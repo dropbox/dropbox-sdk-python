@@ -13,7 +13,7 @@ You can install this package from the root directory by running::
 After installation, to get started, open a Python console::
 
     >>> import dropbox
-    >>> dbx = dropbox.Dropbox(YOUR_ACCESS_TOKEN)
+    >>> dbx = dropbox.Dropbox("YOUR_ACCESS_TOKEN")
     >>> dbx.users_get_current_acccount()
 
 Creating an Application
@@ -23,12 +23,12 @@ You need to create an Dropbox Application to make API requests.
 
 - Go to https://dropbox.com/developers/apps.
 
-Obtaining a User Token
-----------------------
+Obtaining an Access Token
+-------------------------
 
-All requests need to be made with a user token. To get started, once you've
-created an app, you can go to the app's console and generate an access token
-for your own Dropbox account.
+All requests need to be made with an OAuth 2 access token. To get started, once
+you've created an app, you can go to the app's console and generate an access
+token for your own Dropbox account.
 
 Examples
 --------
