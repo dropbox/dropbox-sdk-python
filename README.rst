@@ -40,5 +40,7 @@ Documentation
 -------------
 
 Documentation can be compiled by running ``make html`` from the ``docs``
-folder. After compilation, open ``docs/_build/html/index.html``.
+folder. After compilation, open ``docs/_build/html/index.html``. Alternatively,
+you can read a hosted version from `Read the Docs
+<http://dropbox-sdk-python.readthedocs.org/>`_.
 
