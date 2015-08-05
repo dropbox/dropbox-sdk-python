@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '<insert-version-number-here>'
+__version__ = '0.2'
 
 import json
 import logging
