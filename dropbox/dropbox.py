@@ -134,9 +134,9 @@ class Dropbox(DropboxBase):
 
         self._domain = os.environ.get('DROPBOX_DOMAIN', Dropbox.DEFAULT_DOMAIN)
         self._api_hostname = os.environ.get(
-            'DBOPBOX_API_HOST', 'api.' + self._domain)
+            'DROPBOX_API_HOST', 'api.' + self._domain)
         self._api_content_hostname = os.environ.get(
-            'DBOPBOX_API_CONTENT_HOST', 'api-content.' + self._domain)
+            'DROPBOX_API_CONTENT_HOST', 'api-content.' + self._domain)
         self._host_map = {self.HOST_API: self._api_hostname,
                           self.HOST_CONTENT: self._api_content_hostname}
 

@@ -5,9 +5,9 @@ from abc import ABCMeta, abstractmethod
 from . import babel_validators as bv
 
 from . import (
-    users,
     files,
     sharing,
+    users,
 )
 
 class DropboxBase(object):
@@ -18,66 +18,6 @@ class DropboxBase(object):
         pass
 
     # ------------------------------------------
-    # Routes in users namespace
-
-    def users_get_account(self,
-                          account_id):
-        """
-        Get information about a user's account.
-
-        :param str account_id: A user's account identifier.
-        :rtype: :class:`dropbox.users.BasicAccount`
-        :raises: :class:`dropbox.exceptions.ApiError`
-
-        If this raises, ApiError.reason is of type:
-            :class:`dropbox.users.GetAccountError`
-        """
-        o = users.GetAccountArg(account_id)
-        r = self.request(self.HOST_API,
-                         'users/get_account',
-                         self.ROUTE_STYLE_RPC,
-                         bv.Struct(users.GetAccountArg),
-                         bv.Struct(users.BasicAccount),
-                         bv.Union(users.GetAccountError),
-                         o,
-                         None)
-        return r
-
-    def users_get_current_account(self):
-        """
-        Get information about the current user's account.
-
-        :rtype: :class:`dropbox.users.FullAccount`
-        """
-        o = None
-        r = self.request(self.HOST_API,
-                         'users/get_current_account',
-                         self.ROUTE_STYLE_RPC,
-                         bv.Void(),
-                         bv.Struct(users.FullAccount),
-                         bv.Void(),
-                         o,
-                         None)
-        return r
-
-    def users_get_space_usage(self):
-        """
-        Get the space usage information for the current user's account.
-
-        :rtype: :class:`dropbox.users.SpaceUsage`
-        """
-        o = None
-        r = self.request(self.HOST_API,
-                         'users/get_space_usage',
-                         self.ROUTE_STYLE_RPC,
-                         bv.Void(),
-                         bv.Struct(users.SpaceUsage),
-                         bv.Void(),
-                         o,
-                         None)
-        return r
-
-    # ------------------------------------------
     # Routes in files namespace
 
     def files_get_metadata(self,
@@ -85,8 +25,7 @@ class DropboxBase(object):
         """
         Returns the metadata for a file or folder.
 
-        :param str path: The path of the file or folder on Dropbox. Must not be
-            the root.
+        :param str path: The path or ID of a file or folder on Dropbox
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -105,20 +44,24 @@ class DropboxBase(object):
         return r
 
     def files_list_folder(self,
-                          path):
+                          path,
+                          recursive=False):
         """
         Returns the contents of a folder. NOTE: We're definitely going to
         streamline this interface.
 
         :param str path: The path to the folder you want to see the contents of.
-            May be the root (i.e. empty).
+        :param bool recursive: If true, list folder operation will be applied
+            recursively to all subfolders. And the response will contain
+            contents of all subfolders
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.ListFolderError`
         """
-        o = files.ListFolderArg(path)
+        o = files.ListFolderArg(path,
+                                recursive)
         r = self.request(self.HOST_API,
                          'files/list_folder',
                          self.ROUTE_STYLE_RPC,
@@ -151,6 +94,38 @@ class DropboxBase(object):
                          bv.Struct(files.ListFolderContinueArg),
                          bv.Struct(files.ListFolderResult),
                          bv.Union(files.ListFolderContinueError),
+                         o,
+                         None)
+        return r
+
+    def files_list_folder_get_latest_cursor(self,
+                                            path,
+                                            recursive=False):
+        """
+        A way to quickly get a cursor for the folder's state. Unlike
+        :meth:`list_folder`, :meth:`list_folder_get_latest_cursor` doesn't
+        return any entries. This endpoint is for app which only needs to know
+        about new files and modifications and doesn't need to know about files
+        that already exist in Dropbox.
+
+        :param str path: The path to the folder you want to see the contents of.
+        :param bool recursive: If true, list folder operation will be applied
+            recursively to all subfolders. And the response will contain
+            contents of all subfolders
+        :rtype: :class:`dropbox.files.ListFolderGetLatestCursorResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.ListFolderError`
+        """
+        o = files.ListFolderArg(path,
+                                recursive)
+        r = self.request(self.HOST_API,
+                         'files/list_folder/get_latest_cursor',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(files.ListFolderArg),
+                         bv.Struct(files.ListFolderGetLatestCursorResult),
+                         bv.Union(files.ListFolderError),
                          o,
                          None)
         return r
@@ -358,7 +333,7 @@ class DropboxBase(object):
         Searches for files and folders.
 
         :param str path: The path in the user's Dropbox to search. Should
-            probably be a folder. May be the root (i.e. empty).
+            probably be a folder.
         :param str query: The string to search for. The search string is split
             on spaces into multiple tokens. For file name searching, the last
             token is used for prefix matching (i.e. "bat c" matches "bat cave"
@@ -404,7 +379,7 @@ class DropboxBase(object):
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.files.PathError`
+            :class:`dropbox.files.CreateFolderError`
         """
         o = files.CreateFolderArg(path)
         r = self.request(self.HOST_API,
@@ -412,7 +387,7 @@ class DropboxBase(object):
                          self.ROUTE_STYLE_RPC,
                          bv.Struct(files.CreateFolderArg),
                          bv.Struct(files.FolderMetadata),
-                         bv.Union(files.PathError),
+                         bv.Union(files.CreateFolderError),
                          o,
                          None)
         return r
@@ -428,7 +403,7 @@ class DropboxBase(object):
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.files.PathError`
+            :class:`dropbox.files.DeleteError`
         """
         o = files.DeleteArg(path)
         r = self.request(self.HOST_API,
@@ -436,7 +411,7 @@ class DropboxBase(object):
                          self.ROUTE_STYLE_RPC,
                          bv.Struct(files.DeleteArg),
                          bv.StructTree(files.Metadata),
-                         bv.Union(files.PathError),
+                         bv.Union(files.DeleteError),
                          o,
                          None)
         return r
@@ -637,6 +612,58 @@ class DropboxBase(object):
         self._save_body_to_file(download_path, r[1])
         return r[0]
 
+    def files_list_revisions(self,
+                             path,
+                             limit=10):
+        """
+        Return revisions of a file
+
+        :param str path: The path to the file you want to see the revisions of.
+        :param long limit: The maximum number of revision entries returned.
+        :rtype: :class:`dropbox.files.ListRevisionsResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.ListRevisionsError`
+        """
+        o = files.ListRevisionsArg(path,
+                                   limit)
+        r = self.request(self.HOST_API,
+                         'files/list_revisions',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(files.ListRevisionsArg),
+                         bv.Struct(files.ListRevisionsResult),
+                         bv.Union(files.ListRevisionsError),
+                         o,
+                         None)
+        return r
+
+    def files_restore(self,
+                      path,
+                      rev):
+        """
+        Restore a file to a specific revision
+
+        :param str path: The path to the file you want to restore.
+        :param str rev: The revision to restore for the file.
+        :rtype: :class:`dropbox.files.FileMetadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.RestoreError`
+        """
+        o = files.RestoreArg(path,
+                             rev)
+        r = self.request(self.HOST_API,
+                         'files/restore',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(files.RestoreArg),
+                         bv.Struct(files.FileMetadata),
+                         bv.Union(files.RestoreError),
+                         o,
+                         None)
+        return r
+
     # ------------------------------------------
     # Routes in sharing namespace
 
@@ -657,7 +684,7 @@ class DropboxBase(object):
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.sharing.PathError`
+            :class:`dropbox.sharing.GetSharedLinksError`
         """
         o = sharing.GetSharedLinksArg(path)
         r = self.request(self.HOST_API,
@@ -665,7 +692,7 @@ class DropboxBase(object):
                          self.ROUTE_STYLE_RPC,
                          bv.Struct(sharing.GetSharedLinksArg),
                          bv.Struct(sharing.GetSharedLinksResult),
-                         bv.Union(files.PathError),
+                         bv.Union(sharing.GetSharedLinksError),
                          o,
                          None)
         return r
@@ -690,7 +717,7 @@ class DropboxBase(object):
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.sharing.PathError`
+            :class:`dropbox.sharing.CreateSharedLinkError`
         """
         o = sharing.CreateSharedLinkArg(path,
                                         short_url,
@@ -700,7 +727,115 @@ class DropboxBase(object):
                          self.ROUTE_STYLE_RPC,
                          bv.Struct(sharing.CreateSharedLinkArg),
                          bv.Struct(sharing.PathLinkMetadata),
-                         bv.Union(files.PathError),
+                         bv.Union(sharing.CreateSharedLinkError),
+                         o,
+                         None)
+        return r
+
+    def sharing_get_shared_folder(self,
+                                  id,
+                                  include_membership=True):
+        """
+        Gets shared folder by its folder ID.
+
+        :param str id: The ID for the shared folder.
+        :param bool include_membership: If include user and group membership
+            information in the response.
+        :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.SharedFolderAccessError`
+        """
+        o = sharing.GetSharedFolderArgs(id,
+                                        include_membership)
+        r = self.request(self.HOST_API,
+                         'sharing/get_shared_folder',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.GetSharedFolderArgs),
+                         bv.StructTree(sharing.SharedFolderMetadata),
+                         bv.Union(sharing.SharedFolderAccessError),
+                         o,
+                         None)
+        return r
+
+    def sharing_list_shared_folders(self,
+                                    include_membership=False):
+        """
+        Return the list of all shared folders the authenticated user has access
+        to.
+
+        :param bool include_membership: If include user and group membership
+            information in the response.
+        :rtype: :class:`dropbox.sharing.ListSharedFoldersResult`
+        """
+        o = sharing.ListSharedFoldersArgs(include_membership)
+        r = self.request(self.HOST_API,
+                         'sharing/list_shared_folders',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.ListSharedFoldersArgs),
+                         bv.Struct(sharing.ListSharedFoldersResult),
+                         bv.Void(),
+                         o,
+                         None)
+        return r
+
+    # ------------------------------------------
+    # Routes in users namespace
+
+    def users_get_account(self,
+                          account_id):
+        """
+        Get information about a user's account.
+
+        :param str account_id: A user's account identifier.
+        :rtype: :class:`dropbox.users.BasicAccount`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.users.GetAccountError`
+        """
+        o = users.GetAccountArg(account_id)
+        r = self.request(self.HOST_API,
+                         'users/get_account',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(users.GetAccountArg),
+                         bv.Struct(users.BasicAccount),
+                         bv.Union(users.GetAccountError),
+                         o,
+                         None)
+        return r
+
+    def users_get_current_account(self):
+        """
+        Get information about the current user's account.
+
+        :rtype: :class:`dropbox.users.FullAccount`
+        """
+        o = None
+        r = self.request(self.HOST_API,
+                         'users/get_current_account',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Void(),
+                         bv.Struct(users.FullAccount),
+                         bv.Void(),
+                         o,
+                         None)
+        return r
+
+    def users_get_space_usage(self):
+        """
+        Get the space usage information for the current user's account.
+
+        :rtype: :class:`dropbox.users.SpaceUsage`
+        """
+        o = None
+        r = self.request(self.HOST_API,
+                         'users/get_space_usage',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Void(),
+                         bv.Struct(users.SpaceUsage),
+                         bv.Void(),
                          o,
                          None)
         return r
