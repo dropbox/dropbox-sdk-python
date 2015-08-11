@@ -166,7 +166,7 @@ def download(dbx, folder, subfolder, name):
     return data
 
 def upload(dbx, fullname, folder, subfolder, name, overwrite=False):
-    """Opload a file.
+    """Upload a file.
 
     Return the request response, or None in case of error.
     """
