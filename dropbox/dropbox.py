@@ -3,20 +3,18 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '0.2'
+__version__ = '3.0'
 
 import json
 import logging
 import os
-import pkg_resources
 import random
 import six
-import ssl
 import time
 
 import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.poolmanager import PoolManager
+
+from session import pinned_session
 
 from . import babel_serializers
 from .base import DropboxBase
@@ -28,8 +26,6 @@ from .exceptions import (
     InternalServerError,
     RateLimitError,
 )
-
-_TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 
 class RouteResult(object):
     """The successful result of a call to a route."""
@@ -60,17 +56,6 @@ class RouteErrorResult(object):
         """
         self.obj_result = obj_result
 
-# TODO(kelkabany): We probably only want to instantiate this once so that even
-# if multiple Dropbox objects are instantiated, they all share the same pool.
-class _SSLAdapter(HTTPAdapter):
-    def init_poolmanager(self, connections, maxsize, block=False):
-        self.poolmanager = PoolManager(num_pools=connections,
-                                       maxsize=maxsize,
-                                       block=block,
-                                       cert_reqs=ssl.CERT_REQUIRED,
-                                       ca_certs=_TRUSTED_CERT_FILE,
-                                       ssl_version=ssl.PROTOCOL_TLSv1)
-
 class Dropbox(DropboxBase):
     """
     Use this to make requests to the Dropbox API.
@@ -79,6 +64,9 @@ class Dropbox(DropboxBase):
     API_VERSION = '2-beta-2'
 
     DEFAULT_DOMAIN = 'dropbox.com'
+
+    # host for web routes (used for oauth2)
+    HOST_WEB = 'www'
 
     # Host for RPC-style routes.
     HOST_API = 'api'
@@ -117,11 +105,7 @@ class Dropbox(DropboxBase):
         self._oauth2_access_token = oauth2_access_token
 
         # We only need as many pool_connections as we have unique hostnames.
-        http_adapter = _SSLAdapter(pool_connections=4,
-                                   pool_maxsize=max_connections)
-        # Use a single session for connection re-use.
-        self._session = requests.session()
-        self._session.mount('https://', http_adapter)
+        self._session = pinned_session(pool_maxsize=max_connections)
         self._max_retries_on_error = max_retries_on_error
 
         base_user_agent = 'OfficialDropboxPythonV2SDK/' + __version__
@@ -369,3 +353,4 @@ class Dropbox(DropboxBase):
             for c in http_resp.iter_content(chunksize):
                 f.write(c)
         http_resp.close()
+

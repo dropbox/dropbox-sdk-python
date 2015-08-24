@@ -1,7 +1,8 @@
 Dropbox for Python
 ==================
 
-A Python SDK for integrating with the Dropbox API v2.
+A Python SDK for integrating with the Dropbox API v2. Documentation is
+available on `Read the Docs <http://dropbox-sdk-python.readthedocs.org/>`_.
 
 Setup
 -----
@@ -33,7 +34,7 @@ token for your own Dropbox account.
 Examples
 --------
 
-An example, ``updown.py``, can be found in the examples directory, which
+An example, `updown.py <example/updown.py>`_, can be found in the examples directory, which
 demonstrates how to sync a local directory with a Dropbox.
 
 Documentation
@@ -44,3 +45,16 @@ folder. After compilation, open ``docs/_build/html/index.html``. Alternatively,
 you can read a hosted version from `Read the Docs
 <http://dropbox-sdk-python.readthedocs.org/>`_.
 
+Upgrading from v1
+-----------------
+
+To ease the transition to the new API and SDK, you can still use the old
+``dropbox.client.DropboxClient`` class. In fact, v2 and v1 can be used
+simultaneously.  Support for the old client will be dropped once the new SDK is
+at functional parity.
+
+Instantiating the old ``DropboxClient`` will print a `warning
+<https://docs.python.org/2/library/warnings.html#warnings.warn>`_ to stderr. If
+you want to ignore the warning, you can invoke Python as follows::
+
+    $ python -W ignore your_script.py

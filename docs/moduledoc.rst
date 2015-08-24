@@ -2,6 +2,12 @@
 SDK Documentation
 *****************
 
+:mod:`dropbox.oauth` -- OAuth
+============================================
+.. automodule:: dropbox.oauth
+   :members:
+   :undoc-members:
+
 :mod:`dropbox.base` -- Base
 ============================================
 .. autoclass:: dropbox.base.DropboxBase
@@ -21,12 +27,14 @@ SDK Documentation
 ============================================
 .. automodule:: dropbox.files
    :members:
+   :show-inheritance:
    :undoc-members:
 
 :mod:`dropbox.sharing` -- Sharing
 ============================================
 .. automodule:: dropbox.sharing
    :members:
+   :show-inheritance:
    :special-members: __init__
    :undoc-members:
 
@@ -34,6 +42,7 @@ SDK Documentation
 ============================================
 .. automodule:: dropbox.users
    :members:
+   :show-inheritance:
    :special-members: __init__
    :undoc-members:
 
@@ -41,6 +50,7 @@ SDK Documentation
 ============================================
 .. automodule:: dropbox.exceptions
    :members:
+   :show-inheritance:
    :special-members: __init__
    :undoc-members:
 
