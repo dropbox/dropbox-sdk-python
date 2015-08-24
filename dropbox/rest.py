@@ -26,7 +26,7 @@ except ImportError:
     raise ImportError('Dropbox python client requires urllib3.')
 
 
-SDK_VERSION = "3.1"
+SDK_VERSION = "3.11"
 
 TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 
