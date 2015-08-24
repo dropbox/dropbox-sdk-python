@@ -6,7 +6,8 @@ use_setuptools()
 
 from setuptools import setup
 
-install_reqs = ['requests>=2.5.1',
+install_reqs = ['urllib3',
+                'requests>=2.5.1',
                 'six>=1.3.0']
 assert sys.version_info >= (2, 6), "We only support Python 2.6+"
 
@@ -15,7 +16,7 @@ with open('LICENSE') as f:
 
 dist = setup(
     name='dropbox',
-    version='3.11',
+    version='3.12',
     description='Official Dropbox API Client',
     author='Dropbox',
     author_email='dev-platform@dropbox.com',
