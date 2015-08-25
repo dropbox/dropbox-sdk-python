@@ -52,9 +52,3 @@ To ease the transition to the new API and SDK, you can still use the old
 ``dropbox.client.DropboxClient`` class. In fact, v2 and v1 can be used
 simultaneously.  Support for the old client will be dropped once the new SDK is
 at functional parity.
-
-Instantiating the old ``DropboxClient`` will print a `warning
-<https://docs.python.org/2/library/warnings.html#warnings.warn>`_ to stderr. If
-you want to ignore the warning, you can invoke Python as follows::
-
-    $ python -W ignore your_script.py

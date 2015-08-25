@@ -75,7 +75,7 @@ class DropboxClient(object):
         """
         warnings.warn(
             'You are using a deprecated client. Please use the new v2 client '
-            'located at dropbox.Dropbox.', stacklevel=2)
+            'located at dropbox.Dropbox.', DeprecationWarning, stacklevel=2)
 
         if rest_client is None: rest_client = RESTClient
         if isinstance(oauth2_access_token, basestring):
