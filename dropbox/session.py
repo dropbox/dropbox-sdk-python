@@ -5,7 +5,9 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 
+
 _TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
+
 
 # TODO(kelkabany): We probably only want to instantiate this once so that even
 # if multiple Dropbox objects are instantiated, they all share the same pool.
@@ -34,6 +36,7 @@ for any new functionality.
 """
 
 import random
+import six
 import sys
 import time
 import urllib
@@ -45,6 +48,14 @@ except ImportError:
     from cgi import parse_qs
 
 from . import rest
+
+if six.PY3:
+    url_path_quote = urllib.parse.quote
+    url_encode = urllib.parse.urlencode
+else:
+    url_path_quote = urllib.quote
+    url_encode = urllib.urlencode
+
 
 class OAuthToken(object):
     """
@@ -116,7 +127,7 @@ class BaseSession(object):
         if sys.version_info < (3,) and type(target) == unicode:
             target = target.encode("utf8")
 
-        target_path = urllib.quote(target)
+        target_path = url_path_quote(target)
 
         params = params or {}
         params = params.copy()
@@ -125,7 +136,7 @@ class BaseSession(object):
             params['locale'] = self.locale
 
         if params:
-            return "/%s%s?%s" % (self.API_VERSION, target_path, urllib.urlencode(params))
+            return "/%s%s?%s" % (self.API_VERSION, target_path, url_encode(params))
         else:
             return "/%s%s" % (self.API_VERSION, target_path)
 

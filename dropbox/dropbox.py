@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.14'
+__version__ = '3.2'
 
 import json
 import logging
@@ -13,8 +13,6 @@ import six
 import time
 
 import requests
-
-from session import pinned_session
 
 from . import babel_serializers
 from .base import DropboxBase
@@ -26,6 +24,7 @@ from .exceptions import (
     InternalServerError,
     RateLimitError,
 )
+from .session import pinned_session
 
 class RouteResult(object):
     """The successful result of a call to a route."""

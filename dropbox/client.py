@@ -7,17 +7,18 @@ from __future__ import absolute_import
 import base64
 import re
 import os
+import six
 import sys
 import urllib
 import warnings
 
-PY3 = sys.version_info[0] == 3
-
-if PY3:
+if six.PY3:
     from io import StringIO
     basestring = str
+    url_path_quote = urllib.parse.quote
 else:
     from StringIO import StringIO
+    url_path_quote = urllib.quote
 
 try:
     import json
@@ -1293,7 +1294,7 @@ class DropboxOAuth2FlowBase(object):
         if sys.version_info < (3,) and type(target) == unicode:
             target = target.encode("utf8")
 
-        target_path = urllib.quote(target)
+        target_path = url_path_quote(target)
 
         params = params or {}
         params = params.copy()

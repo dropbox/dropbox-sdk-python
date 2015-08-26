@@ -13,8 +13,8 @@ import os
 import sys
 import urllib
 
-from dropbox import Dropbox
-from session import pinned_session
+from .dropbox import Dropbox
+from .session import pinned_session
 
 OAUTH_ROUTE_VERSION = '1'
 
