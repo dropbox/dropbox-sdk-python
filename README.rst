@@ -52,3 +52,12 @@ To ease the transition to the new API and SDK, you can still use the old
 ``dropbox.client.DropboxClient`` class. In fact, v2 and v1 can be used
 simultaneously.  Support for the old client will be dropped once the new SDK is
 at functional parity.
+
+Running tests
+-------------
+
+In the ``test`` folder, run the ``run_tests.sh`` script. You'll need to specify
+a working Dropbox OAuth2 token::
+
+    $ DROPBOX_TOKEN=YOUR_TOKEN PYTHONPATH=.. ./run_tests.sh
+
