@@ -124,7 +124,7 @@ class BaseSession(object):
         Returns:
             - The path and parameters components of an API URL.
         """
-        if sys.version_info < (3,) and type(target) == unicode:
+        if six.PY2 and isinstance(target, six.text_type):
             target = target.encode("utf8")
 
         target_path = url_path_quote(target)

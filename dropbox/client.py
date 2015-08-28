@@ -42,7 +42,7 @@ def format_path(path):
     path = re.sub(r'/+', '/', path)
 
     if path == '/':
-        return (u"" if isinstance(path, unicode) else "")
+        return ''
     else:
         return '/' + path.strip('/')
 
@@ -481,7 +481,7 @@ class DropboxClient(object):
         # Parses file metadata from a raw dropbox HTTP response, raising a
         # dropbox.rest.ErrorResponse if parsing fails.
         metadata = None
-        for header, header_val in dropbox_raw_response.getheaders().iteritems():
+        for header, header_val in dropbox_raw_response.getheaders().items():
             if header.lower() == 'x-dropbox-metadata':
                 try:
                     metadata = json.loads(header_val)
@@ -1291,7 +1291,7 @@ class DropboxOAuth2FlowBase(object):
         Returns
             The path and parameters components of an API URL.
         """
-        if sys.version_info < (3,) and type(target) == unicode:
+        if six.PY2 and isinstance(target, six.text_type):
             target = target.encode("utf8")
 
         target_path = url_path_quote(target)

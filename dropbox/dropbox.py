@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.21'
+__version__ = '3.22'
 
 import json
 import logging
@@ -320,7 +320,7 @@ class Dropbox(DropboxBase):
                 return RouteResult(raw_resp, r)
             else:
                 return RouteResult(raw_resp)
-        elif r.status_code == 409:
+        elif r.status_code in (403, 404, 409):
             raw_resp = r.content.decode('utf-8')
             return RouteErrorResult(raw_resp)
         else:
