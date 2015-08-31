@@ -300,7 +300,7 @@ class DropboxBase(object):
             created or modified.
         :param bool mute: Normally, users are made aware of any file
             modifications in their Dropbox account via notifications in the
-            client software. If u'true', this tells the clients that this
+            client software. If ``True``, this tells the clients that this
             modification shouldn't result in a user notification.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -705,7 +705,7 @@ class DropboxBase(object):
         Create a shared link. If a shared link already exists for the given
         path, that link is returned. Note that in the returned
         :class:`PathLinkMetadata`, the url field is the shortened URL if the
-        short_url argument is set to u'true'. This API is not supported for App
+        short_url argument is set to ``True``. This API is not supported for App
         Folder and filetypes apps.
 
         :param str path: The path to share.

@@ -9,6 +9,7 @@ import argparse
 import contextlib
 import datetime
 import os
+import six
 import sys
 import time
 import unicodedata
@@ -17,6 +18,7 @@ if sys.version.startswith('2'):
     input = raw_input
 
 import dropbox
+from dropbox.files import FileMetadata, FolderMetadata
 
 # OAuth2 access token.  TODO: login etc.
 TOKEN = ''
@@ -45,7 +47,7 @@ def main():
     mtime with the server.
     """
     args = parser.parse_args()
-    if sum([bool(b) for b in args.yes, args.no, args.default]) > 1:
+    if sum([bool(b) for b in (args.yes, args.no, args.default)]) > 1:
         print('At most one of --yes, --no, --default is allowed')
         sys.exit(2)
     if not args.token:
@@ -73,7 +75,9 @@ def main():
         # First do all the files.
         for name in files:
             fullname = os.path.join(dn, name)
-            nname = unicodedata.normalize('NFC', name.decode('utf8'))
+            if not isinstance(name, six.text_type):
+                name = name.decode('utf-8')
+            nname = unicodedata.normalize('NFC', name)
             if name.startswith('.'):
                 print('Skipping dot file:', name)
             elif name.startswith('@') or name.endswith('~'):
@@ -138,13 +142,7 @@ def list_folder(dbx, folder, subfolder):
     else:
         rv = {}
         for entry in res.entries:
-            md = entry.metadata
-            if md.is_file():
-                rv[entry.name] = md.get_file()
-            elif md.is_folder():
-                rv[entry.name] = md.get_folder()
-            else:
-                rv[entry.name] = ()  # Dummy, can't happen.
+            rv[entry.name] = entry
         return rv
 
 def download(dbx, folder, subfolder, name):
@@ -183,7 +181,7 @@ def upload(dbx, fullname, folder, subfolder, name, overwrite=False):
         try:
             res = dbx.files_upload(
                 data, path, mode,
-                client_modified=datetime.datetime.fromtimestamp(mtime),
+                client_modified=datetime.datetime(*time.gmtime(mtime)[:6]),
                 mute=True)
         except dropbox.exceptions.ApiError as err:
             print('*** API error', err)
