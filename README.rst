@@ -1,8 +1,9 @@
 Dropbox for Python
 ==================
 
-A Python SDK for integrating with the Dropbox API v2. Documentation is
-available on `Read the Docs <http://dropbox-sdk-python.readthedocs.org/>`_.
+A Python SDK for integrating with the Dropbox API v2. Compatible with Python
+2.7 and 3.4+. Documentation is available on `Read the Docs
+<http://dropbox-sdk-python.readthedocs.org/>`_.
 
 Setup
 -----
