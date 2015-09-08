@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.23'
+__version__ = '3.24'
 
 import json
 import logging
@@ -165,7 +165,7 @@ class Dropbox(DropboxBase):
             obj = decoded_obj_result
         elif isinstance(res, RouteErrorResult):
             returned_data_type = error_data_type
-            obj = decoded_obj_result['reason']
+            obj = decoded_obj_result['error']
         else:
             raise AssertionError('Expected RouteResult or RouteErrorResult, '
                                  'but res is %s' % type(res))
