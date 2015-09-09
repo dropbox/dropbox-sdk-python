@@ -10,6 +10,7 @@ __all__ = [
 
 import base64
 import os
+import six
 import sys
 import urllib
 
@@ -434,5 +435,5 @@ def _params_to_urlencoded(params):
             return o.encode('utf8')
         else:
             return str(o)
-    utf8_params = {encode(k): encode(v) for k, v in params.iteritems()}
+    utf8_params = {encode(k): encode(v) for k, v in six.iteritems(params)}
     return urllib.urlencode(utf8_params)

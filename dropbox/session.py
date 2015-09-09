@@ -1,4 +1,5 @@
 import pkg_resources
+import six
 import ssl
 
 import requests
@@ -285,9 +286,10 @@ class DropboxSession(BaseSession):
 
         self._oauth_sign_request(oauth_params, self.consumer_creds, token)
 
-        headers = {'Authorization':
-                   'OAuth %s' % ','.join('%s="%s"' % (k, v)
-                                         for k, v in oauth_params.iteritems())}
+        headers = {
+            'Authorization':
+                'OAuth %s' % ','.join(
+                    '%s="%s"' % (k, v) for k, v in six.iteritems(oauth_params))}
 
         return headers, params
 

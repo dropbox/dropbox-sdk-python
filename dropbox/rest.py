@@ -31,7 +31,7 @@ if six.PY3:
 else:
     url_encode = urllib.urlencode
 
-SDK_VERSION = "3.25"
+SDK_VERSION = "3.26"
 
 TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 
@@ -418,5 +418,5 @@ def params_to_urlencoded(params):
             return o.encode('utf8')
         else:
             return str(o)
-    utf8_params = {encode(k): encode(v) for k, v in params.items()}
+    utf8_params = {encode(k): encode(v) for k, v in six.iteritems(params)}
     return url_encode(utf8_params)
