@@ -1506,7 +1506,9 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             your app, which gives your app permission to access the user's Dropbox account.
             Tell the user to visit this URL and approve your app.
         """
-        csrf_token = base64.urlsafe_b64encode(os.urandom(16))
+        csrf_token = base64.urlsafe_b64encode(os.urandom(16))  # PY3: Returns bytes
+        if not isinstance(csrf_token, str):
+            csrf_token = csrf_token.decode('utf-8')
         state = csrf_token
         if url_state is not None:
             state += "|" + url_state
