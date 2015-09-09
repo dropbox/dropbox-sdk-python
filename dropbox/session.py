@@ -287,7 +287,7 @@ class DropboxSession(BaseSession):
 
         headers = {'Authorization':
                    'OAuth %s' % ','.join('%s="%s"' % (k, v)
-                                         for k, v in oauth_params.iteritems())}
+                                         for k, v in oauth_params.items())}
 
         return headers, params
 
