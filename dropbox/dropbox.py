@@ -3,8 +3,9 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.24'
+__version__ = '3.25'
 
+import contextlib
 import json
 import logging
 import os
@@ -339,7 +340,7 @@ class Dropbox(DropboxBase):
             route_name=route_name,
         )
 
-    def save_body_to_file(self, download_path, http_resp, chunksize=2**16):
+    def _save_body_to_file(self, download_path, http_resp, chunksize=2**16):
         """
         Saves the body of an HTTP response to a file.
 
@@ -349,7 +350,6 @@ class Dropbox(DropboxBase):
         :rtype: None
         """
         with open(download_path, 'wb') as f:
-            for c in http_resp.iter_content(chunksize):
-                f.write(c)
-        http_resp.close()
-
+            with contextlib.closing(http_resp):
+                for c in http_resp.iter_content(chunksize):
+                    f.write(c)

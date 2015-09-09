@@ -146,8 +146,11 @@ class DropboxBase(object):
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.DownloadError`
 
-        You must call close on the Response object when you are done with it,
-        otherwise you will max out your available connections.
+        If you do not consume the entire response body, then you must call close
+        on the response object, otherwise you will max out your available
+        connections. We recommend using the `contextlib.closing
+        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
+        context manager to ensure this.
         """
         o = files.DownloadArg(path,
                               rev)
@@ -493,8 +496,11 @@ class DropboxBase(object):
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.ThumbnailError`
 
-        You must call close on the Response object when you are done with it,
-        otherwise you will max out your available connections.
+        If you do not consume the entire response body, then you must call close
+        on the response object, otherwise you will max out your available
+        connections. We recommend using the `contextlib.closing
+        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
+        context manager to ensure this.
         """
         o = files.ThumbnailArg(path,
                                format,
@@ -564,8 +570,11 @@ class DropboxBase(object):
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.PreviewError`
 
-        You must call close on the Response object when you are done with it,
-        otherwise you will max out your available connections.
+        If you do not consume the entire response body, then you must call close
+        on the response object, otherwise you will max out your available
+        connections. We recommend using the `contextlib.closing
+        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
+        context manager to ensure this.
         """
         o = files.PreviewArg(path,
                              rev)
