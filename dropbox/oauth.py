@@ -25,7 +25,7 @@ class DropboxOAuth2FlowBase(object):
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
         self.locale = locale
-        self.session = pinned_session()
+        self.requests_session = pinned_session()
 
         self._domain = os.environ.get('DROPBOX_DOMAIN', Dropbox.DEFAULT_DOMAIN)
 
@@ -51,7 +51,7 @@ class DropboxOAuth2FlowBase(object):
         if redirect_uri is not None:
             params['redirect_uri'] = redirect_uri
 
-        resp = self.session.post(url, data=params)
+        resp = self.requests_session.post(url, data=params)
         resp.raise_for_status()
 
         d = resp.json()
