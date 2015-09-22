@@ -73,7 +73,7 @@ class DropboxOAuth2FlowBase(object):
         :return: The path and parameters components of an API URL.
         :rtype: str
         """
-        if sys.version_info < (3,) and type(target) == unicode:
+        if sys.version_info < (3,) and type(target) == six.text_type:
             target = target.encode("utf8")
 
         target_path = urllib.quote(target)
@@ -431,7 +431,7 @@ def _params_to_urlencoded(params):
     the exception of unicode objects which are utf8-encoded.
     """
     def encode(o):
-        if isinstance(o, unicode):
+        if isinstance(o, six.text_type):
             return o.encode('utf8')
         else:
             return str(o)
