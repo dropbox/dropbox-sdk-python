@@ -25,7 +25,7 @@ with open('LICENSE') as f:
 
 dist = setup(
     name='dropbox',
-    version='3.32',
+    version='3.33',
     description='Official Dropbox API Client',
     author='Dropbox',
     author_email='dev-platform@dropbox.com',
