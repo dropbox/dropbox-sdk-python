@@ -12,7 +12,11 @@ import base64
 import os
 import six
 import sys
-import urllib
+
+try:
+    import urllib.parse as urllib_parse
+except ImportError:
+    import urllib as urllib_parse
 
 from .dropbox import Dropbox
 from .session import pinned_session
@@ -73,10 +77,10 @@ class DropboxOAuth2FlowBase(object):
         :return: The path and parameters components of an API URL.
         :rtype: str
         """
-        if sys.version_info < (3,) and type(target) == unicode:
+        if sys.version_info < (3,) and type(target) == six.text_type:
             target = target.encode("utf8")
 
-        target_path = urllib.quote(target)
+        target_path = urllib_parse.quote(target)
 
         params = params or {}
         params = params.copy()
@@ -431,9 +435,9 @@ def _params_to_urlencoded(params):
     the exception of unicode objects which are utf8-encoded.
     """
     def encode(o):
-        if isinstance(o, unicode):
+        if isinstance(o, six.text_type):
             return o.encode('utf8')
         else:
             return str(o)
     utf8_params = {encode(k): encode(v) for k, v in six.iteritems(params)}
-    return urllib.urlencode(utf8_params)
+    return urllib_parse.urlencode(utf8_params)
