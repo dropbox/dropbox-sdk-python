@@ -15,7 +15,7 @@ try:
     from . import (
         files,
     )
-except ValueError:
+except (SystemError, ValueError):
     import files
 
 class Visibility(object):
@@ -104,6 +104,8 @@ class LinkMetadata(object):
         '_expires_value',
         '_expires_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  url=None,
@@ -213,6 +215,8 @@ class PathLinkMetadata(LinkMetadata):
         '_path_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  url=None,
                  visibility=None,
@@ -265,6 +269,8 @@ class CollectionLinkMetadata(LinkMetadata):
     __slots__ = [
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  url=None,
                  visibility=None,
@@ -291,6 +297,8 @@ class GetSharedLinksArg(object):
         '_path_value',
         '_path_present',
     ]
+
+    _has_required_fields = False
 
     def __init__(self,
                  path=None):
@@ -341,6 +349,8 @@ class GetSharedLinksResult(object):
         '_links_value',
         '_links_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  links=None):
@@ -472,6 +482,8 @@ class CreateSharedLinkArg(object):
         '_pending_upload_value',
         '_pending_upload_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  path=None,
@@ -715,6 +727,8 @@ class MembershipInfo(object):
         '_access_type_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  access_type=None):
         self._access_type_value = None
@@ -771,6 +785,8 @@ class UserInfo(object):
         '_member_id_value',
         '_member_id_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  account_id=None,
@@ -914,6 +930,8 @@ class UserMembershipInfo(MembershipInfo):
         '_active_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  access_type=None,
                  user=None,
@@ -1004,6 +1022,8 @@ class GroupInfo(object):
         '_same_team_value',
         '_same_team_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  display_name=None,
@@ -1139,6 +1159,8 @@ class GroupMembershipInfo(MembershipInfo):
         '_group_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  access_type=None,
                  group=None):
@@ -1200,6 +1222,8 @@ class SharedFolderMetadata(object):
         '_shared_link_policy_value',
         '_shared_link_policy_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  path_lower=None,
@@ -1360,6 +1384,8 @@ class BasicSharedFolderMetadata(SharedFolderMetadata):
     __slots__ = [
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  path_lower=None,
                  name=None,
@@ -1396,6 +1422,8 @@ class FullSharedFolderMetadata(SharedFolderMetadata):
         '_groups_value',
         '_groups_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  path_lower=None,
@@ -1563,6 +1591,8 @@ class GetSharedFolderArgs(object):
         '_include_membership_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  id=None,
                  include_membership=None):
@@ -1640,6 +1670,8 @@ class ListSharedFoldersArgs(object):
         '_include_membership_present',
     ]
 
+    _has_required_fields = False
+
     def __init__(self,
                  include_membership=None):
         self._include_membership_value = None
@@ -1687,6 +1719,8 @@ class ListSharedFoldersResult(object):
         '_entries_value',
         '_entries_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  entries=None):

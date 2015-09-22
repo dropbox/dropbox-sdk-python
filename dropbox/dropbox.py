@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.28'
+__version__ = '3.29'
 
 import contextlib
 import json
@@ -74,6 +74,9 @@ class Dropbox(DropboxBase):
     # Host for upload and download-style routes.
     HOST_CONTENT = 'content'
 
+    # Host for longpoll routes.
+    HOST_NOTIFY = 'notify'
+
     # Download style means that the route argument goes in a Dropbox-API-Arg
     # header, and the result comes back in a Dropbox-API-Result header. The
     # HTTP response body contains a binary payload.
@@ -121,8 +124,11 @@ class Dropbox(DropboxBase):
             'DROPBOX_API_HOST', 'api.' + self._domain)
         self._api_content_hostname = os.environ.get(
             'DROPBOX_API_CONTENT_HOST', 'api-content.' + self._domain)
+        self._api_notify_hostname = os.environ.get(
+            'DROPBOX_API_NOTIFY_HOST', 'api-notify.' + self._domain)
         self._host_map = {self.HOST_API: self._api_hostname,
-                          self.HOST_CONTENT: self._api_content_hostname}
+                          self.HOST_CONTENT: self._api_content_hostname,
+                          self.HOST_NOTIFY: self._api_notify_hostname}
 
     def request(self,
                 host,

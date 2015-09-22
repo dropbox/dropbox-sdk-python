@@ -28,6 +28,8 @@ class Metadata(object):
         '_path_lower_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  name=None,
                  path_lower=None):
@@ -124,6 +126,8 @@ class FileMetadata(Metadata):
         '_size_value',
         '_size_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  name=None,
@@ -305,6 +309,8 @@ class FolderMetadata(Metadata):
         '_id_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  name=None,
                  path_lower=None,
@@ -357,6 +363,8 @@ class DeletedMetadata(Metadata):
 
     __slots__ = [
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  name=None,
@@ -418,6 +426,8 @@ class GetMetadataArg(object):
         '_path_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  path=None):
         self._path_value = None
@@ -469,6 +479,8 @@ class ListFolderArg(object):
         '_recursive_value',
         '_recursive_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  path=None,
@@ -554,6 +566,8 @@ class ListFolderResult(object):
         '_has_more_value',
         '_has_more_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  entries=None,
@@ -705,6 +719,8 @@ class ListFolderContinueArg(object):
         '_cursor_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  cursor=None):
         self._cursor_value = None
@@ -802,6 +818,8 @@ class ListFolderGetLatestCursorResult(object):
         '_cursor_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  cursor=None):
         self._cursor_value = None
@@ -897,6 +915,8 @@ class DownloadArg(object):
         '_rev_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  path=None,
                  rev=None):
@@ -977,6 +997,8 @@ class UploadWriteFailed(object):
         '_upload_session_id_value',
         '_upload_session_id_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  reason=None,
@@ -1098,6 +1120,8 @@ class UploadSessionOffsetError(object):
         '_correct_offset_value',
         '_correct_offset_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  correct_offset=None):
@@ -1265,6 +1289,8 @@ class UploadSessionStartResult(object):
         '_session_id_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  session_id=None):
         self._session_id_value = None
@@ -1317,6 +1343,8 @@ class UploadSessionCursor(object):
         '_offset_value',
         '_offset_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  session_id=None,
@@ -1463,9 +1491,9 @@ class CommitInfo(object):
         timestamp, provided by Dropbox desktop clients, mobile clients, and API
         apps of when the file was actually created or modified.
     :ivar mute: Normally, users are made aware of any file modifications in
-        their Dropbox account via notifications in the client software. If True,
-        this tells the clients that this modification shouldn't result in a user
-        notification.
+        their Dropbox account via notifications in the client software. If
+        ``True``, this tells the clients that this modification shouldn't result
+        in a user notification.
     """
 
     __slots__ = [
@@ -1480,6 +1508,8 @@ class CommitInfo(object):
         '_mute_value',
         '_mute_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  path=None,
@@ -1612,8 +1642,8 @@ class CommitInfo(object):
     def mute(self):
         """
         Normally, users are made aware of any file modifications in their
-        Dropbox account via notifications in the client software. If True, this
-        tells the clients that this modification shouldn't result in a user
+        Dropbox account via notifications in the client software. If ``True``,
+        this tells the clients that this modification shouldn't result in a user
         notification.
 
         :rtype: bool
@@ -1657,6 +1687,8 @@ class UploadSessionFinishArg(object):
         '_commit_value',
         '_commit_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  cursor=None,
@@ -1794,6 +1826,8 @@ class SearchQuery(object):
         '_mode_value',
         '_mode_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  path=None,
@@ -2007,6 +2041,8 @@ class SearchMatch(object):
         '_metadata_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  match_type=None,
                  metadata=None):
@@ -2090,6 +2126,8 @@ class SearchResults(object):
         '_start_value',
         '_start_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  matches=None,
@@ -2431,6 +2469,8 @@ class CreateFolderArg(object):
         '_path_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  path=None):
         self._path_value = None
@@ -2510,6 +2550,8 @@ class DeleteArg(object):
         '_path_value',
         '_path_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  path=None):
@@ -2610,6 +2652,8 @@ class RelocationArg(object):
         '_to_path_value',
         '_to_path_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  from_path=None,
@@ -2873,6 +2917,8 @@ class ThumbnailArg(object):
         '_size_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  path=None,
                  format=None,
@@ -3054,6 +3100,8 @@ class PreviewArg(object):
         '_rev_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  path=None,
                  rev=None):
@@ -3196,6 +3244,8 @@ class ListRevisionsArg(object):
         '_limit_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  path=None,
                  limit=None):
@@ -3312,6 +3362,8 @@ class ListRevisionsResult(object):
         '_entries_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  is_deleted=None,
                  entries=None):
@@ -3390,6 +3442,8 @@ class RestoreArg(object):
         '_rev_value',
         '_rev_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  path=None,

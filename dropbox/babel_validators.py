@@ -93,6 +93,12 @@ class Validator(object):
         """
         pass
 
+    def has_default(self):
+        return False
+
+    def get_default(self):
+        raise AssertionError('No default available.')
+
 class Primitive(Validator):
     """A basic type that is defined by Babel."""
     pass
@@ -429,6 +435,13 @@ class Struct(Composite):
             raise ValidationError('expected type %s, got %s' %
                 (self.definition.__name__, generic_type_name(val)))
 
+    def has_default(self):
+        return not self.definition._has_required_fields
+
+    def get_default(self):
+        assert not self.definition._has_required_fields, 'No default available.'
+        return self.definition()
+
 class StructTree(Struct):
     """Validator for structs with enumerated subtypes.
 
@@ -488,6 +501,12 @@ class Void(Primitive):
             raise ValidationError('expected NoneType, got %s' %
                                   generic_type_name(val))
 
+    def has_default(self):
+        return True
+
+    def get_default(self):
+        return None
+
 class Nullable(Validator):
 
     def __init__(self, validator):
@@ -511,6 +530,12 @@ class Nullable(Validator):
             return
         else:
             return self.validator.validate_type_only(val)
+
+    def has_default(self):
+        return True
+
+    def get_default(self):
+        return None
 
 class FunctionStyle(object):
 

@@ -22,6 +22,8 @@ class GetAccountArg(object):
         '_account_id_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  account_id=None):
         self._account_id_value = None
@@ -152,6 +154,8 @@ class Account(object):
         '_name_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  account_id=None,
                  name=None):
@@ -221,13 +225,15 @@ class BasicAccount(Account):
     Basic information about any account.
 
     :ivar is_teammate: Whether this user is a teammate of the current user. If
-        this account is the current user's account, then this will be True.
+        this account is the current user's account, then this will be ``True``.
     """
 
     __slots__ = [
         '_is_teammate_value',
         '_is_teammate_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  account_id=None,
@@ -244,7 +250,7 @@ class BasicAccount(Account):
     def is_teammate(self):
         """
         Whether this user is a teammate of the current user. If this account is
-        the current user's account, then this will be True.
+        the current user's account, then this will be ``True``.
 
         :rtype: bool
         """
@@ -307,6 +313,8 @@ class FullAccount(Account):
         '_account_type_value',
         '_account_type_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  account_id=None,
@@ -548,6 +556,8 @@ class Team(object):
         '_name_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  id=None,
                  name=None):
@@ -635,6 +645,8 @@ class Name(object):
         '_display_name_value',
         '_display_name_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  given_name=None,
@@ -776,6 +788,8 @@ class SpaceUsage(object):
         '_allocation_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  used=None,
                  allocation=None):
@@ -908,6 +922,8 @@ class IndividualSpaceAllocation(object):
         '_allocated_present',
     ]
 
+    _has_required_fields = True
+
     def __init__(self,
                  allocated=None):
         self._allocated_value = None
@@ -955,6 +971,8 @@ class TeamSpaceAllocation(object):
         '_allocated_value',
         '_allocated_present',
     ]
+
+    _has_required_fields = True
 
     def __init__(self,
                  used=None,
