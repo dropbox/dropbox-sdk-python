@@ -27,13 +27,19 @@ BACKUPPATH = '/my-file-backup.txt'
 # Uploads contents of LOCALFILE to Dropbox
 def backup():
     with open(LOCALFILE, 'r') as f:
-        # We use WriteMode=overwrite to make sure that the settings in the file are changed on upload
+        # We use WriteMode=overwrite to make sure that the settings in the file
+        # are changed on upload
         try:
             dbx.files_upload(f, BACKUPPATH, mode=WriteMode('overwrite'))
         except ApiError as err:
-            # This checks for the specific error where a user doesn't have enough Dropbox space quota to upload this file
-            if err.reason.is_path() and err.reason.get_path().reason.is_insufficient_space():
+            # This checks for the specific error where a user doesn't have
+            # enough Dropbox space quota to upload this file
+            if (err.error.is_path() and
+                    err.error.get_path().error.is_insufficient_space()):
                 sys.exit("Cannot back up; insufficient space.")
+            elif err.user_message_text:
+                print(err.user_message_text)
+                sys.exit()
             else:
                 print(err)
                 sys.exit()
@@ -48,7 +54,7 @@ def change_app_file(new_content):
 def restore(rev=None):
     # Restore the file on Dropbox to a certain revision
     dbx.files_restore(BACKUPPATH, rev)
-    # Now download the specific revision of the Dropbox file at BACKUPPATH to LOCALFILE
+    # Download the specific revision of the file at BACKUPPATH to LOCALFILE
     dbx.files_download_to_file(LOCALFILE, BACKUPPATH, rev)
     print("Restored to revision " + rev)
 
@@ -56,7 +62,7 @@ def restore(rev=None):
 def select_revision():
     # Get the revisions for a file (and sort by the datetime object, "server_modified")
     revisions = sorted(dbx.files_list_revisions(BACKUPPATH, limit=30).entries,
-        key=lambda entry: entry.server_modified)
+                       key=lambda entry: entry.server_modified)
 
     print("Available backups:")
     for revision in revisions:
@@ -79,4 +85,3 @@ if __name__ == '__main__':
     # Restore the local and Dropbox files to a certain revision
     to_rev = select_revision()
     restore(to_rev)
-

@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.29'
+__version__ = '3.30'
 
 import contextlib
 import json
@@ -105,6 +105,8 @@ class Dropbox(DropboxBase):
             the format "AppName/Version". If set, we append
             "/OfficialDropboxPythonV2SDK/__version__" to the user_agent,
         """
+        assert len(oauth2_access_token) > 0, \
+            'OAuth2 access token cannot be empty.'
         self._oauth2_access_token = oauth2_access_token
 
         # We only need as many pool_connections as we have unique hostnames.
@@ -173,6 +175,9 @@ class Dropbox(DropboxBase):
         elif isinstance(res, RouteErrorResult):
             returned_data_type = error_data_type
             obj = decoded_obj_result['error']
+            user_message = decoded_obj_result.get('user_message')
+            user_message_text = user_message and user_message.get('text')
+            user_message_locale =  user_message and user_message.get('locale')
         else:
             raise AssertionError('Expected RouteResult or RouteErrorResult, '
                                  'but res is %s' % type(res))
@@ -180,9 +185,12 @@ class Dropbox(DropboxBase):
 
         deserialized_result = babel_serializers.json_compat_obj_decode(
             returned_data_type, obj, strict=False)
+        print(deserialized_result)
 
         if isinstance(res, RouteErrorResult):
-            raise ApiError(deserialized_result)
+            raise ApiError(deserialized_result,
+                           user_message_text,
+                           user_message_locale)
         elif route_style == self.ROUTE_STYLE_DOWNLOAD:
             return (deserialized_result, res.http_resp)
         else:

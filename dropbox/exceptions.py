@@ -6,12 +6,21 @@ class DropboxException(Exception):
 class ApiError(DropboxException):
     """Errors produced by the Dropbox API."""
 
-    def __init__(self, reason):
-        super(ApiError, self).__init__(reason)
-        self.reason = reason
+    def __init__(self, error, user_message_text, user_message_locale):
+        """
+        :param error: An instance of the error data type for the route.
+        :param (str) user_message_text: A human-readable message that can be
+            displayed to the end user. Is None, if unavailable.
+        :param (str) user_message_locale: The locale of ``user_message_text``,
+            if present.
+        """
+        super(ApiError, self).__init__(error)
+        self.error = error
+        self.user_message_text = user_message_text
+        self.user_message_locale = user_message_locale
 
     def __repr__(self):
-        return 'ApiError({})'.format(self.reason)
+        return 'ApiError({})'.format(self.error)
 
 
 class HttpError(DropboxException):
@@ -40,12 +49,12 @@ class BadInputError(HttpError):
 class AuthError(HttpError):
     """Errors due to invalid authentication credentials."""
 
-    def __init__(self, reason):
+    def __init__(self, error):
         super(AuthError, self).__init__(401, None)
-        self.reason = reason
+        self.error = error
 
     def __repr__(self):
-        return 'AuthError({!r})'.format(self.reason)
+        return 'AuthError({!r})'.format(self.error)
 
 
 class RateLimitError(HttpError):
