@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.31'
+__version__ = '3.32'
 
 import contextlib
 import json
@@ -95,15 +95,21 @@ class Dropbox(DropboxBase):
                  oauth2_access_token,
                  max_connections=8,
                  max_retries_on_error=4,
-                 user_agent=None):
+                 user_agent=None,
+                 proxies=None):
         """
-        :param str oauth2_access_token: OAuth2 access token for making client requests.
+        :param str oauth2_access_token: OAuth2 access token for making client
+            requests.
         :param int max_connections: Maximum connection pool size.
-        :param int max_retries_on_error: On 5xx errors, the number of times to retry.
-        :param str user_agent: The user agent to use when making requests. This helps
-            us identify requests coming from your application. We recommend you use
-            the format "AppName/Version". If set, we append
+        :param int max_retries_on_error: On 5xx errors, the number of times to
+            retry.
+        :param str user_agent: The user agent to use when making requests. This
+            helps us identify requests coming from your application. We
+            recommend you use the format "AppName/Version". If set, we append
             "/OfficialDropboxPythonV2SDK/__version__" to the user_agent,
+        :param dict proxies: See the `requests module
+            <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_
+            for more details.
         """
         assert len(oauth2_access_token) > 0, \
             'OAuth2 access token cannot be empty.'
@@ -111,6 +117,8 @@ class Dropbox(DropboxBase):
 
         # We only need as many pool_connections as we have unique hostnames.
         self._session = pinned_session(pool_maxsize=max_connections)
+        if proxies:
+            self._session.proxies = proxies
         self._max_retries_on_error = max_retries_on_error
 
         base_user_agent = 'OfficialDropboxPythonV2SDK/' + __version__
