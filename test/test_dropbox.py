@@ -115,9 +115,10 @@ class BaseClientTests(unittest.TestCase):
 
         self.test_dir = "/Test/%s" % str(datetime.datetime.utcnow())
 
-        self.foo = 'foo.txt'
-        self.frog = 'Costa Rican Frog.jpg'
-        self.song = 'dropbox_song.mp3'
+        local_test_dir = os.path.dirname(__file__)
+        self.foo = os.path.join(local_test_dir, 'foo.txt')
+        self.frog = os.path.join(local_test_dir, 'Costa Rican Frog.jpg')
+        self.song = os.path.join(local_test_dir, 'dropbox_song.mp3')
 
     def tearDown(self):
         try:
