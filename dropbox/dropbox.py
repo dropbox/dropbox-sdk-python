@@ -193,7 +193,6 @@ class Dropbox(DropboxBase):
 
         deserialized_result = babel_serializers.json_compat_obj_decode(
             returned_data_type, obj, strict=False)
-        print(deserialized_result)
 
         if isinstance(res, RouteErrorResult):
             raise ApiError(deserialized_result,
