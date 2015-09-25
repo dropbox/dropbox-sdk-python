@@ -44,7 +44,7 @@ class TestDropbox(unittest.TestCase):
         invalid_token_dbx = Dropbox(INVALID_TOKEN)
         with self.assertRaises(AuthError) as cm:
             invalid_token_dbx.files_list_folder('')
-        self.assertEqual(cm.exception.reason['error']['.tag'],
+        self.assertEqual(cm.exception.error['error']['.tag'],
                          'invalid_access_token')
 
     def test_rpc(self):
@@ -55,7 +55,7 @@ class TestDropbox(unittest.TestCase):
                              ''.join(random.sample(string.ascii_letters, 15))
         with self.assertRaises(ApiError) as cm:
             self.dbx.files_list_folder(random_folder_path)
-        self.assertIsInstance(cm.exception.reason, ListFolderError)
+        self.assertIsInstance(cm.exception.error, ListFolderError)
 
     def test_upload_download(self):
         # Upload file
