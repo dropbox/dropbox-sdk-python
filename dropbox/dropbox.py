@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.33'
+__version__ = '3.34'
 
 import contextlib
 import json
@@ -193,7 +193,6 @@ class Dropbox(DropboxBase):
 
         deserialized_result = babel_serializers.json_compat_obj_decode(
             returned_data_type, obj, strict=False)
-        print(deserialized_result)
 
         if isinstance(res, RouteErrorResult):
             raise ApiError(deserialized_result,

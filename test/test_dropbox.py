@@ -44,7 +44,7 @@ class TestDropbox(unittest.TestCase):
         invalid_token_dbx = Dropbox(INVALID_TOKEN)
         with self.assertRaises(AuthError) as cm:
             invalid_token_dbx.files_list_folder('')
-        self.assertEqual(cm.exception.reason['error']['.tag'],
+        self.assertEqual(cm.exception.error['error']['.tag'],
                          'invalid_access_token')
 
     def test_rpc(self):
@@ -55,7 +55,7 @@ class TestDropbox(unittest.TestCase):
                              ''.join(random.sample(string.ascii_letters, 15))
         with self.assertRaises(ApiError) as cm:
             self.dbx.files_list_folder(random_folder_path)
-        self.assertIsInstance(cm.exception.reason, ListFolderError)
+        self.assertIsInstance(cm.exception.error, ListFolderError)
 
     def test_upload_download(self):
         # Upload file
@@ -115,9 +115,10 @@ class BaseClientTests(unittest.TestCase):
 
         self.test_dir = "/Test/%s" % str(datetime.datetime.utcnow())
 
-        self.foo = 'foo.txt'
-        self.frog = 'Costa Rican Frog.jpg'
-        self.song = 'dropbox_song.mp3'
+        local_test_dir = os.path.dirname(__file__)
+        self.foo = os.path.join(local_test_dir, 'foo.txt')
+        self.frog = os.path.join(local_test_dir, 'Costa Rican Frog.jpg')
+        self.song = os.path.join(local_test_dir, 'dropbox_song.mp3')
 
     def tearDown(self):
         try:
