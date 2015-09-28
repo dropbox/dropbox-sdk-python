@@ -57,8 +57,9 @@ at functional parity.
 Running tests
 -------------
 
-In the ``test`` folder, run the ``run_tests.sh`` script. You'll need to specify
-a working Dropbox OAuth2 token::
+We use the `tox <https://tox.readthedocs.org/>`_ package to run tests in Python
+2 and 3. To install, use `pip install tox`. Once installed, run `tox` from the
+root directory. You'll need to specify a working Dropbox OAuth2 token::
 
-    $ DROPBOX_TOKEN=YOUR_TOKEN PYTHONPATH=.. ./run_tests.sh
+    $ DROPBOX_TOKEN=YOUR_TOKEN tox
 
