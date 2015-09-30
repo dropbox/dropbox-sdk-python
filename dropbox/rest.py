@@ -31,7 +31,7 @@ if six.PY3:
 else:
     url_encode = urllib.urlencode
 
-SDK_VERSION = "3.35"
+SDK_VERSION = "3.36"
 
 TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 

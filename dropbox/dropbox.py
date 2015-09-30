@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.35'
+__version__ = '3.36'
 
 import contextlib
 import json
@@ -61,7 +61,7 @@ class Dropbox(DropboxBase):
     Use this to make requests to the Dropbox API.
     """
 
-    API_VERSION = '2-beta-2'
+    API_VERSION = '2'
 
     DEFAULT_DOMAIN = 'dropbox.com'
 
