@@ -1564,7 +1564,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         # Check CSRF token
 
         if self.csrf_token_session_key not in self.session:
-            raise self.BadStateError("Missing CSRF token in session.")
+            raise self.BadStateException("Missing CSRF token in session.")
         csrf_token_from_session = self.session[self.csrf_token_session_key]
         if len(csrf_token_from_session) <= 20:
             raise AssertionError("CSRF token unexpectedly short: %r" % (csrf_token_from_session,))
@@ -1598,7 +1598,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
                 full_message = error
                 if error_description is not None:
                     full_message += ": " + error_description
-                raise self.ProviderError(full_message)
+                raise self.ProviderException(full_message)
 
         # If everything went ok, make the network call to get an access token.
 
