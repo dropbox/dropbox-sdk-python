@@ -1082,7 +1082,7 @@ BasicAccount._all_fields_ = Account._all_fields_ + [('is_teammate', BasicAccount
 
 FullAccount._email_validator = bv.String()
 FullAccount._country_validator = bv.Nullable(bv.String(min_length=2, max_length=2))
-FullAccount._locale_validator = bv.String(min_length=2, max_length=2)
+FullAccount._locale_validator = bv.String(min_length=2, max_length=5)
 FullAccount._referral_link_validator = bv.String()
 FullAccount._team_validator = bv.Nullable(bv.Struct(Team))
 FullAccount._is_paired_validator = bv.Boolean()
