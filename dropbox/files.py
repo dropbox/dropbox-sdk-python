@@ -2844,19 +2844,19 @@ class ThumbnailSize(object):
         self._value = value
 
     def is_xs(self):
-        return self._tag == 'xs'
+        return self._tag == 'w32h32'
 
     def is_s(self):
-        return self._tag == 's'
+        return self._tag == 'w64h64'
 
     def is_m(self):
-        return self._tag == 'm'
+        return self._tag == 'w128h128'
 
     def is_l(self):
-        return self._tag == 'l'
+        return self._tag == 'w640h480'
 
     def is_xl(self):
-        return self._tag == 'xl'
+        return self._tag == 'w1024h768'
 
     def __repr__(self):
         return 'ThumbnailSize(%r)' % self._tag
@@ -4018,18 +4018,18 @@ ThumbnailSize._m_validator = bv.Void()
 ThumbnailSize._l_validator = bv.Void()
 ThumbnailSize._xl_validator = bv.Void()
 ThumbnailSize._tagmap = {
-    'xs': ThumbnailSize._xs_validator,
-    's': ThumbnailSize._s_validator,
-    'm': ThumbnailSize._m_validator,
-    'l': ThumbnailSize._l_validator,
-    'xl': ThumbnailSize._xl_validator,
+    'w32h32': ThumbnailSize._xs_validator,
+    'w64h64': ThumbnailSize._s_validator,
+    'w128h128': ThumbnailSize._m_validator,
+    'w640h480': ThumbnailSize._l_validator,
+    'w1024h768': ThumbnailSize._xl_validator,
 }
 
-ThumbnailSize.xs = ThumbnailSize('xs')
-ThumbnailSize.s = ThumbnailSize('s')
-ThumbnailSize.m = ThumbnailSize('m')
-ThumbnailSize.l = ThumbnailSize('l')
-ThumbnailSize.xl = ThumbnailSize('xl')
+ThumbnailSize.xs = ThumbnailSize('w32h32')
+ThumbnailSize.s = ThumbnailSize('w64h64')
+ThumbnailSize.m = ThumbnailSize('w128h128')
+ThumbnailSize.l = ThumbnailSize('w640h480')
+ThumbnailSize.xl = ThumbnailSize('w1024h768')
 
 ThumbnailFormat._jpeg_validator = bv.Void()
 ThumbnailFormat._png_validator = bv.Void()
