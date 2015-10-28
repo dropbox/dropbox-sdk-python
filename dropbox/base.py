@@ -21,18 +21,22 @@ class DropboxBase(object):
     # Routes in files namespace
 
     def files_get_metadata(self,
-                           path):
+                           path,
+                           include_media_info=False):
         """
         Returns the metadata for a file or folder.
 
-        :param str path: The path or ID of a file or folder on Dropbox
+        :param str path: The path of a file or folder on Dropbox
+        :param bool include_media_info: If true,
+            :field:'FileMetadata.media_info' is set for photo and video.
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.GetMetadataError`
         """
-        o = files.GetMetadataArg(path)
+        o = files.GetMetadataArg(path,
+                                 include_media_info)
         r = self.request(self.HOST_API,
                          'files/get_metadata',
                          self.ROUTE_STYLE_RPC,
@@ -43,17 +47,53 @@ class DropboxBase(object):
                          None)
         return r
 
+    def files_list_folder_longpoll(self,
+                                   cursor,
+                                   timeout=30):
+        """
+        A longpoll endpoint to wait for changes on an account. In conjunction
+        with :meth:`list_folder`, this call gives you a low-latency way to
+        monitor an account for file changes. The connection will block until
+        there are changes available or a timeout occurs.
+
+        :param str cursor: A cursor as returned by :meth:`list_folder` or
+            :meth:`list_folder_continue`
+        :param long timeout: A timeout in seconds. The request will block for at
+            most this length of time, plus up to 90 seconds of random jitter
+            added to avoid the thundering herd problem. Care should be taken
+            when using this parameter, as some network infrastructure does not
+            support long timeouts.
+        :rtype: :class:`dropbox.files.ListFolderLongpollResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.ListFolderLongpollError`
+        """
+        o = files.ListFolderLongpollArg(cursor,
+                                        timeout)
+        r = self.request(self.HOST_NOTIFY,
+                         'files/list_folder/longpoll',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(files.ListFolderLongpollArg),
+                         bv.Struct(files.ListFolderLongpollResult),
+                         bv.Union(files.ListFolderLongpollError),
+                         o,
+                         None)
+        return r
+
     def files_list_folder(self,
                           path,
-                          recursive=False):
+                          recursive=False,
+                          include_media_info=False):
         """
-        Returns the contents of a folder. NOTE: We're definitely going to
-        streamline this interface.
+        Returns the contents of a folder.
 
         :param str path: The path to the folder you want to see the contents of.
-        :param bool recursive: If true, list folder operation will be applied
-            recursively to all subfolders. And the response will contain
-            contents of all subfolders
+        :param bool recursive: If true, the list folder operation will be
+            applied recursively to all subfolders and the response will contain
+            contents of all subfolders.
+        :param bool include_media_info: If true,
+            :field:'FileMetadata.media_info' is set for photo and video.
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -61,7 +101,8 @@ class DropboxBase(object):
             :class:`dropbox.files.ListFolderError`
         """
         o = files.ListFolderArg(path,
-                                recursive)
+                                recursive,
+                                include_media_info)
         r = self.request(self.HOST_API,
                          'files/list_folder',
                          self.ROUTE_STYLE_RPC,
@@ -76,11 +117,10 @@ class DropboxBase(object):
                                    cursor):
         """
         Once a cursor has been retrieved from :meth:`list_folder`, use this to
-        paginate through all files and retrieve updates to the folder. NOTE:
-        We're definitely going to streamline this interface.
+        paginate through all files and retrieve updates to the folder.
 
-        :param str cursor: The cursor returned by :meth:`list_folder` or
-            :meth:`list_folder_continue`.
+        :param str cursor: The cursor returned by your last call to
+            :meth:`list_folder` or :meth:`list_folder_continue`.
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -100,7 +140,8 @@ class DropboxBase(object):
 
     def files_list_folder_get_latest_cursor(self,
                                             path,
-                                            recursive=False):
+                                            recursive=False,
+                                            include_media_info=False):
         """
         A way to quickly get a cursor for the folder's state. Unlike
         :meth:`list_folder`, :meth:`list_folder_get_latest_cursor` doesn't
@@ -109,9 +150,11 @@ class DropboxBase(object):
         that already exist in Dropbox.
 
         :param str path: The path to the folder you want to see the contents of.
-        :param bool recursive: If true, list folder operation will be applied
-            recursively to all subfolders. And the response will contain
-            contents of all subfolders
+        :param bool recursive: If true, the list folder operation will be
+            applied recursively to all subfolders and the response will contain
+            contents of all subfolders.
+        :param bool include_media_info: If true,
+            :field:'FileMetadata.media_info' is set for photo and video.
         :rtype: :class:`dropbox.files.ListFolderGetLatestCursorResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -119,7 +162,8 @@ class DropboxBase(object):
             :class:`dropbox.files.ListFolderError`
         """
         o = files.ListFolderArg(path,
-                                recursive)
+                                recursive,
+                                include_media_info)
         r = self.request(self.HOST_API,
                          'files/list_folder/get_latest_cursor',
                          self.ROUTE_STYLE_RPC,
@@ -198,8 +242,10 @@ class DropboxBase(object):
     def files_upload_session_start(self,
                                    f):
         """
-        Start a new upload session. This is used to upload a single file with
-        multiple calls.
+        Upload sessions allow you to upload a single file using multiple
+        requests. This call starts a new upload session with the given data.
+        You can then use :meth:`upload_session_append` to add more data and
+        :meth:`upload_session_finish` to save all the data to a file in Dropbox.
 
         :param f: A string or file-like obj of data.
         :rtype: :class:`dropbox.files.UploadSessionStartResult`
@@ -347,22 +393,22 @@ class DropboxBase(object):
         :param mode: The search mode (filename, filename_and_content, or
             deleted_filename).
         :type mode: :class:`dropbox.files.SearchMode`
-        :rtype: :class:`dropbox.files.SearchResults`
+        :rtype: :class:`dropbox.files.SearchResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.SearchError`
         """
-        o = files.SearchQuery(path,
-                              query,
-                              start,
-                              max_results,
-                              mode)
+        o = files.SearchArg(path,
+                            query,
+                            start,
+                            max_results,
+                            mode)
         r = self.request(self.HOST_API,
                          'files/search',
                          self.ROUTE_STYLE_RPC,
-                         bv.Struct(files.SearchQuery),
-                         bv.Struct(files.SearchResults),
+                         bv.Struct(files.SearchArg),
+                         bv.Struct(files.SearchResult),
                          bv.Union(files.SearchError),
                          o,
                          None)
@@ -371,11 +417,7 @@ class DropboxBase(object):
     def files_create_folder(self,
                             path):
         """
-        Create a folder at a given path. No file or folder may exist at the
-        path. The parent folder will be created if it does not already exist
-        (and so on). If the parent exists it must be a folder (and the same for
-        any ancestor). If an ancestor is a shared folder it must have write
-        access.
+        Create a folder at a given path.
 
         :param str path: Path in the user's Dropbox to create.
         :rtype: :class:`dropbox.files.FolderMetadata`
@@ -398,7 +440,7 @@ class DropboxBase(object):
     def files_delete(self,
                      path):
         """
-        Delete the file or folder at a given path. If the path is a folder all
+        Delete the file or folder at a given path. If the path is a folder, all
         its contents will be deleted too.
 
         :param str path: Path in the user's Dropbox to delete.
@@ -423,9 +465,8 @@ class DropboxBase(object):
                    from_path,
                    to_path):
         """
-        Copy a file or folder to a different destination in the user's Dropbox.
-        If the source path is a folder all its contents will be copied. The
-        destination path must not yet exist.
+        Copy a file or folder to a different location in the user's Dropbox. If
+        the source path is a folder all its contents will be copied.
 
         :param str from_path: Path in the user's Dropbox to be copied or moved.
         :param str to_path: Path in the user's Dropbox that is the destination.
@@ -451,9 +492,8 @@ class DropboxBase(object):
                    from_path,
                    to_path):
         """
-        Move a file or folder to a different destination in the user's Dropbox.
-        If the source path is a folder all its contents will be moved. The
-        destination path must not yet exist.
+        Move a file or folder to a different location in the user's Dropbox. If
+        the source path is a folder all its contents will be moved.
 
         :param str from_path: Path in the user's Dropbox to be copied or moved.
         :param str to_path: Path in the user's Dropbox that is the destination.
@@ -478,16 +518,19 @@ class DropboxBase(object):
     def files_get_thumbnail(self,
                             path,
                             format=files.ThumbnailFormat.jpeg,
-                            size=files.ThumbnailSize.s):
+                            size=files.ThumbnailSize.w64h64):
         """
-        Get a thumbnail for an image.
+        Get a thumbnail for an image. This method currently supports files with
+        the following file extensions: jpg, jpeg, png, tiff, tif, gif and bmp.
+        Photos that are larger than 20MB in size won't be converted to a
+        thumbnail.
 
         :param str path: The path to the image file you want to thumbnail.
         :param format: The format for the thumbnail image, jpeg (default) or
             png. For  images that are photos, jpeg should be preferred, while
             png is  better for screenshots and digital arts.
         :type format: :class:`dropbox.files.ThumbnailFormat`
-        :param size: The size for the thumbnail image (default s).
+        :param size: The size for the thumbnail image.
         :type size: :class:`dropbox.files.ThumbnailSize`
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
@@ -519,9 +562,12 @@ class DropboxBase(object):
                                     download_path,
                                     path,
                                     format=files.ThumbnailFormat.jpeg,
-                                    size=files.ThumbnailSize.s):
+                                    size=files.ThumbnailSize.w64h64):
         """
-        Get a thumbnail for an image.
+        Get a thumbnail for an image. This method currently supports files with
+        the following file extensions: jpg, jpeg, png, tiff, tif, gif and bmp.
+        Photos that are larger than 20MB in size won't be converted to a
+        thumbnail.
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path to the image file you want to thumbnail.
@@ -529,7 +575,7 @@ class DropboxBase(object):
             png. For  images that are photos, jpeg should be preferred, while
             png is  better for screenshots and digital arts.
         :type format: :class:`dropbox.files.ThumbnailFormat`
-        :param size: The size for the thumbnail image (default s).
+        :param size: The size for the thumbnail image.
         :type size: :class:`dropbox.files.ThumbnailSize`
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
@@ -741,6 +787,29 @@ class DropboxBase(object):
                          None)
         return r
 
+    def sharing_revoke_shared_link(self,
+                                   url):
+        """
+        Revoke a shared link. This API is only supported for full dropbox apps.
+
+        :param str url: URL of the shared link.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.RevokeSharedLinkError`
+        """
+        o = sharing.RevokeSharedLinkArg(url)
+        r = self.request(self.HOST_API,
+                         'sharing/revoke_shared_link',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.RevokeSharedLinkArg),
+                         bv.Void(),
+                         bv.Union(sharing.RevokeSharedLinkError),
+                         o,
+                         None)
+        return None
+
     def sharing_get_shared_folder(self,
                                   id,
                                   include_membership=True):
@@ -769,16 +838,21 @@ class DropboxBase(object):
         return r
 
     def sharing_list_shared_folders(self,
-                                    include_membership=False):
+                                    include_membership=False,
+                                    show_unmounted=False):
         """
         Return the list of all shared folders the authenticated user has access
         to.
 
         :param bool include_membership: If include user and group membership
             information in the response.
+        :param bool show_unmounted: Determines whether the returned list of
+            shared folders will include folders  that the user has left (but may
+            still rejoin).
         :rtype: :class:`dropbox.sharing.ListSharedFoldersResult`
         """
-        o = sharing.ListSharedFoldersArgs(include_membership)
+        o = sharing.ListSharedFoldersArgs(include_membership,
+                                          show_unmounted)
         r = self.request(self.HOST_API,
                          'sharing/list_shared_folders',
                          self.ROUTE_STYLE_RPC,

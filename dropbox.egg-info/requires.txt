@@ -1,0 +1,3 @@
+urllib3
+requests>=2.5.1
+six>=1.3.0
