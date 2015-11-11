@@ -1034,6 +1034,97 @@ class TeamSpaceAllocation(object):
             self._allocated_value,
         )
 
+class GetAccountBatchArg(object):
+    """
+    :ivar account_ids: List of user account identifiers.  Should not contain any
+        duplicate account IDs.
+    """
+
+    __slots__ = [
+        '_account_ids_value',
+        '_account_ids_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 account_ids=None):
+        self._account_ids_value = None
+        self._account_ids_present = False
+        if account_ids is not None:
+            self.account_ids = account_ids
+
+    @property
+    def account_ids(self):
+        """
+        List of user account identifiers.  Should not contain any duplicate
+        account IDs.
+
+        :rtype: list of [str]
+        """
+        if self._account_ids_present:
+            return self._account_ids_value
+        else:
+            raise AttributeError("missing required field 'account_ids'")
+
+    @account_ids.setter
+    def account_ids(self, val):
+        val = self._account_ids_validator.validate(val)
+        self._account_ids_value = val
+        self._account_ids_present = True
+
+    @account_ids.deleter
+    def account_ids(self):
+        self._account_ids_value = None
+        self._account_ids_present = False
+
+    def __repr__(self):
+        return 'GetAccountBatchArg(account_ids={!r})'.format(
+            self._account_ids_value,
+        )
+
+class GetAccountBatchError(object):
+    """
+    :ivar str no_account: The value is an account ID specified in
+        :field:`GetAccountBatchArg.account_ids` that does not exist.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def no_account(cls, val):
+        return cls('no_account', val)
+
+    def is_no_account(self):
+        return self._tag == 'no_account'
+
+    def is_other(self):
+        return self._tag == 'other'
+
+    def get_no_account(self):
+        if not self.is_no_account():
+            raise AttributeError("tag 'no_account' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetAccountBatchError(%r)' % self._tag
+
 GetAccountArg._account_id_validator = bv.String(min_length=40, max_length=40)
 GetAccountArg._all_field_names_ = set(['account_id'])
 GetAccountArg._all_fields_ = [('account_id', GetAccountArg._account_id_validator)]
@@ -1166,4 +1257,17 @@ TeamSpaceAllocation._all_fields_ = [
     ('used', TeamSpaceAllocation._used_validator),
     ('allocated', TeamSpaceAllocation._allocated_validator),
 ]
+
+GetAccountBatchArg._account_ids_validator = bv.List(bv.String(min_length=40, max_length=40), min_items=1)
+GetAccountBatchArg._all_field_names_ = set(['account_ids'])
+GetAccountBatchArg._all_fields_ = [('account_ids', GetAccountBatchArg._account_ids_validator)]
+
+GetAccountBatchError._no_account_validator = bv.String(min_length=40, max_length=40)
+GetAccountBatchError._other_validator = bv.Void()
+GetAccountBatchError._tagmap = {
+    'no_account': GetAccountBatchError._no_account_validator,
+    'other': GetAccountBatchError._other_validator,
+}
+
+GetAccountBatchError.other = GetAccountBatchError('other')
 

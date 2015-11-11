@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '3.38'
+__version__ = '3.39'
 
 import contextlib
 import json
@@ -63,10 +63,7 @@ class Dropbox(DropboxBase):
 
     API_VERSION = '2'
 
-    DEFAULT_DOMAIN = 'dropbox.com'
-
-    # host for web routes (used for oauth2)
-    HOST_WEB = 'www'
+    DEFAULT_DOMAIN = '.dropboxapi.com'
 
     # Host for RPC-style routes.
     HOST_API = 'api'
@@ -131,11 +128,11 @@ class Dropbox(DropboxBase):
 
         self._domain = os.environ.get('DROPBOX_DOMAIN', Dropbox.DEFAULT_DOMAIN)
         self._api_hostname = os.environ.get(
-            'DROPBOX_API_HOST', 'api.' + self._domain)
+            'DROPBOX_API_HOST', 'api' + self._domain)
         self._api_content_hostname = os.environ.get(
-            'DROPBOX_API_CONTENT_HOST', 'api-content.' + self._domain)
+            'DROPBOX_API_CONTENT_HOST', 'content' + self._domain)
         self._api_notify_hostname = os.environ.get(
-            'DROPBOX_API_NOTIFY_HOST', 'api-notify.' + self._domain)
+            'DROPBOX_API_NOTIFY_HOST', 'notify' + self._domain)
         self._host_map = {self.HOST_API: self._api_hostname,
                           self.HOST_CONTENT: self._api_content_hostname,
                           self.HOST_NOTIFY: self._api_notify_hostname}
@@ -288,8 +285,9 @@ class Dropbox(DropboxBase):
         fq_hostname = self._host_map[host]
         url = self._get_route_url(fq_hostname, func_name)
 
-        headers = {'Authorization': 'Bearer %s' % self._oauth2_access_token,
-                   'User-Agent': self._user_agent}
+        headers = {'User-Agent': self._user_agent}
+        if host != self.HOST_NOTIFY:
+            headers['Authorization'] = 'Bearer %s' % self._oauth2_access_token
 
         # The contents of the body of the HTTP request
         body = None

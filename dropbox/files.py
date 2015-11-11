@@ -1599,8 +1599,7 @@ class DownloadError(object):
 class DownloadArg(object):
     """
     :ivar path: The path of the file to download.
-    :ivar rev: Optional revision, taken from the corresponding :class:`Metadata`
-        field.
+    :ivar rev: Deprecated. Please specify revision in :field:'path' instead
     """
 
     __slots__ = [
@@ -1650,7 +1649,7 @@ class DownloadArg(object):
     @property
     def rev(self):
         """
-        Optional revision, taken from the corresponding :class:`Metadata` field.
+        Deprecated. Please specify revision in :field:'path' instead
 
         :rtype: str
         """
@@ -3724,8 +3723,7 @@ class ThumbnailError(object):
 class PreviewArg(object):
     """
     :ivar path: The path of the file to preview.
-    :ivar rev: Optional revision, taken from the corresponding :class:`Metadata`
-        field.
+    :ivar rev: Deprecated. Please specify revision in :field:'path' instead
     """
 
     __slots__ = [
@@ -3775,7 +3773,7 @@ class PreviewArg(object):
     @property
     def rev(self):
         """
-        Optional revision, taken from the corresponding :class:`Metadata` field.
+        Deprecated. Please specify revision in :field:'path' instead
 
         :rtype: str
         """
@@ -4444,7 +4442,7 @@ DownloadError._tagmap = {
 
 DownloadError.other = DownloadError('other')
 
-DownloadArg._path_validator = bv.String(pattern=u'/.*')
+DownloadArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
 DownloadArg._rev_validator = bv.Nullable(bv.String(min_length=9, pattern=u'[0-9a-f]+'))
 DownloadArg._all_field_names_ = set([
     'path',
@@ -4786,7 +4784,7 @@ ThumbnailFormat._tagmap = {
 ThumbnailFormat.jpeg = ThumbnailFormat('jpeg')
 ThumbnailFormat.png = ThumbnailFormat('png')
 
-ThumbnailArg._path_validator = bv.String(pattern=u'/.*')
+ThumbnailArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
 ThumbnailArg._format_validator = bv.Union(ThumbnailFormat)
 ThumbnailArg._size_validator = bv.Union(ThumbnailSize)
 ThumbnailArg._all_field_names_ = set([
@@ -4815,7 +4813,7 @@ ThumbnailError.unsupported_extension = ThumbnailError('unsupported_extension')
 ThumbnailError.unsupported_image = ThumbnailError('unsupported_image')
 ThumbnailError.conversion_error = ThumbnailError('conversion_error')
 
-PreviewArg._path_validator = bv.String(pattern=u'/.*')
+PreviewArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
 PreviewArg._rev_validator = bv.Nullable(bv.String(min_length=9, pattern=u'[0-9a-f]+'))
 PreviewArg._all_field_names_ = set([
     'path',

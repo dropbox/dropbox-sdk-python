@@ -5,8 +5,10 @@ from abc import ABCMeta, abstractmethod
 from . import babel_validators as bv
 
 from . import (
+    async,
     files,
     sharing,
+    team,
     users,
 )
 
@@ -16,6 +18,9 @@ class DropboxBase(object):
     @abstractmethod
     def request(self):
         pass
+
+    # ------------------------------------------
+    # Routes in async namespace
 
     # ------------------------------------------
     # Routes in files namespace
@@ -181,8 +186,8 @@ class DropboxBase(object):
         Download a file from a user's Dropbox.
 
         :param str path: The path of the file to download.
-        :param Nullable rev: Optional revision, taken from the corresponding
-            :class:`Metadata` field.
+        :param Nullable rev: Deprecated. Please specify revision in
+            :field:'path' instead
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -217,8 +222,8 @@ class DropboxBase(object):
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to download.
-        :param Nullable rev: Optional revision, taken from the corresponding
-            :class:`Metadata` field.
+        :param Nullable rev: Deprecated. Please specify revision in
+            :field:'path' instead
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -461,6 +466,30 @@ class DropboxBase(object):
                          None)
         return r
 
+    def files_permanently_delete(self,
+                                 path):
+        """
+        Permanently delete the file or folder at a given path (see
+        https://www.dropbox.com/en/help/40).
+
+        :param str path: Path in the user's Dropbox to delete.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.DeleteError`
+        """
+        o = files.DeleteArg(path)
+        r = self.request(self.HOST_API,
+                         'files/permanently_delete',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(files.DeleteArg),
+                         bv.Void(),
+                         bv.Union(files.DeleteError),
+                         o,
+                         None)
+        return None
+
     def files_copy(self,
                    from_path,
                    to_path):
@@ -607,8 +636,8 @@ class DropboxBase(object):
         .ppsx, .ppsm, .pptx, .pptm,  .xls, .xlsx, .xlsm, .rtf
 
         :param str path: The path of the file to preview.
-        :param Nullable rev: Optional revision, taken from the corresponding
-            :class:`Metadata` field.
+        :param Nullable rev: Deprecated. Please specify revision in
+            :field:'path' instead
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -645,8 +674,8 @@ class DropboxBase(object):
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to preview.
-        :param Nullable rev: Optional revision, taken from the corresponding
-            :class:`Metadata` field.
+        :param Nullable rev: Deprecated. Please specify revision in
+            :field:'path' instead
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -810,58 +839,446 @@ class DropboxBase(object):
                          None)
         return None
 
-    def sharing_get_shared_folder(self,
-                                  id,
-                                  include_membership=True):
+    def sharing_get_folder_metadata(self,
+                                    shared_folder_id,
+                                    include_membership=True):
         """
-        Gets shared folder by its folder ID.
+        Returns shared folder metadata by its folder ID. Warning: This endpoint
+        is in beta and is subject to minor but possibly backwards-incompatible
+        changes.
 
-        :param str id: The ID for the shared folder.
-        :param bool include_membership: If include user and group membership
-            information in the response.
+        :param str shared_folder_id: The ID for the shared folder.
+        :param bool include_membership: If ``True``, user and group membership
+            included in the response.
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.sharing.SharedFolderAccessError`
         """
-        o = sharing.GetSharedFolderArgs(id,
-                                        include_membership)
+        o = sharing.GetMetadataArgs(shared_folder_id,
+                                    include_membership)
         r = self.request(self.HOST_API,
-                         'sharing/get_shared_folder',
+                         'sharing/get_folder_metadata',
                          self.ROUTE_STYLE_RPC,
-                         bv.Struct(sharing.GetSharedFolderArgs),
+                         bv.Struct(sharing.GetMetadataArgs),
                          bv.StructTree(sharing.SharedFolderMetadata),
                          bv.Union(sharing.SharedFolderAccessError),
                          o,
                          None)
         return r
 
-    def sharing_list_shared_folders(self,
-                                    include_membership=False,
-                                    show_unmounted=False):
+    def sharing_list_folders(self,
+                             include_membership=False):
         """
-        Return the list of all shared folders the authenticated user has access
-        to.
+        Return the list of all shared folders the current user has access to.
+        Warning: This endpoint is in beta and is subject to minor but possibly
+        backwards-incompatible changes.
 
         :param bool include_membership: If include user and group membership
             information in the response.
-        :param bool show_unmounted: Determines whether the returned list of
-            shared folders will include folders  that the user has left (but may
-            still rejoin).
-        :rtype: :class:`dropbox.sharing.ListSharedFoldersResult`
+        :rtype: :class:`dropbox.sharing.ListFoldersResult`
         """
-        o = sharing.ListSharedFoldersArgs(include_membership,
-                                          show_unmounted)
+        o = sharing.ListFoldersArgs(include_membership)
         r = self.request(self.HOST_API,
-                         'sharing/list_shared_folders',
+                         'sharing/list_folders',
                          self.ROUTE_STYLE_RPC,
-                         bv.Struct(sharing.ListSharedFoldersArgs),
-                         bv.Struct(sharing.ListSharedFoldersResult),
+                         bv.Struct(sharing.ListFoldersArgs),
+                         bv.Struct(sharing.ListFoldersResult),
                          bv.Void(),
                          o,
                          None)
         return r
+
+    def sharing_share_folder(self,
+                             path,
+                             member_policy=sharing.MemberPolicy.anyone,
+                             acl_update_policy=sharing.AclUpdatePolicy.owner,
+                             shared_link_policy=sharing.SharedLinkPolicy.anyone,
+                             force_async=False):
+        """
+        Share a folder with collaborators. Most sharing will be completed
+        synchronously. Large folders will be completed asynchronously. To make
+        testing the async case repeatable, set `ShareFolderArg.force_async`. If
+        a ``ShareFolderLaunch.async_job_id`` is returned, you'll need to call
+        :meth:`check_share_job_status` until the action completes to get the
+        metadata for the folder. Warning: This endpoint is in beta and is
+        subject to minor but possibly backwards-incompatible changes.
+
+        :param str path: The path to the folder to share. If it does not exist,
+            then a new one is created.
+        :param member_policy: Who can be a member of this shared folder.
+        :type member_policy: :class:`dropbox.sharing.MemberPolicy`
+        :param acl_update_policy: Who can add and remove members of this shared
+            folder.
+        :type acl_update_policy: :class:`dropbox.sharing.AclUpdatePolicy`
+        :param shared_link_policy: The policy to apply to shared links created
+            for content inside this shared folder.
+        :type shared_link_policy: :class:`dropbox.sharing.SharedLinkPolicy`
+        :param bool force_async: Whether to force the share to happen
+            asynchronously.
+        :rtype: :class:`dropbox.sharing.ShareFolderLaunch`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.ShareFolderError`
+        """
+        o = sharing.ShareFolderArg(path,
+                                   member_policy,
+                                   acl_update_policy,
+                                   shared_link_policy,
+                                   force_async)
+        r = self.request(self.HOST_API,
+                         'sharing/share_folder',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.ShareFolderArg),
+                         bv.Union(sharing.ShareFolderLaunch),
+                         bv.Union(sharing.ShareFolderError),
+                         o,
+                         None)
+        return r
+
+    def sharing_update_folder_policy(self,
+                                     shared_folder_id,
+                                     member_policy=None,
+                                     acl_update_policy=None,
+                                     shared_link_policy=None):
+        """
+        Update the sharing policies for a shared folder. Warning: This endpoint
+        is in beta and is subject to minor but possibly backwards-incompatible
+        changes.
+
+        :param str shared_folder_id: The ID for the shared folder.
+        :param Nullable member_policy: Who can be a member of this shared
+            folder. Only set this if the current user is on a team.
+        :param Nullable acl_update_policy: Who can add and remove members of
+            this shared folder.
+        :param Nullable shared_link_policy: The policy to apply to shared links
+            created for content inside this shared folder.
+        :rtype: :class:`dropbox.sharing.BasicSharedFolderMetadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.UpdateFolderPolicyError`
+        """
+        o = sharing.UpdateFolderPolicyArg(shared_folder_id,
+                                          member_policy,
+                                          acl_update_policy,
+                                          shared_link_policy)
+        r = self.request(self.HOST_API,
+                         'sharing/update_folder_policy',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.UpdateFolderPolicyArg),
+                         bv.Struct(sharing.BasicSharedFolderMetadata),
+                         bv.Union(sharing.UpdateFolderPolicyError),
+                         o,
+                         None)
+        return r
+
+    def sharing_unshare_folder(self,
+                               shared_folder_id,
+                               leave_a_copy):
+        """
+        Allows a shared folder owner to unshare the folder. You'll need to call
+        :meth:`check_job_status` to determine if the action has completed
+        successfully. Warning: This endpoint is in beta and is subject to minor
+        but possibly backwards-incompatible changes.
+
+        :param str shared_folder_id: The ID for the shared folder.
+        :param bool leave_a_copy: If true, members of this shared folder will
+            get a copy of this folder after it's unshared. Otherwise, it will be
+            removed from their Dropbox. The current user, who is an owner, will
+            always retain their copy.
+        :rtype: :class:`dropbox.sharing.LaunchEmptyResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.UnshareFolderError`
+        """
+        o = sharing.UnshareFolderArg(shared_folder_id,
+                                     leave_a_copy)
+        r = self.request(self.HOST_API,
+                         'sharing/unshare_folder',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.UnshareFolderArg),
+                         bv.Union(async.LaunchEmptyResult),
+                         bv.Union(sharing.UnshareFolderError),
+                         o,
+                         None)
+        return r
+
+    def sharing_transfer_folder(self,
+                                shared_folder_id,
+                                to_dropbox_id):
+        """
+        Transfer ownership of a shared folder to a member of the shared folder.
+        Warning: This endpoint is in beta and is subject to minor but possibly
+        backwards-incompatible changes.
+
+        :param str shared_folder_id: The ID for the shared folder.
+        :param str to_dropbox_id: A account or team member ID to transfer
+            ownership to.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.TransferFolderError`
+        """
+        o = sharing.TransferFolderArg(shared_folder_id,
+                                      to_dropbox_id)
+        r = self.request(self.HOST_API,
+                         'sharing/transfer_folder',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.TransferFolderArg),
+                         bv.Void(),
+                         bv.Union(sharing.TransferFolderError),
+                         o,
+                         None)
+        return None
+
+    def sharing_unmount_folder(self,
+                               shared_folder_id):
+        """
+        The current user unmounts the designated folder. They can re-mount the
+        folder at a later time using :meth:`mount_folder`. Warning: This
+        endpoint is in beta and is subject to minor but possibly
+        backwards-incompatible changes.
+
+        :param str shared_folder_id: The ID for the shared folder.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.UnmountFolderError`
+        """
+        o = sharing.UnmountFolderArg(shared_folder_id)
+        r = self.request(self.HOST_API,
+                         'sharing/unmount_folder',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.UnmountFolderArg),
+                         bv.Void(),
+                         bv.Union(sharing.UnmountFolderError),
+                         o,
+                         None)
+        return None
+
+    def sharing_mount_folder(self,
+                             shared_folder_id):
+        """
+        The current user mounts the designated folder. Mount a shared folder for
+        a user after they have been added as a member. Once mounted, the shared
+        folder will appear in their Dropbox. Warning: This endpoint is in beta
+        and is subject to minor but possibly backwards-incompatible changes.
+
+        :param str shared_folder_id: The ID of the shared folder to mount.
+        :rtype: :class:`dropbox.sharing.BasicSharedFolderMetadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.MountFolderError`
+        """
+        o = sharing.MountFolderArg(shared_folder_id)
+        r = self.request(self.HOST_API,
+                         'sharing/mount_folder',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.MountFolderArg),
+                         bv.Struct(sharing.BasicSharedFolderMetadata),
+                         bv.Union(sharing.MountFolderError),
+                         o,
+                         None)
+        return r
+
+    def sharing_add_folder_member(self,
+                                  shared_folder_id,
+                                  members,
+                                  quiet=False,
+                                  custom_message=None):
+        """
+        Allows an owner or editor (if the ACL update policy allows) of a shared
+        folder to add another member. For the new member to get access to all
+        the functionality for this folder, you will need to call
+        :meth:`mount_folder` on their behalf. Warning: This endpoint is in beta
+        and is subject to minor but possibly backwards-incompatible changes.
+
+        :param str shared_folder_id: The ID for the shared folder.
+        :param list members: The intended list of members to add.  Added members
+            will receive invites to join the shared folder.
+        :param bool quiet: Whether added members should be notified via email
+            and device notifications of their invite.
+        :param Nullable custom_message: Optional message to display to added
+            members in their invitation.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.AddFolderMemberError`
+        """
+        o = sharing.AddFolderMemberArg(shared_folder_id,
+                                       members,
+                                       quiet,
+                                       custom_message)
+        r = self.request(self.HOST_API,
+                         'sharing/add_folder_member',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.AddFolderMemberArg),
+                         bv.Void(),
+                         bv.Union(sharing.AddFolderMemberError),
+                         o,
+                         None)
+        return None
+
+    def sharing_check_share_job_status(self,
+                                       async_job_id):
+        """
+        Returns the status of an asynchronous job for sharing a folder. Warning:
+        This endpoint is in beta and is subject to minor but possibly
+        backwards-incompatible changes.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.sharing.ShareFolderJobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.PollError`
+        """
+        o = async.PollArg(async_job_id)
+        r = self.request(self.HOST_API,
+                         'sharing/check_share_job_status',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(async.PollArg),
+                         bv.Union(sharing.ShareFolderJobStatus),
+                         bv.Union(async.PollError),
+                         o,
+                         None)
+        return r
+
+    def sharing_check_job_status(self,
+                                 async_job_id):
+        """
+        Returns the status of an asynchronous job. Warning: This endpoint is in
+        beta and is subject to minor but possibly backwards-incompatible
+        changes.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.sharing.JobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.PollError`
+        """
+        o = async.PollArg(async_job_id)
+        r = self.request(self.HOST_API,
+                         'sharing/check_job_status',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(async.PollArg),
+                         bv.Union(sharing.JobStatus),
+                         bv.Union(async.PollError),
+                         o,
+                         None)
+        return r
+
+    def sharing_remove_folder_member(self,
+                                     shared_folder_id,
+                                     member,
+                                     leave_a_copy):
+        """
+        Allows an owner or editor (if the ACL update policy allows) of a shared
+        folder to remove another member. Warning: This endpoint is in beta and
+        is subject to minor but possibly backwards-incompatible changes.
+
+        :param str shared_folder_id: The ID for the shared folder.
+        :param member: The member to remove from the folder. Only the
+            ``MemberSelector.dropbox_id`` may be set at this time.
+        :type member: :class:`dropbox.sharing.MemberSelector`
+        :param bool leave_a_copy: If true, the removed user will keep their copy
+            of the folder after it's unshared, assuming it was mounted.
+            Otherwise, it will be removed from their Dropbox. Also, this must be
+            set to false when kicking a group.
+        :rtype: :class:`dropbox.sharing.LaunchEmptyResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.RemoveFolderMemberError`
+        """
+        o = sharing.RemoveFolderMemberArg(shared_folder_id,
+                                          member,
+                                          leave_a_copy)
+        r = self.request(self.HOST_API,
+                         'sharing/remove_folder_member',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.RemoveFolderMemberArg),
+                         bv.Union(async.LaunchEmptyResult),
+                         bv.Union(sharing.RemoveFolderMemberError),
+                         o,
+                         None)
+        return r
+
+    def sharing_update_folder_member(self,
+                                     shared_folder_id,
+                                     member,
+                                     access_level):
+        """
+        Allows an owner or editor of a shared folder to update another member's
+        permissions. Warning: This endpoint is in beta and is subject to minor
+        but possibly backwards-incompatible changes.
+
+        :param str shared_folder_id: The ID for the shared folder.
+        :param member: The member of the shared folder to update.  Only the
+            ``MemberSelector.dropbox_id`` may be set at this time.
+        :type member: :class:`dropbox.sharing.MemberSelector`
+        :param access_level: The new access level for ``member``.
+            ``AccessLevel.owner`` is disallowed.
+        :type access_level: :class:`dropbox.sharing.AccessLevel`
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.UpdateFolderMemberError`
+        """
+        o = sharing.UpdateFolderMemberArg(shared_folder_id,
+                                          member,
+                                          access_level)
+        r = self.request(self.HOST_API,
+                         'sharing/update_folder_member',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.UpdateFolderMemberArg),
+                         bv.Void(),
+                         bv.Union(sharing.UpdateFolderMemberError),
+                         o,
+                         None)
+        return None
+
+    def sharing_relinquish_folder_membership(self,
+                                             shared_folder_id):
+        """
+        The current user relinquishes their membership in the designated shared
+        folder and will no longer have access to the folder.  A folder owner
+        cannot relinquish membership in their own folder. Warning: This endpoint
+        is in beta and is subject to minor but possibly backwards-incompatible
+        changes.
+
+        :param str shared_folder_id: The ID for the shared folder.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.RelinquishFolderMembershipError`
+        """
+        o = sharing.RelinquishFolderMembershipArg(shared_folder_id)
+        r = self.request(self.HOST_API,
+                         'sharing/relinquish_folder_membership',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(sharing.RelinquishFolderMembershipArg),
+                         bv.Void(),
+                         bv.Union(sharing.RelinquishFolderMembershipError),
+                         o,
+                         None)
+        return None
+
+    # ------------------------------------------
+    # Routes in team namespace
 
     # ------------------------------------------
     # Routes in users namespace
@@ -919,6 +1336,31 @@ class DropboxBase(object):
                          bv.Void(),
                          bv.Struct(users.SpaceUsage),
                          bv.Void(),
+                         o,
+                         None)
+        return r
+
+    def users_get_account_batch(self,
+                                account_ids):
+        """
+        Get information about multiple user accounts.  At most 300 accounts may
+        be queried per request.
+
+        :param list account_ids: List of user account identifiers.  Should not
+            contain any duplicate account IDs.
+        :rtype: list
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.users.GetAccountBatchError`
+        """
+        o = users.GetAccountBatchArg(account_ids)
+        r = self.request(self.HOST_API,
+                         'users/get_account_batch',
+                         self.ROUTE_STYLE_RPC,
+                         bv.Struct(users.GetAccountBatchArg),
+                         bv.List(bv.Struct(users.BasicAccount)),
+                         bv.Union(users.GetAccountBatchError),
                          o,
                          None)
         return r

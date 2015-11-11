@@ -34,7 +34,7 @@ class DropboxOAuth2FlowBase(object):
         self.locale = locale
         self.requests_session = pinned_session()
 
-        self._domain = os.environ.get('DROPBOX_DOMAIN', Dropbox.DEFAULT_DOMAIN)
+        self._host = os.environ.get('DROPBOX_WEB_HOST', 'www.dropbox.com')
 
     def _get_authorize_url(self, redirect_uri, state):
         params = dict(response_type='code',
@@ -44,7 +44,7 @@ class DropboxOAuth2FlowBase(object):
         if state is not None:
             params['state'] = state
 
-        return self.build_url(Dropbox.HOST_WEB, '/oauth2/authorize', params)
+        return self.build_url('/oauth2/authorize', params)
 
     def _finish(self, code, redirect_uri):
         url = self.build_url(Dropbox.HOST_API, '/oauth2/token')
@@ -97,7 +97,7 @@ class DropboxOAuth2FlowBase(object):
         else:
             return "/%s%s" % (OAUTH_ROUTE_VERSION, target_path)
 
-    def build_url(self, host, target, params=None):
+    def build_url(self, target, params=None):
         """Build an API URL.
 
         This method adds scheme and hostname to the path
@@ -108,7 +108,7 @@ class DropboxOAuth2FlowBase(object):
         :return: The full API URL.
         :rtype: str
         """
-        return "https://%s.%s%s" % (host, self._domain, self.build_path(target, params))
+        return "https://%s%s" % (self._host, self.build_path(target, params))
 
 
 class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
