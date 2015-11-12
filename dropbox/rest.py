@@ -31,7 +31,7 @@ if six.PY3:
 else:
     url_encode = urllib.urlencode
 
-SDK_VERSION = "3.39"
+SDK_VERSION = "3.40"
 
 TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 
@@ -204,9 +204,9 @@ class RESTClientObject(object):
                 body = params_to_urlencoded(post_params)
                 headers["Content-type"] = "application/x-www-form-urlencoded"
 
-        # Handle StringIO instances, because urllib3 doesn't.
+        # Handle StringIO/BytesIO instances, because urllib3 doesn't.
         if hasattr(body, 'getvalue'):
-            body = str(body.getvalue())
+            body = body.getvalue()
 
         # Reject any headers containing newlines; the error from the server isn't pretty.
         for key, value in headers.items():

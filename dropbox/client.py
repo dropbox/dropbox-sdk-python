@@ -5,19 +5,17 @@ Deprecated v1 API client. To be removed once v2 is at parity with v1.
 from __future__ import absolute_import
 
 import base64
-import re
+from io import BytesIO
 import os
+import re
 import six
-import sys
 import urllib
 import warnings
 
 if six.PY3:
-    from io import StringIO
     basestring = str
     url_path_quote = urllib.parse.quote
 else:
-    from StringIO import StringIO
     url_path_quote = urllib.quote
 
 try:
@@ -1181,7 +1179,7 @@ class ChunkedUploader(object):
 
             try:
                 (self.offset, self.upload_id) = self.client.upload_chunk(
-                    StringIO(self.last_block), next_chunk_size, self.offset, self.upload_id)
+                    BytesIO(self.last_block), next_chunk_size, self.offset, self.upload_id)
                 self.last_block = None
             except ErrorResponse as e:
                 # Handle the case where the server tells us our offset is wrong.

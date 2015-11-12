@@ -73,32 +73,14 @@ class TestDropbox(unittest.TestCase):
         self.dbx.files_delete('/Test/%s' % timestamp)
 
 
-from dropbox import client
-
-class TestV1DropboxClient(unittest.TestCase):
-
-    def setUp(self):
-        pass
-
-    def test_upload(self):
-        print("Hello!")
-
-
-import json
+from io import BytesIO
 import os
 import posixpath
-import six
 import sys
 import threading
-from uuid import UUID
 
-from dropbox import session, client
+from dropbox import client
 from dropbox.rest import ErrorResponse
-
-if six.PY3:
-    from io import StringIO
-else:
-    from StringIO import StringIO
 
 try:
     import json
@@ -174,7 +156,7 @@ class BaseClientTests(unittest.TestCase):
         """Tests if put_file with overwrite=true returns the expected metadata"""
         path = posixpath.join(self.test_dir, "foo_overwrite.txt")
         self.upload_file(self.foo, path)
-        f = StringIO("This Overwrites")
+        f = BytesIO(b"This Overwrites")
         metadata = self.client.put_file(path, f, overwrite=True)
         self.dict_has(metadata,
             size = "15 bytes",
@@ -427,17 +409,17 @@ class BaseClientTests(unittest.TestCase):
         self.assertEqual(copied_foo, local_foo)
 
 
-    def test_chunked_upload(self):
+    def test_chunked_upload2(self):
         target_path = posixpath.join(self.test_dir, 'chunked_upload_file.txt')
         chunk_size = 4 * 1024
         random_string1, random_data1 = make_random_data(chunk_size)
         random_string2, random_data2 = make_random_data(chunk_size)
 
-        new_offset, upload_id = self.client.upload_chunk(StringIO(random_string1), 0)
+        new_offset, upload_id = self.client.upload_chunk(BytesIO(random_data1), 0)
         self.assertEquals(new_offset, chunk_size)
         self.assertIsNotNone(upload_id)
 
-        new_offset, upload_id2 = self.client.upload_chunk(StringIO(random_string2), 0,
+        new_offset, upload_id2 = self.client.upload_chunk(BytesIO(random_data2), 0,
                                                           new_offset, upload_id)
         self.assertEquals(new_offset, chunk_size * 2)
         self.assertEquals(upload_id2, upload_id)
@@ -456,7 +438,7 @@ class BaseClientTests(unittest.TestCase):
         size = 10 * 1024 * 1024
         chunk_size = 4 * 1024 * 1102
         random_string, random_data = make_random_data(size)
-        uploader = self.client.get_chunked_uploader(StringIO(random_string), len(random_string))
+        uploader = self.client.get_chunked_uploader(BytesIO(random_data), len(random_data))
         error_count = 0
         while uploader.offset < size and error_count < 5:
             try:

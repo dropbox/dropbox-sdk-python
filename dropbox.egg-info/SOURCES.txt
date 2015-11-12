@@ -4,6 +4,7 @@ README.rst
 ez_setup.py
 setup.py
 dropbox/__init__.py
+dropbox/async.py
 dropbox/babel_serializers.py
 dropbox/babel_validators.py
 dropbox/base.py
@@ -15,6 +16,7 @@ dropbox/oauth.py
 dropbox/rest.py
 dropbox/session.py
 dropbox/sharing.py
+dropbox/team.py
 dropbox/trusted-certs.crt
 dropbox/users.py
 dropbox.egg-info/PKG-INFO
