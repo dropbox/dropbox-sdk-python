@@ -14,6 +14,10 @@ class LaunchResultBase(object):
     type of the synchronous response. See :class:`LaunchEmptyResult` for an
     example.
 
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar str async_job_id: This response indicates that the processing is
         asynchronous. The string is an id that can be used to obtain the status
         of the asynchronous job.
@@ -37,24 +41,47 @@ class LaunchResultBase(object):
 
     @classmethod
     def async_job_id(cls, val):
+        """
+        Create an instance of this class set to the ``async_job_id`` tag with value ``val``.
+
+        :param str val:
+        :rtype: LaunchResultBase
+        """
         return cls('async_job_id', val)
 
     def is_async_job_id(self):
+        """
+        Check if the union tag is ``async_job_id``.
+
+        :rtype: bool
+        """
         return self._tag == 'async_job_id'
 
     def get_async_job_id(self):
+        """
+        This response indicates that the processing is asynchronous. The string
+        is an id that can be used to obtain the status of the asynchronous job.
+
+        Only call this if :meth:`is_async_job_id` is true.
+
+        :rtype: str
+        """
         if not self.is_async_job_id():
             raise AttributeError("tag 'async_job_id' not set")
         return self._value
 
     def __repr__(self):
-        return 'LaunchResultBase(%r)' % self._tag
+        return 'LaunchResultBase(%r, %r)' % (self._tag, self._value)
 
 class LaunchEmptyResult(LaunchResultBase):
     """
     Result returned by methods that may either launch an asynchronous job or
     complete synchronously. Upon synchronous completion of the job, no
     additional information is returned.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
 
     :ivar complete: The job finished synchronously and successfully.
     """
@@ -77,10 +104,15 @@ class LaunchEmptyResult(LaunchResultBase):
         self._value = value
 
     def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
         return self._tag == 'complete'
 
     def __repr__(self):
-        return 'LaunchEmptyResult(%r)' % self._tag
+        return 'LaunchEmptyResult(%r, %r)' % (self._tag, self._value)
 
 class PollArg(object):
     """
@@ -140,6 +172,10 @@ class PollResultBase(object):
     the information returned upon job completion. See :class:`PollEmptyResult`
     for an example.
 
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar in_progress: The asynchronous job is still in progress.
     """
 
@@ -162,15 +198,24 @@ class PollResultBase(object):
         self._value = value
 
     def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
         return self._tag == 'in_progress'
 
     def __repr__(self):
-        return 'PollResultBase(%r)' % self._tag
+        return 'PollResultBase(%r, %r)' % (self._tag, self._value)
 
 class PollEmptyResult(PollResultBase):
     """
     Result returned by methods that poll for the status of an asynchronous job.
     Upon completion of the job, no additional information is returned.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
 
     :ivar complete: The asynchronous job has completed successfully.
     """
@@ -193,14 +238,23 @@ class PollEmptyResult(PollResultBase):
         self._value = value
 
     def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
         return self._tag == 'complete'
 
     def __repr__(self):
-        return 'PollEmptyResult(%r)' % self._tag
+        return 'PollEmptyResult(%r, %r)' % (self._tag, self._value)
 
 class PollError(object):
     """
     Error returned by methods for polling the status of asynchronous job.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
 
     :ivar invalid_async_job_id: The job ID is invalid.
     :ivar internal_error: Something went wrong with the job on Dropbox's end.
@@ -232,16 +286,31 @@ class PollError(object):
         self._value = value
 
     def is_invalid_async_job_id(self):
+        """
+        Check if the union tag is ``invalid_async_job_id``.
+
+        :rtype: bool
+        """
         return self._tag == 'invalid_async_job_id'
 
     def is_internal_error(self):
+        """
+        Check if the union tag is ``internal_error``.
+
+        :rtype: bool
+        """
         return self._tag == 'internal_error'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def __repr__(self):
-        return 'PollError(%r)' % self._tag
+        return 'PollError(%r, %r)' % (self._tag, self._value)
 
 LaunchResultBase._async_job_id_validator = bv.String(min_length=1)
 LaunchResultBase._tagmap = {

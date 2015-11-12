@@ -467,6 +467,10 @@ class VideoMetadata(MediaMetadata):
 
 class MediaInfo(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar pending: Indicate the photo/video is still under processing and
         metadata is not available yet.
     :ivar MediaMetadata metadata: The metadata for the photo/video.
@@ -492,21 +496,44 @@ class MediaInfo(object):
 
     @classmethod
     def metadata(cls, val):
+        """
+        Create an instance of this class set to the ``metadata`` tag with value ``val``.
+
+        :param MediaMetadata val:
+        :rtype: MediaInfo
+        """
         return cls('metadata', val)
 
     def is_pending(self):
+        """
+        Check if the union tag is ``pending``.
+
+        :rtype: bool
+        """
         return self._tag == 'pending'
 
     def is_metadata(self):
+        """
+        Check if the union tag is ``metadata``.
+
+        :rtype: bool
+        """
         return self._tag == 'metadata'
 
     def get_metadata(self):
+        """
+        The metadata for the photo/video.
+
+        Only call this if :meth:`is_metadata` is true.
+
+        :rtype: MediaMetadata
+        """
         if not self.is_metadata():
             raise AttributeError("tag 'metadata' not set")
         return self._value
 
     def __repr__(self):
-        return 'MediaInfo(%r)' % self._tag
+        return 'MediaInfo(%r, %r)' % (self._tag, self._value)
 
 class FileMetadata(Metadata):
     """
@@ -820,6 +847,11 @@ class DeletedMetadata(Metadata):
         )
 
 class GetMetadataError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
 
     __slots__ = ['_tag', '_value']
 
@@ -839,18 +871,34 @@ class GetMetadataError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: GetMetadataError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'GetMetadataError(%r)' % self._tag
+        return 'GetMetadataError(%r, %r)' % (self._tag, self._value)
 
 class GetMetadataArg(object):
     """
@@ -1106,6 +1154,10 @@ class ListFolderLongpollResult(object):
 
 class ListFolderLongpollError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar reset: Indicates that the cursor has been invalidated. Call
         list_folder to obtain a new cursor.
     """
@@ -1131,13 +1183,23 @@ class ListFolderLongpollError(object):
         self._value = value
 
     def is_reset(self):
+        """
+        Check if the union tag is ``reset``.
+
+        :rtype: bool
+        """
         return self._tag == 'reset'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def __repr__(self):
-        return 'ListFolderLongpollError(%r)' % self._tag
+        return 'ListFolderLongpollError(%r, %r)' % (self._tag, self._value)
 
 class ListFolderArg(object):
     """
@@ -1371,6 +1433,10 @@ class ListFolderResult(object):
 
 class ListFolderError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar other: An unspecified error.
     """
 
@@ -1394,21 +1460,42 @@ class ListFolderError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: ListFolderError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'ListFolderError(%r)' % self._tag
+        return 'ListFolderError(%r, %r)' % (self._tag, self._value)
 
 class ListFolderContinueArg(object):
     """
@@ -1461,6 +1548,10 @@ class ListFolderContinueArg(object):
 
 class ListFolderContinueError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar reset: Indicates that the cursor has been invalidated. Call
         list_folder to obtain a new cursor.
     """
@@ -1487,24 +1578,50 @@ class ListFolderContinueError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: ListFolderContinueError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_reset(self):
+        """
+        Check if the union tag is ``reset``.
+
+        :rtype: bool
+        """
         return self._tag == 'reset'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'ListFolderContinueError(%r)' % self._tag
+        return 'ListFolderContinueError(%r, %r)' % (self._tag, self._value)
 
 class ListFolderGetLatestCursorResult(object):
     """
@@ -1557,6 +1674,10 @@ class ListFolderGetLatestCursorResult(object):
 
 class DownloadError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar other: An unspecified error.
     """
 
@@ -1580,21 +1701,42 @@ class DownloadError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: DownloadError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'DownloadError(%r)' % self._tag
+        return 'DownloadError(%r, %r)' % (self._tag, self._value)
 
 class DownloadArg(object):
     """
@@ -1760,6 +1902,10 @@ class UploadWriteFailed(object):
 
 class UploadError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar UploadWriteFailed path: Unable to save the uploaded contents to a
         file.
     :ivar other: An unspecified error.
@@ -1785,21 +1931,44 @@ class UploadError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param UploadWriteFailed val:
+        :rtype: UploadError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_path(self):
+        """
+        Unable to save the uploaded contents to a file.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: UploadWriteFailed
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'UploadError(%r)' % self._tag
+        return 'UploadError(%r, %r)' % (self._tag, self._value)
 
 class UploadSessionOffsetError(object):
     """
@@ -1850,6 +2019,10 @@ class UploadSessionOffsetError(object):
 
 class UploadSessionLookupError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar not_found: The upload session id was not found.
     :ivar UploadSessionOffsetError incorrect_offset: The specified offset was
         incorrect. See the value for the correct offset. (This error may occur
@@ -1884,30 +2057,70 @@ class UploadSessionLookupError(object):
 
     @classmethod
     def incorrect_offset(cls, val):
+        """
+        Create an instance of this class set to the ``incorrect_offset`` tag with value ``val``.
+
+        :param UploadSessionOffsetError val:
+        :rtype: UploadSessionLookupError
+        """
         return cls('incorrect_offset', val)
 
     def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
         return self._tag == 'not_found'
 
     def is_incorrect_offset(self):
+        """
+        Check if the union tag is ``incorrect_offset``.
+
+        :rtype: bool
+        """
         return self._tag == 'incorrect_offset'
 
     def is_closed(self):
+        """
+        Check if the union tag is ``closed``.
+
+        :rtype: bool
+        """
         return self._tag == 'closed'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_incorrect_offset(self):
+        """
+        The specified offset was incorrect. See the value for the correct
+        offset. (This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.)
+
+        Only call this if :meth:`is_incorrect_offset` is true.
+
+        :rtype: UploadSessionOffsetError
+        """
         if not self.is_incorrect_offset():
             raise AttributeError("tag 'incorrect_offset' not set")
         return self._value
 
     def __repr__(self):
-        return 'UploadSessionLookupError(%r)' % self._tag
+        return 'UploadSessionLookupError(%r, %r)' % (self._tag, self._value)
 
 class UploadSessionFinishError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar UploadSessionLookupError lookup_failed: The session arguments are
         incorrect; the value explains the reason.
     :ivar WriteError path: Unable to save the uploaded contents to a file.
@@ -1934,33 +2147,74 @@ class UploadSessionFinishError(object):
 
     @classmethod
     def lookup_failed(cls, val):
+        """
+        Create an instance of this class set to the ``lookup_failed`` tag with value ``val``.
+
+        :param UploadSessionLookupError val:
+        :rtype: UploadSessionFinishError
+        """
         return cls('lookup_failed', val)
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param WriteError val:
+        :rtype: UploadSessionFinishError
+        """
         return cls('path', val)
 
     def is_lookup_failed(self):
+        """
+        Check if the union tag is ``lookup_failed``.
+
+        :rtype: bool
+        """
         return self._tag == 'lookup_failed'
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_lookup_failed(self):
+        """
+        The session arguments are incorrect; the value explains the reason.
+
+        Only call this if :meth:`is_lookup_failed` is true.
+
+        :rtype: UploadSessionLookupError
+        """
         if not self.is_lookup_failed():
             raise AttributeError("tag 'lookup_failed' not set")
         return self._value
 
     def get_path(self):
+        """
+        Unable to save the uploaded contents to a file.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: WriteError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'UploadSessionFinishError(%r)' % self._tag
+        return 'UploadSessionFinishError(%r, %r)' % (self._tag, self._value)
 
 class UploadSessionStartResult(object):
     """
@@ -2106,6 +2360,10 @@ class WriteMode(object):
     the target path with contents different from the contents you're trying to
     write.
 
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar add: Never overwrite the existing file. The autorename strategy is to
         append a number to the file name. For example, "document.txt" might
         become "document (2).txt".
@@ -2139,24 +2397,55 @@ class WriteMode(object):
 
     @classmethod
     def update(cls, val):
+        """
+        Create an instance of this class set to the ``update`` tag with value ``val``.
+
+        :param str val:
+        :rtype: WriteMode
+        """
         return cls('update', val)
 
     def is_add(self):
+        """
+        Check if the union tag is ``add``.
+
+        :rtype: bool
+        """
         return self._tag == 'add'
 
     def is_overwrite(self):
+        """
+        Check if the union tag is ``overwrite``.
+
+        :rtype: bool
+        """
         return self._tag == 'overwrite'
 
     def is_update(self):
+        """
+        Check if the union tag is ``update``.
+
+        :rtype: bool
+        """
         return self._tag == 'update'
 
     def get_update(self):
+        """
+        Overwrite if the given "rev" matches the existing file's "rev". The
+        autorename strategy is to append the string "conflicted copy" to the
+        file name. For example, "document.txt" might become "document
+        (conflicted copy).txt" or "document (Panda's conflicted copy).txt".
+
+        Only call this if :meth:`is_update` is true.
+
+        :rtype: str
+        """
         if not self.is_update():
             raise AttributeError("tag 'update' not set")
         return self._value
 
     def __repr__(self):
-        return 'WriteMode(%r)' % self._tag
+        return 'WriteMode(%r, %r)' % (self._tag, self._value)
 
 class CommitInfo(object):
     """
@@ -2433,6 +2722,10 @@ class UploadSessionFinishArg(object):
 
 class SearchMode(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar filename: Search file and folder names.
     :ivar filename_and_content: Search file and folder names as well as file
         contents.
@@ -2462,16 +2755,31 @@ class SearchMode(object):
         self._value = value
 
     def is_filename(self):
+        """
+        Check if the union tag is ``filename``.
+
+        :rtype: bool
+        """
         return self._tag == 'filename'
 
     def is_filename_and_content(self):
+        """
+        Check if the union tag is ``filename_and_content``.
+
+        :rtype: bool
+        """
         return self._tag == 'filename_and_content'
 
     def is_deleted_filename(self):
+        """
+        Check if the union tag is ``deleted_filename``.
+
+        :rtype: bool
+        """
         return self._tag == 'deleted_filename'
 
     def __repr__(self):
-        return 'SearchMode(%r)' % self._tag
+        return 'SearchMode(%r, %r)' % (self._tag, self._value)
 
 class SearchArg(object):
     """
@@ -2659,6 +2967,10 @@ class SearchMatchType(object):
     """
     Indicates what type of match was found for a given item.
 
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar filename: This item was matched on its file or folder name.
     :ivar content: This item was matched based on its file contents.
     :ivar both: This item was matched based on both its contents and its file
@@ -2688,16 +3000,31 @@ class SearchMatchType(object):
         self._value = value
 
     def is_filename(self):
+        """
+        Check if the union tag is ``filename``.
+
+        :rtype: bool
+        """
         return self._tag == 'filename'
 
     def is_content(self):
+        """
+        Check if the union tag is ``content``.
+
+        :rtype: bool
+        """
         return self._tag == 'content'
 
     def is_both(self):
+        """
+        Check if the union tag is ``both``.
+
+        :rtype: bool
+        """
         return self._tag == 'both'
 
     def __repr__(self):
-        return 'SearchMatchType(%r)' % self._tag
+        return 'SearchMatchType(%r, %r)' % (self._tag, self._value)
 
 class SearchMatch(object):
     """
@@ -2895,6 +3222,10 @@ class SearchResult(object):
 
 class SearchError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar other: An unspecified error.
     """
 
@@ -2918,24 +3249,49 @@ class SearchError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: SearchError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'SearchError(%r)' % self._tag
+        return 'SearchError(%r, %r)' % (self._tag, self._value)
 
 class LookupError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar not_found: There is nothing at the given path.
     :ivar not_file: We were expecting a file, but the given path refers to
         something that isn't a file.
@@ -2974,36 +3330,81 @@ class LookupError(object):
 
     @classmethod
     def malformed_path(cls, val):
+        """
+        Create an instance of this class set to the ``malformed_path`` tag with value ``val``.
+
+        :param str val:
+        :rtype: LookupError
+        """
         return cls('malformed_path', val)
 
     def is_malformed_path(self):
+        """
+        Check if the union tag is ``malformed_path``.
+
+        :rtype: bool
+        """
         return self._tag == 'malformed_path'
 
     def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
         return self._tag == 'not_found'
 
     def is_not_file(self):
+        """
+        Check if the union tag is ``not_file``.
+
+        :rtype: bool
+        """
         return self._tag == 'not_file'
 
     def is_not_folder(self):
+        """
+        Check if the union tag is ``not_folder``.
+
+        :rtype: bool
+        """
         return self._tag == 'not_folder'
 
     def is_restricted_content(self):
+        """
+        Check if the union tag is ``restricted_content``.
+
+        :rtype: bool
+        """
         return self._tag == 'restricted_content'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_malformed_path(self):
+        """
+        Only call this if :meth:`is_malformed_path` is true.
+
+        :rtype: str
+        """
         if not self.is_malformed_path():
             raise AttributeError("tag 'malformed_path' not set")
         return self._value
 
     def __repr__(self):
-        return 'LookupError(%r)' % self._tag
+        return 'LookupError(%r, %r)' % (self._tag, self._value)
 
 class WriteError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar WriteConflictError conflict: Couldn't write to the target path because
         there was something in the way.
     :ivar no_write_permission: The user doesn't have permissions to write to the
@@ -3040,45 +3441,104 @@ class WriteError(object):
 
     @classmethod
     def malformed_path(cls, val):
+        """
+        Create an instance of this class set to the ``malformed_path`` tag with value ``val``.
+
+        :param str val:
+        :rtype: WriteError
+        """
         return cls('malformed_path', val)
 
     @classmethod
     def conflict(cls, val):
+        """
+        Create an instance of this class set to the ``conflict`` tag with value ``val``.
+
+        :param WriteConflictError val:
+        :rtype: WriteError
+        """
         return cls('conflict', val)
 
     def is_malformed_path(self):
+        """
+        Check if the union tag is ``malformed_path``.
+
+        :rtype: bool
+        """
         return self._tag == 'malformed_path'
 
     def is_conflict(self):
+        """
+        Check if the union tag is ``conflict``.
+
+        :rtype: bool
+        """
         return self._tag == 'conflict'
 
     def is_no_write_permission(self):
+        """
+        Check if the union tag is ``no_write_permission``.
+
+        :rtype: bool
+        """
         return self._tag == 'no_write_permission'
 
     def is_insufficient_space(self):
+        """
+        Check if the union tag is ``insufficient_space``.
+
+        :rtype: bool
+        """
         return self._tag == 'insufficient_space'
 
     def is_disallowed_name(self):
+        """
+        Check if the union tag is ``disallowed_name``.
+
+        :rtype: bool
+        """
         return self._tag == 'disallowed_name'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_malformed_path(self):
+        """
+        Only call this if :meth:`is_malformed_path` is true.
+
+        :rtype: str
+        """
         if not self.is_malformed_path():
             raise AttributeError("tag 'malformed_path' not set")
         return self._value
 
     def get_conflict(self):
+        """
+        Couldn't write to the target path because there was something in the
+        way.
+
+        Only call this if :meth:`is_conflict` is true.
+
+        :rtype: WriteConflictError
+        """
         if not self.is_conflict():
             raise AttributeError("tag 'conflict' not set")
         return self._value
 
     def __repr__(self):
-        return 'WriteError(%r)' % self._tag
+        return 'WriteError(%r, %r)' % (self._tag, self._value)
 
 class WriteConflictError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar file: There's a file in the way.
     :ivar folder: There's a folder in the way.
     :ivar file_ancestor: There's a file at an ancestor path, so we couldn't
@@ -3110,19 +3570,39 @@ class WriteConflictError(object):
         self._value = value
 
     def is_file(self):
+        """
+        Check if the union tag is ``file``.
+
+        :rtype: bool
+        """
         return self._tag == 'file'
 
     def is_folder(self):
+        """
+        Check if the union tag is ``folder``.
+
+        :rtype: bool
+        """
         return self._tag == 'folder'
 
     def is_file_ancestor(self):
+        """
+        Check if the union tag is ``file_ancestor``.
+
+        :rtype: bool
+        """
         return self._tag == 'file_ancestor'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def __repr__(self):
-        return 'WriteConflictError(%r)' % self._tag
+        return 'WriteConflictError(%r, %r)' % (self._tag, self._value)
 
 class CreateFolderArg(object):
     """
@@ -3172,6 +3652,11 @@ class CreateFolderArg(object):
         )
 
 class CreateFolderError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
 
     __slots__ = ['_tag', '_value']
 
@@ -3191,18 +3676,34 @@ class CreateFolderError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param WriteError val:
+        :rtype: CreateFolderError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: WriteError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'CreateFolderError(%r)' % self._tag
+        return 'CreateFolderError(%r, %r)' % (self._tag, self._value)
 
 class DeleteArg(object):
     """
@@ -3252,6 +3753,11 @@ class DeleteArg(object):
         )
 
 class DeleteError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
 
     __slots__ = ['_tag', '_value']
 
@@ -3273,33 +3779,70 @@ class DeleteError(object):
 
     @classmethod
     def path_lookup(cls, val):
+        """
+        Create an instance of this class set to the ``path_lookup`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: DeleteError
+        """
         return cls('path_lookup', val)
 
     @classmethod
     def path_write(cls, val):
+        """
+        Create an instance of this class set to the ``path_write`` tag with value ``val``.
+
+        :param WriteError val:
+        :rtype: DeleteError
+        """
         return cls('path_write', val)
 
     def is_path_lookup(self):
+        """
+        Check if the union tag is ``path_lookup``.
+
+        :rtype: bool
+        """
         return self._tag == 'path_lookup'
 
     def is_path_write(self):
+        """
+        Check if the union tag is ``path_write``.
+
+        :rtype: bool
+        """
         return self._tag == 'path_write'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_path_lookup(self):
+        """
+        Only call this if :meth:`is_path_lookup` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path_lookup():
             raise AttributeError("tag 'path_lookup' not set")
         return self._value
 
     def get_path_write(self):
+        """
+        Only call this if :meth:`is_path_write` is true.
+
+        :rtype: WriteError
+        """
         if not self.is_path_write():
             raise AttributeError("tag 'path_write' not set")
         return self._value
 
     def __repr__(self):
-        return 'DeleteError(%r)' % self._tag
+        return 'DeleteError(%r, %r)' % (self._tag, self._value)
 
 class RelocationArg(object):
     """
@@ -3382,6 +3925,10 @@ class RelocationArg(object):
 
 class RelocationError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar cant_copy_shared_folder: Shared folders can't be copied.
     :ivar cant_nest_shared_folder: Your move operation would result in nested
         shared folders.  This is not allowed.
@@ -3416,57 +3963,129 @@ class RelocationError(object):
 
     @classmethod
     def from_lookup(cls, val):
+        """
+        Create an instance of this class set to the ``from_lookup`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: RelocationError
+        """
         return cls('from_lookup', val)
 
     @classmethod
     def from_write(cls, val):
+        """
+        Create an instance of this class set to the ``from_write`` tag with value ``val``.
+
+        :param WriteError val:
+        :rtype: RelocationError
+        """
         return cls('from_write', val)
 
     @classmethod
     def to(cls, val):
+        """
+        Create an instance of this class set to the ``to`` tag with value ``val``.
+
+        :param WriteError val:
+        :rtype: RelocationError
+        """
         return cls('to', val)
 
     def is_from_lookup(self):
+        """
+        Check if the union tag is ``from_lookup``.
+
+        :rtype: bool
+        """
         return self._tag == 'from_lookup'
 
     def is_from_write(self):
+        """
+        Check if the union tag is ``from_write``.
+
+        :rtype: bool
+        """
         return self._tag == 'from_write'
 
     def is_to(self):
+        """
+        Check if the union tag is ``to``.
+
+        :rtype: bool
+        """
         return self._tag == 'to'
 
     def is_cant_copy_shared_folder(self):
+        """
+        Check if the union tag is ``cant_copy_shared_folder``.
+
+        :rtype: bool
+        """
         return self._tag == 'cant_copy_shared_folder'
 
     def is_cant_nest_shared_folder(self):
+        """
+        Check if the union tag is ``cant_nest_shared_folder``.
+
+        :rtype: bool
+        """
         return self._tag == 'cant_nest_shared_folder'
 
     def is_too_many_files(self):
+        """
+        Check if the union tag is ``too_many_files``.
+
+        :rtype: bool
+        """
         return self._tag == 'too_many_files'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_from_lookup(self):
+        """
+        Only call this if :meth:`is_from_lookup` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_from_lookup():
             raise AttributeError("tag 'from_lookup' not set")
         return self._value
 
     def get_from_write(self):
+        """
+        Only call this if :meth:`is_from_write` is true.
+
+        :rtype: WriteError
+        """
         if not self.is_from_write():
             raise AttributeError("tag 'from_write' not set")
         return self._value
 
     def get_to(self):
+        """
+        Only call this if :meth:`is_to` is true.
+
+        :rtype: WriteError
+        """
         if not self.is_to():
             raise AttributeError("tag 'to' not set")
         return self._value
 
     def __repr__(self):
-        return 'RelocationError(%r)' % self._tag
+        return 'RelocationError(%r, %r)' % (self._tag, self._value)
 
 class ThumbnailSize(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar w32h32: 32 by 32 px.
     :ivar w64h64: 64 by 64 px.
     :ivar w128h128: 128 by 128 px.
@@ -3501,24 +4120,54 @@ class ThumbnailSize(object):
         self._value = value
 
     def is_w32h32(self):
+        """
+        Check if the union tag is ``w32h32``.
+
+        :rtype: bool
+        """
         return self._tag == 'w32h32'
 
     def is_w64h64(self):
+        """
+        Check if the union tag is ``w64h64``.
+
+        :rtype: bool
+        """
         return self._tag == 'w64h64'
 
     def is_w128h128(self):
+        """
+        Check if the union tag is ``w128h128``.
+
+        :rtype: bool
+        """
         return self._tag == 'w128h128'
 
     def is_w640h480(self):
+        """
+        Check if the union tag is ``w640h480``.
+
+        :rtype: bool
+        """
         return self._tag == 'w640h480'
 
     def is_w1024h768(self):
+        """
+        Check if the union tag is ``w1024h768``.
+
+        :rtype: bool
+        """
         return self._tag == 'w1024h768'
 
     def __repr__(self):
-        return 'ThumbnailSize(%r)' % self._tag
+        return 'ThumbnailSize(%r, %r)' % (self._tag, self._value)
 
 class ThumbnailFormat(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
 
     __slots__ = ['_tag', '_value']
 
@@ -3541,13 +4190,23 @@ class ThumbnailFormat(object):
         self._value = value
 
     def is_jpeg(self):
+        """
+        Check if the union tag is ``jpeg``.
+
+        :rtype: bool
+        """
         return self._tag == 'jpeg'
 
     def is_png(self):
+        """
+        Check if the union tag is ``png``.
+
+        :rtype: bool
+        """
         return self._tag == 'png'
 
     def __repr__(self):
-        return 'ThumbnailFormat(%r)' % self._tag
+        return 'ThumbnailFormat(%r, %r)' % (self._tag, self._value)
 
 class ThumbnailArg(object):
     """
@@ -3666,6 +4325,10 @@ class ThumbnailArg(object):
 
 class ThumbnailError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar LookupError path: An error occurs when downloading metadata for the
         image.
     :ivar unsupported_extension: The file extension doesn't allow conversion to
@@ -3698,27 +4361,60 @@ class ThumbnailError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: ThumbnailError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_unsupported_extension(self):
+        """
+        Check if the union tag is ``unsupported_extension``.
+
+        :rtype: bool
+        """
         return self._tag == 'unsupported_extension'
 
     def is_unsupported_image(self):
+        """
+        Check if the union tag is ``unsupported_image``.
+
+        :rtype: bool
+        """
         return self._tag == 'unsupported_image'
 
     def is_conversion_error(self):
+        """
+        Check if the union tag is ``conversion_error``.
+
+        :rtype: bool
+        """
         return self._tag == 'conversion_error'
 
     def get_path(self):
+        """
+        An error occurs when downloading metadata for the image.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'ThumbnailError(%r)' % self._tag
+        return 'ThumbnailError(%r, %r)' % (self._tag, self._value)
 
 class PreviewArg(object):
     """
@@ -3804,6 +4500,10 @@ class PreviewArg(object):
 
 class PreviewError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar LookupError path: An error occurs when downloading metadata for the
         file.
     :ivar in_progress: This preview generation is still in progress and the file
@@ -3838,27 +4538,60 @@ class PreviewError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: PreviewError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
         return self._tag == 'in_progress'
 
     def is_unsupported_extension(self):
+        """
+        Check if the union tag is ``unsupported_extension``.
+
+        :rtype: bool
+        """
         return self._tag == 'unsupported_extension'
 
     def is_unsupported_content(self):
+        """
+        Check if the union tag is ``unsupported_content``.
+
+        :rtype: bool
+        """
         return self._tag == 'unsupported_content'
 
     def get_path(self):
+        """
+        An error occurs when downloading metadata for the file.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'PreviewError(%r)' % self._tag
+        return 'PreviewError(%r, %r)' % (self._tag, self._value)
 
 class ListRevisionsArg(object):
     """
@@ -3940,6 +4673,11 @@ class ListRevisionsArg(object):
         )
 
 class ListRevisionsError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
 
     __slots__ = ['_tag', '_value']
 
@@ -3961,21 +4699,42 @@ class ListRevisionsError(object):
 
     @classmethod
     def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: ListRevisionsError
+        """
         return cls('path', val)
 
     def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
         return self._tag == 'path'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
     def __repr__(self):
-        return 'ListRevisionsError(%r)' % self._tag
+        return 'ListRevisionsError(%r, %r)' % (self._tag, self._value)
 
 class ListRevisionsResult(object):
     """
@@ -4138,6 +4897,10 @@ class RestoreArg(object):
 
 class RestoreError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar LookupError path_lookup: An error occurs when downloading metadata for
         the file.
     :ivar WriteError path_write: An error occurs when trying to restore the file
@@ -4168,36 +4931,82 @@ class RestoreError(object):
 
     @classmethod
     def path_lookup(cls, val):
+        """
+        Create an instance of this class set to the ``path_lookup`` tag with value ``val``.
+
+        :param LookupError val:
+        :rtype: RestoreError
+        """
         return cls('path_lookup', val)
 
     @classmethod
     def path_write(cls, val):
+        """
+        Create an instance of this class set to the ``path_write`` tag with value ``val``.
+
+        :param WriteError val:
+        :rtype: RestoreError
+        """
         return cls('path_write', val)
 
     def is_path_lookup(self):
+        """
+        Check if the union tag is ``path_lookup``.
+
+        :rtype: bool
+        """
         return self._tag == 'path_lookup'
 
     def is_path_write(self):
+        """
+        Check if the union tag is ``path_write``.
+
+        :rtype: bool
+        """
         return self._tag == 'path_write'
 
     def is_invalid_revision(self):
+        """
+        Check if the union tag is ``invalid_revision``.
+
+        :rtype: bool
+        """
         return self._tag == 'invalid_revision'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_path_lookup(self):
+        """
+        An error occurs when downloading metadata for the file.
+
+        Only call this if :meth:`is_path_lookup` is true.
+
+        :rtype: LookupError
+        """
         if not self.is_path_lookup():
             raise AttributeError("tag 'path_lookup' not set")
         return self._value
 
     def get_path_write(self):
+        """
+        An error occurs when trying to restore the file to that path.
+
+        Only call this if :meth:`is_path_write` is true.
+
+        :rtype: WriteError
+        """
         if not self.is_path_write():
             raise AttributeError("tag 'path_write' not set")
         return self._value
 
     def __repr__(self):
-        return 'RestoreError(%r)' % self._tag
+        return 'RestoreError(%r, %r)' % (self._tag, self._value)
 
 Metadata._name_validator = bv.String()
 Metadata._path_lower_validator = bv.String()

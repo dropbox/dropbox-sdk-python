@@ -59,6 +59,10 @@ class GetAccountArg(object):
 
 class GetAccountError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar no_account: The specified ``GetAccountArg.account_id`` does not exist.
     """
 
@@ -83,17 +87,31 @@ class GetAccountError(object):
         self._value = value
 
     def is_no_account(self):
+        """
+        Check if the union tag is ``no_account``.
+
+        :rtype: bool
+        """
         return self._tag == 'no_account'
 
     def is_unknown(self):
+        """
+        Check if the union tag is ``unknown``.
+
+        :rtype: bool
+        """
         return self._tag == 'unknown'
 
     def __repr__(self):
-        return 'GetAccountError(%r)' % self._tag
+        return 'GetAccountError(%r, %r)' % (self._tag, self._value)
 
 class AccountType(object):
     """
     What type of account this user has.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
 
     :ivar basic: The basic account type.
     :ivar pro: The Dropbox Pro account type.
@@ -123,16 +141,31 @@ class AccountType(object):
         self._value = value
 
     def is_basic(self):
+        """
+        Check if the union tag is ``basic``.
+
+        :rtype: bool
+        """
         return self._tag == 'basic'
 
     def is_pro(self):
+        """
+        Check if the union tag is ``pro``.
+
+        :rtype: bool
+        """
         return self._tag == 'pro'
 
     def is_business(self):
+        """
+        Check if the union tag is ``business``.
+
+        :rtype: bool
+        """
         return self._tag == 'business'
 
     def __repr__(self):
-        return 'AccountType(%r)' % self._tag
+        return 'AccountType(%r, %r)' % (self._tag, self._value)
 
 class Account(object):
     """
@@ -854,6 +887,10 @@ class SpaceAllocation(object):
     """
     Space is allocated differently based on the type of account.
 
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar IndividualSpaceAllocation individual: The user's space allocation
         applies only to their individual account.
     :ivar TeamSpaceAllocation team: The user shares space with other members of
@@ -880,33 +917,74 @@ class SpaceAllocation(object):
 
     @classmethod
     def individual(cls, val):
+        """
+        Create an instance of this class set to the ``individual`` tag with value ``val``.
+
+        :param IndividualSpaceAllocation val:
+        :rtype: SpaceAllocation
+        """
         return cls('individual', val)
 
     @classmethod
     def team(cls, val):
+        """
+        Create an instance of this class set to the ``team`` tag with value ``val``.
+
+        :param TeamSpaceAllocation val:
+        :rtype: SpaceAllocation
+        """
         return cls('team', val)
 
     def is_individual(self):
+        """
+        Check if the union tag is ``individual``.
+
+        :rtype: bool
+        """
         return self._tag == 'individual'
 
     def is_team(self):
+        """
+        Check if the union tag is ``team``.
+
+        :rtype: bool
+        """
         return self._tag == 'team'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_individual(self):
+        """
+        The user's space allocation applies only to their individual account.
+
+        Only call this if :meth:`is_individual` is true.
+
+        :rtype: IndividualSpaceAllocation
+        """
         if not self.is_individual():
             raise AttributeError("tag 'individual' not set")
         return self._value
 
     def get_team(self):
+        """
+        The user shares space with other members of their team.
+
+        Only call this if :meth:`is_team` is true.
+
+        :rtype: TeamSpaceAllocation
+        """
         if not self.is_team():
             raise AttributeError("tag 'team' not set")
         return self._value
 
     def __repr__(self):
-        return 'SpaceAllocation(%r)' % self._tag
+        return 'SpaceAllocation(%r, %r)' % (self._tag, self._value)
 
 class IndividualSpaceAllocation(object):
     """
@@ -1085,6 +1163,10 @@ class GetAccountBatchArg(object):
 
 class GetAccountBatchError(object):
     """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
     :ivar str no_account: The value is an account ID specified in
         :field:`GetAccountBatchArg.account_ids` that does not exist.
     """
@@ -1109,21 +1191,45 @@ class GetAccountBatchError(object):
 
     @classmethod
     def no_account(cls, val):
+        """
+        Create an instance of this class set to the ``no_account`` tag with value ``val``.
+
+        :param str val:
+        :rtype: GetAccountBatchError
+        """
         return cls('no_account', val)
 
     def is_no_account(self):
+        """
+        Check if the union tag is ``no_account``.
+
+        :rtype: bool
+        """
         return self._tag == 'no_account'
 
     def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
         return self._tag == 'other'
 
     def get_no_account(self):
+        """
+        The value is an account ID specified in
+        ``GetAccountBatchArg.account_ids`` that does not exist.
+
+        Only call this if :meth:`is_no_account` is true.
+
+        :rtype: str
+        """
         if not self.is_no_account():
             raise AttributeError("tag 'no_account' not set")
         return self._value
 
     def __repr__(self):
-        return 'GetAccountBatchError(%r)' % self._tag
+        return 'GetAccountBatchError(%r, %r)' % (self._tag, self._value)
 
 GetAccountArg._account_id_validator = bv.String(min_length=40, max_length=40)
 GetAccountArg._all_field_names_ = set(['account_id'])
