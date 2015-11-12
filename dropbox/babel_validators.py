@@ -346,7 +346,14 @@ class Timestamp(Primitive):
                                   'timezone or none set at all')
         return val
 
-class List(Primitive):
+
+class Composite(Validator):
+    """Validator for a type that builds on other primitive and composite
+    types."""
+    pass
+
+
+class List(Composite):
     """Assumes list contents are homogeneous with respect to types."""
 
     def __init__(self, item_validator, min_items=None, max_items=None):
@@ -377,9 +384,6 @@ class List(Primitive):
                                   % (val, self.min_items))
         return [self.item_validator.validate(item) for item in val]
 
-class Composite(Validator):
-    """Validator for user-defined types."""
-    pass
 
 class Struct(Composite):
 
