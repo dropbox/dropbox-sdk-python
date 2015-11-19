@@ -11,10 +11,8 @@ __all__ = [
 import base64
 import os
 import six
-import sys
 import urllib
 
-from .dropbox import Dropbox
 from .session import pinned_session
 
 if six.PY3:
@@ -47,7 +45,7 @@ class DropboxOAuth2FlowBase(object):
         return self.build_url('/oauth2/authorize', params)
 
     def _finish(self, code, redirect_uri):
-        url = self.build_url(Dropbox.HOST_API, '/oauth2/token')
+        url = self.build_url('/oauth2/token')
         params = {'grant_type': 'authorization_code',
                   'code': code,
                   'client_id': self.consumer_key,
