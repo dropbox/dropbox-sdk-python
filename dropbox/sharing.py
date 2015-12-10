@@ -34,12 +34,12 @@ class Visibility(object):
 
     :ivar public: Anyone who has received the link can access it. No login
         required.
-    :ivar team_only: Only members of the same DfB (Dropbox for Business) team
-        can access the link. Login is required.
+    :ivar team_only: Only members of the same team can access the link. Login is
+        required.
     :ivar password: A link-specific password is required to access the link.
         Login is not required.
-    :ivar team_and_password: Only members of the same DfB (Dropbox for Business)
-        team who have the link-specific password can access the link.
+    :ivar team_and_password: Only members of the same team who have the
+        link-specific password can access the link.
     :ivar shared_folder_only: Only members of the shared folder containing the
         linked file can access the link. Login is required.
     :ivar other: An unknown restriction is in place.
@@ -449,7 +449,8 @@ class GetSharedLinksError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param str val:
         :rtype: GetSharedLinksError
@@ -542,8 +543,9 @@ class CreateSharedLinkArg(object):
     :ivar path: The path to share.
     :ivar short_url: Whether to return a shortened URL.
     :ivar pending_upload: If it's okay to share a path that does not yet exist,
-        set this to either 'file' or 'folder' to indicate whether to assume it's
-        a file or folder.
+        set this to either ``PendingUploadMode.file`` or
+        ``PendingUploadMode.folder`` to indicate whether to assume it's a file
+        or folder.
     """
 
     __slots__ = [
@@ -624,7 +626,8 @@ class CreateSharedLinkArg(object):
     def pending_upload(self):
         """
         If it's okay to share a path that does not yet exist, set this to either
-        'file' or 'folder' to indicate whether to assume it's a file or folder.
+        ``PendingUploadMode.file`` or ``PendingUploadMode.folder`` to indicate
+        whether to assume it's a file or folder.
 
         :rtype: PendingUploadMode
         """
@@ -682,7 +685,8 @@ class CreateSharedLinkError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param files.LookupError val:
         :rtype: CreateSharedLinkError
@@ -1438,7 +1442,7 @@ class UserMembershipInfo(MembershipInfo):
 
 class InviteeInfo(object):
     """
-    The information about a non-Dropbox user invited to join a shared folder.
+    The information about a user invited to become a member a shared folder.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -1468,7 +1472,8 @@ class InviteeInfo(object):
     @classmethod
     def email(cls, val):
         """
-        Create an instance of this class set to the ``email`` tag with value ``val``.
+        Create an instance of this class set to the ``email`` tag with value
+        ``val``.
 
         :param str val:
         :rtype: InviteeInfo
@@ -1508,7 +1513,7 @@ class InviteeInfo(object):
 
 class InviteeMembershipInfo(MembershipInfo):
     """
-    The information about a non-Dropbox member invited to join a shared folder.
+    The information about a user invited to become a member of a shared folder.
 
     :ivar invitee: The information for the invited user.
     """
@@ -1674,12 +1679,12 @@ class GroupMembershipInfo(MembershipInfo):
 
 class SharedFolderMetadata(object):
     """
-    The base type for shared folder metadata.
+    The metadata which includes basic information about the shared folder.
 
     :ivar path_lower: The lower-cased full path of this shared folder. Absent
         for unmounted folders.
     :ivar name: The name of the this shared folder.
-    :ivar id: The ID of the shared folder.
+    :ivar shared_folder_id: The ID of the shared folder.
     :ivar access_type: The current user's access level for this shared folder.
     :ivar is_team_folder: Whether this folder is a `team folder
         <https://www.dropbox.com/en/help/986>`_.
@@ -1691,8 +1696,8 @@ class SharedFolderMetadata(object):
         '_path_lower_present',
         '_name_value',
         '_name_present',
-        '_id_value',
-        '_id_present',
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
         '_access_type_value',
         '_access_type_present',
         '_is_team_folder_value',
@@ -1705,7 +1710,7 @@ class SharedFolderMetadata(object):
 
     def __init__(self,
                  name=None,
-                 id=None,
+                 shared_folder_id=None,
                  access_type=None,
                  is_team_folder=None,
                  policy=None,
@@ -1714,8 +1719,8 @@ class SharedFolderMetadata(object):
         self._path_lower_present = False
         self._name_value = None
         self._name_present = False
-        self._id_value = None
-        self._id_present = False
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
         self._access_type_value = None
         self._access_type_present = False
         self._is_team_folder_value = None
@@ -1726,8 +1731,8 @@ class SharedFolderMetadata(object):
             self.path_lower = path_lower
         if name is not None:
             self.name = name
-        if id is not None:
-            self.id = id
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
         if access_type is not None:
             self.access_type = access_type
         if is_team_folder is not None:
@@ -1786,27 +1791,27 @@ class SharedFolderMetadata(object):
         self._name_present = False
 
     @property
-    def id(self):
+    def shared_folder_id(self):
         """
         The ID of the shared folder.
 
         :rtype: str
         """
-        if self._id_present:
-            return self._id_value
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
         else:
-            raise AttributeError("missing required field 'id'")
+            raise AttributeError("missing required field 'shared_folder_id'")
 
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
 
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
 
     @property
     def access_type(self):
@@ -1879,179 +1884,12 @@ class SharedFolderMetadata(object):
         self._policy_present = False
 
     def __repr__(self):
-        return 'SharedFolderMetadata(name={!r}, id={!r}, access_type={!r}, is_team_folder={!r}, policy={!r}, path_lower={!r})'.format(
+        return 'SharedFolderMetadata(name={!r}, shared_folder_id={!r}, access_type={!r}, is_team_folder={!r}, policy={!r}, path_lower={!r})'.format(
             self._name_value,
-            self._id_value,
+            self._shared_folder_id_value,
             self._access_type_value,
             self._is_team_folder_value,
             self._policy_value,
-            self._path_lower_value,
-        )
-
-class BasicSharedFolderMetadata(SharedFolderMetadata):
-    """
-    The metadata which includes basic information about the shared folder.
-    """
-
-    __slots__ = [
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 name=None,
-                 id=None,
-                 access_type=None,
-                 is_team_folder=None,
-                 policy=None,
-                 path_lower=None):
-        super(BasicSharedFolderMetadata, self).__init__(name,
-                                                        id,
-                                                        access_type,
-                                                        is_team_folder,
-                                                        policy,
-                                                        path_lower)
-
-    def __repr__(self):
-        return 'BasicSharedFolderMetadata(name={!r}, id={!r}, access_type={!r}, is_team_folder={!r}, policy={!r}, path_lower={!r})'.format(
-            self._name_value,
-            self._id_value,
-            self._access_type_value,
-            self._is_team_folder_value,
-            self._policy_value,
-            self._path_lower_value,
-        )
-
-class FullSharedFolderMetadata(SharedFolderMetadata):
-    """
-    The full metadata for the shared folder which includes user and group
-    membership.
-
-    :ivar membership: The list of user members of the shared folder.
-    :ivar groups: The list of group members of the shared folder.
-    :ivar invitees: The list of non-Dropbox users invited to join the shared
-        folder.
-    """
-
-    __slots__ = [
-        '_membership_value',
-        '_membership_present',
-        '_groups_value',
-        '_groups_present',
-        '_invitees_value',
-        '_invitees_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 name=None,
-                 id=None,
-                 access_type=None,
-                 is_team_folder=None,
-                 policy=None,
-                 membership=None,
-                 groups=None,
-                 invitees=None,
-                 path_lower=None):
-        super(FullSharedFolderMetadata, self).__init__(name,
-                                                       id,
-                                                       access_type,
-                                                       is_team_folder,
-                                                       policy,
-                                                       path_lower)
-        self._membership_value = None
-        self._membership_present = False
-        self._groups_value = None
-        self._groups_present = False
-        self._invitees_value = None
-        self._invitees_present = False
-        if membership is not None:
-            self.membership = membership
-        if groups is not None:
-            self.groups = groups
-        if invitees is not None:
-            self.invitees = invitees
-
-    @property
-    def membership(self):
-        """
-        The list of user members of the shared folder.
-
-        :rtype: list of [UserMembershipInfo]
-        """
-        if self._membership_present:
-            return self._membership_value
-        else:
-            raise AttributeError("missing required field 'membership'")
-
-    @membership.setter
-    def membership(self, val):
-        val = self._membership_validator.validate(val)
-        self._membership_value = val
-        self._membership_present = True
-
-    @membership.deleter
-    def membership(self):
-        self._membership_value = None
-        self._membership_present = False
-
-    @property
-    def groups(self):
-        """
-        The list of group members of the shared folder.
-
-        :rtype: list of [GroupMembershipInfo]
-        """
-        if self._groups_present:
-            return self._groups_value
-        else:
-            raise AttributeError("missing required field 'groups'")
-
-    @groups.setter
-    def groups(self, val):
-        val = self._groups_validator.validate(val)
-        self._groups_value = val
-        self._groups_present = True
-
-    @groups.deleter
-    def groups(self):
-        self._groups_value = None
-        self._groups_present = False
-
-    @property
-    def invitees(self):
-        """
-        The list of non-Dropbox users invited to join the shared folder.
-
-        :rtype: list of [InviteeMembershipInfo]
-        """
-        if self._invitees_present:
-            return self._invitees_value
-        else:
-            raise AttributeError("missing required field 'invitees'")
-
-    @invitees.setter
-    def invitees(self, val):
-        val = self._invitees_validator.validate(val)
-        self._invitees_value = val
-        self._invitees_present = True
-
-    @invitees.deleter
-    def invitees(self):
-        self._invitees_value = None
-        self._invitees_present = False
-
-    def __repr__(self):
-        return 'FullSharedFolderMetadata(name={!r}, id={!r}, access_type={!r}, is_team_folder={!r}, policy={!r}, membership={!r}, groups={!r}, invitees={!r}, path_lower={!r})'.format(
-            self._name_value,
-            self._id_value,
-            self._access_type_value,
-            self._is_team_folder_value,
-            self._policy_value,
-            self._membership_value,
-            self._groups_value,
-            self._invitees_value,
             self._path_lower_value,
         )
 
@@ -2064,8 +1902,8 @@ class SharedFolderAccessError(object):
     corresponding ``get_*`` method.
 
     :ivar invalid_id: This shared folder ID is invalid.
-    :ivar not_member: The user is not a member of the shared folder thus cannot
-        access it.
+    :ivar not_a_member: The user is not a member of the shared folder thus
+        cannot access it.
     :ivar no_permission: The current user does not have sufficient privileges to
         perform the desired action.
     :ivar email_unverified: The current account's e-mail address is unverified.
@@ -2080,7 +1918,7 @@ class SharedFolderAccessError(object):
     # Attribute is overwritten below the class definition
     invalid_id = None
     # Attribute is overwritten below the class definition
-    not_member = None
+    not_a_member = None
     # Attribute is overwritten below the class definition
     no_permission = None
     # Attribute is overwritten below the class definition
@@ -2112,13 +1950,13 @@ class SharedFolderAccessError(object):
         """
         return self._tag == 'invalid_id'
 
-    def is_not_member(self):
+    def is_not_a_member(self):
         """
-        Check if the union tag is ``not_member``.
+        Check if the union tag is ``not_a_member``.
 
         :rtype: bool
         """
-        return self._tag == 'not_member'
+        return self._tag == 'not_a_member'
 
     def is_no_permission(self):
         """
@@ -2163,134 +2001,6 @@ class SharedFolderAccessError(object):
     def __repr__(self):
         return 'SharedFolderAccessError(%r, %r)' % (self._tag, self._value)
 
-class GetMetadataArgs(object):
-    """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar include_membership: If ``True``, user and group membership included in
-        the response.
-    """
-
-    __slots__ = [
-        '_shared_folder_id_value',
-        '_shared_folder_id_present',
-        '_include_membership_value',
-        '_include_membership_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 shared_folder_id=None,
-                 include_membership=None):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-        self._include_membership_value = None
-        self._include_membership_present = False
-        if shared_folder_id is not None:
-            self.shared_folder_id = shared_folder_id
-        if include_membership is not None:
-            self.include_membership = include_membership
-
-    @property
-    def shared_folder_id(self):
-        """
-        The ID for the shared folder.
-
-        :rtype: str
-        """
-        if self._shared_folder_id_present:
-            return self._shared_folder_id_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_id'")
-
-    @shared_folder_id.setter
-    def shared_folder_id(self, val):
-        val = self._shared_folder_id_validator.validate(val)
-        self._shared_folder_id_value = val
-        self._shared_folder_id_present = True
-
-    @shared_folder_id.deleter
-    def shared_folder_id(self):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-
-    @property
-    def include_membership(self):
-        """
-        If ``True``, user and group membership included in the response.
-
-        :rtype: bool
-        """
-        if self._include_membership_present:
-            return self._include_membership_value
-        else:
-            return True
-
-    @include_membership.setter
-    def include_membership(self, val):
-        val = self._include_membership_validator.validate(val)
-        self._include_membership_value = val
-        self._include_membership_present = True
-
-    @include_membership.deleter
-    def include_membership(self):
-        self._include_membership_value = None
-        self._include_membership_present = False
-
-    def __repr__(self):
-        return 'GetMetadataArgs(shared_folder_id={!r}, include_membership={!r})'.format(
-            self._shared_folder_id_value,
-            self._include_membership_value,
-        )
-
-class ListFoldersArgs(object):
-    """
-    :ivar include_membership: If include user and group membership information
-        in the response.
-    """
-
-    __slots__ = [
-        '_include_membership_value',
-        '_include_membership_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 include_membership=None):
-        self._include_membership_value = None
-        self._include_membership_present = False
-        if include_membership is not None:
-            self.include_membership = include_membership
-
-    @property
-    def include_membership(self):
-        """
-        If include user and group membership information in the response.
-
-        :rtype: bool
-        """
-        if self._include_membership_present:
-            return self._include_membership_value
-        else:
-            return False
-
-    @include_membership.setter
-    def include_membership(self, val):
-        val = self._include_membership_validator.validate(val)
-        self._include_membership_value = val
-        self._include_membership_present = True
-
-    @include_membership.deleter
-    def include_membership(self):
-        self._include_membership_value = None
-        self._include_membership_present = False
-
-    def __repr__(self):
-        return 'ListFoldersArgs(include_membership={!r})'.format(
-            self._include_membership_value,
-        )
-
 class ListFoldersResult(object):
     """
     Result for list_folders. Unmounted shared folders can be identified by the
@@ -2298,21 +2008,31 @@ class ListFoldersResult(object):
 
     :ivar entries: List of all shared folders the authenticated user has access
         to.
+    :ivar cursor: Present if there are additional shared folders that have not
+        been returned yet. Pass the cursor into list_folders/continue to list
+        additional folders.
     """
 
     __slots__ = [
         '_entries_value',
         '_entries_present',
+        '_cursor_value',
+        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 entries=None):
+                 entries=None,
+                 cursor=None):
         self._entries_value = None
         self._entries_present = False
+        self._cursor_value = None
+        self._cursor_present = False
         if entries is not None:
             self.entries = entries
+        if cursor is not None:
+            self.cursor = cursor
 
     @property
     def entries(self):
@@ -2337,10 +2057,512 @@ class ListFoldersResult(object):
         self._entries_value = None
         self._entries_present = False
 
+    @property
+    def cursor(self):
+        """
+        Present if there are additional shared folders that have not been
+        returned yet. Pass the cursor into list_folders/continue to list
+        additional folders.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
     def __repr__(self):
-        return 'ListFoldersResult(entries={!r})'.format(
+        return 'ListFoldersResult(entries={!r}, cursor={!r})'.format(
             self._entries_value,
+            self._cursor_value,
         )
+
+class ListFoldersContinueArg(object):
+    """
+    :ivar cursor: The cursor returned by your last call to list_folders or
+        list_folders/continue.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        The cursor returned by your last call to list_folders or
+        list_folders/continue.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListFoldersContinueArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+class ListFoldersContinueError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_cursor: ``ListFoldersContinueArg.cursor`` is invalid.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_cursor = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_invalid_cursor(self):
+        """
+        Check if the union tag is ``invalid_cursor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_cursor'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ListFoldersContinueError(%r, %r)' % (self._tag, self._value)
+
+class GetMetadataArgs(object):
+    """
+    :ivar shared_folder_id: The ID for the shared folder.
+    """
+
+    __slots__ = [
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_folder_id=None):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+
+    @property
+    def shared_folder_id(self):
+        """
+        The ID for the shared folder.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'shared_folder_id'")
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    def __repr__(self):
+        return 'GetMetadataArgs(shared_folder_id={!r})'.format(
+            self._shared_folder_id_value,
+        )
+
+class ListFolderMembersArgs(object):
+    """
+    :ivar shared_folder_id: The ID for the shared folder.
+    """
+
+    __slots__ = [
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_folder_id=None):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+
+    @property
+    def shared_folder_id(self):
+        """
+        The ID for the shared folder.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'shared_folder_id'")
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    def __repr__(self):
+        return 'ListFolderMembersArgs(shared_folder_id={!r})'.format(
+            self._shared_folder_id_value,
+        )
+
+class SharedFolderMembers(object):
+    """
+    Shared folder user and group membership.
+
+    :ivar users: The list of user members of the shared folder.
+    :ivar groups: The list of group members of the shared folder.
+    :ivar invitees: The list of invited members of the shared folder. This list
+        will not include invitees that have already accepted or declined to join
+        the shared folder.
+    :ivar cursor: Present if there are additional shared folder members that
+        have not been returned yet. Pass the cursor into
+        list_folder_members/continue to list additional members.
+    """
+
+    __slots__ = [
+        '_users_value',
+        '_users_present',
+        '_groups_value',
+        '_groups_present',
+        '_invitees_value',
+        '_invitees_present',
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 users=None,
+                 groups=None,
+                 invitees=None,
+                 cursor=None):
+        self._users_value = None
+        self._users_present = False
+        self._groups_value = None
+        self._groups_present = False
+        self._invitees_value = None
+        self._invitees_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        if users is not None:
+            self.users = users
+        if groups is not None:
+            self.groups = groups
+        if invitees is not None:
+            self.invitees = invitees
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def users(self):
+        """
+        The list of user members of the shared folder.
+
+        :rtype: list of [UserMembershipInfo]
+        """
+        if self._users_present:
+            return self._users_value
+        else:
+            raise AttributeError("missing required field 'users'")
+
+    @users.setter
+    def users(self, val):
+        val = self._users_validator.validate(val)
+        self._users_value = val
+        self._users_present = True
+
+    @users.deleter
+    def users(self):
+        self._users_value = None
+        self._users_present = False
+
+    @property
+    def groups(self):
+        """
+        The list of group members of the shared folder.
+
+        :rtype: list of [GroupMembershipInfo]
+        """
+        if self._groups_present:
+            return self._groups_value
+        else:
+            raise AttributeError("missing required field 'groups'")
+
+    @groups.setter
+    def groups(self, val):
+        val = self._groups_validator.validate(val)
+        self._groups_value = val
+        self._groups_present = True
+
+    @groups.deleter
+    def groups(self):
+        self._groups_value = None
+        self._groups_present = False
+
+    @property
+    def invitees(self):
+        """
+        The list of invited members of the shared folder. This list will not
+        include invitees that have already accepted or declined to join the
+        shared folder.
+
+        :rtype: list of [InviteeMembershipInfo]
+        """
+        if self._invitees_present:
+            return self._invitees_value
+        else:
+            raise AttributeError("missing required field 'invitees'")
+
+    @invitees.setter
+    def invitees(self, val):
+        val = self._invitees_validator.validate(val)
+        self._invitees_value = val
+        self._invitees_present = True
+
+    @invitees.deleter
+    def invitees(self):
+        self._invitees_value = None
+        self._invitees_present = False
+
+    @property
+    def cursor(self):
+        """
+        Present if there are additional shared folder members that have not been
+        returned yet. Pass the cursor into list_folder_members/continue to list
+        additional members.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'SharedFolderMembers(users={!r}, groups={!r}, invitees={!r}, cursor={!r})'.format(
+            self._users_value,
+            self._groups_value,
+            self._invitees_value,
+            self._cursor_value,
+        )
+
+class ListFolderMembersContinueArg(object):
+    """
+    :ivar cursor: The cursor returned by your last call to list_folder_members
+        or list_folder_members/continue.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        The cursor returned by your last call to list_folder_members or
+        list_folder_members/continue.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListFolderMembersContinueArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+class ListFolderMembersContinueError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_cursor: ``ListFolderMembersContinueArg.cursor`` is invalid.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_cursor = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharedFolderAccessError val:
+        :rtype: ListFolderMembersContinueError
+        """
+        return cls('access_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_invalid_cursor(self):
+        """
+        Check if the union tag is ``invalid_cursor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_cursor'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharedFolderAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ListFolderMembersContinueError(%r, %r)' % (self._tag, self._value)
 
 class ShareFolderArg(object):
     """
@@ -2559,7 +2781,8 @@ class ShareFolderError(object):
     @classmethod
     def bad_path(cls, val):
         """
-        Create an instance of this class set to the ``bad_path`` tag with value ``val``.
+        Create an instance of this class set to the ``bad_path`` tag with value
+        ``val``.
 
         :param SharePathError val:
         :rtype: ShareFolderError
@@ -2729,6 +2952,722 @@ class SharePathError(object):
 
     def __repr__(self):
         return 'SharePathError(%r, %r)' % (self._tag, self._value)
+
+class ShareFolderJobStatus(async.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar SharedFolderMetadata complete: The share job has finished. The value
+        is the metadata for the folder.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param SharedFolderMetadata val:
+        :rtype: ShareFolderJobStatus
+        """
+        return cls('complete', val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param ShareFolderError val:
+        :rtype: ShareFolderJobStatus
+        """
+        return cls('failed', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failed'
+
+    def get_complete(self):
+        """
+        The share job has finished. The value is the metadata for the folder.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: SharedFolderMetadata
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: ShareFolderError
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ShareFolderJobStatus(%r, %r)' % (self._tag, self._value)
+
+class ShareFolderLaunch(async.LaunchResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param SharedFolderMetadata val:
+        :rtype: ShareFolderLaunch
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: SharedFolderMetadata
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ShareFolderLaunch(%r, %r)' % (self._tag, self._value)
+
+class JobStatus(async.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar complete: The asynchronous job has finished.
+    :ivar JobError failed: The asynchronous job returned an error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    # Attribute is overwritten below the class definition
+    complete = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param JobError val:
+        :rtype: JobStatus
+        """
+        return cls('failed', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failed'
+
+    def get_failed(self):
+        """
+        The asynchronous job returned an error.
+
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: JobError
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'JobStatus(%r, %r)' % (self._tag, self._value)
+
+class SharedFolderMemberError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_dropbox_id: The target dropbox_id is invalid.
+    :ivar not_a_member: The target dropbox_id is not a member of the shared
+        folder.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_dropbox_id = None
+    # Attribute is overwritten below the class definition
+    not_a_member = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_invalid_dropbox_id(self):
+        """
+        Check if the union tag is ``invalid_dropbox_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_dropbox_id'
+
+    def is_not_a_member(self):
+        """
+        Check if the union tag is ``not_a_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_a_member'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'SharedFolderMemberError(%r, %r)' % (self._tag, self._value)
+
+class JobError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharedFolderAccessError val:
+        :rtype: JobError
+        """
+        return cls('access_error', val)
+
+    @classmethod
+    def member_error(cls, val):
+        """
+        Create an instance of this class set to the ``member_error`` tag with
+        value ``val``.
+
+        :param SharedFolderMemberError val:
+        :rtype: JobError
+        """
+        return cls('member_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_member_error(self):
+        """
+        Check if the union tag is ``member_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharedFolderAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def get_member_error(self):
+        """
+        Only call this if :meth:`is_member_error` is true.
+
+        :rtype: SharedFolderMemberError
+        """
+        if not self.is_member_error():
+            raise AttributeError("tag 'member_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'JobError(%r, %r)' % (self._tag, self._value)
+
+class UnshareFolderArg(object):
+    """
+    :ivar shared_folder_id: The ID for the shared folder.
+    :ivar leave_a_copy: If true, members of this shared folder will get a copy
+        of this folder after it's unshared. Otherwise, it will be removed from
+        their Dropbox. The current user, who is an owner, will always retain
+        their copy.
+    """
+
+    __slots__ = [
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+        '_leave_a_copy_value',
+        '_leave_a_copy_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_folder_id=None,
+                 leave_a_copy=None):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        self._leave_a_copy_value = None
+        self._leave_a_copy_present = False
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+        if leave_a_copy is not None:
+            self.leave_a_copy = leave_a_copy
+
+    @property
+    def shared_folder_id(self):
+        """
+        The ID for the shared folder.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'shared_folder_id'")
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    @property
+    def leave_a_copy(self):
+        """
+        If true, members of this shared folder will get a copy of this folder
+        after it's unshared. Otherwise, it will be removed from their Dropbox.
+        The current user, who is an owner, will always retain their copy.
+
+        :rtype: bool
+        """
+        if self._leave_a_copy_present:
+            return self._leave_a_copy_value
+        else:
+            raise AttributeError("missing required field 'leave_a_copy'")
+
+    @leave_a_copy.setter
+    def leave_a_copy(self, val):
+        val = self._leave_a_copy_validator.validate(val)
+        self._leave_a_copy_value = val
+        self._leave_a_copy_present = True
+
+    @leave_a_copy.deleter
+    def leave_a_copy(self):
+        self._leave_a_copy_value = None
+        self._leave_a_copy_present = False
+
+    def __repr__(self):
+        return 'UnshareFolderArg(shared_folder_id={!r}, leave_a_copy={!r})'.format(
+            self._shared_folder_id_value,
+            self._leave_a_copy_value,
+        )
+
+class UnshareFolderError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharedFolderAccessError val:
+        :rtype: UnshareFolderError
+        """
+        return cls('access_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharedFolderAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UnshareFolderError(%r, %r)' % (self._tag, self._value)
+
+class TransferFolderArg(object):
+    """
+    :ivar shared_folder_id: The ID for the shared folder.
+    :ivar to_dropbox_id: A account or team member ID to transfer ownership to.
+    """
+
+    __slots__ = [
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+        '_to_dropbox_id_value',
+        '_to_dropbox_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_folder_id=None,
+                 to_dropbox_id=None):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        self._to_dropbox_id_value = None
+        self._to_dropbox_id_present = False
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+        if to_dropbox_id is not None:
+            self.to_dropbox_id = to_dropbox_id
+
+    @property
+    def shared_folder_id(self):
+        """
+        The ID for the shared folder.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'shared_folder_id'")
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    @property
+    def to_dropbox_id(self):
+        """
+        A account or team member ID to transfer ownership to.
+
+        :rtype: str
+        """
+        if self._to_dropbox_id_present:
+            return self._to_dropbox_id_value
+        else:
+            raise AttributeError("missing required field 'to_dropbox_id'")
+
+    @to_dropbox_id.setter
+    def to_dropbox_id(self, val):
+        val = self._to_dropbox_id_validator.validate(val)
+        self._to_dropbox_id_value = val
+        self._to_dropbox_id_present = True
+
+    @to_dropbox_id.deleter
+    def to_dropbox_id(self):
+        self._to_dropbox_id_value = None
+        self._to_dropbox_id_present = False
+
+    def __repr__(self):
+        return 'TransferFolderArg(shared_folder_id={!r}, to_dropbox_id={!r})'.format(
+            self._shared_folder_id_value,
+            self._to_dropbox_id_value,
+        )
+
+class TransferFolderError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar no_permission: The current account does not have permission to perform
+        this action.
+    :ivar invalid_dropbox_id: ``TransferFolderArg.to_dropbox_id`` is invalid.
+    :ivar new_owner_not_a_member: The new designated owner is not currently a
+        member of the shared folder.
+    :ivar new_owner_unmounted: The new desginated owner does not have the shared
+        folder mounted.
+    :ivar new_owner_email_unverified: The new designated owner's e-mail address
+        is unverified.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    no_permission = None
+    # Attribute is overwritten below the class definition
+    invalid_dropbox_id = None
+    # Attribute is overwritten below the class definition
+    new_owner_not_a_member = None
+    # Attribute is overwritten below the class definition
+    new_owner_unmounted = None
+    # Attribute is overwritten below the class definition
+    new_owner_email_unverified = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharedFolderAccessError val:
+        :rtype: TransferFolderError
+        """
+        return cls('access_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
+
+    def is_invalid_dropbox_id(self):
+        """
+        Check if the union tag is ``invalid_dropbox_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_dropbox_id'
+
+    def is_new_owner_not_a_member(self):
+        """
+        Check if the union tag is ``new_owner_not_a_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'new_owner_not_a_member'
+
+    def is_new_owner_unmounted(self):
+        """
+        Check if the union tag is ``new_owner_unmounted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'new_owner_unmounted'
+
+    def is_new_owner_email_unverified(self):
+        """
+        Check if the union tag is ``new_owner_email_unverified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'new_owner_email_unverified'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharedFolderAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'TransferFolderError(%r, %r)' % (self._tag, self._value)
 
 class UpdateFolderPolicyArg(object):
     """
@@ -2922,7 +3861,8 @@ class UpdateFolderPolicyError(object):
     @classmethod
     def access_error(cls, val):
         """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
 
         :param SharedFolderAccessError val:
         :rtype: UpdateFolderPolicyError
@@ -2965,612 +3905,6 @@ class UpdateFolderPolicyError(object):
 
     def __repr__(self):
         return 'UpdateFolderPolicyError(%r, %r)' % (self._tag, self._value)
-
-class UnshareFolderArg(object):
-    """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar leave_a_copy: If true, members of this shared folder will get a copy
-        of this folder after it's unshared. Otherwise, it will be removed from
-        their Dropbox. The current user, who is an owner, will always retain
-        their copy.
-    """
-
-    __slots__ = [
-        '_shared_folder_id_value',
-        '_shared_folder_id_present',
-        '_leave_a_copy_value',
-        '_leave_a_copy_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 shared_folder_id=None,
-                 leave_a_copy=None):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-        self._leave_a_copy_value = None
-        self._leave_a_copy_present = False
-        if shared_folder_id is not None:
-            self.shared_folder_id = shared_folder_id
-        if leave_a_copy is not None:
-            self.leave_a_copy = leave_a_copy
-
-    @property
-    def shared_folder_id(self):
-        """
-        The ID for the shared folder.
-
-        :rtype: str
-        """
-        if self._shared_folder_id_present:
-            return self._shared_folder_id_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_id'")
-
-    @shared_folder_id.setter
-    def shared_folder_id(self, val):
-        val = self._shared_folder_id_validator.validate(val)
-        self._shared_folder_id_value = val
-        self._shared_folder_id_present = True
-
-    @shared_folder_id.deleter
-    def shared_folder_id(self):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-
-    @property
-    def leave_a_copy(self):
-        """
-        If true, members of this shared folder will get a copy of this folder
-        after it's unshared. Otherwise, it will be removed from their Dropbox.
-        The current user, who is an owner, will always retain their copy.
-
-        :rtype: bool
-        """
-        if self._leave_a_copy_present:
-            return self._leave_a_copy_value
-        else:
-            raise AttributeError("missing required field 'leave_a_copy'")
-
-    @leave_a_copy.setter
-    def leave_a_copy(self, val):
-        val = self._leave_a_copy_validator.validate(val)
-        self._leave_a_copy_value = val
-        self._leave_a_copy_present = True
-
-    @leave_a_copy.deleter
-    def leave_a_copy(self):
-        self._leave_a_copy_value = None
-        self._leave_a_copy_present = False
-
-    def __repr__(self):
-        return 'UnshareFolderArg(shared_folder_id={!r}, leave_a_copy={!r})'.format(
-            self._shared_folder_id_value,
-            self._leave_a_copy_value,
-        )
-
-class UnshareFolderError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def access_error(cls, val):
-        """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
-
-        :param SharedFolderAccessError val:
-        :rtype: UnshareFolderError
-        """
-        return cls('access_error', val)
-
-    def is_access_error(self):
-        """
-        Check if the union tag is ``access_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'access_error'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_access_error(self):
-        """
-        Only call this if :meth:`is_access_error` is true.
-
-        :rtype: SharedFolderAccessError
-        """
-        if not self.is_access_error():
-            raise AttributeError("tag 'access_error' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'UnshareFolderError(%r, %r)' % (self._tag, self._value)
-
-class TransferFolderArg(object):
-    """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar to_dropbox_id: A account or team member ID to transfer ownership to.
-    """
-
-    __slots__ = [
-        '_shared_folder_id_value',
-        '_shared_folder_id_present',
-        '_to_dropbox_id_value',
-        '_to_dropbox_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 shared_folder_id=None,
-                 to_dropbox_id=None):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-        self._to_dropbox_id_value = None
-        self._to_dropbox_id_present = False
-        if shared_folder_id is not None:
-            self.shared_folder_id = shared_folder_id
-        if to_dropbox_id is not None:
-            self.to_dropbox_id = to_dropbox_id
-
-    @property
-    def shared_folder_id(self):
-        """
-        The ID for the shared folder.
-
-        :rtype: str
-        """
-        if self._shared_folder_id_present:
-            return self._shared_folder_id_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_id'")
-
-    @shared_folder_id.setter
-    def shared_folder_id(self, val):
-        val = self._shared_folder_id_validator.validate(val)
-        self._shared_folder_id_value = val
-        self._shared_folder_id_present = True
-
-    @shared_folder_id.deleter
-    def shared_folder_id(self):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-
-    @property
-    def to_dropbox_id(self):
-        """
-        A account or team member ID to transfer ownership to.
-
-        :rtype: str
-        """
-        if self._to_dropbox_id_present:
-            return self._to_dropbox_id_value
-        else:
-            raise AttributeError("missing required field 'to_dropbox_id'")
-
-    @to_dropbox_id.setter
-    def to_dropbox_id(self, val):
-        val = self._to_dropbox_id_validator.validate(val)
-        self._to_dropbox_id_value = val
-        self._to_dropbox_id_present = True
-
-    @to_dropbox_id.deleter
-    def to_dropbox_id(self):
-        self._to_dropbox_id_value = None
-        self._to_dropbox_id_present = False
-
-    def __repr__(self):
-        return 'TransferFolderArg(shared_folder_id={!r}, to_dropbox_id={!r})'.format(
-            self._shared_folder_id_value,
-            self._to_dropbox_id_value,
-        )
-
-class TransferFolderError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar new_owner_not_member: The new designated owner is not currently a
-        member of the shared folder.
-    :ivar new_owner_unmounted: The new desginated owner does not have the shared
-        folder mounted.
-    :ivar new_owner_email_unverified: The new designated owner's e-mail address
-        is unverified.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    invalid_dropbox_id = None
-    # Attribute is overwritten below the class definition
-    no_permission = None
-    # Attribute is overwritten below the class definition
-    new_owner_not_member = None
-    # Attribute is overwritten below the class definition
-    new_owner_unmounted = None
-    # Attribute is overwritten below the class definition
-    new_owner_email_unverified = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def access_error(cls, val):
-        """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
-
-        :param SharedFolderAccessError val:
-        :rtype: TransferFolderError
-        """
-        return cls('access_error', val)
-
-    def is_access_error(self):
-        """
-        Check if the union tag is ``access_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'access_error'
-
-    def is_invalid_dropbox_id(self):
-        """
-        Check if the union tag is ``invalid_dropbox_id``.
-
-        :rtype: bool
-        """
-        return self._tag == 'invalid_dropbox_id'
-
-    def is_no_permission(self):
-        """
-        Check if the union tag is ``no_permission``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_permission'
-
-    def is_new_owner_not_member(self):
-        """
-        Check if the union tag is ``new_owner_not_member``.
-
-        :rtype: bool
-        """
-        return self._tag == 'new_owner_not_member'
-
-    def is_new_owner_unmounted(self):
-        """
-        Check if the union tag is ``new_owner_unmounted``.
-
-        :rtype: bool
-        """
-        return self._tag == 'new_owner_unmounted'
-
-    def is_new_owner_email_unverified(self):
-        """
-        Check if the union tag is ``new_owner_email_unverified``.
-
-        :rtype: bool
-        """
-        return self._tag == 'new_owner_email_unverified'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_access_error(self):
-        """
-        Only call this if :meth:`is_access_error` is true.
-
-        :rtype: SharedFolderAccessError
-        """
-        if not self.is_access_error():
-            raise AttributeError("tag 'access_error' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'TransferFolderError(%r, %r)' % (self._tag, self._value)
-
-class UnmountFolderArg(object):
-    """
-    :ivar shared_folder_id: The ID for the shared folder.
-    """
-
-    __slots__ = [
-        '_shared_folder_id_value',
-        '_shared_folder_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 shared_folder_id=None):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-        if shared_folder_id is not None:
-            self.shared_folder_id = shared_folder_id
-
-    @property
-    def shared_folder_id(self):
-        """
-        The ID for the shared folder.
-
-        :rtype: str
-        """
-        if self._shared_folder_id_present:
-            return self._shared_folder_id_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_id'")
-
-    @shared_folder_id.setter
-    def shared_folder_id(self, val):
-        val = self._shared_folder_id_validator.validate(val)
-        self._shared_folder_id_value = val
-        self._shared_folder_id_present = True
-
-    @shared_folder_id.deleter
-    def shared_folder_id(self):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-
-    def __repr__(self):
-        return 'UnmountFolderArg(shared_folder_id={!r})'.format(
-            self._shared_folder_id_value,
-        )
-
-class UnmountFolderError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def access_error(cls, val):
-        """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
-
-        :param SharedFolderAccessError val:
-        :rtype: UnmountFolderError
-        """
-        return cls('access_error', val)
-
-    def is_access_error(self):
-        """
-        Check if the union tag is ``access_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'access_error'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_access_error(self):
-        """
-        Only call this if :meth:`is_access_error` is true.
-
-        :rtype: SharedFolderAccessError
-        """
-        if not self.is_access_error():
-            raise AttributeError("tag 'access_error' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'UnmountFolderError(%r, %r)' % (self._tag, self._value)
-
-class MountFolderArg(object):
-    """
-    :ivar shared_folder_id: The ID of the shared folder to mount.
-    """
-
-    __slots__ = [
-        '_shared_folder_id_value',
-        '_shared_folder_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 shared_folder_id=None):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-        if shared_folder_id is not None:
-            self.shared_folder_id = shared_folder_id
-
-    @property
-    def shared_folder_id(self):
-        """
-        The ID of the shared folder to mount.
-
-        :rtype: str
-        """
-        if self._shared_folder_id_present:
-            return self._shared_folder_id_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_id'")
-
-    @shared_folder_id.setter
-    def shared_folder_id(self, val):
-        val = self._shared_folder_id_validator.validate(val)
-        self._shared_folder_id_value = val
-        self._shared_folder_id_present = True
-
-    @shared_folder_id.deleter
-    def shared_folder_id(self):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-
-    def __repr__(self):
-        return 'MountFolderArg(shared_folder_id={!r})'.format(
-            self._shared_folder_id_value,
-        )
-
-class MountFolderError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar inside_shared_folder: Mounting would cause a shared folder to be
-        inside another, which is disallowed.
-    :ivar insufficient_quota: The current user does not have enough space to
-        mount the shared folder.
-    :ivar already_mounted: The shared folder is already mounted.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    inside_shared_folder = None
-    # Attribute is overwritten below the class definition
-    insufficient_quota = None
-    # Attribute is overwritten below the class definition
-    already_mounted = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def access_error(cls, val):
-        """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
-
-        :param SharedFolderAccessError val:
-        :rtype: MountFolderError
-        """
-        return cls('access_error', val)
-
-    def is_access_error(self):
-        """
-        Check if the union tag is ``access_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'access_error'
-
-    def is_inside_shared_folder(self):
-        """
-        Check if the union tag is ``inside_shared_folder``.
-
-        :rtype: bool
-        """
-        return self._tag == 'inside_shared_folder'
-
-    def is_insufficient_quota(self):
-        """
-        Check if the union tag is ``insufficient_quota``.
-
-        :rtype: bool
-        """
-        return self._tag == 'insufficient_quota'
-
-    def is_already_mounted(self):
-        """
-        Check if the union tag is ``already_mounted``.
-
-        :rtype: bool
-        """
-        return self._tag == 'already_mounted'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_access_error(self):
-        """
-        Only call this if :meth:`is_access_error` is true.
-
-        :rtype: SharedFolderAccessError
-        """
-        if not self.is_access_error():
-            raise AttributeError("tag 'access_error' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'MountFolderError(%r, %r)' % (self._tag, self._value)
 
 class AddFolderMemberArg(object):
     """
@@ -3809,15 +4143,14 @@ class AddMember(object):
 
 class MemberSelector(object):
     """
-    Includes different ways to identify a member to add to a shared folder.
+    Includes different ways to identify a member of a shared folder.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str dropbox_id: Dropbox account, team member, or group ID of member to
-        add.
-    :ivar str email: E-mail address of member to add.
+    :ivar str dropbox_id: Dropbox account, team member, or group ID of member.
+    :ivar str email: E-mail address of member.
     """
 
     __slots__ = ['_tag', '_value']
@@ -3841,7 +4174,8 @@ class MemberSelector(object):
     @classmethod
     def dropbox_id(cls, val):
         """
-        Create an instance of this class set to the ``dropbox_id`` tag with value ``val``.
+        Create an instance of this class set to the ``dropbox_id`` tag with
+        value ``val``.
 
         :param str val:
         :rtype: MemberSelector
@@ -3851,7 +4185,8 @@ class MemberSelector(object):
     @classmethod
     def email(cls, val):
         """
-        Create an instance of this class set to the ``email`` tag with value ``val``.
+        Create an instance of this class set to the ``email`` tag with value
+        ``val``.
 
         :param str val:
         :rtype: MemberSelector
@@ -3884,7 +4219,7 @@ class MemberSelector(object):
 
     def get_dropbox_id(self):
         """
-        Dropbox account, team member, or group ID of member to add.
+        Dropbox account, team member, or group ID of member.
 
         Only call this if :meth:`is_dropbox_id` is true.
 
@@ -3896,7 +4231,7 @@ class MemberSelector(object):
 
     def get_email(self):
         """
-        E-mail address of member to add.
+        E-mail address of member.
 
         Only call this if :meth:`is_email` is true.
 
@@ -3926,6 +4261,7 @@ class AddFolderMemberError(object):
     :ivar long too_many_members: The value is the member limit that was reached.
     :ivar long too_many_pending_invites: The value is the pending invite limit
         that was reached.
+    :ivar rate_limit: The user has reached the rate limit for invitations.
     :ivar insufficient_plan: The current user's account doesn't support this
         action. An example of this is when adding a read-only member. This
         action can only be performed by users that have upgraded to a Pro or
@@ -3941,6 +4277,8 @@ class AddFolderMemberError(object):
     no_permission = None
     # Attribute is overwritten below the class definition
     cant_share_outside_team = None
+    # Attribute is overwritten below the class definition
+    rate_limit = None
     # Attribute is overwritten below the class definition
     insufficient_plan = None
     # Attribute is overwritten below the class definition
@@ -3961,7 +4299,8 @@ class AddFolderMemberError(object):
     @classmethod
     def access_error(cls, val):
         """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
 
         :param SharedFolderAccessError val:
         :rtype: AddFolderMemberError
@@ -3971,7 +4310,8 @@ class AddFolderMemberError(object):
     @classmethod
     def bad_member(cls, val):
         """
-        Create an instance of this class set to the ``bad_member`` tag with value ``val``.
+        Create an instance of this class set to the ``bad_member`` tag with
+        value ``val``.
 
         :param AddMemberSelectorError val:
         :rtype: AddFolderMemberError
@@ -3981,7 +4321,8 @@ class AddFolderMemberError(object):
     @classmethod
     def too_many_members(cls, val):
         """
-        Create an instance of this class set to the ``too_many_members`` tag with value ``val``.
+        Create an instance of this class set to the ``too_many_members`` tag
+        with value ``val``.
 
         :param long val:
         :rtype: AddFolderMemberError
@@ -3991,7 +4332,8 @@ class AddFolderMemberError(object):
     @classmethod
     def too_many_pending_invites(cls, val):
         """
-        Create an instance of this class set to the ``too_many_pending_invites`` tag with value ``val``.
+        Create an instance of this class set to the ``too_many_pending_invites``
+        tag with value ``val``.
 
         :param long val:
         :rtype: AddFolderMemberError
@@ -4053,6 +4395,14 @@ class AddFolderMemberError(object):
         :rtype: bool
         """
         return self._tag == 'too_many_pending_invites'
+
+    def is_rate_limit(self):
+        """
+        Check if the union tag is ``rate_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rate_limit'
 
     def is_insufficient_plan(self):
         """
@@ -4164,7 +4514,8 @@ class AddMemberSelectorError(object):
     @classmethod
     def invalid_dropbox_id(cls, val):
         """
-        Create an instance of this class set to the ``invalid_dropbox_id`` tag with value ``val``.
+        Create an instance of this class set to the ``invalid_dropbox_id`` tag
+        with value ``val``.
 
         :param str val:
         :rtype: AddMemberSelectorError
@@ -4174,7 +4525,8 @@ class AddMemberSelectorError(object):
     @classmethod
     def invalid_email(cls, val):
         """
-        Create an instance of this class set to the ``invalid_email`` tag with value ``val``.
+        Create an instance of this class set to the ``invalid_email`` tag with
+        value ``val``.
 
         :param str val:
         :rtype: AddMemberSelectorError
@@ -4184,7 +4536,8 @@ class AddMemberSelectorError(object):
     @classmethod
     def unverified_dropbox_id(cls, val):
         """
-        Create an instance of this class set to the ``unverified_dropbox_id`` tag with value ``val``.
+        Create an instance of this class set to the ``unverified_dropbox_id``
+        tag with value ``val``.
 
         :param str val:
         :rtype: AddMemberSelectorError
@@ -4280,368 +4633,10 @@ class AddMemberSelectorError(object):
     def __repr__(self):
         return 'AddMemberSelectorError(%r, %r)' % (self._tag, self._value)
 
-class ShareFolderJobStatus(async.PollResultBase):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar FullSharedFolderMetadata complete: The share job has finished. The
-        value is the metadata for the folder.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def complete(cls, val):
-        """
-        Create an instance of this class set to the ``complete`` tag with value ``val``.
-
-        :param FullSharedFolderMetadata val:
-        :rtype: ShareFolderJobStatus
-        """
-        return cls('complete', val)
-
-    @classmethod
-    def failed(cls, val):
-        """
-        Create an instance of this class set to the ``failed`` tag with value ``val``.
-
-        :param ShareFolderError val:
-        :rtype: ShareFolderJobStatus
-        """
-        return cls('failed', val)
-
-    def is_complete(self):
-        """
-        Check if the union tag is ``complete``.
-
-        :rtype: bool
-        """
-        return self._tag == 'complete'
-
-    def is_failed(self):
-        """
-        Check if the union tag is ``failed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'failed'
-
-    def get_complete(self):
-        """
-        The share job has finished. The value is the metadata for the folder.
-
-        Only call this if :meth:`is_complete` is true.
-
-        :rtype: FullSharedFolderMetadata
-        """
-        if not self.is_complete():
-            raise AttributeError("tag 'complete' not set")
-        return self._value
-
-    def get_failed(self):
-        """
-        Only call this if :meth:`is_failed` is true.
-
-        :rtype: ShareFolderError
-        """
-        if not self.is_failed():
-            raise AttributeError("tag 'failed' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'ShareFolderJobStatus(%r, %r)' % (self._tag, self._value)
-
-class ShareFolderLaunch(async.LaunchResultBase):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def complete(cls, val):
-        """
-        Create an instance of this class set to the ``complete`` tag with value ``val``.
-
-        :param FullSharedFolderMetadata val:
-        :rtype: ShareFolderLaunch
-        """
-        return cls('complete', val)
-
-    def is_complete(self):
-        """
-        Check if the union tag is ``complete``.
-
-        :rtype: bool
-        """
-        return self._tag == 'complete'
-
-    def get_complete(self):
-        """
-        Only call this if :meth:`is_complete` is true.
-
-        :rtype: FullSharedFolderMetadata
-        """
-        if not self.is_complete():
-            raise AttributeError("tag 'complete' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'ShareFolderLaunch(%r, %r)' % (self._tag, self._value)
-
-class JobStatus(async.PollResultBase):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar complete: The asynchronous job has finished.
-    :ivar JobError failed: The asynchronous job returned an error.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    # Attribute is overwritten below the class definition
-    complete = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def failed(cls, val):
-        """
-        Create an instance of this class set to the ``failed`` tag with value ``val``.
-
-        :param JobError val:
-        :rtype: JobStatus
-        """
-        return cls('failed', val)
-
-    def is_complete(self):
-        """
-        Check if the union tag is ``complete``.
-
-        :rtype: bool
-        """
-        return self._tag == 'complete'
-
-    def is_failed(self):
-        """
-        Check if the union tag is ``failed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'failed'
-
-    def get_failed(self):
-        """
-        The asynchronous job returned an error.
-
-        Only call this if :meth:`is_failed` is true.
-
-        :rtype: JobError
-        """
-        if not self.is_failed():
-            raise AttributeError("tag 'failed' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'JobStatus(%r, %r)' % (self._tag, self._value)
-
-class SharedFolderMemberError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar invalid_dropbox_id: The target dropbox_id is invalid.
-    :ivar not_a_member: The target dropbox_id is not a member of the shared
-        folder.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    invalid_dropbox_id = None
-    # Attribute is overwritten below the class definition
-    not_a_member = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_invalid_dropbox_id(self):
-        """
-        Check if the union tag is ``invalid_dropbox_id``.
-
-        :rtype: bool
-        """
-        return self._tag == 'invalid_dropbox_id'
-
-    def is_not_a_member(self):
-        """
-        Check if the union tag is ``not_a_member``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_a_member'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SharedFolderMemberError(%r, %r)' % (self._tag, self._value)
-
-class JobError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def access_error(cls, val):
-        """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
-
-        :param SharedFolderAccessError val:
-        :rtype: JobError
-        """
-        return cls('access_error', val)
-
-    @classmethod
-    def member_error(cls, val):
-        """
-        Create an instance of this class set to the ``member_error`` tag with value ``val``.
-
-        :param SharedFolderMemberError val:
-        :rtype: JobError
-        """
-        return cls('member_error', val)
-
-    def is_access_error(self):
-        """
-        Check if the union tag is ``access_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'access_error'
-
-    def is_member_error(self):
-        """
-        Check if the union tag is ``member_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'member_error'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_access_error(self):
-        """
-        Only call this if :meth:`is_access_error` is true.
-
-        :rtype: SharedFolderAccessError
-        """
-        if not self.is_access_error():
-            raise AttributeError("tag 'access_error' not set")
-        return self._value
-
-    def get_member_error(self):
-        """
-        Only call this if :meth:`is_member_error` is true.
-
-        :rtype: SharedFolderMemberError
-        """
-        if not self.is_member_error():
-            raise AttributeError("tag 'member_error' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'JobError(%r, %r)' % (self._tag, self._value)
-
 class RemoveFolderMemberArg(object):
     """
     :ivar shared_folder_id: The ID for the shared folder.
-    :ivar member: The member to remove from the folder. Only the
-        ``MemberSelector.dropbox_id`` may be set at this time.
+    :ivar member: The member to remove from the folder.
     :ivar leave_a_copy: If true, the removed user will keep their copy of the
         folder after it's unshared, assuming it was mounted. Otherwise, it will
         be removed from their Dropbox. Also, this must be set to false when
@@ -4702,8 +4697,7 @@ class RemoveFolderMemberArg(object):
     @property
     def member(self):
         """
-        The member to remove from the folder. Only the
-        ``MemberSelector.dropbox_id`` may be set at this time.
+        The member to remove from the folder.
 
         :rtype: MemberSelector
         """
@@ -4760,20 +4754,11 @@ class RemoveFolderMemberError(object):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
-
-    :ivar invalid_dropbox_id: The target ``MemberSelector.dropbox_id`` is
-        invalid.
-    :ivar not_a_member: The target ``MemberSelector.dropbox_id`` is not a member
-        of the shared folder.
     """
 
     __slots__ = ['_tag', '_value']
 
     _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    invalid_dropbox_id = None
-    # Attribute is overwritten below the class definition
-    not_a_member = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -4792,7 +4777,8 @@ class RemoveFolderMemberError(object):
     @classmethod
     def access_error(cls, val):
         """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
 
         :param SharedFolderAccessError val:
         :rtype: RemoveFolderMemberError
@@ -4806,22 +4792,6 @@ class RemoveFolderMemberError(object):
         :rtype: bool
         """
         return self._tag == 'access_error'
-
-    def is_invalid_dropbox_id(self):
-        """
-        Check if the union tag is ``invalid_dropbox_id``.
-
-        :rtype: bool
-        """
-        return self._tag == 'invalid_dropbox_id'
-
-    def is_not_a_member(self):
-        """
-        Check if the union tag is ``not_a_member``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_a_member'
 
     def is_other(self):
         """
@@ -4965,10 +4935,6 @@ class UpdateFolderMemberError(object):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_dropbox_id: The target ``MemberSelector.dropbox_id`` is
-        invalid.
-    :ivar not_a_member: The target ``UpdateFolderMemberArg.member`` is not a
-        member of the shared folder.
     :ivar insufficient_plan: The current user's account doesn't support this
         action. An example of this is when downgrading a member from editor to
         viewer. This action can only be performed by users that have upgraded to
@@ -4978,10 +4944,6 @@ class UpdateFolderMemberError(object):
     __slots__ = ['_tag', '_value']
 
     _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    invalid_dropbox_id = None
-    # Attribute is overwritten below the class definition
-    not_a_member = None
     # Attribute is overwritten below the class definition
     insufficient_plan = None
     # Attribute is overwritten below the class definition
@@ -5002,12 +4964,24 @@ class UpdateFolderMemberError(object):
     @classmethod
     def access_error(cls, val):
         """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
 
         :param SharedFolderAccessError val:
         :rtype: UpdateFolderMemberError
         """
         return cls('access_error', val)
+
+    @classmethod
+    def member_error(cls, val):
+        """
+        Create an instance of this class set to the ``member_error`` tag with
+        value ``val``.
+
+        :param SharedFolderMemberError val:
+        :rtype: UpdateFolderMemberError
+        """
+        return cls('member_error', val)
 
     def is_access_error(self):
         """
@@ -5017,21 +4991,13 @@ class UpdateFolderMemberError(object):
         """
         return self._tag == 'access_error'
 
-    def is_invalid_dropbox_id(self):
+    def is_member_error(self):
         """
-        Check if the union tag is ``invalid_dropbox_id``.
+        Check if the union tag is ``member_error``.
 
         :rtype: bool
         """
-        return self._tag == 'invalid_dropbox_id'
-
-    def is_not_a_member(self):
-        """
-        Check if the union tag is ``not_a_member``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_a_member'
+        return self._tag == 'member_error'
 
     def is_insufficient_plan(self):
         """
@@ -5059,8 +5025,278 @@ class UpdateFolderMemberError(object):
             raise AttributeError("tag 'access_error' not set")
         return self._value
 
+    def get_member_error(self):
+        """
+        Only call this if :meth:`is_member_error` is true.
+
+        :rtype: SharedFolderMemberError
+        """
+        if not self.is_member_error():
+            raise AttributeError("tag 'member_error' not set")
+        return self._value
+
     def __repr__(self):
         return 'UpdateFolderMemberError(%r, %r)' % (self._tag, self._value)
+
+class MountFolderArg(object):
+    """
+    :ivar shared_folder_id: The ID of the shared folder to mount.
+    """
+
+    __slots__ = [
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_folder_id=None):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+
+    @property
+    def shared_folder_id(self):
+        """
+        The ID of the shared folder to mount.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'shared_folder_id'")
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    def __repr__(self):
+        return 'MountFolderArg(shared_folder_id={!r})'.format(
+            self._shared_folder_id_value,
+        )
+
+class MountFolderError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar inside_shared_folder: Mounting would cause a shared folder to be
+        inside another, which is disallowed.
+    :ivar insufficient_quota: The current user does not have enough space to
+        mount the shared folder.
+    :ivar already_mounted: The shared folder is already mounted.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    inside_shared_folder = None
+    # Attribute is overwritten below the class definition
+    insufficient_quota = None
+    # Attribute is overwritten below the class definition
+    already_mounted = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharedFolderAccessError val:
+        :rtype: MountFolderError
+        """
+        return cls('access_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_inside_shared_folder(self):
+        """
+        Check if the union tag is ``inside_shared_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'inside_shared_folder'
+
+    def is_insufficient_quota(self):
+        """
+        Check if the union tag is ``insufficient_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'insufficient_quota'
+
+    def is_already_mounted(self):
+        """
+        Check if the union tag is ``already_mounted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'already_mounted'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharedFolderAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'MountFolderError(%r, %r)' % (self._tag, self._value)
+
+class UnmountFolderArg(object):
+    """
+    :ivar shared_folder_id: The ID for the shared folder.
+    """
+
+    __slots__ = [
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_folder_id=None):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+
+    @property
+    def shared_folder_id(self):
+        """
+        The ID for the shared folder.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'shared_folder_id'")
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    def __repr__(self):
+        return 'UnmountFolderArg(shared_folder_id={!r})'.format(
+            self._shared_folder_id_value,
+        )
+
+class UnmountFolderError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharedFolderAccessError val:
+        :rtype: UnmountFolderError
+        """
+        return cls('access_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharedFolderAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UnmountFolderError(%r, %r)' % (self._tag, self._value)
 
 class RelinquishFolderMembershipArg(object):
     """
@@ -5151,7 +5387,8 @@ class RelinquishFolderMembershipError(object):
     @classmethod
     def access_error(cls, val):
         """
-        Create an instance of this class set to the ``access_error`` tag with value ``val``.
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
 
         :param SharedFolderAccessError val:
         :rtype: RelinquishFolderMembershipError
@@ -5454,62 +5691,29 @@ GroupMembershipInfo._all_fields_ = MembershipInfo._all_fields_ + [('group', Grou
 
 SharedFolderMetadata._path_lower_validator = bv.Nullable(bv.String())
 SharedFolderMetadata._name_validator = bv.String()
-SharedFolderMetadata._id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
+SharedFolderMetadata._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
 SharedFolderMetadata._access_type_validator = bv.Union(AccessLevel)
 SharedFolderMetadata._is_team_folder_validator = bv.Boolean()
 SharedFolderMetadata._policy_validator = bv.Struct(FolderPolicy)
-SharedFolderMetadata._field_names_ = set([
+SharedFolderMetadata._all_field_names_ = set([
     'path_lower',
     'name',
-    'id',
+    'shared_folder_id',
     'access_type',
     'is_team_folder',
     'policy',
 ])
-SharedFolderMetadata._all_field_names_ = SharedFolderMetadata._field_names_
-SharedFolderMetadata._fields_ = [
+SharedFolderMetadata._all_fields_ = [
     ('path_lower', SharedFolderMetadata._path_lower_validator),
     ('name', SharedFolderMetadata._name_validator),
-    ('id', SharedFolderMetadata._id_validator),
+    ('shared_folder_id', SharedFolderMetadata._shared_folder_id_validator),
     ('access_type', SharedFolderMetadata._access_type_validator),
     ('is_team_folder', SharedFolderMetadata._is_team_folder_validator),
     ('policy', SharedFolderMetadata._policy_validator),
 ]
-SharedFolderMetadata._all_fields_ = SharedFolderMetadata._fields_
-
-SharedFolderMetadata._tag_to_subtype_ = {
-    (u'basic',): bv.Struct(BasicSharedFolderMetadata),
-    (u'full',): bv.Struct(FullSharedFolderMetadata),
-}
-SharedFolderMetadata._pytype_to_tag_and_subtype_ = {
-    BasicSharedFolderMetadata: ((u'basic',), bv.Struct(BasicSharedFolderMetadata)),
-    FullSharedFolderMetadata: ((u'full',), bv.Struct(FullSharedFolderMetadata)),
-}
-SharedFolderMetadata._is_catch_all_ = False
-
-BasicSharedFolderMetadata._field_names_ = set([])
-BasicSharedFolderMetadata._all_field_names_ = SharedFolderMetadata._all_field_names_.union(BasicSharedFolderMetadata._field_names_)
-BasicSharedFolderMetadata._fields_ = []
-BasicSharedFolderMetadata._all_fields_ = SharedFolderMetadata._all_fields_ + BasicSharedFolderMetadata._fields_
-
-FullSharedFolderMetadata._membership_validator = bv.List(bv.Struct(UserMembershipInfo))
-FullSharedFolderMetadata._groups_validator = bv.List(bv.Struct(GroupMembershipInfo))
-FullSharedFolderMetadata._invitees_validator = bv.List(bv.Struct(InviteeMembershipInfo))
-FullSharedFolderMetadata._field_names_ = set([
-    'membership',
-    'groups',
-    'invitees',
-])
-FullSharedFolderMetadata._all_field_names_ = SharedFolderMetadata._all_field_names_.union(FullSharedFolderMetadata._field_names_)
-FullSharedFolderMetadata._fields_ = [
-    ('membership', FullSharedFolderMetadata._membership_validator),
-    ('groups', FullSharedFolderMetadata._groups_validator),
-    ('invitees', FullSharedFolderMetadata._invitees_validator),
-]
-FullSharedFolderMetadata._all_fields_ = SharedFolderMetadata._all_fields_ + FullSharedFolderMetadata._fields_
 
 SharedFolderAccessError._invalid_id_validator = bv.Void()
-SharedFolderAccessError._not_member_validator = bv.Void()
+SharedFolderAccessError._not_a_member_validator = bv.Void()
 SharedFolderAccessError._no_permission_validator = bv.Void()
 SharedFolderAccessError._email_unverified_validator = bv.Void()
 SharedFolderAccessError._team_folder_validator = bv.Void()
@@ -5517,7 +5721,7 @@ SharedFolderAccessError._unmounted_validator = bv.Void()
 SharedFolderAccessError._other_validator = bv.Void()
 SharedFolderAccessError._tagmap = {
     'invalid_id': SharedFolderAccessError._invalid_id_validator,
-    'not_member': SharedFolderAccessError._not_member_validator,
+    'not_a_member': SharedFolderAccessError._not_a_member_validator,
     'no_permission': SharedFolderAccessError._no_permission_validator,
     'email_unverified': SharedFolderAccessError._email_unverified_validator,
     'team_folder': SharedFolderAccessError._team_folder_validator,
@@ -5526,31 +5730,78 @@ SharedFolderAccessError._tagmap = {
 }
 
 SharedFolderAccessError.invalid_id = SharedFolderAccessError('invalid_id')
-SharedFolderAccessError.not_member = SharedFolderAccessError('not_member')
+SharedFolderAccessError.not_a_member = SharedFolderAccessError('not_a_member')
 SharedFolderAccessError.no_permission = SharedFolderAccessError('no_permission')
 SharedFolderAccessError.email_unverified = SharedFolderAccessError('email_unverified')
 SharedFolderAccessError.team_folder = SharedFolderAccessError('team_folder')
 SharedFolderAccessError.unmounted = SharedFolderAccessError('unmounted')
 SharedFolderAccessError.other = SharedFolderAccessError('other')
 
-GetMetadataArgs._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
-GetMetadataArgs._include_membership_validator = bv.Boolean()
-GetMetadataArgs._all_field_names_ = set([
-    'shared_folder_id',
-    'include_membership',
+ListFoldersResult._entries_validator = bv.List(bv.Struct(SharedFolderMetadata))
+ListFoldersResult._cursor_validator = bv.Nullable(bv.String())
+ListFoldersResult._all_field_names_ = set([
+    'entries',
+    'cursor',
 ])
-GetMetadataArgs._all_fields_ = [
-    ('shared_folder_id', GetMetadataArgs._shared_folder_id_validator),
-    ('include_membership', GetMetadataArgs._include_membership_validator),
+ListFoldersResult._all_fields_ = [
+    ('entries', ListFoldersResult._entries_validator),
+    ('cursor', ListFoldersResult._cursor_validator),
 ]
 
-ListFoldersArgs._include_membership_validator = bv.Boolean()
-ListFoldersArgs._all_field_names_ = set(['include_membership'])
-ListFoldersArgs._all_fields_ = [('include_membership', ListFoldersArgs._include_membership_validator)]
+ListFoldersContinueArg._cursor_validator = bv.String()
+ListFoldersContinueArg._all_field_names_ = set(['cursor'])
+ListFoldersContinueArg._all_fields_ = [('cursor', ListFoldersContinueArg._cursor_validator)]
 
-ListFoldersResult._entries_validator = bv.List(bv.StructTree(SharedFolderMetadata))
-ListFoldersResult._all_field_names_ = set(['entries'])
-ListFoldersResult._all_fields_ = [('entries', ListFoldersResult._entries_validator)]
+ListFoldersContinueError._invalid_cursor_validator = bv.Void()
+ListFoldersContinueError._other_validator = bv.Void()
+ListFoldersContinueError._tagmap = {
+    'invalid_cursor': ListFoldersContinueError._invalid_cursor_validator,
+    'other': ListFoldersContinueError._other_validator,
+}
+
+ListFoldersContinueError.invalid_cursor = ListFoldersContinueError('invalid_cursor')
+ListFoldersContinueError.other = ListFoldersContinueError('other')
+
+GetMetadataArgs._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
+GetMetadataArgs._all_field_names_ = set(['shared_folder_id'])
+GetMetadataArgs._all_fields_ = [('shared_folder_id', GetMetadataArgs._shared_folder_id_validator)]
+
+ListFolderMembersArgs._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
+ListFolderMembersArgs._all_field_names_ = set(['shared_folder_id'])
+ListFolderMembersArgs._all_fields_ = [('shared_folder_id', ListFolderMembersArgs._shared_folder_id_validator)]
+
+SharedFolderMembers._users_validator = bv.List(bv.Struct(UserMembershipInfo))
+SharedFolderMembers._groups_validator = bv.List(bv.Struct(GroupMembershipInfo))
+SharedFolderMembers._invitees_validator = bv.List(bv.Struct(InviteeMembershipInfo))
+SharedFolderMembers._cursor_validator = bv.Nullable(bv.String())
+SharedFolderMembers._all_field_names_ = set([
+    'users',
+    'groups',
+    'invitees',
+    'cursor',
+])
+SharedFolderMembers._all_fields_ = [
+    ('users', SharedFolderMembers._users_validator),
+    ('groups', SharedFolderMembers._groups_validator),
+    ('invitees', SharedFolderMembers._invitees_validator),
+    ('cursor', SharedFolderMembers._cursor_validator),
+]
+
+ListFolderMembersContinueArg._cursor_validator = bv.String()
+ListFolderMembersContinueArg._all_field_names_ = set(['cursor'])
+ListFolderMembersContinueArg._all_fields_ = [('cursor', ListFolderMembersContinueArg._cursor_validator)]
+
+ListFolderMembersContinueError._access_error_validator = bv.Union(SharedFolderAccessError)
+ListFolderMembersContinueError._invalid_cursor_validator = bv.Void()
+ListFolderMembersContinueError._other_validator = bv.Void()
+ListFolderMembersContinueError._tagmap = {
+    'access_error': ListFolderMembersContinueError._access_error_validator,
+    'invalid_cursor': ListFolderMembersContinueError._invalid_cursor_validator,
+    'other': ListFolderMembersContinueError._other_validator,
+}
+
+ListFolderMembersContinueError.invalid_cursor = ListFolderMembersContinueError('invalid_cursor')
+ListFolderMembersContinueError.other = ListFolderMembersContinueError('other')
 
 ShareFolderArg._path_validator = bv.String(pattern=u'/.*')
 ShareFolderArg._member_policy_validator = bv.Union(MemberPolicy)
@@ -5615,7 +5866,110 @@ SharePathError.already_shared = SharePathError('already_shared')
 SharePathError.invalid_path = SharePathError('invalid_path')
 SharePathError.other = SharePathError('other')
 
-UpdateFolderPolicyArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
+ShareFolderJobStatus._complete_validator = bv.Struct(SharedFolderMetadata)
+ShareFolderJobStatus._failed_validator = bv.Union(ShareFolderError)
+ShareFolderJobStatus._tagmap = {
+    'complete': ShareFolderJobStatus._complete_validator,
+    'failed': ShareFolderJobStatus._failed_validator,
+}
+ShareFolderJobStatus._tagmap.update(async.PollResultBase._tagmap)
+
+ShareFolderLaunch._complete_validator = bv.Struct(SharedFolderMetadata)
+ShareFolderLaunch._tagmap = {
+    'complete': ShareFolderLaunch._complete_validator,
+}
+ShareFolderLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+
+JobStatus._complete_validator = bv.Void()
+JobStatus._failed_validator = bv.Union(JobError)
+JobStatus._tagmap = {
+    'complete': JobStatus._complete_validator,
+    'failed': JobStatus._failed_validator,
+}
+JobStatus._tagmap.update(async.PollResultBase._tagmap)
+
+JobStatus.complete = JobStatus('complete')
+
+SharedFolderMemberError._invalid_dropbox_id_validator = bv.Void()
+SharedFolderMemberError._not_a_member_validator = bv.Void()
+SharedFolderMemberError._other_validator = bv.Void()
+SharedFolderMemberError._tagmap = {
+    'invalid_dropbox_id': SharedFolderMemberError._invalid_dropbox_id_validator,
+    'not_a_member': SharedFolderMemberError._not_a_member_validator,
+    'other': SharedFolderMemberError._other_validator,
+}
+
+SharedFolderMemberError.invalid_dropbox_id = SharedFolderMemberError('invalid_dropbox_id')
+SharedFolderMemberError.not_a_member = SharedFolderMemberError('not_a_member')
+SharedFolderMemberError.other = SharedFolderMemberError('other')
+
+JobError._access_error_validator = bv.Union(SharedFolderAccessError)
+JobError._member_error_validator = bv.Union(SharedFolderMemberError)
+JobError._other_validator = bv.Void()
+JobError._tagmap = {
+    'access_error': JobError._access_error_validator,
+    'member_error': JobError._member_error_validator,
+    'other': JobError._other_validator,
+}
+
+JobError.other = JobError('other')
+
+UnshareFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
+UnshareFolderArg._leave_a_copy_validator = bv.Boolean()
+UnshareFolderArg._all_field_names_ = set([
+    'shared_folder_id',
+    'leave_a_copy',
+])
+UnshareFolderArg._all_fields_ = [
+    ('shared_folder_id', UnshareFolderArg._shared_folder_id_validator),
+    ('leave_a_copy', UnshareFolderArg._leave_a_copy_validator),
+]
+
+UnshareFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
+UnshareFolderError._other_validator = bv.Void()
+UnshareFolderError._tagmap = {
+    'access_error': UnshareFolderError._access_error_validator,
+    'other': UnshareFolderError._other_validator,
+}
+
+UnshareFolderError.other = UnshareFolderError('other')
+
+TransferFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
+TransferFolderArg._to_dropbox_id_validator = bv.String(min_length=1)
+TransferFolderArg._all_field_names_ = set([
+    'shared_folder_id',
+    'to_dropbox_id',
+])
+TransferFolderArg._all_fields_ = [
+    ('shared_folder_id', TransferFolderArg._shared_folder_id_validator),
+    ('to_dropbox_id', TransferFolderArg._to_dropbox_id_validator),
+]
+
+TransferFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
+TransferFolderError._no_permission_validator = bv.Void()
+TransferFolderError._invalid_dropbox_id_validator = bv.Void()
+TransferFolderError._new_owner_not_a_member_validator = bv.Void()
+TransferFolderError._new_owner_unmounted_validator = bv.Void()
+TransferFolderError._new_owner_email_unverified_validator = bv.Void()
+TransferFolderError._other_validator = bv.Void()
+TransferFolderError._tagmap = {
+    'access_error': TransferFolderError._access_error_validator,
+    'no_permission': TransferFolderError._no_permission_validator,
+    'invalid_dropbox_id': TransferFolderError._invalid_dropbox_id_validator,
+    'new_owner_not_a_member': TransferFolderError._new_owner_not_a_member_validator,
+    'new_owner_unmounted': TransferFolderError._new_owner_unmounted_validator,
+    'new_owner_email_unverified': TransferFolderError._new_owner_email_unverified_validator,
+    'other': TransferFolderError._other_validator,
+}
+
+TransferFolderError.no_permission = TransferFolderError('no_permission')
+TransferFolderError.invalid_dropbox_id = TransferFolderError('invalid_dropbox_id')
+TransferFolderError.new_owner_not_a_member = TransferFolderError('new_owner_not_a_member')
+TransferFolderError.new_owner_unmounted = TransferFolderError('new_owner_unmounted')
+TransferFolderError.new_owner_email_unverified = TransferFolderError('new_owner_email_unverified')
+TransferFolderError.other = TransferFolderError('other')
+
+UpdateFolderPolicyArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
 UpdateFolderPolicyArg._member_policy_validator = bv.Nullable(bv.Union(MemberPolicy))
 UpdateFolderPolicyArg._acl_update_policy_validator = bv.Nullable(bv.Union(AclUpdatePolicy))
 UpdateFolderPolicyArg._shared_link_policy_validator = bv.Nullable(bv.Union(SharedLinkPolicy))
@@ -5644,97 +5998,7 @@ UpdateFolderPolicyError._tagmap = {
 UpdateFolderPolicyError.not_on_team = UpdateFolderPolicyError('not_on_team')
 UpdateFolderPolicyError.other = UpdateFolderPolicyError('other')
 
-UnshareFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
-UnshareFolderArg._leave_a_copy_validator = bv.Boolean()
-UnshareFolderArg._all_field_names_ = set([
-    'shared_folder_id',
-    'leave_a_copy',
-])
-UnshareFolderArg._all_fields_ = [
-    ('shared_folder_id', UnshareFolderArg._shared_folder_id_validator),
-    ('leave_a_copy', UnshareFolderArg._leave_a_copy_validator),
-]
-
-UnshareFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
-UnshareFolderError._other_validator = bv.Void()
-UnshareFolderError._tagmap = {
-    'access_error': UnshareFolderError._access_error_validator,
-    'other': UnshareFolderError._other_validator,
-}
-
-UnshareFolderError.other = UnshareFolderError('other')
-
-TransferFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
-TransferFolderArg._to_dropbox_id_validator = bv.String(min_length=1)
-TransferFolderArg._all_field_names_ = set([
-    'shared_folder_id',
-    'to_dropbox_id',
-])
-TransferFolderArg._all_fields_ = [
-    ('shared_folder_id', TransferFolderArg._shared_folder_id_validator),
-    ('to_dropbox_id', TransferFolderArg._to_dropbox_id_validator),
-]
-
-TransferFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
-TransferFolderError._invalid_dropbox_id_validator = bv.Void()
-TransferFolderError._no_permission_validator = bv.Void()
-TransferFolderError._new_owner_not_member_validator = bv.Void()
-TransferFolderError._new_owner_unmounted_validator = bv.Void()
-TransferFolderError._new_owner_email_unverified_validator = bv.Void()
-TransferFolderError._other_validator = bv.Void()
-TransferFolderError._tagmap = {
-    'access_error': TransferFolderError._access_error_validator,
-    'invalid_dropbox_id': TransferFolderError._invalid_dropbox_id_validator,
-    'no_permission': TransferFolderError._no_permission_validator,
-    'new_owner_not_member': TransferFolderError._new_owner_not_member_validator,
-    'new_owner_unmounted': TransferFolderError._new_owner_unmounted_validator,
-    'new_owner_email_unverified': TransferFolderError._new_owner_email_unverified_validator,
-    'other': TransferFolderError._other_validator,
-}
-
-TransferFolderError.invalid_dropbox_id = TransferFolderError('invalid_dropbox_id')
-TransferFolderError.no_permission = TransferFolderError('no_permission')
-TransferFolderError.new_owner_not_member = TransferFolderError('new_owner_not_member')
-TransferFolderError.new_owner_unmounted = TransferFolderError('new_owner_unmounted')
-TransferFolderError.new_owner_email_unverified = TransferFolderError('new_owner_email_unverified')
-TransferFolderError.other = TransferFolderError('other')
-
-UnmountFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
-UnmountFolderArg._all_field_names_ = set(['shared_folder_id'])
-UnmountFolderArg._all_fields_ = [('shared_folder_id', UnmountFolderArg._shared_folder_id_validator)]
-
-UnmountFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
-UnmountFolderError._other_validator = bv.Void()
-UnmountFolderError._tagmap = {
-    'access_error': UnmountFolderError._access_error_validator,
-    'other': UnmountFolderError._other_validator,
-}
-
-UnmountFolderError.other = UnmountFolderError('other')
-
-MountFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
-MountFolderArg._all_field_names_ = set(['shared_folder_id'])
-MountFolderArg._all_fields_ = [('shared_folder_id', MountFolderArg._shared_folder_id_validator)]
-
-MountFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
-MountFolderError._inside_shared_folder_validator = bv.Void()
-MountFolderError._insufficient_quota_validator = bv.Void()
-MountFolderError._already_mounted_validator = bv.Void()
-MountFolderError._other_validator = bv.Void()
-MountFolderError._tagmap = {
-    'access_error': MountFolderError._access_error_validator,
-    'inside_shared_folder': MountFolderError._inside_shared_folder_validator,
-    'insufficient_quota': MountFolderError._insufficient_quota_validator,
-    'already_mounted': MountFolderError._already_mounted_validator,
-    'other': MountFolderError._other_validator,
-}
-
-MountFolderError.inside_shared_folder = MountFolderError('inside_shared_folder')
-MountFolderError.insufficient_quota = MountFolderError('insufficient_quota')
-MountFolderError.already_mounted = MountFolderError('already_mounted')
-MountFolderError.other = MountFolderError('other')
-
-AddFolderMemberArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
+AddFolderMemberArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
 AddFolderMemberArg._members_validator = bv.List(bv.Struct(AddMember))
 AddFolderMemberArg._quiet_validator = bv.Boolean()
 AddFolderMemberArg._custom_message_validator = bv.Nullable(bv.String(min_length=1))
@@ -5780,6 +6044,7 @@ AddFolderMemberError._no_permission_validator = bv.Void()
 AddFolderMemberError._cant_share_outside_team_validator = bv.Void()
 AddFolderMemberError._too_many_members_validator = bv.UInt64()
 AddFolderMemberError._too_many_pending_invites_validator = bv.UInt64()
+AddFolderMemberError._rate_limit_validator = bv.Void()
 AddFolderMemberError._insufficient_plan_validator = bv.Void()
 AddFolderMemberError._other_validator = bv.Void()
 AddFolderMemberError._tagmap = {
@@ -5790,6 +6055,7 @@ AddFolderMemberError._tagmap = {
     'cant_share_outside_team': AddFolderMemberError._cant_share_outside_team_validator,
     'too_many_members': AddFolderMemberError._too_many_members_validator,
     'too_many_pending_invites': AddFolderMemberError._too_many_pending_invites_validator,
+    'rate_limit': AddFolderMemberError._rate_limit_validator,
     'insufficient_plan': AddFolderMemberError._insufficient_plan_validator,
     'other': AddFolderMemberError._other_validator,
 }
@@ -5797,6 +6063,7 @@ AddFolderMemberError._tagmap = {
 AddFolderMemberError.email_unverified = AddFolderMemberError('email_unverified')
 AddFolderMemberError.no_permission = AddFolderMemberError('no_permission')
 AddFolderMemberError.cant_share_outside_team = AddFolderMemberError('cant_share_outside_team')
+AddFolderMemberError.rate_limit = AddFolderMemberError('rate_limit')
 AddFolderMemberError.insufficient_plan = AddFolderMemberError('insufficient_plan')
 AddFolderMemberError.other = AddFolderMemberError('other')
 
@@ -5819,55 +6086,7 @@ AddMemberSelectorError.group_deleted = AddMemberSelectorError('group_deleted')
 AddMemberSelectorError.group_not_on_team = AddMemberSelectorError('group_not_on_team')
 AddMemberSelectorError.other = AddMemberSelectorError('other')
 
-ShareFolderJobStatus._complete_validator = bv.Struct(FullSharedFolderMetadata)
-ShareFolderJobStatus._failed_validator = bv.Union(ShareFolderError)
-ShareFolderJobStatus._tagmap = {
-    'complete': ShareFolderJobStatus._complete_validator,
-    'failed': ShareFolderJobStatus._failed_validator,
-}
-ShareFolderJobStatus._tagmap.update(async.PollResultBase._tagmap)
-
-ShareFolderLaunch._complete_validator = bv.Struct(FullSharedFolderMetadata)
-ShareFolderLaunch._tagmap = {
-    'complete': ShareFolderLaunch._complete_validator,
-}
-ShareFolderLaunch._tagmap.update(async.LaunchResultBase._tagmap)
-
-JobStatus._complete_validator = bv.Void()
-JobStatus._failed_validator = bv.Union(JobError)
-JobStatus._tagmap = {
-    'complete': JobStatus._complete_validator,
-    'failed': JobStatus._failed_validator,
-}
-JobStatus._tagmap.update(async.PollResultBase._tagmap)
-
-JobStatus.complete = JobStatus('complete')
-
-SharedFolderMemberError._invalid_dropbox_id_validator = bv.Void()
-SharedFolderMemberError._not_a_member_validator = bv.Void()
-SharedFolderMemberError._other_validator = bv.Void()
-SharedFolderMemberError._tagmap = {
-    'invalid_dropbox_id': SharedFolderMemberError._invalid_dropbox_id_validator,
-    'not_a_member': SharedFolderMemberError._not_a_member_validator,
-    'other': SharedFolderMemberError._other_validator,
-}
-
-SharedFolderMemberError.invalid_dropbox_id = SharedFolderMemberError('invalid_dropbox_id')
-SharedFolderMemberError.not_a_member = SharedFolderMemberError('not_a_member')
-SharedFolderMemberError.other = SharedFolderMemberError('other')
-
-JobError._access_error_validator = bv.Union(SharedFolderAccessError)
-JobError._member_error_validator = bv.Union(SharedFolderMemberError)
-JobError._other_validator = bv.Void()
-JobError._tagmap = {
-    'access_error': JobError._access_error_validator,
-    'member_error': JobError._member_error_validator,
-    'other': JobError._other_validator,
-}
-
-JobError.other = JobError('other')
-
-RemoveFolderMemberArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
+RemoveFolderMemberArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
 RemoveFolderMemberArg._member_validator = bv.Union(MemberSelector)
 RemoveFolderMemberArg._leave_a_copy_validator = bv.Boolean()
 RemoveFolderMemberArg._all_field_names_ = set([
@@ -5882,21 +6101,15 @@ RemoveFolderMemberArg._all_fields_ = [
 ]
 
 RemoveFolderMemberError._access_error_validator = bv.Union(SharedFolderAccessError)
-RemoveFolderMemberError._invalid_dropbox_id_validator = bv.Void()
-RemoveFolderMemberError._not_a_member_validator = bv.Void()
 RemoveFolderMemberError._other_validator = bv.Void()
 RemoveFolderMemberError._tagmap = {
     'access_error': RemoveFolderMemberError._access_error_validator,
-    'invalid_dropbox_id': RemoveFolderMemberError._invalid_dropbox_id_validator,
-    'not_a_member': RemoveFolderMemberError._not_a_member_validator,
     'other': RemoveFolderMemberError._other_validator,
 }
 
-RemoveFolderMemberError.invalid_dropbox_id = RemoveFolderMemberError('invalid_dropbox_id')
-RemoveFolderMemberError.not_a_member = RemoveFolderMemberError('not_a_member')
 RemoveFolderMemberError.other = RemoveFolderMemberError('other')
 
-UpdateFolderMemberArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
+UpdateFolderMemberArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
 UpdateFolderMemberArg._member_validator = bv.Union(MemberSelector)
 UpdateFolderMemberArg._access_level_validator = bv.Union(AccessLevel)
 UpdateFolderMemberArg._all_field_names_ = set([
@@ -5911,24 +6124,55 @@ UpdateFolderMemberArg._all_fields_ = [
 ]
 
 UpdateFolderMemberError._access_error_validator = bv.Union(SharedFolderAccessError)
-UpdateFolderMemberError._invalid_dropbox_id_validator = bv.Void()
-UpdateFolderMemberError._not_a_member_validator = bv.Void()
+UpdateFolderMemberError._member_error_validator = bv.Union(SharedFolderMemberError)
 UpdateFolderMemberError._insufficient_plan_validator = bv.Void()
 UpdateFolderMemberError._other_validator = bv.Void()
 UpdateFolderMemberError._tagmap = {
     'access_error': UpdateFolderMemberError._access_error_validator,
-    'invalid_dropbox_id': UpdateFolderMemberError._invalid_dropbox_id_validator,
-    'not_a_member': UpdateFolderMemberError._not_a_member_validator,
+    'member_error': UpdateFolderMemberError._member_error_validator,
     'insufficient_plan': UpdateFolderMemberError._insufficient_plan_validator,
     'other': UpdateFolderMemberError._other_validator,
 }
 
-UpdateFolderMemberError.invalid_dropbox_id = UpdateFolderMemberError('invalid_dropbox_id')
-UpdateFolderMemberError.not_a_member = UpdateFolderMemberError('not_a_member')
 UpdateFolderMemberError.insufficient_plan = UpdateFolderMemberError('insufficient_plan')
 UpdateFolderMemberError.other = UpdateFolderMemberError('other')
 
-RelinquishFolderMembershipArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z]+')
+MountFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
+MountFolderArg._all_field_names_ = set(['shared_folder_id'])
+MountFolderArg._all_fields_ = [('shared_folder_id', MountFolderArg._shared_folder_id_validator)]
+
+MountFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
+MountFolderError._inside_shared_folder_validator = bv.Void()
+MountFolderError._insufficient_quota_validator = bv.Void()
+MountFolderError._already_mounted_validator = bv.Void()
+MountFolderError._other_validator = bv.Void()
+MountFolderError._tagmap = {
+    'access_error': MountFolderError._access_error_validator,
+    'inside_shared_folder': MountFolderError._inside_shared_folder_validator,
+    'insufficient_quota': MountFolderError._insufficient_quota_validator,
+    'already_mounted': MountFolderError._already_mounted_validator,
+    'other': MountFolderError._other_validator,
+}
+
+MountFolderError.inside_shared_folder = MountFolderError('inside_shared_folder')
+MountFolderError.insufficient_quota = MountFolderError('insufficient_quota')
+MountFolderError.already_mounted = MountFolderError('already_mounted')
+MountFolderError.other = MountFolderError('other')
+
+UnmountFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
+UnmountFolderArg._all_field_names_ = set(['shared_folder_id'])
+UnmountFolderArg._all_fields_ = [('shared_folder_id', UnmountFolderArg._shared_folder_id_validator)]
+
+UnmountFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
+UnmountFolderError._other_validator = bv.Void()
+UnmountFolderError._tagmap = {
+    'access_error': UnmountFolderError._access_error_validator,
+    'other': UnmountFolderError._other_validator,
+}
+
+UnmountFolderError.other = UnmountFolderError('other')
+
+RelinquishFolderMembershipArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
 RelinquishFolderMembershipArg._all_field_names_ = set(['shared_folder_id'])
 RelinquishFolderMembershipArg._all_fields_ = [('shared_folder_id', RelinquishFolderMembershipArg._shared_folder_id_validator)]
 

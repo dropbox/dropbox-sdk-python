@@ -115,7 +115,7 @@ class AccountType(object):
 
     :ivar basic: The basic account type.
     :ivar pro: The Dropbox Pro account type.
-    :ivar business: The Dropbox for Business account type.
+    :ivar business: The Dropbox Business account type.
     """
 
     __slots__ = ['_tag', '_value']
@@ -918,7 +918,8 @@ class SpaceAllocation(object):
     @classmethod
     def individual(cls, val):
         """
-        Create an instance of this class set to the ``individual`` tag with value ``val``.
+        Create an instance of this class set to the ``individual`` tag with
+        value ``val``.
 
         :param IndividualSpaceAllocation val:
         :rtype: SpaceAllocation
@@ -928,7 +929,8 @@ class SpaceAllocation(object):
     @classmethod
     def team(cls, val):
         """
-        Create an instance of this class set to the ``team`` tag with value ``val``.
+        Create an instance of this class set to the ``team`` tag with value
+        ``val``.
 
         :param TeamSpaceAllocation val:
         :rtype: SpaceAllocation
@@ -1192,7 +1194,8 @@ class GetAccountBatchError(object):
     @classmethod
     def no_account(cls, val):
         """
-        Create an instance of this class set to the ``no_account`` tag with value ``val``.
+        Create an instance of this class set to the ``no_account`` tag with
+        value ``val``.
 
         :param str val:
         :rtype: GetAccountBatchError

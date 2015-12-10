@@ -264,7 +264,7 @@ class String(Primitive):
 
         if pattern:
             try:
-                self.pattern_re = re.compile(pattern)
+                self.pattern_re = re.compile(r"\A" + pattern + r"\Z")
             except re.error as e:
                 raise AssertionError('Regex {!r} failed: {}'.format(
                     pattern, e.args[0]))
@@ -540,27 +540,3 @@ class Nullable(Validator):
 
     def get_default(self):
         return None
-
-class FunctionStyle(object):
-
-    def __init__(self, ident):
-        self.ident = ident
-
-    def __repr__(self):
-        return "FunctionStyle.{}".format(self.ident)
-
-FunctionStyle.RPC = FunctionStyle("RPC")
-FunctionStyle.UPLOAD = FunctionStyle("UPLOAD")
-FunctionStyle.DOWNLOAD = FunctionStyle("DOWNLOAD")
-
-class FunctionSignature(object):
-
-    def __init__(self, style, request_type, response_type, error_type):
-        self.style = style
-        self.request_type = request_type
-        self.response_type = response_type
-        self.error_type = error_type
-
-    def __repr__(self):
-        return "FunctionSignature{!r}".format((
-            self.style, self.request_type, self.response_type, self.error_type))

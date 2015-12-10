@@ -18,6 +18,8 @@ class Metadata(object):
         contains a slash.
     :ivar path_lower: The lowercased full path in the user's Dropbox. This
         always starts with a slash.
+    :ivar parent_shared_folder_id: Set if this file or folder is contained in a
+        shared folder.
     """
 
     __slots__ = [
@@ -25,21 +27,28 @@ class Metadata(object):
         '_name_present',
         '_path_lower_value',
         '_path_lower_present',
+        '_parent_shared_folder_id_value',
+        '_parent_shared_folder_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  name=None,
-                 path_lower=None):
+                 path_lower=None,
+                 parent_shared_folder_id=None):
         self._name_value = None
         self._name_present = False
         self._path_lower_value = None
         self._path_lower_present = False
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
         if name is not None:
             self.name = name
         if path_lower is not None:
             self.path_lower = path_lower
+        if parent_shared_folder_id is not None:
+            self.parent_shared_folder_id = parent_shared_folder_id
 
     @property
     def name(self):
@@ -89,10 +98,37 @@ class Metadata(object):
         self._path_lower_value = None
         self._path_lower_present = False
 
+    @property
+    def parent_shared_folder_id(self):
+        """
+        Set if this file or folder is contained in a shared folder.
+
+        :rtype: str
+        """
+        if self._parent_shared_folder_id_present:
+            return self._parent_shared_folder_id_value
+        else:
+            return None
+
+    @parent_shared_folder_id.setter
+    def parent_shared_folder_id(self, val):
+        if val is None:
+            del self.parent_shared_folder_id
+            return
+        val = self._parent_shared_folder_id_validator.validate(val)
+        self._parent_shared_folder_id_value = val
+        self._parent_shared_folder_id_present = True
+
+    @parent_shared_folder_id.deleter
+    def parent_shared_folder_id(self):
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
+
     def __repr__(self):
-        return 'Metadata(name={!r}, path_lower={!r})'.format(
+        return 'Metadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r})'.format(
             self._name_value,
             self._path_lower_value,
+            self._parent_shared_folder_id_value,
         )
 
 class Dimensions(object):
@@ -497,7 +533,8 @@ class MediaInfo(object):
     @classmethod
     def metadata(cls, val):
         """
-        Create an instance of this class set to the ``metadata`` tag with value ``val``.
+        Create an instance of this class set to the ``metadata`` tag with value
+        ``val``.
 
         :param MediaMetadata val:
         :rtype: MediaInfo
@@ -576,10 +613,12 @@ class FileMetadata(Metadata):
                  server_modified=None,
                  rev=None,
                  size=None,
+                 parent_shared_folder_id=None,
                  id=None,
                  media_info=None):
         super(FileMetadata, self).__init__(name,
-                                           path_lower)
+                                           path_lower,
+                                           parent_shared_folder_id)
         self._id_value = None
         self._id_present = False
         self._client_modified_value = None
@@ -756,13 +795,14 @@ class FileMetadata(Metadata):
         self._media_info_present = False
 
     def __repr__(self):
-        return 'FileMetadata(name={!r}, path_lower={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, id={!r}, media_info={!r})'.format(
+        return 'FileMetadata(name={!r}, path_lower={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, parent_shared_folder_id={!r}, id={!r}, media_info={!r})'.format(
             self._name_value,
             self._path_lower_value,
             self._client_modified_value,
             self._server_modified_value,
             self._rev_value,
             self._size_value,
+            self._parent_shared_folder_id_value,
             self._id_value,
             self._media_info_value,
         )
@@ -770,11 +810,15 @@ class FileMetadata(Metadata):
 class FolderMetadata(Metadata):
     """
     :ivar id: A unique identifier for the folder.
+    :ivar shared_folder_id: If this folder is a shared folder mount point, the
+        ID of the shared folder mounted at this location.
     """
 
     __slots__ = [
         '_id_value',
         '_id_present',
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
     ]
 
     _has_required_fields = True
@@ -782,13 +826,20 @@ class FolderMetadata(Metadata):
     def __init__(self,
                  name=None,
                  path_lower=None,
-                 id=None):
+                 parent_shared_folder_id=None,
+                 id=None,
+                 shared_folder_id=None):
         super(FolderMetadata, self).__init__(name,
-                                             path_lower)
+                                             path_lower,
+                                             parent_shared_folder_id)
         self._id_value = None
         self._id_present = False
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
         if id is not None:
             self.id = id
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
 
     @property
     def id(self):
@@ -816,11 +867,40 @@ class FolderMetadata(Metadata):
         self._id_value = None
         self._id_present = False
 
+    @property
+    def shared_folder_id(self):
+        """
+        If this folder is a shared folder mount point, the ID of the shared
+        folder mounted at this location.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            return None
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        if val is None:
+            del self.shared_folder_id
+            return
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
     def __repr__(self):
-        return 'FolderMetadata(name={!r}, path_lower={!r}, id={!r})'.format(
+        return 'FolderMetadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r}, id={!r}, shared_folder_id={!r})'.format(
             self._name_value,
             self._path_lower_value,
+            self._parent_shared_folder_id_value,
             self._id_value,
+            self._shared_folder_id_value,
         )
 
 class DeletedMetadata(Metadata):
@@ -836,14 +916,17 @@ class DeletedMetadata(Metadata):
 
     def __init__(self,
                  name=None,
-                 path_lower=None):
+                 path_lower=None,
+                 parent_shared_folder_id=None):
         super(DeletedMetadata, self).__init__(name,
-                                              path_lower)
+                                              path_lower,
+                                              parent_shared_folder_id)
 
     def __repr__(self):
-        return 'DeletedMetadata(name={!r}, path_lower={!r})'.format(
+        return 'DeletedMetadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r})'.format(
             self._name_value,
             self._path_lower_value,
+            self._parent_shared_folder_id_value,
         )
 
 class GetMetadataError(object):
@@ -872,7 +955,8 @@ class GetMetadataError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param LookupError val:
         :rtype: GetMetadataError
@@ -1209,6 +1293,8 @@ class ListFolderArg(object):
         all subfolders.
     :ivar include_media_info: If true, :field:'FileMetadata.media_info' is set
         for photo and video.
+    :ivar include_deleted: If true, the results will include entries for files
+        and folders that used to exist but were deleted.
     """
 
     __slots__ = [
@@ -1218,6 +1304,8 @@ class ListFolderArg(object):
         '_recursive_present',
         '_include_media_info_value',
         '_include_media_info_present',
+        '_include_deleted_value',
+        '_include_deleted_present',
     ]
 
     _has_required_fields = True
@@ -1225,19 +1313,24 @@ class ListFolderArg(object):
     def __init__(self,
                  path=None,
                  recursive=None,
-                 include_media_info=None):
+                 include_media_info=None,
+                 include_deleted=None):
         self._path_value = None
         self._path_present = False
         self._recursive_value = None
         self._recursive_present = False
         self._include_media_info_value = None
         self._include_media_info_present = False
+        self._include_deleted_value = None
+        self._include_deleted_present = False
         if path is not None:
             self.path = path
         if recursive is not None:
             self.recursive = recursive
         if include_media_info is not None:
             self.include_media_info = include_media_info
+        if include_deleted is not None:
+            self.include_deleted = include_deleted
 
     @property
     def path(self):
@@ -1309,11 +1402,36 @@ class ListFolderArg(object):
         self._include_media_info_value = None
         self._include_media_info_present = False
 
+    @property
+    def include_deleted(self):
+        """
+        If true, the results will include entries for files and folders that
+        used to exist but were deleted.
+
+        :rtype: bool
+        """
+        if self._include_deleted_present:
+            return self._include_deleted_value
+        else:
+            return False
+
+    @include_deleted.setter
+    def include_deleted(self, val):
+        val = self._include_deleted_validator.validate(val)
+        self._include_deleted_value = val
+        self._include_deleted_present = True
+
+    @include_deleted.deleter
+    def include_deleted(self):
+        self._include_deleted_value = None
+        self._include_deleted_present = False
+
     def __repr__(self):
-        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r})'.format(
+        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r})'.format(
             self._path_value,
             self._recursive_value,
             self._include_media_info_value,
+            self._include_deleted_value,
         )
 
 class ListFolderResult(object):
@@ -1461,7 +1579,8 @@ class ListFolderError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param LookupError val:
         :rtype: ListFolderError
@@ -1579,7 +1698,8 @@ class ListFolderContinueError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param LookupError val:
         :rtype: ListFolderContinueError
@@ -1702,7 +1822,8 @@ class DownloadError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param LookupError val:
         :rtype: DownloadError
@@ -1932,7 +2053,8 @@ class UploadError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param UploadWriteFailed val:
         :rtype: UploadError
@@ -2058,7 +2180,8 @@ class UploadSessionLookupError(object):
     @classmethod
     def incorrect_offset(cls, val):
         """
-        Create an instance of this class set to the ``incorrect_offset`` tag with value ``val``.
+        Create an instance of this class set to the ``incorrect_offset`` tag
+        with value ``val``.
 
         :param UploadSessionOffsetError val:
         :rtype: UploadSessionLookupError
@@ -2148,7 +2271,8 @@ class UploadSessionFinishError(object):
     @classmethod
     def lookup_failed(cls, val):
         """
-        Create an instance of this class set to the ``lookup_failed`` tag with value ``val``.
+        Create an instance of this class set to the ``lookup_failed`` tag with
+        value ``val``.
 
         :param UploadSessionLookupError val:
         :rtype: UploadSessionFinishError
@@ -2158,7 +2282,8 @@ class UploadSessionFinishError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param WriteError val:
         :rtype: UploadSessionFinishError
@@ -2398,7 +2523,8 @@ class WriteMode(object):
     @classmethod
     def update(cls, val):
         """
-        Create an instance of this class set to the ``update`` tag with value ``val``.
+        Create an instance of this class set to the ``update`` tag with value
+        ``val``.
 
         :param str val:
         :rtype: WriteMode
@@ -2792,7 +2918,8 @@ class SearchArg(object):
     :ivar start: The starting index within the search results (used for paging).
     :ivar max_results: The maximum number of search results to return.
     :ivar mode: The search mode (filename, filename_and_content, or
-        deleted_filename).
+        deleted_filename). Note that searching file content is only available
+        for Dropbox Business accounts.
     """
 
     __slots__ = [
@@ -2935,6 +3062,8 @@ class SearchArg(object):
     def mode(self):
         """
         The search mode (filename, filename_and_content, or deleted_filename).
+        Note that searching file content is only available for Dropbox Business
+        accounts.
 
         :rtype: SearchMode
         """
@@ -3250,7 +3379,8 @@ class SearchError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param LookupError val:
         :rtype: SearchError
@@ -3331,7 +3461,8 @@ class LookupError(object):
     @classmethod
     def malformed_path(cls, val):
         """
-        Create an instance of this class set to the ``malformed_path`` tag with value ``val``.
+        Create an instance of this class set to the ``malformed_path`` tag with
+        value ``val``.
 
         :param str val:
         :rtype: LookupError
@@ -3442,7 +3573,8 @@ class WriteError(object):
     @classmethod
     def malformed_path(cls, val):
         """
-        Create an instance of this class set to the ``malformed_path`` tag with value ``val``.
+        Create an instance of this class set to the ``malformed_path`` tag with
+        value ``val``.
 
         :param str val:
         :rtype: WriteError
@@ -3452,7 +3584,8 @@ class WriteError(object):
     @classmethod
     def conflict(cls, val):
         """
-        Create an instance of this class set to the ``conflict`` tag with value ``val``.
+        Create an instance of this class set to the ``conflict`` tag with value
+        ``val``.
 
         :param WriteConflictError val:
         :rtype: WriteError
@@ -3677,7 +3810,8 @@ class CreateFolderError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param WriteError val:
         :rtype: CreateFolderError
@@ -3780,7 +3914,8 @@ class DeleteError(object):
     @classmethod
     def path_lookup(cls, val):
         """
-        Create an instance of this class set to the ``path_lookup`` tag with value ``val``.
+        Create an instance of this class set to the ``path_lookup`` tag with
+        value ``val``.
 
         :param LookupError val:
         :rtype: DeleteError
@@ -3790,7 +3925,8 @@ class DeleteError(object):
     @classmethod
     def path_write(cls, val):
         """
-        Create an instance of this class set to the ``path_write`` tag with value ``val``.
+        Create an instance of this class set to the ``path_write`` tag with
+        value ``val``.
 
         :param WriteError val:
         :rtype: DeleteError
@@ -3964,7 +4100,8 @@ class RelocationError(object):
     @classmethod
     def from_lookup(cls, val):
         """
-        Create an instance of this class set to the ``from_lookup`` tag with value ``val``.
+        Create an instance of this class set to the ``from_lookup`` tag with
+        value ``val``.
 
         :param LookupError val:
         :rtype: RelocationError
@@ -3974,7 +4111,8 @@ class RelocationError(object):
     @classmethod
     def from_write(cls, val):
         """
-        Create an instance of this class set to the ``from_write`` tag with value ``val``.
+        Create an instance of this class set to the ``from_write`` tag with
+        value ``val``.
 
         :param WriteError val:
         :rtype: RelocationError
@@ -3984,7 +4122,8 @@ class RelocationError(object):
     @classmethod
     def to(cls, val):
         """
-        Create an instance of this class set to the ``to`` tag with value ``val``.
+        Create an instance of this class set to the ``to`` tag with value
+        ``val``.
 
         :param WriteError val:
         :rtype: RelocationError
@@ -4362,7 +4501,8 @@ class ThumbnailError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param LookupError val:
         :rtype: ThumbnailError
@@ -4539,7 +4679,8 @@ class PreviewError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param LookupError val:
         :rtype: PreviewError
@@ -4700,7 +4841,8 @@ class ListRevisionsError(object):
     @classmethod
     def path(cls, val):
         """
-        Create an instance of this class set to the ``path`` tag with value ``val``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
 
         :param LookupError val:
         :rtype: ListRevisionsError
@@ -4932,7 +5074,8 @@ class RestoreError(object):
     @classmethod
     def path_lookup(cls, val):
         """
-        Create an instance of this class set to the ``path_lookup`` tag with value ``val``.
+        Create an instance of this class set to the ``path_lookup`` tag with
+        value ``val``.
 
         :param LookupError val:
         :rtype: RestoreError
@@ -4942,7 +5085,8 @@ class RestoreError(object):
     @classmethod
     def path_write(cls, val):
         """
-        Create an instance of this class set to the ``path_write`` tag with value ``val``.
+        Create an instance of this class set to the ``path_write`` tag with
+        value ``val``.
 
         :param WriteError val:
         :rtype: RestoreError
@@ -5010,14 +5154,17 @@ class RestoreError(object):
 
 Metadata._name_validator = bv.String()
 Metadata._path_lower_validator = bv.String()
+Metadata._parent_shared_folder_id_validator = bv.Nullable(bv.String(pattern=u'[-_0-9a-zA-Z:]+'))
 Metadata._field_names_ = set([
     'name',
     'path_lower',
+    'parent_shared_folder_id',
 ])
 Metadata._all_field_names_ = Metadata._field_names_
 Metadata._fields_ = [
     ('name', Metadata._name_validator),
     ('path_lower', Metadata._path_lower_validator),
+    ('parent_shared_folder_id', Metadata._parent_shared_folder_id_validator),
 ]
 Metadata._all_fields_ = Metadata._fields_
 
@@ -5127,9 +5274,16 @@ FileMetadata._fields_ = [
 FileMetadata._all_fields_ = Metadata._all_fields_ + FileMetadata._fields_
 
 FolderMetadata._id_validator = bv.Nullable(bv.String(min_length=1))
-FolderMetadata._field_names_ = set(['id'])
+FolderMetadata._shared_folder_id_validator = bv.Nullable(bv.String(pattern=u'[-_0-9a-zA-Z:]+'))
+FolderMetadata._field_names_ = set([
+    'id',
+    'shared_folder_id',
+])
 FolderMetadata._all_field_names_ = Metadata._all_field_names_.union(FolderMetadata._field_names_)
-FolderMetadata._fields_ = [('id', FolderMetadata._id_validator)]
+FolderMetadata._fields_ = [
+    ('id', FolderMetadata._id_validator),
+    ('shared_folder_id', FolderMetadata._shared_folder_id_validator),
+]
 FolderMetadata._all_fields_ = Metadata._all_fields_ + FolderMetadata._fields_
 
 DeletedMetadata._field_names_ = set([])
@@ -5188,15 +5342,18 @@ ListFolderLongpollError.other = ListFolderLongpollError('other')
 ListFolderArg._path_validator = bv.String(pattern=u'(/.*)?')
 ListFolderArg._recursive_validator = bv.Boolean()
 ListFolderArg._include_media_info_validator = bv.Boolean()
+ListFolderArg._include_deleted_validator = bv.Boolean()
 ListFolderArg._all_field_names_ = set([
     'path',
     'recursive',
     'include_media_info',
+    'include_deleted',
 ])
 ListFolderArg._all_fields_ = [
     ('path', ListFolderArg._path_validator),
     ('recursive', ListFolderArg._recursive_validator),
     ('include_media_info', ListFolderArg._include_media_info_validator),
+    ('include_deleted', ListFolderArg._include_deleted_validator),
 ]
 
 ListFolderResult._entries_validator = bv.List(bv.StructTree(Metadata))

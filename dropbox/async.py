@@ -42,7 +42,8 @@ class LaunchResultBase(object):
     @classmethod
     def async_job_id(cls, val):
         """
-        Create an instance of this class set to the ``async_job_id`` tag with value ``val``.
+        Create an instance of this class set to the ``async_job_id`` tag with
+        value ``val``.
 
         :param str val:
         :rtype: LaunchResultBase
