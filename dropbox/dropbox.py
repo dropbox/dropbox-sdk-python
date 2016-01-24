@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '4.0'
+__version__ = '4.0.1'
 
 import contextlib
 import json
@@ -49,11 +49,14 @@ class RouteResult(object):
 class RouteErrorResult(object):
     """The error result of a call to a route."""
 
-    def __init__(self, obj_result):
+    def __init__(self, request_id, obj_result):
         """
+        :param str request_id: A request_id can be shared with Dropbox Support
+            to pinpoint the exact request that returns an error.
         :param str obj_result: The result of a route not including the binary
             payload portion, if one exists.
         """
+        self.request_id = request_id
         self.obj_result = obj_result
 
 class Dropbox(DropboxBase):
@@ -192,7 +195,8 @@ class Dropbox(DropboxBase):
             returned_data_type, obj, strict=False)
 
         if isinstance(res, RouteErrorResult):
-            raise ApiError(deserialized_result,
+            raise ApiError(res.request_id,
+                           deserialized_result,
                            user_message_text,
                            user_message_locale)
         elif route_style == self.ROUTE_STYLE_DOWNLOAD:
@@ -316,18 +320,19 @@ class Dropbox(DropboxBase):
                                verify=True,
                                )
 
+        request_id = r.headers.get('x-dropbox-request-id')
         if r.status_code >= 500:
-            raise InternalServerError(r.status_code, r.text)
+            raise InternalServerError(request_id, r.status_code, r.text)
         elif r.status_code == 400:
-            raise BadInputError(r.text)
+            raise BadInputError(request_id, r.text)
         elif r.status_code == 401:
             assert r.headers.get('content-type') == 'application/json', (
                 'Expected content-type to be application/json, got %r' %
                 r.headers.get('content-type'))
-            raise AuthError(r.json())
+            raise AuthError(request_id, r.json())
         elif r.status_code == 429:
             # TODO(kelkabany): Use backoff if provided in response.
-            raise RateLimitError()
+            raise RateLimitError(request_id)
         elif 200 <= r.status_code <= 299:
             if route_style == self.ROUTE_STYLE_DOWNLOAD:
                 raw_resp = r.headers['dropbox-api-result']
@@ -342,9 +347,9 @@ class Dropbox(DropboxBase):
                 return RouteResult(raw_resp)
         elif r.status_code in (403, 404, 409):
             raw_resp = r.content.decode('utf-8')
-            return RouteErrorResult(raw_resp)
+            return RouteErrorResult(request_id, raw_resp)
         else:
-            raise HttpError(r.status_code, r.text)
+            raise HttpError(request_id, r.status_code, r.text)
 
     def _get_route_url(self, hostname, route_name):
         """Returns the URL of the route.
