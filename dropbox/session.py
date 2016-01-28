@@ -38,7 +38,6 @@ for any new functionality.
 
 import random
 import six
-import sys
 import time
 import urllib
 

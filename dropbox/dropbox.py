@@ -1,9 +1,11 @@
 __all__ = [
     'Dropbox',
+    'DropboxTeam',
+    'create_session',
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '4.0.1'
+__version__ = '5.0'
 
 import contextlib
 import json
@@ -17,6 +19,7 @@ import requests
 
 from . import babel_serializers
 from .base import DropboxBase
+from .base_team import DropboxTeamBase
 from .exceptions import (
     ApiError,
     AuthError,
@@ -26,6 +29,7 @@ from .exceptions import (
     RateLimitError,
 )
 from .session import pinned_session
+
 
 class RouteResult(object):
     """The successful result of a call to a route."""
@@ -46,6 +50,7 @@ class RouteResult(object):
         self.obj_result = obj_result
         self.http_resp = http_resp
 
+
 class RouteErrorResult(object):
     """The error result of a call to a route."""
 
@@ -59,86 +64,119 @@ class RouteErrorResult(object):
         self.request_id = request_id
         self.obj_result = obj_result
 
-class Dropbox(DropboxBase):
+
+def create_session(max_connections=8, proxies=None):
     """
-    Use this to make requests to the Dropbox API.
+    Creates a session object that can be used by multiple :class:`Dropbox` and
+    :class:`DropboxTeam` instances. This lets you share a connection pool
+    amongst them, as well as proxy parameters.
+
+
+    :param int max_connections: Maximum connection pool size.
+    :param dict proxies: See the `requests module
+            <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_
+            for more details.
+    :rtype: :class:`requests.sessions.Session`. `See the requests module
+        <http://docs.python-requests.org/en/latest/user/advanced/#session-objects>`_
+        for more details.
+    """
+    # We only need as many pool_connections as we have unique hostnames.
+    session = pinned_session(pool_maxsize=max_connections)
+    if proxies:
+        session.proxies = proxies
+    return session
+
+
+class _DropboxTransport(object):
+    """
+    Responsible for implementing the wire protocol for making requests to the
+    Dropbox API.
     """
 
-    API_VERSION = '2'
+    _API_VERSION = '2'
 
-    DEFAULT_DOMAIN = '.dropboxapi.com'
+    _DEFAULT_DOMAIN = '.dropboxapi.com'
 
     # Host for RPC-style routes.
-    HOST_API = 'api'
+    _HOST_API = 'api'
 
     # Host for upload and download-style routes.
-    HOST_CONTENT = 'content'
+    _HOST_CONTENT = 'content'
 
     # Host for longpoll routes.
-    HOST_NOTIFY = 'notify'
+    _HOST_NOTIFY = 'notify'
 
     # Download style means that the route argument goes in a Dropbox-API-Arg
     # header, and the result comes back in a Dropbox-API-Result header. The
     # HTTP response body contains a binary payload.
-    ROUTE_STYLE_DOWNLOAD = 'download'
+    _ROUTE_STYLE_DOWNLOAD = 'download'
 
     # Upload style means that the route argument goes in a Dropbox-API-Arg
     # header. The HTTP request body contains a binary payload. The result
     # comes back in a Dropbox-API-Result header.
-    ROUTE_STYLE_UPLOAD = 'upload'
+    _ROUTE_STYLE_UPLOAD = 'upload'
 
     # RPC style means that the argument and result of a route are contained in
     # the HTTP body.
-    ROUTE_STYLE_RPC = 'rpc'
+    _ROUTE_STYLE_RPC = 'rpc'
 
     def __init__(self,
                  oauth2_access_token,
-                 max_connections=8,
                  max_retries_on_error=4,
                  user_agent=None,
-                 proxies=None):
+                 session=None,
+                 headers=None):
         """
         :param str oauth2_access_token: OAuth2 access token for making client
             requests.
-        :param int max_connections: Maximum connection pool size.
+
         :param int max_retries_on_error: On 5xx errors, the number of times to
             retry.
         :param str user_agent: The user agent to use when making requests. This
             helps us identify requests coming from your application. We
             recommend you use the format "AppName/Version". If set, we append
             "/OfficialDropboxPythonV2SDK/__version__" to the user_agent,
-        :param dict proxies: See the `requests module
-            <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_
-            for more details.
+        :param session: If not provided, a new session (connection pool) is
+            created. To share a session across multiple clients, use
+            :func:`create_session`.
+        :type session: :class:`requests.sessions.Session`
+        :param dict headers: Additional headers to add to requests.
         """
         assert len(oauth2_access_token) > 0, \
             'OAuth2 access token cannot be empty.'
+        assert headers is None or isinstance(headers, dict), \
+            'Expected dict, got %r' % headers
         self._oauth2_access_token = oauth2_access_token
 
-        # We only need as many pool_connections as we have unique hostnames.
-        self._session = pinned_session(pool_maxsize=max_connections)
-        if proxies:
-            self._session.proxies = proxies
         self._max_retries_on_error = max_retries_on_error
+        if session:
+            assert isinstance(session, requests.sessions.Session), \
+                'Expected requests.sessions.Session, got %r' % session
+            self._session = session
+        else:
+            self._session = create_session()
+        self._headers = headers
 
         base_user_agent = 'OfficialDropboxPythonV2SDK/' + __version__
         if user_agent:
+            self._raw_user_agent = user_agent
             self._user_agent = '{}/{}'.format(user_agent, base_user_agent)
         else:
+            self._raw_user_agent = None
             self._user_agent = base_user_agent
 
         self._logger = logging.getLogger('dropbox')
 
-        self._domain = os.environ.get('DROPBOX_DOMAIN', Dropbox.DEFAULT_DOMAIN)
+        self._domain = os.environ.get('DROPBOX_DOMAIN', Dropbox._DEFAULT_DOMAIN)
         self._api_hostname = os.environ.get(
             'DROPBOX_API_HOST', 'api' + self._domain)
         self._api_content_hostname = os.environ.get(
             'DROPBOX_API_CONTENT_HOST', 'content' + self._domain)
         self._api_notify_hostname = os.environ.get(
             'DROPBOX_API_NOTIFY_HOST', 'notify' + self._domain)
-        self._host_map = {self.HOST_API: self._api_hostname,
-                          self.HOST_CONTENT: self._api_content_hostname,
-                          self.HOST_NOTIFY: self._api_notify_hostname}
+        self._host_map = {self._HOST_API: self._api_hostname,
+                          self._HOST_CONTENT: self._api_content_hostname,
+                          self._HOST_NOTIFY: self._api_notify_hostname}
 
     def request(self,
                 host,
@@ -199,7 +237,7 @@ class Dropbox(DropboxBase):
                            deserialized_result,
                            user_message_text,
                            user_message_locale)
-        elif route_style == self.ROUTE_STYLE_DOWNLOAD:
+        elif route_style == self._ROUTE_STYLE_DOWNLOAD:
             return (deserialized_result, res.http_resp)
         else:
             return deserialized_result
@@ -290,8 +328,10 @@ class Dropbox(DropboxBase):
         url = self._get_route_url(fq_hostname, func_name)
 
         headers = {'User-Agent': self._user_agent}
-        if host != self.HOST_NOTIFY:
+        if host != self._HOST_NOTIFY:
             headers['Authorization'] = 'Bearer %s' % self._oauth2_access_token
+            if self._headers:
+                headers.update(self._headers)
 
         # The contents of the body of the HTTP request
         body = None
@@ -300,13 +340,13 @@ class Dropbox(DropboxBase):
         # the HTTP response.
         stream = False
 
-        if route_style == self.ROUTE_STYLE_RPC:
+        if route_style == self._ROUTE_STYLE_RPC:
             headers['Content-Type'] = 'application/json'
             body = request_json_arg
-        elif route_style == self.ROUTE_STYLE_DOWNLOAD:
+        elif route_style == self._ROUTE_STYLE_DOWNLOAD:
             headers['Dropbox-API-Arg'] = request_json_arg
             stream = True
-        elif route_style == self.ROUTE_STYLE_UPLOAD:
+        elif route_style == self._ROUTE_STYLE_UPLOAD:
             headers['Content-Type'] = 'application/octet-stream'
             headers['Dropbox-API-Arg'] = request_json_arg
             body = request_binary
@@ -334,14 +374,14 @@ class Dropbox(DropboxBase):
             # TODO(kelkabany): Use backoff if provided in response.
             raise RateLimitError(request_id)
         elif 200 <= r.status_code <= 299:
-            if route_style == self.ROUTE_STYLE_DOWNLOAD:
+            if route_style == self._ROUTE_STYLE_DOWNLOAD:
                 raw_resp = r.headers['dropbox-api-result']
             else:
                 assert r.headers.get('content-type') == 'application/json', (
                     'Expected content-type to be application/json, got %r' %
                     r.headers.get('content-type'))
                 raw_resp = r.content.decode('utf-8')
-            if route_style == self.ROUTE_STYLE_DOWNLOAD:
+            if route_style == self._ROUTE_STYLE_DOWNLOAD:
                 return RouteResult(raw_resp, r)
             else:
                 return RouteResult(raw_resp)
@@ -360,7 +400,7 @@ class Dropbox(DropboxBase):
         """
         return 'https://{hostname}/{version}/{route_name}'.format(
             hostname=hostname,
-            version=Dropbox.API_VERSION,
+            version=Dropbox._API_VERSION,
             route_name=route_name,
         )
 
@@ -377,3 +417,39 @@ class Dropbox(DropboxBase):
             with contextlib.closing(http_resp):
                 for c in http_resp.iter_content(chunksize):
                     f.write(c)
+
+
+class Dropbox(_DropboxTransport, DropboxBase):
+    """
+    Use this class to make requests to the Dropbox API using a user's access
+    token. Methods of this class are meant to act on the corresponding user's
+    Dropbox.
+    """
+    pass
+
+
+class DropboxTeam(_DropboxTransport, DropboxTeamBase):
+    """
+    Use this class to make requests to the Dropbox API using a team's access
+    token. Methods of this class are meant to act on the team, but there is
+    also an :meth:`as_user` method for assuming a team member's identity.
+    """
+
+    def as_user(self, team_member_id):
+        """
+        Allows a team credential to assume the identity of a member of the
+        team.
+
+        :return: A :class:`Dropbox` object that can be used to query on behalf
+            of this member of the team.
+        :rtype: Dropbox
+        """
+        new_headers = self._headers.copy() if self._headers else {}
+        new_headers['Dropbox-API-Select-User'] = team_member_id
+        return Dropbox(
+            self._oauth2_access_token,
+            max_retries_on_error=self._max_retries_on_error,
+            user_agent=self._raw_user_agent,
+            session=self._session,
+            headers=new_headers,
+        )

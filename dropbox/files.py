@@ -10,2569 +10,6 @@ except (SystemError, ValueError):
     # This makes testing this file directly (outside of a package) easier.
     import babel_validators as bv
 
-class Metadata(object):
-    """
-    Metadata for a file or folder.
-
-    :ivar name: The last component of the path (including extension). This never
-        contains a slash.
-    :ivar path_lower: The lowercased full path in the user's Dropbox. This
-        always starts with a slash.
-    :ivar parent_shared_folder_id: Set if this file or folder is contained in a
-        shared folder.
-    """
-
-    __slots__ = [
-        '_name_value',
-        '_name_present',
-        '_path_lower_value',
-        '_path_lower_present',
-        '_parent_shared_folder_id_value',
-        '_parent_shared_folder_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 name=None,
-                 path_lower=None,
-                 parent_shared_folder_id=None):
-        self._name_value = None
-        self._name_present = False
-        self._path_lower_value = None
-        self._path_lower_present = False
-        self._parent_shared_folder_id_value = None
-        self._parent_shared_folder_id_present = False
-        if name is not None:
-            self.name = name
-        if path_lower is not None:
-            self.path_lower = path_lower
-        if parent_shared_folder_id is not None:
-            self.parent_shared_folder_id = parent_shared_folder_id
-
-    @property
-    def name(self):
-        """
-        The last component of the path (including extension). This never
-        contains a slash.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def path_lower(self):
-        """
-        The lowercased full path in the user's Dropbox. This always starts with
-        a slash.
-
-        :rtype: str
-        """
-        if self._path_lower_present:
-            return self._path_lower_value
-        else:
-            raise AttributeError("missing required field 'path_lower'")
-
-    @path_lower.setter
-    def path_lower(self, val):
-        val = self._path_lower_validator.validate(val)
-        self._path_lower_value = val
-        self._path_lower_present = True
-
-    @path_lower.deleter
-    def path_lower(self):
-        self._path_lower_value = None
-        self._path_lower_present = False
-
-    @property
-    def parent_shared_folder_id(self):
-        """
-        Set if this file or folder is contained in a shared folder.
-
-        :rtype: str
-        """
-        if self._parent_shared_folder_id_present:
-            return self._parent_shared_folder_id_value
-        else:
-            return None
-
-    @parent_shared_folder_id.setter
-    def parent_shared_folder_id(self, val):
-        if val is None:
-            del self.parent_shared_folder_id
-            return
-        val = self._parent_shared_folder_id_validator.validate(val)
-        self._parent_shared_folder_id_value = val
-        self._parent_shared_folder_id_present = True
-
-    @parent_shared_folder_id.deleter
-    def parent_shared_folder_id(self):
-        self._parent_shared_folder_id_value = None
-        self._parent_shared_folder_id_present = False
-
-    def __repr__(self):
-        return 'Metadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r})'.format(
-            self._name_value,
-            self._path_lower_value,
-            self._parent_shared_folder_id_value,
-        )
-
-class Dimensions(object):
-    """
-    Dimensions for a photo or video.
-
-    :ivar height: Height of the photo/video.
-    :ivar width: Width of the photo/video.
-    """
-
-    __slots__ = [
-        '_height_value',
-        '_height_present',
-        '_width_value',
-        '_width_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 height=None,
-                 width=None):
-        self._height_value = None
-        self._height_present = False
-        self._width_value = None
-        self._width_present = False
-        if height is not None:
-            self.height = height
-        if width is not None:
-            self.width = width
-
-    @property
-    def height(self):
-        """
-        Height of the photo/video.
-
-        :rtype: long
-        """
-        if self._height_present:
-            return self._height_value
-        else:
-            raise AttributeError("missing required field 'height'")
-
-    @height.setter
-    def height(self, val):
-        val = self._height_validator.validate(val)
-        self._height_value = val
-        self._height_present = True
-
-    @height.deleter
-    def height(self):
-        self._height_value = None
-        self._height_present = False
-
-    @property
-    def width(self):
-        """
-        Width of the photo/video.
-
-        :rtype: long
-        """
-        if self._width_present:
-            return self._width_value
-        else:
-            raise AttributeError("missing required field 'width'")
-
-    @width.setter
-    def width(self, val):
-        val = self._width_validator.validate(val)
-        self._width_value = val
-        self._width_present = True
-
-    @width.deleter
-    def width(self):
-        self._width_value = None
-        self._width_present = False
-
-    def __repr__(self):
-        return 'Dimensions(height={!r}, width={!r})'.format(
-            self._height_value,
-            self._width_value,
-        )
-
-class GpsCoordinates(object):
-    """
-    GPS coordinates for a photo or video.
-
-    :ivar latitude: Latitude of the GPS coordinates.
-    :ivar longitude: Longitude of the GPS coordinates.
-    """
-
-    __slots__ = [
-        '_latitude_value',
-        '_latitude_present',
-        '_longitude_value',
-        '_longitude_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 latitude=None,
-                 longitude=None):
-        self._latitude_value = None
-        self._latitude_present = False
-        self._longitude_value = None
-        self._longitude_present = False
-        if latitude is not None:
-            self.latitude = latitude
-        if longitude is not None:
-            self.longitude = longitude
-
-    @property
-    def latitude(self):
-        """
-        Latitude of the GPS coordinates.
-
-        :rtype: float
-        """
-        if self._latitude_present:
-            return self._latitude_value
-        else:
-            raise AttributeError("missing required field 'latitude'")
-
-    @latitude.setter
-    def latitude(self, val):
-        val = self._latitude_validator.validate(val)
-        self._latitude_value = val
-        self._latitude_present = True
-
-    @latitude.deleter
-    def latitude(self):
-        self._latitude_value = None
-        self._latitude_present = False
-
-    @property
-    def longitude(self):
-        """
-        Longitude of the GPS coordinates.
-
-        :rtype: float
-        """
-        if self._longitude_present:
-            return self._longitude_value
-        else:
-            raise AttributeError("missing required field 'longitude'")
-
-    @longitude.setter
-    def longitude(self, val):
-        val = self._longitude_validator.validate(val)
-        self._longitude_value = val
-        self._longitude_present = True
-
-    @longitude.deleter
-    def longitude(self):
-        self._longitude_value = None
-        self._longitude_present = False
-
-    def __repr__(self):
-        return 'GpsCoordinates(latitude={!r}, longitude={!r})'.format(
-            self._latitude_value,
-            self._longitude_value,
-        )
-
-class MediaMetadata(object):
-    """
-    Metadata for a photo or video.
-
-    :ivar dimensions: Dimension of the photo/video.
-    :ivar location: The GPS coordinate of the photo/video.
-    :ivar time_taken: The timestamp when the photo/video is taken.
-    """
-
-    __slots__ = [
-        '_dimensions_value',
-        '_dimensions_present',
-        '_location_value',
-        '_location_present',
-        '_time_taken_value',
-        '_time_taken_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 dimensions=None,
-                 location=None,
-                 time_taken=None):
-        self._dimensions_value = None
-        self._dimensions_present = False
-        self._location_value = None
-        self._location_present = False
-        self._time_taken_value = None
-        self._time_taken_present = False
-        if dimensions is not None:
-            self.dimensions = dimensions
-        if location is not None:
-            self.location = location
-        if time_taken is not None:
-            self.time_taken = time_taken
-
-    @property
-    def dimensions(self):
-        """
-        Dimension of the photo/video.
-
-        :rtype: Dimensions
-        """
-        if self._dimensions_present:
-            return self._dimensions_value
-        else:
-            return None
-
-    @dimensions.setter
-    def dimensions(self, val):
-        if val is None:
-            del self.dimensions
-            return
-        self._dimensions_validator.validate_type_only(val)
-        self._dimensions_value = val
-        self._dimensions_present = True
-
-    @dimensions.deleter
-    def dimensions(self):
-        self._dimensions_value = None
-        self._dimensions_present = False
-
-    @property
-    def location(self):
-        """
-        The GPS coordinate of the photo/video.
-
-        :rtype: GpsCoordinates
-        """
-        if self._location_present:
-            return self._location_value
-        else:
-            return None
-
-    @location.setter
-    def location(self, val):
-        if val is None:
-            del self.location
-            return
-        self._location_validator.validate_type_only(val)
-        self._location_value = val
-        self._location_present = True
-
-    @location.deleter
-    def location(self):
-        self._location_value = None
-        self._location_present = False
-
-    @property
-    def time_taken(self):
-        """
-        The timestamp when the photo/video is taken.
-
-        :rtype: datetime.datetime
-        """
-        if self._time_taken_present:
-            return self._time_taken_value
-        else:
-            return None
-
-    @time_taken.setter
-    def time_taken(self, val):
-        if val is None:
-            del self.time_taken
-            return
-        val = self._time_taken_validator.validate(val)
-        self._time_taken_value = val
-        self._time_taken_present = True
-
-    @time_taken.deleter
-    def time_taken(self):
-        self._time_taken_value = None
-        self._time_taken_present = False
-
-    def __repr__(self):
-        return 'MediaMetadata(dimensions={!r}, location={!r}, time_taken={!r})'.format(
-            self._dimensions_value,
-            self._location_value,
-            self._time_taken_value,
-        )
-
-class PhotoMetadata(MediaMetadata):
-    """
-    Metadata for a photo.
-    """
-
-    __slots__ = [
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 dimensions=None,
-                 location=None,
-                 time_taken=None):
-        super(PhotoMetadata, self).__init__(dimensions,
-                                            location,
-                                            time_taken)
-
-    def __repr__(self):
-        return 'PhotoMetadata(dimensions={!r}, location={!r}, time_taken={!r})'.format(
-            self._dimensions_value,
-            self._location_value,
-            self._time_taken_value,
-        )
-
-class VideoMetadata(MediaMetadata):
-    """
-    Metadata for a video.
-
-    :ivar duration: The duration of the video in milliseconds.
-    """
-
-    __slots__ = [
-        '_duration_value',
-        '_duration_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 dimensions=None,
-                 location=None,
-                 time_taken=None,
-                 duration=None):
-        super(VideoMetadata, self).__init__(dimensions,
-                                            location,
-                                            time_taken)
-        self._duration_value = None
-        self._duration_present = False
-        if duration is not None:
-            self.duration = duration
-
-    @property
-    def duration(self):
-        """
-        The duration of the video in milliseconds.
-
-        :rtype: long
-        """
-        if self._duration_present:
-            return self._duration_value
-        else:
-            return None
-
-    @duration.setter
-    def duration(self, val):
-        if val is None:
-            del self.duration
-            return
-        val = self._duration_validator.validate(val)
-        self._duration_value = val
-        self._duration_present = True
-
-    @duration.deleter
-    def duration(self):
-        self._duration_value = None
-        self._duration_present = False
-
-    def __repr__(self):
-        return 'VideoMetadata(dimensions={!r}, location={!r}, time_taken={!r}, duration={!r})'.format(
-            self._dimensions_value,
-            self._location_value,
-            self._time_taken_value,
-            self._duration_value,
-        )
-
-class MediaInfo(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar pending: Indicate the photo/video is still under processing and
-        metadata is not available yet.
-    :ivar MediaMetadata metadata: The metadata for the photo/video.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    pending = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def metadata(cls, val):
-        """
-        Create an instance of this class set to the ``metadata`` tag with value
-        ``val``.
-
-        :param MediaMetadata val:
-        :rtype: MediaInfo
-        """
-        return cls('metadata', val)
-
-    def is_pending(self):
-        """
-        Check if the union tag is ``pending``.
-
-        :rtype: bool
-        """
-        return self._tag == 'pending'
-
-    def is_metadata(self):
-        """
-        Check if the union tag is ``metadata``.
-
-        :rtype: bool
-        """
-        return self._tag == 'metadata'
-
-    def get_metadata(self):
-        """
-        The metadata for the photo/video.
-
-        Only call this if :meth:`is_metadata` is true.
-
-        :rtype: MediaMetadata
-        """
-        if not self.is_metadata():
-            raise AttributeError("tag 'metadata' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'MediaInfo(%r, %r)' % (self._tag, self._value)
-
-class FileMetadata(Metadata):
-    """
-    :ivar id: A unique identifier for the file.
-    :ivar client_modified: For files, this is the modification time set by the
-        desktop client when the file was added to Dropbox. Since this time is
-        not verified (the Dropbox server stores whatever the desktop client
-        sends up), this should only be used for display purposes (such as
-        sorting) and not, for example, to determine if a file has changed or
-        not.
-    :ivar server_modified: The last time the file was modified on Dropbox.
-    :ivar rev: A unique identifier for the current revision of a file. This
-        field is the same rev as elsewhere in the API and can be used to detect
-        changes and avoid conflicts.
-    :ivar size: The file size in bytes.
-    :ivar media_info: Additional information if the file is a photo or video.
-    """
-
-    __slots__ = [
-        '_id_value',
-        '_id_present',
-        '_client_modified_value',
-        '_client_modified_present',
-        '_server_modified_value',
-        '_server_modified_present',
-        '_rev_value',
-        '_rev_present',
-        '_size_value',
-        '_size_present',
-        '_media_info_value',
-        '_media_info_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 name=None,
-                 path_lower=None,
-                 client_modified=None,
-                 server_modified=None,
-                 rev=None,
-                 size=None,
-                 parent_shared_folder_id=None,
-                 id=None,
-                 media_info=None):
-        super(FileMetadata, self).__init__(name,
-                                           path_lower,
-                                           parent_shared_folder_id)
-        self._id_value = None
-        self._id_present = False
-        self._client_modified_value = None
-        self._client_modified_present = False
-        self._server_modified_value = None
-        self._server_modified_present = False
-        self._rev_value = None
-        self._rev_present = False
-        self._size_value = None
-        self._size_present = False
-        self._media_info_value = None
-        self._media_info_present = False
-        if id is not None:
-            self.id = id
-        if client_modified is not None:
-            self.client_modified = client_modified
-        if server_modified is not None:
-            self.server_modified = server_modified
-        if rev is not None:
-            self.rev = rev
-        if size is not None:
-            self.size = size
-        if media_info is not None:
-            self.media_info = media_info
-
-    @property
-    def id(self):
-        """
-        A unique identifier for the file.
-
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            return None
-
-    @id.setter
-    def id(self, val):
-        if val is None:
-            del self.id
-            return
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def client_modified(self):
-        """
-        For files, this is the modification time set by the desktop client when
-        the file was added to Dropbox. Since this time is not verified (the
-        Dropbox server stores whatever the desktop client sends up), this should
-        only be used for display purposes (such as sorting) and not, for
-        example, to determine if a file has changed or not.
-
-        :rtype: datetime.datetime
-        """
-        if self._client_modified_present:
-            return self._client_modified_value
-        else:
-            raise AttributeError("missing required field 'client_modified'")
-
-    @client_modified.setter
-    def client_modified(self, val):
-        val = self._client_modified_validator.validate(val)
-        self._client_modified_value = val
-        self._client_modified_present = True
-
-    @client_modified.deleter
-    def client_modified(self):
-        self._client_modified_value = None
-        self._client_modified_present = False
-
-    @property
-    def server_modified(self):
-        """
-        The last time the file was modified on Dropbox.
-
-        :rtype: datetime.datetime
-        """
-        if self._server_modified_present:
-            return self._server_modified_value
-        else:
-            raise AttributeError("missing required field 'server_modified'")
-
-    @server_modified.setter
-    def server_modified(self, val):
-        val = self._server_modified_validator.validate(val)
-        self._server_modified_value = val
-        self._server_modified_present = True
-
-    @server_modified.deleter
-    def server_modified(self):
-        self._server_modified_value = None
-        self._server_modified_present = False
-
-    @property
-    def rev(self):
-        """
-        A unique identifier for the current revision of a file. This field is
-        the same rev as elsewhere in the API and can be used to detect changes
-        and avoid conflicts.
-
-        :rtype: str
-        """
-        if self._rev_present:
-            return self._rev_value
-        else:
-            raise AttributeError("missing required field 'rev'")
-
-    @rev.setter
-    def rev(self, val):
-        val = self._rev_validator.validate(val)
-        self._rev_value = val
-        self._rev_present = True
-
-    @rev.deleter
-    def rev(self):
-        self._rev_value = None
-        self._rev_present = False
-
-    @property
-    def size(self):
-        """
-        The file size in bytes.
-
-        :rtype: long
-        """
-        if self._size_present:
-            return self._size_value
-        else:
-            raise AttributeError("missing required field 'size'")
-
-    @size.setter
-    def size(self, val):
-        val = self._size_validator.validate(val)
-        self._size_value = val
-        self._size_present = True
-
-    @size.deleter
-    def size(self):
-        self._size_value = None
-        self._size_present = False
-
-    @property
-    def media_info(self):
-        """
-        Additional information if the file is a photo or video.
-
-        :rtype: MediaInfo
-        """
-        if self._media_info_present:
-            return self._media_info_value
-        else:
-            return None
-
-    @media_info.setter
-    def media_info(self, val):
-        if val is None:
-            del self.media_info
-            return
-        self._media_info_validator.validate_type_only(val)
-        self._media_info_value = val
-        self._media_info_present = True
-
-    @media_info.deleter
-    def media_info(self):
-        self._media_info_value = None
-        self._media_info_present = False
-
-    def __repr__(self):
-        return 'FileMetadata(name={!r}, path_lower={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, parent_shared_folder_id={!r}, id={!r}, media_info={!r})'.format(
-            self._name_value,
-            self._path_lower_value,
-            self._client_modified_value,
-            self._server_modified_value,
-            self._rev_value,
-            self._size_value,
-            self._parent_shared_folder_id_value,
-            self._id_value,
-            self._media_info_value,
-        )
-
-class FolderMetadata(Metadata):
-    """
-    :ivar id: A unique identifier for the folder.
-    :ivar shared_folder_id: If this folder is a shared folder mount point, the
-        ID of the shared folder mounted at this location.
-    """
-
-    __slots__ = [
-        '_id_value',
-        '_id_present',
-        '_shared_folder_id_value',
-        '_shared_folder_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 name=None,
-                 path_lower=None,
-                 parent_shared_folder_id=None,
-                 id=None,
-                 shared_folder_id=None):
-        super(FolderMetadata, self).__init__(name,
-                                             path_lower,
-                                             parent_shared_folder_id)
-        self._id_value = None
-        self._id_present = False
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-        if id is not None:
-            self.id = id
-        if shared_folder_id is not None:
-            self.shared_folder_id = shared_folder_id
-
-    @property
-    def id(self):
-        """
-        A unique identifier for the folder.
-
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            return None
-
-    @id.setter
-    def id(self, val):
-        if val is None:
-            del self.id
-            return
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def shared_folder_id(self):
-        """
-        If this folder is a shared folder mount point, the ID of the shared
-        folder mounted at this location.
-
-        :rtype: str
-        """
-        if self._shared_folder_id_present:
-            return self._shared_folder_id_value
-        else:
-            return None
-
-    @shared_folder_id.setter
-    def shared_folder_id(self, val):
-        if val is None:
-            del self.shared_folder_id
-            return
-        val = self._shared_folder_id_validator.validate(val)
-        self._shared_folder_id_value = val
-        self._shared_folder_id_present = True
-
-    @shared_folder_id.deleter
-    def shared_folder_id(self):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
-
-    def __repr__(self):
-        return 'FolderMetadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r}, id={!r}, shared_folder_id={!r})'.format(
-            self._name_value,
-            self._path_lower_value,
-            self._parent_shared_folder_id_value,
-            self._id_value,
-            self._shared_folder_id_value,
-        )
-
-class DeletedMetadata(Metadata):
-    """
-    Indicates that there used to be a file or folder at this path, but it no
-    longer exists.
-    """
-
-    __slots__ = [
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 name=None,
-                 path_lower=None,
-                 parent_shared_folder_id=None):
-        super(DeletedMetadata, self).__init__(name,
-                                              path_lower,
-                                              parent_shared_folder_id)
-
-    def __repr__(self):
-        return 'DeletedMetadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r})'.format(
-            self._name_value,
-            self._path_lower_value,
-            self._parent_shared_folder_id_value,
-        )
-
-class GetMetadataError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param LookupError val:
-        :rtype: GetMetadataError
-        """
-        return cls('path', val)
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def get_path(self):
-        """
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'GetMetadataError(%r, %r)' % (self._tag, self._value)
-
-class GetMetadataArg(object):
-    """
-    :ivar path: The path of a file or folder on Dropbox
-    :ivar include_media_info: If true, :field:'FileMetadata.media_info' is set
-        for photo and video.
-    """
-
-    __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_include_media_info_value',
-        '_include_media_info_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 include_media_info=None):
-        self._path_value = None
-        self._path_present = False
-        self._include_media_info_value = None
-        self._include_media_info_present = False
-        if path is not None:
-            self.path = path
-        if include_media_info is not None:
-            self.include_media_info = include_media_info
-
-    @property
-    def path(self):
-        """
-        The path of a file or folder on Dropbox
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def include_media_info(self):
-        """
-        If true, :field:'FileMetadata.media_info' is set for photo and video.
-
-        :rtype: bool
-        """
-        if self._include_media_info_present:
-            return self._include_media_info_value
-        else:
-            return False
-
-    @include_media_info.setter
-    def include_media_info(self, val):
-        val = self._include_media_info_validator.validate(val)
-        self._include_media_info_value = val
-        self._include_media_info_present = True
-
-    @include_media_info.deleter
-    def include_media_info(self):
-        self._include_media_info_value = None
-        self._include_media_info_present = False
-
-    def __repr__(self):
-        return 'GetMetadataArg(path={!r}, include_media_info={!r})'.format(
-            self._path_value,
-            self._include_media_info_value,
-        )
-
-class ListFolderLongpollArg(object):
-    """
-    :ivar cursor: A cursor as returned by list_folder or list_folder/continue
-    :ivar timeout: A timeout in seconds. The request will block for at most this
-        length of time, plus up to 90 seconds of random jitter added to avoid
-        the thundering herd problem. Care should be taken when using this
-        parameter, as some network infrastructure does not support long
-        timeouts.
-    """
-
-    __slots__ = [
-        '_cursor_value',
-        '_cursor_present',
-        '_timeout_value',
-        '_timeout_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 cursor=None,
-                 timeout=None):
-        self._cursor_value = None
-        self._cursor_present = False
-        self._timeout_value = None
-        self._timeout_present = False
-        if cursor is not None:
-            self.cursor = cursor
-        if timeout is not None:
-            self.timeout = timeout
-
-    @property
-    def cursor(self):
-        """
-        A cursor as returned by list_folder or list_folder/continue
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def timeout(self):
-        """
-        A timeout in seconds. The request will block for at most this length of
-        time, plus up to 90 seconds of random jitter added to avoid the
-        thundering herd problem. Care should be taken when using this parameter,
-        as some network infrastructure does not support long timeouts.
-
-        :rtype: long
-        """
-        if self._timeout_present:
-            return self._timeout_value
-        else:
-            return 30
-
-    @timeout.setter
-    def timeout(self, val):
-        val = self._timeout_validator.validate(val)
-        self._timeout_value = val
-        self._timeout_present = True
-
-    @timeout.deleter
-    def timeout(self):
-        self._timeout_value = None
-        self._timeout_present = False
-
-    def __repr__(self):
-        return 'ListFolderLongpollArg(cursor={!r}, timeout={!r})'.format(
-            self._cursor_value,
-            self._timeout_value,
-        )
-
-class ListFolderLongpollResult(object):
-    """
-    :ivar changes: Indicates whether new changes are available. If true, call
-        list_folder to retrieve the changes.
-    :ivar backoff: If present, backoff for at least this many seconds before
-        calling list_folder/longpoll again.
-    """
-
-    __slots__ = [
-        '_changes_value',
-        '_changes_present',
-        '_backoff_value',
-        '_backoff_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 changes=None,
-                 backoff=None):
-        self._changes_value = None
-        self._changes_present = False
-        self._backoff_value = None
-        self._backoff_present = False
-        if changes is not None:
-            self.changes = changes
-        if backoff is not None:
-            self.backoff = backoff
-
-    @property
-    def changes(self):
-        """
-        Indicates whether new changes are available. If true, call list_folder
-        to retrieve the changes.
-
-        :rtype: bool
-        """
-        if self._changes_present:
-            return self._changes_value
-        else:
-            raise AttributeError("missing required field 'changes'")
-
-    @changes.setter
-    def changes(self, val):
-        val = self._changes_validator.validate(val)
-        self._changes_value = val
-        self._changes_present = True
-
-    @changes.deleter
-    def changes(self):
-        self._changes_value = None
-        self._changes_present = False
-
-    @property
-    def backoff(self):
-        """
-        If present, backoff for at least this many seconds before calling
-        list_folder/longpoll again.
-
-        :rtype: long
-        """
-        if self._backoff_present:
-            return self._backoff_value
-        else:
-            return None
-
-    @backoff.setter
-    def backoff(self, val):
-        if val is None:
-            del self.backoff
-            return
-        val = self._backoff_validator.validate(val)
-        self._backoff_value = val
-        self._backoff_present = True
-
-    @backoff.deleter
-    def backoff(self):
-        self._backoff_value = None
-        self._backoff_present = False
-
-    def __repr__(self):
-        return 'ListFolderLongpollResult(changes={!r}, backoff={!r})'.format(
-            self._changes_value,
-            self._backoff_value,
-        )
-
-class ListFolderLongpollError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar reset: Indicates that the cursor has been invalidated. Call
-        list_folder to obtain a new cursor.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    reset = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_reset(self):
-        """
-        Check if the union tag is ``reset``.
-
-        :rtype: bool
-        """
-        return self._tag == 'reset'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'ListFolderLongpollError(%r, %r)' % (self._tag, self._value)
-
-class ListFolderArg(object):
-    """
-    :ivar path: The path to the folder you want to see the contents of.
-    :ivar recursive: If true, the list folder operation will be applied
-        recursively to all subfolders and the response will contain contents of
-        all subfolders.
-    :ivar include_media_info: If true, :field:'FileMetadata.media_info' is set
-        for photo and video.
-    :ivar include_deleted: If true, the results will include entries for files
-        and folders that used to exist but were deleted.
-    """
-
-    __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_recursive_value',
-        '_recursive_present',
-        '_include_media_info_value',
-        '_include_media_info_present',
-        '_include_deleted_value',
-        '_include_deleted_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 recursive=None,
-                 include_media_info=None,
-                 include_deleted=None):
-        self._path_value = None
-        self._path_present = False
-        self._recursive_value = None
-        self._recursive_present = False
-        self._include_media_info_value = None
-        self._include_media_info_present = False
-        self._include_deleted_value = None
-        self._include_deleted_present = False
-        if path is not None:
-            self.path = path
-        if recursive is not None:
-            self.recursive = recursive
-        if include_media_info is not None:
-            self.include_media_info = include_media_info
-        if include_deleted is not None:
-            self.include_deleted = include_deleted
-
-    @property
-    def path(self):
-        """
-        The path to the folder you want to see the contents of.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def recursive(self):
-        """
-        If true, the list folder operation will be applied recursively to all
-        subfolders and the response will contain contents of all subfolders.
-
-        :rtype: bool
-        """
-        if self._recursive_present:
-            return self._recursive_value
-        else:
-            return False
-
-    @recursive.setter
-    def recursive(self, val):
-        val = self._recursive_validator.validate(val)
-        self._recursive_value = val
-        self._recursive_present = True
-
-    @recursive.deleter
-    def recursive(self):
-        self._recursive_value = None
-        self._recursive_present = False
-
-    @property
-    def include_media_info(self):
-        """
-        If true, :field:'FileMetadata.media_info' is set for photo and video.
-
-        :rtype: bool
-        """
-        if self._include_media_info_present:
-            return self._include_media_info_value
-        else:
-            return False
-
-    @include_media_info.setter
-    def include_media_info(self, val):
-        val = self._include_media_info_validator.validate(val)
-        self._include_media_info_value = val
-        self._include_media_info_present = True
-
-    @include_media_info.deleter
-    def include_media_info(self):
-        self._include_media_info_value = None
-        self._include_media_info_present = False
-
-    @property
-    def include_deleted(self):
-        """
-        If true, the results will include entries for files and folders that
-        used to exist but were deleted.
-
-        :rtype: bool
-        """
-        if self._include_deleted_present:
-            return self._include_deleted_value
-        else:
-            return False
-
-    @include_deleted.setter
-    def include_deleted(self, val):
-        val = self._include_deleted_validator.validate(val)
-        self._include_deleted_value = val
-        self._include_deleted_present = True
-
-    @include_deleted.deleter
-    def include_deleted(self):
-        self._include_deleted_value = None
-        self._include_deleted_present = False
-
-    def __repr__(self):
-        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r})'.format(
-            self._path_value,
-            self._recursive_value,
-            self._include_media_info_value,
-            self._include_deleted_value,
-        )
-
-class ListFolderResult(object):
-    """
-    :ivar entries: The files and (direct) subfolders in the folder.
-    :ivar cursor: Pass the cursor into list_folder/continue to see what's
-        changed in the folder since your previous query.
-    :ivar has_more: If true, then there are more entries available. Pass the
-        cursor to list_folder/continue to retrieve the rest.
-    """
-
-    __slots__ = [
-        '_entries_value',
-        '_entries_present',
-        '_cursor_value',
-        '_cursor_present',
-        '_has_more_value',
-        '_has_more_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 entries=None,
-                 cursor=None,
-                 has_more=None):
-        self._entries_value = None
-        self._entries_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
-        if entries is not None:
-            self.entries = entries
-        if cursor is not None:
-            self.cursor = cursor
-        if has_more is not None:
-            self.has_more = has_more
-
-    @property
-    def entries(self):
-        """
-        The files and (direct) subfolders in the folder.
-
-        :rtype: list of [Metadata]
-        """
-        if self._entries_present:
-            return self._entries_value
-        else:
-            raise AttributeError("missing required field 'entries'")
-
-    @entries.setter
-    def entries(self, val):
-        val = self._entries_validator.validate(val)
-        self._entries_value = val
-        self._entries_present = True
-
-    @entries.deleter
-    def entries(self):
-        self._entries_value = None
-        self._entries_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into list_folder/continue to see what's changed in the
-        folder since your previous query.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        If true, then there are more entries available. Pass the cursor to
-        list_folder/continue to retrieve the rest.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
-
-    def __repr__(self):
-        return 'ListFolderResult(entries={!r}, cursor={!r}, has_more={!r})'.format(
-            self._entries_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
-
-class ListFolderError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar other: An unspecified error.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param LookupError val:
-        :rtype: ListFolderError
-        """
-        return cls('path', val)
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_path(self):
-        """
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'ListFolderError(%r, %r)' % (self._tag, self._value)
-
-class ListFolderContinueArg(object):
-    """
-    :ivar cursor: The cursor returned by your last call to list_folder or
-        list_folder/continue.
-    """
-
-    __slots__ = [
-        '_cursor_value',
-        '_cursor_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
-        if cursor is not None:
-            self.cursor = cursor
-
-    @property
-    def cursor(self):
-        """
-        The cursor returned by your last call to list_folder or
-        list_folder/continue.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    def __repr__(self):
-        return 'ListFolderContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
-
-class ListFolderContinueError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar reset: Indicates that the cursor has been invalidated. Call
-        list_folder to obtain a new cursor.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    reset = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param LookupError val:
-        :rtype: ListFolderContinueError
-        """
-        return cls('path', val)
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def is_reset(self):
-        """
-        Check if the union tag is ``reset``.
-
-        :rtype: bool
-        """
-        return self._tag == 'reset'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_path(self):
-        """
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'ListFolderContinueError(%r, %r)' % (self._tag, self._value)
-
-class ListFolderGetLatestCursorResult(object):
-    """
-    :ivar cursor: Pass the cursor into list_folder/continue to see what's
-        changed in the folder since your previous query.
-    """
-
-    __slots__ = [
-        '_cursor_value',
-        '_cursor_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
-        if cursor is not None:
-            self.cursor = cursor
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into list_folder/continue to see what's changed in the
-        folder since your previous query.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    def __repr__(self):
-        return 'ListFolderGetLatestCursorResult(cursor={!r})'.format(
-            self._cursor_value,
-        )
-
-class DownloadError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar other: An unspecified error.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param LookupError val:
-        :rtype: DownloadError
-        """
-        return cls('path', val)
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_path(self):
-        """
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'DownloadError(%r, %r)' % (self._tag, self._value)
-
-class DownloadArg(object):
-    """
-    :ivar path: The path of the file to download.
-    :ivar rev: Deprecated. Please specify revision in :field:'path' instead
-    """
-
-    __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_rev_value',
-        '_rev_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 rev=None):
-        self._path_value = None
-        self._path_present = False
-        self._rev_value = None
-        self._rev_present = False
-        if path is not None:
-            self.path = path
-        if rev is not None:
-            self.rev = rev
-
-    @property
-    def path(self):
-        """
-        The path of the file to download.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def rev(self):
-        """
-        Deprecated. Please specify revision in :field:'path' instead
-
-        :rtype: str
-        """
-        if self._rev_present:
-            return self._rev_value
-        else:
-            return None
-
-    @rev.setter
-    def rev(self, val):
-        if val is None:
-            del self.rev
-            return
-        val = self._rev_validator.validate(val)
-        self._rev_value = val
-        self._rev_present = True
-
-    @rev.deleter
-    def rev(self):
-        self._rev_value = None
-        self._rev_present = False
-
-    def __repr__(self):
-        return 'DownloadArg(path={!r}, rev={!r})'.format(
-            self._path_value,
-            self._rev_value,
-        )
-
-class UploadWriteFailed(object):
-    """
-    :ivar reason: The reason why the file couldn't be saved.
-    :ivar upload_session_id: The upload session ID; this may be used to retry
-        the commit.
-    """
-
-    __slots__ = [
-        '_reason_value',
-        '_reason_present',
-        '_upload_session_id_value',
-        '_upload_session_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 reason=None,
-                 upload_session_id=None):
-        self._reason_value = None
-        self._reason_present = False
-        self._upload_session_id_value = None
-        self._upload_session_id_present = False
-        if reason is not None:
-            self.reason = reason
-        if upload_session_id is not None:
-            self.upload_session_id = upload_session_id
-
-    @property
-    def reason(self):
-        """
-        The reason why the file couldn't be saved.
-
-        :rtype: WriteError
-        """
-        if self._reason_present:
-            return self._reason_value
-        else:
-            raise AttributeError("missing required field 'reason'")
-
-    @reason.setter
-    def reason(self, val):
-        self._reason_validator.validate_type_only(val)
-        self._reason_value = val
-        self._reason_present = True
-
-    @reason.deleter
-    def reason(self):
-        self._reason_value = None
-        self._reason_present = False
-
-    @property
-    def upload_session_id(self):
-        """
-        The upload session ID; this may be used to retry the commit.
-
-        :rtype: str
-        """
-        if self._upload_session_id_present:
-            return self._upload_session_id_value
-        else:
-            raise AttributeError("missing required field 'upload_session_id'")
-
-    @upload_session_id.setter
-    def upload_session_id(self, val):
-        val = self._upload_session_id_validator.validate(val)
-        self._upload_session_id_value = val
-        self._upload_session_id_present = True
-
-    @upload_session_id.deleter
-    def upload_session_id(self):
-        self._upload_session_id_value = None
-        self._upload_session_id_present = False
-
-    def __repr__(self):
-        return 'UploadWriteFailed(reason={!r}, upload_session_id={!r})'.format(
-            self._reason_value,
-            self._upload_session_id_value,
-        )
-
-class UploadError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar UploadWriteFailed path: Unable to save the uploaded contents to a
-        file.
-    :ivar other: An unspecified error.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param UploadWriteFailed val:
-        :rtype: UploadError
-        """
-        return cls('path', val)
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_path(self):
-        """
-        Unable to save the uploaded contents to a file.
-
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: UploadWriteFailed
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'UploadError(%r, %r)' % (self._tag, self._value)
-
-class UploadSessionOffsetError(object):
-    """
-    :ivar correct_offset: The offset up to which data has been collected.
-    """
-
-    __slots__ = [
-        '_correct_offset_value',
-        '_correct_offset_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 correct_offset=None):
-        self._correct_offset_value = None
-        self._correct_offset_present = False
-        if correct_offset is not None:
-            self.correct_offset = correct_offset
-
-    @property
-    def correct_offset(self):
-        """
-        The offset up to which data has been collected.
-
-        :rtype: long
-        """
-        if self._correct_offset_present:
-            return self._correct_offset_value
-        else:
-            raise AttributeError("missing required field 'correct_offset'")
-
-    @correct_offset.setter
-    def correct_offset(self, val):
-        val = self._correct_offset_validator.validate(val)
-        self._correct_offset_value = val
-        self._correct_offset_present = True
-
-    @correct_offset.deleter
-    def correct_offset(self):
-        self._correct_offset_value = None
-        self._correct_offset_present = False
-
-    def __repr__(self):
-        return 'UploadSessionOffsetError(correct_offset={!r})'.format(
-            self._correct_offset_value,
-        )
-
-class UploadSessionLookupError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar not_found: The upload session id was not found.
-    :ivar UploadSessionOffsetError incorrect_offset: The specified offset was
-        incorrect. See the value for the correct offset. (This error may occur
-        when a previous request was received and processed successfully but the
-        client did not receive the response, e.g. due to a network error.)
-    :ivar closed: You are attempting to append data to an upload session that
-        has alread been closed (i.e. committed).
-    :ivar other: An unspecified error.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    not_found = None
-    # Attribute is overwritten below the class definition
-    closed = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def incorrect_offset(cls, val):
-        """
-        Create an instance of this class set to the ``incorrect_offset`` tag
-        with value ``val``.
-
-        :param UploadSessionOffsetError val:
-        :rtype: UploadSessionLookupError
-        """
-        return cls('incorrect_offset', val)
-
-    def is_not_found(self):
-        """
-        Check if the union tag is ``not_found``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_found'
-
-    def is_incorrect_offset(self):
-        """
-        Check if the union tag is ``incorrect_offset``.
-
-        :rtype: bool
-        """
-        return self._tag == 'incorrect_offset'
-
-    def is_closed(self):
-        """
-        Check if the union tag is ``closed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'closed'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_incorrect_offset(self):
-        """
-        The specified offset was incorrect. See the value for the correct
-        offset. (This error may occur when a previous request was received and
-        processed successfully but the client did not receive the response, e.g.
-        due to a network error.)
-
-        Only call this if :meth:`is_incorrect_offset` is true.
-
-        :rtype: UploadSessionOffsetError
-        """
-        if not self.is_incorrect_offset():
-            raise AttributeError("tag 'incorrect_offset' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'UploadSessionLookupError(%r, %r)' % (self._tag, self._value)
-
-class UploadSessionFinishError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar UploadSessionLookupError lookup_failed: The session arguments are
-        incorrect; the value explains the reason.
-    :ivar WriteError path: Unable to save the uploaded contents to a file.
-    :ivar other: An unspecified error.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def lookup_failed(cls, val):
-        """
-        Create an instance of this class set to the ``lookup_failed`` tag with
-        value ``val``.
-
-        :param UploadSessionLookupError val:
-        :rtype: UploadSessionFinishError
-        """
-        return cls('lookup_failed', val)
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param WriteError val:
-        :rtype: UploadSessionFinishError
-        """
-        return cls('path', val)
-
-    def is_lookup_failed(self):
-        """
-        Check if the union tag is ``lookup_failed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'lookup_failed'
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_lookup_failed(self):
-        """
-        The session arguments are incorrect; the value explains the reason.
-
-        Only call this if :meth:`is_lookup_failed` is true.
-
-        :rtype: UploadSessionLookupError
-        """
-        if not self.is_lookup_failed():
-            raise AttributeError("tag 'lookup_failed' not set")
-        return self._value
-
-    def get_path(self):
-        """
-        Unable to save the uploaded contents to a file.
-
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: WriteError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'UploadSessionFinishError(%r, %r)' % (self._tag, self._value)
-
-class UploadSessionStartResult(object):
-    """
-    :ivar session_id: A unique identifier for the upload session. Pass this to
-        upload_session/append and upload_session/finish.
-    """
-
-    __slots__ = [
-        '_session_id_value',
-        '_session_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 session_id=None):
-        self._session_id_value = None
-        self._session_id_present = False
-        if session_id is not None:
-            self.session_id = session_id
-
-    @property
-    def session_id(self):
-        """
-        A unique identifier for the upload session. Pass this to
-        upload_session/append and upload_session/finish.
-
-        :rtype: str
-        """
-        if self._session_id_present:
-            return self._session_id_value
-        else:
-            raise AttributeError("missing required field 'session_id'")
-
-    @session_id.setter
-    def session_id(self, val):
-        val = self._session_id_validator.validate(val)
-        self._session_id_value = val
-        self._session_id_present = True
-
-    @session_id.deleter
-    def session_id(self):
-        self._session_id_value = None
-        self._session_id_present = False
-
-    def __repr__(self):
-        return 'UploadSessionStartResult(session_id={!r})'.format(
-            self._session_id_value,
-        )
-
-class UploadSessionCursor(object):
-    """
-    :ivar session_id: The upload session ID (returned by upload_session/start).
-    :ivar offset: The amount of data that has been uploaded so far. We use this
-        to make sure upload data isn't lost or duplicated in the event of a
-        network error.
-    """
-
-    __slots__ = [
-        '_session_id_value',
-        '_session_id_present',
-        '_offset_value',
-        '_offset_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 session_id=None,
-                 offset=None):
-        self._session_id_value = None
-        self._session_id_present = False
-        self._offset_value = None
-        self._offset_present = False
-        if session_id is not None:
-            self.session_id = session_id
-        if offset is not None:
-            self.offset = offset
-
-    @property
-    def session_id(self):
-        """
-        The upload session ID (returned by upload_session/start).
-
-        :rtype: str
-        """
-        if self._session_id_present:
-            return self._session_id_value
-        else:
-            raise AttributeError("missing required field 'session_id'")
-
-    @session_id.setter
-    def session_id(self, val):
-        val = self._session_id_validator.validate(val)
-        self._session_id_value = val
-        self._session_id_present = True
-
-    @session_id.deleter
-    def session_id(self):
-        self._session_id_value = None
-        self._session_id_present = False
-
-    @property
-    def offset(self):
-        """
-        The amount of data that has been uploaded so far. We use this to make
-        sure upload data isn't lost or duplicated in the event of a network
-        error.
-
-        :rtype: long
-        """
-        if self._offset_present:
-            return self._offset_value
-        else:
-            raise AttributeError("missing required field 'offset'")
-
-    @offset.setter
-    def offset(self, val):
-        val = self._offset_validator.validate(val)
-        self._offset_value = val
-        self._offset_present = True
-
-    @offset.deleter
-    def offset(self):
-        self._offset_value = None
-        self._offset_present = False
-
-    def __repr__(self):
-        return 'UploadSessionCursor(session_id={!r}, offset={!r})'.format(
-            self._session_id_value,
-            self._offset_value,
-        )
-
-class WriteMode(object):
-    """
-    Your intent when writing a file to some path. This is used to determine what
-    constitutes a conflict and what the autorename strategy is. In some
-    situations, the conflict behavior is identical: (a) If the target path
-    doesn't contain anything, the file is always written; no conflict. (b) If
-    the target path contains a folder, it's always a conflict. (c) If the target
-    path contains a file with identical contents, nothing gets written; no
-    conflict. The conflict checking differs in the case where there's a file at
-    the target path with contents different from the contents you're trying to
-    write.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar add: Never overwrite the existing file. The autorename strategy is to
-        append a number to the file name. For example, "document.txt" might
-        become "document (2).txt".
-    :ivar overwrite: Always overwrite the existing file. The autorename strategy
-        is the same as it is for ``add``.
-    :ivar str update: Overwrite if the given "rev" matches the existing file's
-        "rev". The autorename strategy is to append the string "conflicted copy"
-        to the file name. For example, "document.txt" might become "document
-        (conflicted copy).txt" or "document (Panda's conflicted copy).txt".
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    add = None
-    # Attribute is overwritten below the class definition
-    overwrite = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def update(cls, val):
-        """
-        Create an instance of this class set to the ``update`` tag with value
-        ``val``.
-
-        :param str val:
-        :rtype: WriteMode
-        """
-        return cls('update', val)
-
-    def is_add(self):
-        """
-        Check if the union tag is ``add``.
-
-        :rtype: bool
-        """
-        return self._tag == 'add'
-
-    def is_overwrite(self):
-        """
-        Check if the union tag is ``overwrite``.
-
-        :rtype: bool
-        """
-        return self._tag == 'overwrite'
-
-    def is_update(self):
-        """
-        Check if the union tag is ``update``.
-
-        :rtype: bool
-        """
-        return self._tag == 'update'
-
-    def get_update(self):
-        """
-        Overwrite if the given "rev" matches the existing file's "rev". The
-        autorename strategy is to append the string "conflicted copy" to the
-        file name. For example, "document.txt" might become "document
-        (conflicted copy).txt" or "document (Panda's conflicted copy).txt".
-
-        Only call this if :meth:`is_update` is true.
-
-        :rtype: str
-        """
-        if not self.is_update():
-            raise AttributeError("tag 'update' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'WriteMode(%r, %r)' % (self._tag, self._value)
-
 class CommitInfo(object):
     """
     :ivar path: Path in the user's Dropbox to save the file.
@@ -2766,976 +203,6 @@ class CommitInfo(object):
             self._client_modified_value,
             self._mute_value,
         )
-
-class UploadSessionFinishArg(object):
-    """
-    :ivar cursor: Contains the upload session ID and the offset.
-    :ivar commit: Contains the path and other optional modifiers for the commit.
-    """
-
-    __slots__ = [
-        '_cursor_value',
-        '_cursor_present',
-        '_commit_value',
-        '_commit_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 cursor=None,
-                 commit=None):
-        self._cursor_value = None
-        self._cursor_present = False
-        self._commit_value = None
-        self._commit_present = False
-        if cursor is not None:
-            self.cursor = cursor
-        if commit is not None:
-            self.commit = commit
-
-    @property
-    def cursor(self):
-        """
-        Contains the upload session ID and the offset.
-
-        :rtype: UploadSessionCursor
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        self._cursor_validator.validate_type_only(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def commit(self):
-        """
-        Contains the path and other optional modifiers for the commit.
-
-        :rtype: CommitInfo
-        """
-        if self._commit_present:
-            return self._commit_value
-        else:
-            raise AttributeError("missing required field 'commit'")
-
-    @commit.setter
-    def commit(self, val):
-        self._commit_validator.validate_type_only(val)
-        self._commit_value = val
-        self._commit_present = True
-
-    @commit.deleter
-    def commit(self):
-        self._commit_value = None
-        self._commit_present = False
-
-    def __repr__(self):
-        return 'UploadSessionFinishArg(cursor={!r}, commit={!r})'.format(
-            self._cursor_value,
-            self._commit_value,
-        )
-
-class SearchMode(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar filename: Search file and folder names.
-    :ivar filename_and_content: Search file and folder names as well as file
-        contents.
-    :ivar deleted_filename: Search for deleted file and folder names.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    filename = None
-    # Attribute is overwritten below the class definition
-    filename_and_content = None
-    # Attribute is overwritten below the class definition
-    deleted_filename = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_filename(self):
-        """
-        Check if the union tag is ``filename``.
-
-        :rtype: bool
-        """
-        return self._tag == 'filename'
-
-    def is_filename_and_content(self):
-        """
-        Check if the union tag is ``filename_and_content``.
-
-        :rtype: bool
-        """
-        return self._tag == 'filename_and_content'
-
-    def is_deleted_filename(self):
-        """
-        Check if the union tag is ``deleted_filename``.
-
-        :rtype: bool
-        """
-        return self._tag == 'deleted_filename'
-
-    def __repr__(self):
-        return 'SearchMode(%r, %r)' % (self._tag, self._value)
-
-class SearchArg(object):
-    """
-    :ivar path: The path in the user's Dropbox to search. Should probably be a
-        folder.
-    :ivar query: The string to search for. The search string is split on spaces
-        into multiple tokens. For file name searching, the last token is used
-        for prefix matching (i.e. "bat c" matches "bat cave" but not "batman
-        car").
-    :ivar start: The starting index within the search results (used for paging).
-    :ivar max_results: The maximum number of search results to return.
-    :ivar mode: The search mode (filename, filename_and_content, or
-        deleted_filename). Note that searching file content is only available
-        for Dropbox Business accounts.
-    """
-
-    __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_query_value',
-        '_query_present',
-        '_start_value',
-        '_start_present',
-        '_max_results_value',
-        '_max_results_present',
-        '_mode_value',
-        '_mode_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 query=None,
-                 start=None,
-                 max_results=None,
-                 mode=None):
-        self._path_value = None
-        self._path_present = False
-        self._query_value = None
-        self._query_present = False
-        self._start_value = None
-        self._start_present = False
-        self._max_results_value = None
-        self._max_results_present = False
-        self._mode_value = None
-        self._mode_present = False
-        if path is not None:
-            self.path = path
-        if query is not None:
-            self.query = query
-        if start is not None:
-            self.start = start
-        if max_results is not None:
-            self.max_results = max_results
-        if mode is not None:
-            self.mode = mode
-
-    @property
-    def path(self):
-        """
-        The path in the user's Dropbox to search. Should probably be a folder.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def query(self):
-        """
-        The string to search for. The search string is split on spaces into
-        multiple tokens. For file name searching, the last token is used for
-        prefix matching (i.e. "bat c" matches "bat cave" but not "batman car").
-
-        :rtype: str
-        """
-        if self._query_present:
-            return self._query_value
-        else:
-            raise AttributeError("missing required field 'query'")
-
-    @query.setter
-    def query(self, val):
-        val = self._query_validator.validate(val)
-        self._query_value = val
-        self._query_present = True
-
-    @query.deleter
-    def query(self):
-        self._query_value = None
-        self._query_present = False
-
-    @property
-    def start(self):
-        """
-        The starting index within the search results (used for paging).
-
-        :rtype: long
-        """
-        if self._start_present:
-            return self._start_value
-        else:
-            return 0
-
-    @start.setter
-    def start(self, val):
-        val = self._start_validator.validate(val)
-        self._start_value = val
-        self._start_present = True
-
-    @start.deleter
-    def start(self):
-        self._start_value = None
-        self._start_present = False
-
-    @property
-    def max_results(self):
-        """
-        The maximum number of search results to return.
-
-        :rtype: long
-        """
-        if self._max_results_present:
-            return self._max_results_value
-        else:
-            return 100
-
-    @max_results.setter
-    def max_results(self, val):
-        val = self._max_results_validator.validate(val)
-        self._max_results_value = val
-        self._max_results_present = True
-
-    @max_results.deleter
-    def max_results(self):
-        self._max_results_value = None
-        self._max_results_present = False
-
-    @property
-    def mode(self):
-        """
-        The search mode (filename, filename_and_content, or deleted_filename).
-        Note that searching file content is only available for Dropbox Business
-        accounts.
-
-        :rtype: SearchMode
-        """
-        if self._mode_present:
-            return self._mode_value
-        else:
-            return SearchMode.filename
-
-    @mode.setter
-    def mode(self, val):
-        self._mode_validator.validate_type_only(val)
-        self._mode_value = val
-        self._mode_present = True
-
-    @mode.deleter
-    def mode(self):
-        self._mode_value = None
-        self._mode_present = False
-
-    def __repr__(self):
-        return 'SearchArg(path={!r}, query={!r}, start={!r}, max_results={!r}, mode={!r})'.format(
-            self._path_value,
-            self._query_value,
-            self._start_value,
-            self._max_results_value,
-            self._mode_value,
-        )
-
-class SearchMatchType(object):
-    """
-    Indicates what type of match was found for a given item.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar filename: This item was matched on its file or folder name.
-    :ivar content: This item was matched based on its file contents.
-    :ivar both: This item was matched based on both its contents and its file
-        name.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    filename = None
-    # Attribute is overwritten below the class definition
-    content = None
-    # Attribute is overwritten below the class definition
-    both = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_filename(self):
-        """
-        Check if the union tag is ``filename``.
-
-        :rtype: bool
-        """
-        return self._tag == 'filename'
-
-    def is_content(self):
-        """
-        Check if the union tag is ``content``.
-
-        :rtype: bool
-        """
-        return self._tag == 'content'
-
-    def is_both(self):
-        """
-        Check if the union tag is ``both``.
-
-        :rtype: bool
-        """
-        return self._tag == 'both'
-
-    def __repr__(self):
-        return 'SearchMatchType(%r, %r)' % (self._tag, self._value)
-
-class SearchMatch(object):
-    """
-    :ivar match_type: The type of the match.
-    :ivar metadata: The metadata for the matched file or folder.
-    """
-
-    __slots__ = [
-        '_match_type_value',
-        '_match_type_present',
-        '_metadata_value',
-        '_metadata_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 match_type=None,
-                 metadata=None):
-        self._match_type_value = None
-        self._match_type_present = False
-        self._metadata_value = None
-        self._metadata_present = False
-        if match_type is not None:
-            self.match_type = match_type
-        if metadata is not None:
-            self.metadata = metadata
-
-    @property
-    def match_type(self):
-        """
-        The type of the match.
-
-        :rtype: SearchMatchType
-        """
-        if self._match_type_present:
-            return self._match_type_value
-        else:
-            raise AttributeError("missing required field 'match_type'")
-
-    @match_type.setter
-    def match_type(self, val):
-        self._match_type_validator.validate_type_only(val)
-        self._match_type_value = val
-        self._match_type_present = True
-
-    @match_type.deleter
-    def match_type(self):
-        self._match_type_value = None
-        self._match_type_present = False
-
-    @property
-    def metadata(self):
-        """
-        The metadata for the matched file or folder.
-
-        :rtype: Metadata
-        """
-        if self._metadata_present:
-            return self._metadata_value
-        else:
-            raise AttributeError("missing required field 'metadata'")
-
-    @metadata.setter
-    def metadata(self, val):
-        self._metadata_validator.validate_type_only(val)
-        self._metadata_value = val
-        self._metadata_present = True
-
-    @metadata.deleter
-    def metadata(self):
-        self._metadata_value = None
-        self._metadata_present = False
-
-    def __repr__(self):
-        return 'SearchMatch(match_type={!r}, metadata={!r})'.format(
-            self._match_type_value,
-            self._metadata_value,
-        )
-
-class SearchResult(object):
-    """
-    :ivar matches: A list (possibly empty) of matches for the query.
-    :ivar more: Used for paging. If true, indicates there is another page of
-        results available that can be fetched by calling search again.
-    :ivar start: Used for paging. Value to set the start argument to when
-        calling search to fetch the next page of results.
-    """
-
-    __slots__ = [
-        '_matches_value',
-        '_matches_present',
-        '_more_value',
-        '_more_present',
-        '_start_value',
-        '_start_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 matches=None,
-                 more=None,
-                 start=None):
-        self._matches_value = None
-        self._matches_present = False
-        self._more_value = None
-        self._more_present = False
-        self._start_value = None
-        self._start_present = False
-        if matches is not None:
-            self.matches = matches
-        if more is not None:
-            self.more = more
-        if start is not None:
-            self.start = start
-
-    @property
-    def matches(self):
-        """
-        A list (possibly empty) of matches for the query.
-
-        :rtype: list of [SearchMatch]
-        """
-        if self._matches_present:
-            return self._matches_value
-        else:
-            raise AttributeError("missing required field 'matches'")
-
-    @matches.setter
-    def matches(self, val):
-        val = self._matches_validator.validate(val)
-        self._matches_value = val
-        self._matches_present = True
-
-    @matches.deleter
-    def matches(self):
-        self._matches_value = None
-        self._matches_present = False
-
-    @property
-    def more(self):
-        """
-        Used for paging. If true, indicates there is another page of results
-        available that can be fetched by calling search again.
-
-        :rtype: bool
-        """
-        if self._more_present:
-            return self._more_value
-        else:
-            raise AttributeError("missing required field 'more'")
-
-    @more.setter
-    def more(self, val):
-        val = self._more_validator.validate(val)
-        self._more_value = val
-        self._more_present = True
-
-    @more.deleter
-    def more(self):
-        self._more_value = None
-        self._more_present = False
-
-    @property
-    def start(self):
-        """
-        Used for paging. Value to set the start argument to when calling search
-        to fetch the next page of results.
-
-        :rtype: long
-        """
-        if self._start_present:
-            return self._start_value
-        else:
-            raise AttributeError("missing required field 'start'")
-
-    @start.setter
-    def start(self, val):
-        val = self._start_validator.validate(val)
-        self._start_value = val
-        self._start_present = True
-
-    @start.deleter
-    def start(self):
-        self._start_value = None
-        self._start_present = False
-
-    def __repr__(self):
-        return 'SearchResult(matches={!r}, more={!r}, start={!r})'.format(
-            self._matches_value,
-            self._more_value,
-            self._start_value,
-        )
-
-class SearchError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar other: An unspecified error.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param LookupError val:
-        :rtype: SearchError
-        """
-        return cls('path', val)
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_path(self):
-        """
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'SearchError(%r, %r)' % (self._tag, self._value)
-
-class LookupError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar not_found: There is nothing at the given path.
-    :ivar not_file: We were expecting a file, but the given path refers to
-        something that isn't a file.
-    :ivar not_folder: We were expecting a folder, but the given path refers to
-        something that isn't a folder.
-    :ivar restricted_content: The file cannot be transferred because the content
-        is restricted.  For example, sometimes there are legal restrictions due
-        to copyright claims.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    not_found = None
-    # Attribute is overwritten below the class definition
-    not_file = None
-    # Attribute is overwritten below the class definition
-    not_folder = None
-    # Attribute is overwritten below the class definition
-    restricted_content = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def malformed_path(cls, val):
-        """
-        Create an instance of this class set to the ``malformed_path`` tag with
-        value ``val``.
-
-        :param str val:
-        :rtype: LookupError
-        """
-        return cls('malformed_path', val)
-
-    def is_malformed_path(self):
-        """
-        Check if the union tag is ``malformed_path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'malformed_path'
-
-    def is_not_found(self):
-        """
-        Check if the union tag is ``not_found``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_found'
-
-    def is_not_file(self):
-        """
-        Check if the union tag is ``not_file``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_file'
-
-    def is_not_folder(self):
-        """
-        Check if the union tag is ``not_folder``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_folder'
-
-    def is_restricted_content(self):
-        """
-        Check if the union tag is ``restricted_content``.
-
-        :rtype: bool
-        """
-        return self._tag == 'restricted_content'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_malformed_path(self):
-        """
-        Only call this if :meth:`is_malformed_path` is true.
-
-        :rtype: str
-        """
-        if not self.is_malformed_path():
-            raise AttributeError("tag 'malformed_path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'LookupError(%r, %r)' % (self._tag, self._value)
-
-class WriteError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar WriteConflictError conflict: Couldn't write to the target path because
-        there was something in the way.
-    :ivar no_write_permission: The user doesn't have permissions to write to the
-        target location.
-    :ivar insufficient_space: The user doesn't have enough available space
-        (bytes) to write more data.
-    :ivar disallowed_name: Dropbox will not save the file or folder because it
-        of its name.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    no_write_permission = None
-    # Attribute is overwritten below the class definition
-    insufficient_space = None
-    # Attribute is overwritten below the class definition
-    disallowed_name = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def malformed_path(cls, val):
-        """
-        Create an instance of this class set to the ``malformed_path`` tag with
-        value ``val``.
-
-        :param str val:
-        :rtype: WriteError
-        """
-        return cls('malformed_path', val)
-
-    @classmethod
-    def conflict(cls, val):
-        """
-        Create an instance of this class set to the ``conflict`` tag with value
-        ``val``.
-
-        :param WriteConflictError val:
-        :rtype: WriteError
-        """
-        return cls('conflict', val)
-
-    def is_malformed_path(self):
-        """
-        Check if the union tag is ``malformed_path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'malformed_path'
-
-    def is_conflict(self):
-        """
-        Check if the union tag is ``conflict``.
-
-        :rtype: bool
-        """
-        return self._tag == 'conflict'
-
-    def is_no_write_permission(self):
-        """
-        Check if the union tag is ``no_write_permission``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_write_permission'
-
-    def is_insufficient_space(self):
-        """
-        Check if the union tag is ``insufficient_space``.
-
-        :rtype: bool
-        """
-        return self._tag == 'insufficient_space'
-
-    def is_disallowed_name(self):
-        """
-        Check if the union tag is ``disallowed_name``.
-
-        :rtype: bool
-        """
-        return self._tag == 'disallowed_name'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_malformed_path(self):
-        """
-        Only call this if :meth:`is_malformed_path` is true.
-
-        :rtype: str
-        """
-        if not self.is_malformed_path():
-            raise AttributeError("tag 'malformed_path' not set")
-        return self._value
-
-    def get_conflict(self):
-        """
-        Couldn't write to the target path because there was something in the
-        way.
-
-        Only call this if :meth:`is_conflict` is true.
-
-        :rtype: WriteConflictError
-        """
-        if not self.is_conflict():
-            raise AttributeError("tag 'conflict' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'WriteError(%r, %r)' % (self._tag, self._value)
-
-class WriteConflictError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar file: There's a file in the way.
-    :ivar folder: There's a folder in the way.
-    :ivar file_ancestor: There's a file at an ancestor path, so we couldn't
-        create the required parent folders.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    file = None
-    # Attribute is overwritten below the class definition
-    folder = None
-    # Attribute is overwritten below the class definition
-    file_ancestor = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_file(self):
-        """
-        Check if the union tag is ``file``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file'
-
-    def is_folder(self):
-        """
-        Check if the union tag is ``folder``.
-
-        :rtype: bool
-        """
-        return self._tag == 'folder'
-
-    def is_file_ancestor(self):
-        """
-        Check if the union tag is ``file_ancestor``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_ancestor'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'WriteConflictError(%r, %r)' % (self._tag, self._value)
 
 class CreateFolderArg(object):
     """
@@ -3980,585 +447,239 @@ class DeleteError(object):
     def __repr__(self):
         return 'DeleteError(%r, %r)' % (self._tag, self._value)
 
-class RelocationArg(object):
+class Metadata(object):
     """
-    :ivar from_path: Path in the user's Dropbox to be copied or moved.
-    :ivar to_path: Path in the user's Dropbox that is the destination.
+    Metadata for a file or folder.
+
+    :ivar name: The last component of the path (including extension). This never
+        contains a slash.
+    :ivar path_lower: The lowercased full path in the user's Dropbox. This
+        always starts with a slash.
+    :ivar parent_shared_folder_id: Deprecated. Please use
+        :field:'FileSharingInfo.parent_shared_folder_id' or
+        :field:'FolderSharingInfo.parent_shared_folder_id' instead.
     """
 
     __slots__ = [
-        '_from_path_value',
-        '_from_path_present',
-        '_to_path_value',
-        '_to_path_present',
+        '_name_value',
+        '_name_present',
+        '_path_lower_value',
+        '_path_lower_present',
+        '_parent_shared_folder_id_value',
+        '_parent_shared_folder_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 from_path=None,
-                 to_path=None):
-        self._from_path_value = None
-        self._from_path_present = False
-        self._to_path_value = None
-        self._to_path_present = False
-        if from_path is not None:
-            self.from_path = from_path
-        if to_path is not None:
-            self.to_path = to_path
+                 name=None,
+                 path_lower=None,
+                 parent_shared_folder_id=None):
+        self._name_value = None
+        self._name_present = False
+        self._path_lower_value = None
+        self._path_lower_present = False
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
+        if name is not None:
+            self.name = name
+        if path_lower is not None:
+            self.path_lower = path_lower
+        if parent_shared_folder_id is not None:
+            self.parent_shared_folder_id = parent_shared_folder_id
 
     @property
-    def from_path(self):
+    def name(self):
         """
-        Path in the user's Dropbox to be copied or moved.
+        The last component of the path (including extension). This never
+        contains a slash.
 
         :rtype: str
         """
-        if self._from_path_present:
-            return self._from_path_value
+        if self._name_present:
+            return self._name_value
         else:
-            raise AttributeError("missing required field 'from_path'")
+            raise AttributeError("missing required field 'name'")
 
-    @from_path.setter
-    def from_path(self, val):
-        val = self._from_path_validator.validate(val)
-        self._from_path_value = val
-        self._from_path_present = True
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
 
-    @from_path.deleter
-    def from_path(self):
-        self._from_path_value = None
-        self._from_path_present = False
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
 
     @property
-    def to_path(self):
+    def path_lower(self):
         """
-        Path in the user's Dropbox that is the destination.
+        The lowercased full path in the user's Dropbox. This always starts with
+        a slash.
 
         :rtype: str
         """
-        if self._to_path_present:
-            return self._to_path_value
+        if self._path_lower_present:
+            return self._path_lower_value
         else:
-            raise AttributeError("missing required field 'to_path'")
+            raise AttributeError("missing required field 'path_lower'")
 
-    @to_path.setter
-    def to_path(self, val):
-        val = self._to_path_validator.validate(val)
-        self._to_path_value = val
-        self._to_path_present = True
+    @path_lower.setter
+    def path_lower(self, val):
+        val = self._path_lower_validator.validate(val)
+        self._path_lower_value = val
+        self._path_lower_present = True
 
-    @to_path.deleter
-    def to_path(self):
-        self._to_path_value = None
-        self._to_path_present = False
+    @path_lower.deleter
+    def path_lower(self):
+        self._path_lower_value = None
+        self._path_lower_present = False
+
+    @property
+    def parent_shared_folder_id(self):
+        """
+        Deprecated. Please use :field:'FileSharingInfo.parent_shared_folder_id'
+        or :field:'FolderSharingInfo.parent_shared_folder_id' instead.
+
+        :rtype: str
+        """
+        if self._parent_shared_folder_id_present:
+            return self._parent_shared_folder_id_value
+        else:
+            return None
+
+    @parent_shared_folder_id.setter
+    def parent_shared_folder_id(self, val):
+        if val is None:
+            del self.parent_shared_folder_id
+            return
+        val = self._parent_shared_folder_id_validator.validate(val)
+        self._parent_shared_folder_id_value = val
+        self._parent_shared_folder_id_present = True
+
+    @parent_shared_folder_id.deleter
+    def parent_shared_folder_id(self):
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
 
     def __repr__(self):
-        return 'RelocationArg(from_path={!r}, to_path={!r})'.format(
-            self._from_path_value,
-            self._to_path_value,
+        return 'Metadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r})'.format(
+            self._name_value,
+            self._path_lower_value,
+            self._parent_shared_folder_id_value,
         )
 
-class RelocationError(object):
+class DeletedMetadata(Metadata):
     """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar cant_copy_shared_folder: Shared folders can't be copied.
-    :ivar cant_nest_shared_folder: Your move operation would result in nested
-        shared folders.  This is not allowed.
-    :ivar too_many_files: The operation would involve more than 10,000 files and
-        folders.
-    :ivar other: An unspecified error.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    cant_copy_shared_folder = None
-    # Attribute is overwritten below the class definition
-    cant_nest_shared_folder = None
-    # Attribute is overwritten below the class definition
-    too_many_files = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def from_lookup(cls, val):
-        """
-        Create an instance of this class set to the ``from_lookup`` tag with
-        value ``val``.
-
-        :param LookupError val:
-        :rtype: RelocationError
-        """
-        return cls('from_lookup', val)
-
-    @classmethod
-    def from_write(cls, val):
-        """
-        Create an instance of this class set to the ``from_write`` tag with
-        value ``val``.
-
-        :param WriteError val:
-        :rtype: RelocationError
-        """
-        return cls('from_write', val)
-
-    @classmethod
-    def to(cls, val):
-        """
-        Create an instance of this class set to the ``to`` tag with value
-        ``val``.
-
-        :param WriteError val:
-        :rtype: RelocationError
-        """
-        return cls('to', val)
-
-    def is_from_lookup(self):
-        """
-        Check if the union tag is ``from_lookup``.
-
-        :rtype: bool
-        """
-        return self._tag == 'from_lookup'
-
-    def is_from_write(self):
-        """
-        Check if the union tag is ``from_write``.
-
-        :rtype: bool
-        """
-        return self._tag == 'from_write'
-
-    def is_to(self):
-        """
-        Check if the union tag is ``to``.
-
-        :rtype: bool
-        """
-        return self._tag == 'to'
-
-    def is_cant_copy_shared_folder(self):
-        """
-        Check if the union tag is ``cant_copy_shared_folder``.
-
-        :rtype: bool
-        """
-        return self._tag == 'cant_copy_shared_folder'
-
-    def is_cant_nest_shared_folder(self):
-        """
-        Check if the union tag is ``cant_nest_shared_folder``.
-
-        :rtype: bool
-        """
-        return self._tag == 'cant_nest_shared_folder'
-
-    def is_too_many_files(self):
-        """
-        Check if the union tag is ``too_many_files``.
-
-        :rtype: bool
-        """
-        return self._tag == 'too_many_files'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_from_lookup(self):
-        """
-        Only call this if :meth:`is_from_lookup` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_from_lookup():
-            raise AttributeError("tag 'from_lookup' not set")
-        return self._value
-
-    def get_from_write(self):
-        """
-        Only call this if :meth:`is_from_write` is true.
-
-        :rtype: WriteError
-        """
-        if not self.is_from_write():
-            raise AttributeError("tag 'from_write' not set")
-        return self._value
-
-    def get_to(self):
-        """
-        Only call this if :meth:`is_to` is true.
-
-        :rtype: WriteError
-        """
-        if not self.is_to():
-            raise AttributeError("tag 'to' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'RelocationError(%r, %r)' % (self._tag, self._value)
-
-class ThumbnailSize(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar w32h32: 32 by 32 px.
-    :ivar w64h64: 64 by 64 px.
-    :ivar w128h128: 128 by 128 px.
-    :ivar w640h480: 640 by 480 px.
-    :ivar w1024h768: 1024 by 768
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    w32h32 = None
-    # Attribute is overwritten below the class definition
-    w64h64 = None
-    # Attribute is overwritten below the class definition
-    w128h128 = None
-    # Attribute is overwritten below the class definition
-    w640h480 = None
-    # Attribute is overwritten below the class definition
-    w1024h768 = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_w32h32(self):
-        """
-        Check if the union tag is ``w32h32``.
-
-        :rtype: bool
-        """
-        return self._tag == 'w32h32'
-
-    def is_w64h64(self):
-        """
-        Check if the union tag is ``w64h64``.
-
-        :rtype: bool
-        """
-        return self._tag == 'w64h64'
-
-    def is_w128h128(self):
-        """
-        Check if the union tag is ``w128h128``.
-
-        :rtype: bool
-        """
-        return self._tag == 'w128h128'
-
-    def is_w640h480(self):
-        """
-        Check if the union tag is ``w640h480``.
-
-        :rtype: bool
-        """
-        return self._tag == 'w640h480'
-
-    def is_w1024h768(self):
-        """
-        Check if the union tag is ``w1024h768``.
-
-        :rtype: bool
-        """
-        return self._tag == 'w1024h768'
-
-    def __repr__(self):
-        return 'ThumbnailSize(%r, %r)' % (self._tag, self._value)
-
-class ThumbnailFormat(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    jpeg = None
-    # Attribute is overwritten below the class definition
-    png = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_jpeg(self):
-        """
-        Check if the union tag is ``jpeg``.
-
-        :rtype: bool
-        """
-        return self._tag == 'jpeg'
-
-    def is_png(self):
-        """
-        Check if the union tag is ``png``.
-
-        :rtype: bool
-        """
-        return self._tag == 'png'
-
-    def __repr__(self):
-        return 'ThumbnailFormat(%r, %r)' % (self._tag, self._value)
-
-class ThumbnailArg(object):
-    """
-    :ivar path: The path to the image file you want to thumbnail.
-    :ivar format: The format for the thumbnail image, jpeg (default) or png. For
-        images that are photos, jpeg should be preferred, while png is  better
-        for screenshots and digital arts.
-    :ivar size: The size for the thumbnail image.
+    Indicates that there used to be a file or folder at this path, but it no
+    longer exists.
     """
 
     __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_format_value',
-        '_format_present',
-        '_size_value',
-        '_size_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 path=None,
-                 format=None,
-                 size=None):
-        self._path_value = None
-        self._path_present = False
-        self._format_value = None
-        self._format_present = False
-        self._size_value = None
-        self._size_present = False
-        if path is not None:
-            self.path = path
-        if format is not None:
-            self.format = format
-        if size is not None:
-            self.size = size
-
-    @property
-    def path(self):
-        """
-        The path to the image file you want to thumbnail.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def format(self):
-        """
-        The format for the thumbnail image, jpeg (default) or png. For  images
-        that are photos, jpeg should be preferred, while png is  better for
-        screenshots and digital arts.
-
-        :rtype: ThumbnailFormat
-        """
-        if self._format_present:
-            return self._format_value
-        else:
-            return ThumbnailFormat.jpeg
-
-    @format.setter
-    def format(self, val):
-        self._format_validator.validate_type_only(val)
-        self._format_value = val
-        self._format_present = True
-
-    @format.deleter
-    def format(self):
-        self._format_value = None
-        self._format_present = False
-
-    @property
-    def size(self):
-        """
-        The size for the thumbnail image.
-
-        :rtype: ThumbnailSize
-        """
-        if self._size_present:
-            return self._size_value
-        else:
-            return ThumbnailSize.w64h64
-
-    @size.setter
-    def size(self, val):
-        self._size_validator.validate_type_only(val)
-        self._size_value = val
-        self._size_present = True
-
-    @size.deleter
-    def size(self):
-        self._size_value = None
-        self._size_present = False
+                 name=None,
+                 path_lower=None,
+                 parent_shared_folder_id=None):
+        super(DeletedMetadata, self).__init__(name,
+                                              path_lower,
+                                              parent_shared_folder_id)
 
     def __repr__(self):
-        return 'ThumbnailArg(path={!r}, format={!r}, size={!r})'.format(
-            self._path_value,
-            self._format_value,
-            self._size_value,
+        return 'DeletedMetadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r})'.format(
+            self._name_value,
+            self._path_lower_value,
+            self._parent_shared_folder_id_value,
         )
 
-class ThumbnailError(object):
+class Dimensions(object):
     """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
+    Dimensions for a photo or video.
 
-    :ivar LookupError path: An error occurs when downloading metadata for the
-        image.
-    :ivar unsupported_extension: The file extension doesn't allow conversion to
-        a thumbnail.
-    :ivar unsupported_image: The image cannot be converted to a thumbnail.
-    :ivar conversion_error: An error occurs during thumbnail conversion.
+    :ivar height: Height of the photo/video.
+    :ivar width: Width of the photo/video.
     """
 
-    __slots__ = ['_tag', '_value']
+    __slots__ = [
+        '_height_value',
+        '_height_present',
+        '_width_value',
+        '_width_present',
+    ]
 
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    unsupported_extension = None
-    # Attribute is overwritten below the class definition
-    unsupported_image = None
-    # Attribute is overwritten below the class definition
-    conversion_error = None
+    _has_required_fields = True
 
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
+    def __init__(self,
+                 height=None,
+                 width=None):
+        self._height_value = None
+        self._height_present = False
+        self._width_value = None
+        self._width_present = False
+        if height is not None:
+            self.height = height
+        if width is not None:
+            self.width = width
+
+    @property
+    def height(self):
+        """
+        Height of the photo/video.
+
+        :rtype: long
+        """
+        if self._height_present:
+            return self._height_value
         else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
+            raise AttributeError("missing required field 'height'")
 
-    @classmethod
-    def path(cls, val):
+    @height.setter
+    def height(self, val):
+        val = self._height_validator.validate(val)
+        self._height_value = val
+        self._height_present = True
+
+    @height.deleter
+    def height(self):
+        self._height_value = None
+        self._height_present = False
+
+    @property
+    def width(self):
         """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
+        Width of the photo/video.
 
-        :param LookupError val:
-        :rtype: ThumbnailError
+        :rtype: long
         """
-        return cls('path', val)
+        if self._width_present:
+            return self._width_value
+        else:
+            raise AttributeError("missing required field 'width'")
 
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
+    @width.setter
+    def width(self, val):
+        val = self._width_validator.validate(val)
+        self._width_value = val
+        self._width_present = True
 
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def is_unsupported_extension(self):
-        """
-        Check if the union tag is ``unsupported_extension``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unsupported_extension'
-
-    def is_unsupported_image(self):
-        """
-        Check if the union tag is ``unsupported_image``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unsupported_image'
-
-    def is_conversion_error(self):
-        """
-        Check if the union tag is ``conversion_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'conversion_error'
-
-    def get_path(self):
-        """
-        An error occurs when downloading metadata for the image.
-
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
+    @width.deleter
+    def width(self):
+        self._width_value = None
+        self._width_present = False
 
     def __repr__(self):
-        return 'ThumbnailError(%r, %r)' % (self._tag, self._value)
+        return 'Dimensions(height={!r}, width={!r})'.format(
+            self._height_value,
+            self._width_value,
+        )
 
-class PreviewArg(object):
+class DownloadArg(object):
     """
-    :ivar path: The path of the file to preview.
+    :ivar path: The path of the file to download.
     :ivar rev: Deprecated. Please specify revision in :field:'path' instead
     """
 
@@ -4586,7 +707,7 @@ class PreviewArg(object):
     @property
     def path(self):
         """
-        The path of the file to preview.
+        The path of the file to download.
 
         :rtype: str
         """
@@ -4633,36 +754,25 @@ class PreviewArg(object):
         self._rev_present = False
 
     def __repr__(self):
-        return 'PreviewArg(path={!r}, rev={!r})'.format(
+        return 'DownloadArg(path={!r}, rev={!r})'.format(
             self._path_value,
             self._rev_value,
         )
 
-class PreviewError(object):
+class DownloadError(object):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError path: An error occurs when downloading metadata for the
-        file.
-    :ivar in_progress: This preview generation is still in progress and the file
-        is not ready  for preview yet.
-    :ivar unsupported_extension: The file extension is not supported preview
-        generation.
-    :ivar unsupported_content: The file content is not supported for preview
-        generation.
+    :ivar other: An unspecified error.
     """
 
     __slots__ = ['_tag', '_value']
 
-    _catch_all = None
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    in_progress = None
-    # Attribute is overwritten below the class definition
-    unsupported_extension = None
-    # Attribute is overwritten below the class definition
-    unsupported_content = None
+    other = None
 
     def __init__(self, tag, value=None):
         assert tag in self._tagmap, 'Invalid tag %r.' % tag
@@ -4683,7 +793,7 @@ class PreviewError(object):
         ``val``.
 
         :param LookupError val:
-        :rtype: PreviewError
+        :rtype: DownloadError
         """
         return cls('path', val)
 
@@ -4695,34 +805,16 @@ class PreviewError(object):
         """
         return self._tag == 'path'
 
-    def is_in_progress(self):
+    def is_other(self):
         """
-        Check if the union tag is ``in_progress``.
+        Check if the union tag is ``other``.
 
         :rtype: bool
         """
-        return self._tag == 'in_progress'
-
-    def is_unsupported_extension(self):
-        """
-        Check if the union tag is ``unsupported_extension``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unsupported_extension'
-
-    def is_unsupported_content(self):
-        """
-        Check if the union tag is ``unsupported_content``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unsupported_content'
+        return self._tag == 'other'
 
     def get_path(self):
         """
-        An error occurs when downloading metadata for the file.
-
         Only call this if :meth:`is_path` is true.
 
         :rtype: LookupError
@@ -4732,7 +824,1586 @@ class PreviewError(object):
         return self._value
 
     def __repr__(self):
-        return 'PreviewError(%r, %r)' % (self._tag, self._value)
+        return 'DownloadError(%r, %r)' % (self._tag, self._value)
+
+class FileMetadata(Metadata):
+    """
+    :ivar id: A unique identifier for the file.
+    :ivar client_modified: For files, this is the modification time set by the
+        desktop client when the file was added to Dropbox. Since this time is
+        not verified (the Dropbox server stores whatever the desktop client
+        sends up), this should only be used for display purposes (such as
+        sorting) and not, for example, to determine if a file has changed or
+        not.
+    :ivar server_modified: The last time the file was modified on Dropbox.
+    :ivar rev: A unique identifier for the current revision of a file. This
+        field is the same rev as elsewhere in the API and can be used to detect
+        changes and avoid conflicts.
+    :ivar size: The file size in bytes.
+    :ivar media_info: Additional information if the file is a photo or video.
+    :ivar sharing_info: Set if this file is contained in a shared folder.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_client_modified_value',
+        '_client_modified_present',
+        '_server_modified_value',
+        '_server_modified_present',
+        '_rev_value',
+        '_rev_present',
+        '_size_value',
+        '_size_present',
+        '_media_info_value',
+        '_media_info_present',
+        '_sharing_info_value',
+        '_sharing_info_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 name=None,
+                 path_lower=None,
+                 client_modified=None,
+                 server_modified=None,
+                 rev=None,
+                 size=None,
+                 parent_shared_folder_id=None,
+                 id=None,
+                 media_info=None,
+                 sharing_info=None):
+        super(FileMetadata, self).__init__(name,
+                                           path_lower,
+                                           parent_shared_folder_id)
+        self._id_value = None
+        self._id_present = False
+        self._client_modified_value = None
+        self._client_modified_present = False
+        self._server_modified_value = None
+        self._server_modified_present = False
+        self._rev_value = None
+        self._rev_present = False
+        self._size_value = None
+        self._size_present = False
+        self._media_info_value = None
+        self._media_info_present = False
+        self._sharing_info_value = None
+        self._sharing_info_present = False
+        if id is not None:
+            self.id = id
+        if client_modified is not None:
+            self.client_modified = client_modified
+        if server_modified is not None:
+            self.server_modified = server_modified
+        if rev is not None:
+            self.rev = rev
+        if size is not None:
+            self.size = size
+        if media_info is not None:
+            self.media_info = media_info
+        if sharing_info is not None:
+            self.sharing_info = sharing_info
+
+    @property
+    def id(self):
+        """
+        A unique identifier for the file.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            return None
+
+    @id.setter
+    def id(self, val):
+        if val is None:
+            del self.id
+            return
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def client_modified(self):
+        """
+        For files, this is the modification time set by the desktop client when
+        the file was added to Dropbox. Since this time is not verified (the
+        Dropbox server stores whatever the desktop client sends up), this should
+        only be used for display purposes (such as sorting) and not, for
+        example, to determine if a file has changed or not.
+
+        :rtype: datetime.datetime
+        """
+        if self._client_modified_present:
+            return self._client_modified_value
+        else:
+            raise AttributeError("missing required field 'client_modified'")
+
+    @client_modified.setter
+    def client_modified(self, val):
+        val = self._client_modified_validator.validate(val)
+        self._client_modified_value = val
+        self._client_modified_present = True
+
+    @client_modified.deleter
+    def client_modified(self):
+        self._client_modified_value = None
+        self._client_modified_present = False
+
+    @property
+    def server_modified(self):
+        """
+        The last time the file was modified on Dropbox.
+
+        :rtype: datetime.datetime
+        """
+        if self._server_modified_present:
+            return self._server_modified_value
+        else:
+            raise AttributeError("missing required field 'server_modified'")
+
+    @server_modified.setter
+    def server_modified(self, val):
+        val = self._server_modified_validator.validate(val)
+        self._server_modified_value = val
+        self._server_modified_present = True
+
+    @server_modified.deleter
+    def server_modified(self):
+        self._server_modified_value = None
+        self._server_modified_present = False
+
+    @property
+    def rev(self):
+        """
+        A unique identifier for the current revision of a file. This field is
+        the same rev as elsewhere in the API and can be used to detect changes
+        and avoid conflicts.
+
+        :rtype: str
+        """
+        if self._rev_present:
+            return self._rev_value
+        else:
+            raise AttributeError("missing required field 'rev'")
+
+    @rev.setter
+    def rev(self, val):
+        val = self._rev_validator.validate(val)
+        self._rev_value = val
+        self._rev_present = True
+
+    @rev.deleter
+    def rev(self):
+        self._rev_value = None
+        self._rev_present = False
+
+    @property
+    def size(self):
+        """
+        The file size in bytes.
+
+        :rtype: long
+        """
+        if self._size_present:
+            return self._size_value
+        else:
+            raise AttributeError("missing required field 'size'")
+
+    @size.setter
+    def size(self, val):
+        val = self._size_validator.validate(val)
+        self._size_value = val
+        self._size_present = True
+
+    @size.deleter
+    def size(self):
+        self._size_value = None
+        self._size_present = False
+
+    @property
+    def media_info(self):
+        """
+        Additional information if the file is a photo or video.
+
+        :rtype: MediaInfo
+        """
+        if self._media_info_present:
+            return self._media_info_value
+        else:
+            return None
+
+    @media_info.setter
+    def media_info(self, val):
+        if val is None:
+            del self.media_info
+            return
+        self._media_info_validator.validate_type_only(val)
+        self._media_info_value = val
+        self._media_info_present = True
+
+    @media_info.deleter
+    def media_info(self):
+        self._media_info_value = None
+        self._media_info_present = False
+
+    @property
+    def sharing_info(self):
+        """
+        Set if this file is contained in a shared folder.
+
+        :rtype: FileSharingInfo
+        """
+        if self._sharing_info_present:
+            return self._sharing_info_value
+        else:
+            return None
+
+    @sharing_info.setter
+    def sharing_info(self, val):
+        if val is None:
+            del self.sharing_info
+            return
+        self._sharing_info_validator.validate_type_only(val)
+        self._sharing_info_value = val
+        self._sharing_info_present = True
+
+    @sharing_info.deleter
+    def sharing_info(self):
+        self._sharing_info_value = None
+        self._sharing_info_present = False
+
+    def __repr__(self):
+        return 'FileMetadata(name={!r}, path_lower={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, parent_shared_folder_id={!r}, id={!r}, media_info={!r}, sharing_info={!r})'.format(
+            self._name_value,
+            self._path_lower_value,
+            self._client_modified_value,
+            self._server_modified_value,
+            self._rev_value,
+            self._size_value,
+            self._parent_shared_folder_id_value,
+            self._id_value,
+            self._media_info_value,
+            self._sharing_info_value,
+        )
+
+class SharingInfo(object):
+    """
+    Sharing info for a file or folder.
+
+    :ivar read_only: True if the file or folder is inside a read-only shared
+        folder.
+    """
+
+    __slots__ = [
+        '_read_only_value',
+        '_read_only_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 read_only=None):
+        self._read_only_value = None
+        self._read_only_present = False
+        if read_only is not None:
+            self.read_only = read_only
+
+    @property
+    def read_only(self):
+        """
+        True if the file or folder is inside a read-only shared folder.
+
+        :rtype: bool
+        """
+        if self._read_only_present:
+            return self._read_only_value
+        else:
+            raise AttributeError("missing required field 'read_only'")
+
+    @read_only.setter
+    def read_only(self, val):
+        val = self._read_only_validator.validate(val)
+        self._read_only_value = val
+        self._read_only_present = True
+
+    @read_only.deleter
+    def read_only(self):
+        self._read_only_value = None
+        self._read_only_present = False
+
+    def __repr__(self):
+        return 'SharingInfo(read_only={!r})'.format(
+            self._read_only_value,
+        )
+
+class FileSharingInfo(SharingInfo):
+    """
+    Sharing info for a file which is contained by a shared folder.
+
+    :ivar parent_shared_folder_id: ID of shared folder that holds this file.
+    :ivar modified_by: The last user who modified the file. This field will be
+        null if the user's account has been deleted.
+    """
+
+    __slots__ = [
+        '_parent_shared_folder_id_value',
+        '_parent_shared_folder_id_present',
+        '_modified_by_value',
+        '_modified_by_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 read_only=None,
+                 parent_shared_folder_id=None,
+                 modified_by=None):
+        super(FileSharingInfo, self).__init__(read_only)
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
+        self._modified_by_value = None
+        self._modified_by_present = False
+        if parent_shared_folder_id is not None:
+            self.parent_shared_folder_id = parent_shared_folder_id
+        if modified_by is not None:
+            self.modified_by = modified_by
+
+    @property
+    def parent_shared_folder_id(self):
+        """
+        ID of shared folder that holds this file.
+
+        :rtype: str
+        """
+        if self._parent_shared_folder_id_present:
+            return self._parent_shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'parent_shared_folder_id'")
+
+    @parent_shared_folder_id.setter
+    def parent_shared_folder_id(self, val):
+        val = self._parent_shared_folder_id_validator.validate(val)
+        self._parent_shared_folder_id_value = val
+        self._parent_shared_folder_id_present = True
+
+    @parent_shared_folder_id.deleter
+    def parent_shared_folder_id(self):
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
+
+    @property
+    def modified_by(self):
+        """
+        The last user who modified the file. This field will be null if the
+        user's account has been deleted.
+
+        :rtype: str
+        """
+        if self._modified_by_present:
+            return self._modified_by_value
+        else:
+            return None
+
+    @modified_by.setter
+    def modified_by(self, val):
+        if val is None:
+            del self.modified_by
+            return
+        val = self._modified_by_validator.validate(val)
+        self._modified_by_value = val
+        self._modified_by_present = True
+
+    @modified_by.deleter
+    def modified_by(self):
+        self._modified_by_value = None
+        self._modified_by_present = False
+
+    def __repr__(self):
+        return 'FileSharingInfo(read_only={!r}, parent_shared_folder_id={!r}, modified_by={!r})'.format(
+            self._read_only_value,
+            self._parent_shared_folder_id_value,
+            self._modified_by_value,
+        )
+
+class FolderMetadata(Metadata):
+    """
+    :ivar id: A unique identifier for the folder.
+    :ivar shared_folder_id: Deprecated. Please use :field:'sharing_info'
+        instead.
+    :ivar sharing_info: Set if the folder is contained in a shared folder or is
+        a shared folder mount point.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+        '_sharing_info_value',
+        '_sharing_info_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 name=None,
+                 path_lower=None,
+                 parent_shared_folder_id=None,
+                 id=None,
+                 shared_folder_id=None,
+                 sharing_info=None):
+        super(FolderMetadata, self).__init__(name,
+                                             path_lower,
+                                             parent_shared_folder_id)
+        self._id_value = None
+        self._id_present = False
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        self._sharing_info_value = None
+        self._sharing_info_present = False
+        if id is not None:
+            self.id = id
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+        if sharing_info is not None:
+            self.sharing_info = sharing_info
+
+    @property
+    def id(self):
+        """
+        A unique identifier for the folder.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            return None
+
+    @id.setter
+    def id(self, val):
+        if val is None:
+            del self.id
+            return
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def shared_folder_id(self):
+        """
+        Deprecated. Please use :field:'sharing_info' instead.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            return None
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        if val is None:
+            del self.shared_folder_id
+            return
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    @property
+    def sharing_info(self):
+        """
+        Set if the folder is contained in a shared folder or is a shared folder
+        mount point.
+
+        :rtype: FolderSharingInfo
+        """
+        if self._sharing_info_present:
+            return self._sharing_info_value
+        else:
+            return None
+
+    @sharing_info.setter
+    def sharing_info(self, val):
+        if val is None:
+            del self.sharing_info
+            return
+        self._sharing_info_validator.validate_type_only(val)
+        self._sharing_info_value = val
+        self._sharing_info_present = True
+
+    @sharing_info.deleter
+    def sharing_info(self):
+        self._sharing_info_value = None
+        self._sharing_info_present = False
+
+    def __repr__(self):
+        return 'FolderMetadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r}, id={!r}, shared_folder_id={!r}, sharing_info={!r})'.format(
+            self._name_value,
+            self._path_lower_value,
+            self._parent_shared_folder_id_value,
+            self._id_value,
+            self._shared_folder_id_value,
+            self._sharing_info_value,
+        )
+
+class FolderSharingInfo(SharingInfo):
+    """
+    Sharing info for a folder which is contained in a shared folder or is a
+    shared folder mount point.
+
+    :ivar parent_shared_folder_id: Set if the folder is contained by a shared
+        folder.
+    :ivar shared_folder_id: If this folder is a shared folder mount point, the
+        ID of the shared folder mounted at this location.
+    """
+
+    __slots__ = [
+        '_parent_shared_folder_id_value',
+        '_parent_shared_folder_id_present',
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 read_only=None,
+                 parent_shared_folder_id=None,
+                 shared_folder_id=None):
+        super(FolderSharingInfo, self).__init__(read_only)
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        if parent_shared_folder_id is not None:
+            self.parent_shared_folder_id = parent_shared_folder_id
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+
+    @property
+    def parent_shared_folder_id(self):
+        """
+        Set if the folder is contained by a shared folder.
+
+        :rtype: str
+        """
+        if self._parent_shared_folder_id_present:
+            return self._parent_shared_folder_id_value
+        else:
+            return None
+
+    @parent_shared_folder_id.setter
+    def parent_shared_folder_id(self, val):
+        if val is None:
+            del self.parent_shared_folder_id
+            return
+        val = self._parent_shared_folder_id_validator.validate(val)
+        self._parent_shared_folder_id_value = val
+        self._parent_shared_folder_id_present = True
+
+    @parent_shared_folder_id.deleter
+    def parent_shared_folder_id(self):
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
+
+    @property
+    def shared_folder_id(self):
+        """
+        If this folder is a shared folder mount point, the ID of the shared
+        folder mounted at this location.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            return None
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        if val is None:
+            del self.shared_folder_id
+            return
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    def __repr__(self):
+        return 'FolderSharingInfo(read_only={!r}, parent_shared_folder_id={!r}, shared_folder_id={!r})'.format(
+            self._read_only_value,
+            self._parent_shared_folder_id_value,
+            self._shared_folder_id_value,
+        )
+
+class GetMetadataArg(object):
+    """
+    :ivar path: The path of a file or folder on Dropbox
+    :ivar include_media_info: If true, :field:'FileMetadata.media_info' is set
+        for photo and video.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_include_media_info_value',
+        '_include_media_info_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 include_media_info=None):
+        self._path_value = None
+        self._path_present = False
+        self._include_media_info_value = None
+        self._include_media_info_present = False
+        if path is not None:
+            self.path = path
+        if include_media_info is not None:
+            self.include_media_info = include_media_info
+
+    @property
+    def path(self):
+        """
+        The path of a file or folder on Dropbox
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def include_media_info(self):
+        """
+        If true, :field:'FileMetadata.media_info' is set for photo and video.
+
+        :rtype: bool
+        """
+        if self._include_media_info_present:
+            return self._include_media_info_value
+        else:
+            return False
+
+    @include_media_info.setter
+    def include_media_info(self, val):
+        val = self._include_media_info_validator.validate(val)
+        self._include_media_info_value = val
+        self._include_media_info_present = True
+
+    @include_media_info.deleter
+    def include_media_info(self):
+        self._include_media_info_value = None
+        self._include_media_info_present = False
+
+    def __repr__(self):
+        return 'GetMetadataArg(path={!r}, include_media_info={!r})'.format(
+            self._path_value,
+            self._include_media_info_value,
+        )
+
+class GetMetadataError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: GetMetadataError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetMetadataError(%r, %r)' % (self._tag, self._value)
+
+class GpsCoordinates(object):
+    """
+    GPS coordinates for a photo or video.
+
+    :ivar latitude: Latitude of the GPS coordinates.
+    :ivar longitude: Longitude of the GPS coordinates.
+    """
+
+    __slots__ = [
+        '_latitude_value',
+        '_latitude_present',
+        '_longitude_value',
+        '_longitude_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 latitude=None,
+                 longitude=None):
+        self._latitude_value = None
+        self._latitude_present = False
+        self._longitude_value = None
+        self._longitude_present = False
+        if latitude is not None:
+            self.latitude = latitude
+        if longitude is not None:
+            self.longitude = longitude
+
+    @property
+    def latitude(self):
+        """
+        Latitude of the GPS coordinates.
+
+        :rtype: float
+        """
+        if self._latitude_present:
+            return self._latitude_value
+        else:
+            raise AttributeError("missing required field 'latitude'")
+
+    @latitude.setter
+    def latitude(self, val):
+        val = self._latitude_validator.validate(val)
+        self._latitude_value = val
+        self._latitude_present = True
+
+    @latitude.deleter
+    def latitude(self):
+        self._latitude_value = None
+        self._latitude_present = False
+
+    @property
+    def longitude(self):
+        """
+        Longitude of the GPS coordinates.
+
+        :rtype: float
+        """
+        if self._longitude_present:
+            return self._longitude_value
+        else:
+            raise AttributeError("missing required field 'longitude'")
+
+    @longitude.setter
+    def longitude(self, val):
+        val = self._longitude_validator.validate(val)
+        self._longitude_value = val
+        self._longitude_present = True
+
+    @longitude.deleter
+    def longitude(self):
+        self._longitude_value = None
+        self._longitude_present = False
+
+    def __repr__(self):
+        return 'GpsCoordinates(latitude={!r}, longitude={!r})'.format(
+            self._latitude_value,
+            self._longitude_value,
+        )
+
+class ListFolderArg(object):
+    """
+    :ivar path: The path to the folder you want to see the contents of.
+    :ivar recursive: If true, the list folder operation will be applied
+        recursively to all subfolders and the response will contain contents of
+        all subfolders.
+    :ivar include_media_info: If true, :field:'FileMetadata.media_info' is set
+        for photo and video.
+    :ivar include_deleted: If true, the results will include entries for files
+        and folders that used to exist but were deleted.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_recursive_value',
+        '_recursive_present',
+        '_include_media_info_value',
+        '_include_media_info_present',
+        '_include_deleted_value',
+        '_include_deleted_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 recursive=None,
+                 include_media_info=None,
+                 include_deleted=None):
+        self._path_value = None
+        self._path_present = False
+        self._recursive_value = None
+        self._recursive_present = False
+        self._include_media_info_value = None
+        self._include_media_info_present = False
+        self._include_deleted_value = None
+        self._include_deleted_present = False
+        if path is not None:
+            self.path = path
+        if recursive is not None:
+            self.recursive = recursive
+        if include_media_info is not None:
+            self.include_media_info = include_media_info
+        if include_deleted is not None:
+            self.include_deleted = include_deleted
+
+    @property
+    def path(self):
+        """
+        The path to the folder you want to see the contents of.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def recursive(self):
+        """
+        If true, the list folder operation will be applied recursively to all
+        subfolders and the response will contain contents of all subfolders.
+
+        :rtype: bool
+        """
+        if self._recursive_present:
+            return self._recursive_value
+        else:
+            return False
+
+    @recursive.setter
+    def recursive(self, val):
+        val = self._recursive_validator.validate(val)
+        self._recursive_value = val
+        self._recursive_present = True
+
+    @recursive.deleter
+    def recursive(self):
+        self._recursive_value = None
+        self._recursive_present = False
+
+    @property
+    def include_media_info(self):
+        """
+        If true, :field:'FileMetadata.media_info' is set for photo and video.
+
+        :rtype: bool
+        """
+        if self._include_media_info_present:
+            return self._include_media_info_value
+        else:
+            return False
+
+    @include_media_info.setter
+    def include_media_info(self, val):
+        val = self._include_media_info_validator.validate(val)
+        self._include_media_info_value = val
+        self._include_media_info_present = True
+
+    @include_media_info.deleter
+    def include_media_info(self):
+        self._include_media_info_value = None
+        self._include_media_info_present = False
+
+    @property
+    def include_deleted(self):
+        """
+        If true, the results will include entries for files and folders that
+        used to exist but were deleted.
+
+        :rtype: bool
+        """
+        if self._include_deleted_present:
+            return self._include_deleted_value
+        else:
+            return False
+
+    @include_deleted.setter
+    def include_deleted(self, val):
+        val = self._include_deleted_validator.validate(val)
+        self._include_deleted_value = val
+        self._include_deleted_present = True
+
+    @include_deleted.deleter
+    def include_deleted(self):
+        self._include_deleted_value = None
+        self._include_deleted_present = False
+
+    def __repr__(self):
+        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r})'.format(
+            self._path_value,
+            self._recursive_value,
+            self._include_media_info_value,
+            self._include_deleted_value,
+        )
+
+class ListFolderContinueArg(object):
+    """
+    :ivar cursor: The cursor returned by your last call to list_folder or
+        list_folder/continue.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        The cursor returned by your last call to list_folder or
+        list_folder/continue.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListFolderContinueArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+class ListFolderContinueError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar reset: Indicates that the cursor has been invalidated. Call
+        list_folder to obtain a new cursor.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    reset = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: ListFolderContinueError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_reset(self):
+        """
+        Check if the union tag is ``reset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reset'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ListFolderContinueError(%r, %r)' % (self._tag, self._value)
+
+class ListFolderError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar other: An unspecified error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: ListFolderError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ListFolderError(%r, %r)' % (self._tag, self._value)
+
+class ListFolderGetLatestCursorResult(object):
+    """
+    :ivar cursor: Pass the cursor into list_folder/continue to see what's
+        changed in the folder since your previous query.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        Pass the cursor into list_folder/continue to see what's changed in the
+        folder since your previous query.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListFolderGetLatestCursorResult(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+class ListFolderLongpollArg(object):
+    """
+    :ivar cursor: A cursor as returned by list_folder or list_folder/continue
+    :ivar timeout: A timeout in seconds. The request will block for at most this
+        length of time, plus up to 90 seconds of random jitter added to avoid
+        the thundering herd problem. Care should be taken when using this
+        parameter, as some network infrastructure does not support long
+        timeouts.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+        '_timeout_value',
+        '_timeout_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None,
+                 timeout=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        self._timeout_value = None
+        self._timeout_present = False
+        if cursor is not None:
+            self.cursor = cursor
+        if timeout is not None:
+            self.timeout = timeout
+
+    @property
+    def cursor(self):
+        """
+        A cursor as returned by list_folder or list_folder/continue
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def timeout(self):
+        """
+        A timeout in seconds. The request will block for at most this length of
+        time, plus up to 90 seconds of random jitter added to avoid the
+        thundering herd problem. Care should be taken when using this parameter,
+        as some network infrastructure does not support long timeouts.
+
+        :rtype: long
+        """
+        if self._timeout_present:
+            return self._timeout_value
+        else:
+            return 30
+
+    @timeout.setter
+    def timeout(self, val):
+        val = self._timeout_validator.validate(val)
+        self._timeout_value = val
+        self._timeout_present = True
+
+    @timeout.deleter
+    def timeout(self):
+        self._timeout_value = None
+        self._timeout_present = False
+
+    def __repr__(self):
+        return 'ListFolderLongpollArg(cursor={!r}, timeout={!r})'.format(
+            self._cursor_value,
+            self._timeout_value,
+        )
+
+class ListFolderLongpollError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar reset: Indicates that the cursor has been invalidated. Call
+        list_folder to obtain a new cursor.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    reset = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_reset(self):
+        """
+        Check if the union tag is ``reset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reset'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ListFolderLongpollError(%r, %r)' % (self._tag, self._value)
+
+class ListFolderLongpollResult(object):
+    """
+    :ivar changes: Indicates whether new changes are available. If true, call
+        list_folder to retrieve the changes.
+    :ivar backoff: If present, backoff for at least this many seconds before
+        calling list_folder/longpoll again.
+    """
+
+    __slots__ = [
+        '_changes_value',
+        '_changes_present',
+        '_backoff_value',
+        '_backoff_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 changes=None,
+                 backoff=None):
+        self._changes_value = None
+        self._changes_present = False
+        self._backoff_value = None
+        self._backoff_present = False
+        if changes is not None:
+            self.changes = changes
+        if backoff is not None:
+            self.backoff = backoff
+
+    @property
+    def changes(self):
+        """
+        Indicates whether new changes are available. If true, call list_folder
+        to retrieve the changes.
+
+        :rtype: bool
+        """
+        if self._changes_present:
+            return self._changes_value
+        else:
+            raise AttributeError("missing required field 'changes'")
+
+    @changes.setter
+    def changes(self, val):
+        val = self._changes_validator.validate(val)
+        self._changes_value = val
+        self._changes_present = True
+
+    @changes.deleter
+    def changes(self):
+        self._changes_value = None
+        self._changes_present = False
+
+    @property
+    def backoff(self):
+        """
+        If present, backoff for at least this many seconds before calling
+        list_folder/longpoll again.
+
+        :rtype: long
+        """
+        if self._backoff_present:
+            return self._backoff_value
+        else:
+            return None
+
+    @backoff.setter
+    def backoff(self, val):
+        if val is None:
+            del self.backoff
+            return
+        val = self._backoff_validator.validate(val)
+        self._backoff_value = val
+        self._backoff_present = True
+
+    @backoff.deleter
+    def backoff(self):
+        self._backoff_value = None
+        self._backoff_present = False
+
+    def __repr__(self):
+        return 'ListFolderLongpollResult(changes={!r}, backoff={!r})'.format(
+            self._changes_value,
+            self._backoff_value,
+        )
+
+class ListFolderResult(object):
+    """
+    :ivar entries: The files and (direct) subfolders in the folder.
+    :ivar cursor: Pass the cursor into list_folder/continue to see what's
+        changed in the folder since your previous query.
+    :ivar has_more: If true, then there are more entries available. Pass the
+        cursor to list_folder/continue to retrieve the rest.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+        '_cursor_value',
+        '_cursor_present',
+        '_has_more_value',
+        '_has_more_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None,
+                 cursor=None,
+                 has_more=None):
+        self._entries_value = None
+        self._entries_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        self._has_more_value = None
+        self._has_more_present = False
+        if entries is not None:
+            self.entries = entries
+        if cursor is not None:
+            self.cursor = cursor
+        if has_more is not None:
+            self.has_more = has_more
+
+    @property
+    def entries(self):
+        """
+        The files and (direct) subfolders in the folder.
+
+        :rtype: list of [Metadata]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    @property
+    def cursor(self):
+        """
+        Pass the cursor into list_folder/continue to see what's changed in the
+        folder since your previous query.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def has_more(self):
+        """
+        If true, then there are more entries available. Pass the cursor to
+        list_folder/continue to retrieve the rest.
+
+        :rtype: bool
+        """
+        if self._has_more_present:
+            return self._has_more_value
+        else:
+            raise AttributeError("missing required field 'has_more'")
+
+    @has_more.setter
+    def has_more(self, val):
+        val = self._has_more_validator.validate(val)
+        self._has_more_value = val
+        self._has_more_present = True
+
+    @has_more.deleter
+    def has_more(self):
+        self._has_more_value = None
+        self._has_more_present = False
+
+    def __repr__(self):
+        return 'ListFolderResult(entries={!r}, cursor={!r}, has_more={!r})'.format(
+            self._entries_value,
+            self._cursor_value,
+            self._has_more_value,
+        )
 
 class ListRevisionsArg(object):
     """
@@ -4958,6 +2629,766 @@ class ListRevisionsResult(object):
             self._entries_value,
         )
 
+class LookupError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar not_found: There is nothing at the given path.
+    :ivar not_file: We were expecting a file, but the given path refers to
+        something that isn't a file.
+    :ivar not_folder: We were expecting a folder, but the given path refers to
+        something that isn't a folder.
+    :ivar restricted_content: The file cannot be transferred because the content
+        is restricted.  For example, sometimes there are legal restrictions due
+        to copyright claims.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    not_found = None
+    # Attribute is overwritten below the class definition
+    not_file = None
+    # Attribute is overwritten below the class definition
+    not_folder = None
+    # Attribute is overwritten below the class definition
+    restricted_content = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def malformed_path(cls, val):
+        """
+        Create an instance of this class set to the ``malformed_path`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: LookupError
+        """
+        return cls('malformed_path', val)
+
+    def is_malformed_path(self):
+        """
+        Check if the union tag is ``malformed_path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'malformed_path'
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_not_file(self):
+        """
+        Check if the union tag is ``not_file``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_file'
+
+    def is_not_folder(self):
+        """
+        Check if the union tag is ``not_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_folder'
+
+    def is_restricted_content(self):
+        """
+        Check if the union tag is ``restricted_content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'restricted_content'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_malformed_path(self):
+        """
+        Only call this if :meth:`is_malformed_path` is true.
+
+        :rtype: str
+        """
+        if not self.is_malformed_path():
+            raise AttributeError("tag 'malformed_path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'LookupError(%r, %r)' % (self._tag, self._value)
+
+class MediaInfo(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar pending: Indicate the photo/video is still under processing and
+        metadata is not available yet.
+    :ivar MediaMetadata metadata: The metadata for the photo/video.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    pending = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def metadata(cls, val):
+        """
+        Create an instance of this class set to the ``metadata`` tag with value
+        ``val``.
+
+        :param MediaMetadata val:
+        :rtype: MediaInfo
+        """
+        return cls('metadata', val)
+
+    def is_pending(self):
+        """
+        Check if the union tag is ``pending``.
+
+        :rtype: bool
+        """
+        return self._tag == 'pending'
+
+    def is_metadata(self):
+        """
+        Check if the union tag is ``metadata``.
+
+        :rtype: bool
+        """
+        return self._tag == 'metadata'
+
+    def get_metadata(self):
+        """
+        The metadata for the photo/video.
+
+        Only call this if :meth:`is_metadata` is true.
+
+        :rtype: MediaMetadata
+        """
+        if not self.is_metadata():
+            raise AttributeError("tag 'metadata' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'MediaInfo(%r, %r)' % (self._tag, self._value)
+
+class MediaMetadata(object):
+    """
+    Metadata for a photo or video.
+
+    :ivar dimensions: Dimension of the photo/video.
+    :ivar location: The GPS coordinate of the photo/video.
+    :ivar time_taken: The timestamp when the photo/video is taken.
+    """
+
+    __slots__ = [
+        '_dimensions_value',
+        '_dimensions_present',
+        '_location_value',
+        '_location_present',
+        '_time_taken_value',
+        '_time_taken_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 dimensions=None,
+                 location=None,
+                 time_taken=None):
+        self._dimensions_value = None
+        self._dimensions_present = False
+        self._location_value = None
+        self._location_present = False
+        self._time_taken_value = None
+        self._time_taken_present = False
+        if dimensions is not None:
+            self.dimensions = dimensions
+        if location is not None:
+            self.location = location
+        if time_taken is not None:
+            self.time_taken = time_taken
+
+    @property
+    def dimensions(self):
+        """
+        Dimension of the photo/video.
+
+        :rtype: Dimensions
+        """
+        if self._dimensions_present:
+            return self._dimensions_value
+        else:
+            return None
+
+    @dimensions.setter
+    def dimensions(self, val):
+        if val is None:
+            del self.dimensions
+            return
+        self._dimensions_validator.validate_type_only(val)
+        self._dimensions_value = val
+        self._dimensions_present = True
+
+    @dimensions.deleter
+    def dimensions(self):
+        self._dimensions_value = None
+        self._dimensions_present = False
+
+    @property
+    def location(self):
+        """
+        The GPS coordinate of the photo/video.
+
+        :rtype: GpsCoordinates
+        """
+        if self._location_present:
+            return self._location_value
+        else:
+            return None
+
+    @location.setter
+    def location(self, val):
+        if val is None:
+            del self.location
+            return
+        self._location_validator.validate_type_only(val)
+        self._location_value = val
+        self._location_present = True
+
+    @location.deleter
+    def location(self):
+        self._location_value = None
+        self._location_present = False
+
+    @property
+    def time_taken(self):
+        """
+        The timestamp when the photo/video is taken.
+
+        :rtype: datetime.datetime
+        """
+        if self._time_taken_present:
+            return self._time_taken_value
+        else:
+            return None
+
+    @time_taken.setter
+    def time_taken(self, val):
+        if val is None:
+            del self.time_taken
+            return
+        val = self._time_taken_validator.validate(val)
+        self._time_taken_value = val
+        self._time_taken_present = True
+
+    @time_taken.deleter
+    def time_taken(self):
+        self._time_taken_value = None
+        self._time_taken_present = False
+
+    def __repr__(self):
+        return 'MediaMetadata(dimensions={!r}, location={!r}, time_taken={!r})'.format(
+            self._dimensions_value,
+            self._location_value,
+            self._time_taken_value,
+        )
+
+class PhotoMetadata(MediaMetadata):
+    """
+    Metadata for a photo.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 dimensions=None,
+                 location=None,
+                 time_taken=None):
+        super(PhotoMetadata, self).__init__(dimensions,
+                                            location,
+                                            time_taken)
+
+    def __repr__(self):
+        return 'PhotoMetadata(dimensions={!r}, location={!r}, time_taken={!r})'.format(
+            self._dimensions_value,
+            self._location_value,
+            self._time_taken_value,
+        )
+
+class PreviewArg(object):
+    """
+    :ivar path: The path of the file to preview.
+    :ivar rev: Deprecated. Please specify revision in :field:'path' instead
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_rev_value',
+        '_rev_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 rev=None):
+        self._path_value = None
+        self._path_present = False
+        self._rev_value = None
+        self._rev_present = False
+        if path is not None:
+            self.path = path
+        if rev is not None:
+            self.rev = rev
+
+    @property
+    def path(self):
+        """
+        The path of the file to preview.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def rev(self):
+        """
+        Deprecated. Please specify revision in :field:'path' instead
+
+        :rtype: str
+        """
+        if self._rev_present:
+            return self._rev_value
+        else:
+            return None
+
+    @rev.setter
+    def rev(self, val):
+        if val is None:
+            del self.rev
+            return
+        val = self._rev_validator.validate(val)
+        self._rev_value = val
+        self._rev_present = True
+
+    @rev.deleter
+    def rev(self):
+        self._rev_value = None
+        self._rev_present = False
+
+    def __repr__(self):
+        return 'PreviewArg(path={!r}, rev={!r})'.format(
+            self._path_value,
+            self._rev_value,
+        )
+
+class PreviewError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar LookupError path: An error occurs when downloading metadata for the
+        file.
+    :ivar in_progress: This preview generation is still in progress and the file
+        is not ready  for preview yet.
+    :ivar unsupported_extension: The file extension is not supported preview
+        generation.
+    :ivar unsupported_content: The file content is not supported for preview
+        generation.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    in_progress = None
+    # Attribute is overwritten below the class definition
+    unsupported_extension = None
+    # Attribute is overwritten below the class definition
+    unsupported_content = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: PreviewError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == 'in_progress'
+
+    def is_unsupported_extension(self):
+        """
+        Check if the union tag is ``unsupported_extension``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_extension'
+
+    def is_unsupported_content(self):
+        """
+        Check if the union tag is ``unsupported_content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_content'
+
+    def get_path(self):
+        """
+        An error occurs when downloading metadata for the file.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'PreviewError(%r, %r)' % (self._tag, self._value)
+
+class RelocationArg(object):
+    """
+    :ivar from_path: Path in the user's Dropbox to be copied or moved.
+    :ivar to_path: Path in the user's Dropbox that is the destination.
+    """
+
+    __slots__ = [
+        '_from_path_value',
+        '_from_path_present',
+        '_to_path_value',
+        '_to_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 from_path=None,
+                 to_path=None):
+        self._from_path_value = None
+        self._from_path_present = False
+        self._to_path_value = None
+        self._to_path_present = False
+        if from_path is not None:
+            self.from_path = from_path
+        if to_path is not None:
+            self.to_path = to_path
+
+    @property
+    def from_path(self):
+        """
+        Path in the user's Dropbox to be copied or moved.
+
+        :rtype: str
+        """
+        if self._from_path_present:
+            return self._from_path_value
+        else:
+            raise AttributeError("missing required field 'from_path'")
+
+    @from_path.setter
+    def from_path(self, val):
+        val = self._from_path_validator.validate(val)
+        self._from_path_value = val
+        self._from_path_present = True
+
+    @from_path.deleter
+    def from_path(self):
+        self._from_path_value = None
+        self._from_path_present = False
+
+    @property
+    def to_path(self):
+        """
+        Path in the user's Dropbox that is the destination.
+
+        :rtype: str
+        """
+        if self._to_path_present:
+            return self._to_path_value
+        else:
+            raise AttributeError("missing required field 'to_path'")
+
+    @to_path.setter
+    def to_path(self, val):
+        val = self._to_path_validator.validate(val)
+        self._to_path_value = val
+        self._to_path_present = True
+
+    @to_path.deleter
+    def to_path(self):
+        self._to_path_value = None
+        self._to_path_present = False
+
+    def __repr__(self):
+        return 'RelocationArg(from_path={!r}, to_path={!r})'.format(
+            self._from_path_value,
+            self._to_path_value,
+        )
+
+class RelocationError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar cant_copy_shared_folder: Shared folders can't be copied.
+    :ivar cant_nest_shared_folder: Your move operation would result in nested
+        shared folders.  This is not allowed.
+    :ivar cant_move_folder_into_itself: You cannot move a folder into itself.
+    :ivar too_many_files: The operation would involve more than 10,000 files and
+        folders.
+    :ivar other: An unspecified error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    cant_copy_shared_folder = None
+    # Attribute is overwritten below the class definition
+    cant_nest_shared_folder = None
+    # Attribute is overwritten below the class definition
+    cant_move_folder_into_itself = None
+    # Attribute is overwritten below the class definition
+    too_many_files = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def from_lookup(cls, val):
+        """
+        Create an instance of this class set to the ``from_lookup`` tag with
+        value ``val``.
+
+        :param LookupError val:
+        :rtype: RelocationError
+        """
+        return cls('from_lookup', val)
+
+    @classmethod
+    def from_write(cls, val):
+        """
+        Create an instance of this class set to the ``from_write`` tag with
+        value ``val``.
+
+        :param WriteError val:
+        :rtype: RelocationError
+        """
+        return cls('from_write', val)
+
+    @classmethod
+    def to(cls, val):
+        """
+        Create an instance of this class set to the ``to`` tag with value
+        ``val``.
+
+        :param WriteError val:
+        :rtype: RelocationError
+        """
+        return cls('to', val)
+
+    def is_from_lookup(self):
+        """
+        Check if the union tag is ``from_lookup``.
+
+        :rtype: bool
+        """
+        return self._tag == 'from_lookup'
+
+    def is_from_write(self):
+        """
+        Check if the union tag is ``from_write``.
+
+        :rtype: bool
+        """
+        return self._tag == 'from_write'
+
+    def is_to(self):
+        """
+        Check if the union tag is ``to``.
+
+        :rtype: bool
+        """
+        return self._tag == 'to'
+
+    def is_cant_copy_shared_folder(self):
+        """
+        Check if the union tag is ``cant_copy_shared_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cant_copy_shared_folder'
+
+    def is_cant_nest_shared_folder(self):
+        """
+        Check if the union tag is ``cant_nest_shared_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cant_nest_shared_folder'
+
+    def is_cant_move_folder_into_itself(self):
+        """
+        Check if the union tag is ``cant_move_folder_into_itself``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cant_move_folder_into_itself'
+
+    def is_too_many_files(self):
+        """
+        Check if the union tag is ``too_many_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_files'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_from_lookup(self):
+        """
+        Only call this if :meth:`is_from_lookup` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_from_lookup():
+            raise AttributeError("tag 'from_lookup' not set")
+        return self._value
+
+    def get_from_write(self):
+        """
+        Only call this if :meth:`is_from_write` is true.
+
+        :rtype: WriteError
+        """
+        if not self.is_from_write():
+            raise AttributeError("tag 'from_write' not set")
+        return self._value
+
+    def get_to(self):
+        """
+        Only call this if :meth:`is_to` is true.
+
+        :rtype: WriteError
+        """
+        if not self.is_to():
+            raise AttributeError("tag 'to' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'RelocationError(%r, %r)' % (self._tag, self._value)
+
 class RestoreArg(object):
     """
     :ivar path: The path to the file you want to restore.
@@ -5152,6 +3583,1936 @@ class RestoreError(object):
     def __repr__(self):
         return 'RestoreError(%r, %r)' % (self._tag, self._value)
 
+class SearchArg(object):
+    """
+    :ivar path: The path in the user's Dropbox to search. Should probably be a
+        folder.
+    :ivar query: The string to search for. The search string is split on spaces
+        into multiple tokens. For file name searching, the last token is used
+        for prefix matching (i.e. "bat c" matches "bat cave" but not "batman
+        car").
+    :ivar start: The starting index within the search results (used for paging).
+    :ivar max_results: The maximum number of search results to return.
+    :ivar mode: The search mode (filename, filename_and_content, or
+        deleted_filename). Note that searching file content is only available
+        for Dropbox Business accounts.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_query_value',
+        '_query_present',
+        '_start_value',
+        '_start_present',
+        '_max_results_value',
+        '_max_results_present',
+        '_mode_value',
+        '_mode_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 query=None,
+                 start=None,
+                 max_results=None,
+                 mode=None):
+        self._path_value = None
+        self._path_present = False
+        self._query_value = None
+        self._query_present = False
+        self._start_value = None
+        self._start_present = False
+        self._max_results_value = None
+        self._max_results_present = False
+        self._mode_value = None
+        self._mode_present = False
+        if path is not None:
+            self.path = path
+        if query is not None:
+            self.query = query
+        if start is not None:
+            self.start = start
+        if max_results is not None:
+            self.max_results = max_results
+        if mode is not None:
+            self.mode = mode
+
+    @property
+    def path(self):
+        """
+        The path in the user's Dropbox to search. Should probably be a folder.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def query(self):
+        """
+        The string to search for. The search string is split on spaces into
+        multiple tokens. For file name searching, the last token is used for
+        prefix matching (i.e. "bat c" matches "bat cave" but not "batman car").
+
+        :rtype: str
+        """
+        if self._query_present:
+            return self._query_value
+        else:
+            raise AttributeError("missing required field 'query'")
+
+    @query.setter
+    def query(self, val):
+        val = self._query_validator.validate(val)
+        self._query_value = val
+        self._query_present = True
+
+    @query.deleter
+    def query(self):
+        self._query_value = None
+        self._query_present = False
+
+    @property
+    def start(self):
+        """
+        The starting index within the search results (used for paging).
+
+        :rtype: long
+        """
+        if self._start_present:
+            return self._start_value
+        else:
+            return 0
+
+    @start.setter
+    def start(self, val):
+        val = self._start_validator.validate(val)
+        self._start_value = val
+        self._start_present = True
+
+    @start.deleter
+    def start(self):
+        self._start_value = None
+        self._start_present = False
+
+    @property
+    def max_results(self):
+        """
+        The maximum number of search results to return.
+
+        :rtype: long
+        """
+        if self._max_results_present:
+            return self._max_results_value
+        else:
+            return 100
+
+    @max_results.setter
+    def max_results(self, val):
+        val = self._max_results_validator.validate(val)
+        self._max_results_value = val
+        self._max_results_present = True
+
+    @max_results.deleter
+    def max_results(self):
+        self._max_results_value = None
+        self._max_results_present = False
+
+    @property
+    def mode(self):
+        """
+        The search mode (filename, filename_and_content, or deleted_filename).
+        Note that searching file content is only available for Dropbox Business
+        accounts.
+
+        :rtype: SearchMode
+        """
+        if self._mode_present:
+            return self._mode_value
+        else:
+            return SearchMode.filename
+
+    @mode.setter
+    def mode(self, val):
+        self._mode_validator.validate_type_only(val)
+        self._mode_value = val
+        self._mode_present = True
+
+    @mode.deleter
+    def mode(self):
+        self._mode_value = None
+        self._mode_present = False
+
+    def __repr__(self):
+        return 'SearchArg(path={!r}, query={!r}, start={!r}, max_results={!r}, mode={!r})'.format(
+            self._path_value,
+            self._query_value,
+            self._start_value,
+            self._max_results_value,
+            self._mode_value,
+        )
+
+class SearchError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar other: An unspecified error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: SearchError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'SearchError(%r, %r)' % (self._tag, self._value)
+
+class SearchMatch(object):
+    """
+    :ivar match_type: The type of the match.
+    :ivar metadata: The metadata for the matched file or folder.
+    """
+
+    __slots__ = [
+        '_match_type_value',
+        '_match_type_present',
+        '_metadata_value',
+        '_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 match_type=None,
+                 metadata=None):
+        self._match_type_value = None
+        self._match_type_present = False
+        self._metadata_value = None
+        self._metadata_present = False
+        if match_type is not None:
+            self.match_type = match_type
+        if metadata is not None:
+            self.metadata = metadata
+
+    @property
+    def match_type(self):
+        """
+        The type of the match.
+
+        :rtype: SearchMatchType
+        """
+        if self._match_type_present:
+            return self._match_type_value
+        else:
+            raise AttributeError("missing required field 'match_type'")
+
+    @match_type.setter
+    def match_type(self, val):
+        self._match_type_validator.validate_type_only(val)
+        self._match_type_value = val
+        self._match_type_present = True
+
+    @match_type.deleter
+    def match_type(self):
+        self._match_type_value = None
+        self._match_type_present = False
+
+    @property
+    def metadata(self):
+        """
+        The metadata for the matched file or folder.
+
+        :rtype: Metadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    def __repr__(self):
+        return 'SearchMatch(match_type={!r}, metadata={!r})'.format(
+            self._match_type_value,
+            self._metadata_value,
+        )
+
+class SearchMatchType(object):
+    """
+    Indicates what type of match was found for a given item.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar filename: This item was matched on its file or folder name.
+    :ivar content: This item was matched based on its file contents.
+    :ivar both: This item was matched based on both its contents and its file
+        name.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    filename = None
+    # Attribute is overwritten below the class definition
+    content = None
+    # Attribute is overwritten below the class definition
+    both = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_filename(self):
+        """
+        Check if the union tag is ``filename``.
+
+        :rtype: bool
+        """
+        return self._tag == 'filename'
+
+    def is_content(self):
+        """
+        Check if the union tag is ``content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content'
+
+    def is_both(self):
+        """
+        Check if the union tag is ``both``.
+
+        :rtype: bool
+        """
+        return self._tag == 'both'
+
+    def __repr__(self):
+        return 'SearchMatchType(%r, %r)' % (self._tag, self._value)
+
+class SearchMode(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar filename: Search file and folder names.
+    :ivar filename_and_content: Search file and folder names as well as file
+        contents.
+    :ivar deleted_filename: Search for deleted file and folder names.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    filename = None
+    # Attribute is overwritten below the class definition
+    filename_and_content = None
+    # Attribute is overwritten below the class definition
+    deleted_filename = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_filename(self):
+        """
+        Check if the union tag is ``filename``.
+
+        :rtype: bool
+        """
+        return self._tag == 'filename'
+
+    def is_filename_and_content(self):
+        """
+        Check if the union tag is ``filename_and_content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'filename_and_content'
+
+    def is_deleted_filename(self):
+        """
+        Check if the union tag is ``deleted_filename``.
+
+        :rtype: bool
+        """
+        return self._tag == 'deleted_filename'
+
+    def __repr__(self):
+        return 'SearchMode(%r, %r)' % (self._tag, self._value)
+
+class SearchResult(object):
+    """
+    :ivar matches: A list (possibly empty) of matches for the query.
+    :ivar more: Used for paging. If true, indicates there is another page of
+        results available that can be fetched by calling search again.
+    :ivar start: Used for paging. Value to set the start argument to when
+        calling search to fetch the next page of results.
+    """
+
+    __slots__ = [
+        '_matches_value',
+        '_matches_present',
+        '_more_value',
+        '_more_present',
+        '_start_value',
+        '_start_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 matches=None,
+                 more=None,
+                 start=None):
+        self._matches_value = None
+        self._matches_present = False
+        self._more_value = None
+        self._more_present = False
+        self._start_value = None
+        self._start_present = False
+        if matches is not None:
+            self.matches = matches
+        if more is not None:
+            self.more = more
+        if start is not None:
+            self.start = start
+
+    @property
+    def matches(self):
+        """
+        A list (possibly empty) of matches for the query.
+
+        :rtype: list of [SearchMatch]
+        """
+        if self._matches_present:
+            return self._matches_value
+        else:
+            raise AttributeError("missing required field 'matches'")
+
+    @matches.setter
+    def matches(self, val):
+        val = self._matches_validator.validate(val)
+        self._matches_value = val
+        self._matches_present = True
+
+    @matches.deleter
+    def matches(self):
+        self._matches_value = None
+        self._matches_present = False
+
+    @property
+    def more(self):
+        """
+        Used for paging. If true, indicates there is another page of results
+        available that can be fetched by calling search again.
+
+        :rtype: bool
+        """
+        if self._more_present:
+            return self._more_value
+        else:
+            raise AttributeError("missing required field 'more'")
+
+    @more.setter
+    def more(self, val):
+        val = self._more_validator.validate(val)
+        self._more_value = val
+        self._more_present = True
+
+    @more.deleter
+    def more(self):
+        self._more_value = None
+        self._more_present = False
+
+    @property
+    def start(self):
+        """
+        Used for paging. Value to set the start argument to when calling search
+        to fetch the next page of results.
+
+        :rtype: long
+        """
+        if self._start_present:
+            return self._start_value
+        else:
+            raise AttributeError("missing required field 'start'")
+
+    @start.setter
+    def start(self, val):
+        val = self._start_validator.validate(val)
+        self._start_value = val
+        self._start_present = True
+
+    @start.deleter
+    def start(self):
+        self._start_value = None
+        self._start_present = False
+
+    def __repr__(self):
+        return 'SearchResult(matches={!r}, more={!r}, start={!r})'.format(
+            self._matches_value,
+            self._more_value,
+            self._start_value,
+        )
+
+class ThumbnailArg(object):
+    """
+    :ivar path: The path to the image file you want to thumbnail.
+    :ivar format: The format for the thumbnail image, jpeg (default) or png. For
+        images that are photos, jpeg should be preferred, while png is  better
+        for screenshots and digital arts.
+    :ivar size: The size for the thumbnail image.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_format_value',
+        '_format_present',
+        '_size_value',
+        '_size_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 format=None,
+                 size=None):
+        self._path_value = None
+        self._path_present = False
+        self._format_value = None
+        self._format_present = False
+        self._size_value = None
+        self._size_present = False
+        if path is not None:
+            self.path = path
+        if format is not None:
+            self.format = format
+        if size is not None:
+            self.size = size
+
+    @property
+    def path(self):
+        """
+        The path to the image file you want to thumbnail.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def format(self):
+        """
+        The format for the thumbnail image, jpeg (default) or png. For  images
+        that are photos, jpeg should be preferred, while png is  better for
+        screenshots and digital arts.
+
+        :rtype: ThumbnailFormat
+        """
+        if self._format_present:
+            return self._format_value
+        else:
+            return ThumbnailFormat.jpeg
+
+    @format.setter
+    def format(self, val):
+        self._format_validator.validate_type_only(val)
+        self._format_value = val
+        self._format_present = True
+
+    @format.deleter
+    def format(self):
+        self._format_value = None
+        self._format_present = False
+
+    @property
+    def size(self):
+        """
+        The size for the thumbnail image.
+
+        :rtype: ThumbnailSize
+        """
+        if self._size_present:
+            return self._size_value
+        else:
+            return ThumbnailSize.w64h64
+
+    @size.setter
+    def size(self, val):
+        self._size_validator.validate_type_only(val)
+        self._size_value = val
+        self._size_present = True
+
+    @size.deleter
+    def size(self):
+        self._size_value = None
+        self._size_present = False
+
+    def __repr__(self):
+        return 'ThumbnailArg(path={!r}, format={!r}, size={!r})'.format(
+            self._path_value,
+            self._format_value,
+            self._size_value,
+        )
+
+class ThumbnailError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar LookupError path: An error occurs when downloading metadata for the
+        image.
+    :ivar unsupported_extension: The file extension doesn't allow conversion to
+        a thumbnail.
+    :ivar unsupported_image: The image cannot be converted to a thumbnail.
+    :ivar conversion_error: An error occurs during thumbnail conversion.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    unsupported_extension = None
+    # Attribute is overwritten below the class definition
+    unsupported_image = None
+    # Attribute is overwritten below the class definition
+    conversion_error = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: ThumbnailError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_unsupported_extension(self):
+        """
+        Check if the union tag is ``unsupported_extension``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_extension'
+
+    def is_unsupported_image(self):
+        """
+        Check if the union tag is ``unsupported_image``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_image'
+
+    def is_conversion_error(self):
+        """
+        Check if the union tag is ``conversion_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'conversion_error'
+
+    def get_path(self):
+        """
+        An error occurs when downloading metadata for the image.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ThumbnailError(%r, %r)' % (self._tag, self._value)
+
+class ThumbnailFormat(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    jpeg = None
+    # Attribute is overwritten below the class definition
+    png = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_jpeg(self):
+        """
+        Check if the union tag is ``jpeg``.
+
+        :rtype: bool
+        """
+        return self._tag == 'jpeg'
+
+    def is_png(self):
+        """
+        Check if the union tag is ``png``.
+
+        :rtype: bool
+        """
+        return self._tag == 'png'
+
+    def __repr__(self):
+        return 'ThumbnailFormat(%r, %r)' % (self._tag, self._value)
+
+class ThumbnailSize(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar w32h32: 32 by 32 px.
+    :ivar w64h64: 64 by 64 px.
+    :ivar w128h128: 128 by 128 px.
+    :ivar w640h480: 640 by 480 px.
+    :ivar w1024h768: 1024 by 768
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    w32h32 = None
+    # Attribute is overwritten below the class definition
+    w64h64 = None
+    # Attribute is overwritten below the class definition
+    w128h128 = None
+    # Attribute is overwritten below the class definition
+    w640h480 = None
+    # Attribute is overwritten below the class definition
+    w1024h768 = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_w32h32(self):
+        """
+        Check if the union tag is ``w32h32``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w32h32'
+
+    def is_w64h64(self):
+        """
+        Check if the union tag is ``w64h64``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w64h64'
+
+    def is_w128h128(self):
+        """
+        Check if the union tag is ``w128h128``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w128h128'
+
+    def is_w640h480(self):
+        """
+        Check if the union tag is ``w640h480``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w640h480'
+
+    def is_w1024h768(self):
+        """
+        Check if the union tag is ``w1024h768``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w1024h768'
+
+    def __repr__(self):
+        return 'ThumbnailSize(%r, %r)' % (self._tag, self._value)
+
+class UploadError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UploadWriteFailed path: Unable to save the uploaded contents to a
+        file.
+    :ivar other: An unspecified error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param UploadWriteFailed val:
+        :rtype: UploadError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Unable to save the uploaded contents to a file.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: UploadWriteFailed
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UploadError(%r, %r)' % (self._tag, self._value)
+
+class UploadSessionCursor(object):
+    """
+    :ivar session_id: The upload session ID (returned by upload_session/start).
+    :ivar offset: The amount of data that has been uploaded so far. We use this
+        to make sure upload data isn't lost or duplicated in the event of a
+        network error.
+    """
+
+    __slots__ = [
+        '_session_id_value',
+        '_session_id_present',
+        '_offset_value',
+        '_offset_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 session_id=None,
+                 offset=None):
+        self._session_id_value = None
+        self._session_id_present = False
+        self._offset_value = None
+        self._offset_present = False
+        if session_id is not None:
+            self.session_id = session_id
+        if offset is not None:
+            self.offset = offset
+
+    @property
+    def session_id(self):
+        """
+        The upload session ID (returned by upload_session/start).
+
+        :rtype: str
+        """
+        if self._session_id_present:
+            return self._session_id_value
+        else:
+            raise AttributeError("missing required field 'session_id'")
+
+    @session_id.setter
+    def session_id(self, val):
+        val = self._session_id_validator.validate(val)
+        self._session_id_value = val
+        self._session_id_present = True
+
+    @session_id.deleter
+    def session_id(self):
+        self._session_id_value = None
+        self._session_id_present = False
+
+    @property
+    def offset(self):
+        """
+        The amount of data that has been uploaded so far. We use this to make
+        sure upload data isn't lost or duplicated in the event of a network
+        error.
+
+        :rtype: long
+        """
+        if self._offset_present:
+            return self._offset_value
+        else:
+            raise AttributeError("missing required field 'offset'")
+
+    @offset.setter
+    def offset(self, val):
+        val = self._offset_validator.validate(val)
+        self._offset_value = val
+        self._offset_present = True
+
+    @offset.deleter
+    def offset(self):
+        self._offset_value = None
+        self._offset_present = False
+
+    def __repr__(self):
+        return 'UploadSessionCursor(session_id={!r}, offset={!r})'.format(
+            self._session_id_value,
+            self._offset_value,
+        )
+
+class UploadSessionFinishArg(object):
+    """
+    :ivar cursor: Contains the upload session ID and the offset.
+    :ivar commit: Contains the path and other optional modifiers for the commit.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+        '_commit_value',
+        '_commit_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None,
+                 commit=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        self._commit_value = None
+        self._commit_present = False
+        if cursor is not None:
+            self.cursor = cursor
+        if commit is not None:
+            self.commit = commit
+
+    @property
+    def cursor(self):
+        """
+        Contains the upload session ID and the offset.
+
+        :rtype: UploadSessionCursor
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        self._cursor_validator.validate_type_only(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def commit(self):
+        """
+        Contains the path and other optional modifiers for the commit.
+
+        :rtype: CommitInfo
+        """
+        if self._commit_present:
+            return self._commit_value
+        else:
+            raise AttributeError("missing required field 'commit'")
+
+    @commit.setter
+    def commit(self, val):
+        self._commit_validator.validate_type_only(val)
+        self._commit_value = val
+        self._commit_present = True
+
+    @commit.deleter
+    def commit(self):
+        self._commit_value = None
+        self._commit_present = False
+
+    def __repr__(self):
+        return 'UploadSessionFinishArg(cursor={!r}, commit={!r})'.format(
+            self._cursor_value,
+            self._commit_value,
+        )
+
+class UploadSessionFinishError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UploadSessionLookupError lookup_failed: The session arguments are
+        incorrect; the value explains the reason.
+    :ivar WriteError path: Unable to save the uploaded contents to a file.
+    :ivar other: An unspecified error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def lookup_failed(cls, val):
+        """
+        Create an instance of this class set to the ``lookup_failed`` tag with
+        value ``val``.
+
+        :param UploadSessionLookupError val:
+        :rtype: UploadSessionFinishError
+        """
+        return cls('lookup_failed', val)
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param WriteError val:
+        :rtype: UploadSessionFinishError
+        """
+        return cls('path', val)
+
+    def is_lookup_failed(self):
+        """
+        Check if the union tag is ``lookup_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'lookup_failed'
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_lookup_failed(self):
+        """
+        The session arguments are incorrect; the value explains the reason.
+
+        Only call this if :meth:`is_lookup_failed` is true.
+
+        :rtype: UploadSessionLookupError
+        """
+        if not self.is_lookup_failed():
+            raise AttributeError("tag 'lookup_failed' not set")
+        return self._value
+
+    def get_path(self):
+        """
+        Unable to save the uploaded contents to a file.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: WriteError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UploadSessionFinishError(%r, %r)' % (self._tag, self._value)
+
+class UploadSessionLookupError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar not_found: The upload session id was not found.
+    :ivar UploadSessionOffsetError incorrect_offset: The specified offset was
+        incorrect. See the value for the correct offset. (This error may occur
+        when a previous request was received and processed successfully but the
+        client did not receive the response, e.g. due to a network error.)
+    :ivar closed: You are attempting to append data to an upload session that
+        has alread been closed (i.e. committed).
+    :ivar other: An unspecified error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    not_found = None
+    # Attribute is overwritten below the class definition
+    closed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def incorrect_offset(cls, val):
+        """
+        Create an instance of this class set to the ``incorrect_offset`` tag
+        with value ``val``.
+
+        :param UploadSessionOffsetError val:
+        :rtype: UploadSessionLookupError
+        """
+        return cls('incorrect_offset', val)
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_incorrect_offset(self):
+        """
+        Check if the union tag is ``incorrect_offset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'incorrect_offset'
+
+    def is_closed(self):
+        """
+        Check if the union tag is ``closed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'closed'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_incorrect_offset(self):
+        """
+        The specified offset was incorrect. See the value for the correct
+        offset. (This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.)
+
+        Only call this if :meth:`is_incorrect_offset` is true.
+
+        :rtype: UploadSessionOffsetError
+        """
+        if not self.is_incorrect_offset():
+            raise AttributeError("tag 'incorrect_offset' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UploadSessionLookupError(%r, %r)' % (self._tag, self._value)
+
+class UploadSessionOffsetError(object):
+    """
+    :ivar correct_offset: The offset up to which data has been collected.
+    """
+
+    __slots__ = [
+        '_correct_offset_value',
+        '_correct_offset_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 correct_offset=None):
+        self._correct_offset_value = None
+        self._correct_offset_present = False
+        if correct_offset is not None:
+            self.correct_offset = correct_offset
+
+    @property
+    def correct_offset(self):
+        """
+        The offset up to which data has been collected.
+
+        :rtype: long
+        """
+        if self._correct_offset_present:
+            return self._correct_offset_value
+        else:
+            raise AttributeError("missing required field 'correct_offset'")
+
+    @correct_offset.setter
+    def correct_offset(self, val):
+        val = self._correct_offset_validator.validate(val)
+        self._correct_offset_value = val
+        self._correct_offset_present = True
+
+    @correct_offset.deleter
+    def correct_offset(self):
+        self._correct_offset_value = None
+        self._correct_offset_present = False
+
+    def __repr__(self):
+        return 'UploadSessionOffsetError(correct_offset={!r})'.format(
+            self._correct_offset_value,
+        )
+
+class UploadSessionStartResult(object):
+    """
+    :ivar session_id: A unique identifier for the upload session. Pass this to
+        upload_session/append and upload_session/finish.
+    """
+
+    __slots__ = [
+        '_session_id_value',
+        '_session_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 session_id=None):
+        self._session_id_value = None
+        self._session_id_present = False
+        if session_id is not None:
+            self.session_id = session_id
+
+    @property
+    def session_id(self):
+        """
+        A unique identifier for the upload session. Pass this to
+        upload_session/append and upload_session/finish.
+
+        :rtype: str
+        """
+        if self._session_id_present:
+            return self._session_id_value
+        else:
+            raise AttributeError("missing required field 'session_id'")
+
+    @session_id.setter
+    def session_id(self, val):
+        val = self._session_id_validator.validate(val)
+        self._session_id_value = val
+        self._session_id_present = True
+
+    @session_id.deleter
+    def session_id(self):
+        self._session_id_value = None
+        self._session_id_present = False
+
+    def __repr__(self):
+        return 'UploadSessionStartResult(session_id={!r})'.format(
+            self._session_id_value,
+        )
+
+class UploadWriteFailed(object):
+    """
+    :ivar reason: The reason why the file couldn't be saved.
+    :ivar upload_session_id: The upload session ID; this may be used to retry
+        the commit.
+    """
+
+    __slots__ = [
+        '_reason_value',
+        '_reason_present',
+        '_upload_session_id_value',
+        '_upload_session_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 reason=None,
+                 upload_session_id=None):
+        self._reason_value = None
+        self._reason_present = False
+        self._upload_session_id_value = None
+        self._upload_session_id_present = False
+        if reason is not None:
+            self.reason = reason
+        if upload_session_id is not None:
+            self.upload_session_id = upload_session_id
+
+    @property
+    def reason(self):
+        """
+        The reason why the file couldn't be saved.
+
+        :rtype: WriteError
+        """
+        if self._reason_present:
+            return self._reason_value
+        else:
+            raise AttributeError("missing required field 'reason'")
+
+    @reason.setter
+    def reason(self, val):
+        self._reason_validator.validate_type_only(val)
+        self._reason_value = val
+        self._reason_present = True
+
+    @reason.deleter
+    def reason(self):
+        self._reason_value = None
+        self._reason_present = False
+
+    @property
+    def upload_session_id(self):
+        """
+        The upload session ID; this may be used to retry the commit.
+
+        :rtype: str
+        """
+        if self._upload_session_id_present:
+            return self._upload_session_id_value
+        else:
+            raise AttributeError("missing required field 'upload_session_id'")
+
+    @upload_session_id.setter
+    def upload_session_id(self, val):
+        val = self._upload_session_id_validator.validate(val)
+        self._upload_session_id_value = val
+        self._upload_session_id_present = True
+
+    @upload_session_id.deleter
+    def upload_session_id(self):
+        self._upload_session_id_value = None
+        self._upload_session_id_present = False
+
+    def __repr__(self):
+        return 'UploadWriteFailed(reason={!r}, upload_session_id={!r})'.format(
+            self._reason_value,
+            self._upload_session_id_value,
+        )
+
+class VideoMetadata(MediaMetadata):
+    """
+    Metadata for a video.
+
+    :ivar duration: The duration of the video in milliseconds.
+    """
+
+    __slots__ = [
+        '_duration_value',
+        '_duration_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 dimensions=None,
+                 location=None,
+                 time_taken=None,
+                 duration=None):
+        super(VideoMetadata, self).__init__(dimensions,
+                                            location,
+                                            time_taken)
+        self._duration_value = None
+        self._duration_present = False
+        if duration is not None:
+            self.duration = duration
+
+    @property
+    def duration(self):
+        """
+        The duration of the video in milliseconds.
+
+        :rtype: long
+        """
+        if self._duration_present:
+            return self._duration_value
+        else:
+            return None
+
+    @duration.setter
+    def duration(self, val):
+        if val is None:
+            del self.duration
+            return
+        val = self._duration_validator.validate(val)
+        self._duration_value = val
+        self._duration_present = True
+
+    @duration.deleter
+    def duration(self):
+        self._duration_value = None
+        self._duration_present = False
+
+    def __repr__(self):
+        return 'VideoMetadata(dimensions={!r}, location={!r}, time_taken={!r}, duration={!r})'.format(
+            self._dimensions_value,
+            self._location_value,
+            self._time_taken_value,
+            self._duration_value,
+        )
+
+class WriteConflictError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar file: There's a file in the way.
+    :ivar folder: There's a folder in the way.
+    :ivar file_ancestor: There's a file at an ancestor path, so we couldn't
+        create the required parent folders.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    file = None
+    # Attribute is overwritten below the class definition
+    folder = None
+    # Attribute is overwritten below the class definition
+    file_ancestor = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_file(self):
+        """
+        Check if the union tag is ``file``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file'
+
+    def is_folder(self):
+        """
+        Check if the union tag is ``folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder'
+
+    def is_file_ancestor(self):
+        """
+        Check if the union tag is ``file_ancestor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_ancestor'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'WriteConflictError(%r, %r)' % (self._tag, self._value)
+
+class WriteError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar WriteConflictError conflict: Couldn't write to the target path because
+        there was something in the way.
+    :ivar no_write_permission: The user doesn't have permissions to write to the
+        target location.
+    :ivar insufficient_space: The user doesn't have enough available space
+        (bytes) to write more data.
+    :ivar disallowed_name: Dropbox will not save the file or folder because of
+        its name.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    no_write_permission = None
+    # Attribute is overwritten below the class definition
+    insufficient_space = None
+    # Attribute is overwritten below the class definition
+    disallowed_name = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def malformed_path(cls, val):
+        """
+        Create an instance of this class set to the ``malformed_path`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: WriteError
+        """
+        return cls('malformed_path', val)
+
+    @classmethod
+    def conflict(cls, val):
+        """
+        Create an instance of this class set to the ``conflict`` tag with value
+        ``val``.
+
+        :param WriteConflictError val:
+        :rtype: WriteError
+        """
+        return cls('conflict', val)
+
+    def is_malformed_path(self):
+        """
+        Check if the union tag is ``malformed_path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'malformed_path'
+
+    def is_conflict(self):
+        """
+        Check if the union tag is ``conflict``.
+
+        :rtype: bool
+        """
+        return self._tag == 'conflict'
+
+    def is_no_write_permission(self):
+        """
+        Check if the union tag is ``no_write_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_write_permission'
+
+    def is_insufficient_space(self):
+        """
+        Check if the union tag is ``insufficient_space``.
+
+        :rtype: bool
+        """
+        return self._tag == 'insufficient_space'
+
+    def is_disallowed_name(self):
+        """
+        Check if the union tag is ``disallowed_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disallowed_name'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_malformed_path(self):
+        """
+        Only call this if :meth:`is_malformed_path` is true.
+
+        :rtype: str
+        """
+        if not self.is_malformed_path():
+            raise AttributeError("tag 'malformed_path' not set")
+        return self._value
+
+    def get_conflict(self):
+        """
+        Couldn't write to the target path because there was something in the
+        way.
+
+        Only call this if :meth:`is_conflict` is true.
+
+        :rtype: WriteConflictError
+        """
+        if not self.is_conflict():
+            raise AttributeError("tag 'conflict' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'WriteError(%r, %r)' % (self._tag, self._value)
+
+class WriteMode(object):
+    """
+    Your intent when writing a file to some path. This is used to determine what
+    constitutes a conflict and what the autorename strategy is. In some
+    situations, the conflict behavior is identical: (a) If the target path
+    doesn't contain anything, the file is always written; no conflict. (b) If
+    the target path contains a folder, it's always a conflict. (c) If the target
+    path contains a file with identical contents, nothing gets written; no
+    conflict. The conflict checking differs in the case where there's a file at
+    the target path with contents different from the contents you're trying to
+    write.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar add: Never overwrite the existing file. The autorename strategy is to
+        append a number to the file name. For example, "document.txt" might
+        become "document (2).txt".
+    :ivar overwrite: Always overwrite the existing file. The autorename strategy
+        is the same as it is for ``add``.
+    :ivar str update: Overwrite if the given "rev" matches the existing file's
+        "rev". The autorename strategy is to append the string "conflicted copy"
+        to the file name. For example, "document.txt" might become "document
+        (conflicted copy).txt" or "document (Panda's conflicted copy).txt".
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    add = None
+    # Attribute is overwritten below the class definition
+    overwrite = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def update(cls, val):
+        """
+        Create an instance of this class set to the ``update`` tag with value
+        ``val``.
+
+        :param str val:
+        :rtype: WriteMode
+        """
+        return cls('update', val)
+
+    def is_add(self):
+        """
+        Check if the union tag is ``add``.
+
+        :rtype: bool
+        """
+        return self._tag == 'add'
+
+    def is_overwrite(self):
+        """
+        Check if the union tag is ``overwrite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'overwrite'
+
+    def is_update(self):
+        """
+        Check if the union tag is ``update``.
+
+        :rtype: bool
+        """
+        return self._tag == 'update'
+
+    def get_update(self):
+        """
+        Overwrite if the given "rev" matches the existing file's "rev". The
+        autorename strategy is to append the string "conflicted copy" to the
+        file name. For example, "document.txt" might become "document
+        (conflicted copy).txt" or "document (Panda's conflicted copy).txt".
+
+        Only call this if :meth:`is_update` is true.
+
+        :rtype: str
+        """
+        if not self.is_update():
+            raise AttributeError("tag 'update' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'WriteMode(%r, %r)' % (self._tag, self._value)
+
+CommitInfo._path_validator = bv.String(pattern=u'/.*')
+CommitInfo._mode_validator = bv.Union(WriteMode)
+CommitInfo._autorename_validator = bv.Boolean()
+CommitInfo._client_modified_validator = bv.Nullable(bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ'))
+CommitInfo._mute_validator = bv.Boolean()
+CommitInfo._all_field_names_ = set([
+    'path',
+    'mode',
+    'autorename',
+    'client_modified',
+    'mute',
+])
+CommitInfo._all_fields_ = [
+    ('path', CommitInfo._path_validator),
+    ('mode', CommitInfo._mode_validator),
+    ('autorename', CommitInfo._autorename_validator),
+    ('client_modified', CommitInfo._client_modified_validator),
+    ('mute', CommitInfo._mute_validator),
+]
+
+CreateFolderArg._path_validator = bv.String(pattern=u'/.*')
+CreateFolderArg._all_field_names_ = set(['path'])
+CreateFolderArg._all_fields_ = [('path', CreateFolderArg._path_validator)]
+
+CreateFolderError._path_validator = bv.Union(WriteError)
+CreateFolderError._tagmap = {
+    'path': CreateFolderError._path_validator,
+}
+
+DeleteArg._path_validator = bv.String(pattern=u'/.*')
+DeleteArg._all_field_names_ = set(['path'])
+DeleteArg._all_fields_ = [('path', DeleteArg._path_validator)]
+
+DeleteError._path_lookup_validator = bv.Union(LookupError)
+DeleteError._path_write_validator = bv.Union(WriteError)
+DeleteError._other_validator = bv.Void()
+DeleteError._tagmap = {
+    'path_lookup': DeleteError._path_lookup_validator,
+    'path_write': DeleteError._path_write_validator,
+    'other': DeleteError._other_validator,
+}
+
+DeleteError.other = DeleteError('other')
+
 Metadata._name_validator = bv.String()
 Metadata._path_lower_validator = bv.String()
 Metadata._parent_shared_folder_id_validator = bv.Nullable(bv.String(pattern=u'[-_0-9a-zA-Z:]+'))
@@ -5180,6 +5541,11 @@ Metadata._pytype_to_tag_and_subtype_ = {
 }
 Metadata._is_catch_all_ = False
 
+DeletedMetadata._field_names_ = set([])
+DeletedMetadata._all_field_names_ = Metadata._all_field_names_.union(DeletedMetadata._field_names_)
+DeletedMetadata._fields_ = []
+DeletedMetadata._all_fields_ = Metadata._all_fields_ + DeletedMetadata._fields_
+
 Dimensions._height_validator = bv.UInt64()
 Dimensions._width_validator = bv.UInt64()
 Dimensions._all_field_names_ = set([
@@ -5191,62 +5557,25 @@ Dimensions._all_fields_ = [
     ('width', Dimensions._width_validator),
 ]
 
-GpsCoordinates._latitude_validator = bv.Float64()
-GpsCoordinates._longitude_validator = bv.Float64()
-GpsCoordinates._all_field_names_ = set([
-    'latitude',
-    'longitude',
+DownloadArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
+DownloadArg._rev_validator = bv.Nullable(bv.String(min_length=9, pattern=u'[0-9a-f]+'))
+DownloadArg._all_field_names_ = set([
+    'path',
+    'rev',
 ])
-GpsCoordinates._all_fields_ = [
-    ('latitude', GpsCoordinates._latitude_validator),
-    ('longitude', GpsCoordinates._longitude_validator),
+DownloadArg._all_fields_ = [
+    ('path', DownloadArg._path_validator),
+    ('rev', DownloadArg._rev_validator),
 ]
 
-MediaMetadata._dimensions_validator = bv.Nullable(bv.Struct(Dimensions))
-MediaMetadata._location_validator = bv.Nullable(bv.Struct(GpsCoordinates))
-MediaMetadata._time_taken_validator = bv.Nullable(bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ'))
-MediaMetadata._field_names_ = set([
-    'dimensions',
-    'location',
-    'time_taken',
-])
-MediaMetadata._all_field_names_ = MediaMetadata._field_names_
-MediaMetadata._fields_ = [
-    ('dimensions', MediaMetadata._dimensions_validator),
-    ('location', MediaMetadata._location_validator),
-    ('time_taken', MediaMetadata._time_taken_validator),
-]
-MediaMetadata._all_fields_ = MediaMetadata._fields_
-
-MediaMetadata._tag_to_subtype_ = {
-    (u'photo',): bv.Struct(PhotoMetadata),
-    (u'video',): bv.Struct(VideoMetadata),
-}
-MediaMetadata._pytype_to_tag_and_subtype_ = {
-    PhotoMetadata: ((u'photo',), bv.Struct(PhotoMetadata)),
-    VideoMetadata: ((u'video',), bv.Struct(VideoMetadata)),
-}
-MediaMetadata._is_catch_all_ = False
-
-PhotoMetadata._field_names_ = set([])
-PhotoMetadata._all_field_names_ = MediaMetadata._all_field_names_.union(PhotoMetadata._field_names_)
-PhotoMetadata._fields_ = []
-PhotoMetadata._all_fields_ = MediaMetadata._all_fields_ + PhotoMetadata._fields_
-
-VideoMetadata._duration_validator = bv.Nullable(bv.UInt64())
-VideoMetadata._field_names_ = set(['duration'])
-VideoMetadata._all_field_names_ = MediaMetadata._all_field_names_.union(VideoMetadata._field_names_)
-VideoMetadata._fields_ = [('duration', VideoMetadata._duration_validator)]
-VideoMetadata._all_fields_ = MediaMetadata._all_fields_ + VideoMetadata._fields_
-
-MediaInfo._pending_validator = bv.Void()
-MediaInfo._metadata_validator = bv.StructTree(MediaMetadata)
-MediaInfo._tagmap = {
-    'pending': MediaInfo._pending_validator,
-    'metadata': MediaInfo._metadata_validator,
+DownloadError._path_validator = bv.Union(LookupError)
+DownloadError._other_validator = bv.Void()
+DownloadError._tagmap = {
+    'path': DownloadError._path_validator,
+    'other': DownloadError._other_validator,
 }
 
-MediaInfo.pending = MediaInfo('pending')
+DownloadError.other = DownloadError('other')
 
 FileMetadata._id_validator = bv.Nullable(bv.String(min_length=1))
 FileMetadata._client_modified_validator = bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ')
@@ -5254,6 +5583,7 @@ FileMetadata._server_modified_validator = bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ')
 FileMetadata._rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
 FileMetadata._size_validator = bv.UInt64()
 FileMetadata._media_info_validator = bv.Nullable(bv.Union(MediaInfo))
+FileMetadata._sharing_info_validator = bv.Nullable(bv.Struct(FileSharingInfo))
 FileMetadata._field_names_ = set([
     'id',
     'client_modified',
@@ -5261,6 +5591,7 @@ FileMetadata._field_names_ = set([
     'rev',
     'size',
     'media_info',
+    'sharing_info',
 ])
 FileMetadata._all_field_names_ = Metadata._all_field_names_.union(FileMetadata._field_names_)
 FileMetadata._fields_ = [
@@ -5270,31 +5601,51 @@ FileMetadata._fields_ = [
     ('rev', FileMetadata._rev_validator),
     ('size', FileMetadata._size_validator),
     ('media_info', FileMetadata._media_info_validator),
+    ('sharing_info', FileMetadata._sharing_info_validator),
 ]
 FileMetadata._all_fields_ = Metadata._all_fields_ + FileMetadata._fields_
 
+SharingInfo._read_only_validator = bv.Boolean()
+SharingInfo._all_field_names_ = set(['read_only'])
+SharingInfo._all_fields_ = [('read_only', SharingInfo._read_only_validator)]
+
+FileSharingInfo._parent_shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
+FileSharingInfo._modified_by_validator = bv.Nullable(bv.String(min_length=40, max_length=40))
+FileSharingInfo._all_field_names_ = SharingInfo._all_field_names_.union(set([
+    'parent_shared_folder_id',
+    'modified_by',
+]))
+FileSharingInfo._all_fields_ = SharingInfo._all_fields_ + [
+    ('parent_shared_folder_id', FileSharingInfo._parent_shared_folder_id_validator),
+    ('modified_by', FileSharingInfo._modified_by_validator),
+]
+
 FolderMetadata._id_validator = bv.Nullable(bv.String(min_length=1))
 FolderMetadata._shared_folder_id_validator = bv.Nullable(bv.String(pattern=u'[-_0-9a-zA-Z:]+'))
+FolderMetadata._sharing_info_validator = bv.Nullable(bv.Struct(FolderSharingInfo))
 FolderMetadata._field_names_ = set([
     'id',
     'shared_folder_id',
+    'sharing_info',
 ])
 FolderMetadata._all_field_names_ = Metadata._all_field_names_.union(FolderMetadata._field_names_)
 FolderMetadata._fields_ = [
     ('id', FolderMetadata._id_validator),
     ('shared_folder_id', FolderMetadata._shared_folder_id_validator),
+    ('sharing_info', FolderMetadata._sharing_info_validator),
 ]
 FolderMetadata._all_fields_ = Metadata._all_fields_ + FolderMetadata._fields_
 
-DeletedMetadata._field_names_ = set([])
-DeletedMetadata._all_field_names_ = Metadata._all_field_names_.union(DeletedMetadata._field_names_)
-DeletedMetadata._fields_ = []
-DeletedMetadata._all_fields_ = Metadata._all_fields_ + DeletedMetadata._fields_
-
-GetMetadataError._path_validator = bv.Union(LookupError)
-GetMetadataError._tagmap = {
-    'path': GetMetadataError._path_validator,
-}
+FolderSharingInfo._parent_shared_folder_id_validator = bv.Nullable(bv.String(pattern=u'[-_0-9a-zA-Z:]+'))
+FolderSharingInfo._shared_folder_id_validator = bv.Nullable(bv.String(pattern=u'[-_0-9a-zA-Z:]+'))
+FolderSharingInfo._all_field_names_ = SharingInfo._all_field_names_.union(set([
+    'parent_shared_folder_id',
+    'shared_folder_id',
+]))
+FolderSharingInfo._all_fields_ = SharingInfo._all_fields_ + [
+    ('parent_shared_folder_id', FolderSharingInfo._parent_shared_folder_id_validator),
+    ('shared_folder_id', FolderSharingInfo._shared_folder_id_validator),
+]
 
 GetMetadataArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
 GetMetadataArg._include_media_info_validator = bv.Boolean()
@@ -5307,37 +5658,21 @@ GetMetadataArg._all_fields_ = [
     ('include_media_info', GetMetadataArg._include_media_info_validator),
 ]
 
-ListFolderLongpollArg._cursor_validator = bv.String()
-ListFolderLongpollArg._timeout_validator = bv.UInt64(min_value=30, max_value=480)
-ListFolderLongpollArg._all_field_names_ = set([
-    'cursor',
-    'timeout',
-])
-ListFolderLongpollArg._all_fields_ = [
-    ('cursor', ListFolderLongpollArg._cursor_validator),
-    ('timeout', ListFolderLongpollArg._timeout_validator),
-]
-
-ListFolderLongpollResult._changes_validator = bv.Boolean()
-ListFolderLongpollResult._backoff_validator = bv.Nullable(bv.UInt64())
-ListFolderLongpollResult._all_field_names_ = set([
-    'changes',
-    'backoff',
-])
-ListFolderLongpollResult._all_fields_ = [
-    ('changes', ListFolderLongpollResult._changes_validator),
-    ('backoff', ListFolderLongpollResult._backoff_validator),
-]
-
-ListFolderLongpollError._reset_validator = bv.Void()
-ListFolderLongpollError._other_validator = bv.Void()
-ListFolderLongpollError._tagmap = {
-    'reset': ListFolderLongpollError._reset_validator,
-    'other': ListFolderLongpollError._other_validator,
+GetMetadataError._path_validator = bv.Union(LookupError)
+GetMetadataError._tagmap = {
+    'path': GetMetadataError._path_validator,
 }
 
-ListFolderLongpollError.reset = ListFolderLongpollError('reset')
-ListFolderLongpollError.other = ListFolderLongpollError('other')
+GpsCoordinates._latitude_validator = bv.Float64()
+GpsCoordinates._longitude_validator = bv.Float64()
+GpsCoordinates._all_field_names_ = set([
+    'latitude',
+    'longitude',
+])
+GpsCoordinates._all_fields_ = [
+    ('latitude', GpsCoordinates._latitude_validator),
+    ('longitude', GpsCoordinates._longitude_validator),
+]
 
 ListFolderArg._path_validator = bv.String(pattern=u'(/.*)?')
 ListFolderArg._recursive_validator = bv.Boolean()
@@ -5356,30 +5691,7 @@ ListFolderArg._all_fields_ = [
     ('include_deleted', ListFolderArg._include_deleted_validator),
 ]
 
-ListFolderResult._entries_validator = bv.List(bv.StructTree(Metadata))
-ListFolderResult._cursor_validator = bv.String()
-ListFolderResult._has_more_validator = bv.Boolean()
-ListFolderResult._all_field_names_ = set([
-    'entries',
-    'cursor',
-    'has_more',
-])
-ListFolderResult._all_fields_ = [
-    ('entries', ListFolderResult._entries_validator),
-    ('cursor', ListFolderResult._cursor_validator),
-    ('has_more', ListFolderResult._has_more_validator),
-]
-
-ListFolderError._path_validator = bv.Union(LookupError)
-ListFolderError._other_validator = bv.Void()
-ListFolderError._tagmap = {
-    'path': ListFolderError._path_validator,
-    'other': ListFolderError._other_validator,
-}
-
-ListFolderError.other = ListFolderError('other')
-
-ListFolderContinueArg._cursor_validator = bv.String()
+ListFolderContinueArg._cursor_validator = bv.String(min_length=1)
 ListFolderContinueArg._all_field_names_ = set(['cursor'])
 ListFolderContinueArg._all_fields_ = [('cursor', ListFolderContinueArg._cursor_validator)]
 
@@ -5395,415 +5707,64 @@ ListFolderContinueError._tagmap = {
 ListFolderContinueError.reset = ListFolderContinueError('reset')
 ListFolderContinueError.other = ListFolderContinueError('other')
 
-ListFolderGetLatestCursorResult._cursor_validator = bv.String()
+ListFolderError._path_validator = bv.Union(LookupError)
+ListFolderError._other_validator = bv.Void()
+ListFolderError._tagmap = {
+    'path': ListFolderError._path_validator,
+    'other': ListFolderError._other_validator,
+}
+
+ListFolderError.other = ListFolderError('other')
+
+ListFolderGetLatestCursorResult._cursor_validator = bv.String(min_length=1)
 ListFolderGetLatestCursorResult._all_field_names_ = set(['cursor'])
 ListFolderGetLatestCursorResult._all_fields_ = [('cursor', ListFolderGetLatestCursorResult._cursor_validator)]
 
-DownloadError._path_validator = bv.Union(LookupError)
-DownloadError._other_validator = bv.Void()
-DownloadError._tagmap = {
-    'path': DownloadError._path_validator,
-    'other': DownloadError._other_validator,
-}
-
-DownloadError.other = DownloadError('other')
-
-DownloadArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
-DownloadArg._rev_validator = bv.Nullable(bv.String(min_length=9, pattern=u'[0-9a-f]+'))
-DownloadArg._all_field_names_ = set([
-    'path',
-    'rev',
-])
-DownloadArg._all_fields_ = [
-    ('path', DownloadArg._path_validator),
-    ('rev', DownloadArg._rev_validator),
-]
-
-UploadWriteFailed._reason_validator = bv.Union(WriteError)
-UploadWriteFailed._upload_session_id_validator = bv.String()
-UploadWriteFailed._all_field_names_ = set([
-    'reason',
-    'upload_session_id',
-])
-UploadWriteFailed._all_fields_ = [
-    ('reason', UploadWriteFailed._reason_validator),
-    ('upload_session_id', UploadWriteFailed._upload_session_id_validator),
-]
-
-UploadError._path_validator = bv.Struct(UploadWriteFailed)
-UploadError._other_validator = bv.Void()
-UploadError._tagmap = {
-    'path': UploadError._path_validator,
-    'other': UploadError._other_validator,
-}
-
-UploadError.other = UploadError('other')
-
-UploadSessionOffsetError._correct_offset_validator = bv.UInt64()
-UploadSessionOffsetError._all_field_names_ = set(['correct_offset'])
-UploadSessionOffsetError._all_fields_ = [('correct_offset', UploadSessionOffsetError._correct_offset_validator)]
-
-UploadSessionLookupError._not_found_validator = bv.Void()
-UploadSessionLookupError._incorrect_offset_validator = bv.Struct(UploadSessionOffsetError)
-UploadSessionLookupError._closed_validator = bv.Void()
-UploadSessionLookupError._other_validator = bv.Void()
-UploadSessionLookupError._tagmap = {
-    'not_found': UploadSessionLookupError._not_found_validator,
-    'incorrect_offset': UploadSessionLookupError._incorrect_offset_validator,
-    'closed': UploadSessionLookupError._closed_validator,
-    'other': UploadSessionLookupError._other_validator,
-}
-
-UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
-UploadSessionLookupError.closed = UploadSessionLookupError('closed')
-UploadSessionLookupError.other = UploadSessionLookupError('other')
-
-UploadSessionFinishError._lookup_failed_validator = bv.Union(UploadSessionLookupError)
-UploadSessionFinishError._path_validator = bv.Union(WriteError)
-UploadSessionFinishError._other_validator = bv.Void()
-UploadSessionFinishError._tagmap = {
-    'lookup_failed': UploadSessionFinishError._lookup_failed_validator,
-    'path': UploadSessionFinishError._path_validator,
-    'other': UploadSessionFinishError._other_validator,
-}
-
-UploadSessionFinishError.other = UploadSessionFinishError('other')
-
-UploadSessionStartResult._session_id_validator = bv.String()
-UploadSessionStartResult._all_field_names_ = set(['session_id'])
-UploadSessionStartResult._all_fields_ = [('session_id', UploadSessionStartResult._session_id_validator)]
-
-UploadSessionCursor._session_id_validator = bv.String()
-UploadSessionCursor._offset_validator = bv.UInt64()
-UploadSessionCursor._all_field_names_ = set([
-    'session_id',
-    'offset',
-])
-UploadSessionCursor._all_fields_ = [
-    ('session_id', UploadSessionCursor._session_id_validator),
-    ('offset', UploadSessionCursor._offset_validator),
-]
-
-WriteMode._add_validator = bv.Void()
-WriteMode._overwrite_validator = bv.Void()
-WriteMode._update_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
-WriteMode._tagmap = {
-    'add': WriteMode._add_validator,
-    'overwrite': WriteMode._overwrite_validator,
-    'update': WriteMode._update_validator,
-}
-
-WriteMode.add = WriteMode('add')
-WriteMode.overwrite = WriteMode('overwrite')
-
-CommitInfo._path_validator = bv.String(pattern=u'/.*')
-CommitInfo._mode_validator = bv.Union(WriteMode)
-CommitInfo._autorename_validator = bv.Boolean()
-CommitInfo._client_modified_validator = bv.Nullable(bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ'))
-CommitInfo._mute_validator = bv.Boolean()
-CommitInfo._all_field_names_ = set([
-    'path',
-    'mode',
-    'autorename',
-    'client_modified',
-    'mute',
-])
-CommitInfo._all_fields_ = [
-    ('path', CommitInfo._path_validator),
-    ('mode', CommitInfo._mode_validator),
-    ('autorename', CommitInfo._autorename_validator),
-    ('client_modified', CommitInfo._client_modified_validator),
-    ('mute', CommitInfo._mute_validator),
-]
-
-UploadSessionFinishArg._cursor_validator = bv.Struct(UploadSessionCursor)
-UploadSessionFinishArg._commit_validator = bv.Struct(CommitInfo)
-UploadSessionFinishArg._all_field_names_ = set([
+ListFolderLongpollArg._cursor_validator = bv.String(min_length=1)
+ListFolderLongpollArg._timeout_validator = bv.UInt64(min_value=30, max_value=480)
+ListFolderLongpollArg._all_field_names_ = set([
     'cursor',
-    'commit',
+    'timeout',
 ])
-UploadSessionFinishArg._all_fields_ = [
-    ('cursor', UploadSessionFinishArg._cursor_validator),
-    ('commit', UploadSessionFinishArg._commit_validator),
+ListFolderLongpollArg._all_fields_ = [
+    ('cursor', ListFolderLongpollArg._cursor_validator),
+    ('timeout', ListFolderLongpollArg._timeout_validator),
 ]
 
-SearchMode._filename_validator = bv.Void()
-SearchMode._filename_and_content_validator = bv.Void()
-SearchMode._deleted_filename_validator = bv.Void()
-SearchMode._tagmap = {
-    'filename': SearchMode._filename_validator,
-    'filename_and_content': SearchMode._filename_and_content_validator,
-    'deleted_filename': SearchMode._deleted_filename_validator,
+ListFolderLongpollError._reset_validator = bv.Void()
+ListFolderLongpollError._other_validator = bv.Void()
+ListFolderLongpollError._tagmap = {
+    'reset': ListFolderLongpollError._reset_validator,
+    'other': ListFolderLongpollError._other_validator,
 }
 
-SearchMode.filename = SearchMode('filename')
-SearchMode.filename_and_content = SearchMode('filename_and_content')
-SearchMode.deleted_filename = SearchMode('deleted_filename')
+ListFolderLongpollError.reset = ListFolderLongpollError('reset')
+ListFolderLongpollError.other = ListFolderLongpollError('other')
 
-SearchArg._path_validator = bv.String(pattern=u'(/.*)?')
-SearchArg._query_validator = bv.String()
-SearchArg._start_validator = bv.UInt64()
-SearchArg._max_results_validator = bv.UInt64(min_value=1, max_value=1000)
-SearchArg._mode_validator = bv.Union(SearchMode)
-SearchArg._all_field_names_ = set([
-    'path',
-    'query',
-    'start',
-    'max_results',
-    'mode',
+ListFolderLongpollResult._changes_validator = bv.Boolean()
+ListFolderLongpollResult._backoff_validator = bv.Nullable(bv.UInt64())
+ListFolderLongpollResult._all_field_names_ = set([
+    'changes',
+    'backoff',
 ])
-SearchArg._all_fields_ = [
-    ('path', SearchArg._path_validator),
-    ('query', SearchArg._query_validator),
-    ('start', SearchArg._start_validator),
-    ('max_results', SearchArg._max_results_validator),
-    ('mode', SearchArg._mode_validator),
+ListFolderLongpollResult._all_fields_ = [
+    ('changes', ListFolderLongpollResult._changes_validator),
+    ('backoff', ListFolderLongpollResult._backoff_validator),
 ]
 
-SearchMatchType._filename_validator = bv.Void()
-SearchMatchType._content_validator = bv.Void()
-SearchMatchType._both_validator = bv.Void()
-SearchMatchType._tagmap = {
-    'filename': SearchMatchType._filename_validator,
-    'content': SearchMatchType._content_validator,
-    'both': SearchMatchType._both_validator,
-}
-
-SearchMatchType.filename = SearchMatchType('filename')
-SearchMatchType.content = SearchMatchType('content')
-SearchMatchType.both = SearchMatchType('both')
-
-SearchMatch._match_type_validator = bv.Union(SearchMatchType)
-SearchMatch._metadata_validator = bv.StructTree(Metadata)
-SearchMatch._all_field_names_ = set([
-    'match_type',
-    'metadata',
+ListFolderResult._entries_validator = bv.List(bv.StructTree(Metadata))
+ListFolderResult._cursor_validator = bv.String(min_length=1)
+ListFolderResult._has_more_validator = bv.Boolean()
+ListFolderResult._all_field_names_ = set([
+    'entries',
+    'cursor',
+    'has_more',
 ])
-SearchMatch._all_fields_ = [
-    ('match_type', SearchMatch._match_type_validator),
-    ('metadata', SearchMatch._metadata_validator),
+ListFolderResult._all_fields_ = [
+    ('entries', ListFolderResult._entries_validator),
+    ('cursor', ListFolderResult._cursor_validator),
+    ('has_more', ListFolderResult._has_more_validator),
 ]
-
-SearchResult._matches_validator = bv.List(bv.Struct(SearchMatch))
-SearchResult._more_validator = bv.Boolean()
-SearchResult._start_validator = bv.UInt64()
-SearchResult._all_field_names_ = set([
-    'matches',
-    'more',
-    'start',
-])
-SearchResult._all_fields_ = [
-    ('matches', SearchResult._matches_validator),
-    ('more', SearchResult._more_validator),
-    ('start', SearchResult._start_validator),
-]
-
-SearchError._path_validator = bv.Union(LookupError)
-SearchError._other_validator = bv.Void()
-SearchError._tagmap = {
-    'path': SearchError._path_validator,
-    'other': SearchError._other_validator,
-}
-
-SearchError.other = SearchError('other')
-
-LookupError._malformed_path_validator = bv.Nullable(bv.String())
-LookupError._not_found_validator = bv.Void()
-LookupError._not_file_validator = bv.Void()
-LookupError._not_folder_validator = bv.Void()
-LookupError._restricted_content_validator = bv.Void()
-LookupError._other_validator = bv.Void()
-LookupError._tagmap = {
-    'malformed_path': LookupError._malformed_path_validator,
-    'not_found': LookupError._not_found_validator,
-    'not_file': LookupError._not_file_validator,
-    'not_folder': LookupError._not_folder_validator,
-    'restricted_content': LookupError._restricted_content_validator,
-    'other': LookupError._other_validator,
-}
-
-LookupError.not_found = LookupError('not_found')
-LookupError.not_file = LookupError('not_file')
-LookupError.not_folder = LookupError('not_folder')
-LookupError.restricted_content = LookupError('restricted_content')
-LookupError.other = LookupError('other')
-
-WriteError._malformed_path_validator = bv.Nullable(bv.String())
-WriteError._conflict_validator = bv.Union(WriteConflictError)
-WriteError._no_write_permission_validator = bv.Void()
-WriteError._insufficient_space_validator = bv.Void()
-WriteError._disallowed_name_validator = bv.Void()
-WriteError._other_validator = bv.Void()
-WriteError._tagmap = {
-    'malformed_path': WriteError._malformed_path_validator,
-    'conflict': WriteError._conflict_validator,
-    'no_write_permission': WriteError._no_write_permission_validator,
-    'insufficient_space': WriteError._insufficient_space_validator,
-    'disallowed_name': WriteError._disallowed_name_validator,
-    'other': WriteError._other_validator,
-}
-
-WriteError.no_write_permission = WriteError('no_write_permission')
-WriteError.insufficient_space = WriteError('insufficient_space')
-WriteError.disallowed_name = WriteError('disallowed_name')
-WriteError.other = WriteError('other')
-
-WriteConflictError._file_validator = bv.Void()
-WriteConflictError._folder_validator = bv.Void()
-WriteConflictError._file_ancestor_validator = bv.Void()
-WriteConflictError._other_validator = bv.Void()
-WriteConflictError._tagmap = {
-    'file': WriteConflictError._file_validator,
-    'folder': WriteConflictError._folder_validator,
-    'file_ancestor': WriteConflictError._file_ancestor_validator,
-    'other': WriteConflictError._other_validator,
-}
-
-WriteConflictError.file = WriteConflictError('file')
-WriteConflictError.folder = WriteConflictError('folder')
-WriteConflictError.file_ancestor = WriteConflictError('file_ancestor')
-WriteConflictError.other = WriteConflictError('other')
-
-CreateFolderArg._path_validator = bv.String(pattern=u'/.*')
-CreateFolderArg._all_field_names_ = set(['path'])
-CreateFolderArg._all_fields_ = [('path', CreateFolderArg._path_validator)]
-
-CreateFolderError._path_validator = bv.Union(WriteError)
-CreateFolderError._tagmap = {
-    'path': CreateFolderError._path_validator,
-}
-
-DeleteArg._path_validator = bv.String(pattern=u'/.*')
-DeleteArg._all_field_names_ = set(['path'])
-DeleteArg._all_fields_ = [('path', DeleteArg._path_validator)]
-
-DeleteError._path_lookup_validator = bv.Union(LookupError)
-DeleteError._path_write_validator = bv.Union(WriteError)
-DeleteError._other_validator = bv.Void()
-DeleteError._tagmap = {
-    'path_lookup': DeleteError._path_lookup_validator,
-    'path_write': DeleteError._path_write_validator,
-    'other': DeleteError._other_validator,
-}
-
-DeleteError.other = DeleteError('other')
-
-RelocationArg._from_path_validator = bv.String(pattern=u'/.*')
-RelocationArg._to_path_validator = bv.String(pattern=u'/.*')
-RelocationArg._all_field_names_ = set([
-    'from_path',
-    'to_path',
-])
-RelocationArg._all_fields_ = [
-    ('from_path', RelocationArg._from_path_validator),
-    ('to_path', RelocationArg._to_path_validator),
-]
-
-RelocationError._from_lookup_validator = bv.Union(LookupError)
-RelocationError._from_write_validator = bv.Union(WriteError)
-RelocationError._to_validator = bv.Union(WriteError)
-RelocationError._cant_copy_shared_folder_validator = bv.Void()
-RelocationError._cant_nest_shared_folder_validator = bv.Void()
-RelocationError._too_many_files_validator = bv.Void()
-RelocationError._other_validator = bv.Void()
-RelocationError._tagmap = {
-    'from_lookup': RelocationError._from_lookup_validator,
-    'from_write': RelocationError._from_write_validator,
-    'to': RelocationError._to_validator,
-    'cant_copy_shared_folder': RelocationError._cant_copy_shared_folder_validator,
-    'cant_nest_shared_folder': RelocationError._cant_nest_shared_folder_validator,
-    'too_many_files': RelocationError._too_many_files_validator,
-    'other': RelocationError._other_validator,
-}
-
-RelocationError.cant_copy_shared_folder = RelocationError('cant_copy_shared_folder')
-RelocationError.cant_nest_shared_folder = RelocationError('cant_nest_shared_folder')
-RelocationError.too_many_files = RelocationError('too_many_files')
-RelocationError.other = RelocationError('other')
-
-ThumbnailSize._w32h32_validator = bv.Void()
-ThumbnailSize._w64h64_validator = bv.Void()
-ThumbnailSize._w128h128_validator = bv.Void()
-ThumbnailSize._w640h480_validator = bv.Void()
-ThumbnailSize._w1024h768_validator = bv.Void()
-ThumbnailSize._tagmap = {
-    'w32h32': ThumbnailSize._w32h32_validator,
-    'w64h64': ThumbnailSize._w64h64_validator,
-    'w128h128': ThumbnailSize._w128h128_validator,
-    'w640h480': ThumbnailSize._w640h480_validator,
-    'w1024h768': ThumbnailSize._w1024h768_validator,
-}
-
-ThumbnailSize.w32h32 = ThumbnailSize('w32h32')
-ThumbnailSize.w64h64 = ThumbnailSize('w64h64')
-ThumbnailSize.w128h128 = ThumbnailSize('w128h128')
-ThumbnailSize.w640h480 = ThumbnailSize('w640h480')
-ThumbnailSize.w1024h768 = ThumbnailSize('w1024h768')
-
-ThumbnailFormat._jpeg_validator = bv.Void()
-ThumbnailFormat._png_validator = bv.Void()
-ThumbnailFormat._tagmap = {
-    'jpeg': ThumbnailFormat._jpeg_validator,
-    'png': ThumbnailFormat._png_validator,
-}
-
-ThumbnailFormat.jpeg = ThumbnailFormat('jpeg')
-ThumbnailFormat.png = ThumbnailFormat('png')
-
-ThumbnailArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
-ThumbnailArg._format_validator = bv.Union(ThumbnailFormat)
-ThumbnailArg._size_validator = bv.Union(ThumbnailSize)
-ThumbnailArg._all_field_names_ = set([
-    'path',
-    'format',
-    'size',
-])
-ThumbnailArg._all_fields_ = [
-    ('path', ThumbnailArg._path_validator),
-    ('format', ThumbnailArg._format_validator),
-    ('size', ThumbnailArg._size_validator),
-]
-
-ThumbnailError._path_validator = bv.Union(LookupError)
-ThumbnailError._unsupported_extension_validator = bv.Void()
-ThumbnailError._unsupported_image_validator = bv.Void()
-ThumbnailError._conversion_error_validator = bv.Void()
-ThumbnailError._tagmap = {
-    'path': ThumbnailError._path_validator,
-    'unsupported_extension': ThumbnailError._unsupported_extension_validator,
-    'unsupported_image': ThumbnailError._unsupported_image_validator,
-    'conversion_error': ThumbnailError._conversion_error_validator,
-}
-
-ThumbnailError.unsupported_extension = ThumbnailError('unsupported_extension')
-ThumbnailError.unsupported_image = ThumbnailError('unsupported_image')
-ThumbnailError.conversion_error = ThumbnailError('conversion_error')
-
-PreviewArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
-PreviewArg._rev_validator = bv.Nullable(bv.String(min_length=9, pattern=u'[0-9a-f]+'))
-PreviewArg._all_field_names_ = set([
-    'path',
-    'rev',
-])
-PreviewArg._all_fields_ = [
-    ('path', PreviewArg._path_validator),
-    ('rev', PreviewArg._rev_validator),
-]
-
-PreviewError._path_validator = bv.Union(LookupError)
-PreviewError._in_progress_validator = bv.Void()
-PreviewError._unsupported_extension_validator = bv.Void()
-PreviewError._unsupported_content_validator = bv.Void()
-PreviewError._tagmap = {
-    'path': PreviewError._path_validator,
-    'in_progress': PreviewError._in_progress_validator,
-    'unsupported_extension': PreviewError._unsupported_extension_validator,
-    'unsupported_content': PreviewError._unsupported_content_validator,
-}
-
-PreviewError.in_progress = PreviewError('in_progress')
-PreviewError.unsupported_extension = PreviewError('unsupported_extension')
-PreviewError.unsupported_content = PreviewError('unsupported_content')
 
 ListRevisionsArg._path_validator = bv.String(pattern=u'/.*')
 ListRevisionsArg._limit_validator = bv.UInt64(min_value=1, max_value=100)
@@ -5836,6 +5797,129 @@ ListRevisionsResult._all_fields_ = [
     ('entries', ListRevisionsResult._entries_validator),
 ]
 
+LookupError._malformed_path_validator = bv.Nullable(bv.String())
+LookupError._not_found_validator = bv.Void()
+LookupError._not_file_validator = bv.Void()
+LookupError._not_folder_validator = bv.Void()
+LookupError._restricted_content_validator = bv.Void()
+LookupError._other_validator = bv.Void()
+LookupError._tagmap = {
+    'malformed_path': LookupError._malformed_path_validator,
+    'not_found': LookupError._not_found_validator,
+    'not_file': LookupError._not_file_validator,
+    'not_folder': LookupError._not_folder_validator,
+    'restricted_content': LookupError._restricted_content_validator,
+    'other': LookupError._other_validator,
+}
+
+LookupError.not_found = LookupError('not_found')
+LookupError.not_file = LookupError('not_file')
+LookupError.not_folder = LookupError('not_folder')
+LookupError.restricted_content = LookupError('restricted_content')
+LookupError.other = LookupError('other')
+
+MediaInfo._pending_validator = bv.Void()
+MediaInfo._metadata_validator = bv.StructTree(MediaMetadata)
+MediaInfo._tagmap = {
+    'pending': MediaInfo._pending_validator,
+    'metadata': MediaInfo._metadata_validator,
+}
+
+MediaInfo.pending = MediaInfo('pending')
+
+MediaMetadata._dimensions_validator = bv.Nullable(bv.Struct(Dimensions))
+MediaMetadata._location_validator = bv.Nullable(bv.Struct(GpsCoordinates))
+MediaMetadata._time_taken_validator = bv.Nullable(bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ'))
+MediaMetadata._field_names_ = set([
+    'dimensions',
+    'location',
+    'time_taken',
+])
+MediaMetadata._all_field_names_ = MediaMetadata._field_names_
+MediaMetadata._fields_ = [
+    ('dimensions', MediaMetadata._dimensions_validator),
+    ('location', MediaMetadata._location_validator),
+    ('time_taken', MediaMetadata._time_taken_validator),
+]
+MediaMetadata._all_fields_ = MediaMetadata._fields_
+
+MediaMetadata._tag_to_subtype_ = {
+    (u'photo',): bv.Struct(PhotoMetadata),
+    (u'video',): bv.Struct(VideoMetadata),
+}
+MediaMetadata._pytype_to_tag_and_subtype_ = {
+    PhotoMetadata: ((u'photo',), bv.Struct(PhotoMetadata)),
+    VideoMetadata: ((u'video',), bv.Struct(VideoMetadata)),
+}
+MediaMetadata._is_catch_all_ = False
+
+PhotoMetadata._field_names_ = set([])
+PhotoMetadata._all_field_names_ = MediaMetadata._all_field_names_.union(PhotoMetadata._field_names_)
+PhotoMetadata._fields_ = []
+PhotoMetadata._all_fields_ = MediaMetadata._all_fields_ + PhotoMetadata._fields_
+
+PreviewArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
+PreviewArg._rev_validator = bv.Nullable(bv.String(min_length=9, pattern=u'[0-9a-f]+'))
+PreviewArg._all_field_names_ = set([
+    'path',
+    'rev',
+])
+PreviewArg._all_fields_ = [
+    ('path', PreviewArg._path_validator),
+    ('rev', PreviewArg._rev_validator),
+]
+
+PreviewError._path_validator = bv.Union(LookupError)
+PreviewError._in_progress_validator = bv.Void()
+PreviewError._unsupported_extension_validator = bv.Void()
+PreviewError._unsupported_content_validator = bv.Void()
+PreviewError._tagmap = {
+    'path': PreviewError._path_validator,
+    'in_progress': PreviewError._in_progress_validator,
+    'unsupported_extension': PreviewError._unsupported_extension_validator,
+    'unsupported_content': PreviewError._unsupported_content_validator,
+}
+
+PreviewError.in_progress = PreviewError('in_progress')
+PreviewError.unsupported_extension = PreviewError('unsupported_extension')
+PreviewError.unsupported_content = PreviewError('unsupported_content')
+
+RelocationArg._from_path_validator = bv.String(pattern=u'/.*')
+RelocationArg._to_path_validator = bv.String(pattern=u'/.*')
+RelocationArg._all_field_names_ = set([
+    'from_path',
+    'to_path',
+])
+RelocationArg._all_fields_ = [
+    ('from_path', RelocationArg._from_path_validator),
+    ('to_path', RelocationArg._to_path_validator),
+]
+
+RelocationError._from_lookup_validator = bv.Union(LookupError)
+RelocationError._from_write_validator = bv.Union(WriteError)
+RelocationError._to_validator = bv.Union(WriteError)
+RelocationError._cant_copy_shared_folder_validator = bv.Void()
+RelocationError._cant_nest_shared_folder_validator = bv.Void()
+RelocationError._cant_move_folder_into_itself_validator = bv.Void()
+RelocationError._too_many_files_validator = bv.Void()
+RelocationError._other_validator = bv.Void()
+RelocationError._tagmap = {
+    'from_lookup': RelocationError._from_lookup_validator,
+    'from_write': RelocationError._from_write_validator,
+    'to': RelocationError._to_validator,
+    'cant_copy_shared_folder': RelocationError._cant_copy_shared_folder_validator,
+    'cant_nest_shared_folder': RelocationError._cant_nest_shared_folder_validator,
+    'cant_move_folder_into_itself': RelocationError._cant_move_folder_into_itself_validator,
+    'too_many_files': RelocationError._too_many_files_validator,
+    'other': RelocationError._other_validator,
+}
+
+RelocationError.cant_copy_shared_folder = RelocationError('cant_copy_shared_folder')
+RelocationError.cant_nest_shared_folder = RelocationError('cant_nest_shared_folder')
+RelocationError.cant_move_folder_into_itself = RelocationError('cant_move_folder_into_itself')
+RelocationError.too_many_files = RelocationError('too_many_files')
+RelocationError.other = RelocationError('other')
+
 RestoreArg._path_validator = bv.String(pattern=u'/.*')
 RestoreArg._rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
 RestoreArg._all_field_names_ = set([
@@ -5860,4 +5944,272 @@ RestoreError._tagmap = {
 
 RestoreError.invalid_revision = RestoreError('invalid_revision')
 RestoreError.other = RestoreError('other')
+
+SearchArg._path_validator = bv.String(pattern=u'(/.*)?')
+SearchArg._query_validator = bv.String()
+SearchArg._start_validator = bv.UInt64()
+SearchArg._max_results_validator = bv.UInt64(min_value=1, max_value=1000)
+SearchArg._mode_validator = bv.Union(SearchMode)
+SearchArg._all_field_names_ = set([
+    'path',
+    'query',
+    'start',
+    'max_results',
+    'mode',
+])
+SearchArg._all_fields_ = [
+    ('path', SearchArg._path_validator),
+    ('query', SearchArg._query_validator),
+    ('start', SearchArg._start_validator),
+    ('max_results', SearchArg._max_results_validator),
+    ('mode', SearchArg._mode_validator),
+]
+
+SearchError._path_validator = bv.Union(LookupError)
+SearchError._other_validator = bv.Void()
+SearchError._tagmap = {
+    'path': SearchError._path_validator,
+    'other': SearchError._other_validator,
+}
+
+SearchError.other = SearchError('other')
+
+SearchMatch._match_type_validator = bv.Union(SearchMatchType)
+SearchMatch._metadata_validator = bv.StructTree(Metadata)
+SearchMatch._all_field_names_ = set([
+    'match_type',
+    'metadata',
+])
+SearchMatch._all_fields_ = [
+    ('match_type', SearchMatch._match_type_validator),
+    ('metadata', SearchMatch._metadata_validator),
+]
+
+SearchMatchType._filename_validator = bv.Void()
+SearchMatchType._content_validator = bv.Void()
+SearchMatchType._both_validator = bv.Void()
+SearchMatchType._tagmap = {
+    'filename': SearchMatchType._filename_validator,
+    'content': SearchMatchType._content_validator,
+    'both': SearchMatchType._both_validator,
+}
+
+SearchMatchType.filename = SearchMatchType('filename')
+SearchMatchType.content = SearchMatchType('content')
+SearchMatchType.both = SearchMatchType('both')
+
+SearchMode._filename_validator = bv.Void()
+SearchMode._filename_and_content_validator = bv.Void()
+SearchMode._deleted_filename_validator = bv.Void()
+SearchMode._tagmap = {
+    'filename': SearchMode._filename_validator,
+    'filename_and_content': SearchMode._filename_and_content_validator,
+    'deleted_filename': SearchMode._deleted_filename_validator,
+}
+
+SearchMode.filename = SearchMode('filename')
+SearchMode.filename_and_content = SearchMode('filename_and_content')
+SearchMode.deleted_filename = SearchMode('deleted_filename')
+
+SearchResult._matches_validator = bv.List(bv.Struct(SearchMatch))
+SearchResult._more_validator = bv.Boolean()
+SearchResult._start_validator = bv.UInt64()
+SearchResult._all_field_names_ = set([
+    'matches',
+    'more',
+    'start',
+])
+SearchResult._all_fields_ = [
+    ('matches', SearchResult._matches_validator),
+    ('more', SearchResult._more_validator),
+    ('start', SearchResult._start_validator),
+]
+
+ThumbnailArg._path_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
+ThumbnailArg._format_validator = bv.Union(ThumbnailFormat)
+ThumbnailArg._size_validator = bv.Union(ThumbnailSize)
+ThumbnailArg._all_field_names_ = set([
+    'path',
+    'format',
+    'size',
+])
+ThumbnailArg._all_fields_ = [
+    ('path', ThumbnailArg._path_validator),
+    ('format', ThumbnailArg._format_validator),
+    ('size', ThumbnailArg._size_validator),
+]
+
+ThumbnailError._path_validator = bv.Union(LookupError)
+ThumbnailError._unsupported_extension_validator = bv.Void()
+ThumbnailError._unsupported_image_validator = bv.Void()
+ThumbnailError._conversion_error_validator = bv.Void()
+ThumbnailError._tagmap = {
+    'path': ThumbnailError._path_validator,
+    'unsupported_extension': ThumbnailError._unsupported_extension_validator,
+    'unsupported_image': ThumbnailError._unsupported_image_validator,
+    'conversion_error': ThumbnailError._conversion_error_validator,
+}
+
+ThumbnailError.unsupported_extension = ThumbnailError('unsupported_extension')
+ThumbnailError.unsupported_image = ThumbnailError('unsupported_image')
+ThumbnailError.conversion_error = ThumbnailError('conversion_error')
+
+ThumbnailFormat._jpeg_validator = bv.Void()
+ThumbnailFormat._png_validator = bv.Void()
+ThumbnailFormat._tagmap = {
+    'jpeg': ThumbnailFormat._jpeg_validator,
+    'png': ThumbnailFormat._png_validator,
+}
+
+ThumbnailFormat.jpeg = ThumbnailFormat('jpeg')
+ThumbnailFormat.png = ThumbnailFormat('png')
+
+ThumbnailSize._w32h32_validator = bv.Void()
+ThumbnailSize._w64h64_validator = bv.Void()
+ThumbnailSize._w128h128_validator = bv.Void()
+ThumbnailSize._w640h480_validator = bv.Void()
+ThumbnailSize._w1024h768_validator = bv.Void()
+ThumbnailSize._tagmap = {
+    'w32h32': ThumbnailSize._w32h32_validator,
+    'w64h64': ThumbnailSize._w64h64_validator,
+    'w128h128': ThumbnailSize._w128h128_validator,
+    'w640h480': ThumbnailSize._w640h480_validator,
+    'w1024h768': ThumbnailSize._w1024h768_validator,
+}
+
+ThumbnailSize.w32h32 = ThumbnailSize('w32h32')
+ThumbnailSize.w64h64 = ThumbnailSize('w64h64')
+ThumbnailSize.w128h128 = ThumbnailSize('w128h128')
+ThumbnailSize.w640h480 = ThumbnailSize('w640h480')
+ThumbnailSize.w1024h768 = ThumbnailSize('w1024h768')
+
+UploadError._path_validator = bv.Struct(UploadWriteFailed)
+UploadError._other_validator = bv.Void()
+UploadError._tagmap = {
+    'path': UploadError._path_validator,
+    'other': UploadError._other_validator,
+}
+
+UploadError.other = UploadError('other')
+
+UploadSessionCursor._session_id_validator = bv.String()
+UploadSessionCursor._offset_validator = bv.UInt64()
+UploadSessionCursor._all_field_names_ = set([
+    'session_id',
+    'offset',
+])
+UploadSessionCursor._all_fields_ = [
+    ('session_id', UploadSessionCursor._session_id_validator),
+    ('offset', UploadSessionCursor._offset_validator),
+]
+
+UploadSessionFinishArg._cursor_validator = bv.Struct(UploadSessionCursor)
+UploadSessionFinishArg._commit_validator = bv.Struct(CommitInfo)
+UploadSessionFinishArg._all_field_names_ = set([
+    'cursor',
+    'commit',
+])
+UploadSessionFinishArg._all_fields_ = [
+    ('cursor', UploadSessionFinishArg._cursor_validator),
+    ('commit', UploadSessionFinishArg._commit_validator),
+]
+
+UploadSessionFinishError._lookup_failed_validator = bv.Union(UploadSessionLookupError)
+UploadSessionFinishError._path_validator = bv.Union(WriteError)
+UploadSessionFinishError._other_validator = bv.Void()
+UploadSessionFinishError._tagmap = {
+    'lookup_failed': UploadSessionFinishError._lookup_failed_validator,
+    'path': UploadSessionFinishError._path_validator,
+    'other': UploadSessionFinishError._other_validator,
+}
+
+UploadSessionFinishError.other = UploadSessionFinishError('other')
+
+UploadSessionLookupError._not_found_validator = bv.Void()
+UploadSessionLookupError._incorrect_offset_validator = bv.Struct(UploadSessionOffsetError)
+UploadSessionLookupError._closed_validator = bv.Void()
+UploadSessionLookupError._other_validator = bv.Void()
+UploadSessionLookupError._tagmap = {
+    'not_found': UploadSessionLookupError._not_found_validator,
+    'incorrect_offset': UploadSessionLookupError._incorrect_offset_validator,
+    'closed': UploadSessionLookupError._closed_validator,
+    'other': UploadSessionLookupError._other_validator,
+}
+
+UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
+UploadSessionLookupError.closed = UploadSessionLookupError('closed')
+UploadSessionLookupError.other = UploadSessionLookupError('other')
+
+UploadSessionOffsetError._correct_offset_validator = bv.UInt64()
+UploadSessionOffsetError._all_field_names_ = set(['correct_offset'])
+UploadSessionOffsetError._all_fields_ = [('correct_offset', UploadSessionOffsetError._correct_offset_validator)]
+
+UploadSessionStartResult._session_id_validator = bv.String()
+UploadSessionStartResult._all_field_names_ = set(['session_id'])
+UploadSessionStartResult._all_fields_ = [('session_id', UploadSessionStartResult._session_id_validator)]
+
+UploadWriteFailed._reason_validator = bv.Union(WriteError)
+UploadWriteFailed._upload_session_id_validator = bv.String()
+UploadWriteFailed._all_field_names_ = set([
+    'reason',
+    'upload_session_id',
+])
+UploadWriteFailed._all_fields_ = [
+    ('reason', UploadWriteFailed._reason_validator),
+    ('upload_session_id', UploadWriteFailed._upload_session_id_validator),
+]
+
+VideoMetadata._duration_validator = bv.Nullable(bv.UInt64())
+VideoMetadata._field_names_ = set(['duration'])
+VideoMetadata._all_field_names_ = MediaMetadata._all_field_names_.union(VideoMetadata._field_names_)
+VideoMetadata._fields_ = [('duration', VideoMetadata._duration_validator)]
+VideoMetadata._all_fields_ = MediaMetadata._all_fields_ + VideoMetadata._fields_
+
+WriteConflictError._file_validator = bv.Void()
+WriteConflictError._folder_validator = bv.Void()
+WriteConflictError._file_ancestor_validator = bv.Void()
+WriteConflictError._other_validator = bv.Void()
+WriteConflictError._tagmap = {
+    'file': WriteConflictError._file_validator,
+    'folder': WriteConflictError._folder_validator,
+    'file_ancestor': WriteConflictError._file_ancestor_validator,
+    'other': WriteConflictError._other_validator,
+}
+
+WriteConflictError.file = WriteConflictError('file')
+WriteConflictError.folder = WriteConflictError('folder')
+WriteConflictError.file_ancestor = WriteConflictError('file_ancestor')
+WriteConflictError.other = WriteConflictError('other')
+
+WriteError._malformed_path_validator = bv.Nullable(bv.String())
+WriteError._conflict_validator = bv.Union(WriteConflictError)
+WriteError._no_write_permission_validator = bv.Void()
+WriteError._insufficient_space_validator = bv.Void()
+WriteError._disallowed_name_validator = bv.Void()
+WriteError._other_validator = bv.Void()
+WriteError._tagmap = {
+    'malformed_path': WriteError._malformed_path_validator,
+    'conflict': WriteError._conflict_validator,
+    'no_write_permission': WriteError._no_write_permission_validator,
+    'insufficient_space': WriteError._insufficient_space_validator,
+    'disallowed_name': WriteError._disallowed_name_validator,
+    'other': WriteError._other_validator,
+}
+
+WriteError.no_write_permission = WriteError('no_write_permission')
+WriteError.insufficient_space = WriteError('insufficient_space')
+WriteError.disallowed_name = WriteError('disallowed_name')
+WriteError.other = WriteError('other')
+
+WriteMode._add_validator = bv.Void()
+WriteMode._overwrite_validator = bv.Void()
+WriteMode._update_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
+WriteMode._tagmap = {
+    'add': WriteMode._add_validator,
+    'overwrite': WriteMode._overwrite_validator,
+    'update': WriteMode._update_validator,
+}
+
+WriteMode.add = WriteMode('add')
+WriteMode.overwrite = WriteMode('overwrite')
 

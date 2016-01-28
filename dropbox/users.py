@@ -10,163 +10,6 @@ except (SystemError, ValueError):
     # This makes testing this file directly (outside of a package) easier.
     import babel_validators as bv
 
-class GetAccountArg(object):
-    """
-    :ivar account_id: A user's account identifier.
-    """
-
-    __slots__ = [
-        '_account_id_value',
-        '_account_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 account_id=None):
-        self._account_id_value = None
-        self._account_id_present = False
-        if account_id is not None:
-            self.account_id = account_id
-
-    @property
-    def account_id(self):
-        """
-        A user's account identifier.
-
-        :rtype: str
-        """
-        if self._account_id_present:
-            return self._account_id_value
-        else:
-            raise AttributeError("missing required field 'account_id'")
-
-    @account_id.setter
-    def account_id(self, val):
-        val = self._account_id_validator.validate(val)
-        self._account_id_value = val
-        self._account_id_present = True
-
-    @account_id.deleter
-    def account_id(self):
-        self._account_id_value = None
-        self._account_id_present = False
-
-    def __repr__(self):
-        return 'GetAccountArg(account_id={!r})'.format(
-            self._account_id_value,
-        )
-
-class GetAccountError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar no_account: The specified ``GetAccountArg.account_id`` does not exist.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'unknown'
-    # Attribute is overwritten below the class definition
-    no_account = None
-    # Attribute is overwritten below the class definition
-    unknown = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_no_account(self):
-        """
-        Check if the union tag is ``no_account``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_account'
-
-    def is_unknown(self):
-        """
-        Check if the union tag is ``unknown``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unknown'
-
-    def __repr__(self):
-        return 'GetAccountError(%r, %r)' % (self._tag, self._value)
-
-class AccountType(object):
-    """
-    What type of account this user has.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar basic: The basic account type.
-    :ivar pro: The Dropbox Pro account type.
-    :ivar business: The Dropbox Business account type.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    basic = None
-    # Attribute is overwritten below the class definition
-    pro = None
-    # Attribute is overwritten below the class definition
-    business = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_basic(self):
-        """
-        Check if the union tag is ``basic``.
-
-        :rtype: bool
-        """
-        return self._tag == 'basic'
-
-    def is_pro(self):
-        """
-        Check if the union tag is ``pro``.
-
-        :rtype: bool
-        """
-        return self._tag == 'pro'
-
-    def is_business(self):
-        """
-        Check if the union tag is ``business``.
-
-        :rtype: bool
-        """
-        return self._tag == 'business'
-
-    def __repr__(self):
-        return 'AccountType(%r, %r)' % (self._tag, self._value)
-
 class Account(object):
     """
     The amount of detail revealed about an account depends on the user being
@@ -249,6 +92,68 @@ class Account(object):
             self._name_value,
         )
 
+class AccountType(object):
+    """
+    What type of account this user has.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar basic: The basic account type.
+    :ivar pro: The Dropbox Pro account type.
+    :ivar business: The Dropbox Business account type.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    basic = None
+    # Attribute is overwritten below the class definition
+    pro = None
+    # Attribute is overwritten below the class definition
+    business = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_basic(self):
+        """
+        Check if the union tag is ``basic``.
+
+        :rtype: bool
+        """
+        return self._tag == 'basic'
+
+    def is_pro(self):
+        """
+        Check if the union tag is ``pro``.
+
+        :rtype: bool
+        """
+        return self._tag == 'pro'
+
+    def is_business(self):
+        """
+        Check if the union tag is ``business``.
+
+        :rtype: bool
+        """
+        return self._tag == 'business'
+
+    def __repr__(self):
+        return 'AccountType(%r, %r)' % (self._tag, self._value)
+
 class BasicAccount(Account):
     """
     Basic information about any account.
@@ -310,7 +215,10 @@ class FullAccount(Account):
     """
     Detailed information about the current user's account.
 
-    :ivar email: The user's e-mail address.
+    :ivar email: The user's e-mail address. Do not rely on this without checking
+        the ``email_verified`` field. Even then, it's possible that the user has
+        since lost access to their e-mail.
+    :ivar email_verified: Whether the user has verified their e-mail address.
     :ivar country: The user's two-letter country code, if available. Country
         codes are based on `ISO 3166-1
         <http://en.wikipedia.org/wiki/ISO_3166-1>`_.
@@ -329,6 +237,8 @@ class FullAccount(Account):
     __slots__ = [
         '_email_value',
         '_email_present',
+        '_email_verified_value',
+        '_email_verified_present',
         '_country_value',
         '_country_present',
         '_locale_value',
@@ -349,6 +259,7 @@ class FullAccount(Account):
                  account_id=None,
                  name=None,
                  email=None,
+                 email_verified=None,
                  locale=None,
                  referral_link=None,
                  is_paired=None,
@@ -359,6 +270,8 @@ class FullAccount(Account):
                                           name)
         self._email_value = None
         self._email_present = False
+        self._email_verified_value = None
+        self._email_verified_present = False
         self._country_value = None
         self._country_present = False
         self._locale_value = None
@@ -373,6 +286,8 @@ class FullAccount(Account):
         self._account_type_present = False
         if email is not None:
             self.email = email
+        if email_verified is not None:
+            self.email_verified = email_verified
         if country is not None:
             self.country = country
         if locale is not None:
@@ -389,7 +304,9 @@ class FullAccount(Account):
     @property
     def email(self):
         """
-        The user's e-mail address.
+        The user's e-mail address. Do not rely on this without checking the
+        ``email_verified`` field. Even then, it's possible that the user has
+        since lost access to their e-mail.
 
         :rtype: str
         """
@@ -408,6 +325,29 @@ class FullAccount(Account):
     def email(self):
         self._email_value = None
         self._email_present = False
+
+    @property
+    def email_verified(self):
+        """
+        Whether the user has verified their e-mail address.
+
+        :rtype: bool
+        """
+        if self._email_verified_present:
+            return self._email_verified_value
+        else:
+            raise AttributeError("missing required field 'email_verified'")
+
+    @email_verified.setter
+    def email_verified(self, val):
+        val = self._email_verified_validator.validate(val)
+        self._email_verified_value = val
+        self._email_verified_present = True
+
+    @email_verified.deleter
+    def email_verified(self):
+        self._email_verified_value = None
+        self._email_verified_present = False
 
     @property
     def country(self):
@@ -558,10 +498,11 @@ class FullAccount(Account):
         self._account_type_present = False
 
     def __repr__(self):
-        return 'FullAccount(account_id={!r}, name={!r}, email={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, country={!r}, team={!r})'.format(
+        return 'FullAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, country={!r}, team={!r})'.format(
             self._account_id_value,
             self._name_value,
             self._email_value,
+            self._email_verified_value,
             self._locale_value,
             self._referral_link_value,
             self._is_paired_value,
@@ -570,85 +511,266 @@ class FullAccount(Account):
             self._team_value,
         )
 
-class Team(object):
+class GetAccountArg(object):
     """
-    Information about a team.
-
-    :ivar id: The team's unique ID.
-    :ivar name: The name of the team.
+    :ivar account_id: A user's account identifier.
     """
 
     __slots__ = [
-        '_id_value',
-        '_id_present',
-        '_name_value',
-        '_name_present',
+        '_account_id_value',
+        '_account_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 id=None,
-                 name=None):
-        self._id_value = None
-        self._id_present = False
-        self._name_value = None
-        self._name_present = False
-        if id is not None:
-            self.id = id
-        if name is not None:
-            self.name = name
+                 account_id=None):
+        self._account_id_value = None
+        self._account_id_present = False
+        if account_id is not None:
+            self.account_id = account_id
 
     @property
-    def id(self):
+    def account_id(self):
         """
-        The team's unique ID.
+        A user's account identifier.
 
         :rtype: str
         """
-        if self._id_present:
-            return self._id_value
+        if self._account_id_present:
+            return self._account_id_value
         else:
-            raise AttributeError("missing required field 'id'")
+            raise AttributeError("missing required field 'account_id'")
 
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
+    @account_id.setter
+    def account_id(self, val):
+        val = self._account_id_validator.validate(val)
+        self._account_id_value = val
+        self._account_id_present = True
 
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def name(self):
-        """
-        The name of the team.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
+    @account_id.deleter
+    def account_id(self):
+        self._account_id_value = None
+        self._account_id_present = False
 
     def __repr__(self):
-        return 'Team(id={!r}, name={!r})'.format(
-            self._id_value,
-            self._name_value,
+        return 'GetAccountArg(account_id={!r})'.format(
+            self._account_id_value,
+        )
+
+class GetAccountBatchArg(object):
+    """
+    :ivar account_ids: List of user account identifiers.  Should not contain any
+        duplicate account IDs.
+    """
+
+    __slots__ = [
+        '_account_ids_value',
+        '_account_ids_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 account_ids=None):
+        self._account_ids_value = None
+        self._account_ids_present = False
+        if account_ids is not None:
+            self.account_ids = account_ids
+
+    @property
+    def account_ids(self):
+        """
+        List of user account identifiers.  Should not contain any duplicate
+        account IDs.
+
+        :rtype: list of [str]
+        """
+        if self._account_ids_present:
+            return self._account_ids_value
+        else:
+            raise AttributeError("missing required field 'account_ids'")
+
+    @account_ids.setter
+    def account_ids(self, val):
+        val = self._account_ids_validator.validate(val)
+        self._account_ids_value = val
+        self._account_ids_present = True
+
+    @account_ids.deleter
+    def account_ids(self):
+        self._account_ids_value = None
+        self._account_ids_present = False
+
+    def __repr__(self):
+        return 'GetAccountBatchArg(account_ids={!r})'.format(
+            self._account_ids_value,
+        )
+
+class GetAccountBatchError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar str no_account: The value is an account ID specified in
+        :field:`GetAccountBatchArg.account_ids` that does not exist.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def no_account(cls, val):
+        """
+        Create an instance of this class set to the ``no_account`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: GetAccountBatchError
+        """
+        return cls('no_account', val)
+
+    def is_no_account(self):
+        """
+        Check if the union tag is ``no_account``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_account'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_no_account(self):
+        """
+        The value is an account ID specified in
+        ``GetAccountBatchArg.account_ids`` that does not exist.
+
+        Only call this if :meth:`is_no_account` is true.
+
+        :rtype: str
+        """
+        if not self.is_no_account():
+            raise AttributeError("tag 'no_account' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetAccountBatchError(%r, %r)' % (self._tag, self._value)
+
+class GetAccountError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar no_account: The specified ``GetAccountArg.account_id`` does not exist.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'unknown'
+    # Attribute is overwritten below the class definition
+    no_account = None
+    # Attribute is overwritten below the class definition
+    unknown = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_no_account(self):
+        """
+        Check if the union tag is ``no_account``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_account'
+
+    def is_unknown(self):
+        """
+        Check if the union tag is ``unknown``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown'
+
+    def __repr__(self):
+        return 'GetAccountError(%r, %r)' % (self._tag, self._value)
+
+class IndividualSpaceAllocation(object):
+    """
+    :ivar allocated: The total space allocated to the user's account (bytes).
+    """
+
+    __slots__ = [
+        '_allocated_value',
+        '_allocated_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 allocated=None):
+        self._allocated_value = None
+        self._allocated_present = False
+        if allocated is not None:
+            self.allocated = allocated
+
+    @property
+    def allocated(self):
+        """
+        The total space allocated to the user's account (bytes).
+
+        :rtype: long
+        """
+        if self._allocated_present:
+            return self._allocated_value
+        else:
+            raise AttributeError("missing required field 'allocated'")
+
+    @allocated.setter
+    def allocated(self, val):
+        val = self._allocated_validator.validate(val)
+        self._allocated_value = val
+        self._allocated_present = True
+
+    @allocated.deleter
+    def allocated(self):
+        self._allocated_value = None
+        self._allocated_present = False
+
+    def __repr__(self):
+        return 'IndividualSpaceAllocation(allocated={!r})'.format(
+            self._allocated_value,
         )
 
 class Name(object):
@@ -802,87 +924,6 @@ class Name(object):
             self._display_name_value,
         )
 
-class SpaceUsage(object):
-    """
-    Information about a user's space usage and quota.
-
-    :ivar used: The user's total space usage (bytes).
-    :ivar allocation: The user's space allocation.
-    """
-
-    __slots__ = [
-        '_used_value',
-        '_used_present',
-        '_allocation_value',
-        '_allocation_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 used=None,
-                 allocation=None):
-        self._used_value = None
-        self._used_present = False
-        self._allocation_value = None
-        self._allocation_present = False
-        if used is not None:
-            self.used = used
-        if allocation is not None:
-            self.allocation = allocation
-
-    @property
-    def used(self):
-        """
-        The user's total space usage (bytes).
-
-        :rtype: long
-        """
-        if self._used_present:
-            return self._used_value
-        else:
-            raise AttributeError("missing required field 'used'")
-
-    @used.setter
-    def used(self, val):
-        val = self._used_validator.validate(val)
-        self._used_value = val
-        self._used_present = True
-
-    @used.deleter
-    def used(self):
-        self._used_value = None
-        self._used_present = False
-
-    @property
-    def allocation(self):
-        """
-        The user's space allocation.
-
-        :rtype: SpaceAllocation
-        """
-        if self._allocation_present:
-            return self._allocation_value
-        else:
-            raise AttributeError("missing required field 'allocation'")
-
-    @allocation.setter
-    def allocation(self, val):
-        self._allocation_validator.validate_type_only(val)
-        self._allocation_value = val
-        self._allocation_present = True
-
-    @allocation.deleter
-    def allocation(self):
-        self._allocation_value = None
-        self._allocation_present = False
-
-    def __repr__(self):
-        return 'SpaceUsage(used={!r}, allocation={!r})'.format(
-            self._used_value,
-            self._allocation_value,
-        )
-
 class SpaceAllocation(object):
     """
     Space is allocated differently based on the type of account.
@@ -988,51 +1029,166 @@ class SpaceAllocation(object):
     def __repr__(self):
         return 'SpaceAllocation(%r, %r)' % (self._tag, self._value)
 
-class IndividualSpaceAllocation(object):
+class SpaceUsage(object):
     """
-    :ivar allocated: The total space allocated to the user's account (bytes).
+    Information about a user's space usage and quota.
+
+    :ivar used: The user's total space usage (bytes).
+    :ivar allocation: The user's space allocation.
     """
 
     __slots__ = [
-        '_allocated_value',
-        '_allocated_present',
+        '_used_value',
+        '_used_present',
+        '_allocation_value',
+        '_allocation_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 allocated=None):
-        self._allocated_value = None
-        self._allocated_present = False
-        if allocated is not None:
-            self.allocated = allocated
+                 used=None,
+                 allocation=None):
+        self._used_value = None
+        self._used_present = False
+        self._allocation_value = None
+        self._allocation_present = False
+        if used is not None:
+            self.used = used
+        if allocation is not None:
+            self.allocation = allocation
 
     @property
-    def allocated(self):
+    def used(self):
         """
-        The total space allocated to the user's account (bytes).
+        The user's total space usage (bytes).
 
         :rtype: long
         """
-        if self._allocated_present:
-            return self._allocated_value
+        if self._used_present:
+            return self._used_value
         else:
-            raise AttributeError("missing required field 'allocated'")
+            raise AttributeError("missing required field 'used'")
 
-    @allocated.setter
-    def allocated(self, val):
-        val = self._allocated_validator.validate(val)
-        self._allocated_value = val
-        self._allocated_present = True
+    @used.setter
+    def used(self, val):
+        val = self._used_validator.validate(val)
+        self._used_value = val
+        self._used_present = True
 
-    @allocated.deleter
-    def allocated(self):
-        self._allocated_value = None
-        self._allocated_present = False
+    @used.deleter
+    def used(self):
+        self._used_value = None
+        self._used_present = False
+
+    @property
+    def allocation(self):
+        """
+        The user's space allocation.
+
+        :rtype: SpaceAllocation
+        """
+        if self._allocation_present:
+            return self._allocation_value
+        else:
+            raise AttributeError("missing required field 'allocation'")
+
+    @allocation.setter
+    def allocation(self, val):
+        self._allocation_validator.validate_type_only(val)
+        self._allocation_value = val
+        self._allocation_present = True
+
+    @allocation.deleter
+    def allocation(self):
+        self._allocation_value = None
+        self._allocation_present = False
 
     def __repr__(self):
-        return 'IndividualSpaceAllocation(allocated={!r})'.format(
-            self._allocated_value,
+        return 'SpaceUsage(used={!r}, allocation={!r})'.format(
+            self._used_value,
+            self._allocation_value,
+        )
+
+class Team(object):
+    """
+    Information about a team.
+
+    :ivar id: The team's unique ID.
+    :ivar name: The name of the team.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_name_value',
+        '_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 name=None):
+        self._id_value = None
+        self._id_present = False
+        self._name_value = None
+        self._name_present = False
+        if id is not None:
+            self.id = id
+        if name is not None:
+            self.name = name
+
+    @property
+    def id(self):
+        """
+        The team's unique ID.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def name(self):
+        """
+        The name of the team.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    def __repr__(self):
+        return 'Team(id={!r}, name={!r})'.format(
+            self._id_value,
+            self._name_value,
         )
 
 class TeamSpaceAllocation(object):
@@ -1114,139 +1270,16 @@ class TeamSpaceAllocation(object):
             self._allocated_value,
         )
 
-class GetAccountBatchArg(object):
-    """
-    :ivar account_ids: List of user account identifiers.  Should not contain any
-        duplicate account IDs.
-    """
-
-    __slots__ = [
-        '_account_ids_value',
-        '_account_ids_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 account_ids=None):
-        self._account_ids_value = None
-        self._account_ids_present = False
-        if account_ids is not None:
-            self.account_ids = account_ids
-
-    @property
-    def account_ids(self):
-        """
-        List of user account identifiers.  Should not contain any duplicate
-        account IDs.
-
-        :rtype: list of [str]
-        """
-        if self._account_ids_present:
-            return self._account_ids_value
-        else:
-            raise AttributeError("missing required field 'account_ids'")
-
-    @account_ids.setter
-    def account_ids(self, val):
-        val = self._account_ids_validator.validate(val)
-        self._account_ids_value = val
-        self._account_ids_present = True
-
-    @account_ids.deleter
-    def account_ids(self):
-        self._account_ids_value = None
-        self._account_ids_present = False
-
-    def __repr__(self):
-        return 'GetAccountBatchArg(account_ids={!r})'.format(
-            self._account_ids_value,
-        )
-
-class GetAccountBatchError(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar str no_account: The value is an account ID specified in
-        :field:`GetAccountBatchArg.account_ids` that does not exist.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    @classmethod
-    def no_account(cls, val):
-        """
-        Create an instance of this class set to the ``no_account`` tag with
-        value ``val``.
-
-        :param str val:
-        :rtype: GetAccountBatchError
-        """
-        return cls('no_account', val)
-
-    def is_no_account(self):
-        """
-        Check if the union tag is ``no_account``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_account'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_no_account(self):
-        """
-        The value is an account ID specified in
-        ``GetAccountBatchArg.account_ids`` that does not exist.
-
-        Only call this if :meth:`is_no_account` is true.
-
-        :rtype: str
-        """
-        if not self.is_no_account():
-            raise AttributeError("tag 'no_account' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'GetAccountBatchError(%r, %r)' % (self._tag, self._value)
-
-GetAccountArg._account_id_validator = bv.String(min_length=40, max_length=40)
-GetAccountArg._all_field_names_ = set(['account_id'])
-GetAccountArg._all_fields_ = [('account_id', GetAccountArg._account_id_validator)]
-
-GetAccountError._no_account_validator = bv.Void()
-GetAccountError._unknown_validator = bv.Void()
-GetAccountError._tagmap = {
-    'no_account': GetAccountError._no_account_validator,
-    'unknown': GetAccountError._unknown_validator,
-}
-
-GetAccountError.no_account = GetAccountError('no_account')
-GetAccountError.unknown = GetAccountError('unknown')
+Account._account_id_validator = bv.String(min_length=40, max_length=40)
+Account._name_validator = bv.Struct(Name)
+Account._all_field_names_ = set([
+    'account_id',
+    'name',
+])
+Account._all_fields_ = [
+    ('account_id', Account._account_id_validator),
+    ('name', Account._name_validator),
+]
 
 AccountType._basic_validator = bv.Void()
 AccountType._pro_validator = bv.Void()
@@ -1261,22 +1294,12 @@ AccountType.basic = AccountType('basic')
 AccountType.pro = AccountType('pro')
 AccountType.business = AccountType('business')
 
-Account._account_id_validator = bv.String(min_length=40, max_length=40)
-Account._name_validator = bv.Struct(Name)
-Account._all_field_names_ = set([
-    'account_id',
-    'name',
-])
-Account._all_fields_ = [
-    ('account_id', Account._account_id_validator),
-    ('name', Account._name_validator),
-]
-
 BasicAccount._is_teammate_validator = bv.Boolean()
 BasicAccount._all_field_names_ = Account._all_field_names_.union(set(['is_teammate']))
 BasicAccount._all_fields_ = Account._all_fields_ + [('is_teammate', BasicAccount._is_teammate_validator)]
 
 FullAccount._email_validator = bv.String()
+FullAccount._email_verified_validator = bv.Boolean()
 FullAccount._country_validator = bv.Nullable(bv.String(min_length=2, max_length=2))
 FullAccount._locale_validator = bv.String(min_length=2)
 FullAccount._referral_link_validator = bv.String()
@@ -1285,6 +1308,7 @@ FullAccount._is_paired_validator = bv.Boolean()
 FullAccount._account_type_validator = bv.Union(AccountType)
 FullAccount._all_field_names_ = Account._all_field_names_.union(set([
     'email',
+    'email_verified',
     'country',
     'locale',
     'referral_link',
@@ -1294,6 +1318,7 @@ FullAccount._all_field_names_ = Account._all_field_names_.union(set([
 ]))
 FullAccount._all_fields_ = Account._all_fields_ + [
     ('email', FullAccount._email_validator),
+    ('email_verified', FullAccount._email_verified_validator),
     ('country', FullAccount._country_validator),
     ('locale', FullAccount._locale_validator),
     ('referral_link', FullAccount._referral_link_validator),
@@ -1302,16 +1327,36 @@ FullAccount._all_fields_ = Account._all_fields_ + [
     ('account_type', FullAccount._account_type_validator),
 ]
 
-Team._id_validator = bv.String()
-Team._name_validator = bv.String()
-Team._all_field_names_ = set([
-    'id',
-    'name',
-])
-Team._all_fields_ = [
-    ('id', Team._id_validator),
-    ('name', Team._name_validator),
-]
+GetAccountArg._account_id_validator = bv.String(min_length=40, max_length=40)
+GetAccountArg._all_field_names_ = set(['account_id'])
+GetAccountArg._all_fields_ = [('account_id', GetAccountArg._account_id_validator)]
+
+GetAccountBatchArg._account_ids_validator = bv.List(bv.String(min_length=40, max_length=40), min_items=1)
+GetAccountBatchArg._all_field_names_ = set(['account_ids'])
+GetAccountBatchArg._all_fields_ = [('account_ids', GetAccountBatchArg._account_ids_validator)]
+
+GetAccountBatchError._no_account_validator = bv.String(min_length=40, max_length=40)
+GetAccountBatchError._other_validator = bv.Void()
+GetAccountBatchError._tagmap = {
+    'no_account': GetAccountBatchError._no_account_validator,
+    'other': GetAccountBatchError._other_validator,
+}
+
+GetAccountBatchError.other = GetAccountBatchError('other')
+
+GetAccountError._no_account_validator = bv.Void()
+GetAccountError._unknown_validator = bv.Void()
+GetAccountError._tagmap = {
+    'no_account': GetAccountError._no_account_validator,
+    'unknown': GetAccountError._unknown_validator,
+}
+
+GetAccountError.no_account = GetAccountError('no_account')
+GetAccountError.unknown = GetAccountError('unknown')
+
+IndividualSpaceAllocation._allocated_validator = bv.UInt64()
+IndividualSpaceAllocation._all_field_names_ = set(['allocated'])
+IndividualSpaceAllocation._all_fields_ = [('allocated', IndividualSpaceAllocation._allocated_validator)]
 
 Name._given_name_validator = bv.String()
 Name._surname_validator = bv.String()
@@ -1330,17 +1375,6 @@ Name._all_fields_ = [
     ('display_name', Name._display_name_validator),
 ]
 
-SpaceUsage._used_validator = bv.UInt64()
-SpaceUsage._allocation_validator = bv.Union(SpaceAllocation)
-SpaceUsage._all_field_names_ = set([
-    'used',
-    'allocation',
-])
-SpaceUsage._all_fields_ = [
-    ('used', SpaceUsage._used_validator),
-    ('allocation', SpaceUsage._allocation_validator),
-]
-
 SpaceAllocation._individual_validator = bv.Struct(IndividualSpaceAllocation)
 SpaceAllocation._team_validator = bv.Struct(TeamSpaceAllocation)
 SpaceAllocation._other_validator = bv.Void()
@@ -1352,9 +1386,27 @@ SpaceAllocation._tagmap = {
 
 SpaceAllocation.other = SpaceAllocation('other')
 
-IndividualSpaceAllocation._allocated_validator = bv.UInt64()
-IndividualSpaceAllocation._all_field_names_ = set(['allocated'])
-IndividualSpaceAllocation._all_fields_ = [('allocated', IndividualSpaceAllocation._allocated_validator)]
+SpaceUsage._used_validator = bv.UInt64()
+SpaceUsage._allocation_validator = bv.Union(SpaceAllocation)
+SpaceUsage._all_field_names_ = set([
+    'used',
+    'allocation',
+])
+SpaceUsage._all_fields_ = [
+    ('used', SpaceUsage._used_validator),
+    ('allocation', SpaceUsage._allocation_validator),
+]
+
+Team._id_validator = bv.String()
+Team._name_validator = bv.String()
+Team._all_field_names_ = set([
+    'id',
+    'name',
+])
+Team._all_fields_ = [
+    ('id', Team._id_validator),
+    ('name', Team._name_validator),
+]
 
 TeamSpaceAllocation._used_validator = bv.UInt64()
 TeamSpaceAllocation._allocated_validator = bv.UInt64()
@@ -1366,17 +1418,4 @@ TeamSpaceAllocation._all_fields_ = [
     ('used', TeamSpaceAllocation._used_validator),
     ('allocated', TeamSpaceAllocation._allocated_validator),
 ]
-
-GetAccountBatchArg._account_ids_validator = bv.List(bv.String(min_length=40, max_length=40), min_items=1)
-GetAccountBatchArg._all_field_names_ = set(['account_ids'])
-GetAccountBatchArg._all_fields_ = [('account_ids', GetAccountBatchArg._account_ids_validator)]
-
-GetAccountBatchError._no_account_validator = bv.String(min_length=40, max_length=40)
-GetAccountBatchError._other_validator = bv.Void()
-GetAccountBatchError._tagmap = {
-    'no_account': GetAccountBatchError._no_account_validator,
-    'other': GetAccountBatchError._other_validator,
-}
-
-GetAccountBatchError.other = GetAccountBatchError('other')
 

@@ -264,7 +264,7 @@ class String(Primitive):
 
         if pattern:
             try:
-                self.pattern_re = re.compile(r"\A" + pattern + r"\Z")
+                self.pattern_re = re.compile(r"\A(?:" + pattern + r")\Z")
             except re.error as e:
                 raise AssertionError('Regex {!r} failed: {}'.format(
                     pattern, e.args[0]))

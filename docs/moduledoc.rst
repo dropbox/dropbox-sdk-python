@@ -8,18 +8,12 @@ SDK Documentation
    :members:
    :undoc-members:
 
-:mod:`dropbox.base` -- Base
-============================================
-.. autoclass:: dropbox.base.DropboxBase
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 :mod:`dropbox.dropbox` -- Dropbox
 ============================================
 .. automodule:: dropbox.dropbox
    :members:
    :show-inheritance:
+   :inherited-members:
    :special-members: __init__
    :undoc-members:
 
@@ -33,6 +27,14 @@ SDK Documentation
 :mod:`dropbox.sharing` -- Sharing
 ============================================
 .. automodule:: dropbox.sharing
+   :members:
+   :show-inheritance:
+   :special-members: __init__
+   :undoc-members:
+
+:mod:`dropbox.team` -- Team
+============================================
+.. automodule:: dropbox.team
    :members:
    :show-inheritance:
    :special-members: __init__
