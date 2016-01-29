@@ -5,7 +5,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '5.0.1'
+__version__ = '5.1'
 
 import contextlib
 import json
@@ -123,6 +123,7 @@ class _DropboxTransport(object):
     def __init__(self,
                  oauth2_access_token,
                  max_retries_on_error=4,
+                 max_retries_on_rate_limit=None,
                  user_agent=None,
                  session=None,
                  headers=None):
@@ -132,6 +133,8 @@ class _DropboxTransport(object):
 
         :param int max_retries_on_error: On 5xx errors, the number of times to
             retry.
+        :param Optional[int] max_retries_on_rate_limit: On 429 errors, the
+            number of times to retry. If `None`, always retries.
         :param str user_agent: The user agent to use when making requests. This
             helps us identify requests coming from your application. We
             recommend you use the format "AppName/Version". If set, we append
@@ -149,6 +152,7 @@ class _DropboxTransport(object):
         self._oauth2_access_token = oauth2_access_token
 
         self._max_retries_on_error = max_retries_on_error
+        self._max_retries_on_rate_limit = max_retries_on_rate_limit
         if session:
             assert isinstance(session, requests.sessions.Session), \
                 'Expected requests.sessions.Session, got %r' % session
@@ -288,6 +292,7 @@ class _DropboxTransport(object):
             argument to the route.
         """
         attempt = 0
+        rate_limit_errors = 0
         while True:
             self._logger.info('Request to %s', route_name)
             try:
@@ -296,17 +301,26 @@ class _DropboxTransport(object):
                                                 route_style,
                                                 request_json_arg,
                                                 request_binary)
-            except (InternalServerError, RateLimitError) as e:
-                if isinstance(e, InternalServerError):
-                    # Do not count a rate limiting error as an attempt
-                    attempt += 1
+            except InternalServerError as e:
+                attempt += 1
                 if attempt <= self._max_retries_on_error:
                     # Use exponential backoff
                     backoff = 2**attempt * random.random()
-                    self._logger.info('HttpError status_code=%s: '
-                                      'Retrying in %.1f seconds',
-                                      e.status_code, backoff)
+                    self._logger.info(
+                        'HttpError status_code=%s: Retrying in %.1f seconds',
+                        e.status_code, backoff)
                     time.sleep(backoff)
+                else:
+                    raise
+            except RateLimitError as e:
+                rate_limit_errors += 1
+                if (self._max_retries_on_rate_limit is None or
+                        self._max_retries_on_rate_limit >= rate_limit_errors):
+                    # Set default backoff to 5 seconds.
+                    backoff = e.backoff if e.backoff is not None else 5.0
+                    self._logger.info(
+                        'Ratelimit: Retrying in %.1f seconds.', backoff)
+                    time.sleep(e.backoff)
                 else:
                     raise
 
@@ -332,6 +346,9 @@ class _DropboxTransport(object):
             headers['Authorization'] = 'Bearer %s' % self._oauth2_access_token
             if self._headers:
                 headers.update(self._headers)
+        else:
+            retry_on_timeout = True
+
 
         # The contents of the body of the HTTP request
         body = None
