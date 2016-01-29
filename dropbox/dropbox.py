@@ -5,7 +5,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '5.0'
+__version__ = '5.0.1'
 
 import contextlib
 import json
@@ -157,7 +157,7 @@ class _DropboxTransport(object):
             self._session = create_session()
         self._headers = headers
 
-        base_user_agent = 'OfficialDropboxPythonV2SDK/' + __version__
+        base_user_agent = 'OfficialDropboxPythonSDKv2/' + __version__
         if user_agent:
             self._raw_user_agent = user_agent
             self._user_agent = '{}/{}'.format(user_agent, base_user_agent)
