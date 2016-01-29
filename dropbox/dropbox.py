@@ -5,7 +5,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '5.1'
+__version__ = '5.2'
 
 import contextlib
 import json
@@ -346,9 +346,6 @@ class _DropboxTransport(object):
             headers['Authorization'] = 'Bearer %s' % self._oauth2_access_token
             if self._headers:
                 headers.update(self._headers)
-        else:
-            retry_on_timeout = True
-
 
         # The contents of the body of the HTTP request
         body = None
@@ -388,8 +385,10 @@ class _DropboxTransport(object):
                 r.headers.get('content-type'))
             raise AuthError(request_id, r.json())
         elif r.status_code == 429:
-            # TODO(kelkabany): Use backoff if provided in response.
-            raise RateLimitError(request_id)
+            retry_after = r.headers.get('retry-after')
+            if retry_after is not None:
+                retry_after = int(retry_after)
+            raise RateLimitError(request_id, retry_after)
         elif 200 <= r.status_code <= 299:
             if route_style == self._ROUTE_STYLE_DOWNLOAD:
                 raw_resp = r.headers['dropbox-api-result']
