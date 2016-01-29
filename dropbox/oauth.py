@@ -273,6 +273,8 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             and approve your app.
         """
         csrf_token = base64.urlsafe_b64encode(os.urandom(16))
+        if six.PY3:
+            csrf_token = csrf_token.decode("utf-8")
         state = csrf_token
         if url_state is not None:
             state += "|" + url_state
