@@ -436,9 +436,13 @@ def _params_to_urlencoded(params):
     the exception of unicode objects which are utf8-encoded.
     """
     def encode(o):
-        if isinstance(o, six.text_type):
-            return o.encode('utf8')
+        if isinstance(o, six.binary_type):
+            return o
         else:
-            return str(o)
+            if isinstance(o, six.text_type):
+                return o.encode('utf-8')
+            else:
+                return str(o).encode('utf-8')
+
     utf8_params = {encode(k): encode(v) for k, v in six.iteritems(params)}
     return url_encode(utf8_params)
