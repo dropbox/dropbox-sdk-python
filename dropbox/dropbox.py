@@ -320,7 +320,7 @@ class _DropboxTransport(object):
                     backoff = e.backoff if e.backoff is not None else 5.0
                     self._logger.info(
                         'Ratelimit: Retrying in %.1f seconds.', backoff)
-                    time.sleep(e.backoff)
+                    time.sleep(backoff)
                 else:
                     raise
 
