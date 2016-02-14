@@ -1,6 +1,7 @@
 import pkg_resources
 import six
 import ssl
+import sys
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -320,16 +321,28 @@ class DropboxSession(BaseSession):
         if not params:
             raise ValueError("Invalid parameter string: %r" % s)
 
-        try:
-            key = params['oauth_token'][0]
-        except Exception:
-            raise ValueError("'oauth_token' not found in OAuth request.")
-
-        try:
-            secret = params['oauth_token_secret'][0]
-        except Exception:
-            raise ValueError("'oauth_token_secret' not found in "
+     if sys.version < "3":
+            try:
+                key = params['oauth_token'][0]
+            except Exception:
+                raise ValueError("'oauth_token' not found in OAuth request.")
+            
+            try:
+                secret = params['oauth_token_secret'][0]
+            except Exception:
+                raise ValueError("'oauth_token_secret' not found in "
                              "OAuth request.")
+    else:
+            try:
+                key = params[b'oauth_token'][0]
+            except Exception:
+                raise ValueError("'oauth_token' not found in OAuth request.")
+
+            try:
+            	secret = params[b'oauth_token_secret'][0]
+            except Exception:
+            	raise ValueError("'oauth_token_secret' not found in "
+                             "OAuth request.")th request.")
 
         return OAuthToken(key, secret)
 
