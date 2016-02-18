@@ -272,7 +272,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             access the user's Dropbox account. Tell the user to visit this URL
             and approve your app.
         """
-        csrf_token = base64.urlsafe_b64encode(os.urandom(16))
+        csrf_token = base64.urlsafe_b64encode(os.urandom(16)).decode('ascii')
         state = csrf_token
         if url_state is not None:
             state += "|" + url_state
