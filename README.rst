@@ -8,11 +8,15 @@ A Python SDK for integrating with the Dropbox API v2. Compatible with Python
 Setup
 -----
 
-You can install this package from the root directory by running::
+You can install this package from the root directory by running:
+
+.. code-block:: bash
 
     $ python setup.py install
 
-After installation, to get started, open a Python console::
+After installation, to get started, open a Python console:
+
+.. code-block:: python
 
     >>> import dropbox
     >>> dbx = dropbox.Dropbox("YOUR_ACCESS_TOKEN")
@@ -58,8 +62,10 @@ Running tests
 -------------
 
 We use the `tox <https://tox.readthedocs.org/>`_ package to run tests in Python
-2 and 3. To install, use `pip install tox`. Once installed, run `tox` from the
-root directory. You'll need to specify a working Dropbox OAuth2 token::
+2 and 3. To install, use :code:`pip install tox`. Once installed, run `tox` from the
+root directory. You'll need to specify a working Dropbox OAuth2 token:
+
+.. code-block:: bash
 
     $ DROPBOX_TOKEN=YOUR_TOKEN tox
 
