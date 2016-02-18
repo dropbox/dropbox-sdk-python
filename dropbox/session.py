@@ -1,6 +1,6 @@
 import pkg_resources
-import six
 import ssl
+import sys
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -41,20 +41,16 @@ import six
 import time
 import urllib
 
-try:
-    from urlparse import parse_qs
-except ImportError:
-    # fall back for Python 2.5
-    from cgi import parse_qs
-
 from . import rest
 
-if six.PY3:
-    url_path_quote = urllib.parse.quote
-    url_encode = urllib.parse.urlencode
-else:
+if six.PY2:
+    from urlparse import parse_qs
     url_path_quote = urllib.quote
     url_encode = urllib.urlencode
+else:
+    from urllib.parse import parse_qs
+    url_path_quote = urllib.parse.quote
+    url_encode = urllib.parse.urlencode
 
 
 class OAuthToken(object):
@@ -320,13 +316,19 @@ class DropboxSession(BaseSession):
         if not params:
             raise ValueError("Invalid parameter string: %r" % s)
 
+        if six.PY2:
+            oauth_token_key = 'oauth_token'
+            oauth_token_secret_key = 'oauth_token_secret'
+        else:
+            oauth_token_key = b'oauth_token'
+            oauth_token_secret_key = b'oauth_token_secret'
         try:
-            key = params['oauth_token'][0]
+            key = params[oauth_token_key][0]
         except Exception:
             raise ValueError("'oauth_token' not found in OAuth request.")
 
         try:
-            secret = params['oauth_token_secret'][0]
+            secret = params[oauth_token_secret_key][0]
         except Exception:
             raise ValueError("'oauth_token_secret' not found in "
                              "OAuth request.")
