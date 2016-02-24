@@ -17,6 +17,12 @@ class Account(object):
 
     :ivar account_id: The user's unique Dropbox ID.
     :ivar name: Details of a user's name.
+    :ivar email: The user's e-mail address. Do not rely on this without checking
+        the ``email_verified`` field. Even then, it's possible that the user has
+        since lost access to their e-mail.
+    :ivar email_verified: Whether the user has verified their e-mail address.
+    :ivar profile_photo_url: URL for the photo representing the user, if one is
+        set.
     """
 
     __slots__ = [
@@ -24,21 +30,42 @@ class Account(object):
         '_account_id_present',
         '_name_value',
         '_name_present',
+        '_email_value',
+        '_email_present',
+        '_email_verified_value',
+        '_email_verified_present',
+        '_profile_photo_url_value',
+        '_profile_photo_url_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  account_id=None,
-                 name=None):
+                 name=None,
+                 email=None,
+                 email_verified=None,
+                 profile_photo_url=None):
         self._account_id_value = None
         self._account_id_present = False
         self._name_value = None
         self._name_present = False
+        self._email_value = None
+        self._email_present = False
+        self._email_verified_value = None
+        self._email_verified_present = False
+        self._profile_photo_url_value = None
+        self._profile_photo_url_present = False
         if account_id is not None:
             self.account_id = account_id
         if name is not None:
             self.name = name
+        if email is not None:
+            self.email = email
+        if email_verified is not None:
+            self.email_verified = email_verified
+        if profile_photo_url is not None:
+            self.profile_photo_url = profile_photo_url
 
     @property
     def account_id(self):
@@ -86,10 +113,87 @@ class Account(object):
         self._name_value = None
         self._name_present = False
 
+    @property
+    def email(self):
+        """
+        The user's e-mail address. Do not rely on this without checking the
+        ``email_verified`` field. Even then, it's possible that the user has
+        since lost access to their e-mail.
+
+        :rtype: str
+        """
+        if self._email_present:
+            return self._email_value
+        else:
+            raise AttributeError("missing required field 'email'")
+
+    @email.setter
+    def email(self, val):
+        val = self._email_validator.validate(val)
+        self._email_value = val
+        self._email_present = True
+
+    @email.deleter
+    def email(self):
+        self._email_value = None
+        self._email_present = False
+
+    @property
+    def email_verified(self):
+        """
+        Whether the user has verified their e-mail address.
+
+        :rtype: bool
+        """
+        if self._email_verified_present:
+            return self._email_verified_value
+        else:
+            raise AttributeError("missing required field 'email_verified'")
+
+    @email_verified.setter
+    def email_verified(self, val):
+        val = self._email_verified_validator.validate(val)
+        self._email_verified_value = val
+        self._email_verified_present = True
+
+    @email_verified.deleter
+    def email_verified(self):
+        self._email_verified_value = None
+        self._email_verified_present = False
+
+    @property
+    def profile_photo_url(self):
+        """
+        URL for the photo representing the user, if one is set.
+
+        :rtype: str
+        """
+        if self._profile_photo_url_present:
+            return self._profile_photo_url_value
+        else:
+            return None
+
+    @profile_photo_url.setter
+    def profile_photo_url(self, val):
+        if val is None:
+            del self.profile_photo_url
+            return
+        val = self._profile_photo_url_validator.validate(val)
+        self._profile_photo_url_value = val
+        self._profile_photo_url_present = True
+
+    @profile_photo_url.deleter
+    def profile_photo_url(self):
+        self._profile_photo_url_value = None
+        self._profile_photo_url_present = False
+
     def __repr__(self):
-        return 'Account(account_id={!r}, name={!r})'.format(
+        return 'Account(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, profile_photo_url={!r})'.format(
             self._account_id_value,
             self._name_value,
+            self._email_value,
+            self._email_verified_value,
+            self._profile_photo_url_value,
         )
 
 class AccountType(object):
@@ -160,11 +264,16 @@ class BasicAccount(Account):
 
     :ivar is_teammate: Whether this user is a teammate of the current user. If
         this account is the current user's account, then this will be ``True``.
+    :ivar team_member_id: The user's unique team member id. This field will only
+        be present if the user is part of a team and ``is_teammate`` is
+        ``True``.
     """
 
     __slots__ = [
         '_is_teammate_value',
         '_is_teammate_present',
+        '_team_member_id_value',
+        '_team_member_id_present',
     ]
 
     _has_required_fields = True
@@ -172,13 +281,24 @@ class BasicAccount(Account):
     def __init__(self,
                  account_id=None,
                  name=None,
-                 is_teammate=None):
+                 email=None,
+                 email_verified=None,
+                 is_teammate=None,
+                 profile_photo_url=None,
+                 team_member_id=None):
         super(BasicAccount, self).__init__(account_id,
-                                           name)
+                                           name,
+                                           email,
+                                           email_verified,
+                                           profile_photo_url)
         self._is_teammate_value = None
         self._is_teammate_present = False
+        self._team_member_id_value = None
+        self._team_member_id_present = False
         if is_teammate is not None:
             self.is_teammate = is_teammate
+        if team_member_id is not None:
+            self.team_member_id = team_member_id
 
     @property
     def is_teammate(self):
@@ -204,21 +324,48 @@ class BasicAccount(Account):
         self._is_teammate_value = None
         self._is_teammate_present = False
 
+    @property
+    def team_member_id(self):
+        """
+        The user's unique team member id. This field will only be present if the
+        user is part of a team and ``is_teammate`` is ``True``.
+
+        :rtype: str
+        """
+        if self._team_member_id_present:
+            return self._team_member_id_value
+        else:
+            return None
+
+    @team_member_id.setter
+    def team_member_id(self, val):
+        if val is None:
+            del self.team_member_id
+            return
+        val = self._team_member_id_validator.validate(val)
+        self._team_member_id_value = val
+        self._team_member_id_present = True
+
+    @team_member_id.deleter
+    def team_member_id(self):
+        self._team_member_id_value = None
+        self._team_member_id_present = False
+
     def __repr__(self):
-        return 'BasicAccount(account_id={!r}, name={!r}, is_teammate={!r})'.format(
+        return 'BasicAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, is_teammate={!r}, profile_photo_url={!r}, team_member_id={!r})'.format(
             self._account_id_value,
             self._name_value,
+            self._email_value,
+            self._email_verified_value,
             self._is_teammate_value,
+            self._profile_photo_url_value,
+            self._team_member_id_value,
         )
 
 class FullAccount(Account):
     """
     Detailed information about the current user's account.
 
-    :ivar email: The user's e-mail address. Do not rely on this without checking
-        the ``email_verified`` field. Even then, it's possible that the user has
-        since lost access to their e-mail.
-    :ivar email_verified: Whether the user has verified their e-mail address.
     :ivar country: The user's two-letter country code, if available. Country
         codes are based on `ISO 3166-1
         <http://en.wikipedia.org/wiki/ISO_3166-1>`_.
@@ -228,6 +375,8 @@ class FullAccount(Account):
         <https://www.dropbox.com/referrals>`_.
     :ivar team: If this account is a member of a team, information about that
         team.
+    :ivar team_member_id: This account's unique team member id. This field will
+        only be present if ``team`` is present.
     :ivar is_paired: Whether the user has a personal and work account. If the
         current account is personal, then ``team`` will always be None, but
         ``is_paired`` will indicate if a work account is linked.
@@ -235,10 +384,6 @@ class FullAccount(Account):
     """
 
     __slots__ = [
-        '_email_value',
-        '_email_present',
-        '_email_verified_value',
-        '_email_verified_present',
         '_country_value',
         '_country_present',
         '_locale_value',
@@ -247,6 +392,8 @@ class FullAccount(Account):
         '_referral_link_present',
         '_team_value',
         '_team_present',
+        '_team_member_id_value',
+        '_team_member_id_present',
         '_is_paired_value',
         '_is_paired_present',
         '_account_type_value',
@@ -264,14 +411,15 @@ class FullAccount(Account):
                  referral_link=None,
                  is_paired=None,
                  account_type=None,
+                 profile_photo_url=None,
                  country=None,
-                 team=None):
+                 team=None,
+                 team_member_id=None):
         super(FullAccount, self).__init__(account_id,
-                                          name)
-        self._email_value = None
-        self._email_present = False
-        self._email_verified_value = None
-        self._email_verified_present = False
+                                          name,
+                                          email,
+                                          email_verified,
+                                          profile_photo_url)
         self._country_value = None
         self._country_present = False
         self._locale_value = None
@@ -280,14 +428,12 @@ class FullAccount(Account):
         self._referral_link_present = False
         self._team_value = None
         self._team_present = False
+        self._team_member_id_value = None
+        self._team_member_id_present = False
         self._is_paired_value = None
         self._is_paired_present = False
         self._account_type_value = None
         self._account_type_present = False
-        if email is not None:
-            self.email = email
-        if email_verified is not None:
-            self.email_verified = email_verified
         if country is not None:
             self.country = country
         if locale is not None:
@@ -296,58 +442,12 @@ class FullAccount(Account):
             self.referral_link = referral_link
         if team is not None:
             self.team = team
+        if team_member_id is not None:
+            self.team_member_id = team_member_id
         if is_paired is not None:
             self.is_paired = is_paired
         if account_type is not None:
             self.account_type = account_type
-
-    @property
-    def email(self):
-        """
-        The user's e-mail address. Do not rely on this without checking the
-        ``email_verified`` field. Even then, it's possible that the user has
-        since lost access to their e-mail.
-
-        :rtype: str
-        """
-        if self._email_present:
-            return self._email_value
-        else:
-            raise AttributeError("missing required field 'email'")
-
-    @email.setter
-    def email(self, val):
-        val = self._email_validator.validate(val)
-        self._email_value = val
-        self._email_present = True
-
-    @email.deleter
-    def email(self):
-        self._email_value = None
-        self._email_present = False
-
-    @property
-    def email_verified(self):
-        """
-        Whether the user has verified their e-mail address.
-
-        :rtype: bool
-        """
-        if self._email_verified_present:
-            return self._email_verified_value
-        else:
-            raise AttributeError("missing required field 'email_verified'")
-
-    @email_verified.setter
-    def email_verified(self, val):
-        val = self._email_verified_validator.validate(val)
-        self._email_verified_value = val
-        self._email_verified_present = True
-
-    @email_verified.deleter
-    def email_verified(self):
-        self._email_verified_value = None
-        self._email_verified_present = False
 
     @property
     def country(self):
@@ -450,6 +550,33 @@ class FullAccount(Account):
         self._team_present = False
 
     @property
+    def team_member_id(self):
+        """
+        This account's unique team member id. This field will only be present if
+        ``team`` is present.
+
+        :rtype: str
+        """
+        if self._team_member_id_present:
+            return self._team_member_id_value
+        else:
+            return None
+
+    @team_member_id.setter
+    def team_member_id(self, val):
+        if val is None:
+            del self.team_member_id
+            return
+        val = self._team_member_id_validator.validate(val)
+        self._team_member_id_value = val
+        self._team_member_id_present = True
+
+    @team_member_id.deleter
+    def team_member_id(self):
+        self._team_member_id_value = None
+        self._team_member_id_present = False
+
+    @property
     def is_paired(self):
         """
         Whether the user has a personal and work account. If the current account
@@ -498,7 +625,7 @@ class FullAccount(Account):
         self._account_type_present = False
 
     def __repr__(self):
-        return 'FullAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, country={!r}, team={!r})'.format(
+        return 'FullAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, profile_photo_url={!r}, country={!r}, team={!r}, team_member_id={!r})'.format(
             self._account_id_value,
             self._name_value,
             self._email_value,
@@ -507,8 +634,10 @@ class FullAccount(Account):
             self._referral_link_value,
             self._is_paired_value,
             self._account_type_value,
+            self._profile_photo_url_value,
             self._country_value,
             self._team_value,
+            self._team_member_id_value,
         )
 
 class GetAccountArg(object):
@@ -1272,13 +1401,22 @@ class TeamSpaceAllocation(object):
 
 Account._account_id_validator = bv.String(min_length=40, max_length=40)
 Account._name_validator = bv.Struct(Name)
+Account._email_validator = bv.String()
+Account._email_verified_validator = bv.Boolean()
+Account._profile_photo_url_validator = bv.Nullable(bv.String())
 Account._all_field_names_ = set([
     'account_id',
     'name',
+    'email',
+    'email_verified',
+    'profile_photo_url',
 ])
 Account._all_fields_ = [
     ('account_id', Account._account_id_validator),
     ('name', Account._name_validator),
+    ('email', Account._email_validator),
+    ('email_verified', Account._email_verified_validator),
+    ('profile_photo_url', Account._profile_photo_url_validator),
 ]
 
 AccountType._basic_validator = bv.Void()
@@ -1295,34 +1433,38 @@ AccountType.pro = AccountType('pro')
 AccountType.business = AccountType('business')
 
 BasicAccount._is_teammate_validator = bv.Boolean()
-BasicAccount._all_field_names_ = Account._all_field_names_.union(set(['is_teammate']))
-BasicAccount._all_fields_ = Account._all_fields_ + [('is_teammate', BasicAccount._is_teammate_validator)]
+BasicAccount._team_member_id_validator = bv.Nullable(bv.String())
+BasicAccount._all_field_names_ = Account._all_field_names_.union(set([
+    'is_teammate',
+    'team_member_id',
+]))
+BasicAccount._all_fields_ = Account._all_fields_ + [
+    ('is_teammate', BasicAccount._is_teammate_validator),
+    ('team_member_id', BasicAccount._team_member_id_validator),
+]
 
-FullAccount._email_validator = bv.String()
-FullAccount._email_verified_validator = bv.Boolean()
 FullAccount._country_validator = bv.Nullable(bv.String(min_length=2, max_length=2))
 FullAccount._locale_validator = bv.String(min_length=2)
 FullAccount._referral_link_validator = bv.String()
 FullAccount._team_validator = bv.Nullable(bv.Struct(Team))
+FullAccount._team_member_id_validator = bv.Nullable(bv.String())
 FullAccount._is_paired_validator = bv.Boolean()
 FullAccount._account_type_validator = bv.Union(AccountType)
 FullAccount._all_field_names_ = Account._all_field_names_.union(set([
-    'email',
-    'email_verified',
     'country',
     'locale',
     'referral_link',
     'team',
+    'team_member_id',
     'is_paired',
     'account_type',
 ]))
 FullAccount._all_fields_ = Account._all_fields_ + [
-    ('email', FullAccount._email_validator),
-    ('email_verified', FullAccount._email_verified_validator),
     ('country', FullAccount._country_validator),
     ('locale', FullAccount._locale_validator),
     ('referral_link', FullAccount._referral_link_validator),
     ('team', FullAccount._team_validator),
+    ('team_member_id', FullAccount._team_member_id_validator),
     ('is_paired', FullAccount._is_paired_validator),
     ('account_type', FullAccount._account_type_validator),
 ]

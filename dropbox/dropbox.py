@@ -5,7 +5,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '5.2.2'
+__version__ = '6.0'
 
 import contextlib
 import json

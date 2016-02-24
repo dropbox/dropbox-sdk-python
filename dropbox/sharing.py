@@ -318,11 +318,9 @@ class AddFolderMemberError(object):
     corresponding ``get_*`` method.
 
     :ivar SharedFolderAccessError access_error: Unable to access shared folder.
-    :ivar email_unverified: The current account's e-mail address is unverified.
+    :ivar email_unverified: The current user's e-mail address is unverified.
     :ivar AddMemberSelectorError bad_member: ``AddFolderMemberArg.members``
         contains a bad invitation recipient.
-    :ivar no_permission: The current account does not have permission to perform
-        this action.
     :ivar cant_share_outside_team: Your team policy does not allow sharing
         outside of the team.
     :ivar long too_many_members: The value is the member limit that was reached.
@@ -333,6 +331,9 @@ class AddFolderMemberError(object):
         action. An example of this is when adding a read-only member. This
         action can only be performed by users that have upgraded to a Pro or
         Business plan.
+    :ivar team_folder: This action cannot be performed on a team shared folder.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
     """
 
     __slots__ = ['_tag', '_value']
@@ -341,13 +342,15 @@ class AddFolderMemberError(object):
     # Attribute is overwritten below the class definition
     email_unverified = None
     # Attribute is overwritten below the class definition
-    no_permission = None
-    # Attribute is overwritten below the class definition
     cant_share_outside_team = None
     # Attribute is overwritten below the class definition
     rate_limit = None
     # Attribute is overwritten below the class definition
     insufficient_plan = None
+    # Attribute is overwritten below the class definition
+    team_folder = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -431,14 +434,6 @@ class AddFolderMemberError(object):
         """
         return self._tag == 'bad_member'
 
-    def is_no_permission(self):
-        """
-        Check if the union tag is ``no_permission``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_permission'
-
     def is_cant_share_outside_team(self):
         """
         Check if the union tag is ``cant_share_outside_team``.
@@ -478,6 +473,22 @@ class AddFolderMemberError(object):
         :rtype: bool
         """
         return self._tag == 'insufficient_plan'
+
+    def is_team_folder(self):
+        """
+        Check if the union tag is ``team_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -637,7 +648,7 @@ class AddMemberSelectorError(object):
     :ivar group_deleted: At least one of the specified groups in
         ``AddFolderMemberArg.members`` is deleted.
     :ivar group_not_on_team: Sharing to a group that is not on the current
-        account's team.
+        user's team.
     """
 
     __slots__ = ['_tag', '_value']
@@ -1805,6 +1816,11 @@ class FolderAction(object):
     :ivar change_options: Change folder options, such as who can be invited to
         join the folder.
     :ivar edit_contents: Change or edit contents of the folder.
+    :ivar invite_editor: Invite a user or group to join the folder with read and
+        write permission.
+    :ivar invite_viewer: Invite a user or group to join the folder with read
+        permission.
+    :ivar relinquish_membership: Relinquish one's own membership in the folder.
     :ivar unmount: Unmount the folder.
     :ivar unshare: Stop sharing this folder.
     """
@@ -1816,6 +1832,12 @@ class FolderAction(object):
     change_options = None
     # Attribute is overwritten below the class definition
     edit_contents = None
+    # Attribute is overwritten below the class definition
+    invite_editor = None
+    # Attribute is overwritten below the class definition
+    invite_viewer = None
+    # Attribute is overwritten below the class definition
+    relinquish_membership = None
     # Attribute is overwritten below the class definition
     unmount = None
     # Attribute is overwritten below the class definition
@@ -1850,6 +1872,30 @@ class FolderAction(object):
         :rtype: bool
         """
         return self._tag == 'edit_contents'
+
+    def is_invite_editor(self):
+        """
+        Check if the union tag is ``invite_editor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_editor'
+
+    def is_invite_viewer(self):
+        """
+        Check if the union tag is ``invite_viewer``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_viewer'
+
+    def is_relinquish_membership(self):
+        """
+        Check if the union tag is ``relinquish_membership``.
+
+        :rtype: bool
+        """
+        return self._tag == 'relinquish_membership'
 
     def is_unmount(self):
         """
@@ -2158,7 +2204,7 @@ class FolderPolicy(object):
 class GetMetadataArgs(object):
     """
     :ivar shared_folder_id: The ID for the shared folder.
-    :ivar actions: Folder actions to query.
+    :ivar actions: Folder actions to query. This field is optional.
     """
 
     __slots__ = [
@@ -2208,7 +2254,7 @@ class GetMetadataArgs(object):
     @property
     def actions(self):
         """
-        Folder actions to query.
+        Folder actions to query. This field is optional.
 
         :rtype: list of [FolderAction]
         """
@@ -2689,6 +2735,9 @@ class MembershipInfo(object):
     :ivar access_type: The access type for this member.
     :ivar permissions: The permissions that requesting user has on this member.
         The set of permissions corresponds to the MemberActions in the request.
+    :ivar initials: Suggested name initials for a member.
+    :ivar is_inherited: True if the member's access to the file is inherited
+        from a parent folder.
     """
 
     __slots__ = [
@@ -2696,21 +2745,35 @@ class MembershipInfo(object):
         '_access_type_present',
         '_permissions_value',
         '_permissions_present',
+        '_initials_value',
+        '_initials_present',
+        '_is_inherited_value',
+        '_is_inherited_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  access_type=None,
-                 permissions=None):
+                 permissions=None,
+                 initials=None,
+                 is_inherited=None):
         self._access_type_value = None
         self._access_type_present = False
         self._permissions_value = None
         self._permissions_present = False
+        self._initials_value = None
+        self._initials_present = False
+        self._is_inherited_value = None
+        self._is_inherited_present = False
         if access_type is not None:
             self.access_type = access_type
         if permissions is not None:
             self.permissions = permissions
+        if initials is not None:
+            self.initials = initials
+        if is_inherited is not None:
+            self.is_inherited = is_inherited
 
     @property
     def access_type(self):
@@ -2762,10 +2825,62 @@ class MembershipInfo(object):
         self._permissions_value = None
         self._permissions_present = False
 
+    @property
+    def initials(self):
+        """
+        Suggested name initials for a member.
+
+        :rtype: str
+        """
+        if self._initials_present:
+            return self._initials_value
+        else:
+            return None
+
+    @initials.setter
+    def initials(self, val):
+        if val is None:
+            del self.initials
+            return
+        val = self._initials_validator.validate(val)
+        self._initials_value = val
+        self._initials_present = True
+
+    @initials.deleter
+    def initials(self):
+        self._initials_value = None
+        self._initials_present = False
+
+    @property
+    def is_inherited(self):
+        """
+        True if the member's access to the file is inherited from a parent
+        folder.
+
+        :rtype: bool
+        """
+        if self._is_inherited_present:
+            return self._is_inherited_value
+        else:
+            return False
+
+    @is_inherited.setter
+    def is_inherited(self, val):
+        val = self._is_inherited_validator.validate(val)
+        self._is_inherited_value = val
+        self._is_inherited_present = True
+
+    @is_inherited.deleter
+    def is_inherited(self):
+        self._is_inherited_value = None
+        self._is_inherited_present = False
+
     def __repr__(self):
-        return 'MembershipInfo(access_type={!r}, permissions={!r})'.format(
+        return 'MembershipInfo(access_type={!r}, permissions={!r}, initials={!r}, is_inherited={!r})'.format(
             self._access_type_value,
             self._permissions_value,
+            self._initials_value,
+            self._is_inherited_value,
         )
 
 class GroupMembershipInfo(MembershipInfo):
@@ -2785,9 +2900,13 @@ class GroupMembershipInfo(MembershipInfo):
     def __init__(self,
                  access_type=None,
                  group=None,
-                 permissions=None):
+                 permissions=None,
+                 initials=None,
+                 is_inherited=None):
         super(GroupMembershipInfo, self).__init__(access_type,
-                                                  permissions)
+                                                  permissions,
+                                                  initials,
+                                                  is_inherited)
         self._group_value = None
         self._group_present = False
         if group is not None:
@@ -2817,10 +2936,12 @@ class GroupMembershipInfo(MembershipInfo):
         self._group_present = False
 
     def __repr__(self):
-        return 'GroupMembershipInfo(access_type={!r}, group={!r}, permissions={!r})'.format(
+        return 'GroupMembershipInfo(access_type={!r}, group={!r}, permissions={!r}, initials={!r}, is_inherited={!r})'.format(
             self._access_type_value,
             self._group_value,
             self._permissions_value,
+            self._initials_value,
+            self._is_inherited_value,
         )
 
 class InviteeInfo(object):
@@ -2911,9 +3032,13 @@ class InviteeMembershipInfo(MembershipInfo):
     def __init__(self,
                  access_type=None,
                  invitee=None,
-                 permissions=None):
+                 permissions=None,
+                 initials=None,
+                 is_inherited=None):
         super(InviteeMembershipInfo, self).__init__(access_type,
-                                                    permissions)
+                                                    permissions,
+                                                    initials,
+                                                    is_inherited)
         self._invitee_value = None
         self._invitee_present = False
         if invitee is not None:
@@ -2943,17 +3068,27 @@ class InviteeMembershipInfo(MembershipInfo):
         self._invitee_present = False
 
     def __repr__(self):
-        return 'InviteeMembershipInfo(access_type={!r}, invitee={!r}, permissions={!r})'.format(
+        return 'InviteeMembershipInfo(access_type={!r}, invitee={!r}, permissions={!r}, initials={!r}, is_inherited={!r})'.format(
             self._access_type_value,
             self._invitee_value,
             self._permissions_value,
+            self._initials_value,
+            self._is_inherited_value,
         )
 
 class JobError(object):
     """
+    Error occurred while performing an asynchronous job from unshare_folder or
+    remove_folder_member.
+
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar UnshareFolderError unshare_folder_error: Error occurred while
+        performing unshare_folder action.
+    :ivar RemoveFolderMemberError remove_folder_member_error: Error occurred
+        while performing remove_folder_member action.
     """
 
     __slots__ = ['_tag', '_value']
@@ -2975,42 +3110,42 @@ class JobError(object):
         self._value = value
 
     @classmethod
-    def access_error(cls, val):
+    def unshare_folder_error(cls, val):
         """
-        Create an instance of this class set to the ``access_error`` tag with
-        value ``val``.
+        Create an instance of this class set to the ``unshare_folder_error`` tag
+        with value ``val``.
 
-        :param SharedFolderAccessError val:
+        :param UnshareFolderError val:
         :rtype: JobError
         """
-        return cls('access_error', val)
+        return cls('unshare_folder_error', val)
 
     @classmethod
-    def member_error(cls, val):
+    def remove_folder_member_error(cls, val):
         """
-        Create an instance of this class set to the ``member_error`` tag with
-        value ``val``.
+        Create an instance of this class set to the
+        ``remove_folder_member_error`` tag with value ``val``.
 
-        :param SharedFolderMemberError val:
+        :param RemoveFolderMemberError val:
         :rtype: JobError
         """
-        return cls('member_error', val)
+        return cls('remove_folder_member_error', val)
 
-    def is_access_error(self):
+    def is_unshare_folder_error(self):
         """
-        Check if the union tag is ``access_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'access_error'
-
-    def is_member_error(self):
-        """
-        Check if the union tag is ``member_error``.
+        Check if the union tag is ``unshare_folder_error``.
 
         :rtype: bool
         """
-        return self._tag == 'member_error'
+        return self._tag == 'unshare_folder_error'
+
+    def is_remove_folder_member_error(self):
+        """
+        Check if the union tag is ``remove_folder_member_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'remove_folder_member_error'
 
     def is_other(self):
         """
@@ -3020,24 +3155,28 @@ class JobError(object):
         """
         return self._tag == 'other'
 
-    def get_access_error(self):
+    def get_unshare_folder_error(self):
         """
-        Only call this if :meth:`is_access_error` is true.
+        Error occurred while performing unshare_folder action.
 
-        :rtype: SharedFolderAccessError
+        Only call this if :meth:`is_unshare_folder_error` is true.
+
+        :rtype: UnshareFolderError
         """
-        if not self.is_access_error():
-            raise AttributeError("tag 'access_error' not set")
+        if not self.is_unshare_folder_error():
+            raise AttributeError("tag 'unshare_folder_error' not set")
         return self._value
 
-    def get_member_error(self):
+    def get_remove_folder_member_error(self):
         """
-        Only call this if :meth:`is_member_error` is true.
+        Error occurred while performing remove_folder_member action.
 
-        :rtype: SharedFolderMemberError
+        Only call this if :meth:`is_remove_folder_member_error` is true.
+
+        :rtype: RemoveFolderMemberError
         """
-        if not self.is_member_error():
-            raise AttributeError("tag 'member_error' not set")
+        if not self.is_remove_folder_member_error():
+            raise AttributeError("tag 'remove_folder_member_error' not set")
         return self._value
 
     def __repr__(self):
@@ -3285,7 +3424,9 @@ class LinkPermissions(object):
 class ListFolderMembersArgs(object):
     """
     :ivar shared_folder_id: The ID for the shared folder.
-    :ivar actions: Member actions to query.
+    :ivar actions: Member actions to query. This field is optional.
+    :ivar limit: The maximum number of results that include members, groups and
+        invitees to return per request.
     """
 
     __slots__ = [
@@ -3293,21 +3434,28 @@ class ListFolderMembersArgs(object):
         '_shared_folder_id_present',
         '_actions_value',
         '_actions_present',
+        '_limit_value',
+        '_limit_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  shared_folder_id=None,
-                 actions=None):
+                 actions=None,
+                 limit=None):
         self._shared_folder_id_value = None
         self._shared_folder_id_present = False
         self._actions_value = None
         self._actions_present = False
+        self._limit_value = None
+        self._limit_present = False
         if shared_folder_id is not None:
             self.shared_folder_id = shared_folder_id
         if actions is not None:
             self.actions = actions
+        if limit is not None:
+            self.limit = limit
 
     @property
     def shared_folder_id(self):
@@ -3335,7 +3483,7 @@ class ListFolderMembersArgs(object):
     @property
     def actions(self):
         """
-        Member actions to query.
+        Member actions to query. This field is optional.
 
         :rtype: list of [MemberAction]
         """
@@ -3358,10 +3506,35 @@ class ListFolderMembersArgs(object):
         self._actions_value = None
         self._actions_present = False
 
+    @property
+    def limit(self):
+        """
+        The maximum number of results that include members, groups and invitees
+        to return per request.
+
+        :rtype: long
+        """
+        if self._limit_present:
+            return self._limit_value
+        else:
+            return 1000
+
+    @limit.setter
+    def limit(self, val):
+        val = self._limit_validator.validate(val)
+        self._limit_value = val
+        self._limit_present = True
+
+    @limit.deleter
+    def limit(self):
+        self._limit_value = None
+        self._limit_present = False
+
     def __repr__(self):
-        return 'ListFolderMembersArgs(shared_folder_id={!r}, actions={!r})'.format(
+        return 'ListFolderMembersArgs(shared_folder_id={!r}, actions={!r}, limit={!r})'.format(
             self._shared_folder_id_value,
             self._actions_value,
+            self._limit_value,
         )
 
 class ListFolderMembersContinueArg(object):
@@ -3489,6 +3662,88 @@ class ListFolderMembersContinueError(object):
 
     def __repr__(self):
         return 'ListFolderMembersContinueError(%r, %r)' % (self._tag, self._value)
+
+class ListFoldersArgs(object):
+    """
+    :ivar limit: The maximum number of results to return per request.
+    :ivar actions: Folder actions to query. This field is optional.
+    """
+
+    __slots__ = [
+        '_limit_value',
+        '_limit_present',
+        '_actions_value',
+        '_actions_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 limit=None,
+                 actions=None):
+        self._limit_value = None
+        self._limit_present = False
+        self._actions_value = None
+        self._actions_present = False
+        if limit is not None:
+            self.limit = limit
+        if actions is not None:
+            self.actions = actions
+
+    @property
+    def limit(self):
+        """
+        The maximum number of results to return per request.
+
+        :rtype: long
+        """
+        if self._limit_present:
+            return self._limit_value
+        else:
+            return 1000
+
+    @limit.setter
+    def limit(self, val):
+        val = self._limit_validator.validate(val)
+        self._limit_value = val
+        self._limit_present = True
+
+    @limit.deleter
+    def limit(self):
+        self._limit_value = None
+        self._limit_present = False
+
+    @property
+    def actions(self):
+        """
+        Folder actions to query. This field is optional.
+
+        :rtype: list of [FolderAction]
+        """
+        if self._actions_present:
+            return self._actions_value
+        else:
+            return None
+
+    @actions.setter
+    def actions(self, val):
+        if val is None:
+            del self.actions
+            return
+        val = self._actions_validator.validate(val)
+        self._actions_value = val
+        self._actions_present = True
+
+    @actions.deleter
+    def actions(self):
+        self._actions_value = None
+        self._actions_present = False
+
+    def __repr__(self):
+        return 'ListFoldersArgs(limit={!r}, actions={!r})'.format(
+            self._limit_value,
+            self._actions_value,
+        )
 
 class ListFoldersContinueArg(object):
     """
@@ -3681,6 +3936,7 @@ class ListSharedLinksArg(object):
     """
     :ivar path: See list_shared_links description.
     :ivar cursor: The cursor returned by your last call to list_shared_links.
+    :ivar direct_only: See list_shared_links description.
     """
 
     __slots__ = [
@@ -3688,21 +3944,28 @@ class ListSharedLinksArg(object):
         '_path_present',
         '_cursor_value',
         '_cursor_present',
+        '_direct_only_value',
+        '_direct_only_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  path=None,
-                 cursor=None):
+                 cursor=None,
+                 direct_only=None):
         self._path_value = None
         self._path_present = False
         self._cursor_value = None
         self._cursor_present = False
+        self._direct_only_value = None
+        self._direct_only_present = False
         if path is not None:
             self.path = path
         if cursor is not None:
             self.cursor = cursor
+        if direct_only is not None:
+            self.direct_only = direct_only
 
     @property
     def path(self):
@@ -3756,10 +4019,37 @@ class ListSharedLinksArg(object):
         self._cursor_value = None
         self._cursor_present = False
 
+    @property
+    def direct_only(self):
+        """
+        See list_shared_links description.
+
+        :rtype: bool
+        """
+        if self._direct_only_present:
+            return self._direct_only_value
+        else:
+            return None
+
+    @direct_only.setter
+    def direct_only(self, val):
+        if val is None:
+            del self.direct_only
+            return
+        val = self._direct_only_validator.validate(val)
+        self._direct_only_value = val
+        self._direct_only_present = True
+
+    @direct_only.deleter
+    def direct_only(self):
+        self._direct_only_value = None
+        self._direct_only_present = False
+
     def __repr__(self):
-        return 'ListSharedLinksArg(path={!r}, cursor={!r})'.format(
+        return 'ListSharedLinksArg(path={!r}, cursor={!r}, direct_only={!r})'.format(
             self._path_value,
             self._cursor_value,
+            self._direct_only_value,
         )
 
 class ListSharedLinksError(object):
@@ -3968,7 +4258,9 @@ class MemberAction(object):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar make_editor: Make the member an editor of the folder.
     :ivar make_owner: Make the member an owner of the folder.
+    :ivar make_viewer: Make the member a viewer of the folder.
     :ivar remove: Remove the member from the folder.
     """
 
@@ -3976,7 +4268,11 @@ class MemberAction(object):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    make_editor = None
+    # Attribute is overwritten below the class definition
     make_owner = None
+    # Attribute is overwritten below the class definition
+    make_viewer = None
     # Attribute is overwritten below the class definition
     remove = None
     # Attribute is overwritten below the class definition
@@ -3994,6 +4290,14 @@ class MemberAction(object):
         self._tag = tag
         self._value = value
 
+    def is_make_editor(self):
+        """
+        Check if the union tag is ``make_editor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'make_editor'
+
     def is_make_owner(self):
         """
         Check if the union tag is ``make_owner``.
@@ -4001,6 +4305,14 @@ class MemberAction(object):
         :rtype: bool
         """
         return self._tag == 'make_owner'
+
+    def is_make_viewer(self):
+        """
+        Check if the union tag is ``make_viewer``.
+
+        :rtype: bool
+        """
+        return self._tag == 'make_viewer'
 
     def is_remove(self):
         """
@@ -4511,6 +4823,8 @@ class MountFolderError(object):
     :ivar insufficient_quota: The current user does not have enough space to
         mount the shared folder.
     :ivar already_mounted: The shared folder is already mounted.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
     """
 
     __slots__ = ['_tag', '_value']
@@ -4522,6 +4836,8 @@ class MountFolderError(object):
     insufficient_quota = None
     # Attribute is overwritten below the class definition
     already_mounted = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -4579,6 +4895,14 @@ class MountFolderError(object):
         :rtype: bool
         """
         return self._tag == 'already_mounted'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -4874,11 +5198,14 @@ class RelinquishFolderMembershipError(object):
 
     :ivar folder_owner: The current user is the owner of the shared folder.
         Owners cannot relinquish membership to their own folders. Try unsharing
-        or transfering ownership first.
+        or transferring ownership first.
     :ivar mounted: The shared folder is currently mounted.  Unmount the shared
         folder before relinquishing membership.
     :ivar group_access: The current user has access to the shared folder via a
         group.  You can't relinquish membership to folders shared via groups.
+    :ivar team_folder: This action cannot be performed on a team shared folder.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
     """
 
     __slots__ = ['_tag', '_value']
@@ -4890,6 +5217,10 @@ class RelinquishFolderMembershipError(object):
     mounted = None
     # Attribute is overwritten below the class definition
     group_access = None
+    # Attribute is overwritten below the class definition
+    team_folder = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -4947,6 +5278,22 @@ class RelinquishFolderMembershipError(object):
         :rtype: bool
         """
         return self._tag == 'group_access'
+
+    def is_team_folder(self):
+        """
+        Check if the union tag is ``team_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -5096,6 +5443,9 @@ class RemoveFolderMemberError(object):
         member.
     :ivar group_access: The target user has access to the shared folder via a
         group.
+    :ivar team_folder: This action cannot be performed on a team shared folder.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
     """
 
     __slots__ = ['_tag', '_value']
@@ -5105,6 +5455,10 @@ class RemoveFolderMemberError(object):
     folder_owner = None
     # Attribute is overwritten below the class definition
     group_access = None
+    # Attribute is overwritten below the class definition
+    team_folder = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -5173,6 +5527,22 @@ class RemoveFolderMemberError(object):
         :rtype: bool
         """
         return self._tag == 'group_access'
+
+    def is_team_folder(self):
+        """
+        Check if the union tag is ``team_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -5611,13 +5981,13 @@ class ShareFolderError(object):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar email_unverified: The current account's e-mail address is unverified.
+    :ivar email_unverified: The current user's e-mail address is unverified.
     :ivar SharePathError bad_path: ``ShareFolderArg.path`` is invalid.
     :ivar team_policy_disallows_member_policy: Team policy is more restrictive
         than ``ShareFolderArg.member_policy``.
-    :ivar disallowed_shared_link_policy: The current account is not allowed to
-        select the specified ``ShareFolderArg.shared_link_policy``.
-    :ivar no_permission: The current account does not have permission to perform
+    :ivar disallowed_shared_link_policy: The current user's account is not
+        allowed to select the specified ``ShareFolderArg.shared_link_policy``.
+    :ivar no_permission: The current user does not have permission to perform
         this action.
     """
 
@@ -5989,11 +6359,7 @@ class SharedFolderAccessError(object):
     :ivar invalid_id: This shared folder ID is invalid.
     :ivar not_a_member: The user is not a member of the shared folder thus
         cannot access it.
-    :ivar no_permission: The current user does not have sufficient privileges to
-        perform the desired action.
-    :ivar email_unverified: The current account's e-mail address is unverified.
-    :ivar team_folder: The current user cannot perform this action on a team
-        shared folder.
+    :ivar email_unverified: The current user's e-mail address is unverified.
     :ivar unmounted: The shared folder is unmounted.
     """
 
@@ -6005,11 +6371,7 @@ class SharedFolderAccessError(object):
     # Attribute is overwritten below the class definition
     not_a_member = None
     # Attribute is overwritten below the class definition
-    no_permission = None
-    # Attribute is overwritten below the class definition
     email_unverified = None
-    # Attribute is overwritten below the class definition
-    team_folder = None
     # Attribute is overwritten below the class definition
     unmounted = None
     # Attribute is overwritten below the class definition
@@ -6043,14 +6405,6 @@ class SharedFolderAccessError(object):
         """
         return self._tag == 'not_a_member'
 
-    def is_no_permission(self):
-        """
-        Check if the union tag is ``no_permission``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_permission'
-
     def is_email_unverified(self):
         """
         Check if the union tag is ``email_unverified``.
@@ -6058,14 +6412,6 @@ class SharedFolderAccessError(object):
         :rtype: bool
         """
         return self._tag == 'email_unverified'
-
-    def is_team_folder(self):
-        """
-        Check if the union tag is ``team_folder``.
-
-        :rtype: bool
-        """
-        return self._tag == 'team_folder'
 
     def is_unmounted(self):
         """
@@ -6302,30 +6648,20 @@ class SharedFolderMembers(object):
             self._cursor_value,
         )
 
-class SharedFolderMetadata(object):
+class SharedFolderMetadataBase(object):
     """
-    The metadata which includes basic information about the shared folder.
+    Properties of the shared folder.
 
-    :ivar path_lower: The lower-cased full path of this shared folder. Absent
-        for unmounted folders.
-    :ivar name: The name of the this shared folder.
-    :ivar shared_folder_id: The ID of the shared folder.
     :ivar access_type: The current user's access level for this shared folder.
     :ivar is_team_folder: Whether this folder is a `team folder
         <https://www.dropbox.com/en/help/986>`_.
     :ivar policy: Policies governing this shared folder.
     :ivar permissions: Actions the current user may perform on the folder and
-        its contents. The set of permissions corresponds to the MemberActions in
+        its contents. The set of permissions corresponds to the FolderActions in
         the request.
     """
 
     __slots__ = [
-        '_path_lower_value',
-        '_path_lower_present',
-        '_name_value',
-        '_name_present',
-        '_shared_folder_id_value',
-        '_shared_folder_id_present',
         '_access_type_value',
         '_access_type_present',
         '_is_team_folder_value',
@@ -6339,19 +6675,10 @@ class SharedFolderMetadata(object):
     _has_required_fields = True
 
     def __init__(self,
-                 name=None,
-                 shared_folder_id=None,
                  access_type=None,
                  is_team_folder=None,
                  policy=None,
-                 path_lower=None,
                  permissions=None):
-        self._path_lower_value = None
-        self._path_lower_present = False
-        self._name_value = None
-        self._name_present = False
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
         self._access_type_value = None
         self._access_type_present = False
         self._is_team_folder_value = None
@@ -6360,12 +6687,6 @@ class SharedFolderMetadata(object):
         self._policy_present = False
         self._permissions_value = None
         self._permissions_present = False
-        if path_lower is not None:
-            self.path_lower = path_lower
-        if name is not None:
-            self.name = name
-        if shared_folder_id is not None:
-            self.shared_folder_id = shared_folder_id
         if access_type is not None:
             self.access_type = access_type
         if is_team_folder is not None:
@@ -6374,79 +6695,6 @@ class SharedFolderMetadata(object):
             self.policy = policy
         if permissions is not None:
             self.permissions = permissions
-
-    @property
-    def path_lower(self):
-        """
-        The lower-cased full path of this shared folder. Absent for unmounted
-        folders.
-
-        :rtype: str
-        """
-        if self._path_lower_present:
-            return self._path_lower_value
-        else:
-            return None
-
-    @path_lower.setter
-    def path_lower(self, val):
-        if val is None:
-            del self.path_lower
-            return
-        val = self._path_lower_validator.validate(val)
-        self._path_lower_value = val
-        self._path_lower_present = True
-
-    @path_lower.deleter
-    def path_lower(self):
-        self._path_lower_value = None
-        self._path_lower_present = False
-
-    @property
-    def name(self):
-        """
-        The name of the this shared folder.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def shared_folder_id(self):
-        """
-        The ID of the shared folder.
-
-        :rtype: str
-        """
-        if self._shared_folder_id_present:
-            return self._shared_folder_id_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_id'")
-
-    @shared_folder_id.setter
-    def shared_folder_id(self, val):
-        val = self._shared_folder_id_validator.validate(val)
-        self._shared_folder_id_value = val
-        self._shared_folder_id_present = True
-
-    @shared_folder_id.deleter
-    def shared_folder_id(self):
-        self._shared_folder_id_value = None
-        self._shared_folder_id_present = False
 
     @property
     def access_type(self):
@@ -6522,7 +6770,7 @@ class SharedFolderMetadata(object):
     def permissions(self):
         """
         Actions the current user may perform on the folder and its contents. The
-        set of permissions corresponds to the MemberActions in the request.
+        set of permissions corresponds to the FolderActions in the request.
 
         :rtype: list of [FolderPermission]
         """
@@ -6546,14 +6794,141 @@ class SharedFolderMetadata(object):
         self._permissions_present = False
 
     def __repr__(self):
-        return 'SharedFolderMetadata(name={!r}, shared_folder_id={!r}, access_type={!r}, is_team_folder={!r}, policy={!r}, path_lower={!r}, permissions={!r})'.format(
-            self._name_value,
-            self._shared_folder_id_value,
+        return 'SharedFolderMetadataBase(access_type={!r}, is_team_folder={!r}, policy={!r}, permissions={!r})'.format(
             self._access_type_value,
             self._is_team_folder_value,
             self._policy_value,
-            self._path_lower_value,
             self._permissions_value,
+        )
+
+class SharedFolderMetadata(SharedFolderMetadataBase):
+    """
+    The metadata which includes basic information about the shared folder.
+
+    :ivar path_lower: The lower-cased full path of this shared folder. Absent
+        for unmounted folders.
+    :ivar name: The name of the this shared folder.
+    :ivar shared_folder_id: The ID of the shared folder.
+    """
+
+    __slots__ = [
+        '_path_lower_value',
+        '_path_lower_present',
+        '_name_value',
+        '_name_present',
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 access_type=None,
+                 is_team_folder=None,
+                 policy=None,
+                 name=None,
+                 shared_folder_id=None,
+                 permissions=None,
+                 path_lower=None):
+        super(SharedFolderMetadata, self).__init__(access_type,
+                                                   is_team_folder,
+                                                   policy,
+                                                   permissions)
+        self._path_lower_value = None
+        self._path_lower_present = False
+        self._name_value = None
+        self._name_present = False
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        if path_lower is not None:
+            self.path_lower = path_lower
+        if name is not None:
+            self.name = name
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+
+    @property
+    def path_lower(self):
+        """
+        The lower-cased full path of this shared folder. Absent for unmounted
+        folders.
+
+        :rtype: str
+        """
+        if self._path_lower_present:
+            return self._path_lower_value
+        else:
+            return None
+
+    @path_lower.setter
+    def path_lower(self, val):
+        if val is None:
+            del self.path_lower
+            return
+        val = self._path_lower_validator.validate(val)
+        self._path_lower_value = val
+        self._path_lower_present = True
+
+    @path_lower.deleter
+    def path_lower(self):
+        self._path_lower_value = None
+        self._path_lower_present = False
+
+    @property
+    def name(self):
+        """
+        The name of the this shared folder.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def shared_folder_id(self):
+        """
+        The ID of the shared folder.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'shared_folder_id'")
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    def __repr__(self):
+        return 'SharedFolderMetadata(access_type={!r}, is_team_folder={!r}, policy={!r}, name={!r}, shared_folder_id={!r}, permissions={!r}, path_lower={!r})'.format(
+            self._access_type_value,
+            self._is_team_folder_value,
+            self._policy_value,
+            self._name_value,
+            self._shared_folder_id_value,
+            self._permissions_value,
+            self._path_lower_value,
         )
 
 class SharedLinkAccessFailureReason(object):
@@ -7094,22 +7469,21 @@ class TransferFolderError(object):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar no_permission: The current account does not have permission to perform
-        this action.
     :ivar invalid_dropbox_id: ``TransferFolderArg.to_dropbox_id`` is invalid.
     :ivar new_owner_not_a_member: The new designated owner is not currently a
         member of the shared folder.
-    :ivar new_owner_unmounted: The new desginated owner does not have the shared
+    :ivar new_owner_unmounted: The new designated owner does not have the shared
         folder mounted.
     :ivar new_owner_email_unverified: The new designated owner's e-mail address
         is unverified.
+    :ivar team_folder: This action cannot be performed on a team shared folder.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
     """
 
     __slots__ = ['_tag', '_value']
 
     _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    no_permission = None
     # Attribute is overwritten below the class definition
     invalid_dropbox_id = None
     # Attribute is overwritten below the class definition
@@ -7118,6 +7492,10 @@ class TransferFolderError(object):
     new_owner_unmounted = None
     # Attribute is overwritten below the class definition
     new_owner_email_unverified = None
+    # Attribute is overwritten below the class definition
+    team_folder = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -7152,14 +7530,6 @@ class TransferFolderError(object):
         """
         return self._tag == 'access_error'
 
-    def is_no_permission(self):
-        """
-        Check if the union tag is ``no_permission``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_permission'
-
     def is_invalid_dropbox_id(self):
         """
         Check if the union tag is ``invalid_dropbox_id``.
@@ -7191,6 +7561,22 @@ class TransferFolderError(object):
         :rtype: bool
         """
         return self._tag == 'new_owner_email_unverified'
+
+    def is_team_folder(self):
+        """
+        Check if the union tag is ``team_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -7265,11 +7651,16 @@ class UnmountFolderError(object):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
     """
 
     __slots__ = ['_tag', '_value']
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    no_permission = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -7303,6 +7694,14 @@ class UnmountFolderError(object):
         :rtype: bool
         """
         return self._tag == 'access_error'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -7414,11 +7813,19 @@ class UnshareFolderError(object):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar team_folder: This action cannot be performed on a team shared folder.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
     """
 
     __slots__ = ['_tag', '_value']
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    team_folder = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -7452,6 +7859,22 @@ class UnshareFolderError(object):
         :rtype: bool
         """
         return self._tag == 'access_error'
+
+    def is_team_folder(self):
+        """
+        Check if the union tag is ``team_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -7599,6 +8022,8 @@ class UpdateFolderMemberError(object):
         action. An example of this is when downgrading a member from editor to
         viewer. This action can only be performed by users that have upgraded to
         a Pro or Business plan.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
     """
 
     __slots__ = ['_tag', '_value']
@@ -7606,6 +8031,8 @@ class UpdateFolderMemberError(object):
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     insufficient_plan = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -7666,6 +8093,14 @@ class UpdateFolderMemberError(object):
         :rtype: bool
         """
         return self._tag == 'insufficient_plan'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -7962,7 +8397,7 @@ class UpdateFolderPolicyError(object):
 class UserInfo(object):
     """
     Basic information about a user. Use users.get_account and
-    users.get_account_batch` to obtain more detailed information.
+    users.get_account_batch to obtain more detailed information.
 
     :ivar account_id: The account ID of the user.
     :ivar same_team: If the user is in the same team as current user.
@@ -8095,9 +8530,13 @@ class UserMembershipInfo(MembershipInfo):
     def __init__(self,
                  access_type=None,
                  user=None,
-                 permissions=None):
+                 permissions=None,
+                 initials=None,
+                 is_inherited=None):
         super(UserMembershipInfo, self).__init__(access_type,
-                                                 permissions)
+                                                 permissions,
+                                                 initials,
+                                                 is_inherited)
         self._user_value = None
         self._user_present = False
         if user is not None:
@@ -8127,10 +8566,12 @@ class UserMembershipInfo(MembershipInfo):
         self._user_present = False
 
     def __repr__(self):
-        return 'UserMembershipInfo(access_type={!r}, user={!r}, permissions={!r})'.format(
+        return 'UserMembershipInfo(access_type={!r}, user={!r}, permissions={!r}, initials={!r}, is_inherited={!r})'.format(
             self._access_type_value,
             self._user_value,
             self._permissions_value,
+            self._initials_value,
+            self._is_inherited_value,
         )
 
 class Visibility(object):
@@ -8284,31 +8725,34 @@ AddFolderMemberArg._all_fields_ = [
 AddFolderMemberError._access_error_validator = bv.Union(SharedFolderAccessError)
 AddFolderMemberError._email_unverified_validator = bv.Void()
 AddFolderMemberError._bad_member_validator = bv.Union(AddMemberSelectorError)
-AddFolderMemberError._no_permission_validator = bv.Void()
 AddFolderMemberError._cant_share_outside_team_validator = bv.Void()
 AddFolderMemberError._too_many_members_validator = bv.UInt64()
 AddFolderMemberError._too_many_pending_invites_validator = bv.UInt64()
 AddFolderMemberError._rate_limit_validator = bv.Void()
 AddFolderMemberError._insufficient_plan_validator = bv.Void()
+AddFolderMemberError._team_folder_validator = bv.Void()
+AddFolderMemberError._no_permission_validator = bv.Void()
 AddFolderMemberError._other_validator = bv.Void()
 AddFolderMemberError._tagmap = {
     'access_error': AddFolderMemberError._access_error_validator,
     'email_unverified': AddFolderMemberError._email_unverified_validator,
     'bad_member': AddFolderMemberError._bad_member_validator,
-    'no_permission': AddFolderMemberError._no_permission_validator,
     'cant_share_outside_team': AddFolderMemberError._cant_share_outside_team_validator,
     'too_many_members': AddFolderMemberError._too_many_members_validator,
     'too_many_pending_invites': AddFolderMemberError._too_many_pending_invites_validator,
     'rate_limit': AddFolderMemberError._rate_limit_validator,
     'insufficient_plan': AddFolderMemberError._insufficient_plan_validator,
+    'team_folder': AddFolderMemberError._team_folder_validator,
+    'no_permission': AddFolderMemberError._no_permission_validator,
     'other': AddFolderMemberError._other_validator,
 }
 
 AddFolderMemberError.email_unverified = AddFolderMemberError('email_unverified')
-AddFolderMemberError.no_permission = AddFolderMemberError('no_permission')
 AddFolderMemberError.cant_share_outside_team = AddFolderMemberError('cant_share_outside_team')
 AddFolderMemberError.rate_limit = AddFolderMemberError('rate_limit')
 AddFolderMemberError.insufficient_plan = AddFolderMemberError('insufficient_plan')
+AddFolderMemberError.team_folder = AddFolderMemberError('team_folder')
+AddFolderMemberError.no_permission = AddFolderMemberError('no_permission')
 AddFolderMemberError.other = AddFolderMemberError('other')
 
 AddMember._member_validator = bv.Union(MemberSelector)
@@ -8323,7 +8767,7 @@ AddMember._all_fields_ = [
 ]
 
 AddMemberSelectorError._invalid_dropbox_id_validator = bv.String(min_length=1)
-AddMemberSelectorError._invalid_email_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+AddMemberSelectorError._invalid_email_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
 AddMemberSelectorError._unverified_dropbox_id_validator = bv.String(min_length=1)
 AddMemberSelectorError._group_deleted_validator = bv.Void()
 AddMemberSelectorError._group_not_on_team_validator = bv.Void()
@@ -8485,12 +8929,18 @@ FileLinkMetadata._all_fields_ = SharedLinkMetadata._all_fields_ + FileLinkMetada
 
 FolderAction._change_options_validator = bv.Void()
 FolderAction._edit_contents_validator = bv.Void()
+FolderAction._invite_editor_validator = bv.Void()
+FolderAction._invite_viewer_validator = bv.Void()
+FolderAction._relinquish_membership_validator = bv.Void()
 FolderAction._unmount_validator = bv.Void()
 FolderAction._unshare_validator = bv.Void()
 FolderAction._other_validator = bv.Void()
 FolderAction._tagmap = {
     'change_options': FolderAction._change_options_validator,
     'edit_contents': FolderAction._edit_contents_validator,
+    'invite_editor': FolderAction._invite_editor_validator,
+    'invite_viewer': FolderAction._invite_viewer_validator,
+    'relinquish_membership': FolderAction._relinquish_membership_validator,
     'unmount': FolderAction._unmount_validator,
     'unshare': FolderAction._unshare_validator,
     'other': FolderAction._other_validator,
@@ -8498,6 +8948,9 @@ FolderAction._tagmap = {
 
 FolderAction.change_options = FolderAction('change_options')
 FolderAction.edit_contents = FolderAction('edit_contents')
+FolderAction.invite_editor = FolderAction('invite_editor')
+FolderAction.invite_viewer = FolderAction('invite_viewer')
+FolderAction.relinquish_membership = FolderAction('relinquish_membership')
 FolderAction.unmount = FolderAction('unmount')
 FolderAction.unshare = FolderAction('unshare')
 FolderAction.other = FolderAction('other')
@@ -8604,20 +9057,26 @@ GroupInfo._all_fields_ = team.GroupSummary._all_fields_ + [('same_team', GroupIn
 
 MembershipInfo._access_type_validator = bv.Union(AccessLevel)
 MembershipInfo._permissions_validator = bv.Nullable(bv.List(bv.Struct(MemberPermission)))
+MembershipInfo._initials_validator = bv.Nullable(bv.String())
+MembershipInfo._is_inherited_validator = bv.Boolean()
 MembershipInfo._all_field_names_ = set([
     'access_type',
     'permissions',
+    'initials',
+    'is_inherited',
 ])
 MembershipInfo._all_fields_ = [
     ('access_type', MembershipInfo._access_type_validator),
     ('permissions', MembershipInfo._permissions_validator),
+    ('initials', MembershipInfo._initials_validator),
+    ('is_inherited', MembershipInfo._is_inherited_validator),
 ]
 
 GroupMembershipInfo._group_validator = bv.Struct(GroupInfo)
 GroupMembershipInfo._all_field_names_ = MembershipInfo._all_field_names_.union(set(['group']))
 GroupMembershipInfo._all_fields_ = MembershipInfo._all_fields_ + [('group', GroupMembershipInfo._group_validator)]
 
-InviteeInfo._email_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+InviteeInfo._email_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
 InviteeInfo._other_validator = bv.Void()
 InviteeInfo._tagmap = {
     'email': InviteeInfo._email_validator,
@@ -8630,12 +9089,12 @@ InviteeMembershipInfo._invitee_validator = bv.Union(InviteeInfo)
 InviteeMembershipInfo._all_field_names_ = MembershipInfo._all_field_names_.union(set(['invitee']))
 InviteeMembershipInfo._all_fields_ = MembershipInfo._all_fields_ + [('invitee', InviteeMembershipInfo._invitee_validator)]
 
-JobError._access_error_validator = bv.Union(SharedFolderAccessError)
-JobError._member_error_validator = bv.Union(SharedFolderMemberError)
+JobError._unshare_folder_error_validator = bv.Union(UnshareFolderError)
+JobError._remove_folder_member_error_validator = bv.Union(RemoveFolderMemberError)
 JobError._other_validator = bv.Void()
 JobError._tagmap = {
-    'access_error': JobError._access_error_validator,
-    'member_error': JobError._member_error_validator,
+    'unshare_folder_error': JobError._unshare_folder_error_validator,
+    'remove_folder_member_error': JobError._remove_folder_member_error_validator,
     'other': JobError._other_validator,
 }
 
@@ -8670,13 +9129,16 @@ LinkPermissions._all_fields_ = [
 
 ListFolderMembersArgs._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
 ListFolderMembersArgs._actions_validator = bv.Nullable(bv.List(bv.Union(MemberAction)))
+ListFolderMembersArgs._limit_validator = bv.UInt32(min_value=1, max_value=1000)
 ListFolderMembersArgs._all_field_names_ = set([
     'shared_folder_id',
     'actions',
+    'limit',
 ])
 ListFolderMembersArgs._all_fields_ = [
     ('shared_folder_id', ListFolderMembersArgs._shared_folder_id_validator),
     ('actions', ListFolderMembersArgs._actions_validator),
+    ('limit', ListFolderMembersArgs._limit_validator),
 ]
 
 ListFolderMembersContinueArg._cursor_validator = bv.String()
@@ -8694,6 +9156,17 @@ ListFolderMembersContinueError._tagmap = {
 
 ListFolderMembersContinueError.invalid_cursor = ListFolderMembersContinueError('invalid_cursor')
 ListFolderMembersContinueError.other = ListFolderMembersContinueError('other')
+
+ListFoldersArgs._limit_validator = bv.UInt32(min_value=1, max_value=1000)
+ListFoldersArgs._actions_validator = bv.Nullable(bv.List(bv.Union(FolderAction)))
+ListFoldersArgs._all_field_names_ = set([
+    'limit',
+    'actions',
+])
+ListFoldersArgs._all_fields_ = [
+    ('limit', ListFoldersArgs._limit_validator),
+    ('actions', ListFoldersArgs._actions_validator),
+]
 
 ListFoldersContinueArg._cursor_validator = bv.String()
 ListFoldersContinueArg._all_field_names_ = set(['cursor'])
@@ -8722,13 +9195,16 @@ ListFoldersResult._all_fields_ = [
 
 ListSharedLinksArg._path_validator = bv.Nullable(bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})'))
 ListSharedLinksArg._cursor_validator = bv.Nullable(bv.String())
+ListSharedLinksArg._direct_only_validator = bv.Nullable(bv.Boolean())
 ListSharedLinksArg._all_field_names_ = set([
     'path',
     'cursor',
+    'direct_only',
 ])
 ListSharedLinksArg._all_fields_ = [
     ('path', ListSharedLinksArg._path_validator),
     ('cursor', ListSharedLinksArg._cursor_validator),
+    ('direct_only', ListSharedLinksArg._direct_only_validator),
 ]
 
 ListSharedLinksError._path_validator = bv.Union(files.LookupError)
@@ -8757,16 +9233,22 @@ ListSharedLinksResult._all_fields_ = [
     ('cursor', ListSharedLinksResult._cursor_validator),
 ]
 
+MemberAction._make_editor_validator = bv.Void()
 MemberAction._make_owner_validator = bv.Void()
+MemberAction._make_viewer_validator = bv.Void()
 MemberAction._remove_validator = bv.Void()
 MemberAction._other_validator = bv.Void()
 MemberAction._tagmap = {
+    'make_editor': MemberAction._make_editor_validator,
     'make_owner': MemberAction._make_owner_validator,
+    'make_viewer': MemberAction._make_viewer_validator,
     'remove': MemberAction._remove_validator,
     'other': MemberAction._other_validator,
 }
 
+MemberAction.make_editor = MemberAction('make_editor')
 MemberAction.make_owner = MemberAction('make_owner')
+MemberAction.make_viewer = MemberAction('make_viewer')
 MemberAction.remove = MemberAction('remove')
 MemberAction.other = MemberAction('other')
 
@@ -8798,7 +9280,7 @@ MemberPolicy.anyone = MemberPolicy('anyone')
 MemberPolicy.other = MemberPolicy('other')
 
 MemberSelector._dropbox_id_validator = bv.String(min_length=1)
-MemberSelector._email_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberSelector._email_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
 MemberSelector._other_validator = bv.Void()
 MemberSelector._tagmap = {
     'dropbox_id': MemberSelector._dropbox_id_validator,
@@ -8837,18 +9319,21 @@ MountFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
 MountFolderError._inside_shared_folder_validator = bv.Void()
 MountFolderError._insufficient_quota_validator = bv.Void()
 MountFolderError._already_mounted_validator = bv.Void()
+MountFolderError._no_permission_validator = bv.Void()
 MountFolderError._other_validator = bv.Void()
 MountFolderError._tagmap = {
     'access_error': MountFolderError._access_error_validator,
     'inside_shared_folder': MountFolderError._inside_shared_folder_validator,
     'insufficient_quota': MountFolderError._insufficient_quota_validator,
     'already_mounted': MountFolderError._already_mounted_validator,
+    'no_permission': MountFolderError._no_permission_validator,
     'other': MountFolderError._other_validator,
 }
 
 MountFolderError.inside_shared_folder = MountFolderError('inside_shared_folder')
 MountFolderError.insufficient_quota = MountFolderError('insufficient_quota')
 MountFolderError.already_mounted = MountFolderError('already_mounted')
+MountFolderError.no_permission = MountFolderError('no_permission')
 MountFolderError.other = MountFolderError('other')
 
 PathLinkMetadata._path_validator = bv.String()
@@ -8900,18 +9385,24 @@ RelinquishFolderMembershipError._access_error_validator = bv.Union(SharedFolderA
 RelinquishFolderMembershipError._folder_owner_validator = bv.Void()
 RelinquishFolderMembershipError._mounted_validator = bv.Void()
 RelinquishFolderMembershipError._group_access_validator = bv.Void()
+RelinquishFolderMembershipError._team_folder_validator = bv.Void()
+RelinquishFolderMembershipError._no_permission_validator = bv.Void()
 RelinquishFolderMembershipError._other_validator = bv.Void()
 RelinquishFolderMembershipError._tagmap = {
     'access_error': RelinquishFolderMembershipError._access_error_validator,
     'folder_owner': RelinquishFolderMembershipError._folder_owner_validator,
     'mounted': RelinquishFolderMembershipError._mounted_validator,
     'group_access': RelinquishFolderMembershipError._group_access_validator,
+    'team_folder': RelinquishFolderMembershipError._team_folder_validator,
+    'no_permission': RelinquishFolderMembershipError._no_permission_validator,
     'other': RelinquishFolderMembershipError._other_validator,
 }
 
 RelinquishFolderMembershipError.folder_owner = RelinquishFolderMembershipError('folder_owner')
 RelinquishFolderMembershipError.mounted = RelinquishFolderMembershipError('mounted')
 RelinquishFolderMembershipError.group_access = RelinquishFolderMembershipError('group_access')
+RelinquishFolderMembershipError.team_folder = RelinquishFolderMembershipError('team_folder')
+RelinquishFolderMembershipError.no_permission = RelinquishFolderMembershipError('no_permission')
 RelinquishFolderMembershipError.other = RelinquishFolderMembershipError('other')
 
 RemoveFolderMemberArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
@@ -8932,17 +9423,23 @@ RemoveFolderMemberError._access_error_validator = bv.Union(SharedFolderAccessErr
 RemoveFolderMemberError._member_error_validator = bv.Union(SharedFolderMemberError)
 RemoveFolderMemberError._folder_owner_validator = bv.Void()
 RemoveFolderMemberError._group_access_validator = bv.Void()
+RemoveFolderMemberError._team_folder_validator = bv.Void()
+RemoveFolderMemberError._no_permission_validator = bv.Void()
 RemoveFolderMemberError._other_validator = bv.Void()
 RemoveFolderMemberError._tagmap = {
     'access_error': RemoveFolderMemberError._access_error_validator,
     'member_error': RemoveFolderMemberError._member_error_validator,
     'folder_owner': RemoveFolderMemberError._folder_owner_validator,
     'group_access': RemoveFolderMemberError._group_access_validator,
+    'team_folder': RemoveFolderMemberError._team_folder_validator,
+    'no_permission': RemoveFolderMemberError._no_permission_validator,
     'other': RemoveFolderMemberError._other_validator,
 }
 
 RemoveFolderMemberError.folder_owner = RemoveFolderMemberError('folder_owner')
 RemoveFolderMemberError.group_access = RemoveFolderMemberError('group_access')
+RemoveFolderMemberError.team_folder = RemoveFolderMemberError('team_folder')
+RemoveFolderMemberError.no_permission = RemoveFolderMemberError('no_permission')
 RemoveFolderMemberError.other = RemoveFolderMemberError('other')
 
 RequestedVisibility._public_validator = bv.Void()
@@ -9069,26 +9566,20 @@ SharePathError.other = SharePathError('other')
 
 SharedFolderAccessError._invalid_id_validator = bv.Void()
 SharedFolderAccessError._not_a_member_validator = bv.Void()
-SharedFolderAccessError._no_permission_validator = bv.Void()
 SharedFolderAccessError._email_unverified_validator = bv.Void()
-SharedFolderAccessError._team_folder_validator = bv.Void()
 SharedFolderAccessError._unmounted_validator = bv.Void()
 SharedFolderAccessError._other_validator = bv.Void()
 SharedFolderAccessError._tagmap = {
     'invalid_id': SharedFolderAccessError._invalid_id_validator,
     'not_a_member': SharedFolderAccessError._not_a_member_validator,
-    'no_permission': SharedFolderAccessError._no_permission_validator,
     'email_unverified': SharedFolderAccessError._email_unverified_validator,
-    'team_folder': SharedFolderAccessError._team_folder_validator,
     'unmounted': SharedFolderAccessError._unmounted_validator,
     'other': SharedFolderAccessError._other_validator,
 }
 
 SharedFolderAccessError.invalid_id = SharedFolderAccessError('invalid_id')
 SharedFolderAccessError.not_a_member = SharedFolderAccessError('not_a_member')
-SharedFolderAccessError.no_permission = SharedFolderAccessError('no_permission')
 SharedFolderAccessError.email_unverified = SharedFolderAccessError('email_unverified')
-SharedFolderAccessError.team_folder = SharedFolderAccessError('team_folder')
 SharedFolderAccessError.unmounted = SharedFolderAccessError('unmounted')
 SharedFolderAccessError.other = SharedFolderAccessError('other')
 
@@ -9122,30 +9613,35 @@ SharedFolderMembers._all_fields_ = [
     ('cursor', SharedFolderMembers._cursor_validator),
 ]
 
-SharedFolderMetadata._path_lower_validator = bv.Nullable(bv.String())
-SharedFolderMetadata._name_validator = bv.String()
-SharedFolderMetadata._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
-SharedFolderMetadata._access_type_validator = bv.Union(AccessLevel)
-SharedFolderMetadata._is_team_folder_validator = bv.Boolean()
-SharedFolderMetadata._policy_validator = bv.Struct(FolderPolicy)
-SharedFolderMetadata._permissions_validator = bv.Nullable(bv.List(bv.Struct(FolderPermission)))
-SharedFolderMetadata._all_field_names_ = set([
-    'path_lower',
-    'name',
-    'shared_folder_id',
+SharedFolderMetadataBase._access_type_validator = bv.Union(AccessLevel)
+SharedFolderMetadataBase._is_team_folder_validator = bv.Boolean()
+SharedFolderMetadataBase._policy_validator = bv.Struct(FolderPolicy)
+SharedFolderMetadataBase._permissions_validator = bv.Nullable(bv.List(bv.Struct(FolderPermission)))
+SharedFolderMetadataBase._all_field_names_ = set([
     'access_type',
     'is_team_folder',
     'policy',
     'permissions',
 ])
-SharedFolderMetadata._all_fields_ = [
+SharedFolderMetadataBase._all_fields_ = [
+    ('access_type', SharedFolderMetadataBase._access_type_validator),
+    ('is_team_folder', SharedFolderMetadataBase._is_team_folder_validator),
+    ('policy', SharedFolderMetadataBase._policy_validator),
+    ('permissions', SharedFolderMetadataBase._permissions_validator),
+]
+
+SharedFolderMetadata._path_lower_validator = bv.Nullable(bv.String())
+SharedFolderMetadata._name_validator = bv.String()
+SharedFolderMetadata._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
+SharedFolderMetadata._all_field_names_ = SharedFolderMetadataBase._all_field_names_.union(set([
+    'path_lower',
+    'name',
+    'shared_folder_id',
+]))
+SharedFolderMetadata._all_fields_ = SharedFolderMetadataBase._all_fields_ + [
     ('path_lower', SharedFolderMetadata._path_lower_validator),
     ('name', SharedFolderMetadata._name_validator),
     ('shared_folder_id', SharedFolderMetadata._shared_folder_id_validator),
-    ('access_type', SharedFolderMetadata._access_type_validator),
-    ('is_team_folder', SharedFolderMetadata._is_team_folder_validator),
-    ('policy', SharedFolderMetadata._policy_validator),
-    ('permissions', SharedFolderMetadata._permissions_validator),
 ]
 
 SharedLinkAccessFailureReason._login_required_validator = bv.Void()
@@ -9233,27 +9729,30 @@ TransferFolderArg._all_fields_ = [
 ]
 
 TransferFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
-TransferFolderError._no_permission_validator = bv.Void()
 TransferFolderError._invalid_dropbox_id_validator = bv.Void()
 TransferFolderError._new_owner_not_a_member_validator = bv.Void()
 TransferFolderError._new_owner_unmounted_validator = bv.Void()
 TransferFolderError._new_owner_email_unverified_validator = bv.Void()
+TransferFolderError._team_folder_validator = bv.Void()
+TransferFolderError._no_permission_validator = bv.Void()
 TransferFolderError._other_validator = bv.Void()
 TransferFolderError._tagmap = {
     'access_error': TransferFolderError._access_error_validator,
-    'no_permission': TransferFolderError._no_permission_validator,
     'invalid_dropbox_id': TransferFolderError._invalid_dropbox_id_validator,
     'new_owner_not_a_member': TransferFolderError._new_owner_not_a_member_validator,
     'new_owner_unmounted': TransferFolderError._new_owner_unmounted_validator,
     'new_owner_email_unverified': TransferFolderError._new_owner_email_unverified_validator,
+    'team_folder': TransferFolderError._team_folder_validator,
+    'no_permission': TransferFolderError._no_permission_validator,
     'other': TransferFolderError._other_validator,
 }
 
-TransferFolderError.no_permission = TransferFolderError('no_permission')
 TransferFolderError.invalid_dropbox_id = TransferFolderError('invalid_dropbox_id')
 TransferFolderError.new_owner_not_a_member = TransferFolderError('new_owner_not_a_member')
 TransferFolderError.new_owner_unmounted = TransferFolderError('new_owner_unmounted')
 TransferFolderError.new_owner_email_unverified = TransferFolderError('new_owner_email_unverified')
+TransferFolderError.team_folder = TransferFolderError('team_folder')
+TransferFolderError.no_permission = TransferFolderError('no_permission')
 TransferFolderError.other = TransferFolderError('other')
 
 UnmountFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
@@ -9261,12 +9760,15 @@ UnmountFolderArg._all_field_names_ = set(['shared_folder_id'])
 UnmountFolderArg._all_fields_ = [('shared_folder_id', UnmountFolderArg._shared_folder_id_validator)]
 
 UnmountFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
+UnmountFolderError._no_permission_validator = bv.Void()
 UnmountFolderError._other_validator = bv.Void()
 UnmountFolderError._tagmap = {
     'access_error': UnmountFolderError._access_error_validator,
+    'no_permission': UnmountFolderError._no_permission_validator,
     'other': UnmountFolderError._other_validator,
 }
 
+UnmountFolderError.no_permission = UnmountFolderError('no_permission')
 UnmountFolderError.other = UnmountFolderError('other')
 
 UnshareFolderArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
@@ -9281,12 +9783,18 @@ UnshareFolderArg._all_fields_ = [
 ]
 
 UnshareFolderError._access_error_validator = bv.Union(SharedFolderAccessError)
+UnshareFolderError._team_folder_validator = bv.Void()
+UnshareFolderError._no_permission_validator = bv.Void()
 UnshareFolderError._other_validator = bv.Void()
 UnshareFolderError._tagmap = {
     'access_error': UnshareFolderError._access_error_validator,
+    'team_folder': UnshareFolderError._team_folder_validator,
+    'no_permission': UnshareFolderError._no_permission_validator,
     'other': UnshareFolderError._other_validator,
 }
 
+UnshareFolderError.team_folder = UnshareFolderError('team_folder')
+UnshareFolderError.no_permission = UnshareFolderError('no_permission')
 UnshareFolderError.other = UnshareFolderError('other')
 
 UpdateFolderMemberArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')
@@ -9306,15 +9814,18 @@ UpdateFolderMemberArg._all_fields_ = [
 UpdateFolderMemberError._access_error_validator = bv.Union(SharedFolderAccessError)
 UpdateFolderMemberError._member_error_validator = bv.Union(SharedFolderMemberError)
 UpdateFolderMemberError._insufficient_plan_validator = bv.Void()
+UpdateFolderMemberError._no_permission_validator = bv.Void()
 UpdateFolderMemberError._other_validator = bv.Void()
 UpdateFolderMemberError._tagmap = {
     'access_error': UpdateFolderMemberError._access_error_validator,
     'member_error': UpdateFolderMemberError._member_error_validator,
     'insufficient_plan': UpdateFolderMemberError._insufficient_plan_validator,
+    'no_permission': UpdateFolderMemberError._no_permission_validator,
     'other': UpdateFolderMemberError._other_validator,
 }
 
 UpdateFolderMemberError.insufficient_plan = UpdateFolderMemberError('insufficient_plan')
+UpdateFolderMemberError.no_permission = UpdateFolderMemberError('no_permission')
 UpdateFolderMemberError.other = UpdateFolderMemberError('other')
 
 UpdateFolderPolicyArg._shared_folder_id_validator = bv.String(pattern=u'[-_0-9a-zA-Z:]+')

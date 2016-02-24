@@ -455,9 +455,14 @@ class Metadata(object):
         contains a slash.
     :ivar path_lower: The lowercased full path in the user's Dropbox. This
         always starts with a slash.
+    :ivar path_display: The cased path to be used for display purposes only. In
+        rare instances the casing will not correctly match the user's
+        filesystem, but this behavior will match the path provided in the Core
+        API v1. Changes to the casing of paths won't be returned by
+        list_folder/continue
     :ivar parent_shared_folder_id: Deprecated. Please use
-        :field:'FileSharingInfo.parent_shared_folder_id' or
-        :field:'FolderSharingInfo.parent_shared_folder_id' instead.
+        ``FileSharingInfo.parent_shared_folder_id`` or
+        ``FolderSharingInfo.parent_shared_folder_id`` instead.
     """
 
     __slots__ = [
@@ -465,6 +470,8 @@ class Metadata(object):
         '_name_present',
         '_path_lower_value',
         '_path_lower_present',
+        '_path_display_value',
+        '_path_display_present',
         '_parent_shared_folder_id_value',
         '_parent_shared_folder_id_present',
     ]
@@ -474,17 +481,22 @@ class Metadata(object):
     def __init__(self,
                  name=None,
                  path_lower=None,
+                 path_display=None,
                  parent_shared_folder_id=None):
         self._name_value = None
         self._name_present = False
         self._path_lower_value = None
         self._path_lower_present = False
+        self._path_display_value = None
+        self._path_display_present = False
         self._parent_shared_folder_id_value = None
         self._parent_shared_folder_id_present = False
         if name is not None:
             self.name = name
         if path_lower is not None:
             self.path_lower = path_lower
+        if path_display is not None:
+            self.path_display = path_display
         if parent_shared_folder_id is not None:
             self.parent_shared_folder_id = parent_shared_folder_id
 
@@ -537,10 +549,36 @@ class Metadata(object):
         self._path_lower_present = False
 
     @property
+    def path_display(self):
+        """
+        The cased path to be used for display purposes only. In rare instances
+        the casing will not correctly match the user's filesystem, but this
+        behavior will match the path provided in the Core API v1. Changes to the
+        casing of paths won't be returned by list_folder/continue
+
+        :rtype: str
+        """
+        if self._path_display_present:
+            return self._path_display_value
+        else:
+            raise AttributeError("missing required field 'path_display'")
+
+    @path_display.setter
+    def path_display(self, val):
+        val = self._path_display_validator.validate(val)
+        self._path_display_value = val
+        self._path_display_present = True
+
+    @path_display.deleter
+    def path_display(self):
+        self._path_display_value = None
+        self._path_display_present = False
+
+    @property
     def parent_shared_folder_id(self):
         """
-        Deprecated. Please use :field:'FileSharingInfo.parent_shared_folder_id'
-        or :field:'FolderSharingInfo.parent_shared_folder_id' instead.
+        Deprecated. Please use ``FileSharingInfo.parent_shared_folder_id`` or
+        ``FolderSharingInfo.parent_shared_folder_id`` instead.
 
         :rtype: str
         """
@@ -564,9 +602,10 @@ class Metadata(object):
         self._parent_shared_folder_id_present = False
 
     def __repr__(self):
-        return 'Metadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r})'.format(
+        return 'Metadata(name={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r})'.format(
             self._name_value,
             self._path_lower_value,
+            self._path_display_value,
             self._parent_shared_folder_id_value,
         )
 
@@ -584,15 +623,18 @@ class DeletedMetadata(Metadata):
     def __init__(self,
                  name=None,
                  path_lower=None,
+                 path_display=None,
                  parent_shared_folder_id=None):
         super(DeletedMetadata, self).__init__(name,
                                               path_lower,
+                                              path_display,
                                               parent_shared_folder_id)
 
     def __repr__(self):
-        return 'DeletedMetadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r})'.format(
+        return 'DeletedMetadata(name={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r})'.format(
             self._name_value,
             self._path_lower_value,
+            self._path_display_value,
             self._parent_shared_folder_id_value,
         )
 
@@ -680,7 +722,7 @@ class Dimensions(object):
 class DownloadArg(object):
     """
     :ivar path: The path of the file to download.
-    :ivar rev: Deprecated. Please specify revision in :field:'path' instead
+    :ivar rev: Deprecated. Please specify revision in ``path`` instead
     """
 
     __slots__ = [
@@ -730,7 +772,7 @@ class DownloadArg(object):
     @property
     def rev(self):
         """
-        Deprecated. Please specify revision in :field:'path' instead
+        Deprecated. Please specify revision in ``path`` instead
 
         :rtype: str
         """
@@ -866,16 +908,18 @@ class FileMetadata(Metadata):
     def __init__(self,
                  name=None,
                  path_lower=None,
+                 path_display=None,
+                 id=None,
                  client_modified=None,
                  server_modified=None,
                  rev=None,
                  size=None,
                  parent_shared_folder_id=None,
-                 id=None,
                  media_info=None,
                  sharing_info=None):
         super(FileMetadata, self).__init__(name,
                                            path_lower,
+                                           path_display,
                                            parent_shared_folder_id)
         self._id_value = None
         self._id_present = False
@@ -916,13 +960,10 @@ class FileMetadata(Metadata):
         if self._id_present:
             return self._id_value
         else:
-            return None
+            raise AttributeError("missing required field 'id'")
 
     @id.setter
     def id(self, val):
-        if val is None:
-            del self.id
-            return
         val = self._id_validator.validate(val)
         self._id_value = val
         self._id_present = True
@@ -1083,15 +1124,16 @@ class FileMetadata(Metadata):
         self._sharing_info_present = False
 
     def __repr__(self):
-        return 'FileMetadata(name={!r}, path_lower={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, parent_shared_folder_id={!r}, id={!r}, media_info={!r}, sharing_info={!r})'.format(
+        return 'FileMetadata(name={!r}, path_lower={!r}, path_display={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, parent_shared_folder_id={!r}, media_info={!r}, sharing_info={!r})'.format(
             self._name_value,
             self._path_lower_value,
+            self._path_display_value,
+            self._id_value,
             self._client_modified_value,
             self._server_modified_value,
             self._rev_value,
             self._size_value,
             self._parent_shared_folder_id_value,
-            self._id_value,
             self._media_info_value,
             self._sharing_info_value,
         )
@@ -1238,8 +1280,7 @@ class FileSharingInfo(SharingInfo):
 class FolderMetadata(Metadata):
     """
     :ivar id: A unique identifier for the folder.
-    :ivar shared_folder_id: Deprecated. Please use :field:'sharing_info'
-        instead.
+    :ivar shared_folder_id: Deprecated. Please use ``sharing_info`` instead.
     :ivar sharing_info: Set if the folder is contained in a shared folder or is
         a shared folder mount point.
     """
@@ -1258,12 +1299,14 @@ class FolderMetadata(Metadata):
     def __init__(self,
                  name=None,
                  path_lower=None,
-                 parent_shared_folder_id=None,
+                 path_display=None,
                  id=None,
+                 parent_shared_folder_id=None,
                  shared_folder_id=None,
                  sharing_info=None):
         super(FolderMetadata, self).__init__(name,
                                              path_lower,
+                                             path_display,
                                              parent_shared_folder_id)
         self._id_value = None
         self._id_present = False
@@ -1288,13 +1331,10 @@ class FolderMetadata(Metadata):
         if self._id_present:
             return self._id_value
         else:
-            return None
+            raise AttributeError("missing required field 'id'")
 
     @id.setter
     def id(self, val):
-        if val is None:
-            del self.id
-            return
         val = self._id_validator.validate(val)
         self._id_value = val
         self._id_present = True
@@ -1307,7 +1347,7 @@ class FolderMetadata(Metadata):
     @property
     def shared_folder_id(self):
         """
-        Deprecated. Please use :field:'sharing_info' instead.
+        Deprecated. Please use ``sharing_info`` instead.
 
         :rtype: str
         """
@@ -1358,11 +1398,12 @@ class FolderMetadata(Metadata):
         self._sharing_info_present = False
 
     def __repr__(self):
-        return 'FolderMetadata(name={!r}, path_lower={!r}, parent_shared_folder_id={!r}, id={!r}, shared_folder_id={!r}, sharing_info={!r})'.format(
+        return 'FolderMetadata(name={!r}, path_lower={!r}, path_display={!r}, id={!r}, parent_shared_folder_id={!r}, shared_folder_id={!r}, sharing_info={!r})'.format(
             self._name_value,
             self._path_lower_value,
-            self._parent_shared_folder_id_value,
+            self._path_display_value,
             self._id_value,
+            self._parent_shared_folder_id_value,
             self._shared_folder_id_value,
             self._sharing_info_value,
         )
@@ -1463,9 +1504,9 @@ class FolderSharingInfo(SharingInfo):
 
 class GetMetadataArg(object):
     """
-    :ivar path: The path of a file or folder on Dropbox
-    :ivar include_media_info: If true, :field:'FileMetadata.media_info' is set
-        for photo and video.
+    :ivar path: The path of a file or folder on Dropbox.
+    :ivar include_media_info: If true, ``FileMetadata.media_info`` is set for
+        photo and video.
     """
 
     __slots__ = [
@@ -1492,7 +1533,7 @@ class GetMetadataArg(object):
     @property
     def path(self):
         """
-        The path of a file or folder on Dropbox
+        The path of a file or folder on Dropbox.
 
         :rtype: str
         """
@@ -1515,7 +1556,7 @@ class GetMetadataArg(object):
     @property
     def include_media_info(self):
         """
-        If true, :field:'FileMetadata.media_info' is set for photo and video.
+        If true, ``FileMetadata.media_info`` is set for photo and video.
 
         :rtype: bool
         """
@@ -1683,8 +1724,8 @@ class ListFolderArg(object):
     :ivar recursive: If true, the list folder operation will be applied
         recursively to all subfolders and the response will contain contents of
         all subfolders.
-    :ivar include_media_info: If true, :field:'FileMetadata.media_info' is set
-        for photo and video.
+    :ivar include_media_info: If true, ``FileMetadata.media_info`` is set for
+        photo and video.
     :ivar include_deleted: If true, the results will include entries for files
         and folders that used to exist but were deleted.
     """
@@ -1774,7 +1815,7 @@ class ListFolderArg(object):
     @property
     def include_media_info(self):
         """
-        If true, :field:'FileMetadata.media_info' is set for photo and video.
+        If true, ``FileMetadata.media_info`` is set for photo and video.
 
         :rtype: bool
         """
@@ -2964,7 +3005,7 @@ class PhotoMetadata(MediaMetadata):
 class PreviewArg(object):
     """
     :ivar path: The path of the file to preview.
-    :ivar rev: Deprecated. Please specify revision in :field:'path' instead
+    :ivar rev: Deprecated. Please specify revision in ``path`` instead
     """
 
     __slots__ = [
@@ -3014,7 +3055,7 @@ class PreviewArg(object):
     @property
     def rev(self):
         """
-        Deprecated. Please specify revision in :field:'path' instead
+        Deprecated. Please specify revision in ``path`` instead
 
         :rtype: str
         """
@@ -5515,16 +5556,19 @@ DeleteError.other = DeleteError('other')
 
 Metadata._name_validator = bv.String()
 Metadata._path_lower_validator = bv.String()
+Metadata._path_display_validator = bv.String()
 Metadata._parent_shared_folder_id_validator = bv.Nullable(bv.String(pattern=u'[-_0-9a-zA-Z:]+'))
 Metadata._field_names_ = set([
     'name',
     'path_lower',
+    'path_display',
     'parent_shared_folder_id',
 ])
 Metadata._all_field_names_ = Metadata._field_names_
 Metadata._fields_ = [
     ('name', Metadata._name_validator),
     ('path_lower', Metadata._path_lower_validator),
+    ('path_display', Metadata._path_display_validator),
     ('parent_shared_folder_id', Metadata._parent_shared_folder_id_validator),
 ]
 Metadata._all_fields_ = Metadata._fields_
@@ -5577,7 +5621,7 @@ DownloadError._tagmap = {
 
 DownloadError.other = DownloadError('other')
 
-FileMetadata._id_validator = bv.Nullable(bv.String(min_length=1))
+FileMetadata._id_validator = bv.String(min_length=1)
 FileMetadata._client_modified_validator = bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ')
 FileMetadata._server_modified_validator = bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ')
 FileMetadata._rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
@@ -5620,7 +5664,7 @@ FileSharingInfo._all_fields_ = SharingInfo._all_fields_ + [
     ('modified_by', FileSharingInfo._modified_by_validator),
 ]
 
-FolderMetadata._id_validator = bv.Nullable(bv.String(min_length=1))
+FolderMetadata._id_validator = bv.String(min_length=1)
 FolderMetadata._shared_folder_id_validator = bv.Nullable(bv.String(pattern=u'[-_0-9a-zA-Z:]+'))
 FolderMetadata._sharing_info_validator = bv.Nullable(bv.Struct(FolderSharingInfo))
 FolderMetadata._field_names_ = set([

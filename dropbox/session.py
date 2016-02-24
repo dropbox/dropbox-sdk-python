@@ -301,7 +301,7 @@ class DropboxSession(BaseSession):
 
     @classmethod
     def _generate_oauth_nonce(cls, length=8):
-        return ''.join([str(random.randint(0, 9)) for i in range(length)])
+        return ''.join([str(random.SystemRandom().randint(0, 9)) for i in range(length)])
 
     @classmethod
     def _oauth_version(cls):

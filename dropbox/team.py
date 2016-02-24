@@ -8275,8 +8275,7 @@ class MembersSetProfileError(MemberSelectorError):
     :ivar external_id_used_by_other_user: The external ID is already in use by
         another team member.
     :ivar set_profile_disallowed: Setting profile disallowed
-    :ivar param_cannot_be_empty: New  new_email, new_given_name or new_surname
-        value cannot be empty.
+    :ivar param_cannot_be_empty: Parameter new_email cannot be empty.
     :ivar other: An unspecified error.
     """
 
@@ -11349,9 +11348,9 @@ MemberAccess._all_fields_ = [
     ('access_type', MemberAccess._access_type_validator),
 ]
 
-MemberAddArg._member_email_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
-MemberAddArg._member_given_name_validator = bv.String(min_length=1, pattern=u'[^/:?*<>"|]*')
-MemberAddArg._member_surname_validator = bv.String(min_length=1, pattern=u'[^/:?*<>"|]*')
+MemberAddArg._member_email_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddArg._member_given_name_validator = bv.String(min_length=1, max_length=100, pattern=u'[^/:?*<>"|]*')
+MemberAddArg._member_surname_validator = bv.String(min_length=1, max_length=100, pattern=u'[^/:?*<>"|]*')
 MemberAddArg._member_external_id_validator = bv.Nullable(bv.String(max_length=64))
 MemberAddArg._send_welcome_email_validator = bv.Boolean()
 MemberAddArg._role_validator = bv.Union(AdminTier)
@@ -11373,14 +11372,14 @@ MemberAddArg._all_fields_ = [
 ]
 
 MemberAddResult._success_validator = bv.Struct(TeamMemberInfo)
-MemberAddResult._team_license_limit_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
-MemberAddResult._free_team_member_limit_reached_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
-MemberAddResult._user_already_on_team_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
-MemberAddResult._user_on_another_team_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
-MemberAddResult._user_already_paired_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
-MemberAddResult._user_migration_failed_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
-MemberAddResult._duplicate_external_member_id_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
-MemberAddResult._user_creation_failed_validator = bv.String(pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddResult._team_license_limit_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddResult._free_team_member_limit_reached_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddResult._user_already_on_team_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddResult._user_on_another_team_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddResult._user_already_paired_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddResult._user_migration_failed_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddResult._duplicate_external_member_id_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
+MemberAddResult._user_creation_failed_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*.[A-Za-z]{2,15}$")
 MemberAddResult._tagmap = {
     'success': MemberAddResult._success_validator,
     'team_license_limit': MemberAddResult._team_license_limit_validator,
@@ -11656,8 +11655,8 @@ MembersSetPermissionsResult._all_fields_ = [
 MembersSetProfileArg._user_validator = bv.Union(UserSelectorArg)
 MembersSetProfileArg._new_email_validator = bv.Nullable(bv.String())
 MembersSetProfileArg._new_external_id_validator = bv.Nullable(bv.String())
-MembersSetProfileArg._new_given_name_validator = bv.Nullable(bv.String())
-MembersSetProfileArg._new_surname_validator = bv.Nullable(bv.String())
+MembersSetProfileArg._new_given_name_validator = bv.Nullable(bv.String(min_length=1, max_length=100, pattern=u'[^/:?*<>"|]*'))
+MembersSetProfileArg._new_surname_validator = bv.Nullable(bv.String(min_length=1, max_length=100, pattern=u'[^/:?*<>"|]*'))
 MembersSetProfileArg._all_field_names_ = set([
     'user',
     'new_email',

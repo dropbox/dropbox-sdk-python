@@ -111,8 +111,8 @@ class DropboxBase(object):
         Download a file from a user's Dropbox.
 
         :param str path: The path of the file to download.
-        :param Nullable rev: Deprecated. Please specify revision in
-            :field:'path' instead
+        :param Nullable rev: Deprecated. Please specify revision in ``path``
+            instead
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -149,8 +149,8 @@ class DropboxBase(object):
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to download.
-        :param Nullable rev: Deprecated. Please specify revision in
-            :field:'path' instead
+        :param Nullable rev: Deprecated. Please specify revision in ``path``
+            instead
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -177,11 +177,12 @@ class DropboxBase(object):
                            path,
                            include_media_info=False):
         """
-        Returns the metadata for a file or folder.
+        Returns the metadata for a file or folder. Note: Metadata for the root
+        folder is unsupported.
 
-        :param str path: The path of a file or folder on Dropbox
-        :param bool include_media_info: If true,
-            :field:'FileMetadata.media_info' is set for photo and video.
+        :param str path: The path of a file or folder on Dropbox.
+        :param bool include_media_info: If true, ``FileMetadata.media_info`` is
+            set for photo and video.
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -211,8 +212,8 @@ class DropboxBase(object):
         .ppsx, .ppsm, .pptx, .pptm,  .xls, .xlsx, .xlsm, .rtf
 
         :param str path: The path of the file to preview.
-        :param Nullable rev: Deprecated. Please specify revision in
-            :field:'path' instead
+        :param Nullable rev: Deprecated. Please specify revision in ``path``
+            instead
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -251,8 +252,8 @@ class DropboxBase(object):
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to preview.
-        :param Nullable rev: Deprecated. Please specify revision in
-            :field:'path' instead
+        :param Nullable rev: Deprecated. Please specify revision in ``path``
+            instead
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -374,8 +375,8 @@ class DropboxBase(object):
         :param bool recursive: If true, the list folder operation will be
             applied recursively to all subfolders and the response will contain
             contents of all subfolders.
-        :param bool include_media_info: If true,
-            :field:'FileMetadata.media_info' is set for photo and video.
+        :param bool include_media_info: If true, ``FileMetadata.media_info`` is
+            set for photo and video.
         :param bool include_deleted: If true, the results will include entries
             for files and folders that used to exist but were deleted.
         :rtype: :class:`dropbox.files.ListFolderResult`
@@ -443,8 +444,8 @@ class DropboxBase(object):
         :param bool recursive: If true, the list folder operation will be
             applied recursively to all subfolders and the response will contain
             contents of all subfolders.
-        :param bool include_media_info: If true,
-            :field:'FileMetadata.media_info' is set for photo and video.
+        :param bool include_media_info: If true, ``FileMetadata.media_info`` is
+            set for photo and video.
         :param bool include_deleted: If true, the results will include entries
             for files and folders that used to exist but were deleted.
         :rtype: :class:`dropbox.files.ListFolderGetLatestCursorResult`
@@ -996,7 +997,8 @@ class DropboxBase(object):
         and is subject to minor but possibly backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
-        :param Nullable actions: Folder actions to query.
+        :param Nullable actions: Folder actions to query. This field is
+            optional.
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1163,14 +1165,18 @@ class DropboxBase(object):
 
     def sharing_list_folder_members(self,
                                     shared_folder_id,
-                                    actions=None):
+                                    actions=None,
+                                    limit=1000):
         """
         Returns shared folder membership by its folder ID. Apps must have full
         Dropbox access to use this endpoint. Warning: This endpoint is in beta
         and is subject to minor but possibly backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
-        :param Nullable actions: Member actions to query.
+        :param Nullable actions: Member actions to query. This field is
+            optional.
+        :param long limit: The maximum number of results that include members,
+            groups and invitees to return per request.
         :rtype: :class:`dropbox.sharing.SharedFolderMembers`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1178,7 +1184,8 @@ class DropboxBase(object):
             :class:`dropbox.sharing.SharedFolderAccessError`
         """
         arg = sharing.ListFolderMembersArgs(shared_folder_id,
-                                            actions)
+                                            actions,
+                                            limit)
         r = self.request(
             'api',
             'sharing/list_folder_members',
@@ -1220,21 +1227,27 @@ class DropboxBase(object):
         )
         return r
 
-    def sharing_list_folders(self):
+    def sharing_list_folders(self,
+                             limit=1000,
+                             actions=None):
         """
         Return the list of all shared folders the current user has access to.
         Apps must have full Dropbox access to use this endpoint. Warning: This
         endpoint is in beta and is subject to minor but possibly
         backwards-incompatible changes.
 
+        :param long limit: The maximum number of results to return per request.
+        :param Nullable actions: Folder actions to query. This field is
+            optional.
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         """
-        arg = None
+        arg = sharing.ListFoldersArgs(limit,
+                                      actions)
         r = self.request(
             'api',
             'sharing/list_folders',
             'rpc',
-            bv.Void(),
+            bv.Struct(sharing.ListFoldersArgs),
             bv.Struct(sharing.ListFoldersResult),
             bv.Void(),
             arg,
@@ -1271,19 +1284,76 @@ class DropboxBase(object):
         )
         return r
 
+    def sharing_list_mountable_folders(self,
+                                       limit=1000,
+                                       actions=None):
+        """
+        Return the list of all shared folders the current user can mount or
+        unmount. Apps must have full Dropbox access to use this endpoint.
+
+        :param long limit: The maximum number of results to return per request.
+        :param Nullable actions: Folder actions to query. This field is
+            optional.
+        :rtype: :class:`dropbox.sharing.ListFoldersResult`
+        """
+        arg = sharing.ListFoldersArgs(limit,
+                                      actions)
+        r = self.request(
+            'api',
+            'sharing/list_mountable_folders',
+            'rpc',
+            bv.Struct(sharing.ListFoldersArgs),
+            bv.Struct(sharing.ListFoldersResult),
+            bv.Void(),
+            arg,
+            None,
+        )
+        return r
+
+    def sharing_list_mountable_folders_continue(self,
+                                                cursor):
+        """
+        Once a cursor has been retrieved from :meth:`list_mountable_folders`,
+        use this to paginate through all mountable shared folders. Apps must
+        have full Dropbox access to use this endpoint.
+
+        :param str cursor: The cursor returned by your last call to
+            :meth:`list_folders` or :meth:`list_folders_continue`.
+        :rtype: :class:`dropbox.sharing.ListFoldersResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.ListFoldersContinueError`
+        """
+        arg = sharing.ListFoldersContinueArg(cursor)
+        r = self.request(
+            'api',
+            'sharing/list_mountable_folders/continue',
+            'rpc',
+            bv.Struct(sharing.ListFoldersContinueArg),
+            bv.Struct(sharing.ListFoldersResult),
+            bv.Union(sharing.ListFoldersContinueError),
+            arg,
+            None,
+        )
+        return r
+
     def sharing_list_shared_links(self,
                                   path=None,
-                                  cursor=None):
+                                  cursor=None,
+                                  direct_only=None):
         """
         List shared links of this user. If no path is given or the path is
         empty, returns a list of all shared links for the current user. If a
         non-empty path is given, returns a list of all shared links that allow
         access to the given path - direct links to the given path and links to
-        parent folders of the given path.
+        parent folders of the given path. Links to parent folders can be
+        suppressed by setting direct_only to true.
 
         :param Nullable path: See :meth:`list_shared_links` description.
         :param Nullable cursor: The cursor returned by your last call to
             :meth:`list_shared_links`.
+        :param Nullable direct_only: See :meth:`list_shared_links` description.
         :rtype: :class:`dropbox.sharing.ListSharedLinksResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1291,7 +1361,8 @@ class DropboxBase(object):
             :class:`dropbox.sharing.ListSharedLinksError`
         """
         arg = sharing.ListSharedLinksArg(path,
-                                         cursor)
+                                         cursor,
+                                         direct_only)
         r = self.request(
             'api',
             'sharing/list_shared_links',
