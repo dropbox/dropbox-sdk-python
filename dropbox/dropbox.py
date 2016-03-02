@@ -14,6 +14,7 @@ import os
 import random
 import six
 import time
+import socket
 
 import requests
 
@@ -372,6 +373,7 @@ class _DropboxTransport(object):
                                data=body,
                                stream=stream,
                                verify=True,
+                               timeout=socket.getdefaulttimeout()
                                )
 
         request_id = r.headers.get('x-dropbox-request-id')
