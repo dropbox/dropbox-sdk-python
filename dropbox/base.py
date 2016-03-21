@@ -82,7 +82,10 @@ class DropboxBase(object):
                      path):
         """
         Delete the file or folder at a given path. If the path is a folder, all
-        its contents will be deleted too.
+        its contents will be deleted too. A successful response indicates that
+        the file or folder was deleted. The returned metadata will be the
+        corresponding :class:`FileMetadata` or :class:`FolderMetadata` for the
+        item at time of deletion, and not a :class:`DeletedMetadata` object.
 
         :param str path: Path in the user's Dropbox to delete.
         :rtype: :class:`dropbox.files.Metadata`
@@ -483,7 +486,8 @@ class DropboxBase(object):
         <https://www.dropbox.com/developers/reference/webhooks>`_.
 
         :param str cursor: A cursor as returned by :meth:`list_folder` or
-            :meth:`list_folder_continue`
+            :meth:`list_folder_continue`. Cursors retrieved by setting
+            ``ListFolderArg.include_media_info`` to ``True`` are not supported.
         :param long timeout: A timeout in seconds. The request will block for at
             most this length of time, plus up to 90 seconds of random jitter
             added to avoid the thundering herd problem. Care should be taken
@@ -997,8 +1001,7 @@ class DropboxBase(object):
         and is subject to minor but possibly backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
-        :param Nullable actions: Folder actions to query. This field is
-            optional.
+        :param Nullable actions: Folder actions to query.
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1173,10 +1176,6 @@ class DropboxBase(object):
         and is subject to minor but possibly backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
-        :param Nullable actions: Member actions to query. This field is
-            optional.
-        :param long limit: The maximum number of results that include members,
-            groups and invitees to return per request.
         :rtype: :class:`dropbox.sharing.SharedFolderMembers`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1237,8 +1236,7 @@ class DropboxBase(object):
         backwards-incompatible changes.
 
         :param long limit: The maximum number of results to return per request.
-        :param Nullable actions: Folder actions to query. This field is
-            optional.
+        :param Nullable actions: Folder actions to query.
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         """
         arg = sharing.ListFoldersArgs(limit,
@@ -1259,12 +1257,14 @@ class DropboxBase(object):
                                       cursor):
         """
         Once a cursor has been retrieved from :meth:`list_folders`, use this to
-        paginate through all shared folders. Apps must have full Dropbox access
-        to use this endpoint. Warning: This endpoint is in beta and is subject
-        to minor but possibly backwards-incompatible changes.
+        paginate through all shared folders. The cursor must come from a
+        previous call to :meth:`list_folders` or :meth:`list_folders_continue`.
+        Apps must have full Dropbox access to use this endpoint. Warning: This
+        endpoint is in beta and is subject to minor but possibly
+        backwards-incompatible changes.
 
-        :param str cursor: The cursor returned by your last call to
-            :meth:`list_folders` or :meth:`list_folders_continue`.
+        :param str cursor: The cursor returned by the previous API call
+            specified in the endpoint description.
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1292,8 +1292,7 @@ class DropboxBase(object):
         unmount. Apps must have full Dropbox access to use this endpoint.
 
         :param long limit: The maximum number of results to return per request.
-        :param Nullable actions: Folder actions to query. This field is
-            optional.
+        :param Nullable actions: Folder actions to query.
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         """
         arg = sharing.ListFoldersArgs(limit,
@@ -1314,11 +1313,13 @@ class DropboxBase(object):
                                                 cursor):
         """
         Once a cursor has been retrieved from :meth:`list_mountable_folders`,
-        use this to paginate through all mountable shared folders. Apps must
-        have full Dropbox access to use this endpoint.
+        use this to paginate through all mountable shared folders. The cursor
+        must come from a previous call to :meth:`list_mountable_folders` or
+        :meth:`list_mountable_folders_continue`. Apps must have full Dropbox
+        access to use this endpoint.
 
-        :param str cursor: The cursor returned by your last call to
-            :meth:`list_folders` or :meth:`list_folders_continue`.
+        :param str cursor: The cursor returned by the previous API call
+            specified in the endpoint description.
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1553,13 +1554,15 @@ class DropboxBase(object):
 
         :param str path: The path to the folder to share. If it does not exist,
             then a new one is created.
-        :param member_policy: Who can be a member of this shared folder.
+        :param member_policy: Who can be a member of this shared folder. Only
+            applicable if the current user is on a team.
         :type member_policy: :class:`dropbox.sharing.MemberPolicy`
         :param acl_update_policy: Who can add and remove members of this shared
             folder.
         :type acl_update_policy: :class:`dropbox.sharing.AclUpdatePolicy`
         :param shared_link_policy: The policy to apply to shared links created
-            for content inside this shared folder.
+            for content inside this shared folder.  The current user must be on
+            a team to set this policy to ``SharedLinkPolicy.members``.
         :type shared_link_policy: :class:`dropbox.sharing.SharedLinkPolicy`
         :param bool force_async: Whether to force the share to happen
             asynchronously.
@@ -1591,9 +1594,10 @@ class DropboxBase(object):
                                 to_dropbox_id):
         """
         Transfer ownership of a shared folder to a member of the shared folder.
-        Apps must have full Dropbox access to use this endpoint. Warning: This
-        endpoint is in beta and is subject to minor but possibly
-        backwards-incompatible changes.
+        User must have ``AccessLevel.owner`` access to the shared folder to
+        perform a transfer. Apps must have full Dropbox access to use this
+        endpoint. Warning: This endpoint is in beta and is subject to minor but
+        possibly backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param str to_dropbox_id: A account or team member ID to transfer
@@ -1648,7 +1652,7 @@ class DropboxBase(object):
 
     def sharing_unshare_folder(self,
                                shared_folder_id,
-                               leave_a_copy):
+                               leave_a_copy=False):
         """
         Allows a shared folder owner to unshare the folder. You'll need to call
         :meth:`check_job_status` to determine if the action has completed
@@ -1725,17 +1729,20 @@ class DropboxBase(object):
                                      acl_update_policy=None,
                                      shared_link_policy=None):
         """
-        Update the sharing policies for a shared folder. Apps must have full
-        Dropbox access to use this endpoint. Warning: This endpoint is in beta
-        and is subject to minor but possibly backwards-incompatible changes.
+        Update the sharing policies for a shared folder. User must have
+        ``AccessLevel.owner`` access to the shared folder to update its
+        policies. Apps must have full Dropbox access to use this endpoint.
+        Warning: This endpoint is in beta and is subject to minor but possibly
+        backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param Nullable member_policy: Who can be a member of this shared
-            folder. Only set this if the current user is on a team.
+            folder. Only applicable if the current user is on a team.
         :param Nullable acl_update_policy: Who can add and remove members of
             this shared folder.
         :param Nullable shared_link_policy: The policy to apply to shared links
-            created for content inside this shared folder.
+            created for content inside this shared folder. The current user must
+            be on a team to set this policy to ``SharedLinkPolicy.members``.
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 

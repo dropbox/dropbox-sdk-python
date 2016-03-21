@@ -24,6 +24,7 @@ if six.PY3:
 else:
     _binary_types = (bytes, buffer)
 
+
 class ValidationError(Exception):
     """Raised when a value doesn't pass validation by its validator."""
 
@@ -63,6 +64,7 @@ class ValidationError(Exception):
         # Not a perfect repr, but includes the error location information.
         return 'ValidationError(%r)' % str(self)
 
+
 def generic_type_name(v):
     """Return a descriptive type name that isn't Python specific. For example,
     an int value will return 'integer' rather than 'int'."""
@@ -79,6 +81,7 @@ def generic_type_name(v):
         return 'null'
     else:
         return type(v).__name__
+
 
 class Validator(object):
     """All primitive and composite data types should be a subclass of this."""
@@ -99,9 +102,11 @@ class Validator(object):
     def get_default(self):
         raise AssertionError('No default available.')
 
+
 class Primitive(Validator):
     """A basic type that is defined by Babel."""
     pass
+
 
 class Boolean(Primitive):
 
@@ -109,6 +114,7 @@ class Boolean(Primitive):
         if not isinstance(val, bool):
             raise ValidationError('%r is not a valid boolean' % val)
         return val
+
 
 class Integer(Primitive):
     """
@@ -150,21 +156,26 @@ class Integer(Primitive):
     def __repr__(self):
         return '%s()' % self.__class__.__name__
 
+
 class Int32(Integer):
     minimum = -2**31
     maximum = 2**31 - 1
+
 
 class UInt32(Integer):
     minimum = 0
     maximum = 2**32 - 1
 
+
 class Int64(Integer):
     minimum = -2**63
     maximum = 2**63 - 1
 
+
 class UInt64(Integer):
     minimum = 0
     maximum = 2**64 - 1
+
 
 class Real(Primitive):
     """
@@ -231,13 +242,16 @@ class Real(Primitive):
     def __repr__(self):
         return '%s()' % self.__class__.__name__
 
+
 class Float32(Real):
     # Maximum and minimums from the IEEE 754-1985 standard
     minimum = -3.40282 * 10**38
     maximum = 3.40282 * 10**38
 
+
 class Float64(Real):
     pass
+
 
 class String(Primitive):
     """Represents a unicode string."""
@@ -296,7 +310,8 @@ class String(Primitive):
                                   % (val, self.pattern))
         return val
 
-class Binary(Primitive):
+
+class Bytes(Primitive):
 
     def __init__(self, min_length=None, max_length=None):
         if min_length is not None:
@@ -315,7 +330,7 @@ class Binary(Primitive):
 
     def validate(self, val):
         if not isinstance(val, _binary_types):
-            raise ValidationError("expected binary type, got %s"
+            raise ValidationError("expected bytes type, got %s"
                                   % generic_type_name(val))
         elif self.max_length is not None and len(val) > self.max_length:
             raise ValidationError("'%s' must have at most %d bytes, got %d"
@@ -324,6 +339,7 @@ class Binary(Primitive):
             raise ValidationError("'%s' has fewer than %d bytes, got %d"
                                   % (val, self.min_length, len(val)))
         return val
+
 
 class Timestamp(Primitive):
     """Note that while a format is specified, it isn't used in validation
@@ -446,6 +462,7 @@ class Struct(Composite):
         assert not self.definition._has_required_fields, 'No default available.'
         return self.definition()
 
+
 class StructTree(Struct):
     """Validator for structs with enumerated subtypes.
 
@@ -455,6 +472,7 @@ class StructTree(Struct):
 
     def __init__(self, definition):
         super(StructTree, self).__init__(definition)
+
 
 class Union(Composite):
 
@@ -498,6 +516,7 @@ class Union(Composite):
             raise ValidationError('expected type %s or subtype, got %s' %
                 (self.definition.__name__, generic_type_name(val)))
 
+
 class Void(Primitive):
 
     def validate(self, val):
@@ -510,6 +529,7 @@ class Void(Primitive):
 
     def get_default(self):
         return None
+
 
 class Nullable(Validator):
 
