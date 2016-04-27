@@ -5,7 +5,7 @@ __all__ = [
 ]
 
 # TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '6.1'
+__version__ = '6.2'
 
 import contextlib
 import json
@@ -138,7 +138,7 @@ class _DropboxTransport(object):
         :param str user_agent: The user agent to use when making requests. This
             helps us identify requests coming from your application. We
             recommend you use the format "AppName/Version". If set, we append
-            "/OfficialDropboxPythonV2SDK/__version__" to the user_agent,
+            "/OfficialDropboxPythonSDKv2/__version__" to the user_agent,
         :param session: If not provided, a new session (connection pool) is
             created. To share a session across multiple clients, use
             :func:`create_session`.

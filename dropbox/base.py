@@ -8,8 +8,10 @@ from . import (
     async,
     auth,
     files,
+    properties,
     sharing,
     team,
+    team_policies,
     users,
 )
 
@@ -20,6 +22,28 @@ class DropboxBase(object):
     @abstractmethod
     def request(self):
         pass
+
+    # ------------------------------------------
+    # Routes in auth namespace
+
+    def auth_token_revoke(self):
+        """
+        Disables the access token used to authenticate the call.
+
+        :rtype: None
+        """
+        arg = None
+        r = self.request(
+            'api',
+            'auth/token/revoke',
+            'rpc',
+            bv.Void(),
+            bv.Void(),
+            bv.Void(),
+            arg,
+            None,
+        )
+        return None
 
     # ------------------------------------------
     # Routes in files namespace
@@ -48,6 +72,64 @@ class DropboxBase(object):
             bv.Struct(files.RelocationArg),
             bv.StructTree(files.Metadata),
             bv.Union(files.RelocationError),
+            arg,
+            None,
+        )
+        return r
+
+    def files_copy_reference_get(self,
+                                 path):
+        """
+        Get a copy reference to a file or folder. This reference string can be
+        used to save that file or folder to another user's Dropbox by passing it
+        to :meth:`copy_reference_save`.
+
+        :param str path: The path to the file or folder you want to get a copy
+            reference to.
+        :rtype: :class:`dropbox.files.GetCopyReferenceResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.GetCopyReferenceError`
+        """
+        arg = files.GetCopyReferenceArg(path)
+        r = self.request(
+            'api',
+            'files/copy_reference/get',
+            'rpc',
+            bv.Struct(files.GetCopyReferenceArg),
+            bv.Struct(files.GetCopyReferenceResult),
+            bv.Union(files.GetCopyReferenceError),
+            arg,
+            None,
+        )
+        return r
+
+    def files_copy_reference_save(self,
+                                  copy_reference,
+                                  path):
+        """
+        Save a copy reference returned by :meth:`copy_reference_get` to the
+        user's Dropbox.
+
+        :param str copy_reference: A copy reference returned by
+            :meth:`copy_reference_get`.
+        :param str path: Path in the user's Dropbox that is the destination.
+        :rtype: :class:`dropbox.files.SaveCopyReferenceResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.SaveCopyReferenceError`
+        """
+        arg = files.SaveCopyReferenceArg(copy_reference,
+                                         path)
+        r = self.request(
+            'api',
+            'files/copy_reference/save',
+            'rpc',
+            bv.Struct(files.SaveCopyReferenceArg),
+            bv.Struct(files.SaveCopyReferenceResult),
+            bv.Union(files.SaveCopyReferenceError),
             arg,
             None,
         )
@@ -178,7 +260,9 @@ class DropboxBase(object):
 
     def files_get_metadata(self,
                            path,
-                           include_media_info=False):
+                           include_media_info=False,
+                           include_deleted=False,
+                           include_has_explicit_shared_members=False):
         """
         Returns the metadata for a file or folder. Note: Metadata for the root
         folder is unsupported.
@@ -186,6 +270,12 @@ class DropboxBase(object):
         :param str path: The path of a file or folder on Dropbox.
         :param bool include_media_info: If true, ``FileMetadata.media_info`` is
             set for photo and video.
+        :param bool include_deleted: If true, :class:`DeletedMetadata` will be
+            returned for deleted file or folder, otherwise
+            ``LookupError.not_found`` will be returned.
+        :param bool include_has_explicit_shared_members: If true, the results
+            will include a flag for each file indicating whether or not  that
+            file has any explicit members.
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -193,7 +283,9 @@ class DropboxBase(object):
             :class:`dropbox.files.GetMetadataError`
         """
         arg = files.GetMetadataArg(path,
-                                   include_media_info)
+                                   include_media_info,
+                                   include_deleted,
+                                   include_has_explicit_shared_members)
         r = self.request(
             'api',
             'files/get_metadata',
@@ -278,6 +370,33 @@ class DropboxBase(object):
         )
         self._save_body_to_file(download_path, r[1])
         return r[0]
+
+    def files_get_temporary_link(self,
+                                 path):
+        """
+        Get a temporary link to stream content of a file. This link will expire
+        in four hours and afterwards you will get 410 Gone. Content-Type of the
+        link is determined automatically by the file's mime type.
+
+        :param str path: The path to the file you want a temporary link to.
+        :rtype: :class:`dropbox.files.GetTemporaryLinkResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.GetTemporaryLinkError`
+        """
+        arg = files.GetTemporaryLinkArg(path)
+        r = self.request(
+            'api',
+            'files/get_temporary_link',
+            'rpc',
+            bv.Struct(files.GetTemporaryLinkArg),
+            bv.Struct(files.GetTemporaryLinkResult),
+            bv.Union(files.GetTemporaryLinkError),
+            arg,
+            None,
+        )
+        return r
 
     def files_get_thumbnail(self,
                             path,
@@ -370,7 +489,8 @@ class DropboxBase(object):
                           path,
                           recursive=False,
                           include_media_info=False,
-                          include_deleted=False):
+                          include_deleted=False,
+                          include_has_explicit_shared_members=False):
         """
         Returns the contents of a folder.
 
@@ -382,6 +502,9 @@ class DropboxBase(object):
             set for photo and video.
         :param bool include_deleted: If true, the results will include entries
             for files and folders that used to exist but were deleted.
+        :param bool include_has_explicit_shared_members: If true, the results
+            will include a flag for each file indicating whether or not  that
+            file has any explicit members.
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -391,7 +514,8 @@ class DropboxBase(object):
         arg = files.ListFolderArg(path,
                                   recursive,
                                   include_media_info,
-                                  include_deleted)
+                                  include_deleted,
+                                  include_has_explicit_shared_members)
         r = self.request(
             'api',
             'files/list_folder',
@@ -435,7 +559,8 @@ class DropboxBase(object):
                                             path,
                                             recursive=False,
                                             include_media_info=False,
-                                            include_deleted=False):
+                                            include_deleted=False,
+                                            include_has_explicit_shared_members=False):
         """
         A way to quickly get a cursor for the folder's state. Unlike
         :meth:`list_folder`, :meth:`list_folder_get_latest_cursor` doesn't
@@ -451,6 +576,9 @@ class DropboxBase(object):
             set for photo and video.
         :param bool include_deleted: If true, the results will include entries
             for files and folders that used to exist but were deleted.
+        :param bool include_has_explicit_shared_members: If true, the results
+            will include a flag for each file indicating whether or not  that
+            file has any explicit members.
         :rtype: :class:`dropbox.files.ListFolderGetLatestCursorResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -460,7 +588,8 @@ class DropboxBase(object):
         arg = files.ListFolderArg(path,
                                   recursive,
                                   include_media_info,
-                                  include_deleted)
+                                  include_deleted,
+                                  include_has_explicit_shared_members)
         r = self.request(
             'api',
             'files/list_folder/get_latest_cursor',
@@ -632,7 +761,8 @@ class DropboxBase(object):
                      max_results=100,
                      mode=files.SearchMode.filename):
         """
-        Searches for files and folders.
+        Searches for files and folders. Note: Recent changes may not immediately
+        be reflected in search results due to a short delay in indexing.
 
         :param str path: The path in the user's Dropbox to search. Should
             probably be a folder.
@@ -756,6 +886,40 @@ class DropboxBase(object):
         )
         return None
 
+    def files_upload_session_append_v2(self,
+                                       f,
+                                       cursor,
+                                       close=False):
+        """
+        Append more data to an upload session. When the parameter close is set,
+        this call will close the session. A single request should not upload
+        more than 150 MB of file contents.
+
+        :param f: A string or file-like obj of data.
+        :param cursor: Contains the upload session ID and the offset.
+        :type cursor: :class:`dropbox.files.UploadSessionCursor`
+        :param bool close: If true, current session will be closed. You cannot
+            do :meth:`upload_session_append` any more to current session
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.UploadSessionLookupError`
+        """
+        arg = files.UploadSessionAppendArg(cursor,
+                                           close)
+        r = self.request(
+            'content',
+            'files/upload_session/append_v2',
+            'upload',
+            bv.Struct(files.UploadSessionAppendArg),
+            bv.Void(),
+            bv.Union(files.UploadSessionLookupError),
+            arg,
+            f,
+        )
+        return None
+
     def files_upload_session_finish(self,
                                     f,
                                     cursor,
@@ -792,7 +956,8 @@ class DropboxBase(object):
         return r
 
     def files_upload_session_start(self,
-                                   f):
+                                   f,
+                                   close=False):
         """
         Upload sessions allow you to upload a single file using multiple
         requests. This call starts a new upload session with the given data.
@@ -801,14 +966,16 @@ class DropboxBase(object):
         A single request should not upload more than 150 MB of file contents.
 
         :param f: A string or file-like obj of data.
+        :param bool close: If true, current session will be closed. You cannot
+            do :meth:`upload_session_append` any more to current session
         :rtype: :class:`dropbox.files.UploadSessionStartResult`
         """
-        arg = None
+        arg = files.UploadSessionStartArg(close)
         r = self.request(
             'content',
             'files/upload_session/start',
             'upload',
-            bv.Void(),
+            bv.Struct(files.UploadSessionStartArg),
             bv.Struct(files.UploadSessionStartResult),
             bv.Void(),
             arg,
@@ -829,8 +996,7 @@ class DropboxBase(object):
         folder to add another member. For the new member to get access to all
         the functionality for this folder, you will need to call
         :meth:`mount_folder` on their behalf. Apps must have full Dropbox access
-        to use this endpoint. Warning: This endpoint is in beta and is subject
-        to minor but possibly backwards-incompatible changes.
+        to use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param list members: The intended list of members to add.  Added members
@@ -865,8 +1031,7 @@ class DropboxBase(object):
                                  async_job_id):
         """
         Returns the status of an asynchronous job. Apps must have full Dropbox
-        access to use this endpoint. Warning: This endpoint is in beta and is
-        subject to minor but possibly backwards-incompatible changes.
+        access to use this endpoint.
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -893,9 +1058,7 @@ class DropboxBase(object):
                                        async_job_id):
         """
         Returns the status of an asynchronous job for sharing a folder. Apps
-        must have full Dropbox access to use this endpoint. Warning: This
-        endpoint is in beta and is subject to minor but possibly
-        backwards-incompatible changes.
+        must have full Dropbox access to use this endpoint.
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -997,8 +1160,7 @@ class DropboxBase(object):
                                     actions=None):
         """
         Returns shared folder metadata by its folder ID. Apps must have full
-        Dropbox access to use this endpoint. Warning: This endpoint is in beta
-        and is subject to minor but possibly backwards-incompatible changes.
+        Dropbox access to use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param Nullable actions: Folder actions to query.
@@ -1172,8 +1334,7 @@ class DropboxBase(object):
                                     limit=1000):
         """
         Returns shared folder membership by its folder ID. Apps must have full
-        Dropbox access to use this endpoint. Warning: This endpoint is in beta
-        and is subject to minor but possibly backwards-incompatible changes.
+        Dropbox access to use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :rtype: :class:`dropbox.sharing.SharedFolderMembers`
@@ -1202,8 +1363,7 @@ class DropboxBase(object):
         """
         Once a cursor has been retrieved from :meth:`list_folder_members`, use
         this to paginate through all shared folder members. Apps must have full
-        Dropbox access to use this endpoint. Warning: This endpoint is in beta
-        and is subject to minor but possibly backwards-incompatible changes.
+        Dropbox access to use this endpoint.
 
         :param str cursor: The cursor returned by your last call to
             :meth:`list_folder_members` or :meth:`list_folder_members_continue`.
@@ -1231,9 +1391,7 @@ class DropboxBase(object):
                              actions=None):
         """
         Return the list of all shared folders the current user has access to.
-        Apps must have full Dropbox access to use this endpoint. Warning: This
-        endpoint is in beta and is subject to minor but possibly
-        backwards-incompatible changes.
+        Apps must have full Dropbox access to use this endpoint.
 
         :param long limit: The maximum number of results to return per request.
         :param Nullable actions: Folder actions to query.
@@ -1259,9 +1417,7 @@ class DropboxBase(object):
         Once a cursor has been retrieved from :meth:`list_folders`, use this to
         paginate through all shared folders. The cursor must come from a
         previous call to :meth:`list_folders` or :meth:`list_folders_continue`.
-        Apps must have full Dropbox access to use this endpoint. Warning: This
-        endpoint is in beta and is subject to minor but possibly
-        backwards-incompatible changes.
+        Apps must have full Dropbox access to use this endpoint.
 
         :param str cursor: The cursor returned by the previous API call
             specified in the endpoint description.
@@ -1378,7 +1534,8 @@ class DropboxBase(object):
 
     def sharing_modify_shared_link_settings(self,
                                             url,
-                                            settings):
+                                            settings,
+                                            remove_expiration=False):
         """
         Modify the shared link's settings. If the requested visibility conflict
         with the shared links policy of the team or the shared folder (in case
@@ -1391,6 +1548,8 @@ class DropboxBase(object):
         :param str url: URL of the shared link to change its settings
         :param settings: Set of settings for the shared link.
         :type settings: :class:`dropbox.sharing.SharedLinkSettings`
+        :param bool remove_expiration: If set to true, removes the expiration of
+            the shared link.
         :rtype: :class:`dropbox.sharing.SharedLinkMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1398,7 +1557,8 @@ class DropboxBase(object):
             :class:`dropbox.sharing.ModifySharedLinkSettingsError`
         """
         arg = sharing.ModifySharedLinkSettingsArgs(url,
-                                                   settings)
+                                                   settings,
+                                                   remove_expiration)
         r = self.request(
             'api',
             'sharing/modify_shared_link_settings',
@@ -1417,8 +1577,7 @@ class DropboxBase(object):
         The current user mounts the designated folder. Mount a shared folder for
         a user after they have been added as a member. Once mounted, the shared
         folder will appear in their Dropbox. Apps must have full Dropbox access
-        to use this endpoint. Warning: This endpoint is in beta and is subject
-        to minor but possibly backwards-incompatible changes.
+        to use this endpoint.
 
         :param str shared_folder_id: The ID of the shared folder to mount.
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
@@ -1446,8 +1605,7 @@ class DropboxBase(object):
         The current user relinquishes their membership in the designated shared
         folder and will no longer have access to the folder.  A folder owner
         cannot relinquish membership in their own folder. Apps must have full
-        Dropbox access to use this endpoint. Warning: This endpoint is in beta
-        and is subject to minor but possibly backwards-incompatible changes.
+        Dropbox access to use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :rtype: None
@@ -1476,8 +1634,7 @@ class DropboxBase(object):
         """
         Allows an owner or editor (if the ACL update policy allows) of a shared
         folder to remove another member. Apps must have full Dropbox access to
-        use this endpoint. Warning: This endpoint is in beta and is subject to
-        minor but possibly backwards-incompatible changes.
+        use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param member: The member to remove from the folder.
@@ -1549,8 +1706,7 @@ class DropboxBase(object):
         a ``ShareFolderLaunch.async_job_id`` is returned, you'll need to call
         :meth:`check_share_job_status` until the action completes to get the
         metadata for the folder. Apps must have full Dropbox access to use this
-        endpoint. Warning: This endpoint is in beta and is subject to minor but
-        possibly backwards-incompatible changes.
+        endpoint.
 
         :param str path: The path to the folder to share. If it does not exist,
             then a new one is created.
@@ -1596,8 +1752,7 @@ class DropboxBase(object):
         Transfer ownership of a shared folder to a member of the shared folder.
         User must have ``AccessLevel.owner`` access to the shared folder to
         perform a transfer. Apps must have full Dropbox access to use this
-        endpoint. Warning: This endpoint is in beta and is subject to minor but
-        possibly backwards-incompatible changes.
+        endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param str to_dropbox_id: A account or team member ID to transfer
@@ -1627,8 +1782,7 @@ class DropboxBase(object):
         """
         The current user unmounts the designated folder. They can re-mount the
         folder at a later time using :meth:`mount_folder`. Apps must have full
-        Dropbox access to use this endpoint. Warning: This endpoint is in beta
-        and is subject to minor but possibly backwards-incompatible changes.
+        Dropbox access to use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :rtype: None
@@ -1657,8 +1811,6 @@ class DropboxBase(object):
         Allows a shared folder owner to unshare the folder. You'll need to call
         :meth:`check_job_status` to determine if the action has completed
         successfully. Apps must have full Dropbox access to use this endpoint.
-        Warning: This endpoint is in beta and is subject to minor but possibly
-        backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param bool leave_a_copy: If true, members of this shared folder will
@@ -1692,8 +1844,6 @@ class DropboxBase(object):
         """
         Allows an owner or editor of a shared folder to update another member's
         permissions. Apps must have full Dropbox access to use this endpoint.
-        Warning: This endpoint is in beta and is subject to minor but possibly
-        backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param member: The member of the shared folder to update.  Only the
@@ -1732,8 +1882,6 @@ class DropboxBase(object):
         Update the sharing policies for a shared folder. User must have
         ``AccessLevel.owner`` access to the shared folder to update its
         policies. Apps must have full Dropbox access to use this endpoint.
-        Warning: This endpoint is in beta and is subject to minor but possibly
-        backwards-incompatible changes.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param Nullable member_policy: Who can be a member of this shared

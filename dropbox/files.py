@@ -14,10 +14,12 @@ except (SystemError, ValueError):
 try:
     from . import (
         common,
+        properties,
         users,
     )
 except (SystemError, ValueError):
     import common
+    import properties
     import users
 
 class CommitInfo(object):
@@ -894,6 +896,14 @@ class FileMetadata(Metadata):
     :ivar size: The file size in bytes.
     :ivar media_info: Additional information if the file is a photo or video.
     :ivar sharing_info: Set if this file is contained in a shared folder.
+    :ivar property_groups: Additional information if the file has custom
+        properties with the property template specified.
+    :ivar has_explicit_shared_members: This flag will only be present if
+        include_has_explicit_shared_members  is true in list_folder or
+        get_metadata. If this  flag is present, it will be true if this file has
+        any explicit shared  members. This is different from sharing_info in
+        that this could be true  in the case where a file has explicit members
+        but is not contained within  a shared folder.
     """
 
     __slots__ = [
@@ -911,6 +921,10 @@ class FileMetadata(Metadata):
         '_media_info_present',
         '_sharing_info_value',
         '_sharing_info_present',
+        '_property_groups_value',
+        '_property_groups_present',
+        '_has_explicit_shared_members_value',
+        '_has_explicit_shared_members_present',
     ]
 
     _has_required_fields = True
@@ -926,7 +940,9 @@ class FileMetadata(Metadata):
                  size=None,
                  parent_shared_folder_id=None,
                  media_info=None,
-                 sharing_info=None):
+                 sharing_info=None,
+                 property_groups=None,
+                 has_explicit_shared_members=None):
         super(FileMetadata, self).__init__(name,
                                            path_lower,
                                            path_display,
@@ -945,6 +961,10 @@ class FileMetadata(Metadata):
         self._media_info_present = False
         self._sharing_info_value = None
         self._sharing_info_present = False
+        self._property_groups_value = None
+        self._property_groups_present = False
+        self._has_explicit_shared_members_value = None
+        self._has_explicit_shared_members_present = False
         if id is not None:
             self.id = id
         if client_modified is not None:
@@ -959,6 +979,10 @@ class FileMetadata(Metadata):
             self.media_info = media_info
         if sharing_info is not None:
             self.sharing_info = sharing_info
+        if property_groups is not None:
+            self.property_groups = property_groups
+        if has_explicit_shared_members is not None:
+            self.has_explicit_shared_members = has_explicit_shared_members
 
     @property
     def id(self):
@@ -1133,8 +1157,66 @@ class FileMetadata(Metadata):
         self._sharing_info_value = None
         self._sharing_info_present = False
 
+    @property
+    def property_groups(self):
+        """
+        Additional information if the file has custom properties with the
+        property template specified.
+
+        :rtype: list of [properties.PropertyGroup_validator]
+        """
+        if self._property_groups_present:
+            return self._property_groups_value
+        else:
+            return None
+
+    @property_groups.setter
+    def property_groups(self, val):
+        if val is None:
+            del self.property_groups
+            return
+        val = self._property_groups_validator.validate(val)
+        self._property_groups_value = val
+        self._property_groups_present = True
+
+    @property_groups.deleter
+    def property_groups(self):
+        self._property_groups_value = None
+        self._property_groups_present = False
+
+    @property
+    def has_explicit_shared_members(self):
+        """
+        This flag will only be present if include_has_explicit_shared_members
+        is true in list_folder or get_metadata. If this  flag is present, it
+        will be true if this file has any explicit shared  members. This is
+        different from sharing_info in that this could be true  in the case
+        where a file has explicit members but is not contained within  a shared
+        folder.
+
+        :rtype: bool
+        """
+        if self._has_explicit_shared_members_present:
+            return self._has_explicit_shared_members_value
+        else:
+            return None
+
+    @has_explicit_shared_members.setter
+    def has_explicit_shared_members(self, val):
+        if val is None:
+            del self.has_explicit_shared_members
+            return
+        val = self._has_explicit_shared_members_validator.validate(val)
+        self._has_explicit_shared_members_value = val
+        self._has_explicit_shared_members_present = True
+
+    @has_explicit_shared_members.deleter
+    def has_explicit_shared_members(self):
+        self._has_explicit_shared_members_value = None
+        self._has_explicit_shared_members_present = False
+
     def __repr__(self):
-        return 'FileMetadata(name={!r}, path_lower={!r}, path_display={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, parent_shared_folder_id={!r}, media_info={!r}, sharing_info={!r})'.format(
+        return 'FileMetadata(name={!r}, path_lower={!r}, path_display={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, parent_shared_folder_id={!r}, media_info={!r}, sharing_info={!r}, property_groups={!r}, has_explicit_shared_members={!r})'.format(
             self._name_value,
             self._path_lower_value,
             self._path_display_value,
@@ -1146,6 +1228,8 @@ class FileMetadata(Metadata):
             self._parent_shared_folder_id_value,
             self._media_info_value,
             self._sharing_info_value,
+            self._property_groups_value,
+            self._has_explicit_shared_members_value,
         )
 
 class SharingInfo(object):
@@ -1293,6 +1377,8 @@ class FolderMetadata(Metadata):
     :ivar shared_folder_id: Deprecated. Please use ``sharing_info`` instead.
     :ivar sharing_info: Set if the folder is contained in a shared folder or is
         a shared folder mount point.
+    :ivar property_groups: Additional information if the file has custom
+        properties with the property template specified.
     """
 
     __slots__ = [
@@ -1302,6 +1388,8 @@ class FolderMetadata(Metadata):
         '_shared_folder_id_present',
         '_sharing_info_value',
         '_sharing_info_present',
+        '_property_groups_value',
+        '_property_groups_present',
     ]
 
     _has_required_fields = True
@@ -1313,7 +1401,8 @@ class FolderMetadata(Metadata):
                  id=None,
                  parent_shared_folder_id=None,
                  shared_folder_id=None,
-                 sharing_info=None):
+                 sharing_info=None,
+                 property_groups=None):
         super(FolderMetadata, self).__init__(name,
                                              path_lower,
                                              path_display,
@@ -1324,12 +1413,16 @@ class FolderMetadata(Metadata):
         self._shared_folder_id_present = False
         self._sharing_info_value = None
         self._sharing_info_present = False
+        self._property_groups_value = None
+        self._property_groups_present = False
         if id is not None:
             self.id = id
         if shared_folder_id is not None:
             self.shared_folder_id = shared_folder_id
         if sharing_info is not None:
             self.sharing_info = sharing_info
+        if property_groups is not None:
+            self.property_groups = property_groups
 
     @property
     def id(self):
@@ -1407,8 +1500,35 @@ class FolderMetadata(Metadata):
         self._sharing_info_value = None
         self._sharing_info_present = False
 
+    @property
+    def property_groups(self):
+        """
+        Additional information if the file has custom properties with the
+        property template specified.
+
+        :rtype: list of [properties.PropertyGroup_validator]
+        """
+        if self._property_groups_present:
+            return self._property_groups_value
+        else:
+            return None
+
+    @property_groups.setter
+    def property_groups(self, val):
+        if val is None:
+            del self.property_groups
+            return
+        val = self._property_groups_validator.validate(val)
+        self._property_groups_value = val
+        self._property_groups_present = True
+
+    @property_groups.deleter
+    def property_groups(self):
+        self._property_groups_value = None
+        self._property_groups_present = False
+
     def __repr__(self):
-        return 'FolderMetadata(name={!r}, path_lower={!r}, path_display={!r}, id={!r}, parent_shared_folder_id={!r}, shared_folder_id={!r}, sharing_info={!r})'.format(
+        return 'FolderMetadata(name={!r}, path_lower={!r}, path_display={!r}, id={!r}, parent_shared_folder_id={!r}, shared_folder_id={!r}, sharing_info={!r}, property_groups={!r})'.format(
             self._name_value,
             self._path_lower_value,
             self._path_display_value,
@@ -1416,6 +1536,7 @@ class FolderMetadata(Metadata):
             self._parent_shared_folder_id_value,
             self._shared_folder_id_value,
             self._sharing_info_value,
+            self._property_groups_value,
         )
 
 class FolderSharingInfo(SharingInfo):
@@ -1512,11 +1633,245 @@ class FolderSharingInfo(SharingInfo):
             self._shared_folder_id_value,
         )
 
+class GetCopyReferenceArg(object):
+    """
+    :ivar path: The path to the file or folder you want to get a copy reference
+        to.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None):
+        self._path_value = None
+        self._path_present = False
+        if path is not None:
+            self.path = path
+
+    @property
+    def path(self):
+        """
+        The path to the file or folder you want to get a copy reference to.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    def __repr__(self):
+        return 'GetCopyReferenceArg(path={!r})'.format(
+            self._path_value,
+        )
+
+class GetCopyReferenceError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: GetCopyReferenceError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetCopyReferenceError(%r, %r)' % (self._tag, self._value)
+
+class GetCopyReferenceResult(object):
+    """
+    :ivar metadata: Metadata of the file or folder.
+    :ivar copy_reference: A copy reference to the file or folder.
+    :ivar expires: The expiration date of the copy reference. This value is
+        currently set to be far enough in the future so that expiration is
+        effectively not an issue.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+        '_copy_reference_value',
+        '_copy_reference_present',
+        '_expires_value',
+        '_expires_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None,
+                 copy_reference=None,
+                 expires=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        self._copy_reference_value = None
+        self._copy_reference_present = False
+        self._expires_value = None
+        self._expires_present = False
+        if metadata is not None:
+            self.metadata = metadata
+        if copy_reference is not None:
+            self.copy_reference = copy_reference
+        if expires is not None:
+            self.expires = expires
+
+    @property
+    def metadata(self):
+        """
+        Metadata of the file or folder.
+
+        :rtype: Metadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    @property
+    def copy_reference(self):
+        """
+        A copy reference to the file or folder.
+
+        :rtype: str
+        """
+        if self._copy_reference_present:
+            return self._copy_reference_value
+        else:
+            raise AttributeError("missing required field 'copy_reference'")
+
+    @copy_reference.setter
+    def copy_reference(self, val):
+        val = self._copy_reference_validator.validate(val)
+        self._copy_reference_value = val
+        self._copy_reference_present = True
+
+    @copy_reference.deleter
+    def copy_reference(self):
+        self._copy_reference_value = None
+        self._copy_reference_present = False
+
+    @property
+    def expires(self):
+        """
+        The expiration date of the copy reference. This value is currently set
+        to be far enough in the future so that expiration is effectively not an
+        issue.
+
+        :rtype: datetime.datetime
+        """
+        if self._expires_present:
+            return self._expires_value
+        else:
+            raise AttributeError("missing required field 'expires'")
+
+    @expires.setter
+    def expires(self, val):
+        val = self._expires_validator.validate(val)
+        self._expires_value = val
+        self._expires_present = True
+
+    @expires.deleter
+    def expires(self):
+        self._expires_value = None
+        self._expires_present = False
+
+    def __repr__(self):
+        return 'GetCopyReferenceResult(metadata={!r}, copy_reference={!r}, expires={!r})'.format(
+            self._metadata_value,
+            self._copy_reference_value,
+            self._expires_value,
+        )
+
 class GetMetadataArg(object):
     """
     :ivar path: The path of a file or folder on Dropbox.
     :ivar include_media_info: If true, ``FileMetadata.media_info`` is set for
         photo and video.
+    :ivar include_deleted: If true, :class:`DeletedMetadata` will be returned
+        for deleted file or folder, otherwise ``LookupError.not_found`` will be
+        returned.
+    :ivar include_has_explicit_shared_members: If true, the results will include
+        a flag for each file indicating whether or not  that file has any
+        explicit members.
     """
 
     __slots__ = [
@@ -1524,21 +1879,35 @@ class GetMetadataArg(object):
         '_path_present',
         '_include_media_info_value',
         '_include_media_info_present',
+        '_include_deleted_value',
+        '_include_deleted_present',
+        '_include_has_explicit_shared_members_value',
+        '_include_has_explicit_shared_members_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  path=None,
-                 include_media_info=None):
+                 include_media_info=None,
+                 include_deleted=None,
+                 include_has_explicit_shared_members=None):
         self._path_value = None
         self._path_present = False
         self._include_media_info_value = None
         self._include_media_info_present = False
+        self._include_deleted_value = None
+        self._include_deleted_present = False
+        self._include_has_explicit_shared_members_value = None
+        self._include_has_explicit_shared_members_present = False
         if path is not None:
             self.path = path
         if include_media_info is not None:
             self.include_media_info = include_media_info
+        if include_deleted is not None:
+            self.include_deleted = include_deleted
+        if include_has_explicit_shared_members is not None:
+            self.include_has_explicit_shared_members = include_has_explicit_shared_members
 
     @property
     def path(self):
@@ -1586,10 +1955,60 @@ class GetMetadataArg(object):
         self._include_media_info_value = None
         self._include_media_info_present = False
 
+    @property
+    def include_deleted(self):
+        """
+        If true, :class:`DeletedMetadata` will be returned for deleted file or
+        folder, otherwise ``LookupError.not_found`` will be returned.
+
+        :rtype: bool
+        """
+        if self._include_deleted_present:
+            return self._include_deleted_value
+        else:
+            return False
+
+    @include_deleted.setter
+    def include_deleted(self, val):
+        val = self._include_deleted_validator.validate(val)
+        self._include_deleted_value = val
+        self._include_deleted_present = True
+
+    @include_deleted.deleter
+    def include_deleted(self):
+        self._include_deleted_value = None
+        self._include_deleted_present = False
+
+    @property
+    def include_has_explicit_shared_members(self):
+        """
+        If true, the results will include a flag for each file indicating
+        whether or not  that file has any explicit members.
+
+        :rtype: bool
+        """
+        if self._include_has_explicit_shared_members_present:
+            return self._include_has_explicit_shared_members_value
+        else:
+            return False
+
+    @include_has_explicit_shared_members.setter
+    def include_has_explicit_shared_members(self, val):
+        val = self._include_has_explicit_shared_members_validator.validate(val)
+        self._include_has_explicit_shared_members_value = val
+        self._include_has_explicit_shared_members_present = True
+
+    @include_has_explicit_shared_members.deleter
+    def include_has_explicit_shared_members(self):
+        self._include_has_explicit_shared_members_value = None
+        self._include_has_explicit_shared_members_present = False
+
     def __repr__(self):
-        return 'GetMetadataArg(path={!r}, include_media_info={!r})'.format(
+        return 'GetMetadataArg(path={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r})'.format(
             self._path_value,
             self._include_media_info_value,
+            self._include_deleted_value,
+            self._include_has_explicit_shared_members_value,
         )
 
 class GetMetadataError(object):
@@ -1646,6 +2065,197 @@ class GetMetadataError(object):
 
     def __repr__(self):
         return 'GetMetadataError(%r, %r)' % (self._tag, self._value)
+
+class GetTemporaryLinkArg(object):
+    """
+    :ivar path: The path to the file you want a temporary link to.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None):
+        self._path_value = None
+        self._path_present = False
+        if path is not None:
+            self.path = path
+
+    @property
+    def path(self):
+        """
+        The path to the file you want a temporary link to.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    def __repr__(self):
+        return 'GetTemporaryLinkArg(path={!r})'.format(
+            self._path_value,
+        )
+
+class GetTemporaryLinkError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: GetTemporaryLinkError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetTemporaryLinkError(%r, %r)' % (self._tag, self._value)
+
+class GetTemporaryLinkResult(object):
+    """
+    :ivar metadata: Metadata of the file.
+    :ivar link: The temporary link which can be used to stream content the file.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+        '_link_value',
+        '_link_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None,
+                 link=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        self._link_value = None
+        self._link_present = False
+        if metadata is not None:
+            self.metadata = metadata
+        if link is not None:
+            self.link = link
+
+    @property
+    def metadata(self):
+        """
+        Metadata of the file.
+
+        :rtype: FileMetadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    @property
+    def link(self):
+        """
+        The temporary link which can be used to stream content the file.
+
+        :rtype: str
+        """
+        if self._link_present:
+            return self._link_value
+        else:
+            raise AttributeError("missing required field 'link'")
+
+    @link.setter
+    def link(self, val):
+        val = self._link_validator.validate(val)
+        self._link_value = val
+        self._link_present = True
+
+    @link.deleter
+    def link(self):
+        self._link_value = None
+        self._link_present = False
+
+    def __repr__(self):
+        return 'GetTemporaryLinkResult(metadata={!r}, link={!r})'.format(
+            self._metadata_value,
+            self._link_value,
+        )
 
 class GpsCoordinates(object):
     """
@@ -1738,6 +2348,9 @@ class ListFolderArg(object):
         photo and video.
     :ivar include_deleted: If true, the results will include entries for files
         and folders that used to exist but were deleted.
+    :ivar include_has_explicit_shared_members: If true, the results will include
+        a flag for each file indicating whether or not  that file has any
+        explicit members.
     """
 
     __slots__ = [
@@ -1749,6 +2362,8 @@ class ListFolderArg(object):
         '_include_media_info_present',
         '_include_deleted_value',
         '_include_deleted_present',
+        '_include_has_explicit_shared_members_value',
+        '_include_has_explicit_shared_members_present',
     ]
 
     _has_required_fields = True
@@ -1757,7 +2372,8 @@ class ListFolderArg(object):
                  path=None,
                  recursive=None,
                  include_media_info=None,
-                 include_deleted=None):
+                 include_deleted=None,
+                 include_has_explicit_shared_members=None):
         self._path_value = None
         self._path_present = False
         self._recursive_value = None
@@ -1766,6 +2382,8 @@ class ListFolderArg(object):
         self._include_media_info_present = False
         self._include_deleted_value = None
         self._include_deleted_present = False
+        self._include_has_explicit_shared_members_value = None
+        self._include_has_explicit_shared_members_present = False
         if path is not None:
             self.path = path
         if recursive is not None:
@@ -1774,6 +2392,8 @@ class ListFolderArg(object):
             self.include_media_info = include_media_info
         if include_deleted is not None:
             self.include_deleted = include_deleted
+        if include_has_explicit_shared_members is not None:
+            self.include_has_explicit_shared_members = include_has_explicit_shared_members
 
     @property
     def path(self):
@@ -1869,12 +2489,37 @@ class ListFolderArg(object):
         self._include_deleted_value = None
         self._include_deleted_present = False
 
+    @property
+    def include_has_explicit_shared_members(self):
+        """
+        If true, the results will include a flag for each file indicating
+        whether or not  that file has any explicit members.
+
+        :rtype: bool
+        """
+        if self._include_has_explicit_shared_members_present:
+            return self._include_has_explicit_shared_members_value
+        else:
+            return False
+
+    @include_has_explicit_shared_members.setter
+    def include_has_explicit_shared_members(self, val):
+        val = self._include_has_explicit_shared_members_validator.validate(val)
+        self._include_has_explicit_shared_members_value = val
+        self._include_has_explicit_shared_members_present = True
+
+    @include_has_explicit_shared_members.deleter
+    def include_has_explicit_shared_members(self):
+        self._include_has_explicit_shared_members_value = None
+        self._include_has_explicit_shared_members_present = False
+
     def __repr__(self):
-        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r})'.format(
+        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r})'.format(
             self._path_value,
             self._recursive_value,
             self._include_media_info_value,
             self._include_deleted_value,
+            self._include_has_explicit_shared_members_value,
         )
 
 class ListFolderContinueArg(object):
@@ -3638,6 +4283,245 @@ class RestoreError(object):
     def __repr__(self):
         return 'RestoreError(%r, %r)' % (self._tag, self._value)
 
+class SaveCopyReferenceArg(object):
+    """
+    :ivar copy_reference: A copy reference returned by copy_reference/get.
+    :ivar path: Path in the user's Dropbox that is the destination.
+    """
+
+    __slots__ = [
+        '_copy_reference_value',
+        '_copy_reference_present',
+        '_path_value',
+        '_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 copy_reference=None,
+                 path=None):
+        self._copy_reference_value = None
+        self._copy_reference_present = False
+        self._path_value = None
+        self._path_present = False
+        if copy_reference is not None:
+            self.copy_reference = copy_reference
+        if path is not None:
+            self.path = path
+
+    @property
+    def copy_reference(self):
+        """
+        A copy reference returned by copy_reference/get.
+
+        :rtype: str
+        """
+        if self._copy_reference_present:
+            return self._copy_reference_value
+        else:
+            raise AttributeError("missing required field 'copy_reference'")
+
+    @copy_reference.setter
+    def copy_reference(self, val):
+        val = self._copy_reference_validator.validate(val)
+        self._copy_reference_value = val
+        self._copy_reference_present = True
+
+    @copy_reference.deleter
+    def copy_reference(self):
+        self._copy_reference_value = None
+        self._copy_reference_present = False
+
+    @property
+    def path(self):
+        """
+        Path in the user's Dropbox that is the destination.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    def __repr__(self):
+        return 'SaveCopyReferenceArg(copy_reference={!r}, path={!r})'.format(
+            self._copy_reference_value,
+            self._path_value,
+        )
+
+class SaveCopyReferenceError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_copy_reference: The copy reference is invalid.
+    :ivar no_permission: The app has no permission to access another user's
+        Dropbox.
+    :ivar not_found: The file referenced by the copy reference cannot be found.
+    :ivar too_many_files: The operation would involve more than 10,000 files and
+        folders.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_copy_reference = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
+    # Attribute is overwritten below the class definition
+    not_found = None
+    # Attribute is overwritten below the class definition
+    too_many_files = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param WriteError val:
+        :rtype: SaveCopyReferenceError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_invalid_copy_reference(self):
+        """
+        Check if the union tag is ``invalid_copy_reference``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_copy_reference'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_too_many_files(self):
+        """
+        Check if the union tag is ``too_many_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_files'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: WriteError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'SaveCopyReferenceError(%r, %r)' % (self._tag, self._value)
+
+class SaveCopyReferenceResult(object):
+    """
+    :ivar metadata: The metadata of the saved file or folder in the user's
+        Dropbox.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        if metadata is not None:
+            self.metadata = metadata
+
+    @property
+    def metadata(self):
+        """
+        The metadata of the saved file or folder in the user's Dropbox.
+
+        :rtype: Metadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    def __repr__(self):
+        return 'SaveCopyReferenceResult(metadata={!r})'.format(
+            self._metadata_value,
+        )
+
 class SearchArg(object):
     """
     :ivar path: The path in the user's Dropbox to search. Should probably be a
@@ -4616,6 +5500,87 @@ class UploadError(object):
     def __repr__(self):
         return 'UploadError(%r, %r)' % (self._tag, self._value)
 
+class UploadSessionAppendArg(object):
+    """
+    :ivar cursor: Contains the upload session ID and the offset.
+    :ivar close: If true, current session will be closed. You cannot do
+        upload_session/append any more to current session
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+        '_close_value',
+        '_close_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None,
+                 close=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        self._close_value = None
+        self._close_present = False
+        if cursor is not None:
+            self.cursor = cursor
+        if close is not None:
+            self.close = close
+
+    @property
+    def cursor(self):
+        """
+        Contains the upload session ID and the offset.
+
+        :rtype: UploadSessionCursor
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        self._cursor_validator.validate_type_only(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def close(self):
+        """
+        If true, current session will be closed. You cannot do
+        upload_session/append any more to current session
+
+        :rtype: bool
+        """
+        if self._close_present:
+            return self._close_value
+        else:
+            return False
+
+    @close.setter
+    def close(self, val):
+        val = self._close_validator.validate(val)
+        self._close_value = val
+        self._close_present = True
+
+    @close.deleter
+    def close(self):
+        self._close_value = None
+        self._close_present = False
+
+    def __repr__(self):
+        return 'UploadSessionAppendArg(cursor={!r}, close={!r})'.format(
+            self._cursor_value,
+            self._close_value,
+        )
+
 class UploadSessionCursor(object):
     """
     :ivar session_id: The upload session ID (returned by upload_session/start).
@@ -4787,12 +5752,17 @@ class UploadSessionFinishError(object):
     :ivar UploadSessionLookupError lookup_failed: The session arguments are
         incorrect; the value explains the reason.
     :ivar WriteError path: Unable to save the uploaded contents to a file.
+    :ivar too_many_shared_folder_targets: The batch request commits files into
+        too many different shared folders. Please limit your batch request to
+        files contained in a single shared folder.
     :ivar other: An unspecified error.
     """
 
     __slots__ = ['_tag', '_value']
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    too_many_shared_folder_targets = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -4846,6 +5816,14 @@ class UploadSessionFinishError(object):
         """
         return self._tag == 'path'
 
+    def is_too_many_shared_folder_targets(self):
+        """
+        Check if the union tag is ``too_many_shared_folder_targets``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_shared_folder_targets'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -4894,6 +5872,8 @@ class UploadSessionLookupError(object):
         client did not receive the response, e.g. due to a network error.)
     :ivar closed: You are attempting to append data to an upload session that
         has alread been closed (i.e. committed).
+    :ivar not_closed: The session must be closed before calling
+        upload_session/finish_batch.
     :ivar other: An unspecified error.
     """
 
@@ -4904,6 +5884,8 @@ class UploadSessionLookupError(object):
     not_found = None
     # Attribute is overwritten below the class definition
     closed = None
+    # Attribute is overwritten below the class definition
+    not_closed = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -4953,6 +5935,14 @@ class UploadSessionLookupError(object):
         :rtype: bool
         """
         return self._tag == 'closed'
+
+    def is_not_closed(self):
+        """
+        Check if the union tag is ``not_closed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_closed'
 
     def is_other(self):
         """
@@ -5025,6 +6015,55 @@ class UploadSessionOffsetError(object):
     def __repr__(self):
         return 'UploadSessionOffsetError(correct_offset={!r})'.format(
             self._correct_offset_value,
+        )
+
+class UploadSessionStartArg(object):
+    """
+    :ivar close: If true, current session will be closed. You cannot do
+        upload_session/append any more to current session
+    """
+
+    __slots__ = [
+        '_close_value',
+        '_close_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 close=None):
+        self._close_value = None
+        self._close_present = False
+        if close is not None:
+            self.close = close
+
+    @property
+    def close(self):
+        """
+        If true, current session will be closed. You cannot do
+        upload_session/append any more to current session
+
+        :rtype: bool
+        """
+        if self._close_present:
+            return self._close_value
+        else:
+            return False
+
+    @close.setter
+    def close(self, val):
+        val = self._close_validator.validate(val)
+        self._close_value = val
+        self._close_present = True
+
+    @close.deleter
+    def close(self):
+        self._close_value = None
+        self._close_present = False
+
+    def __repr__(self):
+        return 'UploadSessionStartArg(close={!r})'.format(
+            self._close_value,
         )
 
 class UploadSessionStartResult(object):
@@ -5650,6 +6689,8 @@ FileMetadata._rev_validator = Rev_validator
 FileMetadata._size_validator = bv.UInt64()
 FileMetadata._media_info_validator = bv.Nullable(bv.Union(MediaInfo))
 FileMetadata._sharing_info_validator = bv.Nullable(bv.Struct(FileSharingInfo))
+FileMetadata._property_groups_validator = bv.Nullable(bv.List(bv.Struct(properties.PropertyGroup)))
+FileMetadata._has_explicit_shared_members_validator = bv.Nullable(bv.Boolean())
 FileMetadata._field_names_ = set([
     'id',
     'client_modified',
@@ -5658,6 +6699,8 @@ FileMetadata._field_names_ = set([
     'size',
     'media_info',
     'sharing_info',
+    'property_groups',
+    'has_explicit_shared_members',
 ])
 FileMetadata._all_field_names_ = Metadata._all_field_names_.union(FileMetadata._field_names_)
 FileMetadata._fields_ = [
@@ -5668,6 +6711,8 @@ FileMetadata._fields_ = [
     ('size', FileMetadata._size_validator),
     ('media_info', FileMetadata._media_info_validator),
     ('sharing_info', FileMetadata._sharing_info_validator),
+    ('property_groups', FileMetadata._property_groups_validator),
+    ('has_explicit_shared_members', FileMetadata._has_explicit_shared_members_validator),
 ]
 FileMetadata._all_fields_ = Metadata._all_fields_ + FileMetadata._fields_
 
@@ -5689,16 +6734,19 @@ FileSharingInfo._all_fields_ = SharingInfo._all_fields_ + [
 FolderMetadata._id_validator = Id_validator
 FolderMetadata._shared_folder_id_validator = bv.Nullable(common.SharedFolderId_validator)
 FolderMetadata._sharing_info_validator = bv.Nullable(bv.Struct(FolderSharingInfo))
+FolderMetadata._property_groups_validator = bv.Nullable(bv.List(bv.Struct(properties.PropertyGroup)))
 FolderMetadata._field_names_ = set([
     'id',
     'shared_folder_id',
     'sharing_info',
+    'property_groups',
 ])
 FolderMetadata._all_field_names_ = Metadata._all_field_names_.union(FolderMetadata._field_names_)
 FolderMetadata._fields_ = [
     ('id', FolderMetadata._id_validator),
     ('shared_folder_id', FolderMetadata._shared_folder_id_validator),
     ('sharing_info', FolderMetadata._sharing_info_validator),
+    ('property_groups', FolderMetadata._property_groups_validator),
 ]
 FolderMetadata._all_fields_ = Metadata._all_fields_ + FolderMetadata._fields_
 
@@ -5713,21 +6761,78 @@ FolderSharingInfo._all_fields_ = SharingInfo._all_fields_ + [
     ('shared_folder_id', FolderSharingInfo._shared_folder_id_validator),
 ]
 
+GetCopyReferenceArg._path_validator = ReadPath_validator
+GetCopyReferenceArg._all_field_names_ = set(['path'])
+GetCopyReferenceArg._all_fields_ = [('path', GetCopyReferenceArg._path_validator)]
+
+GetCopyReferenceError._path_validator = bv.Union(LookupError)
+GetCopyReferenceError._other_validator = bv.Void()
+GetCopyReferenceError._tagmap = {
+    'path': GetCopyReferenceError._path_validator,
+    'other': GetCopyReferenceError._other_validator,
+}
+
+GetCopyReferenceError.other = GetCopyReferenceError('other')
+
+GetCopyReferenceResult._metadata_validator = bv.StructTree(Metadata)
+GetCopyReferenceResult._copy_reference_validator = bv.String()
+GetCopyReferenceResult._expires_validator = common.DropboxTimestamp_validator
+GetCopyReferenceResult._all_field_names_ = set([
+    'metadata',
+    'copy_reference',
+    'expires',
+])
+GetCopyReferenceResult._all_fields_ = [
+    ('metadata', GetCopyReferenceResult._metadata_validator),
+    ('copy_reference', GetCopyReferenceResult._copy_reference_validator),
+    ('expires', GetCopyReferenceResult._expires_validator),
+]
+
 GetMetadataArg._path_validator = ReadPath_validator
 GetMetadataArg._include_media_info_validator = bv.Boolean()
+GetMetadataArg._include_deleted_validator = bv.Boolean()
+GetMetadataArg._include_has_explicit_shared_members_validator = bv.Boolean()
 GetMetadataArg._all_field_names_ = set([
     'path',
     'include_media_info',
+    'include_deleted',
+    'include_has_explicit_shared_members',
 ])
 GetMetadataArg._all_fields_ = [
     ('path', GetMetadataArg._path_validator),
     ('include_media_info', GetMetadataArg._include_media_info_validator),
+    ('include_deleted', GetMetadataArg._include_deleted_validator),
+    ('include_has_explicit_shared_members', GetMetadataArg._include_has_explicit_shared_members_validator),
 ]
 
 GetMetadataError._path_validator = bv.Union(LookupError)
 GetMetadataError._tagmap = {
     'path': GetMetadataError._path_validator,
 }
+
+GetTemporaryLinkArg._path_validator = ReadPath_validator
+GetTemporaryLinkArg._all_field_names_ = set(['path'])
+GetTemporaryLinkArg._all_fields_ = [('path', GetTemporaryLinkArg._path_validator)]
+
+GetTemporaryLinkError._path_validator = bv.Union(LookupError)
+GetTemporaryLinkError._other_validator = bv.Void()
+GetTemporaryLinkError._tagmap = {
+    'path': GetTemporaryLinkError._path_validator,
+    'other': GetTemporaryLinkError._other_validator,
+}
+
+GetTemporaryLinkError.other = GetTemporaryLinkError('other')
+
+GetTemporaryLinkResult._metadata_validator = bv.Struct(FileMetadata)
+GetTemporaryLinkResult._link_validator = bv.String()
+GetTemporaryLinkResult._all_field_names_ = set([
+    'metadata',
+    'link',
+])
+GetTemporaryLinkResult._all_fields_ = [
+    ('metadata', GetTemporaryLinkResult._metadata_validator),
+    ('link', GetTemporaryLinkResult._link_validator),
+]
 
 GpsCoordinates._latitude_validator = bv.Float64()
 GpsCoordinates._longitude_validator = bv.Float64()
@@ -5744,17 +6849,20 @@ ListFolderArg._path_validator = PathR_validator
 ListFolderArg._recursive_validator = bv.Boolean()
 ListFolderArg._include_media_info_validator = bv.Boolean()
 ListFolderArg._include_deleted_validator = bv.Boolean()
+ListFolderArg._include_has_explicit_shared_members_validator = bv.Boolean()
 ListFolderArg._all_field_names_ = set([
     'path',
     'recursive',
     'include_media_info',
     'include_deleted',
+    'include_has_explicit_shared_members',
 ])
 ListFolderArg._all_fields_ = [
     ('path', ListFolderArg._path_validator),
     ('recursive', ListFolderArg._recursive_validator),
     ('include_media_info', ListFolderArg._include_media_info_validator),
     ('include_deleted', ListFolderArg._include_deleted_validator),
+    ('include_has_explicit_shared_members', ListFolderArg._include_has_explicit_shared_members_validator),
 ]
 
 ListFolderContinueArg._cursor_validator = ListFolderCursor_validator
@@ -6011,6 +7119,42 @@ RestoreError._tagmap = {
 RestoreError.invalid_revision = RestoreError('invalid_revision')
 RestoreError.other = RestoreError('other')
 
+SaveCopyReferenceArg._copy_reference_validator = bv.String()
+SaveCopyReferenceArg._path_validator = Path_validator
+SaveCopyReferenceArg._all_field_names_ = set([
+    'copy_reference',
+    'path',
+])
+SaveCopyReferenceArg._all_fields_ = [
+    ('copy_reference', SaveCopyReferenceArg._copy_reference_validator),
+    ('path', SaveCopyReferenceArg._path_validator),
+]
+
+SaveCopyReferenceError._path_validator = bv.Union(WriteError)
+SaveCopyReferenceError._invalid_copy_reference_validator = bv.Void()
+SaveCopyReferenceError._no_permission_validator = bv.Void()
+SaveCopyReferenceError._not_found_validator = bv.Void()
+SaveCopyReferenceError._too_many_files_validator = bv.Void()
+SaveCopyReferenceError._other_validator = bv.Void()
+SaveCopyReferenceError._tagmap = {
+    'path': SaveCopyReferenceError._path_validator,
+    'invalid_copy_reference': SaveCopyReferenceError._invalid_copy_reference_validator,
+    'no_permission': SaveCopyReferenceError._no_permission_validator,
+    'not_found': SaveCopyReferenceError._not_found_validator,
+    'too_many_files': SaveCopyReferenceError._too_many_files_validator,
+    'other': SaveCopyReferenceError._other_validator,
+}
+
+SaveCopyReferenceError.invalid_copy_reference = SaveCopyReferenceError('invalid_copy_reference')
+SaveCopyReferenceError.no_permission = SaveCopyReferenceError('no_permission')
+SaveCopyReferenceError.not_found = SaveCopyReferenceError('not_found')
+SaveCopyReferenceError.too_many_files = SaveCopyReferenceError('too_many_files')
+SaveCopyReferenceError.other = SaveCopyReferenceError('other')
+
+SaveCopyReferenceResult._metadata_validator = bv.StructTree(Metadata)
+SaveCopyReferenceResult._all_field_names_ = set(['metadata'])
+SaveCopyReferenceResult._all_fields_ = [('metadata', SaveCopyReferenceResult._metadata_validator)]
+
 SearchArg._path_validator = PathR_validator
 SearchArg._query_validator = bv.String()
 SearchArg._start_validator = bv.UInt64()
@@ -6158,6 +7302,17 @@ UploadError._tagmap = {
 
 UploadError.other = UploadError('other')
 
+UploadSessionAppendArg._cursor_validator = bv.Struct(UploadSessionCursor)
+UploadSessionAppendArg._close_validator = bv.Boolean()
+UploadSessionAppendArg._all_field_names_ = set([
+    'cursor',
+    'close',
+])
+UploadSessionAppendArg._all_fields_ = [
+    ('cursor', UploadSessionAppendArg._cursor_validator),
+    ('close', UploadSessionAppendArg._close_validator),
+]
+
 UploadSessionCursor._session_id_validator = bv.String()
 UploadSessionCursor._offset_validator = bv.UInt64()
 UploadSessionCursor._all_field_names_ = set([
@@ -6182,33 +7337,43 @@ UploadSessionFinishArg._all_fields_ = [
 
 UploadSessionFinishError._lookup_failed_validator = bv.Union(UploadSessionLookupError)
 UploadSessionFinishError._path_validator = bv.Union(WriteError)
+UploadSessionFinishError._too_many_shared_folder_targets_validator = bv.Void()
 UploadSessionFinishError._other_validator = bv.Void()
 UploadSessionFinishError._tagmap = {
     'lookup_failed': UploadSessionFinishError._lookup_failed_validator,
     'path': UploadSessionFinishError._path_validator,
+    'too_many_shared_folder_targets': UploadSessionFinishError._too_many_shared_folder_targets_validator,
     'other': UploadSessionFinishError._other_validator,
 }
 
+UploadSessionFinishError.too_many_shared_folder_targets = UploadSessionFinishError('too_many_shared_folder_targets')
 UploadSessionFinishError.other = UploadSessionFinishError('other')
 
 UploadSessionLookupError._not_found_validator = bv.Void()
 UploadSessionLookupError._incorrect_offset_validator = bv.Struct(UploadSessionOffsetError)
 UploadSessionLookupError._closed_validator = bv.Void()
+UploadSessionLookupError._not_closed_validator = bv.Void()
 UploadSessionLookupError._other_validator = bv.Void()
 UploadSessionLookupError._tagmap = {
     'not_found': UploadSessionLookupError._not_found_validator,
     'incorrect_offset': UploadSessionLookupError._incorrect_offset_validator,
     'closed': UploadSessionLookupError._closed_validator,
+    'not_closed': UploadSessionLookupError._not_closed_validator,
     'other': UploadSessionLookupError._other_validator,
 }
 
 UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
 UploadSessionLookupError.closed = UploadSessionLookupError('closed')
+UploadSessionLookupError.not_closed = UploadSessionLookupError('not_closed')
 UploadSessionLookupError.other = UploadSessionLookupError('other')
 
 UploadSessionOffsetError._correct_offset_validator = bv.UInt64()
 UploadSessionOffsetError._all_field_names_ = set(['correct_offset'])
 UploadSessionOffsetError._all_fields_ = [('correct_offset', UploadSessionOffsetError._correct_offset_validator)]
+
+UploadSessionStartArg._close_validator = bv.Boolean()
+UploadSessionStartArg._all_field_names_ = set(['close'])
+UploadSessionStartArg._all_fields_ = [('close', UploadSessionStartArg._close_validator)]
 
 UploadSessionStartResult._session_id_validator = bv.String()
 UploadSessionStartResult._all_field_names_ = set(['session_id'])

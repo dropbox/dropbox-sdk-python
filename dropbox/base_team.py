@@ -8,8 +8,10 @@ from . import (
     async,
     auth,
     files,
+    properties,
     sharing,
     team,
+    team_policies,
     users,
 )
 
@@ -56,6 +58,47 @@ class DropboxTeamBase(object):
             bv.Struct(team.ListMemberDevicesArg),
             bv.Struct(team.ListMemberDevicesResult),
             bv.Union(team.ListMemberDevicesError),
+            arg,
+            None,
+        )
+        return r
+
+    def team_devices_list_members_devices(self,
+                                          cursor=None,
+                                          include_web_sessions=True,
+                                          include_desktop_clients=True,
+                                          include_mobile_clients=True):
+        """
+        List all device sessions of a team.
+
+        :param Nullable cursor: At the first call to the
+            :meth:`devices_list_members_devices` the cursor shouldn't be passed.
+            Then, if the result of the call includes a cursor, the following
+            requests should include the received cursors in order to receive the
+            next sub list of team devices
+        :param bool include_web_sessions: Whether to list web sessions of the
+            team members
+        :param bool include_desktop_clients: Whether to list desktop clients of
+            the team members
+        :param bool include_mobile_clients: Whether to list mobile clients of
+            the team members
+        :rtype: :class:`dropbox.team.ListMembersDevicesResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.ListMembersDevicesError`
+        """
+        arg = team.ListMembersDevicesArg(cursor,
+                                         include_web_sessions,
+                                         include_desktop_clients,
+                                         include_mobile_clients)
+        r = self.request(
+            'api',
+            'team/devices/list_members_devices',
+            'rpc',
+            bv.Struct(team.ListMembersDevicesArg),
+            bv.Struct(team.ListMembersDevicesResult),
+            bv.Union(team.ListMembersDevicesError),
             arg,
             None,
         )
@@ -335,7 +378,8 @@ class DropboxTeamBase(object):
 
     def team_groups_members_add(self,
                                 group,
-                                members):
+                                members,
+                                return_members=True):
         """
         Adds members to a group. The members are added immediately. However the
         granting of group-owned resources may take additional time. Use the
@@ -352,7 +396,8 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.GroupMembersAddError`
         """
         arg = team.GroupMembersAddArg(group,
-                                      members)
+                                      members,
+                                      return_members)
         r = self.request(
             'api',
             'team/groups/members/add',
@@ -367,15 +412,17 @@ class DropboxTeamBase(object):
 
     def team_groups_members_remove(self,
                                    group,
-                                   users):
+                                   users,
+                                   return_members=True):
         """
         Removes members from a group. The members are removed immediately.
         However the revoking of group-owned resources may take additional time.
         Use the :meth:`groups_job_status_get` to determine whether this process
         has completed. Permission : Team member management
 
+        :param group: Group from which users will be removed.
         :type group: :class:`dropbox.team.GroupSelector`
-        :type users: list
+        :param list users: List of users to be removed from the group.
         :rtype: :class:`dropbox.team.GroupMembersChangeResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -383,7 +430,8 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.GroupMembersRemoveError`
         """
         arg = team.GroupMembersRemoveArg(group,
-                                         users)
+                                         users,
+                                         return_members)
         r = self.request(
             'api',
             'team/groups/members/remove',
@@ -399,29 +447,35 @@ class DropboxTeamBase(object):
     def team_groups_members_set_access_type(self,
                                             group,
                                             user,
-                                            access_type):
+                                            access_type,
+                                            return_members=True):
         """
         Sets a member's access type in a group. Permission : Team member
         management
 
         :param access_type: New group access type the user will have.
         :type access_type: :class:`dropbox.team.GroupAccessType`
+        :param bool return_members: Whether to return the list of members in the
+            group.  Note that the default value will cause all the group members
+            to be returned in the response. This may take a long time for large
+            groups.
         :rtype: list
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.GroupMemberSelectorError`
+            :class:`dropbox.team.GroupMemberSetAccessTypeError`
         """
         arg = team.GroupMembersSetAccessTypeArg(group,
                                                 user,
-                                                access_type)
+                                                access_type,
+                                                return_members)
         r = self.request(
             'api',
             'team/groups/members/set_access_type',
             'rpc',
             bv.Struct(team.GroupMembersSetAccessTypeArg),
             bv.List(bv.Union(team.GroupsGetInfoItem)),
-            bv.Union(team.GroupMemberSelectorError),
+            bv.Union(team.GroupMemberSetAccessTypeError),
             arg,
             None,
         )
@@ -429,6 +483,7 @@ class DropboxTeamBase(object):
 
     def team_groups_update(self,
                            group,
+                           return_members=True,
                            new_group_name=None,
                            new_group_external_id=None):
         """
@@ -450,6 +505,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.GroupUpdateError`
         """
         arg = team.GroupUpdateArgs(group,
+                                   return_members,
                                    new_group_name,
                                    new_group_external_id)
         r = self.request(
@@ -468,7 +524,7 @@ class DropboxTeamBase(object):
                                                  team_member_id):
         """
         List all linked applications of the team member. Note, this endpoint
-        doesn't list any team-linked applications.
+        does not list any team-linked applications.
 
         :param str team_member_id: The team member id
         :rtype: :class:`dropbox.team.ListMemberAppsResult`
@@ -485,6 +541,36 @@ class DropboxTeamBase(object):
             bv.Struct(team.ListMemberAppsArg),
             bv.Struct(team.ListMemberAppsResult),
             bv.Union(team.ListMemberAppsError),
+            arg,
+            None,
+        )
+        return r
+
+    def team_linked_apps_list_members_linked_apps(self,
+                                                  cursor=None):
+        """
+        List all applications linked to the team members' accounts. Note, this
+        endpoint does not list any team-linked applications.
+
+        :param Nullable cursor: At the first call to the
+            :meth:`linked_apps_list_members_linked_apps` the cursor shouldn't be
+            passed. Then, if the result of the call includes a cursor, the
+            following requests should include the received cursors in order to
+            receive the next sub list of the team applications
+        :rtype: :class:`dropbox.team.ListMembersAppsResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.ListMembersAppsError`
+        """
+        arg = team.ListMembersAppsArg(cursor)
+        r = self.request(
+            'api',
+            'team/linked_apps/list_members_linked_apps',
+            'rpc',
+            bv.Struct(team.ListMembersAppsArg),
+            bv.Struct(team.ListMembersAppsResult),
+            bv.Union(team.ListMembersAppsError),
             arg,
             None,
         )
@@ -644,8 +730,9 @@ class DropboxTeamBase(object):
                               members):
         """
         Returns information about multiple team members. Permission : Team
-        information This endpoint will return an empty member_info item, for IDs
-        (or emails) that cannot be matched to a valid team member.
+        information This endpoint will return
+        ``MembersGetInfoItem.id_not_found``, for IDs (or emails) that cannot be
+        matched to a valid team member.
 
         :param list members: List of team members.
         :rtype: list
@@ -947,6 +1034,125 @@ class DropboxTeamBase(object):
             None,
         )
         return None
+
+    def team_properties_template_add(self,
+                                     name,
+                                     description,
+                                     fields):
+        """
+        Add a property template. See route files/properties/add to add
+        properties to a file.
+
+        :rtype: :class:`dropbox.team.AddPropertyTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.ModifyPropertyTemplateError`
+        """
+        arg = team.AddPropertyTemplateArg(name,
+                                          description,
+                                          fields)
+        r = self.request(
+            'api',
+            'team/properties/template/add',
+            'rpc',
+            bv.Struct(team.AddPropertyTemplateArg),
+            bv.Struct(team.AddPropertyTemplateResult),
+            bv.Union(properties.ModifyPropertyTemplateError),
+            arg,
+            None,
+        )
+        return r
+
+    def team_properties_template_get(self,
+                                     template_id):
+        """
+        Get the schema for a specified template.
+
+        :param str template_id: An identifier for property template added by
+            route properties/template/add.
+        :rtype: :class:`dropbox.team.GetPropertyTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.PropertyTemplateError`
+        """
+        arg = properties.GetPropertyTemplateArg(template_id)
+        r = self.request(
+            'api',
+            'team/properties/template/get',
+            'rpc',
+            bv.Struct(properties.GetPropertyTemplateArg),
+            bv.Struct(properties.GetPropertyTemplateResult),
+            bv.Union(properties.PropertyTemplateError),
+            arg,
+            None,
+        )
+        return r
+
+    def team_properties_template_list(self):
+        """
+        Get the property template identifiers for a team. To get the schema of
+        each template use :meth:`properties_template_get`.
+
+        :rtype: :class:`dropbox.team.ListPropertyTemplateIds`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.PropertyTemplateError`
+        """
+        arg = None
+        r = self.request(
+            'api',
+            'team/properties/template/list',
+            'rpc',
+            bv.Void(),
+            bv.Struct(properties.ListPropertyTemplateIds),
+            bv.Union(properties.PropertyTemplateError),
+            arg,
+            None,
+        )
+        return r
+
+    def team_properties_template_update(self,
+                                        template_id,
+                                        name=None,
+                                        description=None,
+                                        add_fields=None):
+        """
+        Update a property template. This route can update the template name, the
+        template description and add optional properties to templates.
+
+        :param str template_id: An identifier for property template added by
+            :meth:`properties_template_add`.
+        :param Nullable name: A display name for the property template. Property
+            template names can be up to 256 bytes.
+        :param Nullable description: Description for new property template.
+            Property template descriptions can be up to 1024 bytes.
+        :param Nullable add_fields: This is a list of custom properties to add
+            to the property template. There can be up to 64 properties in a
+            single property template.
+        :rtype: :class:`dropbox.team.UpdatePropertyTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.ModifyPropertyTemplateError`
+        """
+        arg = team.UpdatePropertyTemplateArg(template_id,
+                                             name,
+                                             description,
+                                             add_fields)
+        r = self.request(
+            'api',
+            'team/properties/template/update',
+            'rpc',
+            bv.Struct(team.UpdatePropertyTemplateArg),
+            bv.Struct(team.UpdatePropertyTemplateResult),
+            bv.Union(properties.ModifyPropertyTemplateError),
+            arg,
+            None,
+        )
+        return r
 
     def team_reports_get_activity(self,
                                   start_date=None,

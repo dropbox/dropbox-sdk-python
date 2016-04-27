@@ -11,6 +11,13 @@ except (SystemError, ValueError):
     # This makes testing this file directly (outside of a package) easier.
     import babel_validators as bv
 
+try:
+    from . import (
+        team_policies,
+    )
+except (SystemError, ValueError):
+    import team_policies
+
 class Account(object):
     """
     The amount of detail revealed about an account depends on the user being
@@ -24,6 +31,7 @@ class Account(object):
     :ivar email_verified: Whether the user has verified their e-mail address.
     :ivar profile_photo_url: URL for the photo representing the user, if one is
         set.
+    :ivar disabled: Whether the user has been disabled.
     """
 
     __slots__ = [
@@ -37,6 +45,8 @@ class Account(object):
         '_email_verified_present',
         '_profile_photo_url_value',
         '_profile_photo_url_present',
+        '_disabled_value',
+        '_disabled_present',
     ]
 
     _has_required_fields = True
@@ -46,6 +56,7 @@ class Account(object):
                  name=None,
                  email=None,
                  email_verified=None,
+                 disabled=None,
                  profile_photo_url=None):
         self._account_id_value = None
         self._account_id_present = False
@@ -57,6 +68,8 @@ class Account(object):
         self._email_verified_present = False
         self._profile_photo_url_value = None
         self._profile_photo_url_present = False
+        self._disabled_value = None
+        self._disabled_present = False
         if account_id is not None:
             self.account_id = account_id
         if name is not None:
@@ -67,6 +80,8 @@ class Account(object):
             self.email_verified = email_verified
         if profile_photo_url is not None:
             self.profile_photo_url = profile_photo_url
+        if disabled is not None:
+            self.disabled = disabled
 
     @property
     def account_id(self):
@@ -188,12 +203,36 @@ class Account(object):
         self._profile_photo_url_value = None
         self._profile_photo_url_present = False
 
+    @property
+    def disabled(self):
+        """
+        Whether the user has been disabled.
+
+        :rtype: bool
+        """
+        if self._disabled_present:
+            return self._disabled_value
+        else:
+            raise AttributeError("missing required field 'disabled'")
+
+    @disabled.setter
+    def disabled(self, val):
+        val = self._disabled_validator.validate(val)
+        self._disabled_value = val
+        self._disabled_present = True
+
+    @disabled.deleter
+    def disabled(self):
+        self._disabled_value = None
+        self._disabled_present = False
+
     def __repr__(self):
-        return 'Account(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, profile_photo_url={!r})'.format(
+        return 'Account(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, profile_photo_url={!r})'.format(
             self._account_id_value,
             self._name_value,
             self._email_value,
             self._email_verified_value,
+            self._disabled_value,
             self._profile_photo_url_value,
         )
 
@@ -284,6 +323,7 @@ class BasicAccount(Account):
                  name=None,
                  email=None,
                  email_verified=None,
+                 disabled=None,
                  is_teammate=None,
                  profile_photo_url=None,
                  team_member_id=None):
@@ -291,6 +331,7 @@ class BasicAccount(Account):
                                            name,
                                            email,
                                            email_verified,
+                                           disabled,
                                            profile_photo_url)
         self._is_teammate_value = None
         self._is_teammate_present = False
@@ -353,11 +394,12 @@ class BasicAccount(Account):
         self._team_member_id_present = False
 
     def __repr__(self):
-        return 'BasicAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, is_teammate={!r}, profile_photo_url={!r}, team_member_id={!r})'.format(
+        return 'BasicAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, is_teammate={!r}, profile_photo_url={!r}, team_member_id={!r})'.format(
             self._account_id_value,
             self._name_value,
             self._email_value,
             self._email_verified_value,
+            self._disabled_value,
             self._is_teammate_value,
             self._profile_photo_url_value,
             self._team_member_id_value,
@@ -408,6 +450,7 @@ class FullAccount(Account):
                  name=None,
                  email=None,
                  email_verified=None,
+                 disabled=None,
                  locale=None,
                  referral_link=None,
                  is_paired=None,
@@ -420,6 +463,7 @@ class FullAccount(Account):
                                           name,
                                           email,
                                           email_verified,
+                                          disabled,
                                           profile_photo_url)
         self._country_value = None
         self._country_present = False
@@ -529,7 +573,7 @@ class FullAccount(Account):
         """
         If this account is a member of a team, information about that team.
 
-        :rtype: Team
+        :rtype: FullTeam
         """
         if self._team_present:
             return self._team_value
@@ -626,11 +670,12 @@ class FullAccount(Account):
         self._account_type_present = False
 
     def __repr__(self):
-        return 'FullAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, profile_photo_url={!r}, country={!r}, team={!r}, team_member_id={!r})'.format(
+        return 'FullAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, profile_photo_url={!r}, country={!r}, team={!r}, team_member_id={!r})'.format(
             self._account_id_value,
             self._name_value,
             self._email_value,
             self._email_verified_value,
+            self._disabled_value,
             self._locale_value,
             self._referral_link_value,
             self._is_paired_value,
@@ -639,6 +684,142 @@ class FullAccount(Account):
             self._country_value,
             self._team_value,
             self._team_member_id_value,
+        )
+
+class Team(object):
+    """
+    Information about a team.
+
+    :ivar id: The team's unique ID.
+    :ivar name: The name of the team.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_name_value',
+        '_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 name=None):
+        self._id_value = None
+        self._id_present = False
+        self._name_value = None
+        self._name_present = False
+        if id is not None:
+            self.id = id
+        if name is not None:
+            self.name = name
+
+    @property
+    def id(self):
+        """
+        The team's unique ID.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def name(self):
+        """
+        The name of the team.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    def __repr__(self):
+        return 'Team(id={!r}, name={!r})'.format(
+            self._id_value,
+            self._name_value,
+        )
+
+class FullTeam(Team):
+    """
+    Detailed information about a team.
+
+    :ivar sharing_policies: Team policies governing sharing.
+    """
+
+    __slots__ = [
+        '_sharing_policies_value',
+        '_sharing_policies_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 name=None,
+                 sharing_policies=None):
+        super(FullTeam, self).__init__(id,
+                                       name)
+        self._sharing_policies_value = None
+        self._sharing_policies_present = False
+        if sharing_policies is not None:
+            self.sharing_policies = sharing_policies
+
+    @property
+    def sharing_policies(self):
+        """
+        Team policies governing sharing.
+
+        :rtype: team_policies.TeamSharingPolicies_validator
+        """
+        if self._sharing_policies_present:
+            return self._sharing_policies_value
+        else:
+            raise AttributeError("missing required field 'sharing_policies'")
+
+    @sharing_policies.setter
+    def sharing_policies(self, val):
+        self._sharing_policies_validator.validate_type_only(val)
+        self._sharing_policies_value = val
+        self._sharing_policies_present = True
+
+    @sharing_policies.deleter
+    def sharing_policies(self):
+        self._sharing_policies_value = None
+        self._sharing_policies_present = False
+
+    def __repr__(self):
+        return 'FullTeam(id={!r}, name={!r}, sharing_policies={!r})'.format(
+            self._id_value,
+            self._name_value,
+            self._sharing_policies_value,
         )
 
 class GetAccountArg(object):
@@ -1240,87 +1421,6 @@ class SpaceUsage(object):
             self._allocation_value,
         )
 
-class Team(object):
-    """
-    Information about a team.
-
-    :ivar id: The team's unique ID.
-    :ivar name: The name of the team.
-    """
-
-    __slots__ = [
-        '_id_value',
-        '_id_present',
-        '_name_value',
-        '_name_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 id=None,
-                 name=None):
-        self._id_value = None
-        self._id_present = False
-        self._name_value = None
-        self._name_present = False
-        if id is not None:
-            self.id = id
-        if name is not None:
-            self.name = name
-
-    @property
-    def id(self):
-        """
-        The team's unique ID.
-
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
-
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def name(self):
-        """
-        The name of the team.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    def __repr__(self):
-        return 'Team(id={!r}, name={!r})'.format(
-            self._id_value,
-            self._name_value,
-        )
-
 class TeamSpaceAllocation(object):
     """
     :ivar used: The total space currently used by the user's team (bytes).
@@ -1407,12 +1507,14 @@ Account._name_validator = bv.Struct(Name)
 Account._email_validator = bv.String()
 Account._email_verified_validator = bv.Boolean()
 Account._profile_photo_url_validator = bv.Nullable(bv.String())
+Account._disabled_validator = bv.Boolean()
 Account._all_field_names_ = set([
     'account_id',
     'name',
     'email',
     'email_verified',
     'profile_photo_url',
+    'disabled',
 ])
 Account._all_fields_ = [
     ('account_id', Account._account_id_validator),
@@ -1420,6 +1522,7 @@ Account._all_fields_ = [
     ('email', Account._email_validator),
     ('email_verified', Account._email_verified_validator),
     ('profile_photo_url', Account._profile_photo_url_validator),
+    ('disabled', Account._disabled_validator),
 ]
 
 AccountType._basic_validator = bv.Void()
@@ -1449,7 +1552,7 @@ BasicAccount._all_fields_ = Account._all_fields_ + [
 FullAccount._country_validator = bv.Nullable(bv.String(min_length=2, max_length=2))
 FullAccount._locale_validator = bv.String(min_length=2)
 FullAccount._referral_link_validator = bv.String()
-FullAccount._team_validator = bv.Nullable(bv.Struct(Team))
+FullAccount._team_validator = bv.Nullable(bv.Struct(FullTeam))
 FullAccount._team_member_id_validator = bv.Nullable(bv.String())
 FullAccount._is_paired_validator = bv.Boolean()
 FullAccount._account_type_validator = bv.Union(AccountType)
@@ -1471,6 +1574,21 @@ FullAccount._all_fields_ = Account._all_fields_ + [
     ('is_paired', FullAccount._is_paired_validator),
     ('account_type', FullAccount._account_type_validator),
 ]
+
+Team._id_validator = bv.String()
+Team._name_validator = bv.String()
+Team._all_field_names_ = set([
+    'id',
+    'name',
+])
+Team._all_fields_ = [
+    ('id', Team._id_validator),
+    ('name', Team._name_validator),
+]
+
+FullTeam._sharing_policies_validator = bv.Struct(team_policies.TeamSharingPolicies)
+FullTeam._all_field_names_ = Team._all_field_names_.union(set(['sharing_policies']))
+FullTeam._all_fields_ = Team._all_fields_ + [('sharing_policies', FullTeam._sharing_policies_validator)]
 
 GetAccountArg._account_id_validator = AccountId_validator
 GetAccountArg._all_field_names_ = set(['account_id'])
@@ -1540,17 +1658,6 @@ SpaceUsage._all_field_names_ = set([
 SpaceUsage._all_fields_ = [
     ('used', SpaceUsage._used_validator),
     ('allocation', SpaceUsage._allocation_validator),
-]
-
-Team._id_validator = bv.String()
-Team._name_validator = bv.String()
-Team._all_field_names_ = set([
-    'id',
-    'name',
-])
-Team._all_fields_ = [
-    ('id', Team._id_validator),
-    ('name', Team._name_validator),
 ]
 
 TeamSpaceAllocation._used_validator = bv.UInt64()

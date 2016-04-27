@@ -11,11 +11,15 @@ try:
     from . import (
         async,
         common,
+        properties,
+        team_policies,
         users,
     )
 except (SystemError, ValueError):
     import async
     import common
+    import properties
+    import team_policies
     import users
 
 class DeviceSession(object):
@@ -332,6 +336,79 @@ class ActiveWebSession(DeviceSession):
             self._country_value,
             self._created_value,
             self._updated_value,
+        )
+
+class AddPropertyTemplateArg(properties.PropertyGroupTemplate):
+    """
+    Arguments for adding property templates.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 fields=None):
+        super(AddPropertyTemplateArg, self).__init__(name,
+                                                     description,
+                                                     fields)
+
+    def __repr__(self):
+        return 'AddPropertyTemplateArg(name={!r}, description={!r}, fields={!r})'.format(
+            self._name_value,
+            self._description_value,
+            self._fields_value,
+        )
+
+class AddPropertyTemplateResult(object):
+    """
+    :ivar template_id: An identifier for property template added by
+        properties/template/add.
+    """
+
+    __slots__ = [
+        '_template_id_value',
+        '_template_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 template_id=None):
+        self._template_id_value = None
+        self._template_id_present = False
+        if template_id is not None:
+            self.template_id = template_id
+
+    @property
+    def template_id(self):
+        """
+        An identifier for property template added by properties/template/add.
+
+        :rtype: str
+        """
+        if self._template_id_present:
+            return self._template_id_value
+        else:
+            raise AttributeError("missing required field 'template_id'")
+
+    @template_id.setter
+    def template_id(self, val):
+        val = self._template_id_validator.validate(val)
+        self._template_id_value = val
+        self._template_id_present = True
+
+    @template_id.deleter
+    def template_id(self):
+        self._template_id_value = None
+        self._template_id_present = False
+
+    def __repr__(self):
+        return 'AddPropertyTemplateResult(template_id={!r})'.format(
+            self._template_id_value,
         )
 
 class AdminTier(object):
@@ -1393,76 +1470,6 @@ class DevicesActive(object):
             self._other_value,
             self._total_value,
         )
-
-class EmmState(object):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar disabled: Emm token is disabled
-    :ivar optional: Emm token is optional
-    :ivar required: Emm token is required
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    disabled = None
-    # Attribute is overwritten below the class definition
-    optional = None
-    # Attribute is overwritten below the class definition
-    required = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_disabled(self):
-        """
-        Check if the union tag is ``disabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'disabled'
-
-    def is_optional(self):
-        """
-        Check if the union tag is ``optional``.
-
-        :rtype: bool
-        """
-        return self._tag == 'optional'
-
-    def is_required(self):
-        """
-        Check if the union tag is ``required``.
-
-        :rtype: bool
-        """
-        return self._tag == 'required'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'EmmState(%r, %r)' % (self._tag, self._value)
 
 class GetActivityReport(BaseDfbReport):
     """
@@ -2776,8 +2783,8 @@ class GroupSummary(object):
     def __init__(self,
                  group_name=None,
                  group_id=None,
-                 member_count=None,
-                 group_external_id=None):
+                 group_external_id=None,
+                 member_count=None):
         self._group_name_value = None
         self._group_name_present = False
         self._group_id_value = None
@@ -2874,10 +2881,13 @@ class GroupSummary(object):
         if self._member_count_present:
             return self._member_count_value
         else:
-            raise AttributeError("missing required field 'member_count'")
+            return None
 
     @member_count.setter
     def member_count(self, val):
+        if val is None:
+            del self.member_count
+            return
         val = self._member_count_validator.validate(val)
         self._member_count_value = val
         self._member_count_present = True
@@ -2888,11 +2898,11 @@ class GroupSummary(object):
         self._member_count_present = False
 
     def __repr__(self):
-        return 'GroupSummary(group_name={!r}, group_id={!r}, member_count={!r}, group_external_id={!r})'.format(
+        return 'GroupSummary(group_name={!r}, group_id={!r}, group_external_id={!r}, member_count={!r})'.format(
             self._group_name_value,
             self._group_id_value,
-            self._member_count_value,
             self._group_external_id_value,
+            self._member_count_value,
         )
 
 class GroupFullInfo(GroupSummary):
@@ -2916,14 +2926,14 @@ class GroupFullInfo(GroupSummary):
     def __init__(self,
                  group_name=None,
                  group_id=None,
-                 member_count=None,
-                 members=None,
                  created=None,
-                 group_external_id=None):
+                 group_external_id=None,
+                 member_count=None,
+                 members=None):
         super(GroupFullInfo, self).__init__(group_name,
                                             group_id,
-                                            member_count,
-                                            group_external_id)
+                                            group_external_id,
+                                            member_count)
         self._members_value = None
         self._members_present = False
         self._created_value = None
@@ -2943,10 +2953,13 @@ class GroupFullInfo(GroupSummary):
         if self._members_present:
             return self._members_value
         else:
-            raise AttributeError("missing required field 'members'")
+            return None
 
     @members.setter
     def members(self, val):
+        if val is None:
+            del self.members
+            return
         val = self._members_validator.validate(val)
         self._members_value = val
         self._members_present = True
@@ -2981,13 +2994,13 @@ class GroupFullInfo(GroupSummary):
         self._created_present = False
 
     def __repr__(self):
-        return 'GroupFullInfo(group_name={!r}, group_id={!r}, member_count={!r}, members={!r}, created={!r}, group_external_id={!r})'.format(
+        return 'GroupFullInfo(group_name={!r}, group_id={!r}, created={!r}, group_external_id={!r}, member_count={!r}, members={!r})'.format(
             self._group_name_value,
             self._group_id_value,
-            self._member_count_value,
-            self._members_value,
             self._created_value,
             self._group_external_id_value,
+            self._member_count_value,
+            self._members_value,
         )
 
 class GroupMemberInfo(object):
@@ -3192,7 +3205,96 @@ class GroupMemberSelectorError(GroupSelectorError):
     def __repr__(self):
         return 'GroupMemberSelectorError(%r, %r)' % (self._tag, self._value)
 
-class GroupMembersAddArg(object):
+class GroupMemberSetAccessTypeError(GroupMemberSelectorError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar user_cannot_be_manager_of_company_managed_group: A company managed
+        group cannot be managed by a user.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    # Attribute is overwritten below the class definition
+    user_cannot_be_manager_of_company_managed_group = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_user_cannot_be_manager_of_company_managed_group(self):
+        """
+        Check if the union tag is ``user_cannot_be_manager_of_company_managed_group``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_cannot_be_manager_of_company_managed_group'
+
+    def __repr__(self):
+        return 'GroupMemberSetAccessTypeError(%r, %r)' % (self._tag, self._value)
+
+class IncludeMembersArg(object):
+    """
+    :ivar return_members: Whether to return the list of members in the group.
+        Note that the default value will cause all the group members  to be
+        returned in the response. This may take a long time for large groups.
+    """
+
+    __slots__ = [
+        '_return_members_value',
+        '_return_members_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 return_members=None):
+        self._return_members_value = None
+        self._return_members_present = False
+        if return_members is not None:
+            self.return_members = return_members
+
+    @property
+    def return_members(self):
+        """
+        Whether to return the list of members in the group.  Note that the
+        default value will cause all the group members  to be returned in the
+        response. This may take a long time for large groups.
+
+        :rtype: bool
+        """
+        if self._return_members_present:
+            return self._return_members_value
+        else:
+            return True
+
+    @return_members.setter
+    def return_members(self, val):
+        val = self._return_members_validator.validate(val)
+        self._return_members_value = val
+        self._return_members_present = True
+
+    @return_members.deleter
+    def return_members(self):
+        self._return_members_value = None
+        self._return_members_present = False
+
+    def __repr__(self):
+        return 'IncludeMembersArg(return_members={!r})'.format(
+            self._return_members_value,
+        )
+
+class GroupMembersAddArg(IncludeMembersArg):
     """
     :ivar group: Group to which users will be added.
     :ivar members: List of users to be added to the group.
@@ -3209,7 +3311,9 @@ class GroupMembersAddArg(object):
 
     def __init__(self,
                  group=None,
-                 members=None):
+                 members=None,
+                 return_members=None):
+        super(GroupMembersAddArg, self).__init__(return_members)
         self._group_value = None
         self._group_present = False
         self._members_value = None
@@ -3266,9 +3370,10 @@ class GroupMembersAddArg(object):
         self._members_present = False
 
     def __repr__(self):
-        return 'GroupMembersAddArg(group={!r}, members={!r})'.format(
+        return 'GroupMembersAddArg(group={!r}, members={!r}, return_members={!r})'.format(
             self._group_value,
             self._members_value,
+            self._return_members_value,
         )
 
 class GroupMembersAddError(GroupSelectorError):
@@ -3289,6 +3394,8 @@ class GroupMembersAddError(GroupSelectorError):
     :ivar list of [str] users_not_found: These users were not found in Dropbox.
     :ivar user_must_be_active_to_be_owner: A suspended user cannot be added to a
         group as owner.
+    :ivar list of [str] user_cannot_be_manager_of_company_managed_group: A
+        company-managed group cannot be managed by a user.
     """
 
     __slots__ = ['_tag', '_value']
@@ -3334,6 +3441,18 @@ class GroupMembersAddError(GroupSelectorError):
         """
         return cls('users_not_found', val)
 
+    @classmethod
+    def user_cannot_be_manager_of_company_managed_group(cls, val):
+        """
+        Create an instance of this class set to the
+        ``user_cannot_be_manager_of_company_managed_group`` tag with value
+        ``val``.
+
+        :param list of [str] val:
+        :rtype: GroupMembersAddError
+        """
+        return cls('user_cannot_be_manager_of_company_managed_group', val)
+
     def is_duplicate_user(self):
         """
         Check if the union tag is ``duplicate_user``.
@@ -3374,6 +3493,14 @@ class GroupMembersAddError(GroupSelectorError):
         """
         return self._tag == 'user_must_be_active_to_be_owner'
 
+    def is_user_cannot_be_manager_of_company_managed_group(self):
+        """
+        Check if the union tag is ``user_cannot_be_manager_of_company_managed_group``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_cannot_be_manager_of_company_managed_group'
+
     def get_members_not_in_team(self):
         """
         These members are not part of your team. Currently, you cannot add
@@ -3401,6 +3528,18 @@ class GroupMembersAddError(GroupSelectorError):
             raise AttributeError("tag 'users_not_found' not set")
         return self._value
 
+    def get_user_cannot_be_manager_of_company_managed_group(self):
+        """
+        A company-managed group cannot be managed by a user.
+
+        Only call this if :meth:`is_user_cannot_be_manager_of_company_managed_group` is true.
+
+        :rtype: list of [str]
+        """
+        if not self.is_user_cannot_be_manager_of_company_managed_group():
+            raise AttributeError("tag 'user_cannot_be_manager_of_company_managed_group' not set")
+        return self._value
+
     def __repr__(self):
         return 'GroupMembersAddError(%r, %r)' % (self._tag, self._value)
 
@@ -3408,8 +3547,8 @@ class GroupMembersChangeResult(object):
     """
     Result returned by groups/members/add and groups/members/remove.
 
-    :ivar group_info: Lists the group members after the member change operation
-        has been performed.
+    :ivar group_info: The group info after member change operation has been
+        performed.
     :ivar async_job_id: An ID that can be used to obtain the status of
         granting/revoking group-owned resources.
     """
@@ -3438,8 +3577,7 @@ class GroupMembersChangeResult(object):
     @property
     def group_info(self):
         """
-        Lists the group members after the member change operation has been
-        performed.
+        The group info after member change operation has been performed.
 
         :rtype: GroupFullInfo
         """
@@ -3489,7 +3627,11 @@ class GroupMembersChangeResult(object):
             self._async_job_id_value,
         )
 
-class GroupMembersRemoveArg(object):
+class GroupMembersRemoveArg(IncludeMembersArg):
+    """
+    :ivar group: Group from which users will be removed.
+    :ivar users: List of users to be removed from the group.
+    """
 
     __slots__ = [
         '_group_value',
@@ -3502,7 +3644,9 @@ class GroupMembersRemoveArg(object):
 
     def __init__(self,
                  group=None,
-                 users=None):
+                 users=None,
+                 return_members=None):
+        super(GroupMembersRemoveArg, self).__init__(return_members)
         self._group_value = None
         self._group_present = False
         self._users_value = None
@@ -3515,6 +3659,8 @@ class GroupMembersRemoveArg(object):
     @property
     def group(self):
         """
+        Group from which users will be removed.
+
         :rtype: GroupSelector
         """
         if self._group_present:
@@ -3536,6 +3682,8 @@ class GroupMembersRemoveArg(object):
     @property
     def users(self):
         """
+        List of users to be removed from the group.
+
         :rtype: list of [UserSelectorArg]
         """
         if self._users_present:
@@ -3555,9 +3703,10 @@ class GroupMembersRemoveArg(object):
         self._users_present = False
 
     def __repr__(self):
-        return 'GroupMembersRemoveArg(group={!r}, users={!r})'.format(
+        return 'GroupMembersRemoveArg(group={!r}, users={!r}, return_members={!r})'.format(
             self._group_value,
             self._users_value,
+            self._return_members_value,
         )
 
 class GroupMembersSelectorError(GroupSelectorError):
@@ -3723,11 +3872,16 @@ class GroupMembersSelector(object):
 class GroupMembersSetAccessTypeArg(GroupMemberSelector):
     """
     :ivar access_type: New group access type the user will have.
+    :ivar return_members: Whether to return the list of members in the group.
+        Note that the default value will cause all the group members  to be
+        returned in the response. This may take a long time for large groups.
     """
 
     __slots__ = [
         '_access_type_value',
         '_access_type_present',
+        '_return_members_value',
+        '_return_members_present',
     ]
 
     _has_required_fields = True
@@ -3735,13 +3889,18 @@ class GroupMembersSetAccessTypeArg(GroupMemberSelector):
     def __init__(self,
                  group=None,
                  user=None,
-                 access_type=None):
+                 access_type=None,
+                 return_members=None):
         super(GroupMembersSetAccessTypeArg, self).__init__(group,
                                                            user)
         self._access_type_value = None
         self._access_type_present = False
+        self._return_members_value = None
+        self._return_members_present = False
         if access_type is not None:
             self.access_type = access_type
+        if return_members is not None:
+            self.return_members = return_members
 
     @property
     def access_type(self):
@@ -3766,11 +3925,37 @@ class GroupMembersSetAccessTypeArg(GroupMemberSelector):
         self._access_type_value = None
         self._access_type_present = False
 
+    @property
+    def return_members(self):
+        """
+        Whether to return the list of members in the group.  Note that the
+        default value will cause all the group members  to be returned in the
+        response. This may take a long time for large groups.
+
+        :rtype: bool
+        """
+        if self._return_members_present:
+            return self._return_members_value
+        else:
+            return True
+
+    @return_members.setter
+    def return_members(self, val):
+        val = self._return_members_validator.validate(val)
+        self._return_members_value = val
+        self._return_members_present = True
+
+    @return_members.deleter
+    def return_members(self):
+        self._return_members_value = None
+        self._return_members_present = False
+
     def __repr__(self):
-        return 'GroupMembersSetAccessTypeArg(group={!r}, user={!r}, access_type={!r})'.format(
+        return 'GroupMembersSetAccessTypeArg(group={!r}, user={!r}, access_type={!r}, return_members={!r})'.format(
             self._group_value,
             self._user_value,
             self._access_type_value,
+            self._return_members_value,
         )
 
 class GroupSelector(object):
@@ -3929,7 +4114,7 @@ class GroupType(object):
     def __repr__(self):
         return 'GroupType(%r, %r)' % (self._tag, self._value)
 
-class GroupUpdateArgs(object):
+class GroupUpdateArgs(IncludeMembersArg):
     """
     :ivar group: Specify a group.
     :ivar new_group_name: Optional argument. Set group name to this if provided.
@@ -3951,8 +4136,10 @@ class GroupUpdateArgs(object):
 
     def __init__(self,
                  group=None,
+                 return_members=None,
                  new_group_name=None,
                  new_group_external_id=None):
+        super(GroupUpdateArgs, self).__init__(return_members)
         self._group_value = None
         self._group_present = False
         self._new_group_name_value = None
@@ -4044,8 +4231,9 @@ class GroupUpdateArgs(object):
         self._new_group_external_id_present = False
 
     def __repr__(self):
-        return 'GroupUpdateArgs(group={!r}, new_group_name={!r}, new_group_external_id={!r})'.format(
+        return 'GroupUpdateArgs(group={!r}, return_members={!r}, new_group_name={!r}, new_group_external_id={!r})'.format(
             self._group_value,
+            self._return_members_value,
             self._new_group_name_value,
             self._new_group_external_id_value,
         )
@@ -4377,11 +4565,11 @@ class GroupsListContinueError(object):
 
 class GroupsListResult(object):
     """
-    :ivar cursor: Pass the cursor into members/list/continue to obtain the
-        additional members.
-    :ivar has_more: Is true if there are additional team members that have not
-        been returned yet. An additional call to members/list/continue can
-        retrieve them.
+    :ivar cursor: Pass the cursor into groups/list/continue to obtain the
+        additional groups.
+    :ivar has_more: Is true if there are additional groups that have not been
+        returned yet. An additional call to groups/list/continue can retrieve
+        them.
     """
 
     __slots__ = [
@@ -4436,8 +4624,8 @@ class GroupsListResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into members/list/continue to obtain the additional
-        members.
+        Pass the cursor into groups/list/continue to obtain the additional
+        groups.
 
         :rtype: str
         """
@@ -4460,8 +4648,8 @@ class GroupsListResult(object):
     @property
     def has_more(self):
         """
-        Is true if there are additional team members that have not been returned
-        yet. An additional call to members/list/continue can retrieve them.
+        Is true if there are additional groups that have not been returned yet.
+        An additional call to groups/list/continue can retrieve them.
 
         :rtype: bool
         """
@@ -5079,6 +5267,560 @@ class ListMemberDevicesResult(object):
             self._active_web_sessions_value,
             self._desktop_client_sessions_value,
             self._mobile_client_sessions_value,
+        )
+
+class ListMembersAppsArg(object):
+    """
+    Arguments for linked_apps/list_members_linked_apps.
+
+    :ivar cursor: At the first call to the linked_apps/list_members_linked_apps
+        the cursor shouldn't be passed. Then, if the result of the call includes
+        a cursor, the following requests should include the received cursors in
+        order to receive the next sub list of the team applications
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        At the first call to the linked_apps/list_members_linked_apps the cursor
+        shouldn't be passed. Then, if the result of the call includes a cursor,
+        the following requests should include the received cursors in order to
+        receive the next sub list of the team applications
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListMembersAppsArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+class ListMembersAppsError(object):
+    """
+    Error returned by linked_apps/list_members_linked_apps
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar reset: Indicates that the cursor has been invalidated. Call
+        linked_apps/list_members_linked_apps again with an empty cursor to
+        obtain a new cursor.
+    :ivar other: An unspecified error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    reset = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_reset(self):
+        """
+        Check if the union tag is ``reset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reset'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ListMembersAppsError(%r, %r)' % (self._tag, self._value)
+
+class ListMembersAppsResult(object):
+    """
+    Information returned by linked_apps/list_members_linked_apps.
+
+    :ivar apps: The linked applications of each member of the team
+    :ivar has_more: If true, then there are more apps available. Pass the cursor
+        to linked_apps/list_members_linked_apps to retrieve the rest.
+    :ivar cursor: Pass the cursor into linked_apps/list_members_linked_apps to
+        receive the next sub list of team's applications.
+    """
+
+    __slots__ = [
+        '_apps_value',
+        '_apps_present',
+        '_has_more_value',
+        '_has_more_present',
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 apps=None,
+                 has_more=None,
+                 cursor=None):
+        self._apps_value = None
+        self._apps_present = False
+        self._has_more_value = None
+        self._has_more_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        if apps is not None:
+            self.apps = apps
+        if has_more is not None:
+            self.has_more = has_more
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def apps(self):
+        """
+        The linked applications of each member of the team
+
+        :rtype: list of [MemberLinkedApps]
+        """
+        if self._apps_present:
+            return self._apps_value
+        else:
+            raise AttributeError("missing required field 'apps'")
+
+    @apps.setter
+    def apps(self, val):
+        val = self._apps_validator.validate(val)
+        self._apps_value = val
+        self._apps_present = True
+
+    @apps.deleter
+    def apps(self):
+        self._apps_value = None
+        self._apps_present = False
+
+    @property
+    def has_more(self):
+        """
+        If true, then there are more apps available. Pass the cursor to
+        linked_apps/list_members_linked_apps to retrieve the rest.
+
+        :rtype: bool
+        """
+        if self._has_more_present:
+            return self._has_more_value
+        else:
+            raise AttributeError("missing required field 'has_more'")
+
+    @has_more.setter
+    def has_more(self, val):
+        val = self._has_more_validator.validate(val)
+        self._has_more_value = val
+        self._has_more_present = True
+
+    @has_more.deleter
+    def has_more(self):
+        self._has_more_value = None
+        self._has_more_present = False
+
+    @property
+    def cursor(self):
+        """
+        Pass the cursor into linked_apps/list_members_linked_apps to receive the
+        next sub list of team's applications.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListMembersAppsResult(apps={!r}, has_more={!r}, cursor={!r})'.format(
+            self._apps_value,
+            self._has_more_value,
+            self._cursor_value,
+        )
+
+class ListMembersDevicesArg(object):
+    """
+    :ivar cursor: At the first call to the devices/list_members_devices the
+        cursor shouldn't be passed. Then, if the result of the call includes a
+        cursor, the following requests should include the received cursors in
+        order to receive the next sub list of team devices
+    :ivar include_web_sessions: Whether to list web sessions of the team members
+    :ivar include_desktop_clients: Whether to list desktop clients of the team
+        members
+    :ivar include_mobile_clients: Whether to list mobile clients of the team
+        members
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+        '_include_web_sessions_value',
+        '_include_web_sessions_present',
+        '_include_desktop_clients_value',
+        '_include_desktop_clients_present',
+        '_include_mobile_clients_value',
+        '_include_mobile_clients_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 cursor=None,
+                 include_web_sessions=None,
+                 include_desktop_clients=None,
+                 include_mobile_clients=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        self._include_web_sessions_value = None
+        self._include_web_sessions_present = False
+        self._include_desktop_clients_value = None
+        self._include_desktop_clients_present = False
+        self._include_mobile_clients_value = None
+        self._include_mobile_clients_present = False
+        if cursor is not None:
+            self.cursor = cursor
+        if include_web_sessions is not None:
+            self.include_web_sessions = include_web_sessions
+        if include_desktop_clients is not None:
+            self.include_desktop_clients = include_desktop_clients
+        if include_mobile_clients is not None:
+            self.include_mobile_clients = include_mobile_clients
+
+    @property
+    def cursor(self):
+        """
+        At the first call to the devices/list_members_devices the cursor
+        shouldn't be passed. Then, if the result of the call includes a cursor,
+        the following requests should include the received cursors in order to
+        receive the next sub list of team devices
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def include_web_sessions(self):
+        """
+        Whether to list web sessions of the team members
+
+        :rtype: bool
+        """
+        if self._include_web_sessions_present:
+            return self._include_web_sessions_value
+        else:
+            return True
+
+    @include_web_sessions.setter
+    def include_web_sessions(self, val):
+        val = self._include_web_sessions_validator.validate(val)
+        self._include_web_sessions_value = val
+        self._include_web_sessions_present = True
+
+    @include_web_sessions.deleter
+    def include_web_sessions(self):
+        self._include_web_sessions_value = None
+        self._include_web_sessions_present = False
+
+    @property
+    def include_desktop_clients(self):
+        """
+        Whether to list desktop clients of the team members
+
+        :rtype: bool
+        """
+        if self._include_desktop_clients_present:
+            return self._include_desktop_clients_value
+        else:
+            return True
+
+    @include_desktop_clients.setter
+    def include_desktop_clients(self, val):
+        val = self._include_desktop_clients_validator.validate(val)
+        self._include_desktop_clients_value = val
+        self._include_desktop_clients_present = True
+
+    @include_desktop_clients.deleter
+    def include_desktop_clients(self):
+        self._include_desktop_clients_value = None
+        self._include_desktop_clients_present = False
+
+    @property
+    def include_mobile_clients(self):
+        """
+        Whether to list mobile clients of the team members
+
+        :rtype: bool
+        """
+        if self._include_mobile_clients_present:
+            return self._include_mobile_clients_value
+        else:
+            return True
+
+    @include_mobile_clients.setter
+    def include_mobile_clients(self, val):
+        val = self._include_mobile_clients_validator.validate(val)
+        self._include_mobile_clients_value = val
+        self._include_mobile_clients_present = True
+
+    @include_mobile_clients.deleter
+    def include_mobile_clients(self):
+        self._include_mobile_clients_value = None
+        self._include_mobile_clients_present = False
+
+    def __repr__(self):
+        return 'ListMembersDevicesArg(cursor={!r}, include_web_sessions={!r}, include_desktop_clients={!r}, include_mobile_clients={!r})'.format(
+            self._cursor_value,
+            self._include_web_sessions_value,
+            self._include_desktop_clients_value,
+            self._include_mobile_clients_value,
+        )
+
+class ListMembersDevicesError(object):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar reset: Indicates that the cursor has been invalidated. Call
+        devices/list_members_devices again with an empty cursor to obtain a new
+        cursor.
+    :ivar other: An unspecified error.
+    """
+
+    __slots__ = ['_tag', '_value']
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    reset = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def __init__(self, tag, value=None):
+        assert tag in self._tagmap, 'Invalid tag %r.' % tag
+        validator = self._tagmap[tag]
+        if isinstance(validator, bv.Void):
+            assert value is None, 'Void type union member must have None value.'
+        elif isinstance(validator, (bv.Struct, bv.Union)):
+            validator.validate_type_only(value)
+        else:
+            validator.validate(value)
+        self._tag = tag
+        self._value = value
+
+    def is_reset(self):
+        """
+        Check if the union tag is ``reset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reset'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ListMembersDevicesError(%r, %r)' % (self._tag, self._value)
+
+class ListMembersDevicesResult(object):
+    """
+    :ivar devices: The devices of each member of the team
+    :ivar has_more: If true, then there are more devices available. Pass the
+        cursor to devices/list_members_devices to retrieve the rest.
+    :ivar cursor: Pass the cursor into devices/list_members_devices to receive
+        the next sub list of team's devices.
+    """
+
+    __slots__ = [
+        '_devices_value',
+        '_devices_present',
+        '_has_more_value',
+        '_has_more_present',
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 devices=None,
+                 has_more=None,
+                 cursor=None):
+        self._devices_value = None
+        self._devices_present = False
+        self._has_more_value = None
+        self._has_more_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        if devices is not None:
+            self.devices = devices
+        if has_more is not None:
+            self.has_more = has_more
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def devices(self):
+        """
+        The devices of each member of the team
+
+        :rtype: list of [MemberDevices]
+        """
+        if self._devices_present:
+            return self._devices_value
+        else:
+            raise AttributeError("missing required field 'devices'")
+
+    @devices.setter
+    def devices(self, val):
+        val = self._devices_validator.validate(val)
+        self._devices_value = val
+        self._devices_present = True
+
+    @devices.deleter
+    def devices(self):
+        self._devices_value = None
+        self._devices_present = False
+
+    @property
+    def has_more(self):
+        """
+        If true, then there are more devices available. Pass the cursor to
+        devices/list_members_devices to retrieve the rest.
+
+        :rtype: bool
+        """
+        if self._has_more_present:
+            return self._has_more_value
+        else:
+            raise AttributeError("missing required field 'has_more'")
+
+    @has_more.setter
+    def has_more(self, val):
+        val = self._has_more_validator.validate(val)
+        self._has_more_value = val
+        self._has_more_present = True
+
+    @has_more.deleter
+    def has_more(self):
+        self._has_more_value = None
+        self._has_more_present = False
+
+    @property
+    def cursor(self):
+        """
+        Pass the cursor into devices/list_members_devices to receive the next
+        sub list of team's devices.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListMembersDevicesResult(devices={!r}, has_more={!r}, cursor={!r})'.format(
+            self._devices_value,
+            self._has_more_value,
+            self._cursor_value,
         )
 
 class ListTeamAppsArg(object):
@@ -9725,208 +10467,6 @@ class RevokeLinkedAppStatus(object):
             self._error_type_value,
         )
 
-class SharedFolderJoinPolicy(object):
-    """
-    Policy governing which shared folders a team member can join.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar from_team_only: Team members can only join folders shared by
-        teammates.
-    :ivar from_anyone: Team members can join any shared folder, including those
-        shared by users outside the team.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    from_team_only = None
-    # Attribute is overwritten below the class definition
-    from_anyone = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_from_team_only(self):
-        """
-        Check if the union tag is ``from_team_only``.
-
-        :rtype: bool
-        """
-        return self._tag == 'from_team_only'
-
-    def is_from_anyone(self):
-        """
-        Check if the union tag is ``from_anyone``.
-
-        :rtype: bool
-        """
-        return self._tag == 'from_anyone'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SharedFolderJoinPolicy(%r, %r)' % (self._tag, self._value)
-
-class SharedFolderMemberPolicy(object):
-    """
-    Policy governing who can be a member of a folder shared by a team member.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar team: Only a teammate can be a member of a folder shared by a team
-        member.
-    :ivar anyone: Anyone can be a member of a folder shared by a team member.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    team = None
-    # Attribute is overwritten below the class definition
-    anyone = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_team(self):
-        """
-        Check if the union tag is ``team``.
-
-        :rtype: bool
-        """
-        return self._tag == 'team'
-
-    def is_anyone(self):
-        """
-        Check if the union tag is ``anyone``.
-
-        :rtype: bool
-        """
-        return self._tag == 'anyone'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SharedFolderMemberPolicy(%r, %r)' % (self._tag, self._value)
-
-class SharedLinkCreatePolicy(object):
-    """
-    Policy governing the visibility of newly created shared links.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar default_public: By default, anyone can access newly created shared
-        links. No login will be required to access the shared links unless
-        overridden.
-    :ivar default_team_only: By default, only members of the same team can
-        access newly created shared links. Login will be required to access the
-        shared links unless overridden.
-    :ivar team_only: Only members of the same team can access newly created
-        shared links. Login will be required to access the shared links.
-    """
-
-    __slots__ = ['_tag', '_value']
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    default_public = None
-    # Attribute is overwritten below the class definition
-    default_team_only = None
-    # Attribute is overwritten below the class definition
-    team_only = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def __init__(self, tag, value=None):
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
-        if isinstance(validator, bv.Void):
-            assert value is None, 'Void type union member must have None value.'
-        elif isinstance(validator, (bv.Struct, bv.Union)):
-            validator.validate_type_only(value)
-        else:
-            validator.validate(value)
-        self._tag = tag
-        self._value = value
-
-    def is_default_public(self):
-        """
-        Check if the union tag is ``default_public``.
-
-        :rtype: bool
-        """
-        return self._tag == 'default_public'
-
-    def is_default_team_only(self):
-        """
-        Check if the union tag is ``default_team_only``.
-
-        :rtype: bool
-        """
-        return self._tag == 'default_team_only'
-
-    def is_team_only(self):
-        """
-        Check if the union tag is ``team_only``.
-
-        :rtype: bool
-        """
-        return self._tag == 'team_only'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SharedLinkCreatePolicy(%r, %r)' % (self._tag, self._value)
-
 class StorageBucket(object):
     """
     Describes the number of users in a specific storage bucket.
@@ -10159,7 +10699,7 @@ class TeamGetInfoResult(object):
     @property
     def policies(self):
         """
-        :rtype: TeamPolicies
+        :rtype: team_policies.TeamPolicies_validator
         """
         if self._policies_present:
             return self._policies_value
@@ -10398,210 +10938,212 @@ class TeamMemberStatus(object):
     def __repr__(self):
         return 'TeamMemberStatus(%r, %r)' % (self._tag, self._value)
 
-class TeamPolicies(object):
+class UpdatePropertyTemplateArg(object):
     """
-    Policies governing team members.
-
-    :ivar sharing: Policies governing sharing.
-    :ivar emm_state: This describes the Enterprise Mobility Management (EMM)
-        state for this team. This information can be used to understand if an
-        organization is integrating with a third-party EMM vendor to further
-        manage and apply restrictions upon the team's Dropbox usage on mobile
-        devices. This is a new feature and in the future we'll be adding more
-        new fields and additional documentation.
+    :ivar template_id: An identifier for property template added by
+        properties/template/add.
+    :ivar name: A display name for the property template. Property template
+        names can be up to 256 bytes.
+    :ivar description: Description for new property template. Property template
+        descriptions can be up to 1024 bytes.
+    :ivar add_fields: This is a list of custom properties to add to the property
+        template. There can be up to 64 properties in a single property
+        template.
     """
 
     __slots__ = [
-        '_sharing_value',
-        '_sharing_present',
-        '_emm_state_value',
-        '_emm_state_present',
+        '_template_id_value',
+        '_template_id_present',
+        '_name_value',
+        '_name_present',
+        '_description_value',
+        '_description_present',
+        '_add_fields_value',
+        '_add_fields_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 sharing=None,
-                 emm_state=None):
-        self._sharing_value = None
-        self._sharing_present = False
-        self._emm_state_value = None
-        self._emm_state_present = False
-        if sharing is not None:
-            self.sharing = sharing
-        if emm_state is not None:
-            self.emm_state = emm_state
+                 template_id=None,
+                 name=None,
+                 description=None,
+                 add_fields=None):
+        self._template_id_value = None
+        self._template_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._description_value = None
+        self._description_present = False
+        self._add_fields_value = None
+        self._add_fields_present = False
+        if template_id is not None:
+            self.template_id = template_id
+        if name is not None:
+            self.name = name
+        if description is not None:
+            self.description = description
+        if add_fields is not None:
+            self.add_fields = add_fields
 
     @property
-    def sharing(self):
+    def template_id(self):
         """
-        Policies governing sharing.
+        An identifier for property template added by properties/template/add.
 
-        :rtype: TeamSharingPolicies
+        :rtype: str
         """
-        if self._sharing_present:
-            return self._sharing_value
+        if self._template_id_present:
+            return self._template_id_value
         else:
-            raise AttributeError("missing required field 'sharing'")
+            raise AttributeError("missing required field 'template_id'")
 
-    @sharing.setter
-    def sharing(self, val):
-        self._sharing_validator.validate_type_only(val)
-        self._sharing_value = val
-        self._sharing_present = True
+    @template_id.setter
+    def template_id(self, val):
+        val = self._template_id_validator.validate(val)
+        self._template_id_value = val
+        self._template_id_present = True
 
-    @sharing.deleter
-    def sharing(self):
-        self._sharing_value = None
-        self._sharing_present = False
+    @template_id.deleter
+    def template_id(self):
+        self._template_id_value = None
+        self._template_id_present = False
 
     @property
-    def emm_state(self):
+    def name(self):
         """
-        This describes the Enterprise Mobility Management (EMM) state for this
-        team. This information can be used to understand if an organization is
-        integrating with a third-party EMM vendor to further manage and apply
-        restrictions upon the team's Dropbox usage on mobile devices. This is a
-        new feature and in the future we'll be adding more new fields and
-        additional documentation.
+        A display name for the property template. Property template names can be
+        up to 256 bytes.
 
-        :rtype: EmmState
+        :rtype: str
         """
-        if self._emm_state_present:
-            return self._emm_state_value
+        if self._name_present:
+            return self._name_value
         else:
-            raise AttributeError("missing required field 'emm_state'")
+            return None
 
-    @emm_state.setter
-    def emm_state(self, val):
-        self._emm_state_validator.validate_type_only(val)
-        self._emm_state_value = val
-        self._emm_state_present = True
+    @name.setter
+    def name(self, val):
+        if val is None:
+            del self.name
+            return
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
 
-    @emm_state.deleter
-    def emm_state(self):
-        self._emm_state_value = None
-        self._emm_state_present = False
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def description(self):
+        """
+        Description for new property template. Property template descriptions
+        can be up to 1024 bytes.
+
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            return None
+
+    @description.setter
+    def description(self, val):
+        if val is None:
+            del self.description
+            return
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    @property
+    def add_fields(self):
+        """
+        This is a list of custom properties to add to the property template.
+        There can be up to 64 properties in a single property template.
+
+        :rtype: list of [properties.PropertyFieldTemplate_validator]
+        """
+        if self._add_fields_present:
+            return self._add_fields_value
+        else:
+            return None
+
+    @add_fields.setter
+    def add_fields(self, val):
+        if val is None:
+            del self.add_fields
+            return
+        val = self._add_fields_validator.validate(val)
+        self._add_fields_value = val
+        self._add_fields_present = True
+
+    @add_fields.deleter
+    def add_fields(self):
+        self._add_fields_value = None
+        self._add_fields_present = False
 
     def __repr__(self):
-        return 'TeamPolicies(sharing={!r}, emm_state={!r})'.format(
-            self._sharing_value,
-            self._emm_state_value,
+        return 'UpdatePropertyTemplateArg(template_id={!r}, name={!r}, description={!r}, add_fields={!r})'.format(
+            self._template_id_value,
+            self._name_value,
+            self._description_value,
+            self._add_fields_value,
         )
 
-class TeamSharingPolicies(object):
+class UpdatePropertyTemplateResult(object):
     """
-    Policies governing sharing within and outside of the team.
-
-    :ivar shared_folder_member_policy: Who can join folders shared by team
-        members.
-    :ivar shared_folder_join_policy: Which shared folders team members can join.
-    :ivar shared_link_create_policy: What is the visibility of newly created
-        shared links.
+    :ivar template_id: An identifier for property template added by
+        properties/template/add.
     """
 
     __slots__ = [
-        '_shared_folder_member_policy_value',
-        '_shared_folder_member_policy_present',
-        '_shared_folder_join_policy_value',
-        '_shared_folder_join_policy_present',
-        '_shared_link_create_policy_value',
-        '_shared_link_create_policy_present',
+        '_template_id_value',
+        '_template_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 shared_folder_member_policy=None,
-                 shared_folder_join_policy=None,
-                 shared_link_create_policy=None):
-        self._shared_folder_member_policy_value = None
-        self._shared_folder_member_policy_present = False
-        self._shared_folder_join_policy_value = None
-        self._shared_folder_join_policy_present = False
-        self._shared_link_create_policy_value = None
-        self._shared_link_create_policy_present = False
-        if shared_folder_member_policy is not None:
-            self.shared_folder_member_policy = shared_folder_member_policy
-        if shared_folder_join_policy is not None:
-            self.shared_folder_join_policy = shared_folder_join_policy
-        if shared_link_create_policy is not None:
-            self.shared_link_create_policy = shared_link_create_policy
+                 template_id=None):
+        self._template_id_value = None
+        self._template_id_present = False
+        if template_id is not None:
+            self.template_id = template_id
 
     @property
-    def shared_folder_member_policy(self):
+    def template_id(self):
         """
-        Who can join folders shared by team members.
+        An identifier for property template added by properties/template/add.
 
-        :rtype: SharedFolderMemberPolicy
+        :rtype: str
         """
-        if self._shared_folder_member_policy_present:
-            return self._shared_folder_member_policy_value
+        if self._template_id_present:
+            return self._template_id_value
         else:
-            raise AttributeError("missing required field 'shared_folder_member_policy'")
+            raise AttributeError("missing required field 'template_id'")
 
-    @shared_folder_member_policy.setter
-    def shared_folder_member_policy(self, val):
-        self._shared_folder_member_policy_validator.validate_type_only(val)
-        self._shared_folder_member_policy_value = val
-        self._shared_folder_member_policy_present = True
+    @template_id.setter
+    def template_id(self, val):
+        val = self._template_id_validator.validate(val)
+        self._template_id_value = val
+        self._template_id_present = True
 
-    @shared_folder_member_policy.deleter
-    def shared_folder_member_policy(self):
-        self._shared_folder_member_policy_value = None
-        self._shared_folder_member_policy_present = False
-
-    @property
-    def shared_folder_join_policy(self):
-        """
-        Which shared folders team members can join.
-
-        :rtype: SharedFolderJoinPolicy
-        """
-        if self._shared_folder_join_policy_present:
-            return self._shared_folder_join_policy_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_join_policy'")
-
-    @shared_folder_join_policy.setter
-    def shared_folder_join_policy(self, val):
-        self._shared_folder_join_policy_validator.validate_type_only(val)
-        self._shared_folder_join_policy_value = val
-        self._shared_folder_join_policy_present = True
-
-    @shared_folder_join_policy.deleter
-    def shared_folder_join_policy(self):
-        self._shared_folder_join_policy_value = None
-        self._shared_folder_join_policy_present = False
-
-    @property
-    def shared_link_create_policy(self):
-        """
-        What is the visibility of newly created shared links.
-
-        :rtype: SharedLinkCreatePolicy
-        """
-        if self._shared_link_create_policy_present:
-            return self._shared_link_create_policy_value
-        else:
-            raise AttributeError("missing required field 'shared_link_create_policy'")
-
-    @shared_link_create_policy.setter
-    def shared_link_create_policy(self, val):
-        self._shared_link_create_policy_validator.validate_type_only(val)
-        self._shared_link_create_policy_value = val
-        self._shared_link_create_policy_present = True
-
-    @shared_link_create_policy.deleter
-    def shared_link_create_policy(self):
-        self._shared_link_create_policy_value = None
-        self._shared_link_create_policy_present = False
+    @template_id.deleter
+    def template_id(self):
+        self._template_id_value = None
+        self._template_id_present = False
 
     def __repr__(self):
-        return 'TeamSharingPolicies(shared_folder_member_policy={!r}, shared_folder_join_policy={!r}, shared_link_create_policy={!r})'.format(
-            self._shared_folder_member_policy_value,
-            self._shared_folder_join_policy_value,
-            self._shared_link_create_policy_value,
+        return 'UpdatePropertyTemplateResult(template_id={!r})'.format(
+            self._template_id_value,
         )
 
 class UserSelectorArg(object):
@@ -10886,6 +11428,13 @@ ActiveWebSession._all_fields_ = DeviceSession._all_fields_ + [
     ('browser', ActiveWebSession._browser_validator),
 ]
 
+AddPropertyTemplateArg._all_field_names_ = properties.PropertyGroupTemplate._all_field_names_.union(set([]))
+AddPropertyTemplateArg._all_fields_ = properties.PropertyGroupTemplate._all_fields_ + []
+
+AddPropertyTemplateResult._template_id_validator = properties.TemplateId_validator
+AddPropertyTemplateResult._all_field_names_ = set(['template_id'])
+AddPropertyTemplateResult._all_fields_ = [('template_id', AddPropertyTemplateResult._template_id_validator)]
+
 AdminTier._team_admin_validator = bv.Void()
 AdminTier._user_management_admin_validator = bv.Void()
 AdminTier._support_admin_validator = bv.Void()
@@ -11019,22 +11568,6 @@ DevicesActive._all_fields_ = [
     ('other', DevicesActive._other_validator),
     ('total', DevicesActive._total_validator),
 ]
-
-EmmState._disabled_validator = bv.Void()
-EmmState._optional_validator = bv.Void()
-EmmState._required_validator = bv.Void()
-EmmState._other_validator = bv.Void()
-EmmState._tagmap = {
-    'disabled': EmmState._disabled_validator,
-    'optional': EmmState._optional_validator,
-    'required': EmmState._required_validator,
-    'other': EmmState._other_validator,
-}
-
-EmmState.disabled = EmmState('disabled')
-EmmState.optional = EmmState('optional')
-EmmState.required = EmmState('required')
-EmmState.other = EmmState('other')
 
 GetActivityReport._adds_validator = NumberPerDay_validator
 GetActivityReport._edits_validator = NumberPerDay_validator
@@ -11195,7 +11728,7 @@ GroupDeleteError.group_already_deleted = GroupDeleteError('group_already_deleted
 GroupSummary._group_name_validator = bv.String()
 GroupSummary._group_id_validator = GroupId_validator
 GroupSummary._group_external_id_validator = bv.Nullable(bv.String())
-GroupSummary._member_count_validator = bv.UInt32()
+GroupSummary._member_count_validator = bv.Nullable(bv.UInt32())
 GroupSummary._all_field_names_ = set([
     'group_name',
     'group_id',
@@ -11209,7 +11742,7 @@ GroupSummary._all_fields_ = [
     ('member_count', GroupSummary._member_count_validator),
 ]
 
-GroupFullInfo._members_validator = bv.List(bv.Struct(GroupMemberInfo))
+GroupFullInfo._members_validator = bv.Nullable(bv.List(bv.Struct(GroupMemberInfo)))
 GroupFullInfo._created_validator = bv.UInt64()
 GroupFullInfo._all_field_names_ = GroupSummary._all_field_names_.union(set([
     'members',
@@ -11250,13 +11783,25 @@ GroupMemberSelectorError._tagmap.update(GroupSelectorError._tagmap)
 
 GroupMemberSelectorError.member_not_in_group = GroupMemberSelectorError('member_not_in_group')
 
+GroupMemberSetAccessTypeError._user_cannot_be_manager_of_company_managed_group_validator = bv.Void()
+GroupMemberSetAccessTypeError._tagmap = {
+    'user_cannot_be_manager_of_company_managed_group': GroupMemberSetAccessTypeError._user_cannot_be_manager_of_company_managed_group_validator,
+}
+GroupMemberSetAccessTypeError._tagmap.update(GroupMemberSelectorError._tagmap)
+
+GroupMemberSetAccessTypeError.user_cannot_be_manager_of_company_managed_group = GroupMemberSetAccessTypeError('user_cannot_be_manager_of_company_managed_group')
+
+IncludeMembersArg._return_members_validator = bv.Boolean()
+IncludeMembersArg._all_field_names_ = set(['return_members'])
+IncludeMembersArg._all_fields_ = [('return_members', IncludeMembersArg._return_members_validator)]
+
 GroupMembersAddArg._group_validator = bv.Union(GroupSelector)
 GroupMembersAddArg._members_validator = bv.List(bv.Struct(MemberAccess))
-GroupMembersAddArg._all_field_names_ = set([
+GroupMembersAddArg._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
     'group',
     'members',
-])
-GroupMembersAddArg._all_fields_ = [
+]))
+GroupMembersAddArg._all_fields_ = IncludeMembersArg._all_fields_ + [
     ('group', GroupMembersAddArg._group_validator),
     ('members', GroupMembersAddArg._members_validator),
 ]
@@ -11266,12 +11811,14 @@ GroupMembersAddError._group_not_in_team_validator = bv.Void()
 GroupMembersAddError._members_not_in_team_validator = bv.List(bv.String())
 GroupMembersAddError._users_not_found_validator = bv.List(bv.String())
 GroupMembersAddError._user_must_be_active_to_be_owner_validator = bv.Void()
+GroupMembersAddError._user_cannot_be_manager_of_company_managed_group_validator = bv.List(bv.String())
 GroupMembersAddError._tagmap = {
     'duplicate_user': GroupMembersAddError._duplicate_user_validator,
     'group_not_in_team': GroupMembersAddError._group_not_in_team_validator,
     'members_not_in_team': GroupMembersAddError._members_not_in_team_validator,
     'users_not_found': GroupMembersAddError._users_not_found_validator,
     'user_must_be_active_to_be_owner': GroupMembersAddError._user_must_be_active_to_be_owner_validator,
+    'user_cannot_be_manager_of_company_managed_group': GroupMembersAddError._user_cannot_be_manager_of_company_managed_group_validator,
 }
 GroupMembersAddError._tagmap.update(GroupSelectorError._tagmap)
 
@@ -11292,11 +11839,11 @@ GroupMembersChangeResult._all_fields_ = [
 
 GroupMembersRemoveArg._group_validator = bv.Union(GroupSelector)
 GroupMembersRemoveArg._users_validator = bv.List(bv.Union(UserSelectorArg))
-GroupMembersRemoveArg._all_field_names_ = set([
+GroupMembersRemoveArg._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
     'group',
     'users',
-])
-GroupMembersRemoveArg._all_fields_ = [
+]))
+GroupMembersRemoveArg._all_fields_ = IncludeMembersArg._all_fields_ + [
     ('group', GroupMembersRemoveArg._group_validator),
     ('users', GroupMembersRemoveArg._users_validator),
 ]
@@ -11329,8 +11876,15 @@ GroupMembersSelector._all_fields_ = [
 ]
 
 GroupMembersSetAccessTypeArg._access_type_validator = bv.Union(GroupAccessType)
-GroupMembersSetAccessTypeArg._all_field_names_ = GroupMemberSelector._all_field_names_.union(set(['access_type']))
-GroupMembersSetAccessTypeArg._all_fields_ = GroupMemberSelector._all_fields_ + [('access_type', GroupMembersSetAccessTypeArg._access_type_validator)]
+GroupMembersSetAccessTypeArg._return_members_validator = bv.Boolean()
+GroupMembersSetAccessTypeArg._all_field_names_ = GroupMemberSelector._all_field_names_.union(set([
+    'access_type',
+    'return_members',
+]))
+GroupMembersSetAccessTypeArg._all_fields_ = GroupMemberSelector._all_fields_ + [
+    ('access_type', GroupMembersSetAccessTypeArg._access_type_validator),
+    ('return_members', GroupMembersSetAccessTypeArg._return_members_validator),
+]
 
 GroupSelector._group_id_validator = GroupId_validator
 GroupSelector._group_external_id_validator = bv.String()
@@ -11355,12 +11909,12 @@ GroupType.other = GroupType('other')
 GroupUpdateArgs._group_validator = bv.Union(GroupSelector)
 GroupUpdateArgs._new_group_name_validator = bv.Nullable(bv.String())
 GroupUpdateArgs._new_group_external_id_validator = bv.Nullable(bv.String())
-GroupUpdateArgs._all_field_names_ = set([
+GroupUpdateArgs._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
     'group',
     'new_group_name',
     'new_group_external_id',
-])
-GroupUpdateArgs._all_fields_ = [
+]))
+GroupUpdateArgs._all_fields_ = IncludeMembersArg._all_fields_ + [
     ('group', GroupUpdateArgs._group_validator),
     ('new_group_name', GroupUpdateArgs._new_group_name_validator),
     ('new_group_external_id', GroupUpdateArgs._new_group_external_id_validator),
@@ -11495,6 +12049,75 @@ ListMemberDevicesResult._all_fields_ = [
     ('active_web_sessions', ListMemberDevicesResult._active_web_sessions_validator),
     ('desktop_client_sessions', ListMemberDevicesResult._desktop_client_sessions_validator),
     ('mobile_client_sessions', ListMemberDevicesResult._mobile_client_sessions_validator),
+]
+
+ListMembersAppsArg._cursor_validator = bv.Nullable(bv.String())
+ListMembersAppsArg._all_field_names_ = set(['cursor'])
+ListMembersAppsArg._all_fields_ = [('cursor', ListMembersAppsArg._cursor_validator)]
+
+ListMembersAppsError._reset_validator = bv.Void()
+ListMembersAppsError._other_validator = bv.Void()
+ListMembersAppsError._tagmap = {
+    'reset': ListMembersAppsError._reset_validator,
+    'other': ListMembersAppsError._other_validator,
+}
+
+ListMembersAppsError.reset = ListMembersAppsError('reset')
+ListMembersAppsError.other = ListMembersAppsError('other')
+
+ListMembersAppsResult._apps_validator = bv.List(bv.Struct(MemberLinkedApps))
+ListMembersAppsResult._has_more_validator = bv.Boolean()
+ListMembersAppsResult._cursor_validator = bv.Nullable(bv.String())
+ListMembersAppsResult._all_field_names_ = set([
+    'apps',
+    'has_more',
+    'cursor',
+])
+ListMembersAppsResult._all_fields_ = [
+    ('apps', ListMembersAppsResult._apps_validator),
+    ('has_more', ListMembersAppsResult._has_more_validator),
+    ('cursor', ListMembersAppsResult._cursor_validator),
+]
+
+ListMembersDevicesArg._cursor_validator = bv.Nullable(bv.String())
+ListMembersDevicesArg._include_web_sessions_validator = bv.Boolean()
+ListMembersDevicesArg._include_desktop_clients_validator = bv.Boolean()
+ListMembersDevicesArg._include_mobile_clients_validator = bv.Boolean()
+ListMembersDevicesArg._all_field_names_ = set([
+    'cursor',
+    'include_web_sessions',
+    'include_desktop_clients',
+    'include_mobile_clients',
+])
+ListMembersDevicesArg._all_fields_ = [
+    ('cursor', ListMembersDevicesArg._cursor_validator),
+    ('include_web_sessions', ListMembersDevicesArg._include_web_sessions_validator),
+    ('include_desktop_clients', ListMembersDevicesArg._include_desktop_clients_validator),
+    ('include_mobile_clients', ListMembersDevicesArg._include_mobile_clients_validator),
+]
+
+ListMembersDevicesError._reset_validator = bv.Void()
+ListMembersDevicesError._other_validator = bv.Void()
+ListMembersDevicesError._tagmap = {
+    'reset': ListMembersDevicesError._reset_validator,
+    'other': ListMembersDevicesError._other_validator,
+}
+
+ListMembersDevicesError.reset = ListMembersDevicesError('reset')
+ListMembersDevicesError.other = ListMembersDevicesError('other')
+
+ListMembersDevicesResult._devices_validator = bv.List(bv.Struct(MemberDevices))
+ListMembersDevicesResult._has_more_validator = bv.Boolean()
+ListMembersDevicesResult._cursor_validator = bv.Nullable(bv.String())
+ListMembersDevicesResult._all_field_names_ = set([
+    'devices',
+    'has_more',
+    'cursor',
+])
+ListMembersDevicesResult._all_fields_ = [
+    ('devices', ListMembersDevicesResult._devices_validator),
+    ('has_more', ListMembersDevicesResult._has_more_validator),
+    ('cursor', ListMembersDevicesResult._cursor_validator),
 ]
 
 ListTeamAppsArg._cursor_validator = bv.Nullable(bv.String())
@@ -12106,48 +12729,6 @@ RevokeLinkedAppStatus._all_fields_ = [
     ('error_type', RevokeLinkedAppStatus._error_type_validator),
 ]
 
-SharedFolderJoinPolicy._from_team_only_validator = bv.Void()
-SharedFolderJoinPolicy._from_anyone_validator = bv.Void()
-SharedFolderJoinPolicy._other_validator = bv.Void()
-SharedFolderJoinPolicy._tagmap = {
-    'from_team_only': SharedFolderJoinPolicy._from_team_only_validator,
-    'from_anyone': SharedFolderJoinPolicy._from_anyone_validator,
-    'other': SharedFolderJoinPolicy._other_validator,
-}
-
-SharedFolderJoinPolicy.from_team_only = SharedFolderJoinPolicy('from_team_only')
-SharedFolderJoinPolicy.from_anyone = SharedFolderJoinPolicy('from_anyone')
-SharedFolderJoinPolicy.other = SharedFolderJoinPolicy('other')
-
-SharedFolderMemberPolicy._team_validator = bv.Void()
-SharedFolderMemberPolicy._anyone_validator = bv.Void()
-SharedFolderMemberPolicy._other_validator = bv.Void()
-SharedFolderMemberPolicy._tagmap = {
-    'team': SharedFolderMemberPolicy._team_validator,
-    'anyone': SharedFolderMemberPolicy._anyone_validator,
-    'other': SharedFolderMemberPolicy._other_validator,
-}
-
-SharedFolderMemberPolicy.team = SharedFolderMemberPolicy('team')
-SharedFolderMemberPolicy.anyone = SharedFolderMemberPolicy('anyone')
-SharedFolderMemberPolicy.other = SharedFolderMemberPolicy('other')
-
-SharedLinkCreatePolicy._default_public_validator = bv.Void()
-SharedLinkCreatePolicy._default_team_only_validator = bv.Void()
-SharedLinkCreatePolicy._team_only_validator = bv.Void()
-SharedLinkCreatePolicy._other_validator = bv.Void()
-SharedLinkCreatePolicy._tagmap = {
-    'default_public': SharedLinkCreatePolicy._default_public_validator,
-    'default_team_only': SharedLinkCreatePolicy._default_team_only_validator,
-    'team_only': SharedLinkCreatePolicy._team_only_validator,
-    'other': SharedLinkCreatePolicy._other_validator,
-}
-
-SharedLinkCreatePolicy.default_public = SharedLinkCreatePolicy('default_public')
-SharedLinkCreatePolicy.default_team_only = SharedLinkCreatePolicy('default_team_only')
-SharedLinkCreatePolicy.team_only = SharedLinkCreatePolicy('team_only')
-SharedLinkCreatePolicy.other = SharedLinkCreatePolicy('other')
-
 StorageBucket._bucket_validator = bv.String()
 StorageBucket._users_validator = bv.UInt64()
 StorageBucket._all_field_names_ = set([
@@ -12163,7 +12744,7 @@ TeamGetInfoResult._name_validator = bv.String()
 TeamGetInfoResult._team_id_validator = bv.String()
 TeamGetInfoResult._num_licensed_users_validator = bv.UInt32()
 TeamGetInfoResult._num_provisioned_users_validator = bv.UInt32()
-TeamGetInfoResult._policies_validator = bv.Struct(TeamPolicies)
+TeamGetInfoResult._policies_validator = bv.Struct(team_policies.TeamPolicies)
 TeamGetInfoResult._all_field_names_ = set([
     'name',
     'team_id',
@@ -12207,30 +12788,26 @@ TeamMemberStatus.active = TeamMemberStatus('active')
 TeamMemberStatus.invited = TeamMemberStatus('invited')
 TeamMemberStatus.suspended = TeamMemberStatus('suspended')
 
-TeamPolicies._sharing_validator = bv.Struct(TeamSharingPolicies)
-TeamPolicies._emm_state_validator = bv.Union(EmmState)
-TeamPolicies._all_field_names_ = set([
-    'sharing',
-    'emm_state',
+UpdatePropertyTemplateArg._template_id_validator = properties.TemplateId_validator
+UpdatePropertyTemplateArg._name_validator = bv.Nullable(bv.String())
+UpdatePropertyTemplateArg._description_validator = bv.Nullable(bv.String())
+UpdatePropertyTemplateArg._add_fields_validator = bv.Nullable(bv.List(bv.Struct(properties.PropertyFieldTemplate)))
+UpdatePropertyTemplateArg._all_field_names_ = set([
+    'template_id',
+    'name',
+    'description',
+    'add_fields',
 ])
-TeamPolicies._all_fields_ = [
-    ('sharing', TeamPolicies._sharing_validator),
-    ('emm_state', TeamPolicies._emm_state_validator),
+UpdatePropertyTemplateArg._all_fields_ = [
+    ('template_id', UpdatePropertyTemplateArg._template_id_validator),
+    ('name', UpdatePropertyTemplateArg._name_validator),
+    ('description', UpdatePropertyTemplateArg._description_validator),
+    ('add_fields', UpdatePropertyTemplateArg._add_fields_validator),
 ]
 
-TeamSharingPolicies._shared_folder_member_policy_validator = bv.Union(SharedFolderMemberPolicy)
-TeamSharingPolicies._shared_folder_join_policy_validator = bv.Union(SharedFolderJoinPolicy)
-TeamSharingPolicies._shared_link_create_policy_validator = bv.Union(SharedLinkCreatePolicy)
-TeamSharingPolicies._all_field_names_ = set([
-    'shared_folder_member_policy',
-    'shared_folder_join_policy',
-    'shared_link_create_policy',
-])
-TeamSharingPolicies._all_fields_ = [
-    ('shared_folder_member_policy', TeamSharingPolicies._shared_folder_member_policy_validator),
-    ('shared_folder_join_policy', TeamSharingPolicies._shared_folder_join_policy_validator),
-    ('shared_link_create_policy', TeamSharingPolicies._shared_link_create_policy_validator),
-]
+UpdatePropertyTemplateResult._template_id_validator = properties.TemplateId_validator
+UpdatePropertyTemplateResult._all_field_names_ = set(['template_id'])
+UpdatePropertyTemplateResult._all_fields_ = [('template_id', UpdatePropertyTemplateResult._template_id_validator)]
 
 UserSelectorArg._team_member_id_validator = TeamMemberId_validator
 UserSelectorArg._external_id_validator = MemberExternalId_validator
