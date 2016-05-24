@@ -5,3 +5,4 @@
 /docs/_build
 /.idea
 /.tox
+/dropbox.egg-info
