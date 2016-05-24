@@ -4,8 +4,7 @@ __all__ = [
     'create_session',
 ]
 
-# TODO(kelkabany): We need to auto populate this as done in the v1 SDK.
-__version__ = '6.2'
+__version__ = '6.3.0'
 
 import contextlib
 import json

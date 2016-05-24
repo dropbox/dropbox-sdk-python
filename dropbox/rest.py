@@ -31,7 +31,9 @@ if six.PY3:
 else:
     url_encode = urllib.urlencode
 
-SDK_VERSION = "6.2"
+from dropbox import __version__
+
+SDK_VERSION = __version__
 
 TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 

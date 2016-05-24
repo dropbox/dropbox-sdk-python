@@ -15,6 +15,8 @@ except ImportError:
 
 from setuptools import setup
 
+from dropbox import __version__
+
 install_reqs = ['urllib3',
                 'requests>=2.5.1',
                 'six>=1.3.0']
@@ -25,7 +27,7 @@ with open('LICENSE') as f:
 
 dist = setup(
     name='dropbox',
-    version='6.2',
+    version=__version__,
     description='Official Dropbox API Client',
     author='Dropbox',
     author_email='dev-platform@dropbox.com',
