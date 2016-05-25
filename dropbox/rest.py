@@ -31,10 +31,6 @@ if six.PY3:
 else:
     url_encode = urllib.urlencode
 
-from dropbox import __version__
-
-SDK_VERSION = __version__
-
 TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 
 
@@ -194,7 +190,9 @@ class RESTClientObject(object):
         """Performs a REST request. See :meth:`RESTClient.request()` for detailed description."""
 
         headers = headers or {}
-        headers['User-Agent'] = 'OfficialDropboxPythonSDK/' + SDK_VERSION
+
+        from dropbox import __version__
+        headers['User-Agent'] = 'OfficialDropboxPythonSDK/' + __version__
 
         if post_params is not None:
             if body:

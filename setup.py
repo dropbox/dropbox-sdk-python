@@ -2,9 +2,10 @@
 # where package_data is expected to be str and not unicode.
 from __future__ import absolute_import, division, print_function
 
-# Ensure setuptools is available
+import os
 import sys
 
+# Ensure setuptools is available
 try:
     from ez_setup import use_setuptools
     use_setuptools()
@@ -15,7 +16,11 @@ except ImportError:
 
 from setuptools import setup
 
-from dropbox import __version__
+dbx_mod_path = os.path.join(os.path.dirname(__file__), 'dropbox/dropbox.py')
+for line in open(dbx_mod_path):
+    if line.startswith('__version__'):
+        break
+version = eval(line.split('=', 1)[1])
 
 install_reqs = ['urllib3',
                 'requests>=2.5.1',
@@ -27,7 +32,7 @@ with open('LICENSE') as f:
 
 dist = setup(
     name='dropbox',
-    version=__version__,
+    version=version,
     description='Official Dropbox API Client',
     author='Dropbox',
     author_email='dev-platform@dropbox.com',

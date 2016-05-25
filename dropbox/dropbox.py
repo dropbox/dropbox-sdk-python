@@ -16,7 +16,7 @@ import time
 
 import requests
 
-from . import babel_serializers
+from . import stone_serializers
 from .base import DropboxBase
 from .base_team import DropboxTeamBase
 from .exceptions import (
@@ -182,12 +182,8 @@ class _DropboxTransport(object):
                           self._HOST_NOTIFY: self._api_notify_hostname}
 
     def request(self,
-                host,
-                route_name,
-                route_style,
-                arg_data_type,
-                result_data_type,
-                error_data_type,
+                route,
+                namespace,
                 request_arg,
                 request_binary):
         """
@@ -198,19 +194,18 @@ class _DropboxTransport(object):
         on the {result,error}_data_type.
 
         :param host: The Dropbox API host to connect to.
-        :param route_name: The name of the route to invoke.
-        :param route_style: The style of the route.
-        :type arg_data_type: :class:`.datatypes.babel_validators.DataType`
-        :type result_data_type: :class:`.datatypes.babel_validators.DataType`
-        :type error_data_type: :class:`.datatypes.babel_validators.DataType`
+        :param route: The route to make the request to.
+        :type route: :class:`.datatypes.stone_base.Route`
         :param request_arg: Argument for the route that conforms to the
-            validator specified by arg_data_type.
+            validator specified by route.arg_type.
         :param request_binary: String or file pointer representing the binary
             payload. Use None if there is no binary payload.
         :return: The route's result.
         """
-
-        serialized_arg = babel_serializers.json_encode(arg_data_type,
+        host = route.attrs['host'] or 'api'
+        route_name = namespace + '/' + route.name
+        route_style = route.attrs['style'] or 'rpc'
+        serialized_arg = stone_serializers.json_encode(route.arg_type,
                                                        request_arg)
         res = self.request_json_string_with_retry(host,
                                                   route_name,
@@ -219,10 +214,10 @@ class _DropboxTransport(object):
                                                   request_binary)
         decoded_obj_result = json.loads(res.obj_result)
         if isinstance(res, RouteResult):
-            returned_data_type = result_data_type
+            returned_data_type = route.result_type
             obj = decoded_obj_result
         elif isinstance(res, RouteErrorResult):
-            returned_data_type = error_data_type
+            returned_data_type = route.error_type
             obj = decoded_obj_result['error']
             user_message = decoded_obj_result.get('user_message')
             user_message_text = user_message and user_message.get('text')
@@ -232,7 +227,7 @@ class _DropboxTransport(object):
                                  'but res is %s' % type(res))
 
 
-        deserialized_result = babel_serializers.json_compat_obj_decode(
+        deserialized_result = stone_serializers.json_compat_obj_decode(
             returned_data_type, obj, strict=False)
 
         if isinstance(res, RouteErrorResult):
