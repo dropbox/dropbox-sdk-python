@@ -5,13 +5,22 @@ A Python SDK for integrating with the Dropbox API v2. Compatible with Python
 2.7 and 3.4+. Documentation is available on `Read the Docs
 <http://dropbox-sdk-python.readthedocs.org/>`_.
 
-Setup
------
+Installation
+------------
 
-You can install this package from the root directory by running:
+Install via ``pip``:
 
 .. code-block:: bash
 
+    $ pip install dropbox
+
+
+Install from source:
+
+.. code-block:: bash
+
+    $ git clone git://github.com/dropbox/dropbox-sdk-python.git
+    $ cd dropbox-sdk-python
     $ python setup.py install
 
 After installation, to get started, open a Python console:
