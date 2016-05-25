@@ -27,14 +27,20 @@ if oauth2_token is None:
           file=sys.stderr)
     sys.exit(1)
 
-# Get team token from environment variable.
-# This team needs to have sufficient permission to get team information
-# and assume user identities.
-team_oauth2_token = os.environ.get('DROPBOX_TEAM_TOKEN')
-if team_oauth2_token is None:
-    print('Set DROPBOX_TEAM_TOKEN environment variable to a valid token.',
-          file=sys.stderr)
-    sys.exit(1)
+
+def require_team_token(f):
+    def inner(*args, **kwargs):
+        # Get team token from environment variable.
+        # This team needs to have sufficient permission to get team information
+        # and assume user identities.
+        team_oauth2_token = os.environ.get('DROPBOX_TEAM_TOKEN')
+        if team_oauth2_token is None:
+            print('Set DROPBOX_TEAM_TOKEN environment variable to a valid token.',
+                  file=sys.stderr)
+            sys.exit(1)
+        return f(team_oauth2_token, *args, **kwargs)
+    return inner
+
 
 MALFORMED_TOKEN = 'asdf'
 INVALID_TOKEN = 'z' * 62
@@ -44,7 +50,6 @@ class TestDropbox(unittest.TestCase):
 
     def setUp(self):
         self.dbx = Dropbox(oauth2_token)
-        self.dbxt = DropboxTeam(team_oauth2_token)
 
     def test_bad_auth(self):
         # Test malformed token
@@ -85,12 +90,14 @@ class TestDropbox(unittest.TestCase):
         # Cleanup folder
         self.dbx.files_delete('/Test/%s' % timestamp)
 
-    def test_team(self):
-        self.dbxt.team_groups_list()
-        r = self.dbxt.team_members_list()
+    @require_team_token
+    def test_team(self, token):
+        dbxt = DropboxTeam(token)
+        dbxt.team_groups_list()
+        r = dbxt.team_members_list()
         if r.members:
             # Only test assuming a member if there is a member
-            self.dbxt.as_user(r.members[0].profile.team_member_id).files_list_folder('')
+            dbxt.as_user(r.members[0].profile.team_member_id).files_list_folder('')
 
 
 from io import BytesIO

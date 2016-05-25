@@ -58,8 +58,8 @@ To ease the transition to the new API and SDK, you can still use the old
 simultaneously.  Support for the old client will be dropped once the new SDK is
 at functional parity.
 
-Running tests
--------------
+Testing
+-------
 
 We use the `tox <https://tox.readthedocs.org/>`_ package to run tests in Python
 2 and 3. To install, use :code:`pip install tox`. Once installed, run `tox` from the
@@ -67,5 +67,19 @@ root directory. You'll need to specify a working Dropbox OAuth2 token:
 
 .. code-block:: bash
 
-    $ DROPBOX_TOKEN=YOUR_TOKEN tox
+    $ DROPBOX_TOKEN=YOUR_TOKEN tox -- -k "'not test_team'"
 
+Note that we skip ``test_team`` which requires a team token with `Member File Access
+<https://www.dropbox.com/developers/documentation/http/teams#teams-member-file-access>`_.
+To test this functionality, specify a ``DROPBOX_TEAM_TOKEN`` environment
+variable.
+
+.. code-block:: bash
+
+    $ DROPBOX_TOKEN=... DROPBOX_TEAM_TOKEN=... tox
+
+If you only want to test the API v2 client, use:
+
+.. code-block:: bash
+
+    $ DROPBOX_TOKEN=... DROPBOX_TEAM_TOKEN=... tox -- -k TestDropbox
