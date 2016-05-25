@@ -59,6 +59,31 @@ folder. After compilation, open ``docs/_build/html/index.html``. Alternatively,
 you can read a hosted version from `Read the Docs
 <http://dropbox-sdk-python.readthedocs.org/>`_.
 
+Updating API specification
+--------------------------
+
+A good amount of this SDK is generated using `Stone
+<https://www.github.com/dropbox/stone>`_. We use git submodules to pin to a
+specific version of `Stone` since it's under active development, and we also
+pin to a version of our `API spec
+<https://www.github.com/dropbox/dropbox-api-spec>`_.
+
+To prepare the repo for generation, run these commands after cloning:
+
+.. code-block:: bash
+
+    $ git submodule init
+    $ git submodule update
+
+You can run ``git pull`` within these sub repositories to update the pinned
+version.
+
+Now, run the included script:
+
+.. code-block:: bash
+
+    $ ./generate_base_client.py
+
 Upgrading from v1
 -----------------
 
