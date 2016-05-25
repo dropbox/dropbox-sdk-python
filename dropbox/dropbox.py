@@ -459,6 +459,7 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
         return Dropbox(
             self._oauth2_access_token,
             max_retries_on_error=self._max_retries_on_error,
+            max_retries_on_rate_limit=self._max_retries_on_rate_limit,
             user_agent=self._raw_user_agent,
             session=self._session,
             headers=new_headers,
