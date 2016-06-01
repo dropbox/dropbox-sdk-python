@@ -20,6 +20,8 @@ class AuthError(bb.Union):
     :ivar invalid_access_token: The access token is invalid.
     :ivar invalid_select_user: The user specified in 'Dropbox-API-Select-User'
         is no longer on the team.
+    :ivar invalid_select_admin: The user specified in 'Dropbox-API-Select-Admin'
+        is not a Dropbox Business team admin.
     :ivar other: An unspecified error.
     """
 
@@ -28,6 +30,8 @@ class AuthError(bb.Union):
     invalid_access_token = None
     # Attribute is overwritten below the class definition
     invalid_select_user = None
+    # Attribute is overwritten below the class definition
+    invalid_select_admin = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -47,6 +51,14 @@ class AuthError(bb.Union):
         """
         return self._tag == 'invalid_select_user'
 
+    def is_invalid_select_admin(self):
+        """
+        Check if the union tag is ``invalid_select_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_select_admin'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -62,15 +74,18 @@ AuthError_validator = bv.Union(AuthError)
 
 AuthError._invalid_access_token_validator = bv.Void()
 AuthError._invalid_select_user_validator = bv.Void()
+AuthError._invalid_select_admin_validator = bv.Void()
 AuthError._other_validator = bv.Void()
 AuthError._tagmap = {
     'invalid_access_token': AuthError._invalid_access_token_validator,
     'invalid_select_user': AuthError._invalid_select_user_validator,
+    'invalid_select_admin': AuthError._invalid_select_admin_validator,
     'other': AuthError._other_validator,
 }
 
 AuthError.invalid_access_token = AuthError('invalid_access_token')
 AuthError.invalid_select_user = AuthError('invalid_select_user')
+AuthError.invalid_select_admin = AuthError('invalid_select_admin')
 AuthError.other = AuthError('other')
 
 token_revoke = bb.Route(
@@ -79,8 +94,8 @@ token_revoke = bb.Route(
     bv.Void(),
     bv.Void(),
     bv.Void(),
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 
 ROUTES = {

@@ -18,14 +18,14 @@ try:
         async,
         common,
         files,
-        team,
+        team_common,
         users,
     )
 except (SystemError, ValueError):
     import async
     import common
     import files
-    import team
+    import team_common
     import users
 
 class AccessLevel(bb.Union):
@@ -41,6 +41,8 @@ class AccessLevel(bb.Union):
         using update_folder_policy.
     :ivar editor: The collaborator can both view and edit the shared folder.
     :ivar viewer: The collaborator can only view the shared folder.
+    :ivar viewer_no_comment: The collaborator can only view the shared folder
+        and does not have any access to comments.
     """
 
     _catch_all = 'other'
@@ -50,6 +52,8 @@ class AccessLevel(bb.Union):
     editor = None
     # Attribute is overwritten below the class definition
     viewer = None
+    # Attribute is overwritten below the class definition
+    viewer_no_comment = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -76,6 +80,14 @@ class AccessLevel(bb.Union):
         :rtype: bool
         """
         return self._tag == 'viewer'
+
+    def is_viewer_no_comment(self):
+        """
+        Check if the union tag is ``viewer_no_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'viewer_no_comment'
 
     def is_other(self):
         """
@@ -2638,18 +2650,21 @@ class GetSharedLinksResult(object):
 
 GetSharedLinksResult_validator = bv.Struct(GetSharedLinksResult)
 
-class GroupInfo(team.GroupSummary):
+class GroupInfo(team_common.GroupSummary):
     """
     The information about a group. Groups is a way to manage a list of users
     who need same access permission to the shared folder.
 
     :ivar group_type: The type of group.
+    :ivar is_owner: If the current user is an owner of the group.
     :ivar same_team: If the group is owned by the current user's team.
     """
 
     __slots__ = [
         '_group_type_value',
         '_group_type_present',
+        '_is_owner_value',
+        '_is_owner_present',
         '_same_team_value',
         '_same_team_present',
     ]
@@ -2660,6 +2675,7 @@ class GroupInfo(team.GroupSummary):
                  group_name=None,
                  group_id=None,
                  group_type=None,
+                 is_owner=None,
                  same_team=None,
                  group_external_id=None,
                  member_count=None):
@@ -2669,10 +2685,14 @@ class GroupInfo(team.GroupSummary):
                                         member_count)
         self._group_type_value = None
         self._group_type_present = False
+        self._is_owner_value = None
+        self._is_owner_present = False
         self._same_team_value = None
         self._same_team_present = False
         if group_type is not None:
             self.group_type = group_type
+        if is_owner is not None:
+            self.is_owner = is_owner
         if same_team is not None:
             self.same_team = same_team
 
@@ -2681,7 +2701,7 @@ class GroupInfo(team.GroupSummary):
         """
         The type of group.
 
-        :rtype: team.GroupType_validator
+        :rtype: team_common.GroupType_validator
         """
         if self._group_type_present:
             return self._group_type_value
@@ -2698,6 +2718,29 @@ class GroupInfo(team.GroupSummary):
     def group_type(self):
         self._group_type_value = None
         self._group_type_present = False
+
+    @property
+    def is_owner(self):
+        """
+        If the current user is an owner of the group.
+
+        :rtype: bool
+        """
+        if self._is_owner_present:
+            return self._is_owner_value
+        else:
+            raise AttributeError("missing required field 'is_owner'")
+
+    @is_owner.setter
+    def is_owner(self, val):
+        val = self._is_owner_validator.validate(val)
+        self._is_owner_value = val
+        self._is_owner_present = True
+
+    @is_owner.deleter
+    def is_owner(self):
+        self._is_owner_value = None
+        self._is_owner_present = False
 
     @property
     def same_team(self):
@@ -2723,10 +2766,11 @@ class GroupInfo(team.GroupSummary):
         self._same_team_present = False
 
     def __repr__(self):
-        return 'GroupInfo(group_name={!r}, group_id={!r}, group_type={!r}, same_team={!r}, group_external_id={!r}, member_count={!r})'.format(
+        return 'GroupInfo(group_name={!r}, group_id={!r}, group_type={!r}, is_owner={!r}, same_team={!r}, group_external_id={!r}, member_count={!r})'.format(
             self._group_name_value,
             self._group_id_value,
             self._group_type_value,
+            self._is_owner_value,
             self._same_team_value,
             self._group_external_id_value,
             self._member_count_value,
@@ -3124,6 +3168,8 @@ class JobError(bb.Union):
         performing unshare_folder action.
     :ivar RemoveFolderMemberError remove_folder_member_error: Error occurred
         while performing remove_folder_member action.
+    :ivar RelinquishFolderMembershipError relinquish_folder_membership_error:
+        Error occurred while performing relinquish_folder_membership action.
     """
 
     _catch_all = 'other'
@@ -3152,6 +3198,17 @@ class JobError(bb.Union):
         """
         return cls('remove_folder_member_error', val)
 
+    @classmethod
+    def relinquish_folder_membership_error(cls, val):
+        """
+        Create an instance of this class set to the
+        ``relinquish_folder_membership_error`` tag with value ``val``.
+
+        :param RelinquishFolderMembershipError val:
+        :rtype: JobError
+        """
+        return cls('relinquish_folder_membership_error', val)
+
     def is_unshare_folder_error(self):
         """
         Check if the union tag is ``unshare_folder_error``.
@@ -3167,6 +3224,14 @@ class JobError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'remove_folder_member_error'
+
+    def is_relinquish_folder_membership_error(self):
+        """
+        Check if the union tag is ``relinquish_folder_membership_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'relinquish_folder_membership_error'
 
     def is_other(self):
         """
@@ -3198,6 +3263,18 @@ class JobError(bb.Union):
         """
         if not self.is_remove_folder_member_error():
             raise AttributeError("tag 'remove_folder_member_error' not set")
+        return self._value
+
+    def get_relinquish_folder_membership_error(self):
+        """
+        Error occurred while performing relinquish_folder_membership action.
+
+        Only call this if :meth:`is_relinquish_folder_membership_error` is true.
+
+        :rtype: RelinquishFolderMembershipError
+        """
+        if not self.is_relinquish_folder_membership_error():
+            raise AttributeError("tag 'relinquish_folder_membership_error' not set")
         return self._value
 
     def __repr__(self):
@@ -5133,21 +5210,30 @@ PermissionDeniedReason_validator = bv.Union(PermissionDeniedReason)
 class RelinquishFolderMembershipArg(object):
     """
     :ivar shared_folder_id: The ID for the shared folder.
+    :ivar leave_a_copy: Keep a copy of the folder's contents upon relinquishing
+        membership.
     """
 
     __slots__ = [
         '_shared_folder_id_value',
         '_shared_folder_id_present',
+        '_leave_a_copy_value',
+        '_leave_a_copy_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 shared_folder_id=None):
+                 shared_folder_id=None,
+                 leave_a_copy=None):
         self._shared_folder_id_value = None
         self._shared_folder_id_present = False
+        self._leave_a_copy_value = None
+        self._leave_a_copy_present = False
         if shared_folder_id is not None:
             self.shared_folder_id = shared_folder_id
+        if leave_a_copy is not None:
+            self.leave_a_copy = leave_a_copy
 
     @property
     def shared_folder_id(self):
@@ -5172,9 +5258,33 @@ class RelinquishFolderMembershipArg(object):
         self._shared_folder_id_value = None
         self._shared_folder_id_present = False
 
+    @property
+    def leave_a_copy(self):
+        """
+        Keep a copy of the folder's contents upon relinquishing membership.
+
+        :rtype: bool
+        """
+        if self._leave_a_copy_present:
+            return self._leave_a_copy_value
+        else:
+            return False
+
+    @leave_a_copy.setter
+    def leave_a_copy(self, val):
+        val = self._leave_a_copy_validator.validate(val)
+        self._leave_a_copy_value = val
+        self._leave_a_copy_present = True
+
+    @leave_a_copy.deleter
+    def leave_a_copy(self):
+        self._leave_a_copy_value = None
+        self._leave_a_copy_present = False
+
     def __repr__(self):
-        return 'RelinquishFolderMembershipArg(shared_folder_id={!r})'.format(
+        return 'RelinquishFolderMembershipArg(shared_folder_id={!r}, leave_a_copy={!r})'.format(
             self._shared_folder_id_value,
+            self._leave_a_copy_value,
         )
 
 RelinquishFolderMembershipArg_validator = bv.Struct(RelinquishFolderMembershipArg)
@@ -6152,7 +6262,8 @@ class SharePathError(bb.Union):
         public link instead.
     :ivar inside_public_folder: A folder inside a public folder can't be shared
         this way. Use a public link instead.
-    :ivar already_shared: Folder is already shared.
+    :ivar SharedFolderMetadata already_shared: Folder is already shared.
+        Contains metadata about the existing shared folder.
     :ivar invalid_path: Path is not valid.
     :ivar is_osx_package: We do not support sharing a Mac OS X package.
     :ivar inside_osx_package: We do not support sharing a folder inside a Mac OS
@@ -6175,8 +6286,6 @@ class SharePathError(bb.Union):
     # Attribute is overwritten below the class definition
     inside_public_folder = None
     # Attribute is overwritten below the class definition
-    already_shared = None
-    # Attribute is overwritten below the class definition
     invalid_path = None
     # Attribute is overwritten below the class definition
     is_osx_package = None
@@ -6184,6 +6293,17 @@ class SharePathError(bb.Union):
     inside_osx_package = None
     # Attribute is overwritten below the class definition
     other = None
+
+    @classmethod
+    def already_shared(cls, val):
+        """
+        Create an instance of this class set to the ``already_shared`` tag with
+        value ``val``.
+
+        :param SharedFolderMetadata val:
+        :rtype: SharePathError
+        """
+        return cls('already_shared', val)
 
     def is_is_file(self):
         """
@@ -6280,6 +6400,19 @@ class SharePathError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def get_already_shared(self):
+        """
+        Folder is already shared. Contains metadata about the existing shared
+        folder.
+
+        Only call this if :meth:`is_already_shared` is true.
+
+        :rtype: SharedFolderMetadata
+        """
+        if not self.is_already_shared():
+            raise AttributeError("tag 'already_shared' not set")
+        return self._value
 
     def __repr__(self):
         return 'SharePathError(%r, %r)' % (self._tag, self._value)
@@ -7470,8 +7603,8 @@ class TransferFolderError(bb.Union):
     :ivar invalid_dropbox_id: ``TransferFolderArg.to_dropbox_id`` is invalid.
     :ivar new_owner_not_a_member: The new designated owner is not currently a
         member of the shared folder.
-    :ivar new_owner_unmounted: The new designated owner does not have the shared
-        folder mounted.
+    :ivar new_owner_unmounted: The new designated owner has not added the folder
+        to their Dropbox.
     :ivar new_owner_email_unverified: The new designated owner's e-mail address
         is unverified.
     :ivar team_folder: This action cannot be performed on a team shared folder.
@@ -8641,17 +8774,20 @@ TeamInfo = users.Team
 AccessLevel._owner_validator = bv.Void()
 AccessLevel._editor_validator = bv.Void()
 AccessLevel._viewer_validator = bv.Void()
+AccessLevel._viewer_no_comment_validator = bv.Void()
 AccessLevel._other_validator = bv.Void()
 AccessLevel._tagmap = {
     'owner': AccessLevel._owner_validator,
     'editor': AccessLevel._editor_validator,
     'viewer': AccessLevel._viewer_validator,
+    'viewer_no_comment': AccessLevel._viewer_no_comment_validator,
     'other': AccessLevel._other_validator,
 }
 
 AccessLevel.owner = AccessLevel('owner')
 AccessLevel.editor = AccessLevel('editor')
 AccessLevel.viewer = AccessLevel('viewer')
+AccessLevel.viewer_no_comment = AccessLevel('viewer_no_comment')
 AccessLevel.other = AccessLevel('other')
 
 AclUpdatePolicy._owner_validator = bv.Void()
@@ -9019,14 +9155,17 @@ GetSharedLinksResult._links_validator = bv.List(LinkMetadata_validator)
 GetSharedLinksResult._all_field_names_ = set(['links'])
 GetSharedLinksResult._all_fields_ = [('links', GetSharedLinksResult._links_validator)]
 
-GroupInfo._group_type_validator = team.GroupType_validator
+GroupInfo._group_type_validator = team_common.GroupType_validator
+GroupInfo._is_owner_validator = bv.Boolean()
 GroupInfo._same_team_validator = bv.Boolean()
-GroupInfo._all_field_names_ = team.GroupSummary._all_field_names_.union(set([
+GroupInfo._all_field_names_ = team_common.GroupSummary._all_field_names_.union(set([
     'group_type',
+    'is_owner',
     'same_team',
 ]))
-GroupInfo._all_fields_ = team.GroupSummary._all_fields_ + [
+GroupInfo._all_fields_ = team_common.GroupSummary._all_fields_ + [
     ('group_type', GroupInfo._group_type_validator),
+    ('is_owner', GroupInfo._is_owner_validator),
     ('same_team', GroupInfo._same_team_validator),
 ]
 
@@ -9073,10 +9212,12 @@ InviteeMembershipInfo._all_fields_ = MembershipInfo._all_fields_ + [
 
 JobError._unshare_folder_error_validator = UnshareFolderError_validator
 JobError._remove_folder_member_error_validator = RemoveFolderMemberError_validator
+JobError._relinquish_folder_membership_error_validator = RelinquishFolderMembershipError_validator
 JobError._other_validator = bv.Void()
 JobError._tagmap = {
     'unshare_folder_error': JobError._unshare_folder_error_validator,
     'remove_folder_member_error': JobError._remove_folder_member_error_validator,
+    'relinquish_folder_membership_error': JobError._relinquish_folder_membership_error_validator,
     'other': JobError._other_validator,
 }
 
@@ -9367,8 +9508,15 @@ PermissionDeniedReason.target_not_active = PermissionDeniedReason('target_not_ac
 PermissionDeniedReason.other = PermissionDeniedReason('other')
 
 RelinquishFolderMembershipArg._shared_folder_id_validator = common.SharedFolderId_validator
-RelinquishFolderMembershipArg._all_field_names_ = set(['shared_folder_id'])
-RelinquishFolderMembershipArg._all_fields_ = [('shared_folder_id', RelinquishFolderMembershipArg._shared_folder_id_validator)]
+RelinquishFolderMembershipArg._leave_a_copy_validator = bv.Boolean()
+RelinquishFolderMembershipArg._all_field_names_ = set([
+    'shared_folder_id',
+    'leave_a_copy',
+])
+RelinquishFolderMembershipArg._all_fields_ = [
+    ('shared_folder_id', RelinquishFolderMembershipArg._shared_folder_id_validator),
+    ('leave_a_copy', RelinquishFolderMembershipArg._leave_a_copy_validator),
+]
 
 RelinquishFolderMembershipError._access_error_validator = SharedFolderAccessError_validator
 RelinquishFolderMembershipError._folder_owner_validator = bv.Void()
@@ -9532,7 +9680,7 @@ SharePathError._is_app_folder_validator = bv.Void()
 SharePathError._inside_app_folder_validator = bv.Void()
 SharePathError._is_public_folder_validator = bv.Void()
 SharePathError._inside_public_folder_validator = bv.Void()
-SharePathError._already_shared_validator = bv.Void()
+SharePathError._already_shared_validator = SharedFolderMetadata_validator
 SharePathError._invalid_path_validator = bv.Void()
 SharePathError._is_osx_package_validator = bv.Void()
 SharePathError._inside_osx_package_validator = bv.Void()
@@ -9559,7 +9707,6 @@ SharePathError.is_app_folder = SharePathError('is_app_folder')
 SharePathError.inside_app_folder = SharePathError('inside_app_folder')
 SharePathError.is_public_folder = SharePathError('is_public_folder')
 SharePathError.inside_public_folder = SharePathError('inside_public_folder')
-SharePathError.already_shared = SharePathError('already_shared')
 SharePathError.invalid_path = SharePathError('invalid_path')
 SharePathError.is_osx_package = SharePathError('is_osx_package')
 SharePathError.inside_osx_package = SharePathError('inside_osx_package')
@@ -9922,8 +10069,8 @@ add_folder_member = bb.Route(
     AddFolderMemberArg_validator,
     bv.Void(),
     AddFolderMemberError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 check_job_status = bb.Route(
     'check_job_status',
@@ -9931,8 +10078,8 @@ check_job_status = bb.Route(
     async.PollArg_validator,
     JobStatus_validator,
     async.PollError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 check_share_job_status = bb.Route(
     'check_share_job_status',
@@ -9940,8 +10087,8 @@ check_share_job_status = bb.Route(
     async.PollArg_validator,
     ShareFolderJobStatus_validator,
     async.PollError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 create_shared_link = bb.Route(
     'create_shared_link',
@@ -9949,8 +10096,8 @@ create_shared_link = bb.Route(
     CreateSharedLinkArg_validator,
     PathLinkMetadata_validator,
     CreateSharedLinkError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 create_shared_link_with_settings = bb.Route(
     'create_shared_link_with_settings',
@@ -9958,8 +10105,8 @@ create_shared_link_with_settings = bb.Route(
     CreateSharedLinkWithSettingsArg_validator,
     SharedLinkMetadata_validator,
     CreateSharedLinkWithSettingsError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 get_folder_metadata = bb.Route(
     'get_folder_metadata',
@@ -9967,8 +10114,8 @@ get_folder_metadata = bb.Route(
     GetMetadataArgs_validator,
     SharedFolderMetadata_validator,
     SharedFolderAccessError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 get_shared_link_file = bb.Route(
     'get_shared_link_file',
@@ -9985,8 +10132,8 @@ get_shared_link_metadata = bb.Route(
     GetSharedLinkMetadataArg_validator,
     SharedLinkMetadata_validator,
     SharedLinkError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 get_shared_links = bb.Route(
     'get_shared_links',
@@ -9994,8 +10141,8 @@ get_shared_links = bb.Route(
     GetSharedLinksArg_validator,
     GetSharedLinksResult_validator,
     GetSharedLinksError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_folder_members = bb.Route(
     'list_folder_members',
@@ -10003,8 +10150,8 @@ list_folder_members = bb.Route(
     ListFolderMembersArgs_validator,
     SharedFolderMembers_validator,
     SharedFolderAccessError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_folder_members_continue = bb.Route(
     'list_folder_members/continue',
@@ -10012,8 +10159,8 @@ list_folder_members_continue = bb.Route(
     ListFolderMembersContinueArg_validator,
     SharedFolderMembers_validator,
     ListFolderMembersContinueError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_folders = bb.Route(
     'list_folders',
@@ -10021,8 +10168,8 @@ list_folders = bb.Route(
     ListFoldersArgs_validator,
     ListFoldersResult_validator,
     bv.Void(),
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_folders_continue = bb.Route(
     'list_folders/continue',
@@ -10030,8 +10177,8 @@ list_folders_continue = bb.Route(
     ListFoldersContinueArg_validator,
     ListFoldersResult_validator,
     ListFoldersContinueError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_mountable_folders = bb.Route(
     'list_mountable_folders',
@@ -10039,8 +10186,8 @@ list_mountable_folders = bb.Route(
     ListFoldersArgs_validator,
     ListFoldersResult_validator,
     bv.Void(),
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_mountable_folders_continue = bb.Route(
     'list_mountable_folders/continue',
@@ -10048,8 +10195,8 @@ list_mountable_folders_continue = bb.Route(
     ListFoldersContinueArg_validator,
     ListFoldersResult_validator,
     ListFoldersContinueError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_shared_links = bb.Route(
     'list_shared_links',
@@ -10057,8 +10204,8 @@ list_shared_links = bb.Route(
     ListSharedLinksArg_validator,
     ListSharedLinksResult_validator,
     ListSharedLinksError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 modify_shared_link_settings = bb.Route(
     'modify_shared_link_settings',
@@ -10066,8 +10213,8 @@ modify_shared_link_settings = bb.Route(
     ModifySharedLinkSettingsArgs_validator,
     SharedLinkMetadata_validator,
     ModifySharedLinkSettingsError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 mount_folder = bb.Route(
     'mount_folder',
@@ -10075,17 +10222,17 @@ mount_folder = bb.Route(
     MountFolderArg_validator,
     SharedFolderMetadata_validator,
     MountFolderError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 relinquish_folder_membership = bb.Route(
     'relinquish_folder_membership',
     False,
     RelinquishFolderMembershipArg_validator,
-    bv.Void(),
+    async.LaunchEmptyResult_validator,
     RelinquishFolderMembershipError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 remove_folder_member = bb.Route(
     'remove_folder_member',
@@ -10093,8 +10240,8 @@ remove_folder_member = bb.Route(
     RemoveFolderMemberArg_validator,
     async.LaunchEmptyResult_validator,
     RemoveFolderMemberError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 revoke_shared_link = bb.Route(
     'revoke_shared_link',
@@ -10102,8 +10249,8 @@ revoke_shared_link = bb.Route(
     RevokeSharedLinkArg_validator,
     bv.Void(),
     RevokeSharedLinkError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 share_folder = bb.Route(
     'share_folder',
@@ -10111,8 +10258,8 @@ share_folder = bb.Route(
     ShareFolderArg_validator,
     ShareFolderLaunch_validator,
     ShareFolderError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 transfer_folder = bb.Route(
     'transfer_folder',
@@ -10120,8 +10267,8 @@ transfer_folder = bb.Route(
     TransferFolderArg_validator,
     bv.Void(),
     TransferFolderError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 unmount_folder = bb.Route(
     'unmount_folder',
@@ -10129,8 +10276,8 @@ unmount_folder = bb.Route(
     UnmountFolderArg_validator,
     bv.Void(),
     UnmountFolderError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 unshare_folder = bb.Route(
     'unshare_folder',
@@ -10138,8 +10285,8 @@ unshare_folder = bb.Route(
     UnshareFolderArg_validator,
     async.LaunchEmptyResult_validator,
     UnshareFolderError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 update_folder_member = bb.Route(
     'update_folder_member',
@@ -10147,8 +10294,8 @@ update_folder_member = bb.Route(
     UpdateFolderMemberArg_validator,
     bv.Void(),
     UpdateFolderMemberError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 update_folder_policy = bb.Route(
     'update_folder_policy',
@@ -10156,8 +10303,8 @@ update_folder_policy = bb.Route(
     UpdateFolderPolicyArg_validator,
     SharedFolderMetadata_validator,
     UpdateFolderPolicyError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 
 ROUTES = {

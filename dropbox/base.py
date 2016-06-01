@@ -10,6 +10,7 @@ from . import (
     properties,
     sharing,
     team,
+    team_common,
     team_policies,
     users,
 )
@@ -538,8 +539,8 @@ class DropboxBase(object):
                                    timeout=30):
         """
         A longpoll endpoint to wait for changes on an account. In conjunction
-        with :meth:`list_folder`, this call gives you a low-latency way to
-        monitor an account for file changes. The connection will block until
+        with :meth:`list_folder_continue`, this call gives you a low-latency way
+        to monitor an account for file changes. The connection will block until
         there are changes available or a timeout occurs. This endpoint is useful
         mostly for client-side apps. If you're looking for server-side
         notifications, check out our `webhooks documentation
@@ -659,6 +660,54 @@ class DropboxBase(object):
                                rev)
         r = self.request(
             files.restore,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_save_url(self,
+                       path,
+                       url):
+        """
+        Save a specified URL into a file in user's Dropbox. If the given path
+        already exists, the file will be renamed to avoid the conflict (e.g.
+        myfile (1).txt).
+
+        :param str path: The path in Dropbox where the URL will be saved to.
+        :param str url: The URL to be saved.
+        :rtype: :class:`dropbox.files.SaveUrlResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.SaveUrlError`
+        """
+        arg = files.SaveUrlArg(path,
+                               url)
+        r = self.request(
+            files.save_url,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_save_url_check_job_status(self,
+                                        async_job_id):
+        """
+        Check the status of a :meth:`save_url` job.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.files.SaveUrlJobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.PollError`
+        """
+        arg = async.PollArg(async_job_id)
+        r = self.request(
+            files.save_url_check_job_status,
             'files',
             arg,
             None,
@@ -1423,28 +1472,34 @@ class DropboxBase(object):
         return r
 
     def sharing_relinquish_folder_membership(self,
-                                             shared_folder_id):
+                                             shared_folder_id,
+                                             leave_a_copy=False):
         """
         The current user relinquishes their membership in the designated shared
         folder and will no longer have access to the folder.  A folder owner
-        cannot relinquish membership in their own folder. Apps must have full
-        Dropbox access to use this endpoint.
+        cannot relinquish membership in their own folder. This will run
+        synchronously if leave_a_copy is false, and asynchronously if
+        leave_a_copy is true. Apps must have full Dropbox access to use this
+        endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
-        :rtype: None
+        :param bool leave_a_copy: Keep a copy of the folder's contents upon
+            relinquishing membership.
+        :rtype: :class:`dropbox.sharing.LaunchEmptyResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.sharing.RelinquishFolderMembershipError`
         """
-        arg = sharing.RelinquishFolderMembershipArg(shared_folder_id)
+        arg = sharing.RelinquishFolderMembershipArg(shared_folder_id,
+                                                    leave_a_copy)
         r = self.request(
             sharing.relinquish_folder_membership,
             'sharing',
             arg,
             None,
         )
-        return None
+        return r
 
     def sharing_remove_folder_member(self,
                                      shared_folder_id,

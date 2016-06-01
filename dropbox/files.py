@@ -15,11 +15,13 @@ except (SystemError, ValueError):
 
 try:
     from . import (
+        async,
         common,
         properties,
         users,
     )
 except (SystemError, ValueError):
+    import async
     import common
     import properties
     import users
@@ -2845,7 +2847,7 @@ ListFolderLongpollError_validator = bv.Union(ListFolderLongpollError)
 class ListFolderLongpollResult(object):
     """
     :ivar changes: Indicates whether new changes are available. If true, call
-        list_folder to retrieve the changes.
+        list_folder/continue to retrieve the changes.
     :ivar backoff: If present, backoff for at least this many seconds before
         calling list_folder/longpoll again.
     """
@@ -2874,8 +2876,8 @@ class ListFolderLongpollResult(object):
     @property
     def changes(self):
         """
-        Indicates whether new changes are available. If true, call list_folder
-        to retrieve the changes.
+        Indicates whether new changes are available. If true, call
+        list_folder/continue to retrieve the changes.
 
         :rtype: bool
         """
@@ -4397,6 +4399,293 @@ class SaveCopyReferenceResult(object):
         )
 
 SaveCopyReferenceResult_validator = bv.Struct(SaveCopyReferenceResult)
+
+class SaveUrlArg(object):
+    """
+    :ivar path: The path in Dropbox where the URL will be saved to.
+    :ivar url: The URL to be saved.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_url_value',
+        '_url_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 url=None):
+        self._path_value = None
+        self._path_present = False
+        self._url_value = None
+        self._url_present = False
+        if path is not None:
+            self.path = path
+        if url is not None:
+            self.url = url
+
+    @property
+    def path(self):
+        """
+        The path in Dropbox where the URL will be saved to.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def url(self):
+        """
+        The URL to be saved.
+
+        :rtype: str
+        """
+        if self._url_present:
+            return self._url_value
+        else:
+            raise AttributeError("missing required field 'url'")
+
+    @url.setter
+    def url(self, val):
+        val = self._url_validator.validate(val)
+        self._url_value = val
+        self._url_present = True
+
+    @url.deleter
+    def url(self):
+        self._url_value = None
+        self._url_present = False
+
+    def __repr__(self):
+        return 'SaveUrlArg(path={!r}, url={!r})'.format(
+            self._path_value,
+            self._url_value,
+        )
+
+SaveUrlArg_validator = bv.Struct(SaveUrlArg)
+
+class SaveUrlError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar download_failed: Failed downloading the given URL.
+    :ivar invalid_url: The given URL is invalid.
+    :ivar not_found: The file where the URL is saved to no longer exists.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    download_failed = None
+    # Attribute is overwritten below the class definition
+    invalid_url = None
+    # Attribute is overwritten below the class definition
+    not_found = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param WriteError val:
+        :rtype: SaveUrlError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_download_failed(self):
+        """
+        Check if the union tag is ``download_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'download_failed'
+
+    def is_invalid_url(self):
+        """
+        Check if the union tag is ``invalid_url``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_url'
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: WriteError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'SaveUrlError(%r, %r)' % (self._tag, self._value)
+
+SaveUrlError_validator = bv.Union(SaveUrlError)
+
+class SaveUrlJobStatus(async.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar FileMetadata complete: Metadata of the file where the URL is saved to.
+    """
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param FileMetadata val:
+        :rtype: SaveUrlJobStatus
+        """
+        return cls('complete', val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param SaveUrlError val:
+        :rtype: SaveUrlJobStatus
+        """
+        return cls('failed', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failed'
+
+    def get_complete(self):
+        """
+        Metadata of the file where the URL is saved to.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: FileMetadata
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: SaveUrlError
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'SaveUrlJobStatus(%r, %r)' % (self._tag, self._value)
+
+SaveUrlJobStatus_validator = bv.Union(SaveUrlJobStatus)
+
+class SaveUrlResult(async.LaunchResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar FileMetadata complete: Metadata of the file where the URL is saved to.
+    """
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param FileMetadata val:
+        :rtype: SaveUrlResult
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def get_complete(self):
+        """
+        Metadata of the file where the URL is saved to.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: FileMetadata
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'SaveUrlResult(%r, %r)' % (self._tag, self._value)
+
+SaveUrlResult_validator = bv.Union(SaveUrlResult)
 
 class SearchArg(object):
     """
@@ -6322,10 +6611,10 @@ WriteMode_validator = bv.Union(WriteMode)
 Id_validator = bv.String(min_length=1)
 ListFolderCursor_validator = bv.String(min_length=1)
 MalformedPathError_validator = bv.Nullable(bv.String())
-Path_validator = bv.String(pattern=u'/.*')
-PathOrId_validator = bv.String(pattern=u'(/|id:).*')
-PathR_validator = bv.String(pattern=u'(/.*)?')
-ReadPath_validator = bv.String(pattern=u'((/|id:).*)|(rev:[0-9a-f]{9,})')
+Path_validator = bv.String(pattern=u'/(.|[\\r\\n])*')
+PathOrId_validator = bv.String(pattern=u'/(.|[\\r\\n])*|id:.*')
+PathR_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?')
+ReadPath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})')
 Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
 CommitInfo._path_validator = Path_validator
 CommitInfo._mode_validator = WriteMode_validator
@@ -6911,6 +7200,49 @@ SaveCopyReferenceResult._metadata_validator = Metadata_validator
 SaveCopyReferenceResult._all_field_names_ = set(['metadata'])
 SaveCopyReferenceResult._all_fields_ = [('metadata', SaveCopyReferenceResult._metadata_validator)]
 
+SaveUrlArg._path_validator = Path_validator
+SaveUrlArg._url_validator = bv.String()
+SaveUrlArg._all_field_names_ = set([
+    'path',
+    'url',
+])
+SaveUrlArg._all_fields_ = [
+    ('path', SaveUrlArg._path_validator),
+    ('url', SaveUrlArg._url_validator),
+]
+
+SaveUrlError._path_validator = WriteError_validator
+SaveUrlError._download_failed_validator = bv.Void()
+SaveUrlError._invalid_url_validator = bv.Void()
+SaveUrlError._not_found_validator = bv.Void()
+SaveUrlError._other_validator = bv.Void()
+SaveUrlError._tagmap = {
+    'path': SaveUrlError._path_validator,
+    'download_failed': SaveUrlError._download_failed_validator,
+    'invalid_url': SaveUrlError._invalid_url_validator,
+    'not_found': SaveUrlError._not_found_validator,
+    'other': SaveUrlError._other_validator,
+}
+
+SaveUrlError.download_failed = SaveUrlError('download_failed')
+SaveUrlError.invalid_url = SaveUrlError('invalid_url')
+SaveUrlError.not_found = SaveUrlError('not_found')
+SaveUrlError.other = SaveUrlError('other')
+
+SaveUrlJobStatus._complete_validator = FileMetadata_validator
+SaveUrlJobStatus._failed_validator = SaveUrlError_validator
+SaveUrlJobStatus._tagmap = {
+    'complete': SaveUrlJobStatus._complete_validator,
+    'failed': SaveUrlJobStatus._failed_validator,
+}
+SaveUrlJobStatus._tagmap.update(async.PollResultBase._tagmap)
+
+SaveUrlResult._complete_validator = FileMetadata_validator
+SaveUrlResult._tagmap = {
+    'complete': SaveUrlResult._complete_validator,
+}
+SaveUrlResult._tagmap.update(async.LaunchResultBase._tagmap)
+
 SearchArg._path_validator = PathR_validator
 SearchArg._query_validator = bv.String()
 SearchArg._start_validator = bv.UInt64()
@@ -7206,8 +7538,8 @@ copy = bb.Route(
     RelocationArg_validator,
     Metadata_validator,
     RelocationError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 copy_reference_get = bb.Route(
     'copy_reference/get',
@@ -7215,8 +7547,8 @@ copy_reference_get = bb.Route(
     GetCopyReferenceArg_validator,
     GetCopyReferenceResult_validator,
     GetCopyReferenceError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 copy_reference_save = bb.Route(
     'copy_reference/save',
@@ -7224,8 +7556,8 @@ copy_reference_save = bb.Route(
     SaveCopyReferenceArg_validator,
     SaveCopyReferenceResult_validator,
     SaveCopyReferenceError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 create_folder = bb.Route(
     'create_folder',
@@ -7233,8 +7565,8 @@ create_folder = bb.Route(
     CreateFolderArg_validator,
     FolderMetadata_validator,
     CreateFolderError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 delete = bb.Route(
     'delete',
@@ -7242,8 +7574,8 @@ delete = bb.Route(
     DeleteArg_validator,
     Metadata_validator,
     DeleteError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 download = bb.Route(
     'download',
@@ -7260,8 +7592,8 @@ get_metadata = bb.Route(
     GetMetadataArg_validator,
     Metadata_validator,
     GetMetadataError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 get_preview = bb.Route(
     'get_preview',
@@ -7278,8 +7610,8 @@ get_temporary_link = bb.Route(
     GetTemporaryLinkArg_validator,
     GetTemporaryLinkResult_validator,
     GetTemporaryLinkError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 get_thumbnail = bb.Route(
     'get_thumbnail',
@@ -7296,8 +7628,8 @@ list_folder = bb.Route(
     ListFolderArg_validator,
     ListFolderResult_validator,
     ListFolderError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_folder_continue = bb.Route(
     'list_folder/continue',
@@ -7305,8 +7637,8 @@ list_folder_continue = bb.Route(
     ListFolderContinueArg_validator,
     ListFolderResult_validator,
     ListFolderContinueError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_folder_get_latest_cursor = bb.Route(
     'list_folder/get_latest_cursor',
@@ -7314,8 +7646,8 @@ list_folder_get_latest_cursor = bb.Route(
     ListFolderArg_validator,
     ListFolderGetLatestCursorResult_validator,
     ListFolderError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 list_folder_longpoll = bb.Route(
     'list_folder/longpoll',
@@ -7324,7 +7656,7 @@ list_folder_longpoll = bb.Route(
     ListFolderLongpollResult_validator,
     ListFolderLongpollError_validator,
     {'host': u'notify',
-     'style': None},
+     'style': u'rpc'},
 )
 list_revisions = bb.Route(
     'list_revisions',
@@ -7332,8 +7664,8 @@ list_revisions = bb.Route(
     ListRevisionsArg_validator,
     ListRevisionsResult_validator,
     ListRevisionsError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 move = bb.Route(
     'move',
@@ -7341,8 +7673,8 @@ move = bb.Route(
     RelocationArg_validator,
     Metadata_validator,
     RelocationError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 permanently_delete = bb.Route(
     'permanently_delete',
@@ -7350,8 +7682,8 @@ permanently_delete = bb.Route(
     DeleteArg_validator,
     bv.Void(),
     DeleteError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 restore = bb.Route(
     'restore',
@@ -7359,8 +7691,26 @@ restore = bb.Route(
     RestoreArg_validator,
     FileMetadata_validator,
     RestoreError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
+)
+save_url = bb.Route(
+    'save_url',
+    False,
+    SaveUrlArg_validator,
+    SaveUrlResult_validator,
+    SaveUrlError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+save_url_check_job_status = bb.Route(
+    'save_url/check_job_status',
+    False,
+    async.PollArg_validator,
+    SaveUrlJobStatus_validator,
+    async.PollError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
 )
 search = bb.Route(
     'search',
@@ -7368,8 +7718,8 @@ search = bb.Route(
     SearchArg_validator,
     SearchResult_validator,
     SearchError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 upload = bb.Route(
     'upload',
@@ -7436,6 +7786,8 @@ ROUTES = {
     'move': move,
     'permanently_delete': permanently_delete,
     'restore': restore,
+    'save_url': save_url,
+    'save_url/check_job_status': save_url_check_job_status,
     'search': search,
     'upload': upload,
     'upload_session/append': upload_session_append,

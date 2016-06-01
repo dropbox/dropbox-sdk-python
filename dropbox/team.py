@@ -14,6 +14,7 @@ try:
         async,
         common,
         properties,
+        team_common,
         team_policies,
         users,
     )
@@ -21,6 +22,7 @@ except (SystemError, ValueError):
     import async
     import common
     import properties
+    import team_common
     import team_policies
     import users
 
@@ -484,6 +486,694 @@ class AdminTier(bb.Union):
         return 'AdminTier(%r, %r)' % (self._tag, self._value)
 
 AdminTier_validator = bv.Union(AdminTier)
+
+class GroupCreateArg(object):
+    """
+    :ivar group_name: Group name.
+    :ivar group_external_id: The creator of a team can associate an arbitrary
+        external ID to the group.
+    """
+
+    __slots__ = [
+        '_group_name_value',
+        '_group_name_present',
+        '_group_external_id_value',
+        '_group_external_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 group_name=None,
+                 group_external_id=None):
+        self._group_name_value = None
+        self._group_name_present = False
+        self._group_external_id_value = None
+        self._group_external_id_present = False
+        if group_name is not None:
+            self.group_name = group_name
+        if group_external_id is not None:
+            self.group_external_id = group_external_id
+
+    @property
+    def group_name(self):
+        """
+        Group name.
+
+        :rtype: str
+        """
+        if self._group_name_present:
+            return self._group_name_value
+        else:
+            raise AttributeError("missing required field 'group_name'")
+
+    @group_name.setter
+    def group_name(self, val):
+        val = self._group_name_validator.validate(val)
+        self._group_name_value = val
+        self._group_name_present = True
+
+    @group_name.deleter
+    def group_name(self):
+        self._group_name_value = None
+        self._group_name_present = False
+
+    @property
+    def group_external_id(self):
+        """
+        The creator of a team can associate an arbitrary external ID to the
+        group.
+
+        :rtype: str
+        """
+        if self._group_external_id_present:
+            return self._group_external_id_value
+        else:
+            return None
+
+    @group_external_id.setter
+    def group_external_id(self, val):
+        if val is None:
+            del self.group_external_id
+            return
+        val = self._group_external_id_validator.validate(val)
+        self._group_external_id_value = val
+        self._group_external_id_present = True
+
+    @group_external_id.deleter
+    def group_external_id(self):
+        self._group_external_id_value = None
+        self._group_external_id_present = False
+
+    def __repr__(self):
+        return 'GroupCreateArg(group_name={!r}, group_external_id={!r})'.format(
+            self._group_name_value,
+            self._group_external_id_value,
+        )
+
+GroupCreateArg_validator = bv.Struct(GroupCreateArg)
+
+class AlphaGroupCreateArg(GroupCreateArg):
+    """
+    :ivar group_management_type: Whether the team can be managed by selected
+        users, or only by team admins
+    """
+
+    __slots__ = [
+        '_group_management_type_value',
+        '_group_management_type_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 group_name=None,
+                 group_external_id=None,
+                 group_management_type=None):
+        super(AlphaGroupCreateArg, self).__init__(group_name,
+                                                  group_external_id)
+        self._group_management_type_value = None
+        self._group_management_type_present = False
+        if group_management_type is not None:
+            self.group_management_type = group_management_type
+
+    @property
+    def group_management_type(self):
+        """
+        Whether the team can be managed by selected users, or only by team
+        admins
+
+        :rtype: team_common.GroupManagementType_validator
+        """
+        if self._group_management_type_present:
+            return self._group_management_type_value
+        else:
+            return team_common.GroupManagementType.company_managed
+
+    @group_management_type.setter
+    def group_management_type(self, val):
+        self._group_management_type_validator.validate_type_only(val)
+        self._group_management_type_value = val
+        self._group_management_type_present = True
+
+    @group_management_type.deleter
+    def group_management_type(self):
+        self._group_management_type_value = None
+        self._group_management_type_present = False
+
+    def __repr__(self):
+        return 'AlphaGroupCreateArg(group_name={!r}, group_external_id={!r}, group_management_type={!r})'.format(
+            self._group_name_value,
+            self._group_external_id_value,
+            self._group_management_type_value,
+        )
+
+AlphaGroupCreateArg_validator = bv.Struct(AlphaGroupCreateArg)
+
+class AlphaGroupFullInfo(team_common.AlphaGroupSummary):
+    """
+    Full description of a group.
+
+    :ivar members: List of group members.
+    :ivar created: The group creation time as a UTC timestamp in milliseconds
+        since the Unix epoch.
+    """
+
+    __slots__ = [
+        '_members_value',
+        '_members_present',
+        '_created_value',
+        '_created_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 group_name=None,
+                 group_id=None,
+                 group_management_type=None,
+                 created=None,
+                 group_external_id=None,
+                 member_count=None,
+                 members=None):
+        super(AlphaGroupFullInfo, self).__init__(group_name,
+                                                 group_id,
+                                                 group_management_type,
+                                                 group_external_id,
+                                                 member_count)
+        self._members_value = None
+        self._members_present = False
+        self._created_value = None
+        self._created_present = False
+        if members is not None:
+            self.members = members
+        if created is not None:
+            self.created = created
+
+    @property
+    def members(self):
+        """
+        List of group members.
+
+        :rtype: list of [GroupMemberInfo]
+        """
+        if self._members_present:
+            return self._members_value
+        else:
+            return None
+
+    @members.setter
+    def members(self, val):
+        if val is None:
+            del self.members
+            return
+        val = self._members_validator.validate(val)
+        self._members_value = val
+        self._members_present = True
+
+    @members.deleter
+    def members(self):
+        self._members_value = None
+        self._members_present = False
+
+    @property
+    def created(self):
+        """
+        The group creation time as a UTC timestamp in milliseconds since the
+        Unix epoch.
+
+        :rtype: long
+        """
+        if self._created_present:
+            return self._created_value
+        else:
+            raise AttributeError("missing required field 'created'")
+
+    @created.setter
+    def created(self, val):
+        val = self._created_validator.validate(val)
+        self._created_value = val
+        self._created_present = True
+
+    @created.deleter
+    def created(self):
+        self._created_value = None
+        self._created_present = False
+
+    def __repr__(self):
+        return 'AlphaGroupFullInfo(group_name={!r}, group_id={!r}, group_management_type={!r}, created={!r}, group_external_id={!r}, member_count={!r}, members={!r})'.format(
+            self._group_name_value,
+            self._group_id_value,
+            self._group_management_type_value,
+            self._created_value,
+            self._group_external_id_value,
+            self._member_count_value,
+            self._members_value,
+        )
+
+AlphaGroupFullInfo_validator = bv.Struct(AlphaGroupFullInfo)
+
+class IncludeMembersArg(object):
+    """
+    :ivar return_members: Whether to return the list of members in the group.
+        Note that the default value will cause all the group members  to be
+        returned in the response. This may take a long time for large groups.
+    """
+
+    __slots__ = [
+        '_return_members_value',
+        '_return_members_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 return_members=None):
+        self._return_members_value = None
+        self._return_members_present = False
+        if return_members is not None:
+            self.return_members = return_members
+
+    @property
+    def return_members(self):
+        """
+        Whether to return the list of members in the group.  Note that the
+        default value will cause all the group members  to be returned in the
+        response. This may take a long time for large groups.
+
+        :rtype: bool
+        """
+        if self._return_members_present:
+            return self._return_members_value
+        else:
+            return True
+
+    @return_members.setter
+    def return_members(self, val):
+        val = self._return_members_validator.validate(val)
+        self._return_members_value = val
+        self._return_members_present = True
+
+    @return_members.deleter
+    def return_members(self):
+        self._return_members_value = None
+        self._return_members_present = False
+
+    def __repr__(self):
+        return 'IncludeMembersArg(return_members={!r})'.format(
+            self._return_members_value,
+        )
+
+IncludeMembersArg_validator = bv.Struct(IncludeMembersArg)
+
+class GroupUpdateArgs(IncludeMembersArg):
+    """
+    :ivar group: Specify a group.
+    :ivar new_group_name: Optional argument. Set group name to this if provided.
+    :ivar new_group_external_id: Optional argument. New group external ID. If
+        the argument is None, the group's external_id won't be updated. If the
+        argument is empty string, the group's external id will be cleared.
+    """
+
+    __slots__ = [
+        '_group_value',
+        '_group_present',
+        '_new_group_name_value',
+        '_new_group_name_present',
+        '_new_group_external_id_value',
+        '_new_group_external_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 group=None,
+                 return_members=None,
+                 new_group_name=None,
+                 new_group_external_id=None):
+        super(GroupUpdateArgs, self).__init__(return_members)
+        self._group_value = None
+        self._group_present = False
+        self._new_group_name_value = None
+        self._new_group_name_present = False
+        self._new_group_external_id_value = None
+        self._new_group_external_id_present = False
+        if group is not None:
+            self.group = group
+        if new_group_name is not None:
+            self.new_group_name = new_group_name
+        if new_group_external_id is not None:
+            self.new_group_external_id = new_group_external_id
+
+    @property
+    def group(self):
+        """
+        Specify a group.
+
+        :rtype: GroupSelector
+        """
+        if self._group_present:
+            return self._group_value
+        else:
+            raise AttributeError("missing required field 'group'")
+
+    @group.setter
+    def group(self, val):
+        self._group_validator.validate_type_only(val)
+        self._group_value = val
+        self._group_present = True
+
+    @group.deleter
+    def group(self):
+        self._group_value = None
+        self._group_present = False
+
+    @property
+    def new_group_name(self):
+        """
+        Optional argument. Set group name to this if provided.
+
+        :rtype: str
+        """
+        if self._new_group_name_present:
+            return self._new_group_name_value
+        else:
+            return None
+
+    @new_group_name.setter
+    def new_group_name(self, val):
+        if val is None:
+            del self.new_group_name
+            return
+        val = self._new_group_name_validator.validate(val)
+        self._new_group_name_value = val
+        self._new_group_name_present = True
+
+    @new_group_name.deleter
+    def new_group_name(self):
+        self._new_group_name_value = None
+        self._new_group_name_present = False
+
+    @property
+    def new_group_external_id(self):
+        """
+        Optional argument. New group external ID. If the argument is None, the
+        group's external_id won't be updated. If the argument is empty string,
+        the group's external id will be cleared.
+
+        :rtype: str
+        """
+        if self._new_group_external_id_present:
+            return self._new_group_external_id_value
+        else:
+            return None
+
+    @new_group_external_id.setter
+    def new_group_external_id(self, val):
+        if val is None:
+            del self.new_group_external_id
+            return
+        val = self._new_group_external_id_validator.validate(val)
+        self._new_group_external_id_value = val
+        self._new_group_external_id_present = True
+
+    @new_group_external_id.deleter
+    def new_group_external_id(self):
+        self._new_group_external_id_value = None
+        self._new_group_external_id_present = False
+
+    def __repr__(self):
+        return 'GroupUpdateArgs(group={!r}, return_members={!r}, new_group_name={!r}, new_group_external_id={!r})'.format(
+            self._group_value,
+            self._return_members_value,
+            self._new_group_name_value,
+            self._new_group_external_id_value,
+        )
+
+GroupUpdateArgs_validator = bv.Struct(GroupUpdateArgs)
+
+class AlphaGroupUpdateArgs(GroupUpdateArgs):
+    """
+    :ivar new_group_management_type: Set new group management type, if provided.
+    """
+
+    __slots__ = [
+        '_new_group_management_type_value',
+        '_new_group_management_type_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 group=None,
+                 return_members=None,
+                 new_group_name=None,
+                 new_group_external_id=None,
+                 new_group_management_type=None):
+        super(AlphaGroupUpdateArgs, self).__init__(group,
+                                                   return_members,
+                                                   new_group_name,
+                                                   new_group_external_id)
+        self._new_group_management_type_value = None
+        self._new_group_management_type_present = False
+        if new_group_management_type is not None:
+            self.new_group_management_type = new_group_management_type
+
+    @property
+    def new_group_management_type(self):
+        """
+        Set new group management type, if provided.
+
+        :rtype: team_common.GroupManagementType_validator
+        """
+        if self._new_group_management_type_present:
+            return self._new_group_management_type_value
+        else:
+            return None
+
+    @new_group_management_type.setter
+    def new_group_management_type(self, val):
+        if val is None:
+            del self.new_group_management_type
+            return
+        self._new_group_management_type_validator.validate_type_only(val)
+        self._new_group_management_type_value = val
+        self._new_group_management_type_present = True
+
+    @new_group_management_type.deleter
+    def new_group_management_type(self):
+        self._new_group_management_type_value = None
+        self._new_group_management_type_present = False
+
+    def __repr__(self):
+        return 'AlphaGroupUpdateArgs(group={!r}, return_members={!r}, new_group_name={!r}, new_group_external_id={!r}, new_group_management_type={!r})'.format(
+            self._group_value,
+            self._return_members_value,
+            self._new_group_name_value,
+            self._new_group_external_id_value,
+            self._new_group_management_type_value,
+        )
+
+AlphaGroupUpdateArgs_validator = bv.Struct(AlphaGroupUpdateArgs)
+
+class AlphaGroupsGetInfoItem(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar str id_not_found: An ID that was provided as a parameter to
+        :route:`alpha/groups/get_info`, and did not match a corresponding group.
+        The ID can be a group ID, or an external ID, depending on how the method
+        was called.
+    :ivar AlphaGroupFullInfo group_info: Info about a group.
+    """
+
+    _catch_all = None
+
+    @classmethod
+    def id_not_found(cls, val):
+        """
+        Create an instance of this class set to the ``id_not_found`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: AlphaGroupsGetInfoItem
+        """
+        return cls('id_not_found', val)
+
+    @classmethod
+    def group_info(cls, val):
+        """
+        Create an instance of this class set to the ``group_info`` tag with
+        value ``val``.
+
+        :param AlphaGroupFullInfo val:
+        :rtype: AlphaGroupsGetInfoItem
+        """
+        return cls('group_info', val)
+
+    def is_id_not_found(self):
+        """
+        Check if the union tag is ``id_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'id_not_found'
+
+    def is_group_info(self):
+        """
+        Check if the union tag is ``group_info``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_info'
+
+    def get_id_not_found(self):
+        """
+        An ID that was provided as a parameter to alpha/groups/get_info, and did
+        not match a corresponding group. The ID can be a group ID, or an
+        external ID, depending on how the method was called.
+
+        Only call this if :meth:`is_id_not_found` is true.
+
+        :rtype: str
+        """
+        if not self.is_id_not_found():
+            raise AttributeError("tag 'id_not_found' not set")
+        return self._value
+
+    def get_group_info(self):
+        """
+        Info about a group.
+
+        Only call this if :meth:`is_group_info` is true.
+
+        :rtype: AlphaGroupFullInfo
+        """
+        if not self.is_group_info():
+            raise AttributeError("tag 'group_info' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'AlphaGroupsGetInfoItem(%r, %r)' % (self._tag, self._value)
+
+AlphaGroupsGetInfoItem_validator = bv.Union(AlphaGroupsGetInfoItem)
+
+class AlphaGroupsListResult(object):
+    """
+    :ivar cursor: Pass the cursor into alpha/groups/list/continue to obtain the
+        additional groups.
+    :ivar has_more: Is true if there are additional groups that have not been
+        returned yet. An additional call to alpha/groups/list/continue can
+        retrieve them.
+    """
+
+    __slots__ = [
+        '_groups_value',
+        '_groups_present',
+        '_cursor_value',
+        '_cursor_present',
+        '_has_more_value',
+        '_has_more_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 groups=None,
+                 cursor=None,
+                 has_more=None):
+        self._groups_value = None
+        self._groups_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        self._has_more_value = None
+        self._has_more_present = False
+        if groups is not None:
+            self.groups = groups
+        if cursor is not None:
+            self.cursor = cursor
+        if has_more is not None:
+            self.has_more = has_more
+
+    @property
+    def groups(self):
+        """
+        :rtype: list of [team_common.AlphaGroupSummary_validator]
+        """
+        if self._groups_present:
+            return self._groups_value
+        else:
+            raise AttributeError("missing required field 'groups'")
+
+    @groups.setter
+    def groups(self, val):
+        val = self._groups_validator.validate(val)
+        self._groups_value = val
+        self._groups_present = True
+
+    @groups.deleter
+    def groups(self):
+        self._groups_value = None
+        self._groups_present = False
+
+    @property
+    def cursor(self):
+        """
+        Pass the cursor into alpha/groups/list/continue to obtain the additional
+        groups.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def has_more(self):
+        """
+        Is true if there are additional groups that have not been returned yet.
+        An additional call to alpha/groups/list/continue can retrieve them.
+
+        :rtype: bool
+        """
+        if self._has_more_present:
+            return self._has_more_value
+        else:
+            raise AttributeError("missing required field 'has_more'")
+
+    @has_more.setter
+    def has_more(self, val):
+        val = self._has_more_validator.validate(val)
+        self._has_more_value = val
+        self._has_more_present = True
+
+    @has_more.deleter
+    def has_more(self):
+        self._has_more_value = None
+        self._has_more_present = False
+
+    def __repr__(self):
+        return 'AlphaGroupsListResult(groups={!r}, cursor={!r}, has_more={!r})'.format(
+            self._groups_value,
+            self._cursor_value,
+            self._has_more_value,
+        )
+
+AlphaGroupsListResult_validator = bv.Struct(AlphaGroupsListResult)
 
 class ApiApp(object):
     """
@@ -2466,7 +3156,7 @@ class GroupAccessType(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar member: User is a member of the group, but has no special permissions.
-    :ivar owner: A group owner can rename the group, and add/remove members.
+    :ivar owner: User can rename the group, and add/remove members.
     """
 
     _catch_all = None
@@ -2495,92 +3185,6 @@ class GroupAccessType(bb.Union):
         return 'GroupAccessType(%r, %r)' % (self._tag, self._value)
 
 GroupAccessType_validator = bv.Union(GroupAccessType)
-
-class GroupCreateArg(object):
-    """
-    :ivar group_name: Group name.
-    :ivar group_external_id: Optional argument. The creator of a team can
-        associate an arbitrary external ID to the group.
-    """
-
-    __slots__ = [
-        '_group_name_value',
-        '_group_name_present',
-        '_group_external_id_value',
-        '_group_external_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 group_name=None,
-                 group_external_id=None):
-        self._group_name_value = None
-        self._group_name_present = False
-        self._group_external_id_value = None
-        self._group_external_id_present = False
-        if group_name is not None:
-            self.group_name = group_name
-        if group_external_id is not None:
-            self.group_external_id = group_external_id
-
-    @property
-    def group_name(self):
-        """
-        Group name.
-
-        :rtype: str
-        """
-        if self._group_name_present:
-            return self._group_name_value
-        else:
-            raise AttributeError("missing required field 'group_name'")
-
-    @group_name.setter
-    def group_name(self, val):
-        val = self._group_name_validator.validate(val)
-        self._group_name_value = val
-        self._group_name_present = True
-
-    @group_name.deleter
-    def group_name(self):
-        self._group_name_value = None
-        self._group_name_present = False
-
-    @property
-    def group_external_id(self):
-        """
-        Optional argument. The creator of a team can associate an arbitrary
-        external ID to the group.
-
-        :rtype: str
-        """
-        if self._group_external_id_present:
-            return self._group_external_id_value
-        else:
-            return None
-
-    @group_external_id.setter
-    def group_external_id(self, val):
-        if val is None:
-            del self.group_external_id
-            return
-        val = self._group_external_id_validator.validate(val)
-        self._group_external_id_value = val
-        self._group_external_id_present = True
-
-    @group_external_id.deleter
-    def group_external_id(self):
-        self._group_external_id_value = None
-        self._group_external_id_present = False
-
-    def __repr__(self):
-        return 'GroupCreateArg(group_name={!r}, group_external_id={!r})'.format(
-            self._group_name_value,
-            self._group_external_id_value,
-        )
-
-GroupCreateArg_validator = bv.Struct(GroupCreateArg)
 
 class GroupCreateError(bb.Union):
     """
@@ -2706,156 +3310,7 @@ class GroupDeleteError(GroupSelectorError):
 
 GroupDeleteError_validator = bv.Union(GroupDeleteError)
 
-class GroupSummary(object):
-    """
-    Information about a group.
-
-    :ivar group_external_id: External ID of group. This is an arbitrary ID that
-        an admin can attach to a group.
-    :ivar member_count: The number of members in the group.
-    """
-
-    __slots__ = [
-        '_group_name_value',
-        '_group_name_present',
-        '_group_id_value',
-        '_group_id_present',
-        '_group_external_id_value',
-        '_group_external_id_present',
-        '_member_count_value',
-        '_member_count_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 group_name=None,
-                 group_id=None,
-                 group_external_id=None,
-                 member_count=None):
-        self._group_name_value = None
-        self._group_name_present = False
-        self._group_id_value = None
-        self._group_id_present = False
-        self._group_external_id_value = None
-        self._group_external_id_present = False
-        self._member_count_value = None
-        self._member_count_present = False
-        if group_name is not None:
-            self.group_name = group_name
-        if group_id is not None:
-            self.group_id = group_id
-        if group_external_id is not None:
-            self.group_external_id = group_external_id
-        if member_count is not None:
-            self.member_count = member_count
-
-    @property
-    def group_name(self):
-        """
-        :rtype: str
-        """
-        if self._group_name_present:
-            return self._group_name_value
-        else:
-            raise AttributeError("missing required field 'group_name'")
-
-    @group_name.setter
-    def group_name(self, val):
-        val = self._group_name_validator.validate(val)
-        self._group_name_value = val
-        self._group_name_present = True
-
-    @group_name.deleter
-    def group_name(self):
-        self._group_name_value = None
-        self._group_name_present = False
-
-    @property
-    def group_id(self):
-        """
-        :rtype: str
-        """
-        if self._group_id_present:
-            return self._group_id_value
-        else:
-            raise AttributeError("missing required field 'group_id'")
-
-    @group_id.setter
-    def group_id(self, val):
-        val = self._group_id_validator.validate(val)
-        self._group_id_value = val
-        self._group_id_present = True
-
-    @group_id.deleter
-    def group_id(self):
-        self._group_id_value = None
-        self._group_id_present = False
-
-    @property
-    def group_external_id(self):
-        """
-        External ID of group. This is an arbitrary ID that an admin can attach
-        to a group.
-
-        :rtype: str
-        """
-        if self._group_external_id_present:
-            return self._group_external_id_value
-        else:
-            return None
-
-    @group_external_id.setter
-    def group_external_id(self, val):
-        if val is None:
-            del self.group_external_id
-            return
-        val = self._group_external_id_validator.validate(val)
-        self._group_external_id_value = val
-        self._group_external_id_present = True
-
-    @group_external_id.deleter
-    def group_external_id(self):
-        self._group_external_id_value = None
-        self._group_external_id_present = False
-
-    @property
-    def member_count(self):
-        """
-        The number of members in the group.
-
-        :rtype: long
-        """
-        if self._member_count_present:
-            return self._member_count_value
-        else:
-            return None
-
-    @member_count.setter
-    def member_count(self, val):
-        if val is None:
-            del self.member_count
-            return
-        val = self._member_count_validator.validate(val)
-        self._member_count_value = val
-        self._member_count_present = True
-
-    @member_count.deleter
-    def member_count(self):
-        self._member_count_value = None
-        self._member_count_present = False
-
-    def __repr__(self):
-        return 'GroupSummary(group_name={!r}, group_id={!r}, group_external_id={!r}, member_count={!r})'.format(
-            self._group_name_value,
-            self._group_id_value,
-            self._group_external_id_value,
-            self._member_count_value,
-        )
-
-GroupSummary_validator = bv.Struct(GroupSummary)
-
-class GroupFullInfo(GroupSummary):
+class GroupFullInfo(team_common.GroupSummary):
     """
     Full description of a group.
 
@@ -3175,59 +3630,6 @@ class GroupMemberSetAccessTypeError(GroupMemberSelectorError):
 
 GroupMemberSetAccessTypeError_validator = bv.Union(GroupMemberSetAccessTypeError)
 
-class IncludeMembersArg(object):
-    """
-    :ivar return_members: Whether to return the list of members in the group.
-        Note that the default value will cause all the group members  to be
-        returned in the response. This may take a long time for large groups.
-    """
-
-    __slots__ = [
-        '_return_members_value',
-        '_return_members_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 return_members=None):
-        self._return_members_value = None
-        self._return_members_present = False
-        if return_members is not None:
-            self.return_members = return_members
-
-    @property
-    def return_members(self):
-        """
-        Whether to return the list of members in the group.  Note that the
-        default value will cause all the group members  to be returned in the
-        response. This may take a long time for large groups.
-
-        :rtype: bool
-        """
-        if self._return_members_present:
-            return self._return_members_value
-        else:
-            return True
-
-    @return_members.setter
-    def return_members(self, val):
-        val = self._return_members_validator.validate(val)
-        self._return_members_value = val
-        self._return_members_present = True
-
-    @return_members.deleter
-    def return_members(self):
-        self._return_members_value = None
-        self._return_members_present = False
-
-    def __repr__(self):
-        return 'IncludeMembersArg(return_members={!r})'.format(
-            self._return_members_value,
-        )
-
-IncludeMembersArg_validator = bv.Struct(IncludeMembersArg)
-
 class GroupMembersAddArg(IncludeMembersArg):
     """
     :ivar group: Group to which users will be added.
@@ -3329,7 +3731,7 @@ class GroupMembersAddError(GroupSelectorError):
         endpoint.
     :ivar list of [str] users_not_found: These users were not found in Dropbox.
     :ivar user_must_be_active_to_be_owner: A suspended user cannot be added to a
-        group as owner.
+        group as ``GroupAccessType.owner``.
     :ivar list of [str] user_cannot_be_manager_of_company_managed_group: A
         company-managed group cannot be managed by a user.
     """
@@ -3948,182 +4350,6 @@ class GroupSelector(bb.Union):
 
 GroupSelector_validator = bv.Union(GroupSelector)
 
-class GroupType(bb.Union):
-    """
-    The group type determines how a group is created and managed.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar team: A group to which team members are automatically added.
-        Applicable to `team folders <https://www.dropbox.com/help/986>`_ only.
-    :ivar user_managed: A group is created and managed by a user.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    team = None
-    # Attribute is overwritten below the class definition
-    user_managed = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_team(self):
-        """
-        Check if the union tag is ``team``.
-
-        :rtype: bool
-        """
-        return self._tag == 'team'
-
-    def is_user_managed(self):
-        """
-        Check if the union tag is ``user_managed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'user_managed'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'GroupType(%r, %r)' % (self._tag, self._value)
-
-GroupType_validator = bv.Union(GroupType)
-
-class GroupUpdateArgs(IncludeMembersArg):
-    """
-    :ivar group: Specify a group.
-    :ivar new_group_name: Optional argument. Set group name to this if provided.
-    :ivar new_group_external_id: Optional argument. New group external ID. If
-        the argument is None, the group's external_id won't be updated. If the
-        argument is empty string, the group's external id will be cleared.
-    """
-
-    __slots__ = [
-        '_group_value',
-        '_group_present',
-        '_new_group_name_value',
-        '_new_group_name_present',
-        '_new_group_external_id_value',
-        '_new_group_external_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 group=None,
-                 return_members=None,
-                 new_group_name=None,
-                 new_group_external_id=None):
-        super(GroupUpdateArgs, self).__init__(return_members)
-        self._group_value = None
-        self._group_present = False
-        self._new_group_name_value = None
-        self._new_group_name_present = False
-        self._new_group_external_id_value = None
-        self._new_group_external_id_present = False
-        if group is not None:
-            self.group = group
-        if new_group_name is not None:
-            self.new_group_name = new_group_name
-        if new_group_external_id is not None:
-            self.new_group_external_id = new_group_external_id
-
-    @property
-    def group(self):
-        """
-        Specify a group.
-
-        :rtype: GroupSelector
-        """
-        if self._group_present:
-            return self._group_value
-        else:
-            raise AttributeError("missing required field 'group'")
-
-    @group.setter
-    def group(self, val):
-        self._group_validator.validate_type_only(val)
-        self._group_value = val
-        self._group_present = True
-
-    @group.deleter
-    def group(self):
-        self._group_value = None
-        self._group_present = False
-
-    @property
-    def new_group_name(self):
-        """
-        Optional argument. Set group name to this if provided.
-
-        :rtype: str
-        """
-        if self._new_group_name_present:
-            return self._new_group_name_value
-        else:
-            return None
-
-    @new_group_name.setter
-    def new_group_name(self, val):
-        if val is None:
-            del self.new_group_name
-            return
-        val = self._new_group_name_validator.validate(val)
-        self._new_group_name_value = val
-        self._new_group_name_present = True
-
-    @new_group_name.deleter
-    def new_group_name(self):
-        self._new_group_name_value = None
-        self._new_group_name_present = False
-
-    @property
-    def new_group_external_id(self):
-        """
-        Optional argument. New group external ID. If the argument is None, the
-        group's external_id won't be updated. If the argument is empty string,
-        the group's external id will be cleared.
-
-        :rtype: str
-        """
-        if self._new_group_external_id_present:
-            return self._new_group_external_id_value
-        else:
-            return None
-
-    @new_group_external_id.setter
-    def new_group_external_id(self, val):
-        if val is None:
-            del self.new_group_external_id
-            return
-        val = self._new_group_external_id_validator.validate(val)
-        self._new_group_external_id_value = val
-        self._new_group_external_id_present = True
-
-    @new_group_external_id.deleter
-    def new_group_external_id(self):
-        self._new_group_external_id_value = None
-        self._new_group_external_id_present = False
-
-    def __repr__(self):
-        return 'GroupUpdateArgs(group={!r}, return_members={!r}, new_group_name={!r}, new_group_external_id={!r})'.format(
-            self._group_value,
-            self._return_members_value,
-            self._new_group_name_value,
-            self._new_group_external_id_value,
-        )
-
-GroupUpdateArgs_validator = bv.Struct(GroupUpdateArgs)
-
 class GroupUpdateError(GroupSelectorError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -4445,7 +4671,7 @@ class GroupsListResult(object):
     @property
     def groups(self):
         """
-        :rtype: list of [GroupSummary]
+        :rtype: list of [team_common.GroupSummary_validator]
         """
         if self._groups_present:
             return self._groups_value
@@ -4519,6 +4745,289 @@ class GroupsListResult(object):
         )
 
 GroupsListResult_validator = bv.Struct(GroupsListResult)
+
+class GroupsMembersListArg(object):
+    """
+    :ivar group: The group whose members are to be listed.
+    :ivar limit: Number of results to return per call.
+    """
+
+    __slots__ = [
+        '_group_value',
+        '_group_present',
+        '_limit_value',
+        '_limit_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 group=None,
+                 limit=None):
+        self._group_value = None
+        self._group_present = False
+        self._limit_value = None
+        self._limit_present = False
+        if group is not None:
+            self.group = group
+        if limit is not None:
+            self.limit = limit
+
+    @property
+    def group(self):
+        """
+        The group whose members are to be listed.
+
+        :rtype: GroupSelector
+        """
+        if self._group_present:
+            return self._group_value
+        else:
+            raise AttributeError("missing required field 'group'")
+
+    @group.setter
+    def group(self, val):
+        self._group_validator.validate_type_only(val)
+        self._group_value = val
+        self._group_present = True
+
+    @group.deleter
+    def group(self):
+        self._group_value = None
+        self._group_present = False
+
+    @property
+    def limit(self):
+        """
+        Number of results to return per call.
+
+        :rtype: long
+        """
+        if self._limit_present:
+            return self._limit_value
+        else:
+            return 1000
+
+    @limit.setter
+    def limit(self, val):
+        val = self._limit_validator.validate(val)
+        self._limit_value = val
+        self._limit_present = True
+
+    @limit.deleter
+    def limit(self):
+        self._limit_value = None
+        self._limit_present = False
+
+    def __repr__(self):
+        return 'GroupsMembersListArg(group={!r}, limit={!r})'.format(
+            self._group_value,
+            self._limit_value,
+        )
+
+GroupsMembersListArg_validator = bv.Struct(GroupsMembersListArg)
+
+class GroupsMembersListContinueArg(object):
+    """
+    :ivar cursor: Indicates from what point to get the next set of groups.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        Indicates from what point to get the next set of groups.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'GroupsMembersListContinueArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+GroupsMembersListContinueArg_validator = bv.Struct(GroupsMembersListContinueArg)
+
+class GroupsMembersListContinueError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_cursor: The cursor is invalid.
+    :ivar other: An unspecified error.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_cursor = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invalid_cursor(self):
+        """
+        Check if the union tag is ``invalid_cursor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_cursor'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'GroupsMembersListContinueError(%r, %r)' % (self._tag, self._value)
+
+GroupsMembersListContinueError_validator = bv.Union(GroupsMembersListContinueError)
+
+class GroupsMembersListResult(object):
+    """
+    :ivar cursor: Pass the cursor into groups/members/list/continue to obtain
+        additional group members.
+    :ivar has_more: Is true if there are additional group members that have not
+        been returned yet. An additional call to groups/members/list/continue
+        can retrieve them.
+    """
+
+    __slots__ = [
+        '_members_value',
+        '_members_present',
+        '_cursor_value',
+        '_cursor_present',
+        '_has_more_value',
+        '_has_more_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 members=None,
+                 cursor=None,
+                 has_more=None):
+        self._members_value = None
+        self._members_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        self._has_more_value = None
+        self._has_more_present = False
+        if members is not None:
+            self.members = members
+        if cursor is not None:
+            self.cursor = cursor
+        if has_more is not None:
+            self.has_more = has_more
+
+    @property
+    def members(self):
+        """
+        :rtype: list of [GroupMemberInfo]
+        """
+        if self._members_present:
+            return self._members_value
+        else:
+            raise AttributeError("missing required field 'members'")
+
+    @members.setter
+    def members(self, val):
+        val = self._members_validator.validate(val)
+        self._members_value = val
+        self._members_present = True
+
+    @members.deleter
+    def members(self):
+        self._members_value = None
+        self._members_present = False
+
+    @property
+    def cursor(self):
+        """
+        Pass the cursor into groups/members/list/continue to obtain additional
+        group members.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def has_more(self):
+        """
+        Is true if there are additional group members that have not been
+        returned yet. An additional call to groups/members/list/continue can
+        retrieve them.
+
+        :rtype: bool
+        """
+        if self._has_more_present:
+            return self._has_more_value
+        else:
+            raise AttributeError("missing required field 'has_more'")
+
+    @has_more.setter
+    def has_more(self, val):
+        val = self._has_more_validator.validate(val)
+        self._has_more_value = val
+        self._has_more_present = True
+
+    @has_more.deleter
+    def has_more(self):
+        self._has_more_value = None
+        self._has_more_present = False
+
+    def __repr__(self):
+        return 'GroupsMembersListResult(members={!r}, cursor={!r}, has_more={!r})'.format(
+            self._members_value,
+            self._cursor_value,
+            self._has_more_value,
+        )
+
+GroupsMembersListResult_validator = bv.Struct(GroupsMembersListResult)
 
 class GroupsPollError(async.PollError):
     """
@@ -7016,6 +7525,9 @@ class MemberProfile(object):
         the user.
     :ivar status: The user's status as a member of a specific team.
     :ivar name: Representations for a person's name.
+    :ivar membership_type: The user's membership type: full (normal team member)
+        vs limited (does not use a license; no access to the team's shared
+        quota).
     """
 
     __slots__ = [
@@ -7031,6 +7543,8 @@ class MemberProfile(object):
         '_status_present',
         '_name_value',
         '_name_present',
+        '_membership_type_value',
+        '_membership_type_present',
     ]
 
     _has_required_fields = True
@@ -7041,6 +7555,7 @@ class MemberProfile(object):
                  email_verified=None,
                  status=None,
                  name=None,
+                 membership_type=None,
                  external_id=None):
         self._team_member_id_value = None
         self._team_member_id_present = False
@@ -7054,6 +7569,8 @@ class MemberProfile(object):
         self._status_present = False
         self._name_value = None
         self._name_present = False
+        self._membership_type_value = None
+        self._membership_type_present = False
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if external_id is not None:
@@ -7066,6 +7583,8 @@ class MemberProfile(object):
             self.status = status
         if name is not None:
             self.name = name
+        if membership_type is not None:
+            self.membership_type = membership_type
 
     @property
     def team_member_id(self):
@@ -7210,13 +7729,38 @@ class MemberProfile(object):
         self._name_value = None
         self._name_present = False
 
+    @property
+    def membership_type(self):
+        """
+        The user's membership type: full (normal team member) vs limited (does
+        not use a license; no access to the team's shared quota).
+
+        :rtype: TeamMembershipType
+        """
+        if self._membership_type_present:
+            return self._membership_type_value
+        else:
+            raise AttributeError("missing required field 'membership_type'")
+
+    @membership_type.setter
+    def membership_type(self, val):
+        self._membership_type_validator.validate_type_only(val)
+        self._membership_type_value = val
+        self._membership_type_present = True
+
+    @membership_type.deleter
+    def membership_type(self):
+        self._membership_type_value = None
+        self._membership_type_present = False
+
     def __repr__(self):
-        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, external_id={!r})'.format(
+        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
             self._status_value,
             self._name_value,
+            self._membership_type_value,
             self._external_id_value,
         )
 
@@ -8054,6 +8598,9 @@ class MembersRemoveArg(MembersDeactivateArg):
     :ivar transfer_admin_id: If provided, errors during the transfer process
         will be sent via email to this user. If the transfer_dest_id argument
         was provided, then this argument must be provided as well.
+    :ivar keep_account: Downgrade the member to a Basic account. The user will
+        retain the email address associated with their Dropbox  account and data
+        in their account that is not restricted to team members.
     """
 
     __slots__ = [
@@ -8061,6 +8608,8 @@ class MembersRemoveArg(MembersDeactivateArg):
         '_transfer_dest_id_present',
         '_transfer_admin_id_value',
         '_transfer_admin_id_present',
+        '_keep_account_value',
+        '_keep_account_present',
     ]
 
     _has_required_fields = True
@@ -8069,17 +8618,22 @@ class MembersRemoveArg(MembersDeactivateArg):
                  user=None,
                  wipe_data=None,
                  transfer_dest_id=None,
-                 transfer_admin_id=None):
+                 transfer_admin_id=None,
+                 keep_account=None):
         super(MembersRemoveArg, self).__init__(user,
                                                wipe_data)
         self._transfer_dest_id_value = None
         self._transfer_dest_id_present = False
         self._transfer_admin_id_value = None
         self._transfer_admin_id_present = False
+        self._keep_account_value = None
+        self._keep_account_present = False
         if transfer_dest_id is not None:
             self.transfer_dest_id = transfer_dest_id
         if transfer_admin_id is not None:
             self.transfer_admin_id = transfer_admin_id
+        if keep_account is not None:
+            self.keep_account = keep_account
 
     @property
     def transfer_dest_id(self):
@@ -8136,12 +8690,38 @@ class MembersRemoveArg(MembersDeactivateArg):
         self._transfer_admin_id_value = None
         self._transfer_admin_id_present = False
 
+    @property
+    def keep_account(self):
+        """
+        Downgrade the member to a Basic account. The user will retain the email
+        address associated with their Dropbox  account and data in their account
+        that is not restricted to team members.
+
+        :rtype: bool
+        """
+        if self._keep_account_present:
+            return self._keep_account_value
+        else:
+            return False
+
+    @keep_account.setter
+    def keep_account(self, val):
+        val = self._keep_account_validator.validate(val)
+        self._keep_account_value = val
+        self._keep_account_present = True
+
+    @keep_account.deleter
+    def keep_account(self):
+        self._keep_account_value = None
+        self._keep_account_present = False
+
     def __repr__(self):
-        return 'MembersRemoveArg(user={!r}, wipe_data={!r}, transfer_dest_id={!r}, transfer_admin_id={!r})'.format(
+        return 'MembersRemoveArg(user={!r}, wipe_data={!r}, transfer_dest_id={!r}, transfer_admin_id={!r}, keep_account={!r})'.format(
             self._user_value,
             self._wipe_data_value,
             self._transfer_dest_id_value,
             self._transfer_admin_id_value,
+            self._keep_account_value,
         )
 
 MembersRemoveArg_validator = bv.Struct(MembersRemoveArg)
@@ -8170,6 +8750,10 @@ class MembersRemoveError(MembersDeactivateError):
         provided when file transfer is requested.
     :ivar transfer_admin_is_not_admin: Specified transfer_admin user is not a
         team admin.
+    :ivar cannot_keep_account_and_transfer: Cannot keep account and transfer the
+        data to another user at the same time.
+    :ivar cannot_keep_account_and_delete_data: Cannot keep account and delete
+        the data at the same time.
     """
 
     # Attribute is overwritten below the class definition
@@ -8190,6 +8774,10 @@ class MembersRemoveError(MembersDeactivateError):
     unspecified_transfer_admin_id = None
     # Attribute is overwritten below the class definition
     transfer_admin_is_not_admin = None
+    # Attribute is overwritten below the class definition
+    cannot_keep_account_and_transfer = None
+    # Attribute is overwritten below the class definition
+    cannot_keep_account_and_delete_data = None
 
     def is_remove_last_admin(self):
         """
@@ -8262,6 +8850,22 @@ class MembersRemoveError(MembersDeactivateError):
         :rtype: bool
         """
         return self._tag == 'transfer_admin_is_not_admin'
+
+    def is_cannot_keep_account_and_transfer(self):
+        """
+        Check if the union tag is ``cannot_keep_account_and_transfer``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_keep_account_and_transfer'
+
+    def is_cannot_keep_account_and_delete_data(self):
+        """
+        Check if the union tag is ``cannot_keep_account_and_delete_data``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_keep_account_and_delete_data'
 
     def __repr__(self):
         return 'MembersRemoveError(%r, %r)' % (self._tag, self._value)
@@ -10391,6 +10995,7 @@ class TeamMemberProfile(MemberProfile):
                  email_verified=None,
                  status=None,
                  name=None,
+                 membership_type=None,
                  groups=None,
                  external_id=None):
         super(TeamMemberProfile, self).__init__(team_member_id,
@@ -10398,6 +11003,7 @@ class TeamMemberProfile(MemberProfile):
                                                 email_verified,
                                                 status,
                                                 name,
+                                                membership_type,
                                                 external_id)
         self._groups_value = None
         self._groups_present = False
@@ -10428,12 +11034,13 @@ class TeamMemberProfile(MemberProfile):
         self._groups_present = False
 
     def __repr__(self):
-        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, groups={!r}, external_id={!r})'.format(
+        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, external_id={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
             self._status_value,
             self._name_value,
+            self._membership_type_value,
             self._groups_value,
             self._external_id_value,
         )
@@ -10491,6 +11098,45 @@ class TeamMemberStatus(bb.Union):
         return 'TeamMemberStatus(%r, %r)' % (self._tag, self._value)
 
 TeamMemberStatus_validator = bv.Union(TeamMemberStatus)
+
+class TeamMembershipType(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar full: User uses a license and has full access to team resources like
+        the shared quota.
+    :ivar limited: User does not have access to the shared quota and team admins
+        have restricted administrative control.
+    """
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    full = None
+    # Attribute is overwritten below the class definition
+    limited = None
+
+    def is_full(self):
+        """
+        Check if the union tag is ``full``.
+
+        :rtype: bool
+        """
+        return self._tag == 'full'
+
+    def is_limited(self):
+        """
+        Check if the union tag is ``limited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'limited'
+
+    def __repr__(self):
+        return 'TeamMembershipType(%r, %r)' % (self._tag, self._value)
+
+TeamMembershipType_validator = bv.Union(TeamMembershipType)
 
 class UpdatePropertyTemplateArg(object):
     """
@@ -10922,7 +11568,7 @@ class UsersSelectorArg(bb.Union):
 
 UsersSelectorArg_validator = bv.Union(UsersSelectorArg)
 
-GroupId_validator = bv.String()
+AlphaGroupsGetInfoResult_validator = bv.List(AlphaGroupsGetInfoItem_validator)
 GroupsGetInfoResult_validator = bv.List(GroupsGetInfoItem_validator)
 MemberExternalId_validator = bv.String(max_length=64)
 MembersGetInfoResult_validator = bv.List(MembersGetInfoItem_validator)
@@ -10984,6 +11630,75 @@ AdminTier.team_admin = AdminTier('team_admin')
 AdminTier.user_management_admin = AdminTier('user_management_admin')
 AdminTier.support_admin = AdminTier('support_admin')
 AdminTier.member_only = AdminTier('member_only')
+
+GroupCreateArg._group_name_validator = bv.String()
+GroupCreateArg._group_external_id_validator = bv.Nullable(bv.String())
+GroupCreateArg._all_field_names_ = set([
+    'group_name',
+    'group_external_id',
+])
+GroupCreateArg._all_fields_ = [
+    ('group_name', GroupCreateArg._group_name_validator),
+    ('group_external_id', GroupCreateArg._group_external_id_validator),
+]
+
+AlphaGroupCreateArg._group_management_type_validator = team_common.GroupManagementType_validator
+AlphaGroupCreateArg._all_field_names_ = GroupCreateArg._all_field_names_.union(set(['group_management_type']))
+AlphaGroupCreateArg._all_fields_ = GroupCreateArg._all_fields_ + [('group_management_type', AlphaGroupCreateArg._group_management_type_validator)]
+
+AlphaGroupFullInfo._members_validator = bv.Nullable(bv.List(GroupMemberInfo_validator))
+AlphaGroupFullInfo._created_validator = bv.UInt64()
+AlphaGroupFullInfo._all_field_names_ = team_common.AlphaGroupSummary._all_field_names_.union(set([
+    'members',
+    'created',
+]))
+AlphaGroupFullInfo._all_fields_ = team_common.AlphaGroupSummary._all_fields_ + [
+    ('members', AlphaGroupFullInfo._members_validator),
+    ('created', AlphaGroupFullInfo._created_validator),
+]
+
+IncludeMembersArg._return_members_validator = bv.Boolean()
+IncludeMembersArg._all_field_names_ = set(['return_members'])
+IncludeMembersArg._all_fields_ = [('return_members', IncludeMembersArg._return_members_validator)]
+
+GroupUpdateArgs._group_validator = GroupSelector_validator
+GroupUpdateArgs._new_group_name_validator = bv.Nullable(bv.String())
+GroupUpdateArgs._new_group_external_id_validator = bv.Nullable(bv.String())
+GroupUpdateArgs._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
+    'group',
+    'new_group_name',
+    'new_group_external_id',
+]))
+GroupUpdateArgs._all_fields_ = IncludeMembersArg._all_fields_ + [
+    ('group', GroupUpdateArgs._group_validator),
+    ('new_group_name', GroupUpdateArgs._new_group_name_validator),
+    ('new_group_external_id', GroupUpdateArgs._new_group_external_id_validator),
+]
+
+AlphaGroupUpdateArgs._new_group_management_type_validator = bv.Nullable(team_common.GroupManagementType_validator)
+AlphaGroupUpdateArgs._all_field_names_ = GroupUpdateArgs._all_field_names_.union(set(['new_group_management_type']))
+AlphaGroupUpdateArgs._all_fields_ = GroupUpdateArgs._all_fields_ + [('new_group_management_type', AlphaGroupUpdateArgs._new_group_management_type_validator)]
+
+AlphaGroupsGetInfoItem._id_not_found_validator = bv.String()
+AlphaGroupsGetInfoItem._group_info_validator = AlphaGroupFullInfo_validator
+AlphaGroupsGetInfoItem._tagmap = {
+    'id_not_found': AlphaGroupsGetInfoItem._id_not_found_validator,
+    'group_info': AlphaGroupsGetInfoItem._group_info_validator,
+}
+
+AlphaGroupsListResult._groups_validator = bv.List(team_common.AlphaGroupSummary_validator)
+AlphaGroupsListResult._cursor_validator = bv.String()
+AlphaGroupsListResult._has_more_validator = bv.Boolean()
+AlphaGroupsListResult._all_field_names_ = set([
+    'groups',
+    'cursor',
+    'has_more',
+])
+AlphaGroupsListResult._all_fields_ = [
+    ('groups', AlphaGroupsListResult._groups_validator),
+    ('cursor', AlphaGroupsListResult._cursor_validator),
+    ('has_more', AlphaGroupsListResult._has_more_validator),
+]
 
 ApiApp._app_id_validator = bv.String()
 ApiApp._app_name_validator = bv.String()
@@ -11214,17 +11929,6 @@ GroupAccessType._tagmap = {
 GroupAccessType.member = GroupAccessType('member')
 GroupAccessType.owner = GroupAccessType('owner')
 
-GroupCreateArg._group_name_validator = bv.String()
-GroupCreateArg._group_external_id_validator = bv.Nullable(bv.String())
-GroupCreateArg._all_field_names_ = set([
-    'group_name',
-    'group_external_id',
-])
-GroupCreateArg._all_fields_ = [
-    ('group_name', GroupCreateArg._group_name_validator),
-    ('group_external_id', GroupCreateArg._group_external_id_validator),
-]
-
 GroupCreateError._group_name_already_used_validator = bv.Void()
 GroupCreateError._group_name_invalid_validator = bv.Void()
 GroupCreateError._external_id_already_in_use_validator = bv.Void()
@@ -11259,30 +11963,13 @@ GroupDeleteError._tagmap.update(GroupSelectorError._tagmap)
 
 GroupDeleteError.group_already_deleted = GroupDeleteError('group_already_deleted')
 
-GroupSummary._group_name_validator = bv.String()
-GroupSummary._group_id_validator = GroupId_validator
-GroupSummary._group_external_id_validator = bv.Nullable(bv.String())
-GroupSummary._member_count_validator = bv.Nullable(bv.UInt32())
-GroupSummary._all_field_names_ = set([
-    'group_name',
-    'group_id',
-    'group_external_id',
-    'member_count',
-])
-GroupSummary._all_fields_ = [
-    ('group_name', GroupSummary._group_name_validator),
-    ('group_id', GroupSummary._group_id_validator),
-    ('group_external_id', GroupSummary._group_external_id_validator),
-    ('member_count', GroupSummary._member_count_validator),
-]
-
 GroupFullInfo._members_validator = bv.Nullable(bv.List(GroupMemberInfo_validator))
 GroupFullInfo._created_validator = bv.UInt64()
-GroupFullInfo._all_field_names_ = GroupSummary._all_field_names_.union(set([
+GroupFullInfo._all_field_names_ = team_common.GroupSummary._all_field_names_.union(set([
     'members',
     'created',
 ]))
-GroupFullInfo._all_fields_ = GroupSummary._all_fields_ + [
+GroupFullInfo._all_fields_ = team_common.GroupSummary._all_fields_ + [
     ('members', GroupFullInfo._members_validator),
     ('created', GroupFullInfo._created_validator),
 ]
@@ -11324,10 +12011,6 @@ GroupMemberSetAccessTypeError._tagmap = {
 GroupMemberSetAccessTypeError._tagmap.update(GroupMemberSelectorError._tagmap)
 
 GroupMemberSetAccessTypeError.user_cannot_be_manager_of_company_managed_group = GroupMemberSetAccessTypeError('user_cannot_be_manager_of_company_managed_group')
-
-IncludeMembersArg._return_members_validator = bv.Boolean()
-IncludeMembersArg._all_field_names_ = set(['return_members'])
-IncludeMembersArg._all_fields_ = [('return_members', IncludeMembersArg._return_members_validator)]
 
 GroupMembersAddArg._group_validator = GroupSelector_validator
 GroupMembersAddArg._members_validator = bv.List(MemberAccess_validator)
@@ -11420,39 +12103,12 @@ GroupMembersSetAccessTypeArg._all_fields_ = GroupMemberSelector._all_fields_ + [
     ('return_members', GroupMembersSetAccessTypeArg._return_members_validator),
 ]
 
-GroupSelector._group_id_validator = GroupId_validator
+GroupSelector._group_id_validator = team_common.GroupId_validator
 GroupSelector._group_external_id_validator = bv.String()
 GroupSelector._tagmap = {
     'group_id': GroupSelector._group_id_validator,
     'group_external_id': GroupSelector._group_external_id_validator,
 }
-
-GroupType._team_validator = bv.Void()
-GroupType._user_managed_validator = bv.Void()
-GroupType._other_validator = bv.Void()
-GroupType._tagmap = {
-    'team': GroupType._team_validator,
-    'user_managed': GroupType._user_managed_validator,
-    'other': GroupType._other_validator,
-}
-
-GroupType.team = GroupType('team')
-GroupType.user_managed = GroupType('user_managed')
-GroupType.other = GroupType('other')
-
-GroupUpdateArgs._group_validator = GroupSelector_validator
-GroupUpdateArgs._new_group_name_validator = bv.Nullable(bv.String())
-GroupUpdateArgs._new_group_external_id_validator = bv.Nullable(bv.String())
-GroupUpdateArgs._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
-    'group',
-    'new_group_name',
-    'new_group_external_id',
-]))
-GroupUpdateArgs._all_fields_ = IncludeMembersArg._all_fields_ + [
-    ('group', GroupUpdateArgs._group_validator),
-    ('new_group_name', GroupUpdateArgs._new_group_name_validator),
-    ('new_group_external_id', GroupUpdateArgs._new_group_external_id_validator),
-]
 
 GroupUpdateError._external_id_already_in_use_validator = bv.Void()
 GroupUpdateError._tagmap = {
@@ -11497,7 +12153,7 @@ GroupsListContinueError._tagmap = {
 GroupsListContinueError.invalid_cursor = GroupsListContinueError('invalid_cursor')
 GroupsListContinueError.other = GroupsListContinueError('other')
 
-GroupsListResult._groups_validator = bv.List(GroupSummary_validator)
+GroupsListResult._groups_validator = bv.List(team_common.GroupSummary_validator)
 GroupsListResult._cursor_validator = bv.String()
 GroupsListResult._has_more_validator = bv.Boolean()
 GroupsListResult._all_field_names_ = set([
@@ -11511,6 +12167,45 @@ GroupsListResult._all_fields_ = [
     ('has_more', GroupsListResult._has_more_validator),
 ]
 
+GroupsMembersListArg._group_validator = GroupSelector_validator
+GroupsMembersListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
+GroupsMembersListArg._all_field_names_ = set([
+    'group',
+    'limit',
+])
+GroupsMembersListArg._all_fields_ = [
+    ('group', GroupsMembersListArg._group_validator),
+    ('limit', GroupsMembersListArg._limit_validator),
+]
+
+GroupsMembersListContinueArg._cursor_validator = bv.String()
+GroupsMembersListContinueArg._all_field_names_ = set(['cursor'])
+GroupsMembersListContinueArg._all_fields_ = [('cursor', GroupsMembersListContinueArg._cursor_validator)]
+
+GroupsMembersListContinueError._invalid_cursor_validator = bv.Void()
+GroupsMembersListContinueError._other_validator = bv.Void()
+GroupsMembersListContinueError._tagmap = {
+    'invalid_cursor': GroupsMembersListContinueError._invalid_cursor_validator,
+    'other': GroupsMembersListContinueError._other_validator,
+}
+
+GroupsMembersListContinueError.invalid_cursor = GroupsMembersListContinueError('invalid_cursor')
+GroupsMembersListContinueError.other = GroupsMembersListContinueError('other')
+
+GroupsMembersListResult._members_validator = bv.List(GroupMemberInfo_validator)
+GroupsMembersListResult._cursor_validator = bv.String()
+GroupsMembersListResult._has_more_validator = bv.Boolean()
+GroupsMembersListResult._all_field_names_ = set([
+    'members',
+    'cursor',
+    'has_more',
+])
+GroupsMembersListResult._all_fields_ = [
+    ('members', GroupsMembersListResult._members_validator),
+    ('cursor', GroupsMembersListResult._cursor_validator),
+    ('has_more', GroupsMembersListResult._has_more_validator),
+]
+
 GroupsPollError._access_denied_validator = bv.Void()
 GroupsPollError._tagmap = {
     'access_denied': GroupsPollError._access_denied_validator,
@@ -11519,7 +12214,7 @@ GroupsPollError._tagmap.update(async.PollError._tagmap)
 
 GroupsPollError.access_denied = GroupsPollError('access_denied')
 
-GroupsSelector._group_ids_validator = bv.List(GroupId_validator)
+GroupsSelector._group_ids_validator = bv.List(team_common.GroupId_validator)
 GroupsSelector._group_external_ids_validator = bv.List(bv.String())
 GroupsSelector._tagmap = {
     'group_ids': GroupsSelector._group_ids_validator,
@@ -11812,6 +12507,7 @@ MemberProfile._email_validator = bv.String()
 MemberProfile._email_verified_validator = bv.Boolean()
 MemberProfile._status_validator = TeamMemberStatus_validator
 MemberProfile._name_validator = users.Name_validator
+MemberProfile._membership_type_validator = TeamMembershipType_validator
 MemberProfile._all_field_names_ = set([
     'team_member_id',
     'external_id',
@@ -11819,6 +12515,7 @@ MemberProfile._all_field_names_ = set([
     'email_verified',
     'status',
     'name',
+    'membership_type',
 ])
 MemberProfile._all_fields_ = [
     ('team_member_id', MemberProfile._team_member_id_validator),
@@ -11827,6 +12524,7 @@ MemberProfile._all_fields_ = [
     ('email_verified', MemberProfile._email_verified_validator),
     ('status', MemberProfile._status_validator),
     ('name', MemberProfile._name_validator),
+    ('membership_type', MemberProfile._membership_type_validator),
 ]
 
 UserSelectorError._user_not_found_validator = bv.Void()
@@ -11950,13 +12648,16 @@ MembersListResult._all_fields_ = [
 
 MembersRemoveArg._transfer_dest_id_validator = bv.Nullable(UserSelectorArg_validator)
 MembersRemoveArg._transfer_admin_id_validator = bv.Nullable(UserSelectorArg_validator)
+MembersRemoveArg._keep_account_validator = bv.Boolean()
 MembersRemoveArg._all_field_names_ = MembersDeactivateArg._all_field_names_.union(set([
     'transfer_dest_id',
     'transfer_admin_id',
+    'keep_account',
 ]))
 MembersRemoveArg._all_fields_ = MembersDeactivateArg._all_fields_ + [
     ('transfer_dest_id', MembersRemoveArg._transfer_dest_id_validator),
     ('transfer_admin_id', MembersRemoveArg._transfer_admin_id_validator),
+    ('keep_account', MembersRemoveArg._keep_account_validator),
 ]
 
 MembersRemoveError._remove_last_admin_validator = bv.Void()
@@ -11968,6 +12669,8 @@ MembersRemoveError._transfer_admin_user_not_found_validator = bv.Void()
 MembersRemoveError._transfer_admin_user_not_in_team_validator = bv.Void()
 MembersRemoveError._unspecified_transfer_admin_id_validator = bv.Void()
 MembersRemoveError._transfer_admin_is_not_admin_validator = bv.Void()
+MembersRemoveError._cannot_keep_account_and_transfer_validator = bv.Void()
+MembersRemoveError._cannot_keep_account_and_delete_data_validator = bv.Void()
 MembersRemoveError._tagmap = {
     'remove_last_admin': MembersRemoveError._remove_last_admin_validator,
     'removed_and_transfer_dest_should_differ': MembersRemoveError._removed_and_transfer_dest_should_differ_validator,
@@ -11978,6 +12681,8 @@ MembersRemoveError._tagmap = {
     'transfer_admin_user_not_in_team': MembersRemoveError._transfer_admin_user_not_in_team_validator,
     'unspecified_transfer_admin_id': MembersRemoveError._unspecified_transfer_admin_id_validator,
     'transfer_admin_is_not_admin': MembersRemoveError._transfer_admin_is_not_admin_validator,
+    'cannot_keep_account_and_transfer': MembersRemoveError._cannot_keep_account_and_transfer_validator,
+    'cannot_keep_account_and_delete_data': MembersRemoveError._cannot_keep_account_and_delete_data_validator,
 }
 MembersRemoveError._tagmap.update(MembersDeactivateError._tagmap)
 
@@ -11990,6 +12695,8 @@ MembersRemoveError.transfer_admin_user_not_found = MembersRemoveError('transfer_
 MembersRemoveError.transfer_admin_user_not_in_team = MembersRemoveError('transfer_admin_user_not_in_team')
 MembersRemoveError.unspecified_transfer_admin_id = MembersRemoveError('unspecified_transfer_admin_id')
 MembersRemoveError.transfer_admin_is_not_admin = MembersRemoveError('transfer_admin_is_not_admin')
+MembersRemoveError.cannot_keep_account_and_transfer = MembersRemoveError('cannot_keep_account_and_transfer')
+MembersRemoveError.cannot_keep_account_and_delete_data = MembersRemoveError('cannot_keep_account_and_delete_data')
 
 MembersSendWelcomeError._other_validator = bv.Void()
 MembersSendWelcomeError._tagmap = {
@@ -12305,7 +13012,7 @@ TeamMemberInfo._all_fields_ = [
     ('role', TeamMemberInfo._role_validator),
 ]
 
-TeamMemberProfile._groups_validator = bv.List(GroupId_validator)
+TeamMemberProfile._groups_validator = bv.List(team_common.GroupId_validator)
 TeamMemberProfile._all_field_names_ = MemberProfile._all_field_names_.union(set(['groups']))
 TeamMemberProfile._all_fields_ = MemberProfile._all_fields_ + [('groups', TeamMemberProfile._groups_validator)]
 
@@ -12321,6 +13028,16 @@ TeamMemberStatus._tagmap = {
 TeamMemberStatus.active = TeamMemberStatus('active')
 TeamMemberStatus.invited = TeamMemberStatus('invited')
 TeamMemberStatus.suspended = TeamMemberStatus('suspended')
+
+TeamMembershipType._full_validator = bv.Void()
+TeamMembershipType._limited_validator = bv.Void()
+TeamMembershipType._tagmap = {
+    'full': TeamMembershipType._full_validator,
+    'limited': TeamMembershipType._limited_validator,
+}
+
+TeamMembershipType.full = TeamMembershipType('full')
+TeamMembershipType.limited = TeamMembershipType('limited')
 
 UpdatePropertyTemplateArg._template_id_validator = properties.TemplateId_validator
 UpdatePropertyTemplateArg._name_validator = bv.Nullable(bv.String())
@@ -12361,14 +13078,59 @@ UsersSelectorArg._tagmap = {
     'emails': UsersSelectorArg._emails_validator,
 }
 
+alpha_groups_create = bb.Route(
+    'alpha/groups/create',
+    False,
+    AlphaGroupCreateArg_validator,
+    AlphaGroupFullInfo_validator,
+    GroupCreateError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+alpha_groups_get_info = bb.Route(
+    'alpha/groups/get_info',
+    False,
+    GroupsSelector_validator,
+    AlphaGroupsGetInfoResult_validator,
+    GroupsGetInfoError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+alpha_groups_list = bb.Route(
+    'alpha/groups/list',
+    False,
+    GroupsListArg_validator,
+    AlphaGroupsListResult_validator,
+    bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
+alpha_groups_list_continue = bb.Route(
+    'alpha/groups/list/continue',
+    False,
+    GroupsListContinueArg_validator,
+    AlphaGroupsListResult_validator,
+    GroupsListContinueError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+alpha_groups_update = bb.Route(
+    'alpha/groups/update',
+    False,
+    AlphaGroupUpdateArgs_validator,
+    AlphaGroupFullInfo_validator,
+    GroupUpdateError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 devices_list_member_devices = bb.Route(
     'devices/list_member_devices',
     False,
     ListMemberDevicesArg_validator,
     ListMemberDevicesResult_validator,
     ListMemberDevicesError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 devices_list_members_devices = bb.Route(
     'devices/list_members_devices',
@@ -12376,8 +13138,8 @@ devices_list_members_devices = bb.Route(
     ListMembersDevicesArg_validator,
     ListMembersDevicesResult_validator,
     ListMembersDevicesError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 devices_list_team_devices = bb.Route(
     'devices/list_team_devices',
@@ -12385,8 +13147,8 @@ devices_list_team_devices = bb.Route(
     ListTeamDevicesArg_validator,
     ListTeamDevicesResult_validator,
     ListTeamDevicesError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 devices_revoke_device_session = bb.Route(
     'devices/revoke_device_session',
@@ -12394,8 +13156,8 @@ devices_revoke_device_session = bb.Route(
     RevokeDeviceSessionArg_validator,
     bv.Void(),
     RevokeDeviceSessionError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 devices_revoke_device_session_batch = bb.Route(
     'devices/revoke_device_session_batch',
@@ -12403,8 +13165,8 @@ devices_revoke_device_session_batch = bb.Route(
     RevokeDeviceSessionBatchArg_validator,
     RevokeDeviceSessionBatchResult_validator,
     RevokeDeviceSessionBatchError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 get_info = bb.Route(
     'get_info',
@@ -12412,8 +13174,8 @@ get_info = bb.Route(
     bv.Void(),
     TeamGetInfoResult_validator,
     bv.Void(),
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_create = bb.Route(
     'groups/create',
@@ -12421,8 +13183,8 @@ groups_create = bb.Route(
     GroupCreateArg_validator,
     GroupFullInfo_validator,
     GroupCreateError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_delete = bb.Route(
     'groups/delete',
@@ -12430,8 +13192,8 @@ groups_delete = bb.Route(
     GroupSelector_validator,
     async.LaunchEmptyResult_validator,
     GroupDeleteError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_get_info = bb.Route(
     'groups/get_info',
@@ -12439,8 +13201,8 @@ groups_get_info = bb.Route(
     GroupsSelector_validator,
     GroupsGetInfoResult_validator,
     GroupsGetInfoError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_job_status_get = bb.Route(
     'groups/job_status/get',
@@ -12448,8 +13210,8 @@ groups_job_status_get = bb.Route(
     async.PollArg_validator,
     async.PollEmptyResult_validator,
     GroupsPollError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_list = bb.Route(
     'groups/list',
@@ -12457,8 +13219,8 @@ groups_list = bb.Route(
     GroupsListArg_validator,
     GroupsListResult_validator,
     bv.Void(),
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_list_continue = bb.Route(
     'groups/list/continue',
@@ -12466,8 +13228,8 @@ groups_list_continue = bb.Route(
     GroupsListContinueArg_validator,
     GroupsListResult_validator,
     GroupsListContinueError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_members_add = bb.Route(
     'groups/members/add',
@@ -12475,8 +13237,26 @@ groups_members_add = bb.Route(
     GroupMembersAddArg_validator,
     GroupMembersChangeResult_validator,
     GroupMembersAddError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
+)
+groups_members_list = bb.Route(
+    'groups/members/list',
+    False,
+    GroupsMembersListArg_validator,
+    GroupsMembersListResult_validator,
+    GroupSelectorError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+groups_members_list_continue = bb.Route(
+    'groups/members/list/continue',
+    False,
+    GroupsMembersListContinueArg_validator,
+    GroupsMembersListResult_validator,
+    GroupsMembersListContinueError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_members_remove = bb.Route(
     'groups/members/remove',
@@ -12484,8 +13264,8 @@ groups_members_remove = bb.Route(
     GroupMembersRemoveArg_validator,
     GroupMembersChangeResult_validator,
     GroupMembersRemoveError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_members_set_access_type = bb.Route(
     'groups/members/set_access_type',
@@ -12493,8 +13273,8 @@ groups_members_set_access_type = bb.Route(
     GroupMembersSetAccessTypeArg_validator,
     GroupsGetInfoResult_validator,
     GroupMemberSetAccessTypeError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 groups_update = bb.Route(
     'groups/update',
@@ -12502,8 +13282,8 @@ groups_update = bb.Route(
     GroupUpdateArgs_validator,
     GroupFullInfo_validator,
     GroupUpdateError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 linked_apps_list_member_linked_apps = bb.Route(
     'linked_apps/list_member_linked_apps',
@@ -12511,8 +13291,8 @@ linked_apps_list_member_linked_apps = bb.Route(
     ListMemberAppsArg_validator,
     ListMemberAppsResult_validator,
     ListMemberAppsError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 linked_apps_list_members_linked_apps = bb.Route(
     'linked_apps/list_members_linked_apps',
@@ -12520,8 +13300,8 @@ linked_apps_list_members_linked_apps = bb.Route(
     ListMembersAppsArg_validator,
     ListMembersAppsResult_validator,
     ListMembersAppsError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 linked_apps_list_team_linked_apps = bb.Route(
     'linked_apps/list_team_linked_apps',
@@ -12529,8 +13309,8 @@ linked_apps_list_team_linked_apps = bb.Route(
     ListTeamAppsArg_validator,
     ListTeamAppsResult_validator,
     ListTeamAppsError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 linked_apps_revoke_linked_app = bb.Route(
     'linked_apps/revoke_linked_app',
@@ -12538,8 +13318,8 @@ linked_apps_revoke_linked_app = bb.Route(
     RevokeLinkedApiAppArg_validator,
     bv.Void(),
     RevokeLinkedAppError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 linked_apps_revoke_linked_app_batch = bb.Route(
     'linked_apps/revoke_linked_app_batch',
@@ -12547,8 +13327,8 @@ linked_apps_revoke_linked_app_batch = bb.Route(
     RevokeLinkedApiAppBatchArg_validator,
     RevokeLinkedAppBatchResult_validator,
     RevokeLinkedAppBatchError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_add = bb.Route(
     'members/add',
@@ -12556,8 +13336,8 @@ members_add = bb.Route(
     MembersAddArg_validator,
     MembersAddLaunch_validator,
     bv.Void(),
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_add_job_status_get = bb.Route(
     'members/add/job_status/get',
@@ -12565,8 +13345,8 @@ members_add_job_status_get = bb.Route(
     async.PollArg_validator,
     MembersAddJobStatus_validator,
     async.PollError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_get_info = bb.Route(
     'members/get_info',
@@ -12574,8 +13354,8 @@ members_get_info = bb.Route(
     MembersGetInfoArgs_validator,
     MembersGetInfoResult_validator,
     MembersGetInfoError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_list = bb.Route(
     'members/list',
@@ -12583,8 +13363,8 @@ members_list = bb.Route(
     MembersListArg_validator,
     MembersListResult_validator,
     MembersListError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_list_continue = bb.Route(
     'members/list/continue',
@@ -12592,8 +13372,8 @@ members_list_continue = bb.Route(
     MembersListContinueArg_validator,
     MembersListResult_validator,
     MembersListContinueError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_remove = bb.Route(
     'members/remove',
@@ -12601,8 +13381,8 @@ members_remove = bb.Route(
     MembersRemoveArg_validator,
     async.LaunchEmptyResult_validator,
     MembersRemoveError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_remove_job_status_get = bb.Route(
     'members/remove/job_status/get',
@@ -12610,8 +13390,8 @@ members_remove_job_status_get = bb.Route(
     async.PollArg_validator,
     async.PollEmptyResult_validator,
     async.PollError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_send_welcome_email = bb.Route(
     'members/send_welcome_email',
@@ -12619,8 +13399,8 @@ members_send_welcome_email = bb.Route(
     UserSelectorArg_validator,
     bv.Void(),
     MembersSendWelcomeError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_set_admin_permissions = bb.Route(
     'members/set_admin_permissions',
@@ -12628,8 +13408,8 @@ members_set_admin_permissions = bb.Route(
     MembersSetPermissionsArg_validator,
     MembersSetPermissionsResult_validator,
     MembersSetPermissionsError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_set_profile = bb.Route(
     'members/set_profile',
@@ -12637,8 +13417,8 @@ members_set_profile = bb.Route(
     MembersSetProfileArg_validator,
     TeamMemberInfo_validator,
     MembersSetProfileError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_suspend = bb.Route(
     'members/suspend',
@@ -12646,8 +13426,8 @@ members_suspend = bb.Route(
     MembersDeactivateArg_validator,
     bv.Void(),
     MembersSuspendError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 members_unsuspend = bb.Route(
     'members/unsuspend',
@@ -12655,8 +13435,8 @@ members_unsuspend = bb.Route(
     MembersUnsuspendArg_validator,
     bv.Void(),
     MembersUnsuspendError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 properties_template_add = bb.Route(
     'properties/template/add',
@@ -12664,8 +13444,8 @@ properties_template_add = bb.Route(
     AddPropertyTemplateArg_validator,
     AddPropertyTemplateResult_validator,
     properties.ModifyPropertyTemplateError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 properties_template_get = bb.Route(
     'properties/template/get',
@@ -12673,8 +13453,8 @@ properties_template_get = bb.Route(
     properties.GetPropertyTemplateArg_validator,
     properties.GetPropertyTemplateResult_validator,
     properties.PropertyTemplateError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 properties_template_list = bb.Route(
     'properties/template/list',
@@ -12682,8 +13462,8 @@ properties_template_list = bb.Route(
     bv.Void(),
     properties.ListPropertyTemplateIds_validator,
     properties.PropertyTemplateError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 properties_template_update = bb.Route(
     'properties/template/update',
@@ -12691,8 +13471,8 @@ properties_template_update = bb.Route(
     UpdatePropertyTemplateArg_validator,
     UpdatePropertyTemplateResult_validator,
     properties.ModifyPropertyTemplateError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 reports_get_activity = bb.Route(
     'reports/get_activity',
@@ -12700,8 +13480,8 @@ reports_get_activity = bb.Route(
     DateRange_validator,
     GetActivityReport_validator,
     DateRangeError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 reports_get_devices = bb.Route(
     'reports/get_devices',
@@ -12709,8 +13489,8 @@ reports_get_devices = bb.Route(
     DateRange_validator,
     GetDevicesReport_validator,
     DateRangeError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 reports_get_membership = bb.Route(
     'reports/get_membership',
@@ -12718,8 +13498,8 @@ reports_get_membership = bb.Route(
     DateRange_validator,
     GetMembershipReport_validator,
     DateRangeError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 reports_get_storage = bb.Route(
     'reports/get_storage',
@@ -12727,11 +13507,16 @@ reports_get_storage = bb.Route(
     DateRange_validator,
     GetStorageReport_validator,
     DateRangeError_validator,
-    {'host': None,
-     'style': None},
+    {'host': u'api',
+     'style': u'rpc'},
 )
 
 ROUTES = {
+    'alpha/groups/create': alpha_groups_create,
+    'alpha/groups/get_info': alpha_groups_get_info,
+    'alpha/groups/list': alpha_groups_list,
+    'alpha/groups/list/continue': alpha_groups_list_continue,
+    'alpha/groups/update': alpha_groups_update,
     'devices/list_member_devices': devices_list_member_devices,
     'devices/list_members_devices': devices_list_members_devices,
     'devices/list_team_devices': devices_list_team_devices,
@@ -12745,6 +13530,8 @@ ROUTES = {
     'groups/list': groups_list,
     'groups/list/continue': groups_list_continue,
     'groups/members/add': groups_members_add,
+    'groups/members/list': groups_members_list,
+    'groups/members/list/continue': groups_members_list_continue,
     'groups/members/remove': groups_members_remove,
     'groups/members/set_access_type': groups_members_set_access_type,
     'groups/update': groups_update,
