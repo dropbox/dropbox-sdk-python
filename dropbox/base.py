@@ -44,6 +44,77 @@ class DropboxBase(object):
     # ------------------------------------------
     # Routes in files namespace
 
+    def files_alpha_get_metadata(self,
+                                 path,
+                                 include_media_info=False,
+                                 include_deleted=False,
+                                 include_has_explicit_shared_members=False,
+                                 include_property_templates=None):
+        """
+        Returns the metadata for a file or folder. This is an alpha endpoint
+        compatible with the properties API. Note: Metadata for the root folder
+        is unsupported.
+
+        :param Nullable include_property_templates: If true,
+            ``FileMetadata.property_groups`` is set for files with custom
+            properties.
+        :rtype: :class:`dropbox.files.Metadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.AlphaGetMetadataError`
+        """
+        arg = files.AlphaGetMetadataArg(path,
+                                        include_media_info,
+                                        include_deleted,
+                                        include_has_explicit_shared_members,
+                                        include_property_templates)
+        r = self.request(
+            files.alpha_get_metadata,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_alpha_upload(self,
+                           f,
+                           path,
+                           mode=files.WriteMode.add,
+                           autorename=False,
+                           client_modified=None,
+                           mute=False,
+                           property_groups=None):
+        """
+        Create a new file with the contents provided in the request. Note that
+        this endpoint is part of the properties API alpha and is slightly
+        different from :meth:`upload`. Do not use this to upload a file larger
+        than 150 MB. Instead, create an upload session with
+        :meth:`upload_session_start`.
+
+        :param f: A string or file-like obj of data.
+        :param Nullable property_groups: List of custom properties to add to
+            file.
+        :rtype: :class:`dropbox.files.FileMetadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.UploadErrorWithProperties`
+        """
+        arg = files.CommitInfoWithProperties(path,
+                                             mode,
+                                             autorename,
+                                             client_modified,
+                                             mute,
+                                             property_groups)
+        r = self.request(
+            files.alpha_upload,
+            'files',
+            arg,
+            f,
+        )
+        return r
+
     def files_copy(self,
                    from_path,
                    to_path):
@@ -642,6 +713,156 @@ class DropboxBase(object):
         )
         return None
 
+    def files_properties_add(self,
+                             path,
+                             property_groups):
+        """
+        Add custom properties to a file using a filled property template. See
+        properties/template/add to create new property templates.
+
+        :param str path: A unique identifier for the file.
+        :param list property_groups: Filled custom property templates associated
+            with a file.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.AddPropertiesError`
+        """
+        arg = files.PropertyGroupWithPath(path,
+                                          property_groups)
+        r = self.request(
+            files.properties_add,
+            'files',
+            arg,
+            None,
+        )
+        return None
+
+    def files_properties_overwrite(self,
+                                   path,
+                                   property_groups):
+        """
+        Overwrite custom properties from a specified template associated with a
+        file.
+
+        :param str path: A unique identifier for the file.
+        :param list property_groups: Filled custom property templates associated
+            with a file.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.InvalidPropertyGroupError`
+        """
+        arg = files.PropertyGroupWithPath(path,
+                                          property_groups)
+        r = self.request(
+            files.properties_overwrite,
+            'files',
+            arg,
+            None,
+        )
+        return None
+
+    def files_properties_remove(self,
+                                path,
+                                property_template_ids):
+        """
+        Remove all custom properties from a specified template associated with a
+        file. To remove specific property key value pairs, see
+        :meth:`properties_update`. To update a property template, see
+        properties/template/update. Property templates can't be removed once
+        created.
+
+        :param str path: A unique identifier for the file.
+        :param list property_template_ids: A list of identifiers for a property
+            template created by route properties/template/add.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.RemovePropertiesError`
+        """
+        arg = files.RemovePropertiesArg(path,
+                                        property_template_ids)
+        r = self.request(
+            files.properties_remove,
+            'files',
+            arg,
+            None,
+        )
+        return None
+
+    def files_properties_template_get(self,
+                                      template_id):
+        """
+        Get the schema for a specified template.
+
+        :param str template_id: An identifier for property template added by
+            route properties/template/add.
+        :rtype: :class:`dropbox.files.GetPropertyTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.PropertyTemplateError`
+        """
+        arg = properties.GetPropertyTemplateArg(template_id)
+        r = self.request(
+            files.properties_template_get,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_properties_template_list(self):
+        """
+        Get the property template identifiers for a user. To get the schema of
+        each template use :meth:`properties_template_get`.
+
+        :rtype: :class:`dropbox.files.ListPropertyTemplateIds`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.PropertyTemplateError`
+        """
+        arg = None
+        r = self.request(
+            files.properties_template_list,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_properties_update(self,
+                                path,
+                                update_property_groups):
+        """
+        Add, update or remove custom properties from a specified template
+        associated with a file. Fields that already exist and not described in
+        the request will not be modified.
+
+        :param str path: A unique identifier for the file.
+        :param list update_property_groups: Filled custom property templates
+            associated with a file.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.UpdatePropertiesError`
+        """
+        arg = files.UpdatePropertyGroupArg(path,
+                                           update_property_groups)
+        r = self.request(
+            files.properties_update,
+            'files',
+            arg,
+            None,
+        )
+        return None
+
     def files_restore(self,
                       path,
                       rev):
@@ -850,8 +1071,9 @@ class DropboxBase(object):
         :param f: A string or file-like obj of data.
         :param cursor: Contains the upload session ID and the offset.
         :type cursor: :class:`dropbox.files.UploadSessionCursor`
-        :param bool close: If true, current session will be closed. You cannot
-            do :meth:`upload_session_append` any more to current session
+        :param bool close: If true, the current session will be closed, at which
+            point you won't be able to call :meth:`upload_session_append_v2`
+            anymore with the current session.
         :rtype: None
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -905,13 +1127,14 @@ class DropboxBase(object):
         """
         Upload sessions allow you to upload a single file using multiple
         requests. This call starts a new upload session with the given data.
-        You can then use :meth:`upload_session_append` to add more data and
+        You can then use :meth:`upload_session_append_v2` to add more data and
         :meth:`upload_session_finish` to save all the data to a file in Dropbox.
         A single request should not upload more than 150 MB of file contents.
 
         :param f: A string or file-like obj of data.
-        :param bool close: If true, current session will be closed. You cannot
-            do :meth:`upload_session_append` any more to current session
+        :param bool close: If true, the current session will be closed, at which
+            point you won't be able to call :meth:`upload_session_append_v2`
+            anymore with the current session.
         :rtype: :class:`dropbox.files.UploadSessionStartResult`
         """
         arg = files.UploadSessionStartArg(close)
@@ -925,6 +1148,49 @@ class DropboxBase(object):
 
     # ------------------------------------------
     # Routes in sharing namespace
+
+    def sharing_add_file_member(self,
+                                file,
+                                members,
+                                custom_message=None,
+                                quiet=False,
+                                access_level=sharing.AccessLevel.viewer,
+                                add_message_as_comment=False):
+        """
+        Adds specified members to a file.
+
+        :param str file: File to which to add members.
+        :param list members: Members to add. Note that even an email address is
+            given, this may result in a user being directy added to the
+            membership if that email is the user's main account email.
+        :param Nullable custom_message: Message to send to added members in
+            their invitation.
+        :param bool quiet: Whether added members should be notified via device
+            notifications of their invitation.
+        :param access_level: AccessLevel union object, describing what access
+            level we want to give new members.
+        :type access_level: :class:`dropbox.sharing.AccessLevel`
+        :param bool add_message_as_comment: If the custom message should be
+            added as a comment on the file.
+        :rtype: list
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.AddFileMemberError`
+        """
+        arg = sharing.AddFileMemberArgs(file,
+                                        members,
+                                        custom_message,
+                                        quiet,
+                                        access_level,
+                                        add_message_as_comment)
+        r = self.request(
+            sharing.add_file_member,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
 
     def sharing_add_folder_member(self,
                                   shared_folder_id,
@@ -980,6 +1246,29 @@ class DropboxBase(object):
         arg = async.PollArg(async_job_id)
         r = self.request(
             sharing.check_job_status,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
+    def sharing_check_remove_member_job_status(self,
+                                               async_job_id):
+        """
+        Returns the status of an asynchronous job for sharing a folder. Apps
+        must have full Dropbox access to use this endpoint.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.sharing.RemoveMemberJobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.PollError`
+        """
+        arg = async.PollArg(async_job_id)
+        r = self.request(
+            sharing.check_remove_member_job_status,
             'sharing',
             arg,
             None,
@@ -1079,6 +1368,54 @@ class DropboxBase(object):
         )
         return r
 
+    def sharing_get_file_metadata(self,
+                                  file,
+                                  actions=None):
+        """
+        Returns shared file metadata.
+
+        :param str file: The file to query.
+        :param Nullable actions: File actions to query.
+        :rtype: :class:`dropbox.sharing.SharedFileMetadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.GetFileMetadataError`
+        """
+        arg = sharing.GetFileMetadataArg(file,
+                                         actions)
+        r = self.request(
+            sharing.get_file_metadata,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
+    def sharing_get_file_metadata_batch(self,
+                                        files,
+                                        actions=None):
+        """
+        Returns shared file metadata.
+
+        :param list files: The files to query.
+        :param Nullable actions: File actions to query.
+        :rtype: list
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.SharingUserError`
+        """
+        arg = sharing.GetFileMetadataBatchArg(files,
+                                              actions)
+        r = self.request(
+            sharing.get_file_metadata_batch,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
     def sharing_get_folder_metadata(self,
                                     shared_folder_id,
                                     actions=None):
@@ -1087,7 +1424,10 @@ class DropboxBase(object):
         Dropbox access to use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
-        :param Nullable actions: Folder actions to query.
+        :param Nullable actions: This is a list indicating whether the returned
+            folder data will include a boolean value  ``FolderPermission.allow``
+            that describes whether the current user can perform the
+            FolderAction on the folder.
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1236,6 +1576,94 @@ class DropboxBase(object):
         )
         return r
 
+    def sharing_list_file_members(self,
+                                  file,
+                                  actions=None,
+                                  include_inherited=True,
+                                  limit=100):
+        """
+        Use to obtain the members who have been invited to a file, both
+        inherited and uninherited members.
+
+        :param str file: The file for which you want to see members.
+        :param Nullable actions: The actions for which to return permissions on
+            a member
+        :param bool include_inherited: Whether to include members who only have
+            access from a parent shared folder.
+        :param long limit: Number of members to return max per query. Defaults
+            to 100 if no limit is specified.
+        :rtype: :class:`dropbox.sharing.SharedFileMembers`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.ListFileMembersError`
+        """
+        arg = sharing.ListFileMembersArg(file,
+                                         actions,
+                                         include_inherited,
+                                         limit)
+        r = self.request(
+            sharing.list_file_members,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
+    def sharing_list_file_members_batch(self,
+                                        files,
+                                        limit=10):
+        """
+        Get members of multiple files at once. The arguments to this route are
+        more limited, and the limit on query result size per file is more
+        strict. To customize the results more, use the individual file endpoint.
+        Inherited users are not included in the result, and permissions are not
+        returned for this endpoint.
+
+        :param list files: Files for which to return members.
+        :param long limit: Number of members to return max per query. Defaults
+            to 10 if no limit is specified.
+        :rtype: list
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.SharingUserError`
+        """
+        arg = sharing.ListFileMembersBatchArg(files,
+                                              limit)
+        r = self.request(
+            sharing.list_file_members_batch,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
+    def sharing_list_file_members_continue(self,
+                                           cursor):
+        """
+        Once a cursor has been retrieved from :meth:`list_file_members` or
+        :meth:`list_file_members_batch`, use this to paginate through all shared
+        file members.
+
+        :param str cursor: The cursor returned by your last call to
+            :meth:`list_file_members`, :meth:`list_file_members_continue`, or
+            :meth:`list_file_members_batch`.
+        :rtype: :class:`dropbox.sharing.SharedFileMembers`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.ListFileMembersContinueError`
+        """
+        arg = sharing.ListFileMembersContinueArg(cursor)
+        r = self.request(
+            sharing.list_file_members_continue,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
     def sharing_list_folder_members(self,
                                     shared_folder_id,
                                     actions=None,
@@ -1294,7 +1722,10 @@ class DropboxBase(object):
         Apps must have full Dropbox access to use this endpoint.
 
         :param long limit: The maximum number of results to return per request.
-        :param Nullable actions: Folder actions to query.
+        :param Nullable actions: This is a list indicating whether each returned
+            folder data entry will include a boolean field
+            ``FolderPermission.allow`` that describes whether the current user
+            can perform the `FolderAction` on the folder.
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         """
         arg = sharing.ListFoldersArgs(limit,
@@ -1340,7 +1771,10 @@ class DropboxBase(object):
         unmount. Apps must have full Dropbox access to use this endpoint.
 
         :param long limit: The maximum number of results to return per request.
-        :param Nullable actions: Folder actions to query.
+        :param Nullable actions: This is a list indicating whether each returned
+            folder data entry will include a boolean field
+            ``FolderPermission.allow`` that describes whether the current user
+            can perform the `FolderAction` on the folder.
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         """
         arg = sharing.ListFoldersArgs(limit,
@@ -1373,6 +1807,54 @@ class DropboxBase(object):
         arg = sharing.ListFoldersContinueArg(cursor)
         r = self.request(
             sharing.list_mountable_folders_continue,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
+    def sharing_list_received_files(self,
+                                    limit=100,
+                                    actions=None):
+        """
+        Returns a list of all files shared with current user.  Does not include
+        files the user has received via shared folders, and does  not include
+        unclaimed invitations.
+
+        :param long limit: Number of files to return max per query. Defaults to
+            100 if no limit is specified.
+        :param Nullable actions: File actions to query.
+        :rtype: :class:`dropbox.sharing.ListFilesResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.SharingUserError`
+        """
+        arg = sharing.ListFilesArg(limit,
+                                   actions)
+        r = self.request(
+            sharing.list_received_files,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
+    def sharing_list_received_files_continue(self,
+                                             cursor):
+        """
+        Get more results with a cursor from :meth:`list_received_files`.
+
+        :param str cursor: Cursor in ``ListFilesResult.cursor``
+        :rtype: :class:`dropbox.sharing.ListFilesResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.ListFilesContinueError`
+        """
+        arg = sharing.ListFilesContinueArg(cursor)
+        r = self.request(
+            sharing.list_received_files_continue,
             'sharing',
             arg,
             None,
@@ -1471,6 +1953,30 @@ class DropboxBase(object):
         )
         return r
 
+    def sharing_relinquish_file_membership(self,
+                                           file):
+        """
+        The current user relinquishes their membership in the designated file.
+        Note that the current user may still have inherited access to this file
+        through the parent folder. Apps must have full Dropbox access to use
+        this endpoint.
+
+        :param str file: The path or id for the file.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.RelinquishFileMembershipError`
+        """
+        arg = sharing.RelinquishFileMembershipArg(file)
+        r = self.request(
+            sharing.relinquish_file_membership,
+            'sharing',
+            arg,
+            None,
+        )
+        return None
+
     def sharing_relinquish_folder_membership(self,
                                              shared_folder_id,
                                              leave_a_copy=False):
@@ -1501,6 +2007,66 @@ class DropboxBase(object):
         )
         return r
 
+    def sharing_remove_file_member(self,
+                                   file,
+                                   member):
+        """
+        Identical to remove_file_member_2 but with less information returned.
+
+        :param str file: File from which to remove members.
+        :param member: Member to remove from this file. Note that even if an
+            email is specified, it may result in the removal of a user (not an
+            invitee) if the user's main account corresponds to that email
+            address.
+        :type member: :class:`dropbox.sharing.MemberSelector`
+        :rtype: :class:`dropbox.sharing.FileMemberActionIndividualResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.RemoveFileMemberError`
+        """
+        warnings.warn(
+            'remove_file_member is deprecated. Use remove_file_member_2.',
+            DeprecationWarning,
+        )
+        arg = sharing.RemoveFileMemberArg(file,
+                                          member)
+        r = self.request(
+            sharing.remove_file_member,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
+    def sharing_remove_file_member_2(self,
+                                     file,
+                                     member):
+        """
+        Removes a specified member from the file.
+
+        :param str file: File from which to remove members.
+        :param member: Member to remove from this file. Note that even if an
+            email is specified, it may result in the removal of a user (not an
+            invitee) if the user's main account corresponds to that email
+            address.
+        :type member: :class:`dropbox.sharing.MemberSelector`
+        :rtype: :class:`dropbox.sharing.FileMemberRemoveActionResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.RemoveFileMemberError`
+        """
+        arg = sharing.RemoveFileMemberArg(file,
+                                          member)
+        r = self.request(
+            sharing.remove_file_member_2,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
     def sharing_remove_folder_member(self,
                                      shared_folder_id,
                                      member,
@@ -1517,7 +2083,7 @@ class DropboxBase(object):
             of the folder after it's unshared, assuming it was mounted.
             Otherwise, it will be removed from their Dropbox. Also, this must be
             set to false when kicking a group.
-        :rtype: :class:`dropbox.sharing.LaunchEmptyResult`
+        :rtype: :class:`dropbox.sharing.LaunchResultBase`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
@@ -1658,6 +2224,27 @@ class DropboxBase(object):
         )
         return None
 
+    def sharing_unshare_file(self,
+                             file):
+        """
+        Remove all members from this file. Does not remove inherited members.
+
+        :param str file: The file to unshare.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.UnshareFileError`
+        """
+        arg = sharing.UnshareFileArg(file)
+        r = self.request(
+            sharing.unshare_file,
+            'sharing',
+            arg,
+            None,
+        )
+        return None
+
     def sharing_unshare_folder(self,
                                shared_folder_id,
                                leave_a_copy=False):
@@ -1702,7 +2289,7 @@ class DropboxBase(object):
         :param access_level: The new access level for ``member``.
             ``AccessLevel.owner`` is disallowed.
         :type access_level: :class:`dropbox.sharing.AccessLevel`
-        :rtype: None
+        :rtype: :class:`dropbox.sharing.MemberAccessLevelResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
@@ -1717,7 +2304,7 @@ class DropboxBase(object):
             arg,
             None,
         )
-        return None
+        return r
 
     def sharing_update_folder_policy(self,
                                      shared_folder_id,

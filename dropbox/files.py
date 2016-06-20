@@ -26,6 +26,413 @@ except (SystemError, ValueError):
     import properties
     import users
 
+class PropertiesError(properties.PropertyTemplateError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: PropertiesError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'PropertiesError(%r, %r)' % (self._tag, self._value)
+
+PropertiesError_validator = bv.Union(PropertiesError)
+
+class InvalidPropertyGroupError(PropertiesError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar property_field_too_large: A field value in this property group is too
+        large.
+    :ivar does_not_fit_template: The property group specified does not conform
+        to the property template.
+    """
+
+    # Attribute is overwritten below the class definition
+    property_field_too_large = None
+    # Attribute is overwritten below the class definition
+    does_not_fit_template = None
+
+    def is_property_field_too_large(self):
+        """
+        Check if the union tag is ``property_field_too_large``.
+
+        :rtype: bool
+        """
+        return self._tag == 'property_field_too_large'
+
+    def is_does_not_fit_template(self):
+        """
+        Check if the union tag is ``does_not_fit_template``.
+
+        :rtype: bool
+        """
+        return self._tag == 'does_not_fit_template'
+
+    def __repr__(self):
+        return 'InvalidPropertyGroupError(%r, %r)' % (self._tag, self._value)
+
+InvalidPropertyGroupError_validator = bv.Union(InvalidPropertyGroupError)
+
+class AddPropertiesError(InvalidPropertyGroupError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar property_group_already_exists: This property group already exists for
+        this file.
+    """
+
+    # Attribute is overwritten below the class definition
+    property_group_already_exists = None
+
+    def is_property_group_already_exists(self):
+        """
+        Check if the union tag is ``property_group_already_exists``.
+
+        :rtype: bool
+        """
+        return self._tag == 'property_group_already_exists'
+
+    def __repr__(self):
+        return 'AddPropertiesError(%r, %r)' % (self._tag, self._value)
+
+AddPropertiesError_validator = bv.Union(AddPropertiesError)
+
+class GetMetadataArg(object):
+    """
+    :ivar path: The path of a file or folder on Dropbox.
+    :ivar include_media_info: If true, ``FileMetadata.media_info`` is set for
+        photo and video.
+    :ivar include_deleted: If true, :class:`DeletedMetadata` will be returned
+        for deleted file or folder, otherwise ``LookupError.not_found`` will be
+        returned.
+    :ivar include_has_explicit_shared_members: If true, the results will include
+        a flag for each file indicating whether or not  that file has any
+        explicit members.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_include_media_info_value',
+        '_include_media_info_present',
+        '_include_deleted_value',
+        '_include_deleted_present',
+        '_include_has_explicit_shared_members_value',
+        '_include_has_explicit_shared_members_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 include_media_info=None,
+                 include_deleted=None,
+                 include_has_explicit_shared_members=None):
+        self._path_value = None
+        self._path_present = False
+        self._include_media_info_value = None
+        self._include_media_info_present = False
+        self._include_deleted_value = None
+        self._include_deleted_present = False
+        self._include_has_explicit_shared_members_value = None
+        self._include_has_explicit_shared_members_present = False
+        if path is not None:
+            self.path = path
+        if include_media_info is not None:
+            self.include_media_info = include_media_info
+        if include_deleted is not None:
+            self.include_deleted = include_deleted
+        if include_has_explicit_shared_members is not None:
+            self.include_has_explicit_shared_members = include_has_explicit_shared_members
+
+    @property
+    def path(self):
+        """
+        The path of a file or folder on Dropbox.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def include_media_info(self):
+        """
+        If true, ``FileMetadata.media_info`` is set for photo and video.
+
+        :rtype: bool
+        """
+        if self._include_media_info_present:
+            return self._include_media_info_value
+        else:
+            return False
+
+    @include_media_info.setter
+    def include_media_info(self, val):
+        val = self._include_media_info_validator.validate(val)
+        self._include_media_info_value = val
+        self._include_media_info_present = True
+
+    @include_media_info.deleter
+    def include_media_info(self):
+        self._include_media_info_value = None
+        self._include_media_info_present = False
+
+    @property
+    def include_deleted(self):
+        """
+        If true, :class:`DeletedMetadata` will be returned for deleted file or
+        folder, otherwise ``LookupError.not_found`` will be returned.
+
+        :rtype: bool
+        """
+        if self._include_deleted_present:
+            return self._include_deleted_value
+        else:
+            return False
+
+    @include_deleted.setter
+    def include_deleted(self, val):
+        val = self._include_deleted_validator.validate(val)
+        self._include_deleted_value = val
+        self._include_deleted_present = True
+
+    @include_deleted.deleter
+    def include_deleted(self):
+        self._include_deleted_value = None
+        self._include_deleted_present = False
+
+    @property
+    def include_has_explicit_shared_members(self):
+        """
+        If true, the results will include a flag for each file indicating
+        whether or not  that file has any explicit members.
+
+        :rtype: bool
+        """
+        if self._include_has_explicit_shared_members_present:
+            return self._include_has_explicit_shared_members_value
+        else:
+            return False
+
+    @include_has_explicit_shared_members.setter
+    def include_has_explicit_shared_members(self, val):
+        val = self._include_has_explicit_shared_members_validator.validate(val)
+        self._include_has_explicit_shared_members_value = val
+        self._include_has_explicit_shared_members_present = True
+
+    @include_has_explicit_shared_members.deleter
+    def include_has_explicit_shared_members(self):
+        self._include_has_explicit_shared_members_value = None
+        self._include_has_explicit_shared_members_present = False
+
+    def __repr__(self):
+        return 'GetMetadataArg(path={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r})'.format(
+            self._path_value,
+            self._include_media_info_value,
+            self._include_deleted_value,
+            self._include_has_explicit_shared_members_value,
+        )
+
+GetMetadataArg_validator = bv.Struct(GetMetadataArg)
+
+class AlphaGetMetadataArg(GetMetadataArg):
+    """
+    :ivar include_property_templates: If true, ``FileMetadata.property_groups``
+        is set for files with custom properties.
+    """
+
+    __slots__ = [
+        '_include_property_templates_value',
+        '_include_property_templates_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 include_media_info=None,
+                 include_deleted=None,
+                 include_has_explicit_shared_members=None,
+                 include_property_templates=None):
+        super(AlphaGetMetadataArg, self).__init__(path,
+                                                  include_media_info,
+                                                  include_deleted,
+                                                  include_has_explicit_shared_members)
+        self._include_property_templates_value = None
+        self._include_property_templates_present = False
+        if include_property_templates is not None:
+            self.include_property_templates = include_property_templates
+
+    @property
+    def include_property_templates(self):
+        """
+        If true, ``FileMetadata.property_groups`` is set for files with custom
+        properties.
+
+        :rtype: list of [str]
+        """
+        if self._include_property_templates_present:
+            return self._include_property_templates_value
+        else:
+            return None
+
+    @include_property_templates.setter
+    def include_property_templates(self, val):
+        if val is None:
+            del self.include_property_templates
+            return
+        val = self._include_property_templates_validator.validate(val)
+        self._include_property_templates_value = val
+        self._include_property_templates_present = True
+
+    @include_property_templates.deleter
+    def include_property_templates(self):
+        self._include_property_templates_value = None
+        self._include_property_templates_present = False
+
+    def __repr__(self):
+        return 'AlphaGetMetadataArg(path={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_property_templates={!r})'.format(
+            self._path_value,
+            self._include_media_info_value,
+            self._include_deleted_value,
+            self._include_has_explicit_shared_members_value,
+            self._include_property_templates_value,
+        )
+
+AlphaGetMetadataArg_validator = bv.Struct(AlphaGetMetadataArg)
+
+class GetMetadataError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: GetMetadataError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetMetadataError(%r, %r)' % (self._tag, self._value)
+
+GetMetadataError_validator = bv.Union(GetMetadataError)
+
+class AlphaGetMetadataError(GetMetadataError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    @classmethod
+    def properties_error(cls, val):
+        """
+        Create an instance of this class set to the ``properties_error`` tag
+        with value ``val``.
+
+        :param LookUpPropertiesError val:
+        :rtype: AlphaGetMetadataError
+        """
+        return cls('properties_error', val)
+
+    def is_properties_error(self):
+        """
+        Check if the union tag is ``properties_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'properties_error'
+
+    def get_properties_error(self):
+        """
+        Only call this if :meth:`is_properties_error` is true.
+
+        :rtype: LookUpPropertiesError
+        """
+        if not self.is_properties_error():
+            raise AttributeError("tag 'properties_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'AlphaGetMetadataError(%r, %r)' % (self._tag, self._value)
+
+AlphaGetMetadataError_validator = bv.Union(AlphaGetMetadataError)
+
 class CommitInfo(object):
     """
     :ivar path: Path in the user's Dropbox to save the file.
@@ -221,6 +628,73 @@ class CommitInfo(object):
         )
 
 CommitInfo_validator = bv.Struct(CommitInfo)
+
+class CommitInfoWithProperties(CommitInfo):
+    """
+    :ivar property_groups: List of custom properties to add to file.
+    """
+
+    __slots__ = [
+        '_property_groups_value',
+        '_property_groups_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 mode=None,
+                 autorename=None,
+                 client_modified=None,
+                 mute=None,
+                 property_groups=None):
+        super(CommitInfoWithProperties, self).__init__(path,
+                                                       mode,
+                                                       autorename,
+                                                       client_modified,
+                                                       mute)
+        self._property_groups_value = None
+        self._property_groups_present = False
+        if property_groups is not None:
+            self.property_groups = property_groups
+
+    @property
+    def property_groups(self):
+        """
+        List of custom properties to add to file.
+
+        :rtype: list of [properties.PropertyGroup_validator]
+        """
+        if self._property_groups_present:
+            return self._property_groups_value
+        else:
+            return None
+
+    @property_groups.setter
+    def property_groups(self, val):
+        if val is None:
+            del self.property_groups
+            return
+        val = self._property_groups_validator.validate(val)
+        self._property_groups_value = val
+        self._property_groups_present = True
+
+    @property_groups.deleter
+    def property_groups(self):
+        self._property_groups_value = None
+        self._property_groups_present = False
+
+    def __repr__(self):
+        return 'CommitInfoWithProperties(path={!r}, mode={!r}, autorename={!r}, client_modified={!r}, mute={!r}, property_groups={!r})'.format(
+            self._path_value,
+            self._mode_value,
+            self._autorename_value,
+            self._client_modified_value,
+            self._mute_value,
+            self._property_groups_value,
+        )
+
+CommitInfoWithProperties_validator = bv.Struct(CommitInfoWithProperties)
 
 class CreateFolderArg(object):
     """
@@ -452,12 +926,14 @@ class Metadata(object):
     :ivar name: The last component of the path (including extension). This never
         contains a slash.
     :ivar path_lower: The lowercased full path in the user's Dropbox. This
-        always starts with a slash.
+        always starts with a slash. This field will be null if the file or
+        folder is not mounted.
     :ivar path_display: The cased path to be used for display purposes only. In
         rare instances the casing will not correctly match the user's
         filesystem, but this behavior will match the path provided in the Core
         API v1. Changes to the casing of paths won't be returned by
-        list_folder/continue
+        list_folder/continue. This field will be null if the file or folder is
+        not mounted.
     :ivar parent_shared_folder_id: Deprecated. Please use
         ``FileSharingInfo.parent_shared_folder_id`` or
         ``FolderSharingInfo.parent_shared_folder_id`` instead.
@@ -526,17 +1002,20 @@ class Metadata(object):
     def path_lower(self):
         """
         The lowercased full path in the user's Dropbox. This always starts with
-        a slash.
+        a slash. This field will be null if the file or folder is not mounted.
 
         :rtype: str
         """
         if self._path_lower_present:
             return self._path_lower_value
         else:
-            raise AttributeError("missing required field 'path_lower'")
+            return None
 
     @path_lower.setter
     def path_lower(self, val):
+        if val is None:
+            del self.path_lower
+            return
         val = self._path_lower_validator.validate(val)
         self._path_lower_value = val
         self._path_lower_present = True
@@ -552,17 +1031,21 @@ class Metadata(object):
         The cased path to be used for display purposes only. In rare instances
         the casing will not correctly match the user's filesystem, but this
         behavior will match the path provided in the Core API v1. Changes to the
-        casing of paths won't be returned by list_folder/continue
+        casing of paths won't be returned by list_folder/continue. This field
+        will be null if the file or folder is not mounted.
 
         :rtype: str
         """
         if self._path_display_present:
             return self._path_display_value
         else:
-            raise AttributeError("missing required field 'path_display'")
+            return None
 
     @path_display.setter
     def path_display(self, val):
+        if val is None:
+            del self.path_display
+            return
         val = self._path_display_validator.validate(val)
         self._path_display_value = val
         self._path_display_present = True
@@ -913,13 +1396,13 @@ class FileMetadata(Metadata):
 
     def __init__(self,
                  name=None,
-                 path_lower=None,
-                 path_display=None,
                  id=None,
                  client_modified=None,
                  server_modified=None,
                  rev=None,
                  size=None,
+                 path_lower=None,
+                 path_display=None,
                  parent_shared_folder_id=None,
                  media_info=None,
                  sharing_info=None,
@@ -1198,15 +1681,15 @@ class FileMetadata(Metadata):
         self._has_explicit_shared_members_present = False
 
     def __repr__(self):
-        return 'FileMetadata(name={!r}, path_lower={!r}, path_display={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, parent_shared_folder_id={!r}, media_info={!r}, sharing_info={!r}, property_groups={!r}, has_explicit_shared_members={!r})'.format(
+        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, sharing_info={!r}, property_groups={!r}, has_explicit_shared_members={!r})'.format(
             self._name_value,
-            self._path_lower_value,
-            self._path_display_value,
             self._id_value,
             self._client_modified_value,
             self._server_modified_value,
             self._rev_value,
             self._size_value,
+            self._path_lower_value,
+            self._path_display_value,
             self._parent_shared_folder_id_value,
             self._media_info_value,
             self._sharing_info_value,
@@ -1384,9 +1867,9 @@ class FolderMetadata(Metadata):
 
     def __init__(self,
                  name=None,
+                 id=None,
                  path_lower=None,
                  path_display=None,
-                 id=None,
                  parent_shared_folder_id=None,
                  shared_folder_id=None,
                  sharing_info=None,
@@ -1516,11 +1999,11 @@ class FolderMetadata(Metadata):
         self._property_groups_present = False
 
     def __repr__(self):
-        return 'FolderMetadata(name={!r}, path_lower={!r}, path_display={!r}, id={!r}, parent_shared_folder_id={!r}, shared_folder_id={!r}, sharing_info={!r}, property_groups={!r})'.format(
+        return 'FolderMetadata(name={!r}, id={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, shared_folder_id={!r}, sharing_info={!r}, property_groups={!r})'.format(
             self._name_value,
+            self._id_value,
             self._path_lower_value,
             self._path_display_value,
-            self._id_value,
             self._parent_shared_folder_id_value,
             self._shared_folder_id_value,
             self._sharing_info_value,
@@ -1844,201 +2327,6 @@ class GetCopyReferenceResult(object):
         )
 
 GetCopyReferenceResult_validator = bv.Struct(GetCopyReferenceResult)
-
-class GetMetadataArg(object):
-    """
-    :ivar path: The path of a file or folder on Dropbox.
-    :ivar include_media_info: If true, ``FileMetadata.media_info`` is set for
-        photo and video.
-    :ivar include_deleted: If true, :class:`DeletedMetadata` will be returned
-        for deleted file or folder, otherwise ``LookupError.not_found`` will be
-        returned.
-    :ivar include_has_explicit_shared_members: If true, the results will include
-        a flag for each file indicating whether or not  that file has any
-        explicit members.
-    """
-
-    __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_include_media_info_value',
-        '_include_media_info_present',
-        '_include_deleted_value',
-        '_include_deleted_present',
-        '_include_has_explicit_shared_members_value',
-        '_include_has_explicit_shared_members_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 include_media_info=None,
-                 include_deleted=None,
-                 include_has_explicit_shared_members=None):
-        self._path_value = None
-        self._path_present = False
-        self._include_media_info_value = None
-        self._include_media_info_present = False
-        self._include_deleted_value = None
-        self._include_deleted_present = False
-        self._include_has_explicit_shared_members_value = None
-        self._include_has_explicit_shared_members_present = False
-        if path is not None:
-            self.path = path
-        if include_media_info is not None:
-            self.include_media_info = include_media_info
-        if include_deleted is not None:
-            self.include_deleted = include_deleted
-        if include_has_explicit_shared_members is not None:
-            self.include_has_explicit_shared_members = include_has_explicit_shared_members
-
-    @property
-    def path(self):
-        """
-        The path of a file or folder on Dropbox.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def include_media_info(self):
-        """
-        If true, ``FileMetadata.media_info`` is set for photo and video.
-
-        :rtype: bool
-        """
-        if self._include_media_info_present:
-            return self._include_media_info_value
-        else:
-            return False
-
-    @include_media_info.setter
-    def include_media_info(self, val):
-        val = self._include_media_info_validator.validate(val)
-        self._include_media_info_value = val
-        self._include_media_info_present = True
-
-    @include_media_info.deleter
-    def include_media_info(self):
-        self._include_media_info_value = None
-        self._include_media_info_present = False
-
-    @property
-    def include_deleted(self):
-        """
-        If true, :class:`DeletedMetadata` will be returned for deleted file or
-        folder, otherwise ``LookupError.not_found`` will be returned.
-
-        :rtype: bool
-        """
-        if self._include_deleted_present:
-            return self._include_deleted_value
-        else:
-            return False
-
-    @include_deleted.setter
-    def include_deleted(self, val):
-        val = self._include_deleted_validator.validate(val)
-        self._include_deleted_value = val
-        self._include_deleted_present = True
-
-    @include_deleted.deleter
-    def include_deleted(self):
-        self._include_deleted_value = None
-        self._include_deleted_present = False
-
-    @property
-    def include_has_explicit_shared_members(self):
-        """
-        If true, the results will include a flag for each file indicating
-        whether or not  that file has any explicit members.
-
-        :rtype: bool
-        """
-        if self._include_has_explicit_shared_members_present:
-            return self._include_has_explicit_shared_members_value
-        else:
-            return False
-
-    @include_has_explicit_shared_members.setter
-    def include_has_explicit_shared_members(self, val):
-        val = self._include_has_explicit_shared_members_validator.validate(val)
-        self._include_has_explicit_shared_members_value = val
-        self._include_has_explicit_shared_members_present = True
-
-    @include_has_explicit_shared_members.deleter
-    def include_has_explicit_shared_members(self):
-        self._include_has_explicit_shared_members_value = None
-        self._include_has_explicit_shared_members_present = False
-
-    def __repr__(self):
-        return 'GetMetadataArg(path={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r})'.format(
-            self._path_value,
-            self._include_media_info_value,
-            self._include_deleted_value,
-            self._include_has_explicit_shared_members_value,
-        )
-
-GetMetadataArg_validator = bv.Struct(GetMetadataArg)
-
-class GetMetadataError(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = None
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param LookupError val:
-        :rtype: GetMetadataError
-        """
-        return cls('path', val)
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def get_path(self):
-        """
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'GetMetadataError(%r, %r)' % (self._tag, self._value)
-
-GetMetadataError_validator = bv.Union(GetMetadataError)
 
 class GetTemporaryLinkArg(object):
     """
@@ -3265,6 +3553,33 @@ class ListRevisionsResult(object):
 
 ListRevisionsResult_validator = bv.Struct(ListRevisionsResult)
 
+class LookUpPropertiesError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar property_group_not_found: This property group does not exist for this
+        file.
+    """
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    property_group_not_found = None
+
+    def is_property_group_not_found(self):
+        """
+        Check if the union tag is ``property_group_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'property_group_not_found'
+
+    def __repr__(self):
+        return 'LookUpPropertiesError(%r, %r)' % (self._tag, self._value)
+
+LookUpPropertiesError_validator = bv.Union(LookUpPropertiesError)
+
 class LookupError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -3745,6 +4060,212 @@ class PreviewError(bb.Union):
 
 PreviewError_validator = bv.Union(PreviewError)
 
+class PropertyGroupUpdate(object):
+    """
+    :ivar template_id: A unique identifier for a property template.
+    :ivar add_or_update_fields: List of property fields to update if the field
+        already exists. If the field doesn't exist, add the field to the
+        property group.
+    :ivar remove_fields: List of property field names to remove from property
+        group if the field exists.
+    """
+
+    __slots__ = [
+        '_template_id_value',
+        '_template_id_present',
+        '_add_or_update_fields_value',
+        '_add_or_update_fields_present',
+        '_remove_fields_value',
+        '_remove_fields_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 template_id=None,
+                 add_or_update_fields=None,
+                 remove_fields=None):
+        self._template_id_value = None
+        self._template_id_present = False
+        self._add_or_update_fields_value = None
+        self._add_or_update_fields_present = False
+        self._remove_fields_value = None
+        self._remove_fields_present = False
+        if template_id is not None:
+            self.template_id = template_id
+        if add_or_update_fields is not None:
+            self.add_or_update_fields = add_or_update_fields
+        if remove_fields is not None:
+            self.remove_fields = remove_fields
+
+    @property
+    def template_id(self):
+        """
+        A unique identifier for a property template.
+
+        :rtype: str
+        """
+        if self._template_id_present:
+            return self._template_id_value
+        else:
+            raise AttributeError("missing required field 'template_id'")
+
+    @template_id.setter
+    def template_id(self, val):
+        val = self._template_id_validator.validate(val)
+        self._template_id_value = val
+        self._template_id_present = True
+
+    @template_id.deleter
+    def template_id(self):
+        self._template_id_value = None
+        self._template_id_present = False
+
+    @property
+    def add_or_update_fields(self):
+        """
+        List of property fields to update if the field already exists. If the
+        field doesn't exist, add the field to the property group.
+
+        :rtype: list of [properties.PropertyField_validator]
+        """
+        if self._add_or_update_fields_present:
+            return self._add_or_update_fields_value
+        else:
+            return None
+
+    @add_or_update_fields.setter
+    def add_or_update_fields(self, val):
+        if val is None:
+            del self.add_or_update_fields
+            return
+        val = self._add_or_update_fields_validator.validate(val)
+        self._add_or_update_fields_value = val
+        self._add_or_update_fields_present = True
+
+    @add_or_update_fields.deleter
+    def add_or_update_fields(self):
+        self._add_or_update_fields_value = None
+        self._add_or_update_fields_present = False
+
+    @property
+    def remove_fields(self):
+        """
+        List of property field names to remove from property group if the field
+        exists.
+
+        :rtype: list of [str]
+        """
+        if self._remove_fields_present:
+            return self._remove_fields_value
+        else:
+            return None
+
+    @remove_fields.setter
+    def remove_fields(self, val):
+        if val is None:
+            del self.remove_fields
+            return
+        val = self._remove_fields_validator.validate(val)
+        self._remove_fields_value = val
+        self._remove_fields_present = True
+
+    @remove_fields.deleter
+    def remove_fields(self):
+        self._remove_fields_value = None
+        self._remove_fields_present = False
+
+    def __repr__(self):
+        return 'PropertyGroupUpdate(template_id={!r}, add_or_update_fields={!r}, remove_fields={!r})'.format(
+            self._template_id_value,
+            self._add_or_update_fields_value,
+            self._remove_fields_value,
+        )
+
+PropertyGroupUpdate_validator = bv.Struct(PropertyGroupUpdate)
+
+class PropertyGroupWithPath(object):
+    """
+    :ivar path: A unique identifier for the file.
+    :ivar property_groups: Filled custom property templates associated with a
+        file.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_property_groups_value',
+        '_property_groups_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 property_groups=None):
+        self._path_value = None
+        self._path_present = False
+        self._property_groups_value = None
+        self._property_groups_present = False
+        if path is not None:
+            self.path = path
+        if property_groups is not None:
+            self.property_groups = property_groups
+
+    @property
+    def path(self):
+        """
+        A unique identifier for the file.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def property_groups(self):
+        """
+        Filled custom property templates associated with a file.
+
+        :rtype: list of [properties.PropertyGroup_validator]
+        """
+        if self._property_groups_present:
+            return self._property_groups_value
+        else:
+            raise AttributeError("missing required field 'property_groups'")
+
+    @property_groups.setter
+    def property_groups(self, val):
+        val = self._property_groups_validator.validate(val)
+        self._property_groups_value = val
+        self._property_groups_present = True
+
+    @property_groups.deleter
+    def property_groups(self):
+        self._property_groups_value = None
+        self._property_groups_present = False
+
+    def __repr__(self):
+        return 'PropertyGroupWithPath(path={!r}, property_groups={!r})'.format(
+            self._path_value,
+            self._property_groups_value,
+        )
+
+PropertyGroupWithPath_validator = bv.Struct(PropertyGroupWithPath)
+
 class RelocationArg(object):
     """
     :ivar from_path: Path in the user's Dropbox to be copied or moved.
@@ -3984,6 +4505,130 @@ class RelocationError(bb.Union):
         return 'RelocationError(%r, %r)' % (self._tag, self._value)
 
 RelocationError_validator = bv.Union(RelocationError)
+
+class RemovePropertiesArg(object):
+    """
+    :ivar path: A unique identifier for the file.
+    :ivar property_template_ids: A list of identifiers for a property template
+        created by route properties/template/add.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_property_template_ids_value',
+        '_property_template_ids_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 property_template_ids=None):
+        self._path_value = None
+        self._path_present = False
+        self._property_template_ids_value = None
+        self._property_template_ids_present = False
+        if path is not None:
+            self.path = path
+        if property_template_ids is not None:
+            self.property_template_ids = property_template_ids
+
+    @property
+    def path(self):
+        """
+        A unique identifier for the file.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def property_template_ids(self):
+        """
+        A list of identifiers for a property template created by route
+        properties/template/add.
+
+        :rtype: list of [str]
+        """
+        if self._property_template_ids_present:
+            return self._property_template_ids_value
+        else:
+            raise AttributeError("missing required field 'property_template_ids'")
+
+    @property_template_ids.setter
+    def property_template_ids(self, val):
+        val = self._property_template_ids_validator.validate(val)
+        self._property_template_ids_value = val
+        self._property_template_ids_present = True
+
+    @property_template_ids.deleter
+    def property_template_ids(self):
+        self._property_template_ids_value = None
+        self._property_template_ids_present = False
+
+    def __repr__(self):
+        return 'RemovePropertiesArg(path={!r}, property_template_ids={!r})'.format(
+            self._path_value,
+            self._property_template_ids_value,
+        )
+
+RemovePropertiesArg_validator = bv.Struct(RemovePropertiesArg)
+
+class RemovePropertiesError(PropertiesError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    @classmethod
+    def property_group_lookup(cls, val):
+        """
+        Create an instance of this class set to the ``property_group_lookup``
+        tag with value ``val``.
+
+        :param LookUpPropertiesError val:
+        :rtype: RemovePropertiesError
+        """
+        return cls('property_group_lookup', val)
+
+    def is_property_group_lookup(self):
+        """
+        Check if the union tag is ``property_group_lookup``.
+
+        :rtype: bool
+        """
+        return self._tag == 'property_group_lookup'
+
+    def get_property_group_lookup(self):
+        """
+        Only call this if :meth:`is_property_group_lookup` is true.
+
+        :rtype: LookUpPropertiesError
+        """
+        if not self.is_property_group_lookup():
+            raise AttributeError("tag 'property_group_lookup' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'RemovePropertiesError(%r, %r)' % (self._tag, self._value)
+
+RemovePropertiesError_validator = bv.Union(RemovePropertiesError)
 
 class RestoreArg(object):
     """
@@ -4257,8 +4902,9 @@ class SaveCopyReferenceError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar invalid_copy_reference: The copy reference is invalid.
-    :ivar no_permission: The app has no permission to access another user's
-        Dropbox.
+    :ivar no_permission: You don't have permission to save the given copy
+        reference. Please make sure this app is same app which created the copy
+        reference and the source user is still linked to the app.
     :ivar not_found: The file referenced by the copy reference cannot be found.
     :ivar too_many_files: The operation would involve more than 10,000 files and
         folders.
@@ -5530,6 +6176,129 @@ class ThumbnailSize(bb.Union):
 
 ThumbnailSize_validator = bv.Union(ThumbnailSize)
 
+class UpdatePropertiesError(InvalidPropertyGroupError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    @classmethod
+    def property_group_lookup(cls, val):
+        """
+        Create an instance of this class set to the ``property_group_lookup``
+        tag with value ``val``.
+
+        :param LookUpPropertiesError val:
+        :rtype: UpdatePropertiesError
+        """
+        return cls('property_group_lookup', val)
+
+    def is_property_group_lookup(self):
+        """
+        Check if the union tag is ``property_group_lookup``.
+
+        :rtype: bool
+        """
+        return self._tag == 'property_group_lookup'
+
+    def get_property_group_lookup(self):
+        """
+        Only call this if :meth:`is_property_group_lookup` is true.
+
+        :rtype: LookUpPropertiesError
+        """
+        if not self.is_property_group_lookup():
+            raise AttributeError("tag 'property_group_lookup' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UpdatePropertiesError(%r, %r)' % (self._tag, self._value)
+
+UpdatePropertiesError_validator = bv.Union(UpdatePropertiesError)
+
+class UpdatePropertyGroupArg(object):
+    """
+    :ivar path: A unique identifier for the file.
+    :ivar update_property_groups: Filled custom property templates associated
+        with a file.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_update_property_groups_value',
+        '_update_property_groups_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 update_property_groups=None):
+        self._path_value = None
+        self._path_present = False
+        self._update_property_groups_value = None
+        self._update_property_groups_present = False
+        if path is not None:
+            self.path = path
+        if update_property_groups is not None:
+            self.update_property_groups = update_property_groups
+
+    @property
+    def path(self):
+        """
+        A unique identifier for the file.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def update_property_groups(self):
+        """
+        Filled custom property templates associated with a file.
+
+        :rtype: list of [PropertyGroupUpdate]
+        """
+        if self._update_property_groups_present:
+            return self._update_property_groups_value
+        else:
+            raise AttributeError("missing required field 'update_property_groups'")
+
+    @update_property_groups.setter
+    def update_property_groups(self, val):
+        val = self._update_property_groups_validator.validate(val)
+        self._update_property_groups_value = val
+        self._update_property_groups_present = True
+
+    @update_property_groups.deleter
+    def update_property_groups(self):
+        self._update_property_groups_value = None
+        self._update_property_groups_present = False
+
+    def __repr__(self):
+        return 'UpdatePropertyGroupArg(path={!r}, update_property_groups={!r})'.format(
+            self._path_value,
+            self._update_property_groups_value,
+        )
+
+UpdatePropertyGroupArg_validator = bv.Struct(UpdatePropertyGroupArg)
+
 class UploadError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -5589,11 +6358,53 @@ class UploadError(bb.Union):
 
 UploadError_validator = bv.Union(UploadError)
 
+class UploadErrorWithProperties(UploadError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    @classmethod
+    def properties_error(cls, val):
+        """
+        Create an instance of this class set to the ``properties_error`` tag
+        with value ``val``.
+
+        :param InvalidPropertyGroupError val:
+        :rtype: UploadErrorWithProperties
+        """
+        return cls('properties_error', val)
+
+    def is_properties_error(self):
+        """
+        Check if the union tag is ``properties_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'properties_error'
+
+    def get_properties_error(self):
+        """
+        Only call this if :meth:`is_properties_error` is true.
+
+        :rtype: InvalidPropertyGroupError
+        """
+        if not self.is_properties_error():
+            raise AttributeError("tag 'properties_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UploadErrorWithProperties(%r, %r)' % (self._tag, self._value)
+
+UploadErrorWithProperties_validator = bv.Union(UploadErrorWithProperties)
+
 class UploadSessionAppendArg(object):
     """
     :ivar cursor: Contains the upload session ID and the offset.
-    :ivar close: If true, current session will be closed. You cannot do
-        upload_session/append any more to current session
+    :ivar close: If true, the current session will be closed, at which point you
+        won't be able to call upload_session/append_v2 anymore with the current
+        session.
     """
 
     __slots__ = [
@@ -5643,8 +6454,8 @@ class UploadSessionAppendArg(object):
     @property
     def close(self):
         """
-        If true, current session will be closed. You cannot do
-        upload_session/append any more to current session
+        If true, the current session will be closed, at which point you won't be
+        able to call upload_session/append_v2 anymore with the current session.
 
         :rtype: bool
         """
@@ -6092,8 +6903,9 @@ UploadSessionOffsetError_validator = bv.Struct(UploadSessionOffsetError)
 
 class UploadSessionStartArg(object):
     """
-    :ivar close: If true, current session will be closed. You cannot do
-        upload_session/append any more to current session
+    :ivar close: If true, the current session will be closed, at which point you
+        won't be able to call upload_session/append_v2 anymore with the current
+        session.
     """
 
     __slots__ = [
@@ -6113,8 +6925,8 @@ class UploadSessionStartArg(object):
     @property
     def close(self):
         """
-        If true, current session will be closed. You cannot do
-        upload_session/append any more to current session
+        If true, the current session will be closed, at which point you won't be
+        able to call upload_session/append_v2 anymore with the current session.
 
         :rtype: bool
         """
@@ -6144,7 +6956,7 @@ UploadSessionStartArg_validator = bv.Struct(UploadSessionStartArg)
 class UploadSessionStartResult(object):
     """
     :ivar session_id: A unique identifier for the upload session. Pass this to
-        upload_session/append and upload_session/finish.
+        upload_session/append_v2 and upload_session/finish.
     """
 
     __slots__ = [
@@ -6165,7 +6977,7 @@ class UploadSessionStartResult(object):
     def session_id(self):
         """
         A unique identifier for the upload session. Pass this to
-        upload_session/append and upload_session/finish.
+        upload_session/append_v2 and upload_session/finish.
 
         :rtype: str
         """
@@ -6614,8 +7426,65 @@ MalformedPathError_validator = bv.Nullable(bv.String())
 Path_validator = bv.String(pattern=u'/(.|[\\r\\n])*')
 PathOrId_validator = bv.String(pattern=u'/(.|[\\r\\n])*|id:.*')
 PathR_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?')
-ReadPath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})')
+ReadPath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/.*)?)')
 Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
+PropertiesError._path_validator = LookupError_validator
+PropertiesError._tagmap = {
+    'path': PropertiesError._path_validator,
+}
+PropertiesError._tagmap.update(properties.PropertyTemplateError._tagmap)
+
+InvalidPropertyGroupError._property_field_too_large_validator = bv.Void()
+InvalidPropertyGroupError._does_not_fit_template_validator = bv.Void()
+InvalidPropertyGroupError._tagmap = {
+    'property_field_too_large': InvalidPropertyGroupError._property_field_too_large_validator,
+    'does_not_fit_template': InvalidPropertyGroupError._does_not_fit_template_validator,
+}
+InvalidPropertyGroupError._tagmap.update(PropertiesError._tagmap)
+
+InvalidPropertyGroupError.property_field_too_large = InvalidPropertyGroupError('property_field_too_large')
+InvalidPropertyGroupError.does_not_fit_template = InvalidPropertyGroupError('does_not_fit_template')
+
+AddPropertiesError._property_group_already_exists_validator = bv.Void()
+AddPropertiesError._tagmap = {
+    'property_group_already_exists': AddPropertiesError._property_group_already_exists_validator,
+}
+AddPropertiesError._tagmap.update(InvalidPropertyGroupError._tagmap)
+
+AddPropertiesError.property_group_already_exists = AddPropertiesError('property_group_already_exists')
+
+GetMetadataArg._path_validator = ReadPath_validator
+GetMetadataArg._include_media_info_validator = bv.Boolean()
+GetMetadataArg._include_deleted_validator = bv.Boolean()
+GetMetadataArg._include_has_explicit_shared_members_validator = bv.Boolean()
+GetMetadataArg._all_field_names_ = set([
+    'path',
+    'include_media_info',
+    'include_deleted',
+    'include_has_explicit_shared_members',
+])
+GetMetadataArg._all_fields_ = [
+    ('path', GetMetadataArg._path_validator),
+    ('include_media_info', GetMetadataArg._include_media_info_validator),
+    ('include_deleted', GetMetadataArg._include_deleted_validator),
+    ('include_has_explicit_shared_members', GetMetadataArg._include_has_explicit_shared_members_validator),
+]
+
+AlphaGetMetadataArg._include_property_templates_validator = bv.Nullable(bv.List(properties.TemplateId_validator))
+AlphaGetMetadataArg._all_field_names_ = GetMetadataArg._all_field_names_.union(set(['include_property_templates']))
+AlphaGetMetadataArg._all_fields_ = GetMetadataArg._all_fields_ + [('include_property_templates', AlphaGetMetadataArg._include_property_templates_validator)]
+
+GetMetadataError._path_validator = LookupError_validator
+GetMetadataError._tagmap = {
+    'path': GetMetadataError._path_validator,
+}
+
+AlphaGetMetadataError._properties_error_validator = LookUpPropertiesError_validator
+AlphaGetMetadataError._tagmap = {
+    'properties_error': AlphaGetMetadataError._properties_error_validator,
+}
+AlphaGetMetadataError._tagmap.update(GetMetadataError._tagmap)
+
 CommitInfo._path_validator = Path_validator
 CommitInfo._mode_validator = WriteMode_validator
 CommitInfo._autorename_validator = bv.Boolean()
@@ -6635,6 +7504,10 @@ CommitInfo._all_fields_ = [
     ('client_modified', CommitInfo._client_modified_validator),
     ('mute', CommitInfo._mute_validator),
 ]
+
+CommitInfoWithProperties._property_groups_validator = bv.Nullable(bv.List(properties.PropertyGroup_validator))
+CommitInfoWithProperties._all_field_names_ = CommitInfo._all_field_names_.union(set(['property_groups']))
+CommitInfoWithProperties._all_fields_ = CommitInfo._all_fields_ + [('property_groups', CommitInfoWithProperties._property_groups_validator)]
 
 CreateFolderArg._path_validator = Path_validator
 CreateFolderArg._all_field_names_ = set(['path'])
@@ -6661,8 +7534,8 @@ DeleteError._tagmap = {
 DeleteError.other = DeleteError('other')
 
 Metadata._name_validator = bv.String()
-Metadata._path_lower_validator = bv.String()
-Metadata._path_display_validator = bv.String()
+Metadata._path_lower_validator = bv.Nullable(bv.String())
+Metadata._path_display_validator = bv.Nullable(bv.String())
 Metadata._parent_shared_folder_id_validator = bv.Nullable(common.SharedFolderId_validator)
 Metadata._field_names_ = set([
     'name',
@@ -6833,28 +7706,6 @@ GetCopyReferenceResult._all_fields_ = [
     ('expires', GetCopyReferenceResult._expires_validator),
 ]
 
-GetMetadataArg._path_validator = ReadPath_validator
-GetMetadataArg._include_media_info_validator = bv.Boolean()
-GetMetadataArg._include_deleted_validator = bv.Boolean()
-GetMetadataArg._include_has_explicit_shared_members_validator = bv.Boolean()
-GetMetadataArg._all_field_names_ = set([
-    'path',
-    'include_media_info',
-    'include_deleted',
-    'include_has_explicit_shared_members',
-])
-GetMetadataArg._all_fields_ = [
-    ('path', GetMetadataArg._path_validator),
-    ('include_media_info', GetMetadataArg._include_media_info_validator),
-    ('include_deleted', GetMetadataArg._include_deleted_validator),
-    ('include_has_explicit_shared_members', GetMetadataArg._include_has_explicit_shared_members_validator),
-]
-
-GetMetadataError._path_validator = LookupError_validator
-GetMetadataError._tagmap = {
-    'path': GetMetadataError._path_validator,
-}
-
 GetTemporaryLinkArg._path_validator = ReadPath_validator
 GetTemporaryLinkArg._all_field_names_ = set(['path'])
 GetTemporaryLinkArg._all_fields_ = [('path', GetTemporaryLinkArg._path_validator)]
@@ -7016,6 +7867,13 @@ ListRevisionsResult._all_fields_ = [
     ('entries', ListRevisionsResult._entries_validator),
 ]
 
+LookUpPropertiesError._property_group_not_found_validator = bv.Void()
+LookUpPropertiesError._tagmap = {
+    'property_group_not_found': LookUpPropertiesError._property_group_not_found_validator,
+}
+
+LookUpPropertiesError.property_group_not_found = LookUpPropertiesError('property_group_not_found')
+
 LookupError._malformed_path_validator = MalformedPathError_validator
 LookupError._not_found_validator = bv.Void()
 LookupError._not_file_validator = bv.Void()
@@ -7103,6 +7961,31 @@ PreviewError.in_progress = PreviewError('in_progress')
 PreviewError.unsupported_extension = PreviewError('unsupported_extension')
 PreviewError.unsupported_content = PreviewError('unsupported_content')
 
+PropertyGroupUpdate._template_id_validator = properties.TemplateId_validator
+PropertyGroupUpdate._add_or_update_fields_validator = bv.Nullable(bv.List(properties.PropertyField_validator))
+PropertyGroupUpdate._remove_fields_validator = bv.Nullable(bv.List(bv.String()))
+PropertyGroupUpdate._all_field_names_ = set([
+    'template_id',
+    'add_or_update_fields',
+    'remove_fields',
+])
+PropertyGroupUpdate._all_fields_ = [
+    ('template_id', PropertyGroupUpdate._template_id_validator),
+    ('add_or_update_fields', PropertyGroupUpdate._add_or_update_fields_validator),
+    ('remove_fields', PropertyGroupUpdate._remove_fields_validator),
+]
+
+PropertyGroupWithPath._path_validator = PathOrId_validator
+PropertyGroupWithPath._property_groups_validator = bv.List(properties.PropertyGroup_validator)
+PropertyGroupWithPath._all_field_names_ = set([
+    'path',
+    'property_groups',
+])
+PropertyGroupWithPath._all_fields_ = [
+    ('path', PropertyGroupWithPath._path_validator),
+    ('property_groups', PropertyGroupWithPath._property_groups_validator),
+]
+
 RelocationArg._from_path_validator = Path_validator
 RelocationArg._to_path_validator = Path_validator
 RelocationArg._all_field_names_ = set([
@@ -7138,6 +8021,23 @@ RelocationError.cant_nest_shared_folder = RelocationError('cant_nest_shared_fold
 RelocationError.cant_move_folder_into_itself = RelocationError('cant_move_folder_into_itself')
 RelocationError.too_many_files = RelocationError('too_many_files')
 RelocationError.other = RelocationError('other')
+
+RemovePropertiesArg._path_validator = PathOrId_validator
+RemovePropertiesArg._property_template_ids_validator = bv.List(properties.TemplateId_validator)
+RemovePropertiesArg._all_field_names_ = set([
+    'path',
+    'property_template_ids',
+])
+RemovePropertiesArg._all_fields_ = [
+    ('path', RemovePropertiesArg._path_validator),
+    ('property_template_ids', RemovePropertiesArg._property_template_ids_validator),
+]
+
+RemovePropertiesError._property_group_lookup_validator = LookUpPropertiesError_validator
+RemovePropertiesError._tagmap = {
+    'property_group_lookup': RemovePropertiesError._property_group_lookup_validator,
+}
+RemovePropertiesError._tagmap.update(PropertiesError._tagmap)
 
 RestoreArg._path_validator = Path_validator
 RestoreArg._rev_validator = Rev_validator
@@ -7381,6 +8281,23 @@ ThumbnailSize.w128h128 = ThumbnailSize('w128h128')
 ThumbnailSize.w640h480 = ThumbnailSize('w640h480')
 ThumbnailSize.w1024h768 = ThumbnailSize('w1024h768')
 
+UpdatePropertiesError._property_group_lookup_validator = LookUpPropertiesError_validator
+UpdatePropertiesError._tagmap = {
+    'property_group_lookup': UpdatePropertiesError._property_group_lookup_validator,
+}
+UpdatePropertiesError._tagmap.update(InvalidPropertyGroupError._tagmap)
+
+UpdatePropertyGroupArg._path_validator = PathOrId_validator
+UpdatePropertyGroupArg._update_property_groups_validator = bv.List(PropertyGroupUpdate_validator)
+UpdatePropertyGroupArg._all_field_names_ = set([
+    'path',
+    'update_property_groups',
+])
+UpdatePropertyGroupArg._all_fields_ = [
+    ('path', UpdatePropertyGroupArg._path_validator),
+    ('update_property_groups', UpdatePropertyGroupArg._update_property_groups_validator),
+]
+
 UploadError._path_validator = UploadWriteFailed_validator
 UploadError._other_validator = bv.Void()
 UploadError._tagmap = {
@@ -7389,6 +8306,12 @@ UploadError._tagmap = {
 }
 
 UploadError.other = UploadError('other')
+
+UploadErrorWithProperties._properties_error_validator = InvalidPropertyGroupError_validator
+UploadErrorWithProperties._tagmap = {
+    'properties_error': UploadErrorWithProperties._properties_error_validator,
+}
+UploadErrorWithProperties._tagmap.update(UploadError._tagmap)
 
 UploadSessionAppendArg._cursor_validator = UploadSessionCursor_validator
 UploadSessionAppendArg._close_validator = bv.Boolean()
@@ -7532,6 +8455,24 @@ WriteMode._tagmap = {
 WriteMode.add = WriteMode('add')
 WriteMode.overwrite = WriteMode('overwrite')
 
+alpha_get_metadata = bb.Route(
+    'alpha/get_metadata',
+    False,
+    AlphaGetMetadataArg_validator,
+    Metadata_validator,
+    AlphaGetMetadataError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+alpha_upload = bb.Route(
+    'alpha/upload',
+    False,
+    CommitInfoWithProperties_validator,
+    FileMetadata_validator,
+    UploadErrorWithProperties_validator,
+    {'host': u'content',
+     'style': u'upload'},
+)
 copy = bb.Route(
     'copy',
     False,
@@ -7685,6 +8626,60 @@ permanently_delete = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+properties_add = bb.Route(
+    'properties/add',
+    False,
+    PropertyGroupWithPath_validator,
+    bv.Void(),
+    AddPropertiesError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+properties_overwrite = bb.Route(
+    'properties/overwrite',
+    False,
+    PropertyGroupWithPath_validator,
+    bv.Void(),
+    InvalidPropertyGroupError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+properties_remove = bb.Route(
+    'properties/remove',
+    False,
+    RemovePropertiesArg_validator,
+    bv.Void(),
+    RemovePropertiesError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+properties_template_get = bb.Route(
+    'properties/template/get',
+    False,
+    properties.GetPropertyTemplateArg_validator,
+    properties.GetPropertyTemplateResult_validator,
+    properties.PropertyTemplateError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+properties_template_list = bb.Route(
+    'properties/template/list',
+    False,
+    bv.Void(),
+    properties.ListPropertyTemplateIds_validator,
+    properties.PropertyTemplateError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+properties_update = bb.Route(
+    'properties/update',
+    False,
+    UpdatePropertyGroupArg_validator,
+    bv.Void(),
+    UpdatePropertiesError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 restore = bb.Route(
     'restore',
     False,
@@ -7768,6 +8763,8 @@ upload_session_start = bb.Route(
 )
 
 ROUTES = {
+    'alpha/get_metadata': alpha_get_metadata,
+    'alpha/upload': alpha_upload,
     'copy': copy,
     'copy_reference/get': copy_reference_get,
     'copy_reference/save': copy_reference_save,
@@ -7785,6 +8782,12 @@ ROUTES = {
     'list_revisions': list_revisions,
     'move': move,
     'permanently_delete': permanently_delete,
+    'properties/add': properties_add,
+    'properties/overwrite': properties_overwrite,
+    'properties/remove': properties_remove,
+    'properties/template/get': properties_template_get,
+    'properties/template/list': properties_template_list,
+    'properties/update': properties_update,
     'restore': restore,
     'save_url': save_url,
     'save_url/check_job_status': save_url_check_job_status,

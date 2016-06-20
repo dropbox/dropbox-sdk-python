@@ -3248,7 +3248,7 @@ GroupCreateError_validator = bv.Union(GroupCreateError)
 
 class GroupSelectorError(bb.Union):
     """
-    Error that can be raised when :class:`GroupSelector`is used.
+    Error that can be raised when :class:`GroupSelector` is used.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -7520,6 +7520,7 @@ class MemberProfile(object):
     :ivar external_id: External ID that a team can attach to the user. An
         application using the API may find it easier to use their own IDs
         instead of Dropbox IDs like account_id or team_member_id.
+    :ivar account_id: A user's account identifier.
     :ivar email: Email address of user.
     :ivar email_verified: Is true if the user's email is verified to be owned by
         the user.
@@ -7535,6 +7536,8 @@ class MemberProfile(object):
         '_team_member_id_present',
         '_external_id_value',
         '_external_id_present',
+        '_account_id_value',
+        '_account_id_present',
         '_email_value',
         '_email_present',
         '_email_verified_value',
@@ -7556,11 +7559,14 @@ class MemberProfile(object):
                  status=None,
                  name=None,
                  membership_type=None,
-                 external_id=None):
+                 external_id=None,
+                 account_id=None):
         self._team_member_id_value = None
         self._team_member_id_present = False
         self._external_id_value = None
         self._external_id_present = False
+        self._account_id_value = None
+        self._account_id_present = False
         self._email_value = None
         self._email_present = False
         self._email_verified_value = None
@@ -7575,6 +7581,8 @@ class MemberProfile(object):
             self.team_member_id = team_member_id
         if external_id is not None:
             self.external_id = external_id
+        if account_id is not None:
+            self.account_id = account_id
         if email is not None:
             self.email = email
         if email_verified is not None:
@@ -7636,6 +7644,32 @@ class MemberProfile(object):
     def external_id(self):
         self._external_id_value = None
         self._external_id_present = False
+
+    @property
+    def account_id(self):
+        """
+        A user's account identifier.
+
+        :rtype: str
+        """
+        if self._account_id_present:
+            return self._account_id_value
+        else:
+            return None
+
+    @account_id.setter
+    def account_id(self, val):
+        if val is None:
+            del self.account_id
+            return
+        val = self._account_id_validator.validate(val)
+        self._account_id_value = val
+        self._account_id_present = True
+
+    @account_id.deleter
+    def account_id(self):
+        self._account_id_value = None
+        self._account_id_present = False
 
     @property
     def email(self):
@@ -7754,7 +7788,7 @@ class MemberProfile(object):
         self._membership_type_present = False
 
     def __repr__(self):
-        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r})'.format(
+        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -7762,6 +7796,7 @@ class MemberProfile(object):
             self._name_value,
             self._membership_type_value,
             self._external_id_value,
+            self._account_id_value,
         )
 
 MemberProfile_validator = bv.Struct(MemberProfile)
@@ -10863,7 +10898,7 @@ class TeamGetInfoResult(object):
     @property
     def policies(self):
         """
-        :rtype: team_policies.TeamPolicies_validator
+        :rtype: team_policies.TeamMemberPolicies_validator
         """
         if self._policies_present:
             return self._policies_value
@@ -10997,14 +11032,16 @@ class TeamMemberProfile(MemberProfile):
                  name=None,
                  membership_type=None,
                  groups=None,
-                 external_id=None):
+                 external_id=None,
+                 account_id=None):
         super(TeamMemberProfile, self).__init__(team_member_id,
                                                 email,
                                                 email_verified,
                                                 status,
                                                 name,
                                                 membership_type,
-                                                external_id)
+                                                external_id,
+                                                account_id)
         self._groups_value = None
         self._groups_present = False
         if groups is not None:
@@ -11034,7 +11071,7 @@ class TeamMemberProfile(MemberProfile):
         self._groups_present = False
 
     def __repr__(self):
-        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, external_id={!r})'.format(
+        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, external_id={!r}, account_id={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -11043,6 +11080,7 @@ class TeamMemberProfile(MemberProfile):
             self._membership_type_value,
             self._groups_value,
             self._external_id_value,
+            self._account_id_value,
         )
 
 TeamMemberProfile_validator = bv.Struct(TeamMemberProfile)
@@ -12503,6 +12541,7 @@ MemberLinkedApps._all_fields_ = [
 
 MemberProfile._team_member_id_validator = TeamMemberId_validator
 MemberProfile._external_id_validator = bv.Nullable(bv.String())
+MemberProfile._account_id_validator = bv.Nullable(users.AccountId_validator)
 MemberProfile._email_validator = bv.String()
 MemberProfile._email_verified_validator = bv.Boolean()
 MemberProfile._status_validator = TeamMemberStatus_validator
@@ -12511,6 +12550,7 @@ MemberProfile._membership_type_validator = TeamMembershipType_validator
 MemberProfile._all_field_names_ = set([
     'team_member_id',
     'external_id',
+    'account_id',
     'email',
     'email_verified',
     'status',
@@ -12520,6 +12560,7 @@ MemberProfile._all_field_names_ = set([
 MemberProfile._all_fields_ = [
     ('team_member_id', MemberProfile._team_member_id_validator),
     ('external_id', MemberProfile._external_id_validator),
+    ('account_id', MemberProfile._account_id_validator),
     ('email', MemberProfile._email_validator),
     ('email_verified', MemberProfile._email_verified_validator),
     ('status', MemberProfile._status_validator),
@@ -12985,7 +13026,7 @@ TeamGetInfoResult._name_validator = bv.String()
 TeamGetInfoResult._team_id_validator = bv.String()
 TeamGetInfoResult._num_licensed_users_validator = bv.UInt32()
 TeamGetInfoResult._num_provisioned_users_validator = bv.UInt32()
-TeamGetInfoResult._policies_validator = team_policies.TeamPolicies_validator
+TeamGetInfoResult._policies_validator = team_policies.TeamMemberPolicies_validator
 TeamGetInfoResult._all_field_names_ = set([
     'name',
     'team_id',

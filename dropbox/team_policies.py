@@ -233,7 +233,7 @@ class SharedLinkCreatePolicy(bb.Union):
 
 SharedLinkCreatePolicy_validator = bv.Union(SharedLinkCreatePolicy)
 
-class TeamPolicies(object):
+class TeamMemberPolicies(object):
     """
     Policies governing team members.
 
@@ -319,12 +319,12 @@ class TeamPolicies(object):
         self._emm_state_present = False
 
     def __repr__(self):
-        return 'TeamPolicies(sharing={!r}, emm_state={!r})'.format(
+        return 'TeamMemberPolicies(sharing={!r}, emm_state={!r})'.format(
             self._sharing_value,
             self._emm_state_value,
         )
 
-TeamPolicies_validator = bv.Struct(TeamPolicies)
+TeamMemberPolicies_validator = bv.Struct(TeamMemberPolicies)
 
 class TeamSharingPolicies(object):
     """
@@ -501,15 +501,15 @@ SharedLinkCreatePolicy.default_team_only = SharedLinkCreatePolicy('default_team_
 SharedLinkCreatePolicy.team_only = SharedLinkCreatePolicy('team_only')
 SharedLinkCreatePolicy.other = SharedLinkCreatePolicy('other')
 
-TeamPolicies._sharing_validator = TeamSharingPolicies_validator
-TeamPolicies._emm_state_validator = EmmState_validator
-TeamPolicies._all_field_names_ = set([
+TeamMemberPolicies._sharing_validator = TeamSharingPolicies_validator
+TeamMemberPolicies._emm_state_validator = EmmState_validator
+TeamMemberPolicies._all_field_names_ = set([
     'sharing',
     'emm_state',
 ])
-TeamPolicies._all_fields_ = [
-    ('sharing', TeamPolicies._sharing_validator),
-    ('emm_state', TeamPolicies._emm_state_validator),
+TeamMemberPolicies._all_fields_ = [
+    ('sharing', TeamMemberPolicies._sharing_validator),
+    ('emm_state', TeamMemberPolicies._emm_state_validator),
 ]
 
 TeamSharingPolicies._shared_folder_member_policy_validator = SharedFolderMemberPolicy_validator

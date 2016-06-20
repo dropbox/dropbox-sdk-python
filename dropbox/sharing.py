@@ -153,6 +153,337 @@ class AclUpdatePolicy(bb.Union):
 
 AclUpdatePolicy_validator = bv.Union(AclUpdatePolicy)
 
+class AddFileMemberArgs(object):
+    """
+    Arguments for add_file_member.
+
+    :ivar file: File to which to add members.
+    :ivar members: Members to add. Note that even an email address is given,
+        this may result in a user being directy added to the membership if that
+        email is the user's main account email.
+    :ivar custom_message: Message to send to added members in their invitation.
+    :ivar quiet: Whether added members should be notified via device
+        notifications of their invitation.
+    :ivar access_level: AccessLevel union object, describing what access level
+        we want to give new members.
+    :ivar add_message_as_comment: If the custom message should be added as a
+        comment on the file.
+    """
+
+    __slots__ = [
+        '_file_value',
+        '_file_present',
+        '_members_value',
+        '_members_present',
+        '_custom_message_value',
+        '_custom_message_present',
+        '_quiet_value',
+        '_quiet_present',
+        '_access_level_value',
+        '_access_level_present',
+        '_add_message_as_comment_value',
+        '_add_message_as_comment_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file=None,
+                 members=None,
+                 custom_message=None,
+                 quiet=None,
+                 access_level=None,
+                 add_message_as_comment=None):
+        self._file_value = None
+        self._file_present = False
+        self._members_value = None
+        self._members_present = False
+        self._custom_message_value = None
+        self._custom_message_present = False
+        self._quiet_value = None
+        self._quiet_present = False
+        self._access_level_value = None
+        self._access_level_present = False
+        self._add_message_as_comment_value = None
+        self._add_message_as_comment_present = False
+        if file is not None:
+            self.file = file
+        if members is not None:
+            self.members = members
+        if custom_message is not None:
+            self.custom_message = custom_message
+        if quiet is not None:
+            self.quiet = quiet
+        if access_level is not None:
+            self.access_level = access_level
+        if add_message_as_comment is not None:
+            self.add_message_as_comment = add_message_as_comment
+
+    @property
+    def file(self):
+        """
+        File to which to add members.
+
+        :rtype: str
+        """
+        if self._file_present:
+            return self._file_value
+        else:
+            raise AttributeError("missing required field 'file'")
+
+    @file.setter
+    def file(self, val):
+        val = self._file_validator.validate(val)
+        self._file_value = val
+        self._file_present = True
+
+    @file.deleter
+    def file(self):
+        self._file_value = None
+        self._file_present = False
+
+    @property
+    def members(self):
+        """
+        Members to add. Note that even an email address is given, this may
+        result in a user being directy added to the membership if that email is
+        the user's main account email.
+
+        :rtype: list of [MemberSelector]
+        """
+        if self._members_present:
+            return self._members_value
+        else:
+            raise AttributeError("missing required field 'members'")
+
+    @members.setter
+    def members(self, val):
+        val = self._members_validator.validate(val)
+        self._members_value = val
+        self._members_present = True
+
+    @members.deleter
+    def members(self):
+        self._members_value = None
+        self._members_present = False
+
+    @property
+    def custom_message(self):
+        """
+        Message to send to added members in their invitation.
+
+        :rtype: str
+        """
+        if self._custom_message_present:
+            return self._custom_message_value
+        else:
+            return None
+
+    @custom_message.setter
+    def custom_message(self, val):
+        if val is None:
+            del self.custom_message
+            return
+        val = self._custom_message_validator.validate(val)
+        self._custom_message_value = val
+        self._custom_message_present = True
+
+    @custom_message.deleter
+    def custom_message(self):
+        self._custom_message_value = None
+        self._custom_message_present = False
+
+    @property
+    def quiet(self):
+        """
+        Whether added members should be notified via device notifications of
+        their invitation.
+
+        :rtype: bool
+        """
+        if self._quiet_present:
+            return self._quiet_value
+        else:
+            return False
+
+    @quiet.setter
+    def quiet(self, val):
+        val = self._quiet_validator.validate(val)
+        self._quiet_value = val
+        self._quiet_present = True
+
+    @quiet.deleter
+    def quiet(self):
+        self._quiet_value = None
+        self._quiet_present = False
+
+    @property
+    def access_level(self):
+        """
+        AccessLevel union object, describing what access level we want to give
+        new members.
+
+        :rtype: AccessLevel
+        """
+        if self._access_level_present:
+            return self._access_level_value
+        else:
+            return AccessLevel.viewer
+
+    @access_level.setter
+    def access_level(self, val):
+        self._access_level_validator.validate_type_only(val)
+        self._access_level_value = val
+        self._access_level_present = True
+
+    @access_level.deleter
+    def access_level(self):
+        self._access_level_value = None
+        self._access_level_present = False
+
+    @property
+    def add_message_as_comment(self):
+        """
+        If the custom message should be added as a comment on the file.
+
+        :rtype: bool
+        """
+        if self._add_message_as_comment_present:
+            return self._add_message_as_comment_value
+        else:
+            return False
+
+    @add_message_as_comment.setter
+    def add_message_as_comment(self, val):
+        val = self._add_message_as_comment_validator.validate(val)
+        self._add_message_as_comment_value = val
+        self._add_message_as_comment_present = True
+
+    @add_message_as_comment.deleter
+    def add_message_as_comment(self):
+        self._add_message_as_comment_value = None
+        self._add_message_as_comment_present = False
+
+    def __repr__(self):
+        return 'AddFileMemberArgs(file={!r}, members={!r}, custom_message={!r}, quiet={!r}, access_level={!r}, add_message_as_comment={!r})'.format(
+            self._file_value,
+            self._members_value,
+            self._custom_message_value,
+            self._quiet_value,
+            self._access_level_value,
+            self._add_message_as_comment_value,
+        )
+
+AddFileMemberArgs_validator = bv.Struct(AddFileMemberArgs)
+
+class AddFileMemberError(bb.Union):
+    """
+    Errors for add_file_member.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar rate_limit: The user has reached the rate limit for invitations.
+    :ivar invalid_comment: The custom message did not pass comment permissions
+        checks.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    rate_limit = None
+    # Attribute is overwritten below the class definition
+    invalid_comment = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param SharingUserError val:
+        :rtype: AddFileMemberError
+        """
+        return cls('user_error', val)
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: AddFileMemberError
+        """
+        return cls('access_error', val)
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_error'
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_rate_limit(self):
+        """
+        Check if the union tag is ``rate_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rate_limit'
+
+    def is_invalid_comment(self):
+        """
+        Check if the union tag is ``invalid_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_comment'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_user_error(self):
+        """
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: SharingUserError
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'AddFileMemberError(%r, %r)' % (self._tag, self._value)
+
+AddFileMemberError_validator = bv.Union(AddFileMemberError)
+
 class AddFolderMemberArg(object):
     """
     :ivar shared_folder_id: The ID for the shared folder.
@@ -1282,6 +1613,200 @@ class CreateSharedLinkWithSettingsError(bb.Union):
 
 CreateSharedLinkWithSettingsError_validator = bv.Union(CreateSharedLinkWithSettingsError)
 
+class FileAction(bb.Union):
+    """
+    Sharing actions that may be taken on files.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar edit_contents: Change or edit contents of the file.
+    :ivar invite_viewer: Add a member with view permissions.
+    :ivar unshare: Stop sharing this file.
+    :ivar relinquish_membership: Relinquish one's own membership to the file.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    edit_contents = None
+    # Attribute is overwritten below the class definition
+    invite_viewer = None
+    # Attribute is overwritten below the class definition
+    unshare = None
+    # Attribute is overwritten below the class definition
+    relinquish_membership = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_edit_contents(self):
+        """
+        Check if the union tag is ``edit_contents``.
+
+        :rtype: bool
+        """
+        return self._tag == 'edit_contents'
+
+    def is_invite_viewer(self):
+        """
+        Check if the union tag is ``invite_viewer``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_viewer'
+
+    def is_unshare(self):
+        """
+        Check if the union tag is ``unshare``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unshare'
+
+    def is_relinquish_membership(self):
+        """
+        Check if the union tag is ``relinquish_membership``.
+
+        :rtype: bool
+        """
+        return self._tag == 'relinquish_membership'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'FileAction(%r, %r)' % (self._tag, self._value)
+
+FileAction_validator = bv.Union(FileAction)
+
+class FileErrorResult(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar str file_not_found_error: File specified by id was not found.
+    :ivar str invalid_file_action_error: User does not have permission to take
+        the specified action on the file.
+    :ivar str permission_denied_error: User does not have permission to access
+        file specified by file.Id.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def file_not_found_error(cls, val):
+        """
+        Create an instance of this class set to the ``file_not_found_error`` tag
+        with value ``val``.
+
+        :param str val:
+        :rtype: FileErrorResult
+        """
+        return cls('file_not_found_error', val)
+
+    @classmethod
+    def invalid_file_action_error(cls, val):
+        """
+        Create an instance of this class set to the
+        ``invalid_file_action_error`` tag with value ``val``.
+
+        :param str val:
+        :rtype: FileErrorResult
+        """
+        return cls('invalid_file_action_error', val)
+
+    @classmethod
+    def permission_denied_error(cls, val):
+        """
+        Create an instance of this class set to the ``permission_denied_error``
+        tag with value ``val``.
+
+        :param str val:
+        :rtype: FileErrorResult
+        """
+        return cls('permission_denied_error', val)
+
+    def is_file_not_found_error(self):
+        """
+        Check if the union tag is ``file_not_found_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_not_found_error'
+
+    def is_invalid_file_action_error(self):
+        """
+        Check if the union tag is ``invalid_file_action_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_file_action_error'
+
+    def is_permission_denied_error(self):
+        """
+        Check if the union tag is ``permission_denied_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'permission_denied_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_file_not_found_error(self):
+        """
+        File specified by id was not found.
+
+        Only call this if :meth:`is_file_not_found_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_file_not_found_error():
+            raise AttributeError("tag 'file_not_found_error' not set")
+        return self._value
+
+    def get_invalid_file_action_error(self):
+        """
+        User does not have permission to take the specified action on the file.
+
+        Only call this if :meth:`is_invalid_file_action_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_invalid_file_action_error():
+            raise AttributeError("tag 'invalid_file_action_error' not set")
+        return self._value
+
+    def get_permission_denied_error(self):
+        """
+        User does not have permission to access file specified by file.Id.
+
+        Only call this if :meth:`is_permission_denied_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_permission_denied_error():
+            raise AttributeError("tag 'permission_denied_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'FileErrorResult(%r, %r)' % (self._tag, self._value)
+
+FileErrorResult_validator = bv.Union(FileErrorResult)
+
 class SharedLinkMetadata(object):
     """
     The metadata of a shared link
@@ -1766,6 +2291,432 @@ class FileLinkMetadata(SharedLinkMetadata):
 
 FileLinkMetadata_validator = bv.Struct(FileLinkMetadata)
 
+class FileMemberActionError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_member: Specified member was not found.
+    :ivar no_permission: User does not have permission to perform this action on
+        this member.
+    :ivar other: Unknown error when applying action to member.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_member = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invalid_member(self):
+        """
+        Check if the union tag is ``invalid_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_member'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'FileMemberActionError(%r, %r)' % (self._tag, self._value)
+
+FileMemberActionError_validator = bv.Union(FileMemberActionError)
+
+class FileMemberActionIndividualResult(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar Optional[AccessLevel] success: Member was successfully removed from
+        this file. If AccessLevel is given, the member still has access via a
+        parent shared folder.
+    :ivar FileMemberActionError member_error: User was not able to remove this
+        member.
+    """
+
+    _catch_all = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param AccessLevel val:
+        :rtype: FileMemberActionIndividualResult
+        """
+        return cls('success', val)
+
+    @classmethod
+    def member_error(cls, val):
+        """
+        Create an instance of this class set to the ``member_error`` tag with
+        value ``val``.
+
+        :param FileMemberActionError val:
+        :rtype: FileMemberActionIndividualResult
+        """
+        return cls('member_error', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_member_error(self):
+        """
+        Check if the union tag is ``member_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_error'
+
+    def get_success(self):
+        """
+        Member was successfully removed from this file. If AccessLevel is given,
+        the member still has access via a parent shared folder.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: AccessLevel
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_member_error(self):
+        """
+        User was not able to remove this member.
+
+        Only call this if :meth:`is_member_error` is true.
+
+        :rtype: FileMemberActionError
+        """
+        if not self.is_member_error():
+            raise AttributeError("tag 'member_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'FileMemberActionIndividualResult(%r, %r)' % (self._tag, self._value)
+
+FileMemberActionIndividualResult_validator = bv.Union(FileMemberActionIndividualResult)
+
+class FileMemberActionResult(object):
+    """
+    Per-member result for remove_file_member_2 or add_file_member.
+
+    :ivar member: One of specified input members.
+    :ivar result: The outcome of the action on this member.
+    """
+
+    __slots__ = [
+        '_member_value',
+        '_member_present',
+        '_result_value',
+        '_result_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 member=None,
+                 result=None):
+        self._member_value = None
+        self._member_present = False
+        self._result_value = None
+        self._result_present = False
+        if member is not None:
+            self.member = member
+        if result is not None:
+            self.result = result
+
+    @property
+    def member(self):
+        """
+        One of specified input members.
+
+        :rtype: MemberSelector
+        """
+        if self._member_present:
+            return self._member_value
+        else:
+            raise AttributeError("missing required field 'member'")
+
+    @member.setter
+    def member(self, val):
+        self._member_validator.validate_type_only(val)
+        self._member_value = val
+        self._member_present = True
+
+    @member.deleter
+    def member(self):
+        self._member_value = None
+        self._member_present = False
+
+    @property
+    def result(self):
+        """
+        The outcome of the action on this member.
+
+        :rtype: FileMemberActionIndividualResult
+        """
+        if self._result_present:
+            return self._result_value
+        else:
+            raise AttributeError("missing required field 'result'")
+
+    @result.setter
+    def result(self, val):
+        self._result_validator.validate_type_only(val)
+        self._result_value = val
+        self._result_present = True
+
+    @result.deleter
+    def result(self):
+        self._result_value = None
+        self._result_present = False
+
+    def __repr__(self):
+        return 'FileMemberActionResult(member={!r}, result={!r})'.format(
+            self._member_value,
+            self._result_value,
+        )
+
+FileMemberActionResult_validator = bv.Struct(FileMemberActionResult)
+
+class FileMemberRemoveActionResult(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar MemberAccessLevelResult success: Member was successfully removed from
+        this file.
+    :ivar FileMemberActionError member_error: User was not able to remove this
+        member.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param MemberAccessLevelResult val:
+        :rtype: FileMemberRemoveActionResult
+        """
+        return cls('success', val)
+
+    @classmethod
+    def member_error(cls, val):
+        """
+        Create an instance of this class set to the ``member_error`` tag with
+        value ``val``.
+
+        :param FileMemberActionError val:
+        :rtype: FileMemberRemoveActionResult
+        """
+        return cls('member_error', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_member_error(self):
+        """
+        Check if the union tag is ``member_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        Member was successfully removed from this file.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: MemberAccessLevelResult
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_member_error(self):
+        """
+        User was not able to remove this member.
+
+        Only call this if :meth:`is_member_error` is true.
+
+        :rtype: FileMemberActionError
+        """
+        if not self.is_member_error():
+            raise AttributeError("tag 'member_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'FileMemberRemoveActionResult(%r, %r)' % (self._tag, self._value)
+
+FileMemberRemoveActionResult_validator = bv.Union(FileMemberRemoveActionResult)
+
+class FilePermission(object):
+    """
+    Whether the user is allowed to take the sharing action on the file.
+
+    :ivar action: The action that the user may wish to take on the file.
+    :ivar allow: True if the user is allowed to take the action.
+    :ivar reason: The reason why the user is denied the permission. Not present
+        if the action is allowed
+    """
+
+    __slots__ = [
+        '_action_value',
+        '_action_present',
+        '_allow_value',
+        '_allow_present',
+        '_reason_value',
+        '_reason_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 action=None,
+                 allow=None,
+                 reason=None):
+        self._action_value = None
+        self._action_present = False
+        self._allow_value = None
+        self._allow_present = False
+        self._reason_value = None
+        self._reason_present = False
+        if action is not None:
+            self.action = action
+        if allow is not None:
+            self.allow = allow
+        if reason is not None:
+            self.reason = reason
+
+    @property
+    def action(self):
+        """
+        The action that the user may wish to take on the file.
+
+        :rtype: FileAction
+        """
+        if self._action_present:
+            return self._action_value
+        else:
+            raise AttributeError("missing required field 'action'")
+
+    @action.setter
+    def action(self, val):
+        self._action_validator.validate_type_only(val)
+        self._action_value = val
+        self._action_present = True
+
+    @action.deleter
+    def action(self):
+        self._action_value = None
+        self._action_present = False
+
+    @property
+    def allow(self):
+        """
+        True if the user is allowed to take the action.
+
+        :rtype: bool
+        """
+        if self._allow_present:
+            return self._allow_value
+        else:
+            raise AttributeError("missing required field 'allow'")
+
+    @allow.setter
+    def allow(self, val):
+        val = self._allow_validator.validate(val)
+        self._allow_value = val
+        self._allow_present = True
+
+    @allow.deleter
+    def allow(self):
+        self._allow_value = None
+        self._allow_present = False
+
+    @property
+    def reason(self):
+        """
+        The reason why the user is denied the permission. Not present if the
+        action is allowed
+
+        :rtype: PermissionDeniedReason
+        """
+        if self._reason_present:
+            return self._reason_value
+        else:
+            return None
+
+    @reason.setter
+    def reason(self, val):
+        if val is None:
+            del self.reason
+            return
+        self._reason_validator.validate_type_only(val)
+        self._reason_value = val
+        self._reason_present = True
+
+    @reason.deleter
+    def reason(self):
+        self._reason_value = None
+        self._reason_present = False
+
+    def __repr__(self):
+        return 'FilePermission(action={!r}, allow={!r}, reason={!r})'.format(
+            self._action_value,
+            self._allow_value,
+            self._reason_value,
+        )
+
+FilePermission_validator = bv.Struct(FilePermission)
+
 class FolderAction(bb.Union):
     """
     Actions that may be taken on shared folders.
@@ -2213,10 +3164,444 @@ class FolderPolicy(object):
 
 FolderPolicy_validator = bv.Struct(FolderPolicy)
 
+class GetFileMetadataArg(object):
+    """
+    Arguments of get_file_metadata
+
+    :ivar file: The file to query.
+    :ivar actions: File actions to query.
+    """
+
+    __slots__ = [
+        '_file_value',
+        '_file_present',
+        '_actions_value',
+        '_actions_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file=None,
+                 actions=None):
+        self._file_value = None
+        self._file_present = False
+        self._actions_value = None
+        self._actions_present = False
+        if file is not None:
+            self.file = file
+        if actions is not None:
+            self.actions = actions
+
+    @property
+    def file(self):
+        """
+        The file to query.
+
+        :rtype: str
+        """
+        if self._file_present:
+            return self._file_value
+        else:
+            raise AttributeError("missing required field 'file'")
+
+    @file.setter
+    def file(self, val):
+        val = self._file_validator.validate(val)
+        self._file_value = val
+        self._file_present = True
+
+    @file.deleter
+    def file(self):
+        self._file_value = None
+        self._file_present = False
+
+    @property
+    def actions(self):
+        """
+        File actions to query.
+
+        :rtype: list of [FileAction]
+        """
+        if self._actions_present:
+            return self._actions_value
+        else:
+            return None
+
+    @actions.setter
+    def actions(self, val):
+        if val is None:
+            del self.actions
+            return
+        val = self._actions_validator.validate(val)
+        self._actions_value = val
+        self._actions_present = True
+
+    @actions.deleter
+    def actions(self):
+        self._actions_value = None
+        self._actions_present = False
+
+    def __repr__(self):
+        return 'GetFileMetadataArg(file={!r}, actions={!r})'.format(
+            self._file_value,
+            self._actions_value,
+        )
+
+GetFileMetadataArg_validator = bv.Struct(GetFileMetadataArg)
+
+class GetFileMetadataBatchArg(object):
+    """
+    Arguments of get_file_metadata/batch
+
+    :ivar files: The files to query.
+    :ivar actions: File actions to query.
+    """
+
+    __slots__ = [
+        '_files_value',
+        '_files_present',
+        '_actions_value',
+        '_actions_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 files=None,
+                 actions=None):
+        self._files_value = None
+        self._files_present = False
+        self._actions_value = None
+        self._actions_present = False
+        if files is not None:
+            self.files = files
+        if actions is not None:
+            self.actions = actions
+
+    @property
+    def files(self):
+        """
+        The files to query.
+
+        :rtype: list of [str]
+        """
+        if self._files_present:
+            return self._files_value
+        else:
+            raise AttributeError("missing required field 'files'")
+
+    @files.setter
+    def files(self, val):
+        val = self._files_validator.validate(val)
+        self._files_value = val
+        self._files_present = True
+
+    @files.deleter
+    def files(self):
+        self._files_value = None
+        self._files_present = False
+
+    @property
+    def actions(self):
+        """
+        File actions to query.
+
+        :rtype: list of [FileAction]
+        """
+        if self._actions_present:
+            return self._actions_value
+        else:
+            return None
+
+    @actions.setter
+    def actions(self, val):
+        if val is None:
+            del self.actions
+            return
+        val = self._actions_validator.validate(val)
+        self._actions_value = val
+        self._actions_present = True
+
+    @actions.deleter
+    def actions(self):
+        self._actions_value = None
+        self._actions_present = False
+
+    def __repr__(self):
+        return 'GetFileMetadataBatchArg(files={!r}, actions={!r})'.format(
+            self._files_value,
+            self._actions_value,
+        )
+
+GetFileMetadataBatchArg_validator = bv.Struct(GetFileMetadataBatchArg)
+
+class GetFileMetadataBatchResult(object):
+    """
+    Per file results of get_file_metadata/batch
+
+    :ivar file: This is the input file identifier corresponding to one of
+        ``GetFileMetadataBatchArg.files``.
+    :ivar result: The result for this particular file
+    """
+
+    __slots__ = [
+        '_file_value',
+        '_file_present',
+        '_result_value',
+        '_result_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file=None,
+                 result=None):
+        self._file_value = None
+        self._file_present = False
+        self._result_value = None
+        self._result_present = False
+        if file is not None:
+            self.file = file
+        if result is not None:
+            self.result = result
+
+    @property
+    def file(self):
+        """
+        This is the input file identifier corresponding to one of
+        ``GetFileMetadataBatchArg.files``.
+
+        :rtype: str
+        """
+        if self._file_present:
+            return self._file_value
+        else:
+            raise AttributeError("missing required field 'file'")
+
+    @file.setter
+    def file(self, val):
+        val = self._file_validator.validate(val)
+        self._file_value = val
+        self._file_present = True
+
+    @file.deleter
+    def file(self):
+        self._file_value = None
+        self._file_present = False
+
+    @property
+    def result(self):
+        """
+        The result for this particular file
+
+        :rtype: GetFileMetadataIndividualResult
+        """
+        if self._result_present:
+            return self._result_value
+        else:
+            raise AttributeError("missing required field 'result'")
+
+    @result.setter
+    def result(self, val):
+        self._result_validator.validate_type_only(val)
+        self._result_value = val
+        self._result_present = True
+
+    @result.deleter
+    def result(self):
+        self._result_value = None
+        self._result_present = False
+
+    def __repr__(self):
+        return 'GetFileMetadataBatchResult(file={!r}, result={!r})'.format(
+            self._file_value,
+            self._result_value,
+        )
+
+GetFileMetadataBatchResult_validator = bv.Struct(GetFileMetadataBatchResult)
+
+class GetFileMetadataError(bb.Union):
+    """
+    Error result for get_file_metadata.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param SharingUserError val:
+        :rtype: GetFileMetadataError
+        """
+        return cls('user_error', val)
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: GetFileMetadataError
+        """
+        return cls('access_error', val)
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_error'
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_user_error(self):
+        """
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: SharingUserError
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetFileMetadataError(%r, %r)' % (self._tag, self._value)
+
+GetFileMetadataError_validator = bv.Union(GetFileMetadataError)
+
+class GetFileMetadataIndividualResult(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar SharedFileMetadata metadata: The result for this file if it was
+        successful.
+    :ivar SharingFileAccessError access_error: The result for this file if it
+        was an error.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def metadata(cls, val):
+        """
+        Create an instance of this class set to the ``metadata`` tag with value
+        ``val``.
+
+        :param SharedFileMetadata val:
+        :rtype: GetFileMetadataIndividualResult
+        """
+        return cls('metadata', val)
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: GetFileMetadataIndividualResult
+        """
+        return cls('access_error', val)
+
+    def is_metadata(self):
+        """
+        Check if the union tag is ``metadata``.
+
+        :rtype: bool
+        """
+        return self._tag == 'metadata'
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_metadata(self):
+        """
+        The result for this file if it was successful.
+
+        Only call this if :meth:`is_metadata` is true.
+
+        :rtype: SharedFileMetadata
+        """
+        if not self.is_metadata():
+            raise AttributeError("tag 'metadata' not set")
+        return self._value
+
+    def get_access_error(self):
+        """
+        The result for this file if it was an error.
+
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetFileMetadataIndividualResult(%r, %r)' % (self._tag, self._value)
+
+GetFileMetadataIndividualResult_validator = bv.Union(GetFileMetadataIndividualResult)
+
 class GetMetadataArgs(object):
     """
     :ivar shared_folder_id: The ID for the shared folder.
-    :ivar actions: Folder actions to query.
+    :ivar actions: This is a list indicating whether the returned folder data
+        will include a boolean value  ``FolderPermission.allow`` that describes
+        whether the current user can perform the  FolderAction on the folder.
     """
 
     __slots__ = [
@@ -2266,7 +3651,9 @@ class GetMetadataArgs(object):
     @property
     def actions(self):
         """
-        Folder actions to query.
+        This is a list indicating whether the returned folder data will include
+        a boolean value  ``FolderPermission.allow`` that describes whether the
+        current user can perform the  FolderAction on the folder.
 
         :rtype: list of [FolderAction]
         """
@@ -2780,14 +4167,13 @@ GroupInfo_validator = bv.Struct(GroupInfo)
 
 class MembershipInfo(object):
     """
-    The information about a member of the shared folder.
+    The information about a member of the shared content.
 
     :ivar access_type: The access type for this member.
     :ivar permissions: The permissions that requesting user has on this member.
         The set of permissions corresponds to the MemberActions in the request.
     :ivar initials: Suggested name initials for a member.
-    :ivar is_inherited: True if the member's access to the file is inherited
-        from a parent folder.
+    :ivar is_inherited: True if the member has access from a parent folder.
     """
 
     __slots__ = [
@@ -2904,8 +4290,7 @@ class MembershipInfo(object):
     @property
     def is_inherited(self):
         """
-        True if the member's access to the file is inherited from a parent
-        folder.
+        True if the member has access from a parent folder.
 
         :rtype: bool
         """
@@ -2937,7 +4322,7 @@ MembershipInfo_validator = bv.Struct(MembershipInfo)
 
 class GroupMembershipInfo(MembershipInfo):
     """
-    The information about a group member of the shared folder.
+    The information about a group member of the shared content.
 
     :ivar group: The information about the membership group.
     """
@@ -3000,7 +4385,7 @@ GroupMembershipInfo_validator = bv.Struct(GroupMembershipInfo)
 
 class InviteeInfo(bb.Union):
     """
-    Information about the recipient of a shared folder invitation.
+    Information about the recipient of a shared content invitation.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -3059,7 +4444,7 @@ InviteeInfo_validator = bv.Union(InviteeInfo)
 
 class InviteeMembershipInfo(MembershipInfo):
     """
-    Information about an invited member of a shared folder.
+    Information about an invited member of a shared content.
 
     :ivar invitee: Recipient of the invitation.
     :ivar user: The user this invitation is tied to, if available.
@@ -3511,9 +4896,1035 @@ class LinkPermissions(object):
 
 LinkPermissions_validator = bv.Struct(LinkPermissions)
 
+class ListFileMembersArg(object):
+    """
+    Arguments for list_file_members.
+
+    :ivar file: The file for which you want to see members.
+    :ivar actions: The actions for which to return permissions on a member
+    :ivar include_inherited: Whether to include members who only have access
+        from a parent shared folder.
+    :ivar limit: Number of members to return max per query. Defaults to 100 if
+        no limit is specified.
+    """
+
+    __slots__ = [
+        '_file_value',
+        '_file_present',
+        '_actions_value',
+        '_actions_present',
+        '_include_inherited_value',
+        '_include_inherited_present',
+        '_limit_value',
+        '_limit_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file=None,
+                 actions=None,
+                 include_inherited=None,
+                 limit=None):
+        self._file_value = None
+        self._file_present = False
+        self._actions_value = None
+        self._actions_present = False
+        self._include_inherited_value = None
+        self._include_inherited_present = False
+        self._limit_value = None
+        self._limit_present = False
+        if file is not None:
+            self.file = file
+        if actions is not None:
+            self.actions = actions
+        if include_inherited is not None:
+            self.include_inherited = include_inherited
+        if limit is not None:
+            self.limit = limit
+
+    @property
+    def file(self):
+        """
+        The file for which you want to see members.
+
+        :rtype: str
+        """
+        if self._file_present:
+            return self._file_value
+        else:
+            raise AttributeError("missing required field 'file'")
+
+    @file.setter
+    def file(self, val):
+        val = self._file_validator.validate(val)
+        self._file_value = val
+        self._file_present = True
+
+    @file.deleter
+    def file(self):
+        self._file_value = None
+        self._file_present = False
+
+    @property
+    def actions(self):
+        """
+        The actions for which to return permissions on a member
+
+        :rtype: list of [MemberAction]
+        """
+        if self._actions_present:
+            return self._actions_value
+        else:
+            return None
+
+    @actions.setter
+    def actions(self, val):
+        if val is None:
+            del self.actions
+            return
+        val = self._actions_validator.validate(val)
+        self._actions_value = val
+        self._actions_present = True
+
+    @actions.deleter
+    def actions(self):
+        self._actions_value = None
+        self._actions_present = False
+
+    @property
+    def include_inherited(self):
+        """
+        Whether to include members who only have access from a parent shared
+        folder.
+
+        :rtype: bool
+        """
+        if self._include_inherited_present:
+            return self._include_inherited_value
+        else:
+            return True
+
+    @include_inherited.setter
+    def include_inherited(self, val):
+        val = self._include_inherited_validator.validate(val)
+        self._include_inherited_value = val
+        self._include_inherited_present = True
+
+    @include_inherited.deleter
+    def include_inherited(self):
+        self._include_inherited_value = None
+        self._include_inherited_present = False
+
+    @property
+    def limit(self):
+        """
+        Number of members to return max per query. Defaults to 100 if no limit
+        is specified.
+
+        :rtype: long
+        """
+        if self._limit_present:
+            return self._limit_value
+        else:
+            return 100
+
+    @limit.setter
+    def limit(self, val):
+        val = self._limit_validator.validate(val)
+        self._limit_value = val
+        self._limit_present = True
+
+    @limit.deleter
+    def limit(self):
+        self._limit_value = None
+        self._limit_present = False
+
+    def __repr__(self):
+        return 'ListFileMembersArg(file={!r}, actions={!r}, include_inherited={!r}, limit={!r})'.format(
+            self._file_value,
+            self._actions_value,
+            self._include_inherited_value,
+            self._limit_value,
+        )
+
+ListFileMembersArg_validator = bv.Struct(ListFileMembersArg)
+
+class ListFileMembersBatchArg(object):
+    """
+    Arguments for list_file_members/batch.
+
+    :ivar files: Files for which to return members.
+    :ivar limit: Number of members to return max per query. Defaults to 10 if no
+        limit is specified.
+    """
+
+    __slots__ = [
+        '_files_value',
+        '_files_present',
+        '_limit_value',
+        '_limit_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 files=None,
+                 limit=None):
+        self._files_value = None
+        self._files_present = False
+        self._limit_value = None
+        self._limit_present = False
+        if files is not None:
+            self.files = files
+        if limit is not None:
+            self.limit = limit
+
+    @property
+    def files(self):
+        """
+        Files for which to return members.
+
+        :rtype: list of [str]
+        """
+        if self._files_present:
+            return self._files_value
+        else:
+            raise AttributeError("missing required field 'files'")
+
+    @files.setter
+    def files(self, val):
+        val = self._files_validator.validate(val)
+        self._files_value = val
+        self._files_present = True
+
+    @files.deleter
+    def files(self):
+        self._files_value = None
+        self._files_present = False
+
+    @property
+    def limit(self):
+        """
+        Number of members to return max per query. Defaults to 10 if no limit is
+        specified.
+
+        :rtype: long
+        """
+        if self._limit_present:
+            return self._limit_value
+        else:
+            return 10
+
+    @limit.setter
+    def limit(self, val):
+        val = self._limit_validator.validate(val)
+        self._limit_value = val
+        self._limit_present = True
+
+    @limit.deleter
+    def limit(self):
+        self._limit_value = None
+        self._limit_present = False
+
+    def __repr__(self):
+        return 'ListFileMembersBatchArg(files={!r}, limit={!r})'.format(
+            self._files_value,
+            self._limit_value,
+        )
+
+ListFileMembersBatchArg_validator = bv.Struct(ListFileMembersBatchArg)
+
+class ListFileMembersBatchResult(object):
+    """
+    Per-file result for list_file_members/batch.
+
+    :ivar file: This is the input file identifier, whether an ID or a path.
+    :ivar result: The result for this particular file
+    """
+
+    __slots__ = [
+        '_file_value',
+        '_file_present',
+        '_result_value',
+        '_result_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file=None,
+                 result=None):
+        self._file_value = None
+        self._file_present = False
+        self._result_value = None
+        self._result_present = False
+        if file is not None:
+            self.file = file
+        if result is not None:
+            self.result = result
+
+    @property
+    def file(self):
+        """
+        This is the input file identifier, whether an ID or a path.
+
+        :rtype: str
+        """
+        if self._file_present:
+            return self._file_value
+        else:
+            raise AttributeError("missing required field 'file'")
+
+    @file.setter
+    def file(self, val):
+        val = self._file_validator.validate(val)
+        self._file_value = val
+        self._file_present = True
+
+    @file.deleter
+    def file(self):
+        self._file_value = None
+        self._file_present = False
+
+    @property
+    def result(self):
+        """
+        The result for this particular file
+
+        :rtype: ListFileMembersIndividualResult
+        """
+        if self._result_present:
+            return self._result_value
+        else:
+            raise AttributeError("missing required field 'result'")
+
+    @result.setter
+    def result(self, val):
+        self._result_validator.validate_type_only(val)
+        self._result_value = val
+        self._result_present = True
+
+    @result.deleter
+    def result(self):
+        self._result_value = None
+        self._result_present = False
+
+    def __repr__(self):
+        return 'ListFileMembersBatchResult(file={!r}, result={!r})'.format(
+            self._file_value,
+            self._result_value,
+        )
+
+ListFileMembersBatchResult_validator = bv.Struct(ListFileMembersBatchResult)
+
+class ListFileMembersContinueArg(object):
+    """
+    Arguments for list_file_members/continue.
+
+    :ivar cursor: The cursor returned by your last call to list_file_members,
+        list_file_members/continue, or list_file_members/batch.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        The cursor returned by your last call to list_file_members,
+        list_file_members/continue, or list_file_members/batch.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListFileMembersContinueArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+ListFileMembersContinueArg_validator = bv.Struct(ListFileMembersContinueArg)
+
+class ListFileMembersContinueError(bb.Union):
+    """
+    Error for list_file_members/continue.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_cursor: ``ListFileMembersContinueArg.cursor`` is invalid.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_cursor = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param SharingUserError val:
+        :rtype: ListFileMembersContinueError
+        """
+        return cls('user_error', val)
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: ListFileMembersContinueError
+        """
+        return cls('access_error', val)
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_error'
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_invalid_cursor(self):
+        """
+        Check if the union tag is ``invalid_cursor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_cursor'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_user_error(self):
+        """
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: SharingUserError
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ListFileMembersContinueError(%r, %r)' % (self._tag, self._value)
+
+ListFileMembersContinueError_validator = bv.Union(ListFileMembersContinueError)
+
+class ListFileMembersCountResult(object):
+    """
+    :ivar members: A list of members on this file.
+    :ivar member_count: The number of members on this file. This does not
+        include inherited members
+    """
+
+    __slots__ = [
+        '_members_value',
+        '_members_present',
+        '_member_count_value',
+        '_member_count_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 members=None,
+                 member_count=None):
+        self._members_value = None
+        self._members_present = False
+        self._member_count_value = None
+        self._member_count_present = False
+        if members is not None:
+            self.members = members
+        if member_count is not None:
+            self.member_count = member_count
+
+    @property
+    def members(self):
+        """
+        A list of members on this file.
+
+        :rtype: SharedFileMembers
+        """
+        if self._members_present:
+            return self._members_value
+        else:
+            raise AttributeError("missing required field 'members'")
+
+    @members.setter
+    def members(self, val):
+        self._members_validator.validate_type_only(val)
+        self._members_value = val
+        self._members_present = True
+
+    @members.deleter
+    def members(self):
+        self._members_value = None
+        self._members_present = False
+
+    @property
+    def member_count(self):
+        """
+        The number of members on this file. This does not include inherited
+        members
+
+        :rtype: long
+        """
+        if self._member_count_present:
+            return self._member_count_value
+        else:
+            raise AttributeError("missing required field 'member_count'")
+
+    @member_count.setter
+    def member_count(self, val):
+        val = self._member_count_validator.validate(val)
+        self._member_count_value = val
+        self._member_count_present = True
+
+    @member_count.deleter
+    def member_count(self):
+        self._member_count_value = None
+        self._member_count_present = False
+
+    def __repr__(self):
+        return 'ListFileMembersCountResult(members={!r}, member_count={!r})'.format(
+            self._members_value,
+            self._member_count_value,
+        )
+
+ListFileMembersCountResult_validator = bv.Struct(ListFileMembersCountResult)
+
+class ListFileMembersError(bb.Union):
+    """
+    Error for list_file_members.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param SharingUserError val:
+        :rtype: ListFileMembersError
+        """
+        return cls('user_error', val)
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: ListFileMembersError
+        """
+        return cls('access_error', val)
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_error'
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_user_error(self):
+        """
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: SharingUserError
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ListFileMembersError(%r, %r)' % (self._tag, self._value)
+
+ListFileMembersError_validator = bv.Union(ListFileMembersError)
+
+class ListFileMembersIndividualResult(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar ListFileMembersCountResult result: The results of the query for this
+        file if it was successful
+    :ivar SharingFileAccessError access_error: The result of the query for this
+        file if it was an error.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def result(cls, val):
+        """
+        Create an instance of this class set to the ``result`` tag with value
+        ``val``.
+
+        :param ListFileMembersCountResult val:
+        :rtype: ListFileMembersIndividualResult
+        """
+        return cls('result', val)
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: ListFileMembersIndividualResult
+        """
+        return cls('access_error', val)
+
+    def is_result(self):
+        """
+        Check if the union tag is ``result``.
+
+        :rtype: bool
+        """
+        return self._tag == 'result'
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_result(self):
+        """
+        The results of the query for this file if it was successful
+
+        Only call this if :meth:`is_result` is true.
+
+        :rtype: ListFileMembersCountResult
+        """
+        if not self.is_result():
+            raise AttributeError("tag 'result' not set")
+        return self._value
+
+    def get_access_error(self):
+        """
+        The result of the query for this file if it was an error.
+
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ListFileMembersIndividualResult(%r, %r)' % (self._tag, self._value)
+
+ListFileMembersIndividualResult_validator = bv.Union(ListFileMembersIndividualResult)
+
+class ListFilesArg(object):
+    """
+    Arguments for list_received_files.
+
+    :ivar limit: Number of files to return max per query. Defaults to 100 if no
+        limit is specified.
+    :ivar actions: File actions to query.
+    """
+
+    __slots__ = [
+        '_limit_value',
+        '_limit_present',
+        '_actions_value',
+        '_actions_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 limit=None,
+                 actions=None):
+        self._limit_value = None
+        self._limit_present = False
+        self._actions_value = None
+        self._actions_present = False
+        if limit is not None:
+            self.limit = limit
+        if actions is not None:
+            self.actions = actions
+
+    @property
+    def limit(self):
+        """
+        Number of files to return max per query. Defaults to 100 if no limit is
+        specified.
+
+        :rtype: long
+        """
+        if self._limit_present:
+            return self._limit_value
+        else:
+            return 100
+
+    @limit.setter
+    def limit(self, val):
+        val = self._limit_validator.validate(val)
+        self._limit_value = val
+        self._limit_present = True
+
+    @limit.deleter
+    def limit(self):
+        self._limit_value = None
+        self._limit_present = False
+
+    @property
+    def actions(self):
+        """
+        File actions to query.
+
+        :rtype: list of [FileAction]
+        """
+        if self._actions_present:
+            return self._actions_value
+        else:
+            return None
+
+    @actions.setter
+    def actions(self, val):
+        if val is None:
+            del self.actions
+            return
+        val = self._actions_validator.validate(val)
+        self._actions_value = val
+        self._actions_present = True
+
+    @actions.deleter
+    def actions(self):
+        self._actions_value = None
+        self._actions_present = False
+
+    def __repr__(self):
+        return 'ListFilesArg(limit={!r}, actions={!r})'.format(
+            self._limit_value,
+            self._actions_value,
+        )
+
+ListFilesArg_validator = bv.Struct(ListFilesArg)
+
+class ListFilesContinueArg(object):
+    """
+    Arguments for list_received_files/continue.
+
+    :ivar cursor: Cursor in ``ListFilesResult.cursor``
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        Cursor in ``ListFilesResult.cursor``
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListFilesContinueArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+ListFilesContinueArg_validator = bv.Struct(ListFilesContinueArg)
+
+class ListFilesContinueError(bb.Union):
+    """
+    Error results for list_received_files/continue.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar SharingUserError user_error: User account had a problem.
+    :ivar invalid_cursor: ``ListFilesContinueArg.cursor`` is invalid.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_cursor = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param SharingUserError val:
+        :rtype: ListFilesContinueError
+        """
+        return cls('user_error', val)
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_error'
+
+    def is_invalid_cursor(self):
+        """
+        Check if the union tag is ``invalid_cursor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_cursor'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_user_error(self):
+        """
+        User account had a problem.
+
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: SharingUserError
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ListFilesContinueError(%r, %r)' % (self._tag, self._value)
+
+ListFilesContinueError_validator = bv.Union(ListFilesContinueError)
+
+class ListFilesResult(object):
+    """
+    Success results for list_received_files.
+
+    :ivar entries: Information about the files shared with current user.
+    :ivar cursor: Cursor used to obtain additional shared files.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None,
+                 cursor=None):
+        self._entries_value = None
+        self._entries_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        if entries is not None:
+            self.entries = entries
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def entries(self):
+        """
+        Information about the files shared with current user.
+
+        :rtype: list of [SharedFileMetadata]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    @property
+    def cursor(self):
+        """
+        Cursor used to obtain additional shared files.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'ListFilesResult(entries={!r}, cursor={!r})'.format(
+            self._entries_value,
+            self._cursor_value,
+        )
+
+ListFilesResult_validator = bv.Struct(ListFilesResult)
+
 class ListFolderMembersCursorArg(object):
     """
-    :ivar actions: Member actions to query.
+    :ivar actions: This is a list indicating whether each returned member will
+        include a boolean value ``MemberPermission.allow`` that describes
+        whether the current user can perform the MemberAction on the member.
     :ivar limit: The maximum number of results that include members, groups and
         invitees to return per request.
     """
@@ -3542,7 +5953,9 @@ class ListFolderMembersCursorArg(object):
     @property
     def actions(self):
         """
-        Member actions to query.
+        This is a list indicating whether each returned member will include a
+        boolean value ``MemberPermission.allow`` that describes whether the
+        current user can perform the MemberAction on the member.
 
         :rtype: list of [MemberAction]
         """
@@ -3771,7 +6184,10 @@ ListFolderMembersContinueError_validator = bv.Union(ListFolderMembersContinueErr
 class ListFoldersArgs(object):
     """
     :ivar limit: The maximum number of results to return per request.
-    :ivar actions: Folder actions to query.
+    :ivar actions: This is a list indicating whether each returned folder data
+        entry will include a boolean field ``FolderPermission.allow`` that
+        describes whether the current user can perform the `FolderAction` on the
+        folder.
     """
 
     __slots__ = [
@@ -3821,7 +6237,9 @@ class ListFoldersArgs(object):
     @property
     def actions(self):
         """
-        Folder actions to query.
+        This is a list indicating whether each returned folder data entry will
+        include a boolean field ``FolderPermission.allow`` that describes
+        whether the current user can perform the `FolderAction` on the folder.
 
         :rtype: list of [FolderAction]
         """
@@ -4344,6 +6762,100 @@ class ListSharedLinksResult(object):
 
 ListSharedLinksResult_validator = bv.Struct(ListSharedLinksResult)
 
+class MemberAccessLevelResult(object):
+    """
+    Contains information about a member's access level to content after an
+    operation.
+
+    :ivar access_level: The member still has this level of access to the content
+        through a parent folder.
+    :ivar warning: A localized string with additional information about why the
+        user has this access level to the content.
+    """
+
+    __slots__ = [
+        '_access_level_value',
+        '_access_level_present',
+        '_warning_value',
+        '_warning_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 access_level=None,
+                 warning=None):
+        self._access_level_value = None
+        self._access_level_present = False
+        self._warning_value = None
+        self._warning_present = False
+        if access_level is not None:
+            self.access_level = access_level
+        if warning is not None:
+            self.warning = warning
+
+    @property
+    def access_level(self):
+        """
+        The member still has this level of access to the content through a
+        parent folder.
+
+        :rtype: AccessLevel
+        """
+        if self._access_level_present:
+            return self._access_level_value
+        else:
+            return None
+
+    @access_level.setter
+    def access_level(self, val):
+        if val is None:
+            del self.access_level
+            return
+        self._access_level_validator.validate_type_only(val)
+        self._access_level_value = val
+        self._access_level_present = True
+
+    @access_level.deleter
+    def access_level(self):
+        self._access_level_value = None
+        self._access_level_present = False
+
+    @property
+    def warning(self):
+        """
+        A localized string with additional information about why the user has
+        this access level to the content.
+
+        :rtype: str
+        """
+        if self._warning_present:
+            return self._warning_value
+        else:
+            return None
+
+    @warning.setter
+    def warning(self, val):
+        if val is None:
+            del self.warning
+            return
+        val = self._warning_validator.validate(val)
+        self._warning_value = val
+        self._warning_present = True
+
+    @warning.deleter
+    def warning(self):
+        self._warning_value = None
+        self._warning_present = False
+
+    def __repr__(self):
+        return 'MemberAccessLevelResult(access_level={!r}, warning={!r})'.format(
+            self._access_level_value,
+            self._warning_value,
+        )
+
+MemberAccessLevelResult_validator = bv.Struct(MemberAccessLevelResult)
+
 class MemberAction(bb.Union):
     """
     Actions that may be taken on members of a shared folder.
@@ -4352,6 +6864,8 @@ class MemberAction(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar leave_a_copy: Allow the member to keep a copy of the folder when
+        removing.
     :ivar make_editor: Make the member an editor of the folder.
     :ivar make_owner: Make the member an owner of the folder.
     :ivar make_viewer: Make the member a viewer of the folder.
@@ -4359,6 +6873,8 @@ class MemberAction(bb.Union):
     """
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    leave_a_copy = None
     # Attribute is overwritten below the class definition
     make_editor = None
     # Attribute is overwritten below the class definition
@@ -4369,6 +6885,14 @@ class MemberAction(bb.Union):
     remove = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_leave_a_copy(self):
+        """
+        Check if the union tag is ``leave_a_copy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'leave_a_copy'
 
     def is_make_editor(self):
         """
@@ -5207,6 +7731,133 @@ class PermissionDeniedReason(bb.Union):
 
 PermissionDeniedReason_validator = bv.Union(PermissionDeniedReason)
 
+class RelinquishFileMembershipArg(object):
+    """
+    :ivar file: The path or id for the file.
+    """
+
+    __slots__ = [
+        '_file_value',
+        '_file_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file=None):
+        self._file_value = None
+        self._file_present = False
+        if file is not None:
+            self.file = file
+
+    @property
+    def file(self):
+        """
+        The path or id for the file.
+
+        :rtype: str
+        """
+        if self._file_present:
+            return self._file_value
+        else:
+            raise AttributeError("missing required field 'file'")
+
+    @file.setter
+    def file(self, val):
+        val = self._file_validator.validate(val)
+        self._file_value = val
+        self._file_present = True
+
+    @file.deleter
+    def file(self):
+        self._file_value = None
+        self._file_present = False
+
+    def __repr__(self):
+        return 'RelinquishFileMembershipArg(file={!r})'.format(
+            self._file_value,
+        )
+
+RelinquishFileMembershipArg_validator = bv.Struct(RelinquishFileMembershipArg)
+
+class RelinquishFileMembershipError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar group_access: The current user has access to the shared file via a
+        group.  You can't relinquish membership to a file shared via groups.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    group_access = None
+    # Attribute is overwritten below the class definition
+    no_permission = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: RelinquishFileMembershipError
+        """
+        return cls('access_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_group_access(self):
+        """
+        Check if the union tag is ``group_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_access'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'RelinquishFileMembershipError(%r, %r)' % (self._tag, self._value)
+
+RelinquishFileMembershipError_validator = bv.Union(RelinquishFileMembershipError)
+
 class RelinquishFolderMembershipArg(object):
     """
     :ivar shared_folder_id: The ID for the shared folder.
@@ -5402,6 +8053,190 @@ class RelinquishFolderMembershipError(bb.Union):
         return 'RelinquishFolderMembershipError(%r, %r)' % (self._tag, self._value)
 
 RelinquishFolderMembershipError_validator = bv.Union(RelinquishFolderMembershipError)
+
+class RemoveFileMemberArg(object):
+    """
+    Arguments for remove_file_member_2.
+
+    :ivar file: File from which to remove members.
+    :ivar member: Member to remove from this file. Note that even if an email is
+        specified, it may result in the removal of a user (not an invitee) if
+        the user's main account corresponds to that email address.
+    """
+
+    __slots__ = [
+        '_file_value',
+        '_file_present',
+        '_member_value',
+        '_member_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file=None,
+                 member=None):
+        self._file_value = None
+        self._file_present = False
+        self._member_value = None
+        self._member_present = False
+        if file is not None:
+            self.file = file
+        if member is not None:
+            self.member = member
+
+    @property
+    def file(self):
+        """
+        File from which to remove members.
+
+        :rtype: str
+        """
+        if self._file_present:
+            return self._file_value
+        else:
+            raise AttributeError("missing required field 'file'")
+
+    @file.setter
+    def file(self, val):
+        val = self._file_validator.validate(val)
+        self._file_value = val
+        self._file_present = True
+
+    @file.deleter
+    def file(self):
+        self._file_value = None
+        self._file_present = False
+
+    @property
+    def member(self):
+        """
+        Member to remove from this file. Note that even if an email is
+        specified, it may result in the removal of a user (not an invitee) if
+        the user's main account corresponds to that email address.
+
+        :rtype: MemberSelector
+        """
+        if self._member_present:
+            return self._member_value
+        else:
+            raise AttributeError("missing required field 'member'")
+
+    @member.setter
+    def member(self, val):
+        self._member_validator.validate_type_only(val)
+        self._member_value = val
+        self._member_present = True
+
+    @member.deleter
+    def member(self):
+        self._member_value = None
+        self._member_present = False
+
+    def __repr__(self):
+        return 'RemoveFileMemberArg(file={!r}, member={!r})'.format(
+            self._file_value,
+            self._member_value,
+        )
+
+RemoveFileMemberArg_validator = bv.Struct(RemoveFileMemberArg)
+
+class RemoveFileMemberError(bb.Union):
+    """
+    Errors for remove_file_member_2.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar no_explicit_access: This member does not have explicit access to the
+        file and therefore cannot be removed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    no_explicit_access = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param SharingUserError val:
+        :rtype: RemoveFileMemberError
+        """
+        return cls('user_error', val)
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: RemoveFileMemberError
+        """
+        return cls('access_error', val)
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_error'
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_no_explicit_access(self):
+        """
+        Check if the union tag is ``no_explicit_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_explicit_access'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_user_error(self):
+        """
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: SharingUserError
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'RemoveFileMemberError(%r, %r)' % (self._tag, self._value)
+
+RemoveFileMemberError_validator = bv.Union(RemoveFileMemberError)
 
 class RemoveFolderMemberArg(object):
     """
@@ -5651,6 +8486,83 @@ class RemoveFolderMemberError(bb.Union):
         return 'RemoveFolderMemberError(%r, %r)' % (self._tag, self._value)
 
 RemoveFolderMemberError_validator = bv.Union(RemoveFolderMemberError)
+
+class RemoveMemberJobStatus(async.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar MemberAccessLevelResult complete: Removing the folder member has
+        finished. The value is information about whether the member has another
+        form of access.
+    """
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param MemberAccessLevelResult val:
+        :rtype: RemoveMemberJobStatus
+        """
+        return cls('complete', val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param RemoveFolderMemberError val:
+        :rtype: RemoveMemberJobStatus
+        """
+        return cls('failed', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failed'
+
+    def get_complete(self):
+        """
+        Removing the folder member has finished. The value is information about
+        whether the member has another form of access.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: MemberAccessLevelResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: RemoveFolderMemberError
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'RemoveMemberJobStatus(%r, %r)' % (self._tag, self._value)
+
+RemoveMemberJobStatus_validator = bv.Union(RemoveMemberJobStatus)
 
 class RequestedVisibility(bb.Union):
     """
@@ -6024,7 +8936,7 @@ class ShareFolderArg(object):
 
 ShareFolderArg_validator = bv.Struct(ShareFolderArg)
 
-class ShareFolderError(bb.Union):
+class ShareFolderErrorBase(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -6036,8 +8948,6 @@ class ShareFolderError(bb.Union):
         than ``ShareFolderArg.member_policy``.
     :ivar disallowed_shared_link_policy: The current user's account is not
         allowed to select the specified ``ShareFolderArg.shared_link_policy``.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
     """
 
     _catch_all = 'other'
@@ -6048,8 +8958,6 @@ class ShareFolderError(bb.Union):
     # Attribute is overwritten below the class definition
     disallowed_shared_link_policy = None
     # Attribute is overwritten below the class definition
-    no_permission = None
-    # Attribute is overwritten below the class definition
     other = None
 
     @classmethod
@@ -6059,7 +8967,7 @@ class ShareFolderError(bb.Union):
         ``val``.
 
         :param SharePathError val:
-        :rtype: ShareFolderError
+        :rtype: ShareFolderErrorBase
         """
         return cls('bad_path', val)
 
@@ -6095,14 +9003,6 @@ class ShareFolderError(bb.Union):
         """
         return self._tag == 'disallowed_shared_link_policy'
 
-    def is_no_permission(self):
-        """
-        Check if the union tag is ``no_permission``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_permission'
-
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -6122,6 +9022,32 @@ class ShareFolderError(bb.Union):
         if not self.is_bad_path():
             raise AttributeError("tag 'bad_path' not set")
         return self._value
+
+    def __repr__(self):
+        return 'ShareFolderErrorBase(%r, %r)' % (self._tag, self._value)
+
+ShareFolderErrorBase_validator = bv.Union(ShareFolderErrorBase)
+
+class ShareFolderError(ShareFolderErrorBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
+    """
+
+    # Attribute is overwritten below the class definition
+    no_permission = None
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def __repr__(self):
         return 'ShareFolderError(%r, %r)' % (self._tag, self._value)
@@ -6418,6 +9344,501 @@ class SharePathError(bb.Union):
         return 'SharePathError(%r, %r)' % (self._tag, self._value)
 
 SharePathError_validator = bv.Union(SharePathError)
+
+class SharedFileMembers(object):
+    """
+    Shared file user, group, and invitee membership. Used for the results of
+    list_file_members and list_file_members/continue, and used as part of the
+    results for list_file_members/batch.
+
+    :ivar users: The list of user members of the shared file.
+    :ivar groups: The list of group members of the shared file.
+    :ivar invitees: The list of invited members of a file, but have not logged
+        in and claimed this.
+    :ivar cursor: Present if there are additional shared file members that have
+        not been returned yet. Pass the cursor into list_file_members/continue
+        to list additional members.
+    """
+
+    __slots__ = [
+        '_users_value',
+        '_users_present',
+        '_groups_value',
+        '_groups_present',
+        '_invitees_value',
+        '_invitees_present',
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 users=None,
+                 groups=None,
+                 invitees=None,
+                 cursor=None):
+        self._users_value = None
+        self._users_present = False
+        self._groups_value = None
+        self._groups_present = False
+        self._invitees_value = None
+        self._invitees_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        if users is not None:
+            self.users = users
+        if groups is not None:
+            self.groups = groups
+        if invitees is not None:
+            self.invitees = invitees
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def users(self):
+        """
+        The list of user members of the shared file.
+
+        :rtype: list of [UserMembershipInfo]
+        """
+        if self._users_present:
+            return self._users_value
+        else:
+            raise AttributeError("missing required field 'users'")
+
+    @users.setter
+    def users(self, val):
+        val = self._users_validator.validate(val)
+        self._users_value = val
+        self._users_present = True
+
+    @users.deleter
+    def users(self):
+        self._users_value = None
+        self._users_present = False
+
+    @property
+    def groups(self):
+        """
+        The list of group members of the shared file.
+
+        :rtype: list of [GroupMembershipInfo]
+        """
+        if self._groups_present:
+            return self._groups_value
+        else:
+            raise AttributeError("missing required field 'groups'")
+
+    @groups.setter
+    def groups(self, val):
+        val = self._groups_validator.validate(val)
+        self._groups_value = val
+        self._groups_present = True
+
+    @groups.deleter
+    def groups(self):
+        self._groups_value = None
+        self._groups_present = False
+
+    @property
+    def invitees(self):
+        """
+        The list of invited members of a file, but have not logged in and
+        claimed this.
+
+        :rtype: list of [InviteeMembershipInfo]
+        """
+        if self._invitees_present:
+            return self._invitees_value
+        else:
+            raise AttributeError("missing required field 'invitees'")
+
+    @invitees.setter
+    def invitees(self, val):
+        val = self._invitees_validator.validate(val)
+        self._invitees_value = val
+        self._invitees_present = True
+
+    @invitees.deleter
+    def invitees(self):
+        self._invitees_value = None
+        self._invitees_present = False
+
+    @property
+    def cursor(self):
+        """
+        Present if there are additional shared file members that have not been
+        returned yet. Pass the cursor into list_file_members/continue to list
+        additional members.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'SharedFileMembers(users={!r}, groups={!r}, invitees={!r}, cursor={!r})'.format(
+            self._users_value,
+            self._groups_value,
+            self._invitees_value,
+            self._cursor_value,
+        )
+
+SharedFileMembers_validator = bv.Struct(SharedFileMembers)
+
+class SharedFileMetadata(object):
+    """
+    Properties of the shared file.
+
+    :ivar policy: Policies governing this shared file.
+    :ivar permissions: The sharing permissions that requesting user has on this
+        file. This corresponds to the entries given in
+        ``GetFileMetadataBatchArg.actions`` or ``GetFileMetadataArg.actions``.
+    :ivar owner_team: The team that owns the file. This field is not present if
+        the file is not owned by a team.
+    :ivar parent_shared_folder_id: The ID of the parent shared folder. This
+        field is present only if the file is contained within a shared folder.
+    :ivar preview_url: URL for displaying a web preview of the shared file.
+    :ivar path_lower: The lower-case full path of this file. Absent for
+        unmounted files.
+    :ivar path_display: The cased path to be used for display purposes only. In
+        rare instances the casing will not correctly match the user's
+        filesystem, but this behavior will match the path provided in the Core
+        API v1. Absent for unmounted files.
+    :ivar name: The name of this file.
+    :ivar id: The ID of the file.
+    """
+
+    __slots__ = [
+        '_policy_value',
+        '_policy_present',
+        '_permissions_value',
+        '_permissions_present',
+        '_owner_team_value',
+        '_owner_team_present',
+        '_parent_shared_folder_id_value',
+        '_parent_shared_folder_id_present',
+        '_preview_url_value',
+        '_preview_url_present',
+        '_path_lower_value',
+        '_path_lower_present',
+        '_path_display_value',
+        '_path_display_present',
+        '_name_value',
+        '_name_present',
+        '_id_value',
+        '_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 policy=None,
+                 preview_url=None,
+                 name=None,
+                 id=None,
+                 permissions=None,
+                 owner_team=None,
+                 parent_shared_folder_id=None,
+                 path_lower=None,
+                 path_display=None):
+        self._policy_value = None
+        self._policy_present = False
+        self._permissions_value = None
+        self._permissions_present = False
+        self._owner_team_value = None
+        self._owner_team_present = False
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
+        self._preview_url_value = None
+        self._preview_url_present = False
+        self._path_lower_value = None
+        self._path_lower_present = False
+        self._path_display_value = None
+        self._path_display_present = False
+        self._name_value = None
+        self._name_present = False
+        self._id_value = None
+        self._id_present = False
+        if policy is not None:
+            self.policy = policy
+        if permissions is not None:
+            self.permissions = permissions
+        if owner_team is not None:
+            self.owner_team = owner_team
+        if parent_shared_folder_id is not None:
+            self.parent_shared_folder_id = parent_shared_folder_id
+        if preview_url is not None:
+            self.preview_url = preview_url
+        if path_lower is not None:
+            self.path_lower = path_lower
+        if path_display is not None:
+            self.path_display = path_display
+        if name is not None:
+            self.name = name
+        if id is not None:
+            self.id = id
+
+    @property
+    def policy(self):
+        """
+        Policies governing this shared file.
+
+        :rtype: FolderPolicy
+        """
+        if self._policy_present:
+            return self._policy_value
+        else:
+            raise AttributeError("missing required field 'policy'")
+
+    @policy.setter
+    def policy(self, val):
+        self._policy_validator.validate_type_only(val)
+        self._policy_value = val
+        self._policy_present = True
+
+    @policy.deleter
+    def policy(self):
+        self._policy_value = None
+        self._policy_present = False
+
+    @property
+    def permissions(self):
+        """
+        The sharing permissions that requesting user has on this file. This
+        corresponds to the entries given in ``GetFileMetadataBatchArg.actions``
+        or ``GetFileMetadataArg.actions``.
+
+        :rtype: list of [FilePermission]
+        """
+        if self._permissions_present:
+            return self._permissions_value
+        else:
+            return None
+
+    @permissions.setter
+    def permissions(self, val):
+        if val is None:
+            del self.permissions
+            return
+        val = self._permissions_validator.validate(val)
+        self._permissions_value = val
+        self._permissions_present = True
+
+    @permissions.deleter
+    def permissions(self):
+        self._permissions_value = None
+        self._permissions_present = False
+
+    @property
+    def owner_team(self):
+        """
+        The team that owns the file. This field is not present if the file is
+        not owned by a team.
+
+        :rtype: users.Team_validator
+        """
+        if self._owner_team_present:
+            return self._owner_team_value
+        else:
+            return None
+
+    @owner_team.setter
+    def owner_team(self, val):
+        if val is None:
+            del self.owner_team
+            return
+        self._owner_team_validator.validate_type_only(val)
+        self._owner_team_value = val
+        self._owner_team_present = True
+
+    @owner_team.deleter
+    def owner_team(self):
+        self._owner_team_value = None
+        self._owner_team_present = False
+
+    @property
+    def parent_shared_folder_id(self):
+        """
+        The ID of the parent shared folder. This field is present only if the
+        file is contained within a shared folder.
+
+        :rtype: str
+        """
+        if self._parent_shared_folder_id_present:
+            return self._parent_shared_folder_id_value
+        else:
+            return None
+
+    @parent_shared_folder_id.setter
+    def parent_shared_folder_id(self, val):
+        if val is None:
+            del self.parent_shared_folder_id
+            return
+        val = self._parent_shared_folder_id_validator.validate(val)
+        self._parent_shared_folder_id_value = val
+        self._parent_shared_folder_id_present = True
+
+    @parent_shared_folder_id.deleter
+    def parent_shared_folder_id(self):
+        self._parent_shared_folder_id_value = None
+        self._parent_shared_folder_id_present = False
+
+    @property
+    def preview_url(self):
+        """
+        URL for displaying a web preview of the shared file.
+
+        :rtype: str
+        """
+        if self._preview_url_present:
+            return self._preview_url_value
+        else:
+            raise AttributeError("missing required field 'preview_url'")
+
+    @preview_url.setter
+    def preview_url(self, val):
+        val = self._preview_url_validator.validate(val)
+        self._preview_url_value = val
+        self._preview_url_present = True
+
+    @preview_url.deleter
+    def preview_url(self):
+        self._preview_url_value = None
+        self._preview_url_present = False
+
+    @property
+    def path_lower(self):
+        """
+        The lower-case full path of this file. Absent for unmounted files.
+
+        :rtype: str
+        """
+        if self._path_lower_present:
+            return self._path_lower_value
+        else:
+            return None
+
+    @path_lower.setter
+    def path_lower(self, val):
+        if val is None:
+            del self.path_lower
+            return
+        val = self._path_lower_validator.validate(val)
+        self._path_lower_value = val
+        self._path_lower_present = True
+
+    @path_lower.deleter
+    def path_lower(self):
+        self._path_lower_value = None
+        self._path_lower_present = False
+
+    @property
+    def path_display(self):
+        """
+        The cased path to be used for display purposes only. In rare instances
+        the casing will not correctly match the user's filesystem, but this
+        behavior will match the path provided in the Core API v1. Absent for
+        unmounted files.
+
+        :rtype: str
+        """
+        if self._path_display_present:
+            return self._path_display_value
+        else:
+            return None
+
+    @path_display.setter
+    def path_display(self, val):
+        if val is None:
+            del self.path_display
+            return
+        val = self._path_display_validator.validate(val)
+        self._path_display_value = val
+        self._path_display_present = True
+
+    @path_display.deleter
+    def path_display(self):
+        self._path_display_value = None
+        self._path_display_present = False
+
+    @property
+    def name(self):
+        """
+        The name of this file.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def id(self):
+        """
+        The ID of the file.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    def __repr__(self):
+        return 'SharedFileMetadata(policy={!r}, preview_url={!r}, name={!r}, id={!r}, permissions={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r}, path_display={!r})'.format(
+            self._policy_value,
+            self._preview_url_value,
+            self._name_value,
+            self._id_value,
+            self._permissions_value,
+            self._owner_team_value,
+            self._parent_shared_folder_id_value,
+            self._path_lower_value,
+            self._path_display_value,
+        )
+
+SharedFileMetadata_validator = bv.Struct(SharedFileMetadata)
 
 class SharedFolderAccessError(bb.Union):
     """
@@ -7393,6 +10814,131 @@ class SharedLinkSettingsError(bb.Union):
 
 SharedLinkSettingsError_validator = bv.Union(SharedLinkSettingsError)
 
+class SharingFileAccessError(bb.Union):
+    """
+    User could not access this file.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar no_permission: Current user does not have sufficient privileges to
+        perform the desired action.
+    :ivar invalid_file: File specified was not found.
+    :ivar is_folder: A folder can't be shared this way. Use folder sharing or a
+        shared link instead.
+    :ivar inside_public_folder: A file inside a public folder can't be shared
+        this way. Use a public link instead.
+    :ivar inside_osx_package: A Mac OS X package can't be shared this way. Use a
+        shared link instead.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    no_permission = None
+    # Attribute is overwritten below the class definition
+    invalid_file = None
+    # Attribute is overwritten below the class definition
+    is_folder = None
+    # Attribute is overwritten below the class definition
+    inside_public_folder = None
+    # Attribute is overwritten below the class definition
+    inside_osx_package = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
+
+    def is_invalid_file(self):
+        """
+        Check if the union tag is ``invalid_file``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_file'
+
+    def is_is_folder(self):
+        """
+        Check if the union tag is ``is_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'is_folder'
+
+    def is_inside_public_folder(self):
+        """
+        Check if the union tag is ``inside_public_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'inside_public_folder'
+
+    def is_inside_osx_package(self):
+        """
+        Check if the union tag is ``inside_osx_package``.
+
+        :rtype: bool
+        """
+        return self._tag == 'inside_osx_package'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'SharingFileAccessError(%r, %r)' % (self._tag, self._value)
+
+SharingFileAccessError_validator = bv.Union(SharingFileAccessError)
+
+class SharingUserError(bb.Union):
+    """
+    User account had a problem preventing this action.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar email_unverified: The current user must verify the account e-mail
+        address before performing this action.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    email_unverified = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_email_unverified(self):
+        """
+        Check if the union tag is ``email_unverified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_unverified'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'SharingUserError(%r, %r)' % (self._tag, self._value)
+
+SharingUserError_validator = bv.Union(SharingUserError)
+
 class TeamMemberInfo(object):
     """
     Information about a team member.
@@ -7846,6 +11392,141 @@ class UnmountFolderError(bb.Union):
 
 UnmountFolderError_validator = bv.Union(UnmountFolderError)
 
+class UnshareFileArg(object):
+    """
+    Arguments for unshare_file.
+
+    :ivar file: The file to unshare.
+    """
+
+    __slots__ = [
+        '_file_value',
+        '_file_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file=None):
+        self._file_value = None
+        self._file_present = False
+        if file is not None:
+            self.file = file
+
+    @property
+    def file(self):
+        """
+        The file to unshare.
+
+        :rtype: str
+        """
+        if self._file_present:
+            return self._file_value
+        else:
+            raise AttributeError("missing required field 'file'")
+
+    @file.setter
+    def file(self, val):
+        val = self._file_validator.validate(val)
+        self._file_value = val
+        self._file_present = True
+
+    @file.deleter
+    def file(self):
+        self._file_value = None
+        self._file_present = False
+
+    def __repr__(self):
+        return 'UnshareFileArg(file={!r})'.format(
+            self._file_value,
+        )
+
+UnshareFileArg_validator = bv.Struct(UnshareFileArg)
+
+class UnshareFileError(bb.Union):
+    """
+    Error result for unshare_file.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param SharingUserError val:
+        :rtype: UnshareFileError
+        """
+        return cls('user_error', val)
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: UnshareFileError
+        """
+        return cls('access_error', val)
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_error'
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_user_error(self):
+        """
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: SharingUserError
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UnshareFileError(%r, %r)' % (self._tag, self._value)
+
+UnshareFileError_validator = bv.Union(UnshareFileError)
+
 class UnshareFolderArg(object):
     """
     :ivar shared_folder_id: The ID for the shared folder.
@@ -8132,6 +11813,9 @@ class UpdateFolderMemberError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar AddFolderMemberError no_explicit_access: If updating the access type
+        required the member to be added to the shared folder and there was an
+        error when adding the member.
     :ivar insufficient_plan: The current user's account doesn't support this
         action. An example of this is when downgrading a member from editor to
         viewer. This action can only be performed by users that have upgraded to
@@ -8170,6 +11854,17 @@ class UpdateFolderMemberError(bb.Union):
         """
         return cls('member_error', val)
 
+    @classmethod
+    def no_explicit_access(cls, val):
+        """
+        Create an instance of this class set to the ``no_explicit_access`` tag
+        with value ``val``.
+
+        :param AddFolderMemberError val:
+        :rtype: UpdateFolderMemberError
+        """
+        return cls('no_explicit_access', val)
+
     def is_access_error(self):
         """
         Check if the union tag is ``access_error``.
@@ -8185,6 +11880,14 @@ class UpdateFolderMemberError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_error'
+
+    def is_no_explicit_access(self):
+        """
+        Check if the union tag is ``no_explicit_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_explicit_access'
 
     def is_insufficient_plan(self):
         """
@@ -8228,6 +11931,19 @@ class UpdateFolderMemberError(bb.Union):
         """
         if not self.is_member_error():
             raise AttributeError("tag 'member_error' not set")
+        return self._value
+
+    def get_no_explicit_access(self):
+        """
+        If updating the access type required the member to be added to the
+        shared folder and there was an error when adding the member.
+
+        Only call this if :meth:`is_no_explicit_access` is true.
+
+        :rtype: AddFolderMemberError
+        """
+        if not self.is_no_explicit_access():
+            raise AttributeError("tag 'no_explicit_access' not set")
         return self._value
 
     def __repr__(self):
@@ -8611,7 +12327,7 @@ UserInfo_validator = bv.Struct(UserInfo)
 
 class UserMembershipInfo(MembershipInfo):
     """
-    The information about a user member of the shared folder.
+    The information about a user member of the shared content.
 
     :ivar user: The account information for the membership user.
     """
@@ -8763,10 +12479,12 @@ class Visibility(bb.Union):
 Visibility_validator = bv.Union(Visibility)
 
 DropboxId_validator = bv.String(min_length=1)
+FileId_validator = bv.String(min_length=1, pattern=u'id:.*')
 GetSharedLinkFileArg_validator = GetSharedLinkMetadataArg_validator
 GetSharedLinkFileArg = GetSharedLinkMetadataArg
 Id_validator = files.Id_validator
 Path_validator = files.Path_validator
+PathOrId_validator = bv.String(min_length=1, pattern=u'((/|id:).*|nspath:[^:]*:[^:]*)')
 ReadPath_validator = files.ReadPath_validator
 Rev_validator = files.Rev_validator
 TeamInfo_validator = users.Team_validator
@@ -8802,6 +12520,46 @@ AclUpdatePolicy._tagmap = {
 AclUpdatePolicy.owner = AclUpdatePolicy('owner')
 AclUpdatePolicy.editors = AclUpdatePolicy('editors')
 AclUpdatePolicy.other = AclUpdatePolicy('other')
+
+AddFileMemberArgs._file_validator = PathOrId_validator
+AddFileMemberArgs._members_validator = bv.List(MemberSelector_validator)
+AddFileMemberArgs._custom_message_validator = bv.Nullable(bv.String())
+AddFileMemberArgs._quiet_validator = bv.Boolean()
+AddFileMemberArgs._access_level_validator = AccessLevel_validator
+AddFileMemberArgs._add_message_as_comment_validator = bv.Boolean()
+AddFileMemberArgs._all_field_names_ = set([
+    'file',
+    'members',
+    'custom_message',
+    'quiet',
+    'access_level',
+    'add_message_as_comment',
+])
+AddFileMemberArgs._all_fields_ = [
+    ('file', AddFileMemberArgs._file_validator),
+    ('members', AddFileMemberArgs._members_validator),
+    ('custom_message', AddFileMemberArgs._custom_message_validator),
+    ('quiet', AddFileMemberArgs._quiet_validator),
+    ('access_level', AddFileMemberArgs._access_level_validator),
+    ('add_message_as_comment', AddFileMemberArgs._add_message_as_comment_validator),
+]
+
+AddFileMemberError._user_error_validator = SharingUserError_validator
+AddFileMemberError._access_error_validator = SharingFileAccessError_validator
+AddFileMemberError._rate_limit_validator = bv.Void()
+AddFileMemberError._invalid_comment_validator = bv.Void()
+AddFileMemberError._other_validator = bv.Void()
+AddFileMemberError._tagmap = {
+    'user_error': AddFileMemberError._user_error_validator,
+    'access_error': AddFileMemberError._access_error_validator,
+    'rate_limit': AddFileMemberError._rate_limit_validator,
+    'invalid_comment': AddFileMemberError._invalid_comment_validator,
+    'other': AddFileMemberError._other_validator,
+}
+
+AddFileMemberError.rate_limit = AddFileMemberError('rate_limit')
+AddFileMemberError.invalid_comment = AddFileMemberError('invalid_comment')
+AddFileMemberError.other = AddFileMemberError('other')
 
 AddFolderMemberArg._shared_folder_id_validator = common.SharedFolderId_validator
 AddFolderMemberArg._members_validator = bv.List(AddMember_validator)
@@ -8965,6 +12723,38 @@ CreateSharedLinkWithSettingsError.email_not_verified = CreateSharedLinkWithSetti
 CreateSharedLinkWithSettingsError.shared_link_already_exists = CreateSharedLinkWithSettingsError('shared_link_already_exists')
 CreateSharedLinkWithSettingsError.access_denied = CreateSharedLinkWithSettingsError('access_denied')
 
+FileAction._edit_contents_validator = bv.Void()
+FileAction._invite_viewer_validator = bv.Void()
+FileAction._unshare_validator = bv.Void()
+FileAction._relinquish_membership_validator = bv.Void()
+FileAction._other_validator = bv.Void()
+FileAction._tagmap = {
+    'edit_contents': FileAction._edit_contents_validator,
+    'invite_viewer': FileAction._invite_viewer_validator,
+    'unshare': FileAction._unshare_validator,
+    'relinquish_membership': FileAction._relinquish_membership_validator,
+    'other': FileAction._other_validator,
+}
+
+FileAction.edit_contents = FileAction('edit_contents')
+FileAction.invite_viewer = FileAction('invite_viewer')
+FileAction.unshare = FileAction('unshare')
+FileAction.relinquish_membership = FileAction('relinquish_membership')
+FileAction.other = FileAction('other')
+
+FileErrorResult._file_not_found_error_validator = files.Id_validator
+FileErrorResult._invalid_file_action_error_validator = files.Id_validator
+FileErrorResult._permission_denied_error_validator = files.Id_validator
+FileErrorResult._other_validator = bv.Void()
+FileErrorResult._tagmap = {
+    'file_not_found_error': FileErrorResult._file_not_found_error_validator,
+    'invalid_file_action_error': FileErrorResult._invalid_file_action_error_validator,
+    'permission_denied_error': FileErrorResult._permission_denied_error_validator,
+    'other': FileErrorResult._other_validator,
+}
+
+FileErrorResult.other = FileErrorResult('other')
+
 SharedLinkMetadata._url_validator = bv.String()
 SharedLinkMetadata._id_validator = bv.Nullable(Id_validator)
 SharedLinkMetadata._name_validator = bv.String()
@@ -9024,6 +12814,62 @@ FileLinkMetadata._fields_ = [
     ('size', FileLinkMetadata._size_validator),
 ]
 FileLinkMetadata._all_fields_ = SharedLinkMetadata._all_fields_ + FileLinkMetadata._fields_
+
+FileMemberActionError._invalid_member_validator = bv.Void()
+FileMemberActionError._no_permission_validator = bv.Void()
+FileMemberActionError._other_validator = bv.Void()
+FileMemberActionError._tagmap = {
+    'invalid_member': FileMemberActionError._invalid_member_validator,
+    'no_permission': FileMemberActionError._no_permission_validator,
+    'other': FileMemberActionError._other_validator,
+}
+
+FileMemberActionError.invalid_member = FileMemberActionError('invalid_member')
+FileMemberActionError.no_permission = FileMemberActionError('no_permission')
+FileMemberActionError.other = FileMemberActionError('other')
+
+FileMemberActionIndividualResult._success_validator = bv.Nullable(AccessLevel_validator)
+FileMemberActionIndividualResult._member_error_validator = FileMemberActionError_validator
+FileMemberActionIndividualResult._tagmap = {
+    'success': FileMemberActionIndividualResult._success_validator,
+    'member_error': FileMemberActionIndividualResult._member_error_validator,
+}
+
+FileMemberActionResult._member_validator = MemberSelector_validator
+FileMemberActionResult._result_validator = FileMemberActionIndividualResult_validator
+FileMemberActionResult._all_field_names_ = set([
+    'member',
+    'result',
+])
+FileMemberActionResult._all_fields_ = [
+    ('member', FileMemberActionResult._member_validator),
+    ('result', FileMemberActionResult._result_validator),
+]
+
+FileMemberRemoveActionResult._success_validator = MemberAccessLevelResult_validator
+FileMemberRemoveActionResult._member_error_validator = FileMemberActionError_validator
+FileMemberRemoveActionResult._other_validator = bv.Void()
+FileMemberRemoveActionResult._tagmap = {
+    'success': FileMemberRemoveActionResult._success_validator,
+    'member_error': FileMemberRemoveActionResult._member_error_validator,
+    'other': FileMemberRemoveActionResult._other_validator,
+}
+
+FileMemberRemoveActionResult.other = FileMemberRemoveActionResult('other')
+
+FilePermission._action_validator = FileAction_validator
+FilePermission._allow_validator = bv.Boolean()
+FilePermission._reason_validator = bv.Nullable(PermissionDeniedReason_validator)
+FilePermission._all_field_names_ = set([
+    'action',
+    'allow',
+    'reason',
+])
+FilePermission._all_fields_ = [
+    ('action', FilePermission._action_validator),
+    ('allow', FilePermission._allow_validator),
+    ('reason', FilePermission._reason_validator),
+]
 
 FolderAction._change_options_validator = bv.Void()
 FolderAction._edit_contents_validator = bv.Void()
@@ -9091,6 +12937,61 @@ FolderPolicy._all_fields_ = [
     ('acl_update_policy', FolderPolicy._acl_update_policy_validator),
     ('shared_link_policy', FolderPolicy._shared_link_policy_validator),
 ]
+
+GetFileMetadataArg._file_validator = PathOrId_validator
+GetFileMetadataArg._actions_validator = bv.Nullable(bv.List(FileAction_validator))
+GetFileMetadataArg._all_field_names_ = set([
+    'file',
+    'actions',
+])
+GetFileMetadataArg._all_fields_ = [
+    ('file', GetFileMetadataArg._file_validator),
+    ('actions', GetFileMetadataArg._actions_validator),
+]
+
+GetFileMetadataBatchArg._files_validator = bv.List(PathOrId_validator, max_items=100)
+GetFileMetadataBatchArg._actions_validator = bv.Nullable(bv.List(FileAction_validator))
+GetFileMetadataBatchArg._all_field_names_ = set([
+    'files',
+    'actions',
+])
+GetFileMetadataBatchArg._all_fields_ = [
+    ('files', GetFileMetadataBatchArg._files_validator),
+    ('actions', GetFileMetadataBatchArg._actions_validator),
+]
+
+GetFileMetadataBatchResult._file_validator = PathOrId_validator
+GetFileMetadataBatchResult._result_validator = GetFileMetadataIndividualResult_validator
+GetFileMetadataBatchResult._all_field_names_ = set([
+    'file',
+    'result',
+])
+GetFileMetadataBatchResult._all_fields_ = [
+    ('file', GetFileMetadataBatchResult._file_validator),
+    ('result', GetFileMetadataBatchResult._result_validator),
+]
+
+GetFileMetadataError._user_error_validator = SharingUserError_validator
+GetFileMetadataError._access_error_validator = SharingFileAccessError_validator
+GetFileMetadataError._other_validator = bv.Void()
+GetFileMetadataError._tagmap = {
+    'user_error': GetFileMetadataError._user_error_validator,
+    'access_error': GetFileMetadataError._access_error_validator,
+    'other': GetFileMetadataError._other_validator,
+}
+
+GetFileMetadataError.other = GetFileMetadataError('other')
+
+GetFileMetadataIndividualResult._metadata_validator = SharedFileMetadata_validator
+GetFileMetadataIndividualResult._access_error_validator = SharingFileAccessError_validator
+GetFileMetadataIndividualResult._other_validator = bv.Void()
+GetFileMetadataIndividualResult._tagmap = {
+    'metadata': GetFileMetadataIndividualResult._metadata_validator,
+    'access_error': GetFileMetadataIndividualResult._access_error_validator,
+    'other': GetFileMetadataIndividualResult._other_validator,
+}
+
+GetFileMetadataIndividualResult.other = GetFileMetadataIndividualResult('other')
 
 GetMetadataArgs._shared_folder_id_validator = common.SharedFolderId_validator
 GetMetadataArgs._actions_validator = bv.Nullable(bv.List(FolderAction_validator))
@@ -9250,6 +13151,134 @@ LinkPermissions._all_fields_ = [
     ('revoke_failure_reason', LinkPermissions._revoke_failure_reason_validator),
 ]
 
+ListFileMembersArg._file_validator = PathOrId_validator
+ListFileMembersArg._actions_validator = bv.Nullable(bv.List(MemberAction_validator))
+ListFileMembersArg._include_inherited_validator = bv.Boolean()
+ListFileMembersArg._limit_validator = bv.UInt32(min_value=1, max_value=300)
+ListFileMembersArg._all_field_names_ = set([
+    'file',
+    'actions',
+    'include_inherited',
+    'limit',
+])
+ListFileMembersArg._all_fields_ = [
+    ('file', ListFileMembersArg._file_validator),
+    ('actions', ListFileMembersArg._actions_validator),
+    ('include_inherited', ListFileMembersArg._include_inherited_validator),
+    ('limit', ListFileMembersArg._limit_validator),
+]
+
+ListFileMembersBatchArg._files_validator = bv.List(PathOrId_validator, max_items=100)
+ListFileMembersBatchArg._limit_validator = bv.UInt32(max_value=20)
+ListFileMembersBatchArg._all_field_names_ = set([
+    'files',
+    'limit',
+])
+ListFileMembersBatchArg._all_fields_ = [
+    ('files', ListFileMembersBatchArg._files_validator),
+    ('limit', ListFileMembersBatchArg._limit_validator),
+]
+
+ListFileMembersBatchResult._file_validator = PathOrId_validator
+ListFileMembersBatchResult._result_validator = ListFileMembersIndividualResult_validator
+ListFileMembersBatchResult._all_field_names_ = set([
+    'file',
+    'result',
+])
+ListFileMembersBatchResult._all_fields_ = [
+    ('file', ListFileMembersBatchResult._file_validator),
+    ('result', ListFileMembersBatchResult._result_validator),
+]
+
+ListFileMembersContinueArg._cursor_validator = bv.String()
+ListFileMembersContinueArg._all_field_names_ = set(['cursor'])
+ListFileMembersContinueArg._all_fields_ = [('cursor', ListFileMembersContinueArg._cursor_validator)]
+
+ListFileMembersContinueError._user_error_validator = SharingUserError_validator
+ListFileMembersContinueError._access_error_validator = SharingFileAccessError_validator
+ListFileMembersContinueError._invalid_cursor_validator = bv.Void()
+ListFileMembersContinueError._other_validator = bv.Void()
+ListFileMembersContinueError._tagmap = {
+    'user_error': ListFileMembersContinueError._user_error_validator,
+    'access_error': ListFileMembersContinueError._access_error_validator,
+    'invalid_cursor': ListFileMembersContinueError._invalid_cursor_validator,
+    'other': ListFileMembersContinueError._other_validator,
+}
+
+ListFileMembersContinueError.invalid_cursor = ListFileMembersContinueError('invalid_cursor')
+ListFileMembersContinueError.other = ListFileMembersContinueError('other')
+
+ListFileMembersCountResult._members_validator = SharedFileMembers_validator
+ListFileMembersCountResult._member_count_validator = bv.UInt32()
+ListFileMembersCountResult._all_field_names_ = set([
+    'members',
+    'member_count',
+])
+ListFileMembersCountResult._all_fields_ = [
+    ('members', ListFileMembersCountResult._members_validator),
+    ('member_count', ListFileMembersCountResult._member_count_validator),
+]
+
+ListFileMembersError._user_error_validator = SharingUserError_validator
+ListFileMembersError._access_error_validator = SharingFileAccessError_validator
+ListFileMembersError._other_validator = bv.Void()
+ListFileMembersError._tagmap = {
+    'user_error': ListFileMembersError._user_error_validator,
+    'access_error': ListFileMembersError._access_error_validator,
+    'other': ListFileMembersError._other_validator,
+}
+
+ListFileMembersError.other = ListFileMembersError('other')
+
+ListFileMembersIndividualResult._result_validator = ListFileMembersCountResult_validator
+ListFileMembersIndividualResult._access_error_validator = SharingFileAccessError_validator
+ListFileMembersIndividualResult._other_validator = bv.Void()
+ListFileMembersIndividualResult._tagmap = {
+    'result': ListFileMembersIndividualResult._result_validator,
+    'access_error': ListFileMembersIndividualResult._access_error_validator,
+    'other': ListFileMembersIndividualResult._other_validator,
+}
+
+ListFileMembersIndividualResult.other = ListFileMembersIndividualResult('other')
+
+ListFilesArg._limit_validator = bv.UInt32(min_value=1, max_value=300)
+ListFilesArg._actions_validator = bv.Nullable(bv.List(FileAction_validator))
+ListFilesArg._all_field_names_ = set([
+    'limit',
+    'actions',
+])
+ListFilesArg._all_fields_ = [
+    ('limit', ListFilesArg._limit_validator),
+    ('actions', ListFilesArg._actions_validator),
+]
+
+ListFilesContinueArg._cursor_validator = bv.String()
+ListFilesContinueArg._all_field_names_ = set(['cursor'])
+ListFilesContinueArg._all_fields_ = [('cursor', ListFilesContinueArg._cursor_validator)]
+
+ListFilesContinueError._user_error_validator = SharingUserError_validator
+ListFilesContinueError._invalid_cursor_validator = bv.Void()
+ListFilesContinueError._other_validator = bv.Void()
+ListFilesContinueError._tagmap = {
+    'user_error': ListFilesContinueError._user_error_validator,
+    'invalid_cursor': ListFilesContinueError._invalid_cursor_validator,
+    'other': ListFilesContinueError._other_validator,
+}
+
+ListFilesContinueError.invalid_cursor = ListFilesContinueError('invalid_cursor')
+ListFilesContinueError.other = ListFilesContinueError('other')
+
+ListFilesResult._entries_validator = bv.List(SharedFileMetadata_validator)
+ListFilesResult._cursor_validator = bv.Nullable(bv.String())
+ListFilesResult._all_field_names_ = set([
+    'entries',
+    'cursor',
+])
+ListFilesResult._all_fields_ = [
+    ('entries', ListFilesResult._entries_validator),
+    ('cursor', ListFilesResult._cursor_validator),
+]
+
 ListFolderMembersCursorArg._actions_validator = bv.Nullable(bv.List(MemberAction_validator))
 ListFolderMembersCursorArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
 ListFolderMembersCursorArg._all_field_names_ = set([
@@ -9357,12 +13386,25 @@ ListSharedLinksResult._all_fields_ = [
     ('cursor', ListSharedLinksResult._cursor_validator),
 ]
 
+MemberAccessLevelResult._access_level_validator = bv.Nullable(AccessLevel_validator)
+MemberAccessLevelResult._warning_validator = bv.Nullable(bv.String())
+MemberAccessLevelResult._all_field_names_ = set([
+    'access_level',
+    'warning',
+])
+MemberAccessLevelResult._all_fields_ = [
+    ('access_level', MemberAccessLevelResult._access_level_validator),
+    ('warning', MemberAccessLevelResult._warning_validator),
+]
+
+MemberAction._leave_a_copy_validator = bv.Void()
 MemberAction._make_editor_validator = bv.Void()
 MemberAction._make_owner_validator = bv.Void()
 MemberAction._make_viewer_validator = bv.Void()
 MemberAction._remove_validator = bv.Void()
 MemberAction._other_validator = bv.Void()
 MemberAction._tagmap = {
+    'leave_a_copy': MemberAction._leave_a_copy_validator,
     'make_editor': MemberAction._make_editor_validator,
     'make_owner': MemberAction._make_owner_validator,
     'make_viewer': MemberAction._make_viewer_validator,
@@ -9370,6 +13412,7 @@ MemberAction._tagmap = {
     'other': MemberAction._other_validator,
 }
 
+MemberAction.leave_a_copy = MemberAction('leave_a_copy')
 MemberAction.make_editor = MemberAction('make_editor')
 MemberAction.make_owner = MemberAction('make_owner')
 MemberAction.make_viewer = MemberAction('make_viewer')
@@ -9507,6 +13550,25 @@ PermissionDeniedReason.target_is_self = PermissionDeniedReason('target_is_self')
 PermissionDeniedReason.target_not_active = PermissionDeniedReason('target_not_active')
 PermissionDeniedReason.other = PermissionDeniedReason('other')
 
+RelinquishFileMembershipArg._file_validator = PathOrId_validator
+RelinquishFileMembershipArg._all_field_names_ = set(['file'])
+RelinquishFileMembershipArg._all_fields_ = [('file', RelinquishFileMembershipArg._file_validator)]
+
+RelinquishFileMembershipError._access_error_validator = SharingFileAccessError_validator
+RelinquishFileMembershipError._group_access_validator = bv.Void()
+RelinquishFileMembershipError._no_permission_validator = bv.Void()
+RelinquishFileMembershipError._other_validator = bv.Void()
+RelinquishFileMembershipError._tagmap = {
+    'access_error': RelinquishFileMembershipError._access_error_validator,
+    'group_access': RelinquishFileMembershipError._group_access_validator,
+    'no_permission': RelinquishFileMembershipError._no_permission_validator,
+    'other': RelinquishFileMembershipError._other_validator,
+}
+
+RelinquishFileMembershipError.group_access = RelinquishFileMembershipError('group_access')
+RelinquishFileMembershipError.no_permission = RelinquishFileMembershipError('no_permission')
+RelinquishFileMembershipError.other = RelinquishFileMembershipError('other')
+
 RelinquishFolderMembershipArg._shared_folder_id_validator = common.SharedFolderId_validator
 RelinquishFolderMembershipArg._leave_a_copy_validator = bv.Boolean()
 RelinquishFolderMembershipArg._all_field_names_ = set([
@@ -9541,6 +13603,31 @@ RelinquishFolderMembershipError.group_access = RelinquishFolderMembershipError('
 RelinquishFolderMembershipError.team_folder = RelinquishFolderMembershipError('team_folder')
 RelinquishFolderMembershipError.no_permission = RelinquishFolderMembershipError('no_permission')
 RelinquishFolderMembershipError.other = RelinquishFolderMembershipError('other')
+
+RemoveFileMemberArg._file_validator = PathOrId_validator
+RemoveFileMemberArg._member_validator = MemberSelector_validator
+RemoveFileMemberArg._all_field_names_ = set([
+    'file',
+    'member',
+])
+RemoveFileMemberArg._all_fields_ = [
+    ('file', RemoveFileMemberArg._file_validator),
+    ('member', RemoveFileMemberArg._member_validator),
+]
+
+RemoveFileMemberError._user_error_validator = SharingUserError_validator
+RemoveFileMemberError._access_error_validator = SharingFileAccessError_validator
+RemoveFileMemberError._no_explicit_access_validator = bv.Void()
+RemoveFileMemberError._other_validator = bv.Void()
+RemoveFileMemberError._tagmap = {
+    'user_error': RemoveFileMemberError._user_error_validator,
+    'access_error': RemoveFileMemberError._access_error_validator,
+    'no_explicit_access': RemoveFileMemberError._no_explicit_access_validator,
+    'other': RemoveFileMemberError._other_validator,
+}
+
+RemoveFileMemberError.no_explicit_access = RemoveFileMemberError('no_explicit_access')
+RemoveFileMemberError.other = RemoveFileMemberError('other')
 
 RemoveFolderMemberArg._shared_folder_id_validator = common.SharedFolderId_validator
 RemoveFolderMemberArg._member_validator = MemberSelector_validator
@@ -9578,6 +13665,14 @@ RemoveFolderMemberError.group_access = RemoveFolderMemberError('group_access')
 RemoveFolderMemberError.team_folder = RemoveFolderMemberError('team_folder')
 RemoveFolderMemberError.no_permission = RemoveFolderMemberError('no_permission')
 RemoveFolderMemberError.other = RemoveFolderMemberError('other')
+
+RemoveMemberJobStatus._complete_validator = MemberAccessLevelResult_validator
+RemoveMemberJobStatus._failed_validator = RemoveFolderMemberError_validator
+RemoveMemberJobStatus._tagmap = {
+    'complete': RemoveMemberJobStatus._complete_validator,
+    'failed': RemoveMemberJobStatus._failed_validator,
+}
+RemoveMemberJobStatus._tagmap.update(async.PollResultBase._tagmap)
 
 RequestedVisibility._public_validator = bv.Void()
 RequestedVisibility._team_only_validator = bv.Void()
@@ -9638,26 +13733,31 @@ ShareFolderArg._all_fields_ = [
     ('force_async', ShareFolderArg._force_async_validator),
 ]
 
-ShareFolderError._email_unverified_validator = bv.Void()
-ShareFolderError._bad_path_validator = SharePathError_validator
-ShareFolderError._team_policy_disallows_member_policy_validator = bv.Void()
-ShareFolderError._disallowed_shared_link_policy_validator = bv.Void()
-ShareFolderError._no_permission_validator = bv.Void()
-ShareFolderError._other_validator = bv.Void()
-ShareFolderError._tagmap = {
-    'email_unverified': ShareFolderError._email_unverified_validator,
-    'bad_path': ShareFolderError._bad_path_validator,
-    'team_policy_disallows_member_policy': ShareFolderError._team_policy_disallows_member_policy_validator,
-    'disallowed_shared_link_policy': ShareFolderError._disallowed_shared_link_policy_validator,
-    'no_permission': ShareFolderError._no_permission_validator,
-    'other': ShareFolderError._other_validator,
+ShareFolderErrorBase._email_unverified_validator = bv.Void()
+ShareFolderErrorBase._bad_path_validator = SharePathError_validator
+ShareFolderErrorBase._team_policy_disallows_member_policy_validator = bv.Void()
+ShareFolderErrorBase._disallowed_shared_link_policy_validator = bv.Void()
+ShareFolderErrorBase._other_validator = bv.Void()
+ShareFolderErrorBase._tagmap = {
+    'email_unverified': ShareFolderErrorBase._email_unverified_validator,
+    'bad_path': ShareFolderErrorBase._bad_path_validator,
+    'team_policy_disallows_member_policy': ShareFolderErrorBase._team_policy_disallows_member_policy_validator,
+    'disallowed_shared_link_policy': ShareFolderErrorBase._disallowed_shared_link_policy_validator,
+    'other': ShareFolderErrorBase._other_validator,
 }
 
-ShareFolderError.email_unverified = ShareFolderError('email_unverified')
-ShareFolderError.team_policy_disallows_member_policy = ShareFolderError('team_policy_disallows_member_policy')
-ShareFolderError.disallowed_shared_link_policy = ShareFolderError('disallowed_shared_link_policy')
+ShareFolderErrorBase.email_unverified = ShareFolderErrorBase('email_unverified')
+ShareFolderErrorBase.team_policy_disallows_member_policy = ShareFolderErrorBase('team_policy_disallows_member_policy')
+ShareFolderErrorBase.disallowed_shared_link_policy = ShareFolderErrorBase('disallowed_shared_link_policy')
+ShareFolderErrorBase.other = ShareFolderErrorBase('other')
+
+ShareFolderError._no_permission_validator = bv.Void()
+ShareFolderError._tagmap = {
+    'no_permission': ShareFolderError._no_permission_validator,
+}
+ShareFolderError._tagmap.update(ShareFolderErrorBase._tagmap)
+
 ShareFolderError.no_permission = ShareFolderError('no_permission')
-ShareFolderError.other = ShareFolderError('other')
 
 ShareFolderJobStatus._complete_validator = SharedFolderMetadata_validator
 ShareFolderJobStatus._failed_validator = ShareFolderError_validator
@@ -9711,6 +13811,55 @@ SharePathError.invalid_path = SharePathError('invalid_path')
 SharePathError.is_osx_package = SharePathError('is_osx_package')
 SharePathError.inside_osx_package = SharePathError('inside_osx_package')
 SharePathError.other = SharePathError('other')
+
+SharedFileMembers._users_validator = bv.List(UserMembershipInfo_validator)
+SharedFileMembers._groups_validator = bv.List(GroupMembershipInfo_validator)
+SharedFileMembers._invitees_validator = bv.List(InviteeMembershipInfo_validator)
+SharedFileMembers._cursor_validator = bv.Nullable(bv.String())
+SharedFileMembers._all_field_names_ = set([
+    'users',
+    'groups',
+    'invitees',
+    'cursor',
+])
+SharedFileMembers._all_fields_ = [
+    ('users', SharedFileMembers._users_validator),
+    ('groups', SharedFileMembers._groups_validator),
+    ('invitees', SharedFileMembers._invitees_validator),
+    ('cursor', SharedFileMembers._cursor_validator),
+]
+
+SharedFileMetadata._policy_validator = FolderPolicy_validator
+SharedFileMetadata._permissions_validator = bv.Nullable(bv.List(FilePermission_validator))
+SharedFileMetadata._owner_team_validator = bv.Nullable(users.Team_validator)
+SharedFileMetadata._parent_shared_folder_id_validator = bv.Nullable(common.SharedFolderId_validator)
+SharedFileMetadata._preview_url_validator = bv.String()
+SharedFileMetadata._path_lower_validator = bv.Nullable(bv.String())
+SharedFileMetadata._path_display_validator = bv.Nullable(bv.String())
+SharedFileMetadata._name_validator = bv.String()
+SharedFileMetadata._id_validator = FileId_validator
+SharedFileMetadata._all_field_names_ = set([
+    'policy',
+    'permissions',
+    'owner_team',
+    'parent_shared_folder_id',
+    'preview_url',
+    'path_lower',
+    'path_display',
+    'name',
+    'id',
+])
+SharedFileMetadata._all_fields_ = [
+    ('policy', SharedFileMetadata._policy_validator),
+    ('permissions', SharedFileMetadata._permissions_validator),
+    ('owner_team', SharedFileMetadata._owner_team_validator),
+    ('parent_shared_folder_id', SharedFileMetadata._parent_shared_folder_id_validator),
+    ('preview_url', SharedFileMetadata._preview_url_validator),
+    ('path_lower', SharedFileMetadata._path_lower_validator),
+    ('path_display', SharedFileMetadata._path_display_validator),
+    ('name', SharedFileMetadata._name_validator),
+    ('id', SharedFileMetadata._id_validator),
+]
 
 SharedFolderAccessError._invalid_id_validator = bv.Void()
 SharedFolderAccessError._not_a_member_validator = bv.Void()
@@ -9860,6 +14009,38 @@ SharedLinkSettingsError._tagmap = {
 SharedLinkSettingsError.invalid_settings = SharedLinkSettingsError('invalid_settings')
 SharedLinkSettingsError.not_authorized = SharedLinkSettingsError('not_authorized')
 
+SharingFileAccessError._no_permission_validator = bv.Void()
+SharingFileAccessError._invalid_file_validator = bv.Void()
+SharingFileAccessError._is_folder_validator = bv.Void()
+SharingFileAccessError._inside_public_folder_validator = bv.Void()
+SharingFileAccessError._inside_osx_package_validator = bv.Void()
+SharingFileAccessError._other_validator = bv.Void()
+SharingFileAccessError._tagmap = {
+    'no_permission': SharingFileAccessError._no_permission_validator,
+    'invalid_file': SharingFileAccessError._invalid_file_validator,
+    'is_folder': SharingFileAccessError._is_folder_validator,
+    'inside_public_folder': SharingFileAccessError._inside_public_folder_validator,
+    'inside_osx_package': SharingFileAccessError._inside_osx_package_validator,
+    'other': SharingFileAccessError._other_validator,
+}
+
+SharingFileAccessError.no_permission = SharingFileAccessError('no_permission')
+SharingFileAccessError.invalid_file = SharingFileAccessError('invalid_file')
+SharingFileAccessError.is_folder = SharingFileAccessError('is_folder')
+SharingFileAccessError.inside_public_folder = SharingFileAccessError('inside_public_folder')
+SharingFileAccessError.inside_osx_package = SharingFileAccessError('inside_osx_package')
+SharingFileAccessError.other = SharingFileAccessError('other')
+
+SharingUserError._email_unverified_validator = bv.Void()
+SharingUserError._other_validator = bv.Void()
+SharingUserError._tagmap = {
+    'email_unverified': SharingUserError._email_unverified_validator,
+    'other': SharingUserError._other_validator,
+}
+
+SharingUserError.email_unverified = SharingUserError('email_unverified')
+SharingUserError.other = SharingUserError('other')
+
 TeamMemberInfo._team_info_validator = TeamInfo_validator
 TeamMemberInfo._display_name_validator = bv.String()
 TeamMemberInfo._member_id_validator = bv.Nullable(bv.String())
@@ -9931,6 +14112,21 @@ UnmountFolderError.no_permission = UnmountFolderError('no_permission')
 UnmountFolderError.not_unmountable = UnmountFolderError('not_unmountable')
 UnmountFolderError.other = UnmountFolderError('other')
 
+UnshareFileArg._file_validator = PathOrId_validator
+UnshareFileArg._all_field_names_ = set(['file'])
+UnshareFileArg._all_fields_ = [('file', UnshareFileArg._file_validator)]
+
+UnshareFileError._user_error_validator = SharingUserError_validator
+UnshareFileError._access_error_validator = SharingFileAccessError_validator
+UnshareFileError._other_validator = bv.Void()
+UnshareFileError._tagmap = {
+    'user_error': UnshareFileError._user_error_validator,
+    'access_error': UnshareFileError._access_error_validator,
+    'other': UnshareFileError._other_validator,
+}
+
+UnshareFileError.other = UnshareFileError('other')
+
 UnshareFolderArg._shared_folder_id_validator = common.SharedFolderId_validator
 UnshareFolderArg._leave_a_copy_validator = bv.Boolean()
 UnshareFolderArg._all_field_names_ = set([
@@ -9973,12 +14169,14 @@ UpdateFolderMemberArg._all_fields_ = [
 
 UpdateFolderMemberError._access_error_validator = SharedFolderAccessError_validator
 UpdateFolderMemberError._member_error_validator = SharedFolderMemberError_validator
+UpdateFolderMemberError._no_explicit_access_validator = AddFolderMemberError_validator
 UpdateFolderMemberError._insufficient_plan_validator = bv.Void()
 UpdateFolderMemberError._no_permission_validator = bv.Void()
 UpdateFolderMemberError._other_validator = bv.Void()
 UpdateFolderMemberError._tagmap = {
     'access_error': UpdateFolderMemberError._access_error_validator,
     'member_error': UpdateFolderMemberError._member_error_validator,
+    'no_explicit_access': UpdateFolderMemberError._no_explicit_access_validator,
     'insufficient_plan': UpdateFolderMemberError._insufficient_plan_validator,
     'no_permission': UpdateFolderMemberError._no_permission_validator,
     'other': UpdateFolderMemberError._other_validator,
@@ -10063,6 +14261,15 @@ Visibility.team_and_password = Visibility('team_and_password')
 Visibility.shared_folder_only = Visibility('shared_folder_only')
 Visibility.other = Visibility('other')
 
+add_file_member = bb.Route(
+    'add_file_member',
+    False,
+    AddFileMemberArgs_validator,
+    bv.List(FileMemberActionResult_validator),
+    AddFileMemberError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 add_folder_member = bb.Route(
     'add_folder_member',
     False,
@@ -10077,6 +14284,15 @@ check_job_status = bb.Route(
     False,
     async.PollArg_validator,
     JobStatus_validator,
+    async.PollError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+check_remove_member_job_status = bb.Route(
+    'check_remove_member_job_status',
+    False,
+    async.PollArg_validator,
+    RemoveMemberJobStatus_validator,
     async.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
@@ -10105,6 +14321,24 @@ create_shared_link_with_settings = bb.Route(
     CreateSharedLinkWithSettingsArg_validator,
     SharedLinkMetadata_validator,
     CreateSharedLinkWithSettingsError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+get_file_metadata = bb.Route(
+    'get_file_metadata',
+    False,
+    GetFileMetadataArg_validator,
+    SharedFileMetadata_validator,
+    GetFileMetadataError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+get_file_metadata_batch = bb.Route(
+    'get_file_metadata/batch',
+    False,
+    GetFileMetadataBatchArg_validator,
+    bv.List(GetFileMetadataBatchResult_validator),
+    SharingUserError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -10141,6 +14375,33 @@ get_shared_links = bb.Route(
     GetSharedLinksArg_validator,
     GetSharedLinksResult_validator,
     GetSharedLinksError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+list_file_members = bb.Route(
+    'list_file_members',
+    False,
+    ListFileMembersArg_validator,
+    SharedFileMembers_validator,
+    ListFileMembersError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+list_file_members_batch = bb.Route(
+    'list_file_members/batch',
+    False,
+    ListFileMembersBatchArg_validator,
+    bv.List(ListFileMembersBatchResult_validator),
+    SharingUserError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+list_file_members_continue = bb.Route(
+    'list_file_members/continue',
+    False,
+    ListFileMembersContinueArg_validator,
+    SharedFileMembers_validator,
+    ListFileMembersContinueError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -10198,6 +14459,24 @@ list_mountable_folders_continue = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+list_received_files = bb.Route(
+    'list_received_files',
+    False,
+    ListFilesArg_validator,
+    ListFilesResult_validator,
+    SharingUserError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+list_received_files_continue = bb.Route(
+    'list_received_files/continue',
+    False,
+    ListFilesContinueArg_validator,
+    ListFilesResult_validator,
+    ListFilesContinueError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 list_shared_links = bb.Route(
     'list_shared_links',
     False,
@@ -10225,6 +14504,15 @@ mount_folder = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+relinquish_file_membership = bb.Route(
+    'relinquish_file_membership',
+    False,
+    RelinquishFileMembershipArg_validator,
+    bv.Void(),
+    RelinquishFileMembershipError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 relinquish_folder_membership = bb.Route(
     'relinquish_folder_membership',
     False,
@@ -10234,11 +14522,29 @@ relinquish_folder_membership = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+remove_file_member = bb.Route(
+    'remove_file_member',
+    True,
+    RemoveFileMemberArg_validator,
+    FileMemberActionIndividualResult_validator,
+    RemoveFileMemberError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+remove_file_member_2 = bb.Route(
+    'remove_file_member_2',
+    False,
+    RemoveFileMemberArg_validator,
+    FileMemberRemoveActionResult_validator,
+    RemoveFileMemberError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 remove_folder_member = bb.Route(
     'remove_folder_member',
     False,
     RemoveFolderMemberArg_validator,
-    async.LaunchEmptyResult_validator,
+    async.LaunchResultBase_validator,
     RemoveFolderMemberError_validator,
     {'host': u'api',
      'style': u'rpc'},
@@ -10279,6 +14585,15 @@ unmount_folder = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+unshare_file = bb.Route(
+    'unshare_file',
+    False,
+    UnshareFileArg_validator,
+    bv.Void(),
+    UnshareFileError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 unshare_folder = bb.Route(
     'unshare_folder',
     False,
@@ -10292,7 +14607,7 @@ update_folder_member = bb.Route(
     'update_folder_member',
     False,
     UpdateFolderMemberArg_validator,
-    bv.Void(),
+    MemberAccessLevelResult_validator,
     UpdateFolderMemberError_validator,
     {'host': u'api',
      'style': u'rpc'},
@@ -10308,30 +14623,43 @@ update_folder_policy = bb.Route(
 )
 
 ROUTES = {
+    'add_file_member': add_file_member,
     'add_folder_member': add_folder_member,
     'check_job_status': check_job_status,
+    'check_remove_member_job_status': check_remove_member_job_status,
     'check_share_job_status': check_share_job_status,
     'create_shared_link': create_shared_link,
     'create_shared_link_with_settings': create_shared_link_with_settings,
+    'get_file_metadata': get_file_metadata,
+    'get_file_metadata/batch': get_file_metadata_batch,
     'get_folder_metadata': get_folder_metadata,
     'get_shared_link_file': get_shared_link_file,
     'get_shared_link_metadata': get_shared_link_metadata,
     'get_shared_links': get_shared_links,
+    'list_file_members': list_file_members,
+    'list_file_members/batch': list_file_members_batch,
+    'list_file_members/continue': list_file_members_continue,
     'list_folder_members': list_folder_members,
     'list_folder_members/continue': list_folder_members_continue,
     'list_folders': list_folders,
     'list_folders/continue': list_folders_continue,
     'list_mountable_folders': list_mountable_folders,
     'list_mountable_folders/continue': list_mountable_folders_continue,
+    'list_received_files': list_received_files,
+    'list_received_files/continue': list_received_files_continue,
     'list_shared_links': list_shared_links,
     'modify_shared_link_settings': modify_shared_link_settings,
     'mount_folder': mount_folder,
+    'relinquish_file_membership': relinquish_file_membership,
     'relinquish_folder_membership': relinquish_folder_membership,
+    'remove_file_member': remove_file_member,
+    'remove_file_member_2': remove_file_member_2,
     'remove_folder_member': remove_folder_member,
     'revoke_shared_link': revoke_shared_link,
     'share_folder': share_folder,
     'transfer_folder': transfer_folder,
     'unmount_folder': unmount_folder,
+    'unshare_file': unshare_file,
     'unshare_folder': unshare_folder,
     'update_folder_member': update_folder_member,
     'update_folder_policy': update_folder_policy,
