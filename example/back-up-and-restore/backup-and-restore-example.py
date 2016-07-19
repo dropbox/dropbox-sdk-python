@@ -18,7 +18,7 @@ BACKUPPATH = '/my-file-backup.txt'
 
 # Uploads contents of LOCALFILE to Dropbox
 def backup():
-    with open(LOCALFILE, 'r') as f:
+    with open(LOCALFILE, 'rb') as f:
         # We use WriteMode=overwrite to make sure that the settings in the file
         # are changed on upload
         print("Uploading " + LOCALFILE + " to Dropbox as " + BACKUPPATH + "...")
@@ -41,7 +41,7 @@ def backup():
 # @param new_content is a string
 def change_local_file(new_content):
     print("Changing contents of " + LOCALFILE + " on local machine...")
-    with open(LOCALFILE, 'w') as f:
+    with open(LOCALFILE, 'wb') as f:
         f.write(new_content)
 
 # Restore the local and Dropbox files to a certain revision
