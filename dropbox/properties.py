@@ -274,7 +274,6 @@ class PropertyTemplateError(bb.Union):
         identifier.
     :ivar restricted_content: You do not have the permissions to modify this
         property template.
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'

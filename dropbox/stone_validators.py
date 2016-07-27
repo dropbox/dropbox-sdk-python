@@ -10,6 +10,8 @@ the future, this could be imported from a pre-installed Python package, rather
 than being added to a project.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 from abc import ABCMeta, abstractmethod
 import datetime
 import math
@@ -60,7 +62,7 @@ class ValidationError(Exception):
 
     def __repr__(self):
         # Not a perfect repr, but includes the error location information.
-        return 'ValidationError(%r)' % str(self)
+        return 'ValidationError(%r)' % six.text_type(self)
 
 
 def generic_type_name(v):

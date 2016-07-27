@@ -1121,6 +1121,60 @@ class DropboxBase(object):
         )
         return r
 
+    def files_upload_session_finish_batch(self,
+                                          entries):
+        """
+        This route helps you commit many files at once into a user's Dropbox.
+        Use :meth:`upload_session_start` and :meth:`upload_session_append_v2` to
+        upload file contents. We recommend uploading many files in parallel to
+        increase throughput. Once the file contents have been uploaded, rather
+        than calling :meth:`upload_session_finish`, use this route to finish all
+        your upload sessions in a single request.
+        ``UploadSessionStartArg.close`` or ``UploadSessionAppendArg.close``
+        needs to be true for last :meth:`upload_session_start` or
+        :meth:`upload_session_append_v2` call. This route will return job_id
+        immediately and do the async commit job in background. We have another
+        route :meth:`upload_session_finish_batch_check` to check the job status.
+        For the same account, this route should be executed serially. That means
+        you should not start next job before current job finishes. Also we only
+        allow up to 1000 entries in a single request
+
+        :param list entries: Commit information for each file in the batch.
+        :rtype: :class:`dropbox.files.LaunchEmptyResult`
+        """
+        arg = files.UploadSessionFinishBatchArg(entries)
+        r = self.request(
+            files.upload_session_finish_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_upload_session_finish_batch_check(self,
+                                                async_job_id):
+        """
+        Returns the status of an asynchronous job for
+        :meth:`upload_session_finish_batch`. If success, it returns list of
+        result for each entry
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.files.UploadSessionFinishBatchJobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.PollError`
+        """
+        arg = async.PollArg(async_job_id)
+        r = self.request(
+            files.upload_session_finish_batch_check,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_upload_session_start(self,
                                    f,
                                    close=False):
@@ -1228,6 +1282,35 @@ class DropboxBase(object):
             None,
         )
         return None
+
+    def sharing_change_file_member_access(self,
+                                          file,
+                                          member,
+                                          access_level):
+        """
+        Changes a member's access on a shared file.
+
+        :param str file: File for which we are changing a member's access.
+        :param member: The member whose access we are changing.
+        :type member: :class:`dropbox.sharing.MemberSelector`
+        :param access_level: The new access level for the member.
+        :type access_level: :class:`dropbox.sharing.AccessLevel`
+        :rtype: :class:`dropbox.sharing.FileMemberActionResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.FileMemberActionError`
+        """
+        arg = sharing.ChangeFileMemberAccessArgs(file,
+                                                 member,
+                                                 access_level)
+        r = self.request(
+            sharing.change_file_member_access,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
 
     def sharing_check_job_status(self,
                                  async_job_id):

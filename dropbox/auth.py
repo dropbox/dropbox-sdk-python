@@ -22,7 +22,6 @@ class AuthError(bb.Union):
         is no longer on the team.
     :ivar invalid_select_admin: The user specified in 'Dropbox-API-Select-Admin'
         is not a Dropbox Business team admin.
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'
@@ -72,6 +71,140 @@ class AuthError(bb.Union):
 
 AuthError_validator = bv.Union(AuthError)
 
+class RateLimitError(object):
+    """
+    Error occurred because the app is being rate limited.
+
+    :ivar reason: The reason why the app is being rate limited.
+    :ivar retry_after: The number of seconds that the app should wait before
+        making another request.
+    """
+
+    __slots__ = [
+        '_reason_value',
+        '_reason_present',
+        '_retry_after_value',
+        '_retry_after_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 reason=None,
+                 retry_after=None):
+        self._reason_value = None
+        self._reason_present = False
+        self._retry_after_value = None
+        self._retry_after_present = False
+        if reason is not None:
+            self.reason = reason
+        if retry_after is not None:
+            self.retry_after = retry_after
+
+    @property
+    def reason(self):
+        """
+        The reason why the app is being rate limited.
+
+        :rtype: RateLimitReason
+        """
+        if self._reason_present:
+            return self._reason_value
+        else:
+            raise AttributeError("missing required field 'reason'")
+
+    @reason.setter
+    def reason(self, val):
+        self._reason_validator.validate_type_only(val)
+        self._reason_value = val
+        self._reason_present = True
+
+    @reason.deleter
+    def reason(self):
+        self._reason_value = None
+        self._reason_present = False
+
+    @property
+    def retry_after(self):
+        """
+        The number of seconds that the app should wait before making another
+        request.
+
+        :rtype: long
+        """
+        if self._retry_after_present:
+            return self._retry_after_value
+        else:
+            return 1
+
+    @retry_after.setter
+    def retry_after(self, val):
+        val = self._retry_after_validator.validate(val)
+        self._retry_after_value = val
+        self._retry_after_present = True
+
+    @retry_after.deleter
+    def retry_after(self):
+        self._retry_after_value = None
+        self._retry_after_present = False
+
+    def __repr__(self):
+        return 'RateLimitError(reason={!r}, retry_after={!r})'.format(
+            self._reason_value,
+            self._retry_after_value,
+        )
+
+RateLimitError_validator = bv.Struct(RateLimitError)
+
+class RateLimitReason(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar too_many_requests: You are making too many requests in the past few
+        minutes.
+    :ivar too_many_write_operations: There are currently too many write
+        operations happening in the user's Dropbox.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    too_many_requests = None
+    # Attribute is overwritten below the class definition
+    too_many_write_operations = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_too_many_requests(self):
+        """
+        Check if the union tag is ``too_many_requests``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_requests'
+
+    def is_too_many_write_operations(self):
+        """
+        Check if the union tag is ``too_many_write_operations``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_write_operations'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'RateLimitReason(%r, %r)' % (self._tag, self._value)
+
+RateLimitReason_validator = bv.Union(RateLimitReason)
+
 AuthError._invalid_access_token_validator = bv.Void()
 AuthError._invalid_select_user_validator = bv.Void()
 AuthError._invalid_select_admin_validator = bv.Void()
@@ -87,6 +220,30 @@ AuthError.invalid_access_token = AuthError('invalid_access_token')
 AuthError.invalid_select_user = AuthError('invalid_select_user')
 AuthError.invalid_select_admin = AuthError('invalid_select_admin')
 AuthError.other = AuthError('other')
+
+RateLimitError._reason_validator = RateLimitReason_validator
+RateLimitError._retry_after_validator = bv.UInt64()
+RateLimitError._all_field_names_ = set([
+    'reason',
+    'retry_after',
+])
+RateLimitError._all_fields_ = [
+    ('reason', RateLimitError._reason_validator),
+    ('retry_after', RateLimitError._retry_after_validator),
+]
+
+RateLimitReason._too_many_requests_validator = bv.Void()
+RateLimitReason._too_many_write_operations_validator = bv.Void()
+RateLimitReason._other_validator = bv.Void()
+RateLimitReason._tagmap = {
+    'too_many_requests': RateLimitReason._too_many_requests_validator,
+    'too_many_write_operations': RateLimitReason._too_many_write_operations_validator,
+    'other': RateLimitReason._other_validator,
+}
+
+RateLimitReason.too_many_requests = RateLimitReason('too_many_requests')
+RateLimitReason.too_many_write_operations = RateLimitReason('too_many_write_operations')
+RateLimitReason.other = RateLimitReason('other')
 
 token_revoke = bb.Route(
     'token/revoke',

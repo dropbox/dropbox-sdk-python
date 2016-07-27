@@ -218,7 +218,6 @@ class PollError(bb.Union):
     :ivar internal_error: Something went wrong with the job on Dropbox's end.
         You'll need to verify that the action you were taking succeeded, and if
         not, try again. This should happen very rarely.
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'

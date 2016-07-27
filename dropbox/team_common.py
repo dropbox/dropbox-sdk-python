@@ -9,6 +9,55 @@ except (SystemError, ValueError):
     import stone_validators as bv
     import stone_base as bb
 
+class GroupManagementType(bb.Union):
+    """
+    The group type determines how a group is managed.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar company_managed: A group which is managed by team admins only.
+    :ivar user_managed: A group which is managed by selected users.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    company_managed = None
+    # Attribute is overwritten below the class definition
+    user_managed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_company_managed(self):
+        """
+        Check if the union tag is ``company_managed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'company_managed'
+
+    def is_user_managed(self):
+        """
+        Check if the union tag is ``user_managed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_managed'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'GroupManagementType(%r, %r)' % (self._tag, self._value)
+
+GroupManagementType_validator = bv.Union(GroupManagementType)
+
 class GroupSummary(object):
     """
     Information about a group.
@@ -16,6 +65,7 @@ class GroupSummary(object):
     :ivar group_external_id: External ID of group. This is an arbitrary ID that
         an admin can attach to a group.
     :ivar member_count: The number of members in the group.
+    :ivar group_management_type: Who is allowed to manage the group.
     """
 
     __slots__ = [
@@ -27,6 +77,8 @@ class GroupSummary(object):
         '_group_external_id_present',
         '_member_count_value',
         '_member_count_present',
+        '_group_management_type_value',
+        '_group_management_type_present',
     ]
 
     _has_required_fields = True
@@ -34,6 +86,7 @@ class GroupSummary(object):
     def __init__(self,
                  group_name=None,
                  group_id=None,
+                 group_management_type=None,
                  group_external_id=None,
                  member_count=None):
         self._group_name_value = None
@@ -44,6 +97,8 @@ class GroupSummary(object):
         self._group_external_id_present = False
         self._member_count_value = None
         self._member_count_present = False
+        self._group_management_type_value = None
+        self._group_management_type_present = False
         if group_name is not None:
             self.group_name = group_name
         if group_id is not None:
@@ -52,6 +107,8 @@ class GroupSummary(object):
             self.group_external_id = group_external_id
         if member_count is not None:
             self.member_count = member_count
+        if group_management_type is not None:
+            self.group_management_type = group_management_type
 
     @property
     def group_name(self):
@@ -148,45 +205,6 @@ class GroupSummary(object):
         self._member_count_value = None
         self._member_count_present = False
 
-    def __repr__(self):
-        return 'GroupSummary(group_name={!r}, group_id={!r}, group_external_id={!r}, member_count={!r})'.format(
-            self._group_name_value,
-            self._group_id_value,
-            self._group_external_id_value,
-            self._member_count_value,
-        )
-
-GroupSummary_validator = bv.Struct(GroupSummary)
-
-class AlphaGroupSummary(GroupSummary):
-    """
-    Information about a group.
-
-    :ivar group_management_type: Who is allowed to manage the group.
-    """
-
-    __slots__ = [
-        '_group_management_type_value',
-        '_group_management_type_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 group_name=None,
-                 group_id=None,
-                 group_management_type=None,
-                 group_external_id=None,
-                 member_count=None):
-        super(AlphaGroupSummary, self).__init__(group_name,
-                                                group_id,
-                                                group_external_id,
-                                                member_count)
-        self._group_management_type_value = None
-        self._group_management_type_present = False
-        if group_management_type is not None:
-            self.group_management_type = group_management_type
-
     @property
     def group_management_type(self):
         """
@@ -211,7 +229,7 @@ class AlphaGroupSummary(GroupSummary):
         self._group_management_type_present = False
 
     def __repr__(self):
-        return 'AlphaGroupSummary(group_name={!r}, group_id={!r}, group_management_type={!r}, group_external_id={!r}, member_count={!r})'.format(
+        return 'GroupSummary(group_name={!r}, group_id={!r}, group_management_type={!r}, group_external_id={!r}, member_count={!r})'.format(
             self._group_name_value,
             self._group_id_value,
             self._group_management_type_value,
@@ -219,56 +237,7 @@ class AlphaGroupSummary(GroupSummary):
             self._member_count_value,
         )
 
-AlphaGroupSummary_validator = bv.Struct(AlphaGroupSummary)
-
-class GroupManagementType(bb.Union):
-    """
-    The group type determines how a group is managed.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar company_managed: A group which is managed by team admins only.
-    :ivar user_managed: A group which is managed by selected users.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    company_managed = None
-    # Attribute is overwritten below the class definition
-    user_managed = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_company_managed(self):
-        """
-        Check if the union tag is ``company_managed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'company_managed'
-
-    def is_user_managed(self):
-        """
-        Check if the union tag is ``user_managed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'user_managed'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'GroupManagementType(%r, %r)' % (self._tag, self._value)
-
-GroupManagementType_validator = bv.Union(GroupManagementType)
+GroupSummary_validator = bv.Struct(GroupSummary)
 
 class GroupType(bb.Union):
     """
@@ -321,27 +290,6 @@ class GroupType(bb.Union):
 GroupType_validator = bv.Union(GroupType)
 
 GroupId_validator = bv.String()
-GroupSummary._group_name_validator = bv.String()
-GroupSummary._group_id_validator = GroupId_validator
-GroupSummary._group_external_id_validator = bv.Nullable(bv.String())
-GroupSummary._member_count_validator = bv.Nullable(bv.UInt32())
-GroupSummary._all_field_names_ = set([
-    'group_name',
-    'group_id',
-    'group_external_id',
-    'member_count',
-])
-GroupSummary._all_fields_ = [
-    ('group_name', GroupSummary._group_name_validator),
-    ('group_id', GroupSummary._group_id_validator),
-    ('group_external_id', GroupSummary._group_external_id_validator),
-    ('member_count', GroupSummary._member_count_validator),
-]
-
-AlphaGroupSummary._group_management_type_validator = GroupManagementType_validator
-AlphaGroupSummary._all_field_names_ = GroupSummary._all_field_names_.union(set(['group_management_type']))
-AlphaGroupSummary._all_fields_ = GroupSummary._all_fields_ + [('group_management_type', AlphaGroupSummary._group_management_type_validator)]
-
 GroupManagementType._company_managed_validator = bv.Void()
 GroupManagementType._user_managed_validator = bv.Void()
 GroupManagementType._other_validator = bv.Void()
@@ -354,6 +302,26 @@ GroupManagementType._tagmap = {
 GroupManagementType.company_managed = GroupManagementType('company_managed')
 GroupManagementType.user_managed = GroupManagementType('user_managed')
 GroupManagementType.other = GroupManagementType('other')
+
+GroupSummary._group_name_validator = bv.String()
+GroupSummary._group_id_validator = GroupId_validator
+GroupSummary._group_external_id_validator = bv.Nullable(bv.String())
+GroupSummary._member_count_validator = bv.Nullable(bv.UInt32())
+GroupSummary._group_management_type_validator = GroupManagementType_validator
+GroupSummary._all_field_names_ = set([
+    'group_name',
+    'group_id',
+    'group_external_id',
+    'member_count',
+    'group_management_type',
+])
+GroupSummary._all_fields_ = [
+    ('group_name', GroupSummary._group_name_validator),
+    ('group_id', GroupSummary._group_id_validator),
+    ('group_external_id', GroupSummary._group_external_id_validator),
+    ('member_count', GroupSummary._member_count_validator),
+    ('group_management_type', GroupSummary._group_management_type_validator),
+]
 
 GroupType._team_validator = bv.Void()
 GroupType._user_managed_validator = bv.Void()

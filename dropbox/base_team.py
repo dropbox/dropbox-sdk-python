@@ -29,23 +29,25 @@ class DropboxTeamBase(object):
     def team_alpha_groups_create(self,
                                  group_name,
                                  group_external_id=None,
-                                 group_management_type=team_common.GroupManagementType.company_managed):
+                                 group_management_type=None):
         """
         Creates a new, empty group, with a requested name. Permission : Team
         member management
 
-        :param group_management_type: Whether the team can be managed by
-            selected users, or only by team admins
-        :type group_management_type: :class:`dropbox.team.GroupManagementType`
-        :rtype: :class:`dropbox.team.AlphaGroupFullInfo`
+        :param str group_name: Group name.
+        :param Nullable group_external_id: The creator of a team can associate
+            an arbitrary external ID to the group.
+        :param Nullable group_management_type: Whether the team can be managed
+            by selected users, or only by team admins
+        :rtype: :class:`dropbox.team.GroupFullInfo`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.team.GroupCreateError`
         """
-        arg = team.AlphaGroupCreateArg(group_name,
-                                       group_external_id,
-                                       group_management_type)
+        arg = team.GroupCreateArg(group_name,
+                                  group_external_id,
+                                  group_management_type)
         r = self.request(
             team.alpha_groups_create,
             'team',
@@ -83,7 +85,7 @@ class DropboxTeamBase(object):
         Lists groups on a team. Permission : Team Information
 
         :param long limit: Number of results to return per call.
-        :rtype: :class:`dropbox.team.AlphaGroupsListResult`
+        :rtype: :class:`dropbox.team.GroupsListResult`
         """
         arg = team.GroupsListArg(limit)
         r = self.request(
@@ -102,7 +104,7 @@ class DropboxTeamBase(object):
 
         :param str cursor: Indicates from what point to get the next set of
             groups.
-        :rtype: :class:`dropbox.team.AlphaGroupsListResult`
+        :rtype: :class:`dropbox.team.GroupsListResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
@@ -127,19 +129,27 @@ class DropboxTeamBase(object):
         Updates a group's name, external ID or management type. Permission :
         Team member management
 
+        :param group: Specify a group.
+        :type group: :class:`dropbox.team.GroupSelector`
+        :param Nullable new_group_name: Optional argument. Set group name to
+            this if provided.
+        :param Nullable new_group_external_id: Optional argument. New group
+            external ID. If the argument is None, the group's external_id won't
+            be updated. If the argument is empty string, the group's external id
+            will be cleared.
         :param Nullable new_group_management_type: Set new group management
             type, if provided.
-        :rtype: :class:`dropbox.team.AlphaGroupFullInfo`
+        :rtype: :class:`dropbox.team.GroupFullInfo`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.team.GroupUpdateError`
         """
-        arg = team.AlphaGroupUpdateArgs(group,
-                                        return_members,
-                                        new_group_name,
-                                        new_group_external_id,
-                                        new_group_management_type)
+        arg = team.GroupUpdateArgs(group,
+                                   return_members,
+                                   new_group_name,
+                                   new_group_external_id,
+                                   new_group_management_type)
         r = self.request(
             team.alpha_groups_update,
             'team',
@@ -317,7 +327,8 @@ class DropboxTeamBase(object):
 
     def team_groups_create(self,
                            group_name,
-                           group_external_id=None):
+                           group_external_id=None,
+                           group_management_type=None):
         """
         Creates a new, empty group, with a requested name. Permission : Team
         member management
@@ -325,6 +336,8 @@ class DropboxTeamBase(object):
         :param str group_name: Group name.
         :param Nullable group_external_id: The creator of a team can associate
             an arbitrary external ID to the group.
+        :param Nullable group_management_type: Whether the team can be managed
+            by selected users, or only by team admins
         :rtype: :class:`dropbox.team.GroupFullInfo`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -332,7 +345,8 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.GroupCreateError`
         """
         arg = team.GroupCreateArg(group_name,
-                                  group_external_id)
+                                  group_external_id,
+                                  group_management_type)
         r = self.request(
             team.groups_create,
             'team',
@@ -541,7 +555,9 @@ class DropboxTeamBase(object):
         Removes members from a group. The members are removed immediately.
         However the revoking of group-owned resources may take additional time.
         Use the :meth:`groups_job_status_get` to determine whether this process
-        has completed. Permission : Team member management
+        has completed. This method permits removing the only owner of a group,
+        even in cases where this is not possible via the web client. Permission
+        : Team member management
 
         :param group: Group from which users will be removed.
         :type group: :class:`dropbox.team.GroupSelector`
@@ -600,7 +616,8 @@ class DropboxTeamBase(object):
                            group,
                            return_members=True,
                            new_group_name=None,
-                           new_group_external_id=None):
+                           new_group_external_id=None,
+                           new_group_management_type=None):
         """
         Updates a group's name and/or external ID. Permission : Team member
         management
@@ -613,6 +630,8 @@ class DropboxTeamBase(object):
             external ID. If the argument is None, the group's external_id won't
             be updated. If the argument is empty string, the group's external id
             will be cleared.
+        :param Nullable new_group_management_type: Set new group management
+            type, if provided.
         :rtype: :class:`dropbox.team.GroupFullInfo`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -622,7 +641,8 @@ class DropboxTeamBase(object):
         arg = team.GroupUpdateArgs(group,
                                    return_members,
                                    new_group_name,
-                                   new_group_external_id)
+                                   new_group_external_id,
+                                   new_group_management_type)
         r = self.request(
             team.groups_update,
             'team',
@@ -838,18 +858,21 @@ class DropboxTeamBase(object):
         return r
 
     def team_members_list(self,
-                          limit=1000):
+                          limit=1000,
+                          include_removed=False):
         """
         Lists members of a team. Permission : Team information
 
         :param long limit: Number of results to return per call.
+        :param bool include_removed: Whether to return removed members.
         :rtype: :class:`dropbox.team.MembersListResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.team.MembersListError`
         """
-        arg = team.MembersListArg(limit)
+        arg = team.MembersListArg(limit,
+                                  include_removed)
         r = self.request(
             team.members_list,
             'team',
@@ -880,6 +903,30 @@ class DropboxTeamBase(object):
             None,
         )
         return r
+
+    def team_members_recover(self,
+                             user):
+        """
+        Recover a deleted member. Permission : Team member management Exactly
+        one of team_member_id, email, or external_id must be provided to
+        identify the user account.
+
+        :param user: Identity of user to recover.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.MembersRecoverError`
+        """
+        arg = team.MembersRecoverArg(user)
+        r = self.request(
+            team.members_recover,
+            'team',
+            arg,
+            None,
+        )
+        return None
 
     def team_members_remove(self,
                             user,

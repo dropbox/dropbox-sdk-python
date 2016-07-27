@@ -990,11 +990,11 @@ class GetAccountError(bb.Union):
     :ivar no_account: The specified ``GetAccountArg.account_id`` does not exist.
     """
 
-    _catch_all = 'unknown'
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     no_account = None
     # Attribute is overwritten below the class definition
-    unknown = None
+    other = None
 
     def is_no_account(self):
         """
@@ -1004,13 +1004,13 @@ class GetAccountError(bb.Union):
         """
         return self._tag == 'no_account'
 
-    def is_unknown(self):
+    def is_other(self):
         """
-        Check if the union tag is ``unknown``.
+        Check if the union tag is ``other``.
 
         :rtype: bool
         """
-        return self._tag == 'unknown'
+        return self._tag == 'other'
 
     def __repr__(self):
         return 'GetAccountError(%r, %r)' % (self._tag, self._value)
@@ -1584,14 +1584,14 @@ GetAccountBatchError._tagmap = {
 GetAccountBatchError.other = GetAccountBatchError('other')
 
 GetAccountError._no_account_validator = bv.Void()
-GetAccountError._unknown_validator = bv.Void()
+GetAccountError._other_validator = bv.Void()
 GetAccountError._tagmap = {
     'no_account': GetAccountError._no_account_validator,
-    'unknown': GetAccountError._unknown_validator,
+    'other': GetAccountError._other_validator,
 }
 
 GetAccountError.no_account = GetAccountError('no_account')
-GetAccountError.unknown = GetAccountError('unknown')
+GetAccountError.other = GetAccountError('other')
 
 IndividualSpaceAllocation._allocated_validator = bv.UInt64()
 IndividualSpaceAllocation._all_field_names_ = set(['allocated'])

@@ -60,20 +60,22 @@ def main():
         print('Generating Python types')
     subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_types', dropbox_pkg_path] +
-         specs + ['--', '-a', 'host', '-a', 'style']),
+         specs + ['-a', 'host', '-a', 'style']),
         cwd=stone_path)
 
     if verbose:
         print('Generating Python client')
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
-         specs + ['-b', 'team', '--', '-m', 'base', '-c', 'DropboxBase']),
+         specs + ['-a', 'host', '-a', 'style', '-b', 'team'] +
+         ['--', '-m', 'base', '-c', 'DropboxBase']),
         cwd=stone_path)
     if o:
         print('Output:', o)
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
-         specs + ['-w', 'team', '--', '-m', 'base_team', '-c', 'DropboxTeamBase']),
+         specs + ['-a', 'host', '-a', 'style', '-w', 'team'] +
+         ['--', '-m', 'base_team', '-c', 'DropboxTeamBase']),
         cwd=stone_path)
     if o:
         print('Output:', o)

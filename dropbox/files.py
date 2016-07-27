@@ -1295,8 +1295,6 @@ class DownloadError(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
-
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'
@@ -2902,8 +2900,6 @@ class ListFolderError(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
-
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'
@@ -4359,7 +4355,6 @@ class RelocationError(bb.Union):
     :ivar cant_move_folder_into_itself: You cannot move a folder into itself.
     :ivar too_many_files: The operation would involve more than 10,000 files and
         folders.
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'
@@ -5525,8 +5520,6 @@ class SearchError(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
-
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'
@@ -6307,7 +6300,6 @@ class UploadError(bb.Union):
 
     :ivar UploadWriteFailed path: Unable to save the uploaded contents to a
         file.
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'
@@ -6649,6 +6641,222 @@ class UploadSessionFinishArg(object):
 
 UploadSessionFinishArg_validator = bv.Struct(UploadSessionFinishArg)
 
+class UploadSessionFinishBatchArg(object):
+    """
+    :ivar entries: Commit information for each file in the batch.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        Commit information for each file in the batch.
+
+        :rtype: list of [UploadSessionFinishArg]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def __repr__(self):
+        return 'UploadSessionFinishBatchArg(entries={!r})'.format(
+            self._entries_value,
+        )
+
+UploadSessionFinishBatchArg_validator = bv.Struct(UploadSessionFinishBatchArg)
+
+class UploadSessionFinishBatchJobStatus(async.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UploadSessionFinishBatchResult complete: The
+        upload_session/finish_batch has finished.
+    """
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param UploadSessionFinishBatchResult val:
+        :rtype: UploadSessionFinishBatchJobStatus
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def get_complete(self):
+        """
+        The upload_session/finish_batch has finished.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: UploadSessionFinishBatchResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UploadSessionFinishBatchJobStatus(%r, %r)' % (self._tag, self._value)
+
+UploadSessionFinishBatchJobStatus_validator = bv.Union(UploadSessionFinishBatchJobStatus)
+
+class UploadSessionFinishBatchResult(object):
+    """
+    :ivar entries: Commit result for each file in the batch.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        Commit result for each file in the batch.
+
+        :rtype: list of [UploadSessionFinishBatchResultEntry]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def __repr__(self):
+        return 'UploadSessionFinishBatchResult(entries={!r})'.format(
+            self._entries_value,
+        )
+
+UploadSessionFinishBatchResult_validator = bv.Struct(UploadSessionFinishBatchResult)
+
+class UploadSessionFinishBatchResultEntry(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param FileMetadata val:
+        :rtype: UploadSessionFinishBatchResultEntry
+        """
+        return cls('success', val)
+
+    @classmethod
+    def failure(cls, val):
+        """
+        Create an instance of this class set to the ``failure`` tag with value
+        ``val``.
+
+        :param UploadSessionFinishError val:
+        :rtype: UploadSessionFinishBatchResultEntry
+        """
+        return cls('failure', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_failure(self):
+        """
+        Check if the union tag is ``failure``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failure'
+
+    def get_success(self):
+        """
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: FileMetadata
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_failure(self):
+        """
+        Only call this if :meth:`is_failure` is true.
+
+        :rtype: UploadSessionFinishError
+        """
+        if not self.is_failure():
+            raise AttributeError("tag 'failure' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UploadSessionFinishBatchResultEntry(%r, %r)' % (self._tag, self._value)
+
+UploadSessionFinishBatchResultEntry_validator = bv.Union(UploadSessionFinishBatchResultEntry)
+
 class UploadSessionFinishError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -6661,7 +6869,6 @@ class UploadSessionFinishError(bb.Union):
     :ivar too_many_shared_folder_targets: The batch request commits files into
         too many different shared folders. Please limit your batch request to
         files contained in a single shared folder.
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'
@@ -6768,7 +6975,6 @@ class UploadSessionLookupError(bb.Union):
         has alread been closed (i.e. committed).
     :ivar not_closed: The session must be closed before calling
         upload_session/finish_batch.
-    :ivar other: An unspecified error.
     """
 
     _catch_all = 'other'
@@ -7424,10 +7630,11 @@ Id_validator = bv.String(min_length=1)
 ListFolderCursor_validator = bv.String(min_length=1)
 MalformedPathError_validator = bv.Nullable(bv.String())
 Path_validator = bv.String(pattern=u'/(.|[\\r\\n])*')
-PathOrId_validator = bv.String(pattern=u'/(.|[\\r\\n])*|id:.*')
-PathR_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?')
+PathOrId_validator = bv.String(pattern=u'/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)')
+PathR_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?|(ns:[0-9]+(/.*)?)')
 ReadPath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/.*)?)')
 Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
+WritePath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
 PropertiesError._path_validator = LookupError_validator
 PropertiesError._tagmap = {
     'path': PropertiesError._path_validator,
@@ -7485,7 +7692,7 @@ AlphaGetMetadataError._tagmap = {
 }
 AlphaGetMetadataError._tagmap.update(GetMetadataError._tagmap)
 
-CommitInfo._path_validator = Path_validator
+CommitInfo._path_validator = WritePath_validator
 CommitInfo._mode_validator = WriteMode_validator
 CommitInfo._autorename_validator = bv.Boolean()
 CommitInfo._client_modified_validator = bv.Nullable(common.DropboxTimestamp_validator)
@@ -7509,7 +7716,7 @@ CommitInfoWithProperties._property_groups_validator = bv.Nullable(bv.List(proper
 CommitInfoWithProperties._all_field_names_ = CommitInfo._all_field_names_.union(set(['property_groups']))
 CommitInfoWithProperties._all_fields_ = CommitInfo._all_fields_ + [('property_groups', CommitInfoWithProperties._property_groups_validator)]
 
-CreateFolderArg._path_validator = Path_validator
+CreateFolderArg._path_validator = WritePath_validator
 CreateFolderArg._all_field_names_ = set(['path'])
 CreateFolderArg._all_fields_ = [('path', CreateFolderArg._path_validator)]
 
@@ -7518,7 +7725,7 @@ CreateFolderError._tagmap = {
     'path': CreateFolderError._path_validator,
 }
 
-DeleteArg._path_validator = Path_validator
+DeleteArg._path_validator = WritePath_validator
 DeleteArg._all_field_names_ = set(['path'])
 DeleteArg._all_fields_ = [('path', DeleteArg._path_validator)]
 
@@ -7836,7 +8043,7 @@ ListFolderResult._all_fields_ = [
     ('has_more', ListFolderResult._has_more_validator),
 ]
 
-ListRevisionsArg._path_validator = Path_validator
+ListRevisionsArg._path_validator = PathOrId_validator
 ListRevisionsArg._limit_validator = bv.UInt64(min_value=1, max_value=100)
 ListRevisionsArg._all_field_names_ = set([
     'path',
@@ -7986,8 +8193,8 @@ PropertyGroupWithPath._all_fields_ = [
     ('property_groups', PropertyGroupWithPath._property_groups_validator),
 ]
 
-RelocationArg._from_path_validator = Path_validator
-RelocationArg._to_path_validator = Path_validator
+RelocationArg._from_path_validator = WritePath_validator
+RelocationArg._to_path_validator = WritePath_validator
 RelocationArg._all_field_names_ = set([
     'from_path',
     'to_path',
@@ -8039,7 +8246,7 @@ RemovePropertiesError._tagmap = {
 }
 RemovePropertiesError._tagmap.update(PropertiesError._tagmap)
 
-RestoreArg._path_validator = Path_validator
+RestoreArg._path_validator = WritePath_validator
 RestoreArg._rev_validator = Rev_validator
 RestoreArg._all_field_names_ = set([
     'path',
@@ -8345,6 +8552,27 @@ UploadSessionFinishArg._all_fields_ = [
     ('cursor', UploadSessionFinishArg._cursor_validator),
     ('commit', UploadSessionFinishArg._commit_validator),
 ]
+
+UploadSessionFinishBatchArg._entries_validator = bv.List(UploadSessionFinishArg_validator, max_items=1000)
+UploadSessionFinishBatchArg._all_field_names_ = set(['entries'])
+UploadSessionFinishBatchArg._all_fields_ = [('entries', UploadSessionFinishBatchArg._entries_validator)]
+
+UploadSessionFinishBatchJobStatus._complete_validator = UploadSessionFinishBatchResult_validator
+UploadSessionFinishBatchJobStatus._tagmap = {
+    'complete': UploadSessionFinishBatchJobStatus._complete_validator,
+}
+UploadSessionFinishBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
+
+UploadSessionFinishBatchResult._entries_validator = bv.List(UploadSessionFinishBatchResultEntry_validator)
+UploadSessionFinishBatchResult._all_field_names_ = set(['entries'])
+UploadSessionFinishBatchResult._all_fields_ = [('entries', UploadSessionFinishBatchResult._entries_validator)]
+
+UploadSessionFinishBatchResultEntry._success_validator = FileMetadata_validator
+UploadSessionFinishBatchResultEntry._failure_validator = UploadSessionFinishError_validator
+UploadSessionFinishBatchResultEntry._tagmap = {
+    'success': UploadSessionFinishBatchResultEntry._success_validator,
+    'failure': UploadSessionFinishBatchResultEntry._failure_validator,
+}
 
 UploadSessionFinishError._lookup_failed_validator = UploadSessionLookupError_validator
 UploadSessionFinishError._path_validator = WriteError_validator
@@ -8752,6 +8980,24 @@ upload_session_finish = bb.Route(
     {'host': u'content',
      'style': u'upload'},
 )
+upload_session_finish_batch = bb.Route(
+    'upload_session/finish_batch',
+    False,
+    UploadSessionFinishBatchArg_validator,
+    async.LaunchEmptyResult_validator,
+    bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
+upload_session_finish_batch_check = bb.Route(
+    'upload_session/finish_batch/check',
+    False,
+    async.PollArg_validator,
+    UploadSessionFinishBatchJobStatus_validator,
+    async.PollError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 upload_session_start = bb.Route(
     'upload_session/start',
     False,
@@ -8796,6 +9042,8 @@ ROUTES = {
     'upload_session/append': upload_session_append,
     'upload_session/append_v2': upload_session_append_v2,
     'upload_session/finish': upload_session_finish,
+    'upload_session/finish_batch': upload_session_finish_batch,
+    'upload_session/finish_batch/check': upload_session_finish_batch_check,
     'upload_session/start': upload_session_start,
 }
 

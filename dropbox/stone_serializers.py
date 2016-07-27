@@ -10,6 +10,8 @@ the future, this could be imported from a pre-installed Python package, rather
 than being added to a project.
 """
 
+from __future__ import absolute_import, unicode_literals
+
 import base64
 import collections
 import datetime
