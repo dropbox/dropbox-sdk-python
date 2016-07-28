@@ -18,6 +18,7 @@ import math
 import numbers
 import re
 import six
+from typing import Optional
 
 if six.PY3:
     _binary_types = (bytes, memoryview)
@@ -121,8 +122,8 @@ class Integer(Primitive):
     Do not use this class directly. Extend it and specify a 'minimum' and
     'maximum' value as class variables for a more restrictive integer range.
     """
-    minimum = None
-    maximum = None
+    minimum = None  # type: Optional[numbers.Integral]
+    maximum = None  # type: Optional[numbers.Integral]
 
     def __init__(self, min_value=None, max_value=None):
         """
@@ -183,8 +184,8 @@ class Real(Primitive):
     and 'maximum' value to enforce a range that's a subset of the Python float
     implementation. Python floats are doubles.
     """
-    minimum = None
-    maximum = None
+    minimum = None  # type: Optional[numbers.Real]
+    maximum = None  # type: Optional[numbers.Real]
 
     def __init__(self, min_value=None, max_value=None):
         """

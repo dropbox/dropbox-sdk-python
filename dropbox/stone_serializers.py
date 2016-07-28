@@ -24,7 +24,7 @@ try:
 except (SystemError, ValueError):
     # Catch errors raised when importing a relative module when not in a package.
     # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
+    import stone_validators as bv  # type: ignore
 
 
 # --------------------------------------------------------------
