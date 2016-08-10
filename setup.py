@@ -23,7 +23,7 @@ for line in open(dbx_mod_path):
 version = eval(line.split('=', 1)[1])
 
 install_reqs = ['urllib3',
-                'requests>=2.5.1',
+                'requests>=2.6.2',
                 'six>=1.3.0']
 assert sys.version_info >= (2, 6), "We only support Python 2.6+"
 
