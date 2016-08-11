@@ -17,7 +17,10 @@ import time
 import requests
 
 from . import stone_serializers
-from .auth import AuthError_validator
+from .auth import (
+    AuthError_validator,
+    RateLimitError_validator,
+)
 from .base import DropboxBase
 from .base_team import DropboxTeamBase
 from .exceptions import (
@@ -382,10 +385,18 @@ class _DropboxTransport(object):
                 AuthError_validator, r.json()['error'])
             raise AuthError(request_id, err)
         elif r.status_code == 429:
-            retry_after = r.headers.get('retry-after')
-            if retry_after is not None:
-                retry_after = int(retry_after)
-            raise RateLimitError(request_id, retry_after)
+            err = None
+            if r.headers.get('content-type') == 'application/json':
+                err = stone_serializers.json_compat_obj_decode(
+                    RateLimitError_validator, r.json()['error'])
+                retry_after = err.retry_after
+            else:
+                retry_after_str = r.headers.get('retry-after')
+                if retry_after_str is not None:
+                    retry_after = int(retry_after_str)
+                else:
+                    retry_after = None
+            raise RateLimitError(request_id, err, retry_after)
         elif 200 <= r.status_code <= 299:
             if route_style == self._ROUTE_STYLE_DOWNLOAD:
                 raw_resp = r.headers['dropbox-api-result']
