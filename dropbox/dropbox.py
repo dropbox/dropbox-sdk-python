@@ -17,6 +17,7 @@ import time
 import requests
 
 from . import stone_serializers
+from .auth import AuthError_validator
 from .base import DropboxBase
 from .base_team import DropboxTeamBase
 from .exceptions import (
@@ -377,7 +378,9 @@ class _DropboxTransport(object):
             assert r.headers.get('content-type') == 'application/json', (
                 'Expected content-type to be application/json, got %r' %
                 r.headers.get('content-type'))
-            raise AuthError(request_id, r.json())
+            err = stone_serializers.json_compat_obj_decode(
+                AuthError_validator, r.json()['error'])
+            raise AuthError(request_id, err)
         elif r.status_code == 429:
             retry_after = r.headers.get('retry-after')
             if retry_after is not None:

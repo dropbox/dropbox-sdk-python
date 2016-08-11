@@ -7,6 +7,9 @@ class DropboxException(Exception):
         super(DropboxException, self).__init__(request_id, *args, **kwargs)
         self.request_id = request_id
 
+    def __str__(self):
+        return repr(self)
+
 
 class ApiError(DropboxException):
     """Errors produced by the Dropbox API."""
