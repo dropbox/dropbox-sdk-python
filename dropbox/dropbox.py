@@ -16,7 +16,7 @@ import time
 
 import requests
 
-from . import stone_serializers
+from . import files, stone_serializers
 from .auth import (
     AuthError_validator,
     RateLimitError_validator,
@@ -123,13 +123,17 @@ class _DropboxTransport(object):
     # the HTTP body.
     _ROUTE_STYLE_RPC = 'rpc'
 
+    # This is the default longest time we'll block on receiving data from the server
+    _DEFAULT_TIMEOUT = 30
+
     def __init__(self,
                  oauth2_access_token,
                  max_retries_on_error=4,
                  max_retries_on_rate_limit=None,
                  user_agent=None,
                  session=None,
-                 headers=None):
+                 headers=None,
+                 timeout=_DEFAULT_TIMEOUT):
         """
         :param str oauth2_access_token: OAuth2 access token for making client
             requests.
@@ -147,6 +151,11 @@ class _DropboxTransport(object):
             :func:`create_session`.
         :type session: :class:`requests.sessions.Session`
         :param dict headers: Additional headers to add to requests.
+        :param Optional[float] timeout: Maximum duration in seconds that
+            client will wait for any single packet from the
+            server. After the timeout the client will give up on
+            connection. If `None`, client will wait forever. Defaults
+            to 30 seconds.
         """
         assert len(oauth2_access_token) > 0, \
             'OAuth2 access token cannot be empty.'
@@ -185,11 +194,14 @@ class _DropboxTransport(object):
                           self._HOST_CONTENT: self._api_content_hostname,
                           self._HOST_NOTIFY: self._api_notify_hostname}
 
+        self._timeout = timeout
+
     def request(self,
                 route,
                 namespace,
                 request_arg,
-                request_binary):
+                request_binary,
+                timeout=None):
         """
         Makes a request to the Dropbox API and in the process validates that
         the route argument and result are the expected data types. The
@@ -204,6 +216,11 @@ class _DropboxTransport(object):
             validator specified by route.arg_type.
         :param request_binary: String or file pointer representing the binary
             payload. Use None if there is no binary payload.
+        :param Optional[float] timeout: Maximum duration in seconds
+            that client will wait for any single packet from the
+            server. After the timeout the client will give up on
+            connection. If `None`, client will wait forever. Defaults
+            to `None`.
         :return: The route's result.
         """
         host = route.attrs['host'] or 'api'
@@ -211,11 +228,25 @@ class _DropboxTransport(object):
         route_style = route.attrs['style'] or 'rpc'
         serialized_arg = stone_serializers.json_encode(route.arg_type,
                                                        request_arg)
+
+
+        if (timeout is None and
+                route == files.list_folder_longpoll):
+            # The client normally sends a timeout value to the
+            # longpoll route. The server will respond after
+            # <timeout> + random(0, 90) seconds. We increase the
+            # socket timeout to the longpoll timeout value plus 90
+            # seconds so that we don't cut the server response short
+            # due to a shorter socket timeout.
+            # NB: This is done here because base.py is auto-generated
+            timeout = request_arg.timeout + 90
+
         res = self.request_json_string_with_retry(host,
                                                   route_name,
                                                   route_style,
                                                   serialized_arg,
-                                                  request_binary)
+                                                  request_binary,
+                                                  timeout=timeout)
         decoded_obj_result = json.loads(res.obj_result)
         if isinstance(res, RouteResult):
             returned_data_type = route.result_type
@@ -249,7 +280,8 @@ class _DropboxTransport(object):
                             route_name,
                             route_style,
                             request_arg,
-                            request_binary):
+                            request_binary,
+                            timeout=None):
         """
         Makes a request to the Dropbox API, taking a JSON-serializable Python
         object as an argument, and returning one as a response.
@@ -261,6 +293,15 @@ class _DropboxTransport(object):
             the argument for the route.
         :param request_binary: String or file pointer representing the binary
             payload. Use None if there is no binary payload.
+        :param Optional[float] timeout: Maximum duration in seconds that
+            client will wait when receiving data from server. After the timeout
+            the client will give up on connection. If `None`, client will
+            wait forever. Defaults to `None`.
+        :param Optional[float] timeout: Maximum duration in seconds
+            that client will wait for any single packet from the
+            server. After the timeout the client will give up on
+            connection. If `None`, client will wait forever. Defaults
+            to `None`.
         :return: The route's result as a JSON-serializable Python object.
         """
         serialized_arg = json.dumps(request_arg)
@@ -268,7 +309,8 @@ class _DropboxTransport(object):
                                                   route_name,
                                                   route_style,
                                                   serialized_arg,
-                                                  request_binary)
+                                                  request_binary,
+                                                  timeout=timeout)
         # This can throw a ValueError if the result is not deserializable,
         # but that would be completely unexpected.
         deserialized_result = json.loads(res.obj_result)
@@ -282,7 +324,8 @@ class _DropboxTransport(object):
                                        route_name,
                                        route_style,
                                        request_json_arg,
-                                       request_binary):
+                                       request_binary,
+                                       timeout=None):
         """
         See :meth:`request_json_object` for description of parameters.
 
@@ -298,7 +341,8 @@ class _DropboxTransport(object):
                                                 route_name,
                                                 route_style,
                                                 request_json_arg,
-                                                request_binary)
+                                                request_binary,
+                                                timeout=timeout)
             except InternalServerError as e:
                 attempt += 1
                 if attempt <= self._max_retries_on_error:
@@ -327,7 +371,8 @@ class _DropboxTransport(object):
                             func_name,
                             route_style,
                             request_json_arg,
-                            request_binary):
+                            request_binary,
+                            timeout=None):
         """
         See :meth:`request_json_string_with_retry` for description of
         parameters.
@@ -365,11 +410,15 @@ class _DropboxTransport(object):
         else:
             raise ValueError('Unknown operation style: %r' % route_style)
 
+        if timeout is None:
+            timeout = self._timeout
+
         r = self._session.post(url,
                                headers=headers,
                                data=body,
                                stream=stream,
                                verify=True,
+                               timeout=timeout,
                                )
 
         request_id = r.headers.get('x-dropbox-request-id')
