@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Dropbox for Python'
-copyright = u'2015, Dropbox, Inc.'
+copyright = u'2016, Dropbox, Inc.'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
