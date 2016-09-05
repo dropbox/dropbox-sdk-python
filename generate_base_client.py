@@ -60,7 +60,8 @@ def main():
         print('Generating Python types')
     subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_types', dropbox_pkg_path] +
-         specs + ['-a', 'host', '-a', 'style']),
+         specs + ['-a', 'host', '-a', 'style'] +
+         ['--', '-r', 'dropbox.dropbox.Dropbox.{ns}_{route}']),
         cwd=stone_path)
 
     if verbose:

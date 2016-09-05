@@ -932,8 +932,8 @@ class Metadata(object):
         rare instances the casing will not correctly match the user's
         filesystem, but this behavior will match the path provided in the Core
         API v1. Changes to the casing of paths won't be returned by
-        list_folder/continue. This field will be null if the file or folder is
-        not mounted.
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`. This field
+        will be null if the file or folder is not mounted.
     :ivar parent_shared_folder_id: Deprecated. Please use
         ``FileSharingInfo.parent_shared_folder_id`` or
         ``FolderSharingInfo.parent_shared_folder_id`` instead.
@@ -1031,7 +1031,8 @@ class Metadata(object):
         The cased path to be used for display purposes only. In rare instances
         the casing will not correctly match the user's filesystem, but this
         behavior will match the path provided in the Core API v1. Changes to the
-        casing of paths won't be returned by list_folder/continue. This field
+        casing of paths won't be returned by
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`. This field
         will be null if the file or folder is not mounted.
 
         :rtype: str
@@ -1362,11 +1363,13 @@ class FileMetadata(Metadata):
     :ivar property_groups: Additional information if the file has custom
         properties with the property template specified.
     :ivar has_explicit_shared_members: This flag will only be present if
-        include_has_explicit_shared_members  is true in list_folder or
-        get_metadata. If this  flag is present, it will be true if this file has
-        any explicit shared  members. This is different from sharing_info in
-        that this could be true  in the case where a file has explicit members
-        but is not contained within  a shared folder.
+        include_has_explicit_shared_members  is true in
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder` or
+        :meth:`dropbox.dropbox.Dropbox.files_get_metadata`. If this  flag is
+        present, it will be true if this file has any explicit shared  members.
+        This is different from sharing_info in that this could be true  in the
+        case where a file has explicit members but is not contained within  a
+        shared folder.
     """
 
     __slots__ = [
@@ -1651,11 +1654,12 @@ class FileMetadata(Metadata):
     def has_explicit_shared_members(self):
         """
         This flag will only be present if include_has_explicit_shared_members
-        is true in list_folder or get_metadata. If this  flag is present, it
-        will be true if this file has any explicit shared  members. This is
-        different from sharing_info in that this could be true  in the case
-        where a file has explicit members but is not contained within  a shared
-        folder.
+        is true in :meth:`dropbox.dropbox.Dropbox.files_list_folder` or
+        :meth:`dropbox.dropbox.Dropbox.files_get_metadata`. If this  flag is
+        present, it will be true if this file has any explicit shared  members.
+        This is different from sharing_info in that this could be true  in the
+        case where a file has explicit members but is not contained within  a
+        shared folder.
 
         :rtype: bool
         """
@@ -2780,8 +2784,9 @@ ListFolderArg_validator = bv.Struct(ListFolderArg)
 
 class ListFolderContinueArg(object):
     """
-    :ivar cursor: The cursor returned by your last call to list_folder or
-        list_folder/continue.
+    :ivar cursor: The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder` or
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`.
     """
 
     __slots__ = [
@@ -2801,8 +2806,9 @@ class ListFolderContinueArg(object):
     @property
     def cursor(self):
         """
-        The cursor returned by your last call to list_folder or
-        list_folder/continue.
+        The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder` or
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`.
 
         :rtype: str
         """
@@ -2836,7 +2842,8 @@ class ListFolderContinueError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar reset: Indicates that the cursor has been invalidated. Call
-        list_folder to obtain a new cursor.
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder` to obtain a new
+        cursor.
     """
 
     _catch_all = 'other'
@@ -2950,7 +2957,8 @@ ListFolderError_validator = bv.Union(ListFolderError)
 
 class ListFolderGetLatestCursorResult(object):
     """
-    :ivar cursor: Pass the cursor into list_folder/continue to see what's
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue` to see what's
         changed in the folder since your previous query.
     """
 
@@ -2971,8 +2979,9 @@ class ListFolderGetLatestCursorResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into list_folder/continue to see what's changed in the
-        folder since your previous query.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue` to see what's
+        changed in the folder since your previous query.
 
         :rtype: str
         """
@@ -3001,9 +3010,11 @@ ListFolderGetLatestCursorResult_validator = bv.Struct(ListFolderGetLatestCursorR
 
 class ListFolderLongpollArg(object):
     """
-    :ivar cursor: A cursor as returned by list_folder or list_folder/continue.
-        Cursors retrieved by setting ``ListFolderArg.include_media_info`` to
-        ``True`` are not supported.
+    :ivar cursor: A cursor as returned by
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder` or
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`. Cursors
+        retrieved by setting ``ListFolderArg.include_media_info`` to ``True``
+        are not supported.
     :ivar timeout: A timeout in seconds. The request will block for at most this
         length of time, plus up to 90 seconds of random jitter added to avoid
         the thundering herd problem. Care should be taken when using this
@@ -3035,7 +3046,9 @@ class ListFolderLongpollArg(object):
     @property
     def cursor(self):
         """
-        A cursor as returned by list_folder or list_folder/continue. Cursors
+        A cursor as returned by
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder` or
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`. Cursors
         retrieved by setting ``ListFolderArg.include_media_info`` to ``True``
         are not supported.
 
@@ -3098,7 +3111,8 @@ class ListFolderLongpollError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar reset: Indicates that the cursor has been invalidated. Call
-        list_folder to obtain a new cursor.
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder` to obtain a new
+        cursor.
     """
 
     _catch_all = 'other'
@@ -3131,9 +3145,11 @@ ListFolderLongpollError_validator = bv.Union(ListFolderLongpollError)
 class ListFolderLongpollResult(object):
     """
     :ivar changes: Indicates whether new changes are available. If true, call
-        list_folder/continue to retrieve the changes.
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue` to retrieve
+        the changes.
     :ivar backoff: If present, backoff for at least this many seconds before
-        calling list_folder/longpoll again.
+        calling :meth:`dropbox.dropbox.Dropbox.files_list_folder_longpoll`
+        again.
     """
 
     __slots__ = [
@@ -3161,7 +3177,8 @@ class ListFolderLongpollResult(object):
     def changes(self):
         """
         Indicates whether new changes are available. If true, call
-        list_folder/continue to retrieve the changes.
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue` to retrieve
+        the changes.
 
         :rtype: bool
         """
@@ -3185,7 +3202,7 @@ class ListFolderLongpollResult(object):
     def backoff(self):
         """
         If present, backoff for at least this many seconds before calling
-        list_folder/longpoll again.
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_longpoll` again.
 
         :rtype: long
         """
@@ -3219,10 +3236,12 @@ ListFolderLongpollResult_validator = bv.Struct(ListFolderLongpollResult)
 class ListFolderResult(object):
     """
     :ivar entries: The files and (direct) subfolders in the folder.
-    :ivar cursor: Pass the cursor into list_folder/continue to see what's
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue` to see what's
         changed in the folder since your previous query.
     :ivar has_more: If true, then there are more entries available. Pass the
-        cursor to list_folder/continue to retrieve the rest.
+        cursor to :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue` to
+        retrieve the rest.
     """
 
     __slots__ = [
@@ -3279,8 +3298,9 @@ class ListFolderResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into list_folder/continue to see what's changed in the
-        folder since your previous query.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue` to see what's
+        changed in the folder since your previous query.
 
         :rtype: str
         """
@@ -3304,7 +3324,8 @@ class ListFolderResult(object):
     def has_more(self):
         """
         If true, then there are more entries available. Pass the cursor to
-        list_folder/continue to retrieve the rest.
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue` to retrieve
+        the rest.
 
         :rtype: bool
         """
@@ -4811,7 +4832,8 @@ RestoreError_validator = bv.Union(RestoreError)
 
 class SaveCopyReferenceArg(object):
     """
-    :ivar copy_reference: A copy reference returned by copy_reference/get.
+    :ivar copy_reference: A copy reference returned by
+        :meth:`dropbox.dropbox.Dropbox.files_copy_reference_get`.
     :ivar path: Path in the user's Dropbox that is the destination.
     """
 
@@ -4839,7 +4861,8 @@ class SaveCopyReferenceArg(object):
     @property
     def copy_reference(self):
         """
-        A copy reference returned by copy_reference/get.
+        A copy reference returned by
+        :meth:`dropbox.dropbox.Dropbox.files_copy_reference_get`.
 
         :rtype: str
         """
@@ -5753,9 +5776,11 @@ class SearchResult(object):
     """
     :ivar matches: A list (possibly empty) of matches for the query.
     :ivar more: Used for paging. If true, indicates there is another page of
-        results available that can be fetched by calling search again.
+        results available that can be fetched by calling
+        :meth:`dropbox.dropbox.Dropbox.files_search` again.
     :ivar start: Used for paging. Value to set the start argument to when
-        calling search to fetch the next page of results.
+        calling :meth:`dropbox.dropbox.Dropbox.files_search` to fetch the next
+        page of results.
     """
 
     __slots__ = [
@@ -5813,7 +5838,8 @@ class SearchResult(object):
     def more(self):
         """
         Used for paging. If true, indicates there is another page of results
-        available that can be fetched by calling search again.
+        available that can be fetched by calling
+        :meth:`dropbox.dropbox.Dropbox.files_search` again.
 
         :rtype: bool
         """
@@ -5836,8 +5862,9 @@ class SearchResult(object):
     @property
     def start(self):
         """
-        Used for paging. Value to set the start argument to when calling search
-        to fetch the next page of results.
+        Used for paging. Value to set the start argument to when calling
+        :meth:`dropbox.dropbox.Dropbox.files_search` to fetch the next page of
+        results.
 
         :rtype: long
         """
@@ -6395,8 +6422,9 @@ class UploadSessionAppendArg(object):
     """
     :ivar cursor: Contains the upload session ID and the offset.
     :ivar close: If true, the current session will be closed, at which point you
-        won't be able to call upload_session/append_v2 anymore with the current
-        session.
+        won't be able to call
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_append_v2` anymore
+        with the current session.
     """
 
     __slots__ = [
@@ -6447,7 +6475,9 @@ class UploadSessionAppendArg(object):
     def close(self):
         """
         If true, the current session will be closed, at which point you won't be
-        able to call upload_session/append_v2 anymore with the current session.
+        able to call
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_append_v2` anymore
+        with the current session.
 
         :rtype: bool
         """
@@ -6477,7 +6507,8 @@ UploadSessionAppendArg_validator = bv.Struct(UploadSessionAppendArg)
 
 class UploadSessionCursor(object):
     """
-    :ivar session_id: The upload session ID (returned by upload_session/start).
+    :ivar session_id: The upload session ID (returned by
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_start`).
     :ivar offset: The amount of data that has been uploaded so far. We use this
         to make sure upload data isn't lost or duplicated in the event of a
         network error.
@@ -6507,7 +6538,8 @@ class UploadSessionCursor(object):
     @property
     def session_id(self):
         """
-        The upload session ID (returned by upload_session/start).
+        The upload session ID (returned by
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_start`).
 
         :rtype: str
         """
@@ -6697,7 +6729,8 @@ class UploadSessionFinishBatchJobStatus(async.PollResultBase):
     corresponding ``get_*`` method.
 
     :ivar UploadSessionFinishBatchResult complete: The
-        upload_session/finish_batch has finished.
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish_batch` has
+        finished.
     """
 
     @classmethod
@@ -6721,7 +6754,8 @@ class UploadSessionFinishBatchJobStatus(async.PollResultBase):
 
     def get_complete(self):
         """
-        The upload_session/finish_batch has finished.
+        The :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish_batch`
+        has finished.
 
         Only call this if :meth:`is_complete` is true.
 
@@ -7110,8 +7144,9 @@ UploadSessionOffsetError_validator = bv.Struct(UploadSessionOffsetError)
 class UploadSessionStartArg(object):
     """
     :ivar close: If true, the current session will be closed, at which point you
-        won't be able to call upload_session/append_v2 anymore with the current
-        session.
+        won't be able to call
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_append_v2` anymore
+        with the current session.
     """
 
     __slots__ = [
@@ -7132,7 +7167,9 @@ class UploadSessionStartArg(object):
     def close(self):
         """
         If true, the current session will be closed, at which point you won't be
-        able to call upload_session/append_v2 anymore with the current session.
+        able to call
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_append_v2` anymore
+        with the current session.
 
         :rtype: bool
         """
@@ -7162,7 +7199,8 @@ UploadSessionStartArg_validator = bv.Struct(UploadSessionStartArg)
 class UploadSessionStartResult(object):
     """
     :ivar session_id: A unique identifier for the upload session. Pass this to
-        upload_session/append_v2 and upload_session/finish.
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_append_v2` and
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish`.
     """
 
     __slots__ = [
@@ -7183,7 +7221,8 @@ class UploadSessionStartResult(object):
     def session_id(self):
         """
         A unique identifier for the upload session. Pass this to
-        upload_session/append_v2 and upload_session/finish.
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_append_v2` and
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish`.
 
         :rtype: str
         """

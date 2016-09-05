@@ -376,7 +376,7 @@ AddPropertyTemplateArg_validator = bv.Struct(AddPropertyTemplateArg)
 class AddPropertyTemplateResult(object):
     """
     :ivar template_id: An identifier for property template added by
-        properties/template/add.
+        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
     """
 
     __slots__ = [
@@ -396,7 +396,8 @@ class AddPropertyTemplateResult(object):
     @property
     def template_id(self):
         """
-        An identifier for property template added by properties/template/add.
+        An identifier for property template added by
+        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
 
         :rtype: str
         """
@@ -3318,7 +3319,8 @@ class GroupMembersAddError(GroupSelectorError):
         These members are not part of your team. Currently, you cannot add
         members to a group if they are not part of your team, though this may
         change in a subsequent version. To add new members to your Dropbox
-        Business team, use the members/add endpoint.
+        Business team, use the :meth:`dropbox.dropbox.Dropbox.team_members_add`
+        endpoint.
 
         Only call this if :meth:`is_members_not_in_team` is true.
 
@@ -3359,7 +3361,8 @@ GroupMembersAddError_validator = bv.Union(GroupMembersAddError)
 
 class GroupMembersChangeResult(object):
     """
-    Result returned by groups/members/add and groups/members/remove.
+    Result returned by :meth:`dropbox.dropbox.Dropbox.team_groups_members_add`
+    and :meth:`dropbox.dropbox.Dropbox.team_groups_members_remove`.
 
     :ivar group_info: The group info after member change operation has been
         performed.
@@ -4116,9 +4119,10 @@ class GroupsGetInfoItem(bb.Union):
 
     def get_id_not_found(self):
         """
-        An ID that was provided as a parameter to groups/get_info, and did not
-        match a corresponding group. The ID can be a group ID, or an external
-        ID, depending on how the method was called.
+        An ID that was provided as a parameter to
+        :meth:`dropbox.dropbox.Dropbox.team_groups_get_info`, and did not match
+        a corresponding group. The ID can be a group ID, or an external ID,
+        depending on how the method was called.
 
         Only call this if :meth:`is_id_not_found` is true.
 
@@ -4281,10 +4285,12 @@ GroupsListContinueError_validator = bv.Union(GroupsListContinueError)
 
 class GroupsListResult(object):
     """
-    :ivar cursor: Pass the cursor into groups/list/continue to obtain the
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` to obtain the
         additional groups.
     :ivar has_more: Is true if there are additional groups that have not been
-        returned yet. An additional call to groups/list/continue can retrieve
+        returned yet. An additional call to
+        :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` can retrieve
         them.
     """
 
@@ -4340,8 +4346,9 @@ class GroupsListResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into groups/list/continue to obtain the additional
-        groups.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` to obtain the
+        additional groups.
 
         :rtype: str
         """
@@ -4365,7 +4372,9 @@ class GroupsListResult(object):
     def has_more(self):
         """
         Is true if there are additional groups that have not been returned yet.
-        An additional call to groups/list/continue can retrieve them.
+        An additional call to
+        :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` can retrieve
+        them.
 
         :rtype: bool
         """
@@ -4562,11 +4571,13 @@ GroupsMembersListContinueError_validator = bv.Union(GroupsMembersListContinueErr
 
 class GroupsMembersListResult(object):
     """
-    :ivar cursor: Pass the cursor into groups/members/list/continue to obtain
-        additional group members.
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` to
+        obtain additional group members.
     :ivar has_more: Is true if there are additional group members that have not
-        been returned yet. An additional call to groups/members/list/continue
-        can retrieve them.
+        been returned yet. An additional call to
+        :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` can
+        retrieve them.
     """
 
     __slots__ = [
@@ -4621,8 +4632,9 @@ class GroupsMembersListResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into groups/members/list/continue to obtain additional
-        group members.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` to
+        obtain additional group members.
 
         :rtype: str
         """
@@ -4646,7 +4658,8 @@ class GroupsMembersListResult(object):
     def has_more(self):
         """
         Is true if there are additional group members that have not been
-        returned yet. An additional call to groups/members/list/continue can
+        returned yet. An additional call to
+        :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` can
         retrieve them.
 
         :rtype: bool
@@ -4834,7 +4847,8 @@ ListMemberAppsArg_validator = bv.Struct(ListMemberAppsArg)
 
 class ListMemberAppsError(bb.Union):
     """
-    Error returned by linked_apps/list_member_linked_apps.
+    Error returned by
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_member_linked_apps`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -5229,9 +5243,11 @@ ListMemberDevicesResult_validator = bv.Struct(ListMemberDevicesResult)
 
 class ListMembersAppsArg(object):
     """
-    Arguments for linked_apps/list_members_linked_apps.
+    Arguments for
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`.
 
-    :ivar cursor: At the first call to the linked_apps/list_members_linked_apps
+    :ivar cursor: At the first call to the
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
         the cursor shouldn't be passed. Then, if the result of the call includes
         a cursor, the following requests should include the received cursors in
         order to receive the next sub list of the team applications
@@ -5254,10 +5270,11 @@ class ListMembersAppsArg(object):
     @property
     def cursor(self):
         """
-        At the first call to the linked_apps/list_members_linked_apps the cursor
-        shouldn't be passed. Then, if the result of the call includes a cursor,
-        the following requests should include the received cursors in order to
-        receive the next sub list of the team applications
+        At the first call to the
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        the cursor shouldn't be passed. Then, if the result of the call includes
+        a cursor, the following requests should include the received cursors in
+        order to receive the next sub list of the team applications
 
         :rtype: str
         """
@@ -5289,15 +5306,16 @@ ListMembersAppsArg_validator = bv.Struct(ListMembersAppsArg)
 
 class ListMembersAppsError(bb.Union):
     """
-    Error returned by linked_apps/list_members_linked_apps
+    Error returned by
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
     :ivar reset: Indicates that the cursor has been invalidated. Call
-        linked_apps/list_members_linked_apps again with an empty cursor to
-        obtain a new cursor.
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        again with an empty cursor to obtain a new cursor.
     """
 
     _catch_all = 'other'
@@ -5329,13 +5347,17 @@ ListMembersAppsError_validator = bv.Union(ListMembersAppsError)
 
 class ListMembersAppsResult(object):
     """
-    Information returned by linked_apps/list_members_linked_apps.
+    Information returned by
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`.
 
     :ivar apps: The linked applications of each member of the team
     :ivar has_more: If true, then there are more apps available. Pass the cursor
-        to linked_apps/list_members_linked_apps to retrieve the rest.
-    :ivar cursor: Pass the cursor into linked_apps/list_members_linked_apps to
-        receive the next sub list of team's applications.
+        to
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        to retrieve the rest.
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        to receive the next sub list of team's applications.
     """
 
     __slots__ = [
@@ -5393,7 +5415,8 @@ class ListMembersAppsResult(object):
     def has_more(self):
         """
         If true, then there are more apps available. Pass the cursor to
-        linked_apps/list_members_linked_apps to retrieve the rest.
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        to retrieve the rest.
 
         :rtype: bool
         """
@@ -5416,8 +5439,9 @@ class ListMembersAppsResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into linked_apps/list_members_linked_apps to receive the
-        next sub list of team's applications.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        to receive the next sub list of team's applications.
 
         :rtype: str
         """
@@ -5451,7 +5475,8 @@ ListMembersAppsResult_validator = bv.Struct(ListMembersAppsResult)
 
 class ListMembersDevicesArg(object):
     """
-    :ivar cursor: At the first call to the devices/list_members_devices the
+    :ivar cursor: At the first call to the
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` the
         cursor shouldn't be passed. Then, if the result of the call includes a
         cursor, the following requests should include the received cursors in
         order to receive the next sub list of team devices
@@ -5500,10 +5525,11 @@ class ListMembersDevicesArg(object):
     @property
     def cursor(self):
         """
-        At the first call to the devices/list_members_devices the cursor
-        shouldn't be passed. Then, if the result of the call includes a cursor,
-        the following requests should include the received cursors in order to
-        receive the next sub list of team devices
+        At the first call to the
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` the
+        cursor shouldn't be passed. Then, if the result of the call includes a
+        cursor, the following requests should include the received cursors in
+        order to receive the next sub list of team devices
 
         :rtype: str
         """
@@ -5612,8 +5638,8 @@ class ListMembersDevicesError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar reset: Indicates that the cursor has been invalidated. Call
-        devices/list_members_devices again with an empty cursor to obtain a new
-        cursor.
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` again
+        with an empty cursor to obtain a new cursor.
     """
 
     _catch_all = 'other'
@@ -5647,9 +5673,12 @@ class ListMembersDevicesResult(object):
     """
     :ivar devices: The devices of each member of the team
     :ivar has_more: If true, then there are more devices available. Pass the
-        cursor to devices/list_members_devices to retrieve the rest.
-    :ivar cursor: Pass the cursor into devices/list_members_devices to receive
-        the next sub list of team's devices.
+        cursor to
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
+        retrieve the rest.
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
+        receive the next sub list of team's devices.
     """
 
     __slots__ = [
@@ -5707,7 +5736,8 @@ class ListMembersDevicesResult(object):
     def has_more(self):
         """
         If true, then there are more devices available. Pass the cursor to
-        devices/list_members_devices to retrieve the rest.
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
+        retrieve the rest.
 
         :rtype: bool
         """
@@ -5730,8 +5760,9 @@ class ListMembersDevicesResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into devices/list_members_devices to receive the next
-        sub list of team's devices.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
+        receive the next sub list of team's devices.
 
         :rtype: str
         """
@@ -5765,11 +5796,13 @@ ListMembersDevicesResult_validator = bv.Struct(ListMembersDevicesResult)
 
 class ListTeamAppsArg(object):
     """
-    Arguments for linked_apps/list_team_linked_apps.
+    Arguments for
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`.
 
-    :ivar cursor: At the first call to the linked_apps/list_team_linked_apps the
-        cursor shouldn't be passed. Then, if the result of the call includes a
-        cursor, the following requests should include the received cursors in
+    :ivar cursor: At the first call to the
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        the cursor shouldn't be passed. Then, if the result of the call includes
+        a cursor, the following requests should include the received cursors in
         order to receive the next sub list of the team applications
     """
 
@@ -5790,10 +5823,11 @@ class ListTeamAppsArg(object):
     @property
     def cursor(self):
         """
-        At the first call to the linked_apps/list_team_linked_apps the cursor
-        shouldn't be passed. Then, if the result of the call includes a cursor,
-        the following requests should include the received cursors in order to
-        receive the next sub list of the team applications
+        At the first call to the
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        the cursor shouldn't be passed. Then, if the result of the call includes
+        a cursor, the following requests should include the received cursors in
+        order to receive the next sub list of the team applications
 
         :rtype: str
         """
@@ -5825,15 +5859,16 @@ ListTeamAppsArg_validator = bv.Struct(ListTeamAppsArg)
 
 class ListTeamAppsError(bb.Union):
     """
-    Error returned by linked_apps/list_team_linked_apps
+    Error returned by
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
     :ivar reset: Indicates that the cursor has been invalidated. Call
-        linked_apps/list_team_linked_apps again with an empty cursor to obtain a
-        new cursor.
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        again with an empty cursor to obtain a new cursor.
     """
 
     _catch_all = 'other'
@@ -5865,13 +5900,17 @@ ListTeamAppsError_validator = bv.Union(ListTeamAppsError)
 
 class ListTeamAppsResult(object):
     """
-    Information returned by linked_apps/list_team_linked_apps.
+    Information returned by
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`.
 
     :ivar apps: The linked applications of each member of the team
     :ivar has_more: If true, then there are more apps available. Pass the cursor
-        to linked_apps/list_team_linked_apps to retrieve the rest.
-    :ivar cursor: Pass the cursor into linked_apps/list_team_linked_apps to
-        receive the next sub list of team's applications.
+        to
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        to retrieve the rest.
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        to receive the next sub list of team's applications.
     """
 
     __slots__ = [
@@ -5929,7 +5968,8 @@ class ListTeamAppsResult(object):
     def has_more(self):
         """
         If true, then there are more apps available. Pass the cursor to
-        linked_apps/list_team_linked_apps to retrieve the rest.
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        to retrieve the rest.
 
         :rtype: bool
         """
@@ -5952,8 +5992,9 @@ class ListTeamAppsResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into linked_apps/list_team_linked_apps to receive the
-        next sub list of team's applications.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        to receive the next sub list of team's applications.
 
         :rtype: str
         """
@@ -5987,10 +6028,11 @@ ListTeamAppsResult_validator = bv.Struct(ListTeamAppsResult)
 
 class ListTeamDevicesArg(object):
     """
-    :ivar cursor: At the first call to the devices/list_team_devices the cursor
-        shouldn't be passed. Then, if the result of the call includes a cursor,
-        the following requests should include the received cursors in order to
-        receive the next sub list of team devices
+    :ivar cursor: At the first call to the
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` the
+        cursor shouldn't be passed. Then, if the result of the call includes a
+        cursor, the following requests should include the received cursors in
+        order to receive the next sub list of team devices
     :ivar include_web_sessions: Whether to list web sessions of the team members
     :ivar include_desktop_clients: Whether to list desktop clients of the team
         members
@@ -6036,10 +6078,11 @@ class ListTeamDevicesArg(object):
     @property
     def cursor(self):
         """
-        At the first call to the devices/list_team_devices the cursor shouldn't
-        be passed. Then, if the result of the call includes a cursor, the
-        following requests should include the received cursors in order to
-        receive the next sub list of team devices
+        At the first call to the
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` the
+        cursor shouldn't be passed. Then, if the result of the call includes a
+        cursor, the following requests should include the received cursors in
+        order to receive the next sub list of team devices
 
         :rtype: str
         """
@@ -6148,8 +6191,8 @@ class ListTeamDevicesError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar reset: Indicates that the cursor has been invalidated. Call
-        devices/list_team_devices again with an empty cursor to obtain a new
-        cursor.
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` again
+        with an empty cursor to obtain a new cursor.
     """
 
     _catch_all = 'other'
@@ -6183,9 +6226,11 @@ class ListTeamDevicesResult(object):
     """
     :ivar devices: The devices of each member of the team
     :ivar has_more: If true, then there are more devices available. Pass the
-        cursor to devices/list_team_devices to retrieve the rest.
-    :ivar cursor: Pass the cursor into devices/list_team_devices to receive the
-        next sub list of team's devices.
+        cursor to :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices`
+        to retrieve the rest.
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
+        receive the next sub list of team's devices.
     """
 
     __slots__ = [
@@ -6243,7 +6288,8 @@ class ListTeamDevicesResult(object):
     def has_more(self):
         """
         If true, then there are more devices available. Pass the cursor to
-        devices/list_team_devices to retrieve the rest.
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
+        retrieve the rest.
 
         :rtype: bool
         """
@@ -6266,8 +6312,9 @@ class ListTeamDevicesResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into devices/list_team_devices to receive the next sub
-        list of team's devices.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
+        receive the next sub list of team's devices.
 
         :rtype: str
         """
@@ -7633,8 +7680,9 @@ class MembersAddJobStatus(async.PollResultBase):
     def get_complete(self):
         """
         The asynchronous job has finished. For each member that was specified in
-        the parameter :class:`MembersAddArg` that was provided to members/add, a
-        corresponding item is returned in this list.
+        the parameter :class:`MembersAddArg` that was provided to
+        :meth:`dropbox.dropbox.Dropbox.team_members_add`, a corresponding item
+        is returned in this list.
 
         Only call this if :meth:`is_complete` is true.
 
@@ -7901,7 +7949,7 @@ MembersGetInfoError_validator = bv.Union(MembersGetInfoError)
 class MembersGetInfoItem(bb.Union):
     """
     Describes a result obtained for a single user whose id was specified in the
-    parameter of members/get_info.
+    parameter of :meth:`dropbox.dropbox.Dropbox.team_members_get_info`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -7956,9 +8004,10 @@ class MembersGetInfoItem(bb.Union):
 
     def get_id_not_found(self):
         """
-        An ID that was provided as a parameter to members/get_info, and did not
-        match a corresponding user. This might be a team_member_id, an email, or
-        an external ID, depending on how the method was called.
+        An ID that was provided as a parameter to
+        :meth:`dropbox.dropbox.Dropbox.team_members_get_info`, and did not match
+        a corresponding user. This might be a team_member_id, an email, or an
+        external ID, depending on how the method was called.
 
         Only call this if :meth:`is_id_not_found` is true.
 
@@ -8178,11 +8227,13 @@ MembersListError_validator = bv.Union(MembersListError)
 class MembersListResult(object):
     """
     :ivar members: List of team members.
-    :ivar cursor: Pass the cursor into members/list/continue to obtain the
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` to obtain the
         additional members.
     :ivar has_more: Is true if there are additional team members that have not
-        been returned yet. An additional call to members/list/continue can
-        retrieve them.
+        been returned yet. An additional call to
+        :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` can retrieve
+        them.
     """
 
     __slots__ = [
@@ -8239,8 +8290,9 @@ class MembersListResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into members/list/continue to obtain the additional
-        members.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` to obtain the
+        additional members.
 
         :rtype: str
         """
@@ -8264,7 +8316,9 @@ class MembersListResult(object):
     def has_more(self):
         """
         Is true if there are additional team members that have not been returned
-        yet. An additional call to members/list/continue can retrieve them.
+        yet. An additional call to
+        :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` can retrieve
+        them.
 
         :rtype: bool
         """
@@ -10279,7 +10333,8 @@ RevokeLinkedApiAppBatchArg_validator = bv.Struct(RevokeLinkedApiAppBatchArg)
 
 class RevokeLinkedAppBatchError(bb.Union):
     """
-    Error returned by linked_apps/revoke_linked_app_batch.
+    Error returned by
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_revoke_linked_app_batch`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -10349,7 +10404,8 @@ RevokeLinkedAppBatchResult_validator = bv.Struct(RevokeLinkedAppBatchResult)
 
 class RevokeLinkedAppError(bb.Union):
     """
-    Error returned by linked_apps/revoke_linked_app.
+    Error returned by
+    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_revoke_linked_app`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -11029,7 +11085,7 @@ TeamMembershipType_validator = bv.Union(TeamMembershipType)
 class UpdatePropertyTemplateArg(object):
     """
     :ivar template_id: An identifier for property template added by
-        properties/template/add.
+        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
     :ivar name: A display name for the property template. Property template
         names can be up to 256 bytes.
     :ivar description: Description for new property template. Property template
@@ -11077,7 +11133,8 @@ class UpdatePropertyTemplateArg(object):
     @property
     def template_id(self):
         """
-        An identifier for property template added by properties/template/add.
+        An identifier for property template added by
+        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
 
         :rtype: str
         """
@@ -11191,7 +11248,7 @@ UpdatePropertyTemplateArg_validator = bv.Struct(UpdatePropertyTemplateArg)
 class UpdatePropertyTemplateResult(object):
     """
     :ivar template_id: An identifier for property template added by
-        properties/template/add.
+        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
     """
 
     __slots__ = [
@@ -11211,7 +11268,8 @@ class UpdatePropertyTemplateResult(object):
     @property
     def template_id(self):
         """
-        An identifier for property template added by properties/template/add.
+        An identifier for property template added by
+        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
 
         :rtype: str
         """

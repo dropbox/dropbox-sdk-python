@@ -38,7 +38,7 @@ class AccessLevel(bb.Union):
 
     :ivar owner: The collaborator is the owner of the shared folder. Owners can
         view and edit the shared folder as well as set the folder's policies
-        using update_folder_policy.
+        using :meth:`dropbox.dropbox.Dropbox.sharing_update_folder_policy`.
     :ivar editor: The collaborator can both view and edit the shared folder.
     :ivar viewer: The collaborator can only view the shared folder.
     :ivar viewer_no_comment: The collaborator can only view the shared folder
@@ -155,7 +155,7 @@ AclUpdatePolicy_validator = bv.Union(AclUpdatePolicy)
 
 class AddFileMemberArgs(object):
     """
-    Arguments for add_file_member.
+    Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_add_file_member`.
 
     :ivar file: File to which to add members.
     :ivar members: Members to add. Note that even an email address is given,
@@ -378,7 +378,7 @@ AddFileMemberArgs_validator = bv.Struct(AddFileMemberArgs)
 
 class AddFileMemberError(bb.Union):
     """
-    Errors for add_file_member.
+    Errors for :meth:`dropbox.dropbox.Dropbox.sharing_add_file_member`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -1126,7 +1126,8 @@ AddMemberSelectorError_validator = bv.Union(AddMemberSelectorError)
 
 class ChangeFileMemberAccessArgs(object):
     """
-    Arguments for change_file_member_access.
+    Arguments for
+    :meth:`dropbox.dropbox.Dropbox.sharing_change_file_member_access`.
 
     :ivar file: File for which we are changing a member's access.
     :ivar member: The member whose access we are changing.
@@ -2587,8 +2588,10 @@ FileMemberActionIndividualResult_validator = bv.Union(FileMemberActionIndividual
 
 class FileMemberActionResult(object):
     """
-    Per-member result for remove_file_member_2 or add_file_member or
-    change_file_member_access.
+    Per-member result for
+    :meth:`dropbox.dropbox.Dropbox.sharing_remove_file_member_2` or
+    :meth:`dropbox.dropbox.Dropbox.sharing_add_file_member` or
+    :meth:`dropbox.dropbox.Dropbox.sharing_change_file_member_access`.
 
     :ivar member: One of specified input members.
     :ivar result: The outcome of the action on this member.
@@ -3352,7 +3355,7 @@ FolderPolicy_validator = bv.Struct(FolderPolicy)
 
 class GetFileMetadataArg(object):
     """
-    Arguments of get_file_metadata
+    Arguments of :meth:`dropbox.dropbox.Dropbox.sharing_get_file_metadata`
 
     :ivar file: The file to query.
     :ivar actions: File actions to query.
@@ -3438,7 +3441,7 @@ GetFileMetadataArg_validator = bv.Struct(GetFileMetadataArg)
 
 class GetFileMetadataBatchArg(object):
     """
-    Arguments of get_file_metadata/batch
+    Arguments of :meth:`dropbox.dropbox.Dropbox.sharing_get_file_metadata_batch`
 
     :ivar files: The files to query.
     :ivar actions: File actions to query.
@@ -3524,7 +3527,8 @@ GetFileMetadataBatchArg_validator = bv.Struct(GetFileMetadataBatchArg)
 
 class GetFileMetadataBatchResult(object):
     """
-    Per file results of get_file_metadata/batch
+    Per file results of
+    :meth:`dropbox.dropbox.Dropbox.sharing_get_file_metadata_batch`
 
     :ivar file: This is the input file identifier corresponding to one of
         ``GetFileMetadataBatchArg.files``.
@@ -3609,7 +3613,7 @@ GetFileMetadataBatchResult_validator = bv.Struct(GetFileMetadataBatchResult)
 
 class GetFileMetadataError(bb.Union):
     """
-    Error result for get_file_metadata.
+    Error result for :meth:`dropbox.dropbox.Dropbox.sharing_get_file_metadata`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -4070,7 +4074,8 @@ GetSharedLinkMetadataArg_validator = bv.Struct(GetSharedLinkMetadataArg)
 
 class GetSharedLinksArg(object):
     """
-    :ivar path: See get_shared_links description.
+    :ivar path: See :meth:`dropbox.dropbox.Dropbox.sharing_get_shared_links`
+        description.
     """
 
     __slots__ = [
@@ -4090,7 +4095,8 @@ class GetSharedLinksArg(object):
     @property
     def path(self):
         """
-        See get_shared_links description.
+        See :meth:`dropbox.dropbox.Dropbox.sharing_get_shared_links`
+        description.
 
         :rtype: str
         """
@@ -4845,19 +4851,24 @@ InviteeMembershipInfo_validator = bv.Struct(InviteeMembershipInfo)
 
 class JobError(bb.Union):
     """
-    Error occurred while performing an asynchronous job from unshare_folder or
-    remove_folder_member.
+    Error occurred while performing an asynchronous job from
+    :meth:`dropbox.dropbox.Dropbox.sharing_unshare_folder` or
+    :meth:`dropbox.dropbox.Dropbox.sharing_remove_folder_member`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
     :ivar UnshareFolderError unshare_folder_error: Error occurred while
-        performing unshare_folder action.
+        performing :meth:`dropbox.dropbox.Dropbox.sharing_unshare_folder`
+        action.
     :ivar RemoveFolderMemberError remove_folder_member_error: Error occurred
-        while performing remove_folder_member action.
+        while performing
+        :meth:`dropbox.dropbox.Dropbox.sharing_remove_folder_member` action.
     :ivar RelinquishFolderMembershipError relinquish_folder_membership_error:
-        Error occurred while performing relinquish_folder_membership action.
+        Error occurred while performing
+        :meth:`dropbox.dropbox.Dropbox.sharing_relinquish_folder_membership`
+        action.
     """
 
     _catch_all = 'other'
@@ -4931,7 +4942,8 @@ class JobError(bb.Union):
 
     def get_unshare_folder_error(self):
         """
-        Error occurred while performing unshare_folder action.
+        Error occurred while performing
+        :meth:`dropbox.dropbox.Dropbox.sharing_unshare_folder` action.
 
         Only call this if :meth:`is_unshare_folder_error` is true.
 
@@ -4943,7 +4955,8 @@ class JobError(bb.Union):
 
     def get_remove_folder_member_error(self):
         """
-        Error occurred while performing remove_folder_member action.
+        Error occurred while performing
+        :meth:`dropbox.dropbox.Dropbox.sharing_remove_folder_member` action.
 
         Only call this if :meth:`is_remove_folder_member_error` is true.
 
@@ -4955,7 +4968,9 @@ class JobError(bb.Union):
 
     def get_relinquish_folder_membership_error(self):
         """
-        Error occurred while performing relinquish_folder_membership action.
+        Error occurred while performing
+        :meth:`dropbox.dropbox.Dropbox.sharing_relinquish_folder_membership`
+        action.
 
         Only call this if :meth:`is_relinquish_folder_membership_error` is true.
 
@@ -5201,7 +5216,7 @@ LinkPermissions_validator = bv.Struct(LinkPermissions)
 
 class ListFileMembersArg(object):
     """
-    Arguments for list_file_members.
+    Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members`.
 
     :ivar file: The file for which you want to see members.
     :ivar actions: The actions for which to return permissions on a member
@@ -5355,7 +5370,8 @@ ListFileMembersArg_validator = bv.Struct(ListFileMembersArg)
 
 class ListFileMembersBatchArg(object):
     """
-    Arguments for list_file_members/batch.
+    Arguments for
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
 
     :ivar files: Files for which to return members.
     :ivar limit: Number of members to return max per query. Defaults to 10 if no
@@ -5440,7 +5456,8 @@ ListFileMembersBatchArg_validator = bv.Struct(ListFileMembersBatchArg)
 
 class ListFileMembersBatchResult(object):
     """
-    Per-file result for list_file_members/batch.
+    Per-file result for
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
 
     :ivar file: This is the input file identifier, whether an ID or a path.
     :ivar result: The result for this particular file
@@ -5523,10 +5540,13 @@ ListFileMembersBatchResult_validator = bv.Struct(ListFileMembersBatchResult)
 
 class ListFileMembersContinueArg(object):
     """
-    Arguments for list_file_members/continue.
+    Arguments for
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue`.
 
-    :ivar cursor: The cursor returned by your last call to list_file_members,
-        list_file_members/continue, or list_file_members/batch.
+    :ivar cursor: The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members`,
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue`, or
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
     """
 
     __slots__ = [
@@ -5546,8 +5566,10 @@ class ListFileMembersContinueArg(object):
     @property
     def cursor(self):
         """
-        The cursor returned by your last call to list_file_members,
-        list_file_members/continue, or list_file_members/batch.
+        The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members`,
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue`, or
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
 
         :rtype: str
         """
@@ -5576,7 +5598,8 @@ ListFileMembersContinueArg_validator = bv.Struct(ListFileMembersContinueArg)
 
 class ListFileMembersContinueError(bb.Union):
     """
-    Error for list_file_members/continue.
+    Error for
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -5755,7 +5778,7 @@ ListFileMembersCountResult_validator = bv.Struct(ListFileMembersCountResult)
 
 class ListFileMembersError(bb.Union):
     """
-    Error for list_file_members.
+    Error for :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -5930,7 +5953,7 @@ ListFileMembersIndividualResult_validator = bv.Union(ListFileMembersIndividualRe
 
 class ListFilesArg(object):
     """
-    Arguments for list_received_files.
+    Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_list_received_files`.
 
     :ivar limit: Number of files to return max per query. Defaults to 100 if no
         limit is specified.
@@ -6018,7 +6041,8 @@ ListFilesArg_validator = bv.Struct(ListFilesArg)
 
 class ListFilesContinueArg(object):
     """
-    Arguments for list_received_files/continue.
+    Arguments for
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_received_files_continue`.
 
     :ivar cursor: Cursor in ``ListFilesResult.cursor``
     """
@@ -6069,7 +6093,8 @@ ListFilesContinueArg_validator = bv.Struct(ListFilesContinueArg)
 
 class ListFilesContinueError(bb.Union):
     """
-    Error results for list_received_files/continue.
+    Error results for
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_received_files_continue`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -6139,7 +6164,8 @@ ListFilesContinueError_validator = bv.Union(ListFilesContinueError)
 
 class ListFilesResult(object):
     """
-    Success results for list_received_files.
+    Success results for
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_received_files`.
 
     :ivar entries: Information about the files shared with current user.
     :ivar cursor: Cursor used to obtain additional shared files.
@@ -6370,8 +6396,9 @@ ListFolderMembersArgs_validator = bv.Struct(ListFolderMembersArgs)
 
 class ListFolderMembersContinueArg(object):
     """
-    :ivar cursor: The cursor returned by your last call to list_folder_members
-        or list_folder_members/continue.
+    :ivar cursor: The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members` or
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members_continue`.
     """
 
     __slots__ = [
@@ -6391,8 +6418,9 @@ class ListFolderMembersContinueArg(object):
     @property
     def cursor(self):
         """
-        The cursor returned by your last call to list_folder_members or
-        list_folder_members/continue.
+        The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members` or
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members_continue`.
 
         :rtype: str
         """
@@ -6662,16 +6690,19 @@ ListFoldersContinueError_validator = bv.Union(ListFoldersContinueError)
 
 class ListFoldersResult(object):
     """
-    Result for list_folders or list_mountable_folders, depending on which
-    endpoint was requested. Unmounted shared folders can be identified by the
-    absence of ``SharedFolderMetadata.path_lower``.
+    Result for :meth:`dropbox.dropbox.Dropbox.sharing_list_folders` or
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_mountable_folders`, depending on
+    which endpoint was requested. Unmounted shared folders can be identified by
+    the absence of ``SharedFolderMetadata.path_lower``.
 
     :ivar entries: List of all shared folders the authenticated user has access
         to.
     :ivar cursor: Present if there are additional shared folders that have not
         been returned yet. Pass the cursor into the corresponding continue
-        endpoint (either list_folders/continue or
-        list_mountable_folders/continue) to list additional folders.
+        endpoint (either
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_folders_continue` or
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_mountable_folders_continue`)
+        to list additional folders.
     """
 
     __slots__ = [
@@ -6723,8 +6754,9 @@ class ListFoldersResult(object):
         """
         Present if there are additional shared folders that have not been
         returned yet. Pass the cursor into the corresponding continue endpoint
-        (either list_folders/continue or list_mountable_folders/continue) to
-        list additional folders.
+        (either :meth:`dropbox.dropbox.Dropbox.sharing_list_folders_continue` or
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_mountable_folders_continue`)
+        to list additional folders.
 
         :rtype: str
         """
@@ -6757,9 +6789,12 @@ ListFoldersResult_validator = bv.Struct(ListFoldersResult)
 
 class ListSharedLinksArg(object):
     """
-    :ivar path: See list_shared_links description.
-    :ivar cursor: The cursor returned by your last call to list_shared_links.
-    :ivar direct_only: See list_shared_links description.
+    :ivar path: See :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links`
+        description.
+    :ivar cursor: The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links`.
+    :ivar direct_only: See
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` description.
     """
 
     __slots__ = [
@@ -6793,7 +6828,8 @@ class ListSharedLinksArg(object):
     @property
     def path(self):
         """
-        See list_shared_links description.
+        See :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links`
+        description.
 
         :rtype: str
         """
@@ -6819,7 +6855,8 @@ class ListSharedLinksArg(object):
     @property
     def cursor(self):
         """
-        The cursor returned by your last call to list_shared_links.
+        The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links`.
 
         :rtype: str
         """
@@ -6845,7 +6882,8 @@ class ListSharedLinksArg(object):
     @property
     def direct_only(self):
         """
-        See list_shared_links description.
+        See :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links`
+        description.
 
         :rtype: bool
         """
@@ -6884,7 +6922,8 @@ class ListSharedLinksError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar reset: Indicates that the cursor has been invalidated. Call
-        list_shared_links to obtain a new cursor.
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to obtain a
+        new cursor.
     """
 
     _catch_all = 'other'
@@ -6947,9 +6986,11 @@ class ListSharedLinksResult(object):
     """
     :ivar links: Shared links applicable to the path argument.
     :ivar has_more: Is true if there are additional shared links that have not
-        been returned yet. Pass the cursor into list_shared_links to retrieve
+        been returned yet. Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to retrieve
         them.
-    :ivar cursor: Pass the cursor into list_shared_links to obtain the
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to obtain the
         additional links. Cursor is returned only if no path is given or the
         path is empty.
     """
@@ -7009,7 +7050,9 @@ class ListSharedLinksResult(object):
     def has_more(self):
         """
         Is true if there are additional shared links that have not been returned
-        yet. Pass the cursor into list_shared_links to retrieve them.
+        yet. Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to retrieve
+        them.
 
         :rtype: bool
         """
@@ -7032,8 +7075,10 @@ class ListSharedLinksResult(object):
     @property
     def cursor(self):
         """
-        Pass the cursor into list_shared_links to obtain the additional links.
-        Cursor is returned only if no path is given or the path is empty.
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to obtain the
+        additional links. Cursor is returned only if no path is given or the
+        path is empty.
 
         :rtype: str
         """
@@ -8558,7 +8603,7 @@ RelinquishFolderMembershipError_validator = bv.Union(RelinquishFolderMembershipE
 
 class RemoveFileMemberArg(object):
     """
-    Arguments for remove_file_member_2.
+    Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_remove_file_member_2`.
 
     :ivar file: File from which to remove members.
     :ivar member: Member to remove from this file. Note that even if an email is
@@ -8645,7 +8690,7 @@ RemoveFileMemberArg_validator = bv.Struct(RemoveFileMemberArg)
 
 class RemoveFileMemberError(bb.Union):
     """
-    Errors for remove_file_member_2.
+    Errors for :meth:`dropbox.dropbox.Dropbox.sharing_remove_file_member_2`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -9874,16 +9919,19 @@ SharePathError_validator = bv.Union(SharePathError)
 class SharedFileMembers(object):
     """
     Shared file user, group, and invitee membership. Used for the results of
-    list_file_members and list_file_members/continue, and used as part of the
-    results for list_file_members/batch.
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members` and
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue`, and used
+    as part of the results for
+    :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
 
     :ivar users: The list of user members of the shared file.
     :ivar groups: The list of group members of the shared file.
     :ivar invitees: The list of invited members of a file, but have not logged
         in and claimed this.
     :ivar cursor: Present if there are additional shared file members that have
-        not been returned yet. Pass the cursor into list_file_members/continue
-        to list additional members.
+        not been returned yet. Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue` to
+        list additional members.
     """
 
     __slots__ = [
@@ -9995,8 +10043,9 @@ class SharedFileMembers(object):
     def cursor(self):
         """
         Present if there are additional shared file members that have not been
-        returned yet. Pass the cursor into list_file_members/continue to list
-        additional members.
+        returned yet. Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue` to
+        list additional members.
 
         :rtype: str
         """
@@ -10528,7 +10577,8 @@ class SharedFolderMembers(object):
     :ivar invitees: The list of invitees to the shared folder.
     :ivar cursor: Present if there are additional shared folder members that
         have not been returned yet. Pass the cursor into
-        list_folder_members/continue to list additional members.
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members_continue` to
+        list additional members.
     """
 
     __slots__ = [
@@ -10639,8 +10689,9 @@ class SharedFolderMembers(object):
     def cursor(self):
         """
         Present if there are additional shared folder members that have not been
-        returned yet. Pass the cursor into list_folder_members/continue to list
-        additional members.
+        returned yet. Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members_continue` to
+        list additional members.
 
         :rtype: str
         """
@@ -11983,7 +12034,7 @@ UnmountFolderError_validator = bv.Union(UnmountFolderError)
 
 class UnshareFileArg(object):
     """
-    Arguments for unshare_file.
+    Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_unshare_file`.
 
     :ivar file: The file to unshare.
     """
@@ -12034,7 +12085,7 @@ UnshareFileArg_validator = bv.Struct(UnshareFileArg)
 
 class UnshareFileError(bb.Union):
     """
-    Error result for unshare_file.
+    Error result for :meth:`dropbox.dropbox.Dropbox.sharing_unshare_file`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -12807,8 +12858,10 @@ UpdateFolderPolicyError_validator = bv.Union(UpdateFolderPolicyError)
 
 class UserInfo(object):
     """
-    Basic information about a user. Use users.get_account and
-    users.get_account_batch to obtain more detailed information.
+    Basic information about a user. Use
+    :meth:`dropbox.dropbox.Dropbox.sharing_users_account` and
+    :meth:`dropbox.dropbox.Dropbox.sharing_users_account_batch` to obtain more
+    detailed information.
 
     :ivar account_id: The account ID of the user.
     :ivar same_team: If the user is in the same team as current user.

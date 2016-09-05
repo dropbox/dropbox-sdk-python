@@ -88,9 +88,9 @@ class DropboxBase(object):
         """
         Create a new file with the contents provided in the request. Note that
         this endpoint is part of the properties API alpha and is slightly
-        different from :meth:`upload`. Do not use this to upload a file larger
-        than 150 MB. Instead, create an upload session with
-        :meth:`upload_session_start`.
+        different from :meth:`files_upload`. Do not use this to upload a file
+        larger than 150 MB. Instead, create an upload session with
+        :meth:`files_upload_session_start`.
 
         :param f: A string or file-like obj of data.
         :param Nullable property_groups: List of custom properties to add to
@@ -145,7 +145,7 @@ class DropboxBase(object):
         """
         Get a copy reference to a file or folder. This reference string can be
         used to save that file or folder to another user's Dropbox by passing it
-        to :meth:`copy_reference_save`.
+        to :meth:`files_copy_reference_save`.
 
         :param str path: The path to the file or folder you want to get a copy
             reference to.
@@ -168,11 +168,11 @@ class DropboxBase(object):
                                   copy_reference,
                                   path):
         """
-        Save a copy reference returned by :meth:`copy_reference_get` to the
-        user's Dropbox.
+        Save a copy reference returned by :meth:`files_copy_reference_get` to
+        the user's Dropbox.
 
         :param str copy_reference: A copy reference returned by
-            :meth:`copy_reference_get`.
+            :meth:`files_copy_reference_get`.
         :param str path: Path in the user's Dropbox that is the destination.
         :rtype: :class:`dropbox.files.SaveCopyReferenceResult`
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -542,11 +542,11 @@ class DropboxBase(object):
     def files_list_folder_continue(self,
                                    cursor):
         """
-        Once a cursor has been retrieved from :meth:`list_folder`, use this to
-        paginate through all files and retrieve updates to the folder.
+        Once a cursor has been retrieved from :meth:`files_list_folder`, use
+        this to paginate through all files and retrieve updates to the folder.
 
         :param str cursor: The cursor returned by your last call to
-            :meth:`list_folder` or :meth:`list_folder_continue`.
+            :meth:`files_list_folder` or :meth:`files_list_folder_continue`.
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -570,10 +570,10 @@ class DropboxBase(object):
                                             include_has_explicit_shared_members=False):
         """
         A way to quickly get a cursor for the folder's state. Unlike
-        :meth:`list_folder`, :meth:`list_folder_get_latest_cursor` doesn't
-        return any entries. This endpoint is for app which only needs to know
-        about new files and modifications and doesn't need to know about files
-        that already exist in Dropbox.
+        :meth:`files_list_folder`, :meth:`files_list_folder_get_latest_cursor`
+        doesn't return any entries. This endpoint is for app which only needs to
+        know about new files and modifications and doesn't need to know about
+        files that already exist in Dropbox.
 
         :param str path: The path to the folder you want to see the contents of.
         :param bool recursive: If true, the list folder operation will be
@@ -610,15 +610,15 @@ class DropboxBase(object):
                                    timeout=30):
         """
         A longpoll endpoint to wait for changes on an account. In conjunction
-        with :meth:`list_folder_continue`, this call gives you a low-latency way
-        to monitor an account for file changes. The connection will block until
-        there are changes available or a timeout occurs. This endpoint is useful
-        mostly for client-side apps. If you're looking for server-side
-        notifications, check out our `webhooks documentation
+        with :meth:`files_list_folder_continue`, this call gives you a
+        low-latency way to monitor an account for file changes. The connection
+        will block until there are changes available or a timeout occurs. This
+        endpoint is useful mostly for client-side apps. If you're looking for
+        server-side notifications, check out our `webhooks documentation
         <https://www.dropbox.com/developers/reference/webhooks>`_.
 
-        :param str cursor: A cursor as returned by :meth:`list_folder` or
-            :meth:`list_folder_continue`. Cursors retrieved by setting
+        :param str cursor: A cursor as returned by :meth:`files_list_folder` or
+            :meth:`files_list_folder_continue`. Cursors retrieved by setting
             ``ListFolderArg.include_media_info`` to ``True`` are not supported.
         :param long timeout: A timeout in seconds. The request will block for at
             most this length of time, plus up to 90 seconds of random jitter
@@ -771,7 +771,7 @@ class DropboxBase(object):
         """
         Remove all custom properties from a specified template associated with a
         file. To remove specific property key value pairs, see
-        :meth:`properties_update`. To update a property template, see
+        :meth:`files_properties_update`. To update a property template, see
         properties/template/update. Property templates can't be removed once
         created.
 
@@ -819,7 +819,7 @@ class DropboxBase(object):
     def files_properties_template_list(self):
         """
         Get the property template identifiers for a user. To get the schema of
-        each template use :meth:`properties_template_get`.
+        each template use :meth:`files_properties_template_get`.
 
         :rtype: :class:`dropbox.files.ListPropertyTemplateIds`
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -916,7 +916,7 @@ class DropboxBase(object):
     def files_save_url_check_job_status(self,
                                         async_job_id):
         """
-        Check the status of a :meth:`save_url` job.
+        Check the status of a :meth:`files_save_url` job.
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -987,7 +987,7 @@ class DropboxBase(object):
         """
         Create a new file with the contents provided in the request. Do not use
         this to upload a file larger than 150 MB. Instead, create an upload
-        session with :meth:`upload_session_start`.
+        session with :meth:`files_upload_session_start`.
 
         :param f: A string or file-like obj of data.
         :param str path: Path in the user's Dropbox to save the file.
@@ -1035,7 +1035,7 @@ class DropboxBase(object):
 
         :param f: A string or file-like obj of data.
         :param str session_id: The upload session ID (returned by
-            :meth:`upload_session_start`).
+            :meth:`files_upload_session_start`).
         :param long offset: The amount of data that has been uploaded so far. We
             use this to make sure upload data isn't lost or duplicated in the
             event of a network error.
@@ -1072,8 +1072,9 @@ class DropboxBase(object):
         :param cursor: Contains the upload session ID and the offset.
         :type cursor: :class:`dropbox.files.UploadSessionCursor`
         :param bool close: If true, the current session will be closed, at which
-            point you won't be able to call :meth:`upload_session_append_v2`
-            anymore with the current session.
+            point you won't be able to call
+            :meth:`files_upload_session_append_v2` anymore with the current
+            session.
         :rtype: None
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1125,19 +1126,20 @@ class DropboxBase(object):
                                           entries):
         """
         This route helps you commit many files at once into a user's Dropbox.
-        Use :meth:`upload_session_start` and :meth:`upload_session_append_v2` to
-        upload file contents. We recommend uploading many files in parallel to
-        increase throughput. Once the file contents have been uploaded, rather
-        than calling :meth:`upload_session_finish`, use this route to finish all
-        your upload sessions in a single request.
-        ``UploadSessionStartArg.close`` or ``UploadSessionAppendArg.close``
-        needs to be true for last :meth:`upload_session_start` or
-        :meth:`upload_session_append_v2` call. This route will return job_id
-        immediately and do the async commit job in background. We have another
-        route :meth:`upload_session_finish_batch_check` to check the job status.
-        For the same account, this route should be executed serially. That means
-        you should not start next job before current job finishes. Also we only
-        allow up to 1000 entries in a single request
+        Use :meth:`files_upload_session_start` and
+        :meth:`files_upload_session_append_v2` to upload file contents. We
+        recommend uploading many files in parallel to increase throughput. Once
+        the file contents have been uploaded, rather than calling
+        :meth:`files_upload_session_finish`, use this route to finish all your
+        upload sessions in a single request. ``UploadSessionStartArg.close`` or
+        ``UploadSessionAppendArg.close`` needs to be true for last
+        :meth:`files_upload_session_start` or
+        :meth:`files_upload_session_append_v2` call. This route will return
+        job_id immediately and do the async commit job in background. We have
+        another route :meth:`files_upload_session_finish_batch_check` to check
+        the job status. For the same account, this route should be executed
+        serially. That means you should not start next job before current job
+        finishes. Also we only allow up to 1000 entries in a single request
 
         :param list entries: Commit information for each file in the batch.
         :rtype: :class:`dropbox.files.LaunchEmptyResult`
@@ -1155,8 +1157,8 @@ class DropboxBase(object):
                                                 async_job_id):
         """
         Returns the status of an asynchronous job for
-        :meth:`upload_session_finish_batch`. If success, it returns list of
-        result for each entry
+        :meth:`files_upload_session_finish_batch`. If success, it returns list
+        of result for each entry
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -1181,14 +1183,16 @@ class DropboxBase(object):
         """
         Upload sessions allow you to upload a single file using multiple
         requests. This call starts a new upload session with the given data.
-        You can then use :meth:`upload_session_append_v2` to add more data and
-        :meth:`upload_session_finish` to save all the data to a file in Dropbox.
-        A single request should not upload more than 150 MB of file contents.
+        You can then use :meth:`files_upload_session_append_v2` to add more data
+        and :meth:`files_upload_session_finish` to save all the data to a file
+        in Dropbox. A single request should not upload more than 150 MB of file
+        contents.
 
         :param f: A string or file-like obj of data.
         :param bool close: If true, the current session will be closed, at which
-            point you won't be able to call :meth:`upload_session_append_v2`
-            anymore with the current session.
+            point you won't be able to call
+            :meth:`files_upload_session_append_v2` anymore with the current
+            session.
         :rtype: :class:`dropbox.files.UploadSessionStartResult`
         """
         arg = files.UploadSessionStartArg(close)
@@ -1255,8 +1259,8 @@ class DropboxBase(object):
         Allows an owner or editor (if the ACL update policy allows) of a shared
         folder to add another member. For the new member to get access to all
         the functionality for this folder, you will need to call
-        :meth:`mount_folder` on their behalf. Apps must have full Dropbox access
-        to use this endpoint.
+        :meth:`sharing_mount_folder` on their behalf. Apps must have full
+        Dropbox access to use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param list members: The intended list of members to add.  Added members
@@ -1394,7 +1398,7 @@ class DropboxBase(object):
         by moving or renaming the corresponding file or folder. In the future,
         this will no longer be the case, so your app shouldn't rely on this
         behavior. Instead, if your app needs to revoke a shared link, use
-        :meth:`revoke_shared_link`.
+        :meth:`sharing_revoke_shared_link`.
 
         :param str path: The path to share.
         :param bool short_url: Whether to return a shortened URL.
@@ -1639,7 +1643,7 @@ class DropboxBase(object):
         returned in this case. Note that the url field in the response is never
         the shortened URL.
 
-        :param Nullable path: See :meth:`get_shared_links` description.
+        :param Nullable path: See :meth:`sharing_get_shared_links` description.
         :rtype: :class:`dropbox.sharing.GetSharedLinksResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1725,13 +1729,14 @@ class DropboxBase(object):
     def sharing_list_file_members_continue(self,
                                            cursor):
         """
-        Once a cursor has been retrieved from :meth:`list_file_members` or
-        :meth:`list_file_members_batch`, use this to paginate through all shared
-        file members.
+        Once a cursor has been retrieved from :meth:`sharing_list_file_members`
+        or :meth:`sharing_list_file_members_batch`, use this to paginate through
+        all shared file members.
 
         :param str cursor: The cursor returned by your last call to
-            :meth:`list_file_members`, :meth:`list_file_members_continue`, or
-            :meth:`list_file_members_batch`.
+            :meth:`sharing_list_file_members`,
+            :meth:`sharing_list_file_members_continue`, or
+            :meth:`sharing_list_file_members_batch`.
         :rtype: :class:`dropbox.sharing.SharedFileMembers`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1776,12 +1781,14 @@ class DropboxBase(object):
     def sharing_list_folder_members_continue(self,
                                              cursor):
         """
-        Once a cursor has been retrieved from :meth:`list_folder_members`, use
-        this to paginate through all shared folder members. Apps must have full
-        Dropbox access to use this endpoint.
+        Once a cursor has been retrieved from
+        :meth:`sharing_list_folder_members`, use this to paginate through all
+        shared folder members. Apps must have full Dropbox access to use this
+        endpoint.
 
         :param str cursor: The cursor returned by your last call to
-            :meth:`list_folder_members` or :meth:`list_folder_members_continue`.
+            :meth:`sharing_list_folder_members` or
+            :meth:`sharing_list_folder_members_continue`.
         :rtype: :class:`dropbox.sharing.SharedFolderMembers`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1824,10 +1831,11 @@ class DropboxBase(object):
     def sharing_list_folders_continue(self,
                                       cursor):
         """
-        Once a cursor has been retrieved from :meth:`list_folders`, use this to
-        paginate through all shared folders. The cursor must come from a
-        previous call to :meth:`list_folders` or :meth:`list_folders_continue`.
-        Apps must have full Dropbox access to use this endpoint.
+        Once a cursor has been retrieved from :meth:`sharing_list_folders`, use
+        this to paginate through all shared folders. The cursor must come from a
+        previous call to :meth:`sharing_list_folders` or
+        :meth:`sharing_list_folders_continue`. Apps must have full Dropbox
+        access to use this endpoint.
 
         :param str cursor: The cursor returned by the previous API call
             specified in the endpoint description.
@@ -1873,11 +1881,12 @@ class DropboxBase(object):
     def sharing_list_mountable_folders_continue(self,
                                                 cursor):
         """
-        Once a cursor has been retrieved from :meth:`list_mountable_folders`,
-        use this to paginate through all mountable shared folders. The cursor
-        must come from a previous call to :meth:`list_mountable_folders` or
-        :meth:`list_mountable_folders_continue`. Apps must have full Dropbox
-        access to use this endpoint.
+        Once a cursor has been retrieved from
+        :meth:`sharing_list_mountable_folders`, use this to paginate through all
+        mountable shared folders. The cursor must come from a previous call to
+        :meth:`sharing_list_mountable_folders` or
+        :meth:`sharing_list_mountable_folders_continue`. Apps must have full
+        Dropbox access to use this endpoint.
 
         :param str cursor: The cursor returned by the previous API call
             specified in the endpoint description.
@@ -1926,7 +1935,7 @@ class DropboxBase(object):
     def sharing_list_received_files_continue(self,
                                              cursor):
         """
-        Get more results with a cursor from :meth:`list_received_files`.
+        Get more results with a cursor from :meth:`sharing_list_received_files`.
 
         :param str cursor: Cursor in ``ListFilesResult.cursor``
         :rtype: :class:`dropbox.sharing.ListFilesResult`
@@ -1956,10 +1965,11 @@ class DropboxBase(object):
         parent folders of the given path. Links to parent folders can be
         suppressed by setting direct_only to true.
 
-        :param Nullable path: See :meth:`list_shared_links` description.
+        :param Nullable path: See :meth:`sharing_list_shared_links` description.
         :param Nullable cursor: The cursor returned by your last call to
-            :meth:`list_shared_links`.
-        :param Nullable direct_only: See :meth:`list_shared_links` description.
+            :meth:`sharing_list_shared_links`.
+        :param Nullable direct_only: See :meth:`sharing_list_shared_links`
+            description.
         :rtype: :class:`dropbox.sharing.ListSharedLinksResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -2189,8 +2199,9 @@ class DropboxBase(object):
         Revoke a shared link. Note that even after revoking a shared link to a
         file, the file may be accessible if there are shared links leading to
         any of the file parent folders. To list all shared links that enable
-        access to a specific file, you can use the :meth:`list_shared_links`
-        with the file as the ``ListSharedLinksArg.path`` argument.
+        access to a specific file, you can use the
+        :meth:`sharing_list_shared_links` with the file as the
+        ``ListSharedLinksArg.path`` argument.
 
         :param str url: URL of the shared link.
         :rtype: None
@@ -2219,9 +2230,9 @@ class DropboxBase(object):
         synchronously. Large folders will be completed asynchronously. To make
         testing the async case repeatable, set `ShareFolderArg.force_async`. If
         a ``ShareFolderLaunch.async_job_id`` is returned, you'll need to call
-        :meth:`check_share_job_status` until the action completes to get the
-        metadata for the folder. Apps must have full Dropbox access to use this
-        endpoint.
+        :meth:`sharing_check_share_job_status` until the action completes to get
+        the metadata for the folder. Apps must have full Dropbox access to use
+        this endpoint.
 
         :param str path: The path to the folder to share. If it does not exist,
             then a new one is created.
@@ -2288,8 +2299,8 @@ class DropboxBase(object):
                                shared_folder_id):
         """
         The current user unmounts the designated folder. They can re-mount the
-        folder at a later time using :meth:`mount_folder`. Apps must have full
-        Dropbox access to use this endpoint.
+        folder at a later time using :meth:`sharing_mount_folder`. Apps must
+        have full Dropbox access to use this endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :rtype: None
@@ -2333,8 +2344,9 @@ class DropboxBase(object):
                                leave_a_copy=False):
         """
         Allows a shared folder owner to unshare the folder. You'll need to call
-        :meth:`check_job_status` to determine if the action has completed
-        successfully. Apps must have full Dropbox access to use this endpoint.
+        :meth:`sharing_check_job_status` to determine if the action has
+        completed successfully. Apps must have full Dropbox access to use this
+        endpoint.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param bool leave_a_copy: If true, members of this shared folder will

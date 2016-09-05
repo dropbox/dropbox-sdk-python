@@ -99,8 +99,8 @@ class DropboxTeamBase(object):
     def team_alpha_groups_list_continue(self,
                                         cursor):
         """
-        Once a cursor has been retrieved from :meth:`alpha_groups_list`, use
-        this to paginate through all groups. Permission : Team information
+        Once a cursor has been retrieved from :meth:`team_alpha_groups_list`,
+        use this to paginate through all groups. Permission : Team information
 
         :param str cursor: Indicates from what point to get the next set of
             groups.
@@ -200,10 +200,10 @@ class DropboxTeamBase(object):
         List all device sessions of a team.
 
         :param Nullable cursor: At the first call to the
-            :meth:`devices_list_members_devices` the cursor shouldn't be passed.
-            Then, if the result of the call includes a cursor, the following
-            requests should include the received cursors in order to receive the
-            next sub list of team devices
+            :meth:`team_devices_list_members_devices` the cursor shouldn't be
+            passed. Then, if the result of the call includes a cursor, the
+            following requests should include the received cursors in order to
+            receive the next sub list of team devices
         :param bool include_web_sessions: Whether to list web sessions of the
             team members
         :param bool include_desktop_clients: Whether to list desktop clients of
@@ -237,10 +237,10 @@ class DropboxTeamBase(object):
         List all device sessions of a team.
 
         :param Nullable cursor: At the first call to the
-            :meth:`devices_list_team_devices` the cursor shouldn't be passed.
-            Then, if the result of the call includes a cursor, the following
-            requests should include the received cursors in order to receive the
-            next sub list of team devices
+            :meth:`team_devices_list_team_devices` the cursor shouldn't be
+            passed. Then, if the result of the call includes a cursor, the
+            following requests should include the received cursors in order to
+            receive the next sub list of team devices
         :param bool include_web_sessions: Whether to list web sessions of the
             team members
         :param bool include_desktop_clients: Whether to list desktop clients of
@@ -360,7 +360,7 @@ class DropboxTeamBase(object):
         """
         Deletes a group. The group is deleted immediately. However the revoking
         of group-owned resources may take additional time. Use the
-        :meth:`groups_job_status_get` to determine whether this process has
+        :meth:`team_groups_job_status_get` to determine whether this process has
         completed. Permission : Team member management
 
         :param arg: Argument for selecting a single group, either by group_id or
@@ -406,10 +406,10 @@ class DropboxTeamBase(object):
     def team_groups_job_status_get(self,
                                    async_job_id):
         """
-        Once an async_job_id is returned from :meth:`groups_delete`,
-        :meth:`groups_members_add` , or :meth:`groups_members_remove` use this
-        method to poll the status of granting/revoking group members' access to
-        group-owned resources. Permission : Team member management
+        Once an async_job_id is returned from :meth:`team_groups_delete`,
+        :meth:`team_groups_members_add` , or :meth:`team_groups_members_remove`
+        use this method to poll the status of granting/revoking group members'
+        access to group-owned resources. Permission : Team member management
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -448,8 +448,8 @@ class DropboxTeamBase(object):
     def team_groups_list_continue(self,
                                   cursor):
         """
-        Once a cursor has been retrieved from :meth:`groups_list`, use this to
-        paginate through all groups. Permission : Team information
+        Once a cursor has been retrieved from :meth:`team_groups_list`, use this
+        to paginate through all groups. Permission : Team information
 
         :param str cursor: Indicates from what point to get the next set of
             groups.
@@ -475,7 +475,7 @@ class DropboxTeamBase(object):
         """
         Adds members to a group. The members are added immediately. However the
         granting of group-owned resources may take additional time. Use the
-        :meth:`groups_job_status_get` to determine whether this process has
+        :meth:`team_groups_job_status_get` to determine whether this process has
         completed. Permission : Team member management
 
         :param group: Group to which users will be added.
@@ -526,8 +526,8 @@ class DropboxTeamBase(object):
     def team_groups_members_list_continue(self,
                                           cursor):
         """
-        Once a cursor has been retrieved from :meth:`groups_members_list`, use
-        this to paginate through all members of the group. Permission : Team
+        Once a cursor has been retrieved from :meth:`team_groups_members_list`,
+        use this to paginate through all members of the group. Permission : Team
         information
 
         :param str cursor: Indicates from what point to get the next set of
@@ -554,10 +554,10 @@ class DropboxTeamBase(object):
         """
         Removes members from a group. The members are removed immediately.
         However the revoking of group-owned resources may take additional time.
-        Use the :meth:`groups_job_status_get` to determine whether this process
-        has completed. This method permits removing the only owner of a group,
-        even in cases where this is not possible via the web client. Permission
-        : Team member management
+        Use the :meth:`team_groups_job_status_get` to determine whether this
+        process has completed. This method permits removing the only owner of a
+        group, even in cases where this is not possible via the web client.
+        Permission : Team member management
 
         :param group: Group from which users will be removed.
         :type group: :class:`dropbox.team.GroupSelector`
@@ -680,10 +680,10 @@ class DropboxTeamBase(object):
         endpoint does not list any team-linked applications.
 
         :param Nullable cursor: At the first call to the
-            :meth:`linked_apps_list_members_linked_apps` the cursor shouldn't be
-            passed. Then, if the result of the call includes a cursor, the
-            following requests should include the received cursors in order to
-            receive the next sub list of the team applications
+            :meth:`team_linked_apps_list_members_linked_apps` the cursor
+            shouldn't be passed. Then, if the result of the call includes a
+            cursor, the following requests should include the received cursors
+            in order to receive the next sub list of the team applications
         :rtype: :class:`dropbox.team.ListMembersAppsResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -706,8 +706,8 @@ class DropboxTeamBase(object):
         endpoint doesn't list any team-linked applications.
 
         :param Nullable cursor: At the first call to the
-            :meth:`linked_apps_list_team_linked_apps` the cursor shouldn't be
-            passed. Then, if the result of the call includes a cursor, the
+            :meth:`team_linked_apps_list_team_linked_apps` the cursor shouldn't
+            be passed. Then, if the result of the call includes a cursor, the
             following requests should include the received cursors in order to
             receive the next sub list of the team applications
         :rtype: :class:`dropbox.team.ListTeamAppsResult`
@@ -812,9 +812,9 @@ class DropboxTeamBase(object):
     def team_members_add_job_status_get(self,
                                         async_job_id):
         """
-        Once an async_job_id is returned from :meth:`members_add` , use this to
-        poll the status of the asynchronous request. Permission : Team member
-        management
+        Once an async_job_id is returned from :meth:`team_members_add` , use
+        this to poll the status of the asynchronous request. Permission : Team
+        member management
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -884,8 +884,8 @@ class DropboxTeamBase(object):
     def team_members_list_continue(self,
                                    cursor):
         """
-        Once a cursor has been retrieved from :meth:`members_list`, use this to
-        paginate through all team members. Permission : Team information
+        Once a cursor has been retrieved from :meth:`team_members_list`, use
+        this to paginate through all team members. Permission : Team information
 
         :param str cursor: Indicates from what point to get the next set of
             members.
@@ -938,12 +938,12 @@ class DropboxTeamBase(object):
         Removes a member from a team. Permission : Team member management
         Exactly one of team_member_id, email, or external_id must be provided to
         identify the user account. This is not a deactivation where the account
-        can be re-activated again. Calling :meth:`members_add` with the removed
-        user's email address will create a new account with a new team_member_id
-        that will not have access to any content that was shared with the
-        initial account. This endpoint may initiate an asynchronous job. To
-        obtain the final result of the job, the client should periodically poll
-        :meth:`members_remove_job_status_get`.
+        can be re-activated again. Calling :meth:`team_members_add` with the
+        removed user's email address will create a new account with a new
+        team_member_id that will not have access to any content that was shared
+        with the initial account. This endpoint may initiate an asynchronous
+        job. To obtain the final result of the job, the client should
+        periodically poll :meth:`team_members_remove_job_status_get`.
 
         :param Nullable transfer_dest_id: If provided, files from the deleted
             member account will be transferred to this user.
@@ -977,9 +977,9 @@ class DropboxTeamBase(object):
     def team_members_remove_job_status_get(self,
                                            async_job_id):
         """
-        Once an async_job_id is returned from :meth:`members_remove` , use this
-        to poll the status of the asynchronous request. Permission : Team member
-        management
+        Once an async_job_id is returned from :meth:`team_members_remove` , use
+        this to poll the status of the asynchronous request. Permission : Team
+        member management
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -1185,7 +1185,7 @@ class DropboxTeamBase(object):
     def team_properties_template_list(self):
         """
         Get the property template identifiers for a team. To get the schema of
-        each template use :meth:`properties_template_get`.
+        each template use :meth:`team_properties_template_get`.
 
         :rtype: :class:`dropbox.team.ListPropertyTemplateIds`
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -1212,7 +1212,7 @@ class DropboxTeamBase(object):
         template description and add optional properties to templates.
 
         :param str template_id: An identifier for property template added by
-            :meth:`properties_template_add`.
+            :meth:`team_properties_template_add`.
         :param Nullable name: A display name for the property template. Property
             template names can be up to 256 bytes.
         :param Nullable description: Description for new property template.
