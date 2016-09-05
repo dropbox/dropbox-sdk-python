@@ -217,8 +217,9 @@ class DropboxBase(object):
         Delete the file or folder at a given path. If the path is a folder, all
         its contents will be deleted too. A successful response indicates that
         the file or folder was deleted. The returned metadata will be the
-        corresponding :class:`FileMetadata` or :class:`FolderMetadata` for the
-        item at time of deletion, and not a :class:`DeletedMetadata` object.
+        corresponding :class:`dropbox.files.FileMetadata` or
+        :class:`dropbox.files.FolderMetadata` for the item at time of deletion,
+        and not a :class:`dropbox.files.DeletedMetadata` object.
 
         :param str path: Path in the user's Dropbox to delete.
         :rtype: :class:`dropbox.files.Metadata`
@@ -309,9 +310,10 @@ class DropboxBase(object):
         :param str path: The path of a file or folder on Dropbox.
         :param bool include_media_info: If true, ``FileMetadata.media_info`` is
             set for photo and video.
-        :param bool include_deleted: If true, :class:`DeletedMetadata` will be
-            returned for deleted file or folder, otherwise
-            ``LookupError.not_found`` will be returned.
+        :param bool include_deleted: If true,
+            :class:`dropbox.files.DeletedMetadata` will be returned for deleted
+            file or folder, otherwise ``LookupError.not_found`` will be
+            returned.
         :param bool include_has_explicit_shared_members: If true, the results
             will include a flag for each file indicating whether or not  that
             file has any explicit members.
@@ -1392,13 +1394,13 @@ class DropboxBase(object):
         """
         Create a shared link. If a shared link already exists for the given
         path, that link is returned. Note that in the returned
-        :class:`PathLinkMetadata`, the ``PathLinkMetadata.url`` field is the
-        shortened URL if ``CreateSharedLinkArg.short_url`` argument is set to
-        ``True``. Previously, it was technically possible to break a shared link
-        by moving or renaming the corresponding file or folder. In the future,
-        this will no longer be the case, so your app shouldn't rely on this
-        behavior. Instead, if your app needs to revoke a shared link, use
-        :meth:`sharing_revoke_shared_link`.
+        :class:`dropbox.sharing.PathLinkMetadata`, the ``PathLinkMetadata.url``
+        field is the shortened URL if ``CreateSharedLinkArg.short_url`` argument
+        is set to ``True``. Previously, it was technically possible to break a
+        shared link by moving or renaming the corresponding file or folder. In
+        the future, this will no longer be the case, so your app shouldn't rely
+        on this behavior. Instead, if your app needs to revoke a shared link,
+        use :meth:`sharing_revoke_shared_link`.
 
         :param str path: The path to share.
         :param bool short_url: Whether to return a shortened URL.
@@ -1635,13 +1637,13 @@ class DropboxBase(object):
     def sharing_get_shared_links(self,
                                  path=None):
         """
-        Returns a list of :class:`LinkMetadata` objects for this user, including
-        collection links. If no path is given or the path is empty, returns a
-        list of all shared links for the current user, including collection
-        links. If a non-empty path is given, returns a list of all shared links
-        that allow access to the given path.  Collection links are never
-        returned in this case. Note that the url field in the response is never
-        the shortened URL.
+        Returns a list of :class:`dropbox.sharing.LinkMetadata` objects for this
+        user, including collection links. If no path is given or the path is
+        empty, returns a list of all shared links for the current user,
+        including collection links. If a non-empty path is given, returns a list
+        of all shared links that allow access to the given path.  Collection
+        links are never returned in this case. Note that the url field in the
+        response is never the shortened URL.
 
         :param Nullable path: See :meth:`sharing_get_shared_links` description.
         :rtype: :class:`dropbox.sharing.GetSharedLinksResult`
@@ -1996,9 +1998,10 @@ class DropboxBase(object):
         with the shared links policy of the team or the shared folder (in case
         the linked file is part of a shared folder) then the
         ``LinkPermissions.resolved_visibility`` of the returned
-        :class:`SharedLinkMetadata` will reflect the actual visibility of the
-        shared link and the ``LinkPermissions.requested_visibility`` will
-        reflect the requested visibility.
+        :class:`dropbox.sharing.SharedLinkMetadata` will reflect the actual
+        visibility of the shared link and the
+        ``LinkPermissions.requested_visibility`` will reflect the requested
+        visibility.
 
         :param str url: URL of the shared link to change its settings
         :param settings: Set of settings for the shared link.
