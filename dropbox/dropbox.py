@@ -219,8 +219,8 @@ class _DropboxTransport(object):
         :param Optional[float] timeout: Maximum duration in seconds
             that client will wait for any single packet from the
             server. After the timeout the client will give up on
-            connection. If `None`, client will wait forever. Defaults
-            to `None`.
+            connection. If `None`, will use default timeout set on
+            Dropbox object.  Defaults to `None`.
         :return: The route's result.
         """
         host = route.attrs['host'] or 'api'
@@ -300,8 +300,8 @@ class _DropboxTransport(object):
         :param Optional[float] timeout: Maximum duration in seconds
             that client will wait for any single packet from the
             server. After the timeout the client will give up on
-            connection. If `None`, client will wait forever. Defaults
-            to `None`.
+            connection. If `None`, will use default timeout set on
+            Dropbox object.  Defaults to `None`.
         :return: The route's result as a JSON-serializable Python object.
         """
         serialized_arg = json.dumps(request_arg)
