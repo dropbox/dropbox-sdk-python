@@ -293,10 +293,6 @@ class _DropboxTransport(object):
             the argument for the route.
         :param request_binary: String or file pointer representing the binary
             payload. Use None if there is no binary payload.
-        :param Optional[float] timeout: Maximum duration in seconds that
-            client will wait when receiving data from server. After the timeout
-            the client will give up on connection. If `None`, client will
-            wait forever. Defaults to `None`.
         :param Optional[float] timeout: Maximum duration in seconds
             that client will wait for any single packet from the
             server. After the timeout the client will give up on
