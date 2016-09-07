@@ -152,9 +152,10 @@ class _DropboxTransport(object):
         :type session: :class:`requests.sessions.Session`
         :param dict headers: Additional headers to add to requests.
         :param Optional[float] timeout: Maximum duration in seconds that
-            client will wait when receiving data from server. After the timeout
-            the client will give up on connection. If `None`, client will
-            wait forever. Defaults to 30 seconds.
+            client will wait for any single packet from the
+            server. After the timeout the client will give up on
+            connection. If `None`, client will wait forever. Defaults
+            to 30 seconds.
         """
         assert len(oauth2_access_token) > 0, \
             'OAuth2 access token cannot be empty.'
@@ -215,10 +216,11 @@ class _DropboxTransport(object):
             validator specified by route.arg_type.
         :param request_binary: String or file pointer representing the binary
             payload. Use None if there is no binary payload.
-        :param Optional[float] timeout: Maximum duration in seconds that
-            client will wait when receiving data from server. After the timeout
-            the client will give up on connection. If `None`, client will
-            wait forever. Defaults to `None`.
+        :param Optional[float] timeout: Maximum duration in seconds
+            that client will wait for any single packet from the
+            server. After the timeout the client will give up on
+            connection. If `None`, client will wait forever. Defaults
+            to `None`.
         :return: The route's result.
         """
         host = route.attrs['host'] or 'api'
@@ -295,6 +297,11 @@ class _DropboxTransport(object):
             client will wait when receiving data from server. After the timeout
             the client will give up on connection. If `None`, client will
             wait forever. Defaults to `None`.
+        :param Optional[float] timeout: Maximum duration in seconds
+            that client will wait for any single packet from the
+            server. After the timeout the client will give up on
+            connection. If `None`, client will wait forever. Defaults
+            to `None`.
         :return: The route's result as a JSON-serializable Python object.
         """
         serialized_arg = json.dumps(request_arg)
