@@ -22,6 +22,7 @@ class AuthError(bb.Union):
         is no longer on the team.
     :ivar invalid_select_admin: The user specified in 'Dropbox-API-Select-Admin'
         is not a Dropbox Business team admin.
+    :ivar user_suspended: The user has been suspended.
     """
 
     _catch_all = 'other'
@@ -31,6 +32,8 @@ class AuthError(bb.Union):
     invalid_select_user = None
     # Attribute is overwritten below the class definition
     invalid_select_admin = None
+    # Attribute is overwritten below the class definition
+    user_suspended = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -57,6 +60,14 @@ class AuthError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'invalid_select_admin'
+
+    def is_user_suspended(self):
+        """
+        Check if the union tag is ``user_suspended``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_suspended'
 
     def is_other(self):
         """
@@ -208,17 +219,20 @@ RateLimitReason_validator = bv.Union(RateLimitReason)
 AuthError._invalid_access_token_validator = bv.Void()
 AuthError._invalid_select_user_validator = bv.Void()
 AuthError._invalid_select_admin_validator = bv.Void()
+AuthError._user_suspended_validator = bv.Void()
 AuthError._other_validator = bv.Void()
 AuthError._tagmap = {
     'invalid_access_token': AuthError._invalid_access_token_validator,
     'invalid_select_user': AuthError._invalid_select_user_validator,
     'invalid_select_admin': AuthError._invalid_select_admin_validator,
+    'user_suspended': AuthError._user_suspended_validator,
     'other': AuthError._other_validator,
 }
 
 AuthError.invalid_access_token = AuthError('invalid_access_token')
 AuthError.invalid_select_user = AuthError('invalid_select_user')
 AuthError.invalid_select_admin = AuthError('invalid_select_admin')
+AuthError.user_suspended = AuthError('user_suspended')
 AuthError.other = AuthError('other')
 
 RateLimitError._reason_validator = RateLimitReason_validator

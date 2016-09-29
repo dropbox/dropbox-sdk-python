@@ -55,9 +55,9 @@ class DropboxBase(object):
         compatible with the properties API. Note: Metadata for the root folder
         is unsupported.
 
-        :param Nullable include_property_templates: If true,
-            ``FileMetadata.property_groups`` is set for files with custom
-            properties.
+        :param Nullable include_property_templates: If set to a valid list of
+            template IDs, ``FileMetadata.property_groups`` is set for files with
+            custom properties.
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -117,13 +117,20 @@ class DropboxBase(object):
 
     def files_copy(self,
                    from_path,
-                   to_path):
+                   to_path,
+                   allow_shared_folder=False,
+                   autorename=False):
         """
         Copy a file or folder to a different location in the user's Dropbox. If
         the source path is a folder all its contents will be copied.
 
-        :param str from_path: Path in the user's Dropbox to be copied or moved.
-        :param str to_path: Path in the user's Dropbox that is the destination.
+        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
+            contents in shared folder, otherwise
+            ``RelocationError.cant_copy_shared_folder`` will be returned if
+            ``from_path`` contains shared folder. This field is always true for
+            :meth:`files_move`.
+        :param bool autorename: If there's a conflict, have the Dropbox server
+            try to autorename the file to avoid the conflict.
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -131,9 +138,70 @@ class DropboxBase(object):
             :class:`dropbox.files.RelocationError`
         """
         arg = files.RelocationArg(from_path,
-                                  to_path)
+                                  to_path,
+                                  allow_shared_folder,
+                                  autorename)
         r = self.request(
             files.copy,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_copy_batch(self,
+                         entries,
+                         allow_shared_folder=False,
+                         autorename=False):
+        """
+        Copy multiple files or folders to different locations at once in the
+        user's Dropbox. If ``RelocationBatchArg.allow_shared_folder`` is false,
+        this route is atomic. If on entry failes, the whole transaction will
+        abort. If ``RelocationBatchArg.allow_shared_folder`` is true, not
+        atomicity is guaranteed, but you will be able to copy the contents of
+        shared folders to new locations. This route will return job ID
+        immediately and do the async copy job in background. Please use
+        :meth:`files_copy_batch_check` to check the job status.
+
+        :param list entries: List of entries to be moved or copied. Each entry
+            is :class:`dropbox.files.RelocationPath`.
+        :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
+            copy contents in shared folder, otherwise
+            ``RelocationError.cant_copy_shared_folder`` will be returned if
+            ``RelocationPath.from_path`` contains shared folder.  This field is
+            always true for :meth:`files_move_batch`.
+        :param bool autorename: If there's a conflict with any file, have the
+            Dropbox server try to autorename that file to avoid the conflict.
+        :rtype: :class:`dropbox.files.LaunchEmptyResult`
+        """
+        arg = files.RelocationBatchArg(entries,
+                                       allow_shared_folder,
+                                       autorename)
+        r = self.request(
+            files.copy_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_copy_batch_check(self,
+                               async_job_id):
+        """
+        Returns the status of an asynchronous job for :meth:`files_copy_batch`.
+        If success, it returns list of results for each entry.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.files.RelocationBatchJobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.PollError`
+        """
+        arg = async.PollArg(async_job_id)
+        r = self.request(
+            files.copy_batch_check,
             'files',
             arg,
             None,
@@ -191,18 +259,22 @@ class DropboxBase(object):
         return r
 
     def files_create_folder(self,
-                            path):
+                            path,
+                            autorename=False):
         """
         Create a folder at a given path.
 
         :param str path: Path in the user's Dropbox to create.
+        :param bool autorename: If there's a conflict, have the Dropbox server
+            try to autorename the folder to avoid the conflict.
         :rtype: :class:`dropbox.files.FolderMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.CreateFolderError`
         """
-        arg = files.CreateFolderArg(path)
+        arg = files.CreateFolderArg(path,
+                                    autorename)
         r = self.request(
             files.create_folder,
             'files',
@@ -237,6 +309,49 @@ class DropboxBase(object):
         )
         return r
 
+    def files_delete_batch(self,
+                           entries):
+        """
+        Delete multiple files/folders at once. This route is asynchronous, which
+        returns a job ID immediately and runs the delete batch asynchronously.
+        Use :meth:`files_delete_batch_check` to check the job status.
+
+        :type entries: list
+        :rtype: :class:`dropbox.files.LaunchEmptyResult`
+        """
+        arg = files.DeleteBatchArg(entries)
+        r = self.request(
+            files.delete_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_delete_batch_check(self,
+                                 async_job_id):
+        """
+        Returns the status of an asynchronous job for
+        :meth:`files_delete_batch`. If success, it returns list of result for
+        each entry.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.files.DeleteBatchJobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.PollError`
+        """
+        arg = async.PollArg(async_job_id)
+        r = self.request(
+            files.delete_batch_check,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_download(self,
                        path,
                        rev=None):
@@ -245,7 +360,7 @@ class DropboxBase(object):
 
         :param str path: The path of the file to download.
         :param Nullable rev: Deprecated. Please specify revision in ``path``
-            instead
+            instead.
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -279,7 +394,7 @@ class DropboxBase(object):
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to download.
         :param Nullable rev: Deprecated. Please specify revision in ``path``
-            instead
+            instead.
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -341,11 +456,11 @@ class DropboxBase(object):
         """
         Get a preview for a file. Currently previews are only generated for the
         files with  the following extensions: .doc, .docx, .docm, .ppt, .pps,
-        .ppsx, .ppsm, .pptx, .pptm,  .xls, .xlsx, .xlsm, .rtf
+        .ppsx, .ppsm, .pptx, .pptm,  .xls, .xlsx, .xlsm, .rtf.
 
         :param str path: The path of the file to preview.
         :param Nullable rev: Deprecated. Please specify revision in ``path``
-            instead
+            instead.
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -376,12 +491,12 @@ class DropboxBase(object):
         """
         Get a preview for a file. Currently previews are only generated for the
         files with  the following extensions: .doc, .docx, .docm, .ppt, .pps,
-        .ppsx, .ppsm, .pptx, .pptm,  .xls, .xlsx, .xlsm, .rtf
+        .ppsx, .ppsm, .pptx, .pptm,  .xls, .xlsx, .xlsm, .rtf.
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to preview.
         :param Nullable rev: Deprecated. Please specify revision in ``path``
-            instead
+            instead.
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -509,7 +624,25 @@ class DropboxBase(object):
                           include_deleted=False,
                           include_has_explicit_shared_members=False):
         """
-        Returns the contents of a folder.
+        Starts returning the contents of a folder. If the result's
+        ``ListFolderResult.has_more`` field is ``True``, call
+        :meth:`files_list_folder_continue` with the returned
+        ``ListFolderResult.cursor`` to retrieve more entries. If you're using
+        ``ListFolderArg.recursive`` set to ``True`` to keep a local cache of the
+        contents of a Dropbox account, iterate through each entry in order and
+        process them as follows to keep your local state in sync: For each
+        :class:`dropbox.files.FileMetadata`, store the new entry at the given
+        path in your local state. If the required parent folders don't exist
+        yet, create them. If there's already something else at the given path,
+        replace it and remove all its children. For each
+        :class:`dropbox.files.FolderMetadata`, store the new entry at the given
+        path in your local state. If the required parent folders don't exist
+        yet, create them. If there's already something else at the given path,
+        replace it but leave the children as they are. Check the new entry's
+        ``FolderSharingInfo.read_only`` and set all its children's read-only
+        statuses to match. For each :class:`dropbox.files.DeletedMetadata`, if
+        your local state has something at the given path, remove it and all its
+        children. If there's nothing at the given path, ignore this entry.
 
         :param str path: The path to the folder you want to see the contents of.
         :param bool recursive: If true, the list folder operation will be
@@ -545,7 +678,8 @@ class DropboxBase(object):
                                    cursor):
         """
         Once a cursor has been retrieved from :meth:`files_list_folder`, use
-        this to paginate through all files and retrieve updates to the folder.
+        this to paginate through all files and retrieve updates to the folder,
+        following the same rules as documented for :meth:`files_list_folder`.
 
         :param str cursor: The cursor returned by your last call to
             :meth:`files_list_folder` or :meth:`files_list_folder_continue`.
@@ -647,7 +781,7 @@ class DropboxBase(object):
                              path,
                              limit=10):
         """
-        Return revisions of a file
+        Return revisions of a file.
 
         :param str path: The path to the file you want to see the revisions of.
         :param long limit: The maximum number of revision entries returned.
@@ -669,13 +803,20 @@ class DropboxBase(object):
 
     def files_move(self,
                    from_path,
-                   to_path):
+                   to_path,
+                   allow_shared_folder=False,
+                   autorename=False):
         """
         Move a file or folder to a different location in the user's Dropbox. If
         the source path is a folder all its contents will be moved.
 
-        :param str from_path: Path in the user's Dropbox to be copied or moved.
-        :param str to_path: Path in the user's Dropbox that is the destination.
+        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
+            contents in shared folder, otherwise
+            ``RelocationError.cant_copy_shared_folder`` will be returned if
+            ``from_path`` contains shared folder. This field is always true for
+            :meth:`files_move`.
+        :param bool autorename: If there's a conflict, have the Dropbox server
+            try to autorename the file to avoid the conflict.
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -683,9 +824,67 @@ class DropboxBase(object):
             :class:`dropbox.files.RelocationError`
         """
         arg = files.RelocationArg(from_path,
-                                  to_path)
+                                  to_path,
+                                  allow_shared_folder,
+                                  autorename)
         r = self.request(
             files.move,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_move_batch(self,
+                         entries,
+                         allow_shared_folder=False,
+                         autorename=False):
+        """
+        Move multiple files or folders to different locations at once in the
+        user's Dropbox. This route is 'all or nothing', which means if one entry
+        fails, the whole transaction will abort. This route will return job ID
+        immediately and do the async moving job in background. Please use
+        :meth:`files_move_batch_check` to check the job status.
+
+        :param list entries: List of entries to be moved or copied. Each entry
+            is :class:`dropbox.files.RelocationPath`.
+        :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
+            copy contents in shared folder, otherwise
+            ``RelocationError.cant_copy_shared_folder`` will be returned if
+            ``RelocationPath.from_path`` contains shared folder.  This field is
+            always true for :meth:`files_move_batch`.
+        :param bool autorename: If there's a conflict with any file, have the
+            Dropbox server try to autorename that file to avoid the conflict.
+        :rtype: :class:`dropbox.files.LaunchEmptyResult`
+        """
+        arg = files.RelocationBatchArg(entries,
+                                       allow_shared_folder,
+                                       autorename)
+        r = self.request(
+            files.move_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_move_batch_check(self,
+                               async_job_id):
+        """
+        Returns the status of an asynchronous job for :meth:`files_move_batch`.
+        If success, it returns list of results for each entry.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.files.RelocationBatchJobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.files.PollError`
+        """
+        arg = async.PollArg(async_job_id)
+        r = self.request(
+            files.move_batch_check,
             'files',
             arg,
             None,
@@ -869,7 +1068,7 @@ class DropboxBase(object):
                       path,
                       rev):
         """
-        Restore a file to a specific revision
+        Restore a file to a specific revision.
 
         :param str path: The path to the file you want to restore.
         :param str rev: The revision to restore for the file.
@@ -1134,14 +1333,14 @@ class DropboxBase(object):
         the file contents have been uploaded, rather than calling
         :meth:`files_upload_session_finish`, use this route to finish all your
         upload sessions in a single request. ``UploadSessionStartArg.close`` or
-        ``UploadSessionAppendArg.close`` needs to be true for last
+        ``UploadSessionAppendArg.close`` needs to be true for the last
         :meth:`files_upload_session_start` or
-        :meth:`files_upload_session_append_v2` call. This route will return
-        job_id immediately and do the async commit job in background. We have
-        another route :meth:`files_upload_session_finish_batch_check` to check
-        the job status. For the same account, this route should be executed
-        serially. That means you should not start next job before current job
-        finishes. Also we only allow up to 1000 entries in a single request
+        :meth:`files_upload_session_append_v2` call. This route will return a
+        job_id immediately and do the async commit job in background. Use
+        :meth:`files_upload_session_finish_batch_check` to check the job status.
+        For the same account, this route should be executed serially. That means
+        you should not start the next job before current job finishes. We allow
+        up to 1000 entries in a single request.
 
         :param list entries: Commit information for each file in the batch.
         :rtype: :class:`dropbox.files.LaunchEmptyResult`
@@ -1160,7 +1359,7 @@ class DropboxBase(object):
         """
         Returns the status of an asynchronous job for
         :meth:`files_upload_session_finish_batch`. If success, it returns list
-        of result for each entry
+        of result for each entry.
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -1183,11 +1382,12 @@ class DropboxBase(object):
                                    f,
                                    close=False):
         """
-        Upload sessions allow you to upload a single file using multiple
-        requests. This call starts a new upload session with the given data.
-        You can then use :meth:`files_upload_session_append_v2` to add more data
-        and :meth:`files_upload_session_finish` to save all the data to a file
-        in Dropbox. A single request should not upload more than 150 MB of file
+        Upload sessions allow you to upload a single file in one or more
+        requests, for example where the size of the file is greater than 150 MB.
+        This call starts a new upload session with the given data. You can then
+        use :meth:`files_upload_session_append_v2` to add more data and
+        :meth:`files_upload_session_finish` to save all the data to a file in
+        Dropbox. A single request should not upload more than 150 MB of file
         contents.
 
         :param f: A string or file-like obj of data.
@@ -1638,12 +1838,12 @@ class DropboxBase(object):
                                  path=None):
         """
         Returns a list of :class:`dropbox.sharing.LinkMetadata` objects for this
-        user, including collection links. If no path is given or the path is
-        empty, returns a list of all shared links for the current user,
-        including collection links. If a non-empty path is given, returns a list
-        of all shared links that allow access to the given path.  Collection
-        links are never returned in this case. Note that the url field in the
-        response is never the shortened URL.
+        user, including collection links. If no path is given, returns a list of
+        all shared links for the current user, including collection links. If a
+        non-empty path is given, returns a list of all shared links that allow
+        access to the given path.  Collection links are never returned in this
+        case. Note that the url field in the response is never the shortened
+        URL.
 
         :param Nullable path: See :meth:`sharing_get_shared_links` description.
         :rtype: :class:`dropbox.sharing.GetSharedLinksResult`
@@ -1960,12 +2160,12 @@ class DropboxBase(object):
                                   cursor=None,
                                   direct_only=None):
         """
-        List shared links of this user. If no path is given or the path is
-        empty, returns a list of all shared links for the current user. If a
-        non-empty path is given, returns a list of all shared links that allow
-        access to the given path - direct links to the given path and links to
-        parent folders of the given path. Links to parent folders can be
-        suppressed by setting direct_only to true.
+        List shared links of this user. If no path is given, returns a list of
+        all shared links for the current user. If a non-empty path is given,
+        returns a list of all shared links that allow access to the given path -
+        direct links to the given path and links to parent folders of the given
+        path. Links to parent folders can be suppressed by setting direct_only
+        to true.
 
         :param Nullable path: See :meth:`sharing_list_shared_links` description.
         :param Nullable cursor: The cursor returned by your last call to

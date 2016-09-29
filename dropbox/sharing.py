@@ -1768,7 +1768,8 @@ class FileAction(bb.Union):
         comment permissions.
     :ivar unshare: Stop sharing this file.
     :ivar relinquish_membership: Relinquish one's own membership to the file.
-    :ivar share_link: Create a shared link to the file.
+    :ivar share_link: This action is deprecated. Use create_link instead.
+    :ivar create_link: Create a shared link to the file.
     """
 
     _catch_all = 'other'
@@ -1784,6 +1785,8 @@ class FileAction(bb.Union):
     relinquish_membership = None
     # Attribute is overwritten below the class definition
     share_link = None
+    # Attribute is overwritten below the class definition
+    create_link = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -1834,6 +1837,14 @@ class FileAction(bb.Union):
         :rtype: bool
         """
         return self._tag == 'share_link'
+
+    def is_create_link(self):
+        """
+        Check if the union tag is ``create_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'create_link'
 
     def is_other(self):
         """
@@ -2464,6 +2475,8 @@ class FileMemberActionError(bb.Union):
     :ivar invalid_member: Specified member was not found.
     :ivar no_permission: User does not have permission to perform this action on
         this member.
+    :ivar SharingFileAccessError access_error: Specified file was invalid or
+        user does not have access.
     """
 
     _catch_all = 'other'
@@ -2473,6 +2486,17 @@ class FileMemberActionError(bb.Union):
     no_permission = None
     # Attribute is overwritten below the class definition
     other = None
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharingFileAccessError val:
+        :rtype: FileMemberActionError
+        """
+        return cls('access_error', val)
 
     def is_invalid_member(self):
         """
@@ -2490,6 +2514,14 @@ class FileMemberActionError(bb.Union):
         """
         return self._tag == 'no_permission'
 
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -2497,6 +2529,18 @@ class FileMemberActionError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Specified file was invalid or user does not have access.
+
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharingFileAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
 
     def __repr__(self):
         return 'FileMemberActionError(%r, %r)' % (self._tag, self._value)
@@ -2905,7 +2949,8 @@ class FolderAction(bb.Union):
     :ivar unshare: Stop sharing this folder.
     :ivar leave_a_copy: Keep a copy of the contents upon leaving or being kicked
         from the folder.
-    :ivar share_link: Create a shared link for folder.
+    :ivar share_link: This action is deprecated. Use create_link instead.
+    :ivar create_link: Create a shared link for folder.
     """
 
     _catch_all = 'other'
@@ -2929,6 +2974,8 @@ class FolderAction(bb.Union):
     leave_a_copy = None
     # Attribute is overwritten below the class definition
     share_link = None
+    # Attribute is overwritten below the class definition
+    create_link = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -3011,6 +3058,14 @@ class FolderAction(bb.Union):
         :rtype: bool
         """
         return self._tag == 'share_link'
+
+    def is_create_link(self):
+        """
+        Check if the union tag is ``create_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'create_link'
 
     def is_other(self):
         """
@@ -6991,8 +7046,7 @@ class ListSharedLinksResult(object):
         them.
     :ivar cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to obtain the
-        additional links. Cursor is returned only if no path is given or the
-        path is empty.
+        additional links. Cursor is returned only if no path is given.
     """
 
     __slots__ = [
@@ -7077,8 +7131,7 @@ class ListSharedLinksResult(object):
         """
         Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to obtain the
-        additional links. Cursor is returned only if no path is given or the
-        path is empty.
+        additional links. Cursor is returned only if no path is given.
 
         :rtype: str
         """
@@ -9752,6 +9805,10 @@ class SharePathError(bb.Union):
         shared folder.
     :ivar contains_shared_folder: We do not support shared folders that contain
         shared folders.
+    :ivar contains_app_folder: We do not support shared folders that contain app
+        folders.
+    :ivar contains_team_folder: We do not support shared folders that contain
+        team folders.
     :ivar is_app_folder: We do not support sharing an app folder.
     :ivar inside_app_folder: We do not support sharing a folder inside an app
         folder.
@@ -9765,6 +9822,8 @@ class SharePathError(bb.Union):
     :ivar is_osx_package: We do not support sharing a Mac OS X package.
     :ivar inside_osx_package: We do not support sharing a folder inside a Mac OS
         X package.
+    :ivar PathRootError invalid_path_root: The path root parameter provided is
+        invalid.
     """
 
     _catch_all = 'other'
@@ -9774,6 +9833,10 @@ class SharePathError(bb.Union):
     inside_shared_folder = None
     # Attribute is overwritten below the class definition
     contains_shared_folder = None
+    # Attribute is overwritten below the class definition
+    contains_app_folder = None
+    # Attribute is overwritten below the class definition
+    contains_team_folder = None
     # Attribute is overwritten below the class definition
     is_app_folder = None
     # Attribute is overwritten below the class definition
@@ -9802,6 +9865,17 @@ class SharePathError(bb.Union):
         """
         return cls('already_shared', val)
 
+    @classmethod
+    def invalid_path_root(cls, val):
+        """
+        Create an instance of this class set to the ``invalid_path_root`` tag
+        with value ``val``.
+
+        :param files.PathRootError_validator val:
+        :rtype: SharePathError
+        """
+        return cls('invalid_path_root', val)
+
     def is_is_file(self):
         """
         Check if the union tag is ``is_file``.
@@ -9825,6 +9899,22 @@ class SharePathError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'contains_shared_folder'
+
+    def is_contains_app_folder(self):
+        """
+        Check if the union tag is ``contains_app_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'contains_app_folder'
+
+    def is_contains_team_folder(self):
+        """
+        Check if the union tag is ``contains_team_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'contains_team_folder'
 
     def is_is_app_folder(self):
         """
@@ -9890,6 +9980,14 @@ class SharePathError(bb.Union):
         """
         return self._tag == 'inside_osx_package'
 
+    def is_invalid_path_root(self):
+        """
+        Check if the union tag is ``invalid_path_root``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_path_root'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -9909,6 +10007,18 @@ class SharePathError(bb.Union):
         """
         if not self.is_already_shared():
             raise AttributeError("tag 'already_shared' not set")
+        return self._value
+
+    def get_invalid_path_root(self):
+        """
+        The path root parameter provided is invalid.
+
+        Only call this if :meth:`is_invalid_path_root` is true.
+
+        :rtype: files.PathRootError_validator
+        """
+        if not self.is_invalid_path_root():
+            raise AttributeError("tag 'invalid_path_root' not set")
         return self._value
 
     def __repr__(self):
@@ -10099,6 +10209,10 @@ class SharedFileMetadata(object):
         API v1. Absent for unmounted files.
     :ivar name: The name of this file.
     :ivar id: The ID of the file.
+    :ivar time_invited: Timestamp indicating when the current user was invited
+        to this shared file. If the user was not invited to the shared file, the
+        timestamp will indicate when the user was invited to the parent shared
+        folder. This value may be absent.
     """
 
     __slots__ = [
@@ -10120,6 +10234,8 @@ class SharedFileMetadata(object):
         '_name_present',
         '_id_value',
         '_id_present',
+        '_time_invited_value',
+        '_time_invited_present',
     ]
 
     _has_required_fields = True
@@ -10133,7 +10249,8 @@ class SharedFileMetadata(object):
                  owner_team=None,
                  parent_shared_folder_id=None,
                  path_lower=None,
-                 path_display=None):
+                 path_display=None,
+                 time_invited=None):
         self._policy_value = None
         self._policy_present = False
         self._permissions_value = None
@@ -10152,6 +10269,8 @@ class SharedFileMetadata(object):
         self._name_present = False
         self._id_value = None
         self._id_present = False
+        self._time_invited_value = None
+        self._time_invited_present = False
         if policy is not None:
             self.policy = policy
         if permissions is not None:
@@ -10170,6 +10289,8 @@ class SharedFileMetadata(object):
             self.name = name
         if id is not None:
             self.id = id
+        if time_invited is not None:
+            self.time_invited = time_invited
 
     @property
     def policy(self):
@@ -10400,8 +10521,37 @@ class SharedFileMetadata(object):
         self._id_value = None
         self._id_present = False
 
+    @property
+    def time_invited(self):
+        """
+        Timestamp indicating when the current user was invited to this shared
+        file. If the user was not invited to the shared file, the timestamp will
+        indicate when the user was invited to the parent shared folder. This
+        value may be absent.
+
+        :rtype: datetime.datetime
+        """
+        if self._time_invited_present:
+            return self._time_invited_value
+        else:
+            return None
+
+    @time_invited.setter
+    def time_invited(self, val):
+        if val is None:
+            del self.time_invited
+            return
+        val = self._time_invited_validator.validate(val)
+        self._time_invited_value = val
+        self._time_invited_present = True
+
+    @time_invited.deleter
+    def time_invited(self):
+        self._time_invited_value = None
+        self._time_invited_present = False
+
     def __repr__(self):
-        return 'SharedFileMetadata(policy={!r}, preview_url={!r}, name={!r}, id={!r}, permissions={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r}, path_display={!r})'.format(
+        return 'SharedFileMetadata(policy={!r}, preview_url={!r}, name={!r}, id={!r}, permissions={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r}, path_display={!r}, time_invited={!r})'.format(
             self._policy_value,
             self._preview_url_value,
             self._name_value,
@@ -10411,6 +10561,7 @@ class SharedFileMetadata(object):
             self._parent_shared_folder_id_value,
             self._path_lower_value,
             self._path_display_value,
+            self._time_invited_value,
         )
 
 SharedFileMetadata_validator = bv.Struct(SharedFileMetadata)
@@ -13137,7 +13288,7 @@ GetSharedLinkFileArg_validator = GetSharedLinkMetadataArg_validator
 GetSharedLinkFileArg = GetSharedLinkMetadataArg
 Id_validator = files.Id_validator
 Path_validator = files.Path_validator
-PathOrId_validator = bv.String(min_length=1, pattern=u'((/|id:).*|nspath:[^:]*:[^:]*)')
+PathOrId_validator = bv.String(min_length=1, pattern=u'((/|id:).*|nspath:[0-9]+:.*)|ns:[0-9]+(/.*)?')
 ReadPath_validator = files.ReadPath_validator
 Rev_validator = files.Rev_validator
 TeamInfo_validator = users.Team_validator
@@ -13402,6 +13553,7 @@ FileAction._invite_viewer_no_comment_validator = bv.Void()
 FileAction._unshare_validator = bv.Void()
 FileAction._relinquish_membership_validator = bv.Void()
 FileAction._share_link_validator = bv.Void()
+FileAction._create_link_validator = bv.Void()
 FileAction._other_validator = bv.Void()
 FileAction._tagmap = {
     'edit_contents': FileAction._edit_contents_validator,
@@ -13410,6 +13562,7 @@ FileAction._tagmap = {
     'unshare': FileAction._unshare_validator,
     'relinquish_membership': FileAction._relinquish_membership_validator,
     'share_link': FileAction._share_link_validator,
+    'create_link': FileAction._create_link_validator,
     'other': FileAction._other_validator,
 }
 
@@ -13419,6 +13572,7 @@ FileAction.invite_viewer_no_comment = FileAction('invite_viewer_no_comment')
 FileAction.unshare = FileAction('unshare')
 FileAction.relinquish_membership = FileAction('relinquish_membership')
 FileAction.share_link = FileAction('share_link')
+FileAction.create_link = FileAction('create_link')
 FileAction.other = FileAction('other')
 
 FileErrorResult._file_not_found_error_validator = files.Id_validator
@@ -13496,10 +13650,12 @@ FileLinkMetadata._all_fields_ = SharedLinkMetadata._all_fields_ + FileLinkMetada
 
 FileMemberActionError._invalid_member_validator = bv.Void()
 FileMemberActionError._no_permission_validator = bv.Void()
+FileMemberActionError._access_error_validator = SharingFileAccessError_validator
 FileMemberActionError._other_validator = bv.Void()
 FileMemberActionError._tagmap = {
     'invalid_member': FileMemberActionError._invalid_member_validator,
     'no_permission': FileMemberActionError._no_permission_validator,
+    'access_error': FileMemberActionError._access_error_validator,
     'other': FileMemberActionError._other_validator,
 }
 
@@ -13560,6 +13716,7 @@ FolderAction._unmount_validator = bv.Void()
 FolderAction._unshare_validator = bv.Void()
 FolderAction._leave_a_copy_validator = bv.Void()
 FolderAction._share_link_validator = bv.Void()
+FolderAction._create_link_validator = bv.Void()
 FolderAction._other_validator = bv.Void()
 FolderAction._tagmap = {
     'change_options': FolderAction._change_options_validator,
@@ -13572,6 +13729,7 @@ FolderAction._tagmap = {
     'unshare': FolderAction._unshare_validator,
     'leave_a_copy': FolderAction._leave_a_copy_validator,
     'share_link': FolderAction._share_link_validator,
+    'create_link': FolderAction._create_link_validator,
     'other': FolderAction._other_validator,
 }
 
@@ -13585,6 +13743,7 @@ FolderAction.unmount = FolderAction('unmount')
 FolderAction.unshare = FolderAction('unshare')
 FolderAction.leave_a_copy = FolderAction('leave_a_copy')
 FolderAction.share_link = FolderAction('share_link')
+FolderAction.create_link = FolderAction('create_link')
 FolderAction.other = FolderAction('other')
 
 FolderLinkMetadata._field_names_ = set([])
@@ -14433,7 +14592,7 @@ RevokeSharedLinkError._tagmap.update(SharedLinkError._tagmap)
 
 RevokeSharedLinkError.shared_link_malformed = RevokeSharedLinkError('shared_link_malformed')
 
-ShareFolderArg._path_validator = files.Path_validator
+ShareFolderArg._path_validator = files.WritePath_validator
 ShareFolderArg._member_policy_validator = MemberPolicy_validator
 ShareFolderArg._acl_update_policy_validator = AclUpdatePolicy_validator
 ShareFolderArg._shared_link_policy_validator = SharedLinkPolicy_validator
@@ -14496,6 +14655,8 @@ ShareFolderLaunch._tagmap.update(async.LaunchResultBase._tagmap)
 SharePathError._is_file_validator = bv.Void()
 SharePathError._inside_shared_folder_validator = bv.Void()
 SharePathError._contains_shared_folder_validator = bv.Void()
+SharePathError._contains_app_folder_validator = bv.Void()
+SharePathError._contains_team_folder_validator = bv.Void()
 SharePathError._is_app_folder_validator = bv.Void()
 SharePathError._inside_app_folder_validator = bv.Void()
 SharePathError._is_public_folder_validator = bv.Void()
@@ -14504,11 +14665,14 @@ SharePathError._already_shared_validator = SharedFolderMetadata_validator
 SharePathError._invalid_path_validator = bv.Void()
 SharePathError._is_osx_package_validator = bv.Void()
 SharePathError._inside_osx_package_validator = bv.Void()
+SharePathError._invalid_path_root_validator = files.PathRootError_validator
 SharePathError._other_validator = bv.Void()
 SharePathError._tagmap = {
     'is_file': SharePathError._is_file_validator,
     'inside_shared_folder': SharePathError._inside_shared_folder_validator,
     'contains_shared_folder': SharePathError._contains_shared_folder_validator,
+    'contains_app_folder': SharePathError._contains_app_folder_validator,
+    'contains_team_folder': SharePathError._contains_team_folder_validator,
     'is_app_folder': SharePathError._is_app_folder_validator,
     'inside_app_folder': SharePathError._inside_app_folder_validator,
     'is_public_folder': SharePathError._is_public_folder_validator,
@@ -14517,12 +14681,15 @@ SharePathError._tagmap = {
     'invalid_path': SharePathError._invalid_path_validator,
     'is_osx_package': SharePathError._is_osx_package_validator,
     'inside_osx_package': SharePathError._inside_osx_package_validator,
+    'invalid_path_root': SharePathError._invalid_path_root_validator,
     'other': SharePathError._other_validator,
 }
 
 SharePathError.is_file = SharePathError('is_file')
 SharePathError.inside_shared_folder = SharePathError('inside_shared_folder')
 SharePathError.contains_shared_folder = SharePathError('contains_shared_folder')
+SharePathError.contains_app_folder = SharePathError('contains_app_folder')
+SharePathError.contains_team_folder = SharePathError('contains_team_folder')
 SharePathError.is_app_folder = SharePathError('is_app_folder')
 SharePathError.inside_app_folder = SharePathError('inside_app_folder')
 SharePathError.is_public_folder = SharePathError('is_public_folder')
@@ -14558,6 +14725,7 @@ SharedFileMetadata._path_lower_validator = bv.Nullable(bv.String())
 SharedFileMetadata._path_display_validator = bv.Nullable(bv.String())
 SharedFileMetadata._name_validator = bv.String()
 SharedFileMetadata._id_validator = FileId_validator
+SharedFileMetadata._time_invited_validator = bv.Nullable(common.DropboxTimestamp_validator)
 SharedFileMetadata._all_field_names_ = set([
     'policy',
     'permissions',
@@ -14568,6 +14736,7 @@ SharedFileMetadata._all_field_names_ = set([
     'path_display',
     'name',
     'id',
+    'time_invited',
 ])
 SharedFileMetadata._all_fields_ = [
     ('policy', SharedFileMetadata._policy_validator),
@@ -14579,6 +14748,7 @@ SharedFileMetadata._all_fields_ = [
     ('path_display', SharedFileMetadata._path_display_validator),
     ('name', SharedFileMetadata._name_validator),
     ('id', SharedFileMetadata._id_validator),
+    ('time_invited', SharedFileMetadata._time_invited_validator),
 ]
 
 SharedFolderAccessError._invalid_id_validator = bv.Void()

@@ -6659,15 +6659,15 @@ class MemberAddResult(bb.Union):
     :ivar str free_team_member_limit_reached: Team is already full. The free
         team member limit has been reached.
     :ivar str user_already_on_team: User is already on this team. The provided
-        email address is associated with a user who is already a member of or
-        invited to the team.
+        email address is associated with a user who is already a member of
+        (including in recoverable state) or invited to the team.
     :ivar str user_on_another_team: User is already on another team. The
         provided email address is associated with a user that is already a
         member or invited to another team.
     :ivar str user_already_paired: User is already paired.
     :ivar str user_migration_failed: User migration has failed.
     :ivar str duplicate_external_member_id: A user with the given external
-        member ID already exists on the team.
+        member ID already exists on the team (including in recoverable state).
     :ivar str user_creation_failed: User creation has failed.
     """
 
@@ -6883,7 +6883,8 @@ class MemberAddResult(bb.Union):
     def get_user_already_on_team(self):
         """
         User is already on this team. The provided email address is associated
-        with a user who is already a member of or invited to the team.
+        with a user who is already a member of (including in recoverable state)
+        or invited to the team.
 
         Only call this if :meth:`is_user_already_on_team` is true.
 
@@ -6933,7 +6934,8 @@ class MemberAddResult(bb.Union):
 
     def get_duplicate_external_member_id(self):
         """
-        A user with the given external member ID already exists on the team.
+        A user with the given external member ID already exists on the team
+        (including in recoverable state).
 
         Only call this if :meth:`is_duplicate_external_member_id` is true.
 
@@ -8407,6 +8409,8 @@ class MembersRecoverError(UserSelectorError):
 
     :ivar user_unrecoverable: The user is not recoverable.
     :ivar user_not_in_team: The user is not a member of the team.
+    :ivar team_license_limit: Team is full. The organization has no available
+        licenses.
     """
 
     _catch_all = 'other'
@@ -8414,6 +8418,8 @@ class MembersRecoverError(UserSelectorError):
     user_unrecoverable = None
     # Attribute is overwritten below the class definition
     user_not_in_team = None
+    # Attribute is overwritten below the class definition
+    team_license_limit = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -8432,6 +8438,14 @@ class MembersRecoverError(UserSelectorError):
         :rtype: bool
         """
         return self._tag == 'user_not_in_team'
+
+    def is_team_license_limit(self):
+        """
+        Check if the union tag is ``team_license_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_license_limit'
 
     def is_other(self):
         """
@@ -12573,16 +12587,19 @@ MembersRecoverArg._all_fields_ = [('user', MembersRecoverArg._user_validator)]
 
 MembersRecoverError._user_unrecoverable_validator = bv.Void()
 MembersRecoverError._user_not_in_team_validator = bv.Void()
+MembersRecoverError._team_license_limit_validator = bv.Void()
 MembersRecoverError._other_validator = bv.Void()
 MembersRecoverError._tagmap = {
     'user_unrecoverable': MembersRecoverError._user_unrecoverable_validator,
     'user_not_in_team': MembersRecoverError._user_not_in_team_validator,
+    'team_license_limit': MembersRecoverError._team_license_limit_validator,
     'other': MembersRecoverError._other_validator,
 }
 MembersRecoverError._tagmap.update(UserSelectorError._tagmap)
 
 MembersRecoverError.user_unrecoverable = MembersRecoverError('user_unrecoverable')
 MembersRecoverError.user_not_in_team = MembersRecoverError('user_not_in_team')
+MembersRecoverError.team_license_limit = MembersRecoverError('team_license_limit')
 MembersRecoverError.other = MembersRecoverError('other')
 
 MembersRemoveArg._transfer_dest_id_validator = bv.Nullable(UserSelectorArg_validator)

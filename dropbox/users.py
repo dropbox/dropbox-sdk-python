@@ -1077,6 +1077,8 @@ class Name(object):
         of a person's ``given_name`` and ``surname``.
     :ivar display_name: A name that can be used directly to represent the name
         of a user's Dropbox account.
+    :ivar abbreviated_name: An abbreviated form of the person's name. Their
+        initials in most locales.
     """
 
     __slots__ = [
@@ -1088,6 +1090,8 @@ class Name(object):
         '_familiar_name_present',
         '_display_name_value',
         '_display_name_present',
+        '_abbreviated_name_value',
+        '_abbreviated_name_present',
     ]
 
     _has_required_fields = True
@@ -1096,7 +1100,8 @@ class Name(object):
                  given_name=None,
                  surname=None,
                  familiar_name=None,
-                 display_name=None):
+                 display_name=None,
+                 abbreviated_name=None):
         self._given_name_value = None
         self._given_name_present = False
         self._surname_value = None
@@ -1105,6 +1110,8 @@ class Name(object):
         self._familiar_name_present = False
         self._display_name_value = None
         self._display_name_present = False
+        self._abbreviated_name_value = None
+        self._abbreviated_name_present = False
         if given_name is not None:
             self.given_name = given_name
         if surname is not None:
@@ -1113,6 +1120,8 @@ class Name(object):
             self.familiar_name = familiar_name
         if display_name is not None:
             self.display_name = display_name
+        if abbreviated_name is not None:
+            self.abbreviated_name = abbreviated_name
 
     @property
     def given_name(self):
@@ -1209,12 +1218,37 @@ class Name(object):
         self._display_name_value = None
         self._display_name_present = False
 
+    @property
+    def abbreviated_name(self):
+        """
+        An abbreviated form of the person's name. Their initials in most
+        locales.
+
+        :rtype: str
+        """
+        if self._abbreviated_name_present:
+            return self._abbreviated_name_value
+        else:
+            raise AttributeError("missing required field 'abbreviated_name'")
+
+    @abbreviated_name.setter
+    def abbreviated_name(self, val):
+        val = self._abbreviated_name_validator.validate(val)
+        self._abbreviated_name_value = val
+        self._abbreviated_name_present = True
+
+    @abbreviated_name.deleter
+    def abbreviated_name(self):
+        self._abbreviated_name_value = None
+        self._abbreviated_name_present = False
+
     def __repr__(self):
-        return 'Name(given_name={!r}, surname={!r}, familiar_name={!r}, display_name={!r})'.format(
+        return 'Name(given_name={!r}, surname={!r}, familiar_name={!r}, display_name={!r}, abbreviated_name={!r})'.format(
             self._given_name_value,
             self._surname_value,
             self._familiar_name_value,
             self._display_name_value,
+            self._abbreviated_name_value,
         )
 
 Name_validator = bv.Struct(Name)
@@ -1601,17 +1635,20 @@ Name._given_name_validator = bv.String()
 Name._surname_validator = bv.String()
 Name._familiar_name_validator = bv.String()
 Name._display_name_validator = bv.String()
+Name._abbreviated_name_validator = bv.String()
 Name._all_field_names_ = set([
     'given_name',
     'surname',
     'familiar_name',
     'display_name',
+    'abbreviated_name',
 ])
 Name._all_fields_ = [
     ('given_name', Name._given_name_validator),
     ('surname', Name._surname_validator),
     ('familiar_name', Name._familiar_name_validator),
     ('display_name', Name._display_name_validator),
+    ('abbreviated_name', Name._abbreviated_name_validator),
 ]
 
 SpaceAllocation._individual_validator = IndividualSpaceAllocation_validator
