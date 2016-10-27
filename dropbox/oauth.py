@@ -123,10 +123,6 @@ class DropboxOAuth2FlowBase(object):
 
         d = resp.json()
 
-        access_token = d["access_token"]
-        user_id = d["uid"]
-        print('BASE', d)
-
         return OAuth2FlowNoRedirectResult(
             d['access_token'],
             d['account_id'],
@@ -193,12 +189,12 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         auth_code = raw_input("Enter the authorization code here: ").strip()
 
         try:
-            access_token, user_id = auth_flow.finish(auth_code)
+            oauth_result = auth_flow.finish(auth_code)
         except Exception, e:
             print('Error: %s' % (e,))
             return
 
-        dbx = Dropbox(access_token)
+        dbx = Dropbox(oauth_result.access_token)
     """
 
     def __init__(self, consumer_key, consumer_secret, locale=None):
@@ -268,7 +264,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         # URL handler for /dropbox-auth-finish
         def dropbox_auth_finish(web_app_session, request):
             try:
-                access_token, user_id, url_state = \\
+                oauth_result = \\
                         get_dropbox_auth_flow(web_app_session).finish(
                             request.query_params)
             except BadRequestException, e:
