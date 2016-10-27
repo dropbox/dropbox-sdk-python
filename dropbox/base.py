@@ -92,7 +92,7 @@ class DropboxBase(object):
         larger than 150 MB. Instead, create an upload session with
         :meth:`files_upload_session_start`.
 
-        :param f: A string or file-like obj of data.
+        :param bytes f: Contents to upload.
         :param Nullable property_groups: List of custom properties to add to
             file.
         :rtype: :class:`dropbox.files.FileMetadata`
@@ -1190,7 +1190,7 @@ class DropboxBase(object):
         this to upload a file larger than 150 MB. Instead, create an upload
         session with :meth:`files_upload_session_start`.
 
-        :param f: A string or file-like obj of data.
+        :param bytes f: Contents to upload.
         :param str path: Path in the user's Dropbox to save the file.
         :param mode: Selects what to do if the file already exists.
         :type mode: :class:`dropbox.files.WriteMode`
@@ -1234,7 +1234,7 @@ class DropboxBase(object):
         Append more data to an upload session. A single request should not
         upload more than 150 MB of file contents.
 
-        :param f: A string or file-like obj of data.
+        :param bytes f: Contents to upload.
         :param str session_id: The upload session ID (returned by
             :meth:`files_upload_session_start`).
         :param long offset: The amount of data that has been uploaded so far. We
@@ -1269,7 +1269,7 @@ class DropboxBase(object):
         this call will close the session. A single request should not upload
         more than 150 MB of file contents.
 
-        :param f: A string or file-like obj of data.
+        :param bytes f: Contents to upload.
         :param cursor: Contains the upload session ID and the offset.
         :type cursor: :class:`dropbox.files.UploadSessionCursor`
         :param bool close: If true, the current session will be closed, at which
@@ -1301,7 +1301,7 @@ class DropboxBase(object):
         path. A single request should not upload more than 150 MB of file
         contents.
 
-        :param f: A string or file-like obj of data.
+        :param bytes f: Contents to upload.
         :param cursor: Contains the upload session ID and the offset.
         :type cursor: :class:`dropbox.files.UploadSessionCursor`
         :param commit: Contains the path and other optional modifiers for the
@@ -1390,7 +1390,7 @@ class DropboxBase(object):
         Dropbox. A single request should not upload more than 150 MB of file
         contents.
 
-        :param f: A string or file-like obj of data.
+        :param bytes f: Contents to upload.
         :param bool close: If true, the current session will be closed, at which
             point you won't be able to call
             :meth:`files_upload_session_append_v2` anymore with the current

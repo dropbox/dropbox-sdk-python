@@ -34,6 +34,20 @@ class Union(object):
         self._tag = tag
         self._value = value
 
+    def __eq__(self, other):
+        # Also need to check if one class is a subclass of another. If one union extends another,
+        # the common fields should be able to be compared to each other.
+        return (
+            isinstance(other, Union) and
+            (isinstance(self, other.__class__) or isinstance(other, self.__class__)) and
+            self._tag == other._tag and self._value == other._value
+        )
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __hash__(self):
+        return hash((self._tag, self._value))
 
 class Route(object):
 

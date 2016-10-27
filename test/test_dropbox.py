@@ -7,6 +7,11 @@ import string
 import sys
 import unittest
 
+try:
+    from StringIO import StringIO as BytesIO
+except ImportError:
+    from io import BytesIO
+
 from dropbox import (
     Dropbox,
     DropboxTeam,
@@ -45,6 +50,8 @@ def require_team_token(f):
 MALFORMED_TOKEN = 'asdf'
 INVALID_TOKEN = 'z' * 62
 
+# Need bytes type for Python3
+DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
 class TestDropbox(unittest.TestCase):
 
@@ -80,15 +87,19 @@ class TestDropbox(unittest.TestCase):
         timestamp = str(datetime.datetime.utcnow())
         random_filename = ''.join(random.sample(string.ascii_letters, 15))
         random_path = '/Test/%s/%s' % (timestamp, random_filename)
-        test_contents = string.ascii_letters
+        test_contents = DUMMY_PAYLOAD
         self.dbx.files_upload(test_contents, random_path)
 
         # Download file
         metadata, resp = self.dbx.files_download(random_path)
-        self.assertEqual(string.ascii_letters, resp.text)
+        self.assertEqual(DUMMY_PAYLOAD, resp.content)
 
         # Cleanup folder
         self.dbx.files_delete('/Test/%s' % timestamp)
+
+    def test_bad_upload_types(self):
+        with self.assertRaises(TypeError):
+            self.dbx.files_upload(BytesIO(b'test'), '/Test')
 
     @require_team_token
     def test_team(self, token):

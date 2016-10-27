@@ -291,7 +291,7 @@ class _DropboxTransport(object):
         :param route_style: The style of the route.
         :param str request_arg: A JSON-serializable Python object representing
             the argument for the route.
-        :param request_binary: String or file pointer representing the binary
+        :param Optional[bytes] request_binary: Bytes representing the binary
             payload. Use None if there is no binary payload.
         :param Optional[float] timeout: Maximum duration in seconds
             that client will wait for any single packet from the
@@ -375,6 +375,14 @@ class _DropboxTransport(object):
         """
         if host not in self._host_map:
             raise ValueError('Unknown value for host: %r' % host)
+
+        if not isinstance(request_binary, (six.binary_type, type(None))):
+            # Disallow streams and file-like objects even though the underlying
+            # requests library supports them. This is to prevent incorrect
+            # behavior when a non-rewindable stream is read from, but the
+            # request fails and needs to be re-tried at a later time.
+            raise TypeError('expected request_binary as binary type, got %s' %
+                            type(request_binary))
 
         # Fully qualified hostname
         fq_hostname = self._host_map[host]
