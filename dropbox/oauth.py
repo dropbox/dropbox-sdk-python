@@ -5,6 +5,8 @@ __all__ = [
     'DropboxOAuth2Flow',
     'DropboxOAuth2FlowNoRedirect',
     'NotApprovedException',
+    'OAuth2FlowNoRedirectResult',
+    'OAuth2FlowResult',
     'ProviderException',
 ]
 
@@ -23,6 +25,66 @@ else:
     url_encode = urllib.urlencode
 
 OAUTH_ROUTE_VERSION = '1'
+
+
+class OAuth2FlowNoRedirectResult(object):
+    """
+    Authorization information for an OAuth2Flow performed with no redirect.
+    """
+
+    def __init__(self, access_token, account_id, user_id):
+        """
+        Args:
+            access_token (str): Token to be used to authenticate later
+                requests.
+            account_id (str): The Dropbox user's account ID. Please use this
+                instead of the user_id.
+            user_id (str): For backwards compatibility with API v1, please
+                avoid using this if possible.
+        """
+        self.access_token = access_token
+        self.account_id = account_id
+        self.user_id = user_id
+
+    def __repr__(self):
+        return 'OAuth2FlowNoRedirectResult(%r, %r, %r)' % (
+            self.access_token,
+            self.account_id,
+            self.user_id,
+        )
+
+
+class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
+    """
+    Authorization information for an OAuth2Flow with redirect.
+    """
+
+    def __init__(self, access_token, account_id, user_id, url_state):
+        """
+        Same as OAuth2FlowNoRedirectResult but with url_state.
+
+        Args:
+            url_state (str): The url state that was set by
+                :meth:`DropboxOAuth2Flow.start`.
+        """
+        super(OAuth2FlowResult, self).__init__(
+            access_token, account_id, user_id)
+        self.url_state = url_state
+
+    @classmethod
+    def from_no_redirect_result(cls, result, url_state):
+        assert isinstance(result, OAuth2FlowNoRedirectResult)
+        return cls(
+            result.access_token, result.account_id, result.user_id, url_state)
+
+    def __repr__(self):
+        return 'OAuth2FlowResult(%r, %r, %r, %r)' % (
+            self.access_token,
+            self.account_id,
+            self.user_id,
+            self.url_state,
+        )
+
 
 class DropboxOAuth2FlowBase(object):
 
@@ -63,8 +125,12 @@ class DropboxOAuth2FlowBase(object):
 
         access_token = d["access_token"]
         user_id = d["uid"]
+        print('BASE', d)
 
-        return access_token, user_id
+        return OAuth2FlowNoRedirectResult(
+            d['access_token'],
+            d['account_id'],
+            d['uid'])
 
     def build_path(self, target, params=None):
         """Build the path component for an API URL.
@@ -170,9 +236,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
 
         :param str code: The authorization code shown to the user when they
             approved your app.
-        :return: A pair of ``(access_token, user_id)``.  ``access_token`` is a
-            string that can be passed to Dropbox.  ``user_id`` is the
-            Dropbox user ID (string) of the user that just approved your app.
+        :rtype: OAuth2FlowNoRedirectResult
         :raises: The same exceptions as :meth:`DropboxOAuth2Flow.finish()`.
         """
         return self._finish(code, None)
@@ -288,11 +352,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
         :param dict query_params: The query parameters on the GET request to
             your redirect URI.
-        :return: A tuple of ``(access_token, user_id, url_state)``.
-            ``access_token`` can be used to construct a
-            :class:`dropbox.dropbox.Dropbox`. ``user_id`` is the Dropbox user
-            ID (string) of the user that just approved your app. ``url_state``
-            is the value you originally passed in to :meth:`start()`.
+        :rtype: OAuth2FlowResult
         :raises: :class:`BadRequestException` If the redirect URL was missing
             parameters or if the given parameters were not valid.
         :raises: :class:`BadStateException` If there's no CSRF token in the
@@ -366,8 +426,9 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
         # If everything went ok, make the network call to get an access token.
 
-        access_token, user_id = self._finish(code, self.redirect_uri)
-        return access_token, user_id, url_state
+        no_redirect_result = self._finish(code, self.redirect_uri)
+        return OAuth2FlowResult.from_no_redirect_result(
+            no_redirect_result, url_state)
 
 
 class BadRequestException(Exception):
