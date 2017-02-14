@@ -62,7 +62,7 @@ def main():
         print(rootdir, 'does not exist on your filesystem')
         sys.exit(1)
     elif not os.path.isdir(rootdir):
-        print(rootdir, 'is not a foldder on your filesystem')
+        print(rootdir, 'is not a folder on your filesystem')
         sys.exit(1)
 
     dbx = dropbox.Dropbox(args.token)
@@ -137,7 +137,7 @@ def list_folder(dbx, folder, subfolder):
         with stopwatch('list_folder'):
             res = dbx.files_list_folder(path)
     except dropbox.exceptions.ApiError as err:
-        print('Folder listing failed for', path, '-- assumped empty:', err)
+        print('Folder listing failed for', path, '-- assumed empty:', err)
         return {}
     else:
         rv = {}
