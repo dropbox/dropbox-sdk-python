@@ -1042,6 +1042,62 @@ class DeleteBatchJobStatus(async.PollResultBase):
 
 DeleteBatchJobStatus_validator = bv.Union(DeleteBatchJobStatus)
 
+class DeleteBatchLaunch(async.LaunchResultBase):
+    """
+    Result returned by :meth:`dropbox.dropbox.Dropbox.files_delete_batch` that
+    may either launch an asynchronous job or complete synchronously.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param DeleteBatchResult val:
+        :rtype: DeleteBatchLaunch
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: DeleteBatchResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'DeleteBatchLaunch(%r, %r)' % (self._tag, self._value)
+
+DeleteBatchLaunch_validator = bv.Union(DeleteBatchLaunch)
+
 class DeleteBatchResult(object):
 
     __slots__ = [
@@ -1296,7 +1352,8 @@ class Metadata(object):
     :ivar path_display: The cased path to be used for display purposes only. In
         rare instances the casing will not correctly match the user's
         filesystem, but this behavior will match the path provided in the Core
-        API v1. Changes to the casing of paths won't be returned by
+        API v1, and at least the last path component will have the correct
+        casing. Changes to only the casing of paths won't be returned by
         :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`. This field
         will be null if the file or folder is not mounted.
     :ivar parent_shared_folder_id: Deprecated. Please use
@@ -1395,8 +1452,9 @@ class Metadata(object):
         """
         The cased path to be used for display purposes only. In rare instances
         the casing will not correctly match the user's filesystem, but this
-        behavior will match the path provided in the Core API v1. Changes to the
-        casing of paths won't be returned by
+        behavior will match the path provided in the Core API v1, and at least
+        the last path component will have the correct casing. Changes to only
+        the casing of paths won't be returned by
         :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`. This field
         will be null if the file or folder is not mounted.
 
@@ -1735,6 +1793,9 @@ class FileMetadata(Metadata):
         This is different from sharing_info in that this could be true  in the
         case where a file has explicit members but is not contained within  a
         shared folder.
+    :ivar content_hash: A hash of the file content. This field can be used to
+        verify data integrity. For more information see our `Content hash
+        </developers/reference/content-hash>`_ page.
     """
 
     __slots__ = [
@@ -1756,6 +1817,8 @@ class FileMetadata(Metadata):
         '_property_groups_present',
         '_has_explicit_shared_members_value',
         '_has_explicit_shared_members_present',
+        '_content_hash_value',
+        '_content_hash_present',
     ]
 
     _has_required_fields = True
@@ -1773,7 +1836,8 @@ class FileMetadata(Metadata):
                  media_info=None,
                  sharing_info=None,
                  property_groups=None,
-                 has_explicit_shared_members=None):
+                 has_explicit_shared_members=None,
+                 content_hash=None):
         super(FileMetadata, self).__init__(name,
                                            path_lower,
                                            path_display,
@@ -1796,6 +1860,8 @@ class FileMetadata(Metadata):
         self._property_groups_present = False
         self._has_explicit_shared_members_value = None
         self._has_explicit_shared_members_present = False
+        self._content_hash_value = None
+        self._content_hash_present = False
         if id is not None:
             self.id = id
         if client_modified is not None:
@@ -1814,6 +1880,8 @@ class FileMetadata(Metadata):
             self.property_groups = property_groups
         if has_explicit_shared_members is not None:
             self.has_explicit_shared_members = has_explicit_shared_members
+        if content_hash is not None:
+            self.content_hash = content_hash
 
     @property
     def id(self):
@@ -2047,8 +2115,36 @@ class FileMetadata(Metadata):
         self._has_explicit_shared_members_value = None
         self._has_explicit_shared_members_present = False
 
+    @property
+    def content_hash(self):
+        """
+        A hash of the file content. This field can be used to verify data
+        integrity. For more information see our `Content hash
+        </developers/reference/content-hash>`_ page.
+
+        :rtype: str
+        """
+        if self._content_hash_present:
+            return self._content_hash_value
+        else:
+            return None
+
+    @content_hash.setter
+    def content_hash(self, val):
+        if val is None:
+            del self.content_hash
+            return
+        val = self._content_hash_validator.validate(val)
+        self._content_hash_value = val
+        self._content_hash_present = True
+
+    @content_hash.deleter
+    def content_hash(self):
+        self._content_hash_value = None
+        self._content_hash_present = False
+
     def __repr__(self):
-        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, sharing_info={!r}, property_groups={!r}, has_explicit_shared_members={!r})'.format(
+        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, sharing_info={!r}, property_groups={!r}, has_explicit_shared_members={!r}, content_hash={!r})'.format(
             self._name_value,
             self._id_value,
             self._client_modified_value,
@@ -2062,6 +2158,7 @@ class FileMetadata(Metadata):
             self._sharing_info_value,
             self._property_groups_value,
             self._has_explicit_shared_members_value,
+            self._content_hash_value,
         )
 
 FileMetadata_validator = bv.Struct(FileMetadata)
@@ -5120,6 +5217,8 @@ class RelocationError(bb.Union):
     :ivar cant_move_folder_into_itself: You cannot move a folder into itself.
     :ivar too_many_files: The operation would involve more than 10,000 files and
         folders.
+    :ivar duplicated_or_nested_paths: There are duplicated/nested paths among
+        ``RelocationArg.from_path`` and ``RelocationArg.to_path``.
     """
 
     _catch_all = 'other'
@@ -5131,6 +5230,8 @@ class RelocationError(bb.Union):
     cant_move_folder_into_itself = None
     # Attribute is overwritten below the class definition
     too_many_files = None
+    # Attribute is overwritten below the class definition
+    duplicated_or_nested_paths = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -5223,6 +5324,14 @@ class RelocationError(bb.Union):
         """
         return self._tag == 'too_many_files'
 
+    def is_duplicated_or_nested_paths(self):
+        """
+        Check if the union tag is ``duplicated_or_nested_paths``.
+
+        :rtype: bool
+        """
+        return self._tag == 'duplicated_or_nested_paths'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -5272,24 +5381,12 @@ class RelocationBatchError(RelocationError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar duplicated_or_nested_paths: There are duplicated/nested paths among
-        ``RelocationArg.from_path`` and ``RelocationArg.to_path``.
     :ivar too_many_write_operations: There are too many write operations in
         user's Dropbox. Please retry this request.
     """
 
     # Attribute is overwritten below the class definition
-    duplicated_or_nested_paths = None
-    # Attribute is overwritten below the class definition
     too_many_write_operations = None
-
-    def is_duplicated_or_nested_paths(self):
-        """
-        Check if the union tag is ``duplicated_or_nested_paths``.
-
-        :rtype: bool
-        """
-        return self._tag == 'duplicated_or_nested_paths'
 
     def is_too_many_write_operations(self):
         """
@@ -5382,6 +5479,63 @@ class RelocationBatchJobStatus(async.PollResultBase):
         return 'RelocationBatchJobStatus(%r, %r)' % (self._tag, self._value)
 
 RelocationBatchJobStatus_validator = bv.Union(RelocationBatchJobStatus)
+
+class RelocationBatchLaunch(async.LaunchResultBase):
+    """
+    Result returned by :meth:`dropbox.dropbox.Dropbox.files_copy_batch` or
+    :meth:`dropbox.dropbox.Dropbox.files_move_batch` that may either launch an
+    asynchronous job or complete synchronously.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param RelocationBatchResult val:
+        :rtype: RelocationBatchLaunch
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: RelocationBatchResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'RelocationBatchLaunch(%r, %r)' % (self._tag, self._value)
+
+RelocationBatchLaunch_validator = bv.Union(RelocationBatchLaunch)
 
 class RelocationBatchResult(object):
 
@@ -7719,6 +7873,63 @@ class UploadSessionFinishBatchJobStatus(async.PollResultBase):
 
 UploadSessionFinishBatchJobStatus_validator = bv.Union(UploadSessionFinishBatchJobStatus)
 
+class UploadSessionFinishBatchLaunch(async.LaunchResultBase):
+    """
+    Result returned by
+    :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish_batch` that may
+    either launch an asynchronous job or complete synchronously.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param UploadSessionFinishBatchResult val:
+        :rtype: UploadSessionFinishBatchLaunch
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: UploadSessionFinishBatchResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UploadSessionFinishBatchLaunch(%r, %r)' % (self._tag, self._value)
+
+UploadSessionFinishBatchLaunch_validator = bv.Union(UploadSessionFinishBatchLaunch)
+
 class UploadSessionFinishBatchResult(object):
     """
     :ivar entries: Commit result for each file in the batch.
@@ -8542,9 +8753,9 @@ class WriteMode(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar add: Never overwrite the existing file. The autorename strategy is to
-        append a number to the file name. For example, "document.txt" might
-        become "document (2).txt".
+    :ivar add: Do not overwrite an existing file if there is a conflict. The
+        autorename strategy is to append a number to the file name. For example,
+        "document.txt" might become "document (2).txt".
     :ivar overwrite: Always overwrite the existing file. The autorename strategy
         is the same as it is for ``add``.
     :ivar str update: Overwrite if the given "rev" matches the existing file's
@@ -8622,6 +8833,7 @@ PathOrId_validator = bv.String(pattern=u'/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)'
 PathR_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?|(ns:[0-9]+(/.*)?)')
 ReadPath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/.*)?)')
 Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
+Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
 WritePath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
 PropertiesError._path_validator = LookupError_validator
 PropertiesError._tagmap = {
@@ -8750,6 +8962,16 @@ DeleteBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
 
 DeleteBatchJobStatus.other = DeleteBatchJobStatus('other')
 
+DeleteBatchLaunch._complete_validator = DeleteBatchResult_validator
+DeleteBatchLaunch._other_validator = bv.Void()
+DeleteBatchLaunch._tagmap = {
+    'complete': DeleteBatchLaunch._complete_validator,
+    'other': DeleteBatchLaunch._other_validator,
+}
+DeleteBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+
+DeleteBatchLaunch.other = DeleteBatchLaunch('other')
+
 DeleteBatchResult._entries_validator = bv.List(DeleteBatchResultEntry_validator)
 DeleteBatchResult._all_field_names_ = set(['entries'])
 DeleteBatchResult._all_fields_ = [('entries', DeleteBatchResult._entries_validator)]
@@ -8852,6 +9074,7 @@ FileMetadata._media_info_validator = bv.Nullable(MediaInfo_validator)
 FileMetadata._sharing_info_validator = bv.Nullable(FileSharingInfo_validator)
 FileMetadata._property_groups_validator = bv.Nullable(bv.List(properties.PropertyGroup_validator))
 FileMetadata._has_explicit_shared_members_validator = bv.Nullable(bv.Boolean())
+FileMetadata._content_hash_validator = bv.Nullable(Sha256HexHash_validator)
 FileMetadata._field_names_ = set([
     'id',
     'client_modified',
@@ -8862,6 +9085,7 @@ FileMetadata._field_names_ = set([
     'sharing_info',
     'property_groups',
     'has_explicit_shared_members',
+    'content_hash',
 ])
 FileMetadata._all_field_names_ = Metadata._all_field_names_.union(FileMetadata._field_names_)
 FileMetadata._fields_ = [
@@ -8874,6 +9098,7 @@ FileMetadata._fields_ = [
     ('sharing_info', FileMetadata._sharing_info_validator),
     ('property_groups', FileMetadata._property_groups_validator),
     ('has_explicit_shared_members', FileMetadata._has_explicit_shared_members_validator),
+    ('content_hash', FileMetadata._content_hash_validator),
 ]
 FileMetadata._all_fields_ = Metadata._all_fields_ + FileMetadata._fields_
 
@@ -9284,6 +9509,7 @@ RelocationError._cant_copy_shared_folder_validator = bv.Void()
 RelocationError._cant_nest_shared_folder_validator = bv.Void()
 RelocationError._cant_move_folder_into_itself_validator = bv.Void()
 RelocationError._too_many_files_validator = bv.Void()
+RelocationError._duplicated_or_nested_paths_validator = bv.Void()
 RelocationError._other_validator = bv.Void()
 RelocationError._tagmap = {
     'from_lookup': RelocationError._from_lookup_validator,
@@ -9293,6 +9519,7 @@ RelocationError._tagmap = {
     'cant_nest_shared_folder': RelocationError._cant_nest_shared_folder_validator,
     'cant_move_folder_into_itself': RelocationError._cant_move_folder_into_itself_validator,
     'too_many_files': RelocationError._too_many_files_validator,
+    'duplicated_or_nested_paths': RelocationError._duplicated_or_nested_paths_validator,
     'other': RelocationError._other_validator,
 }
 
@@ -9300,17 +9527,15 @@ RelocationError.cant_copy_shared_folder = RelocationError('cant_copy_shared_fold
 RelocationError.cant_nest_shared_folder = RelocationError('cant_nest_shared_folder')
 RelocationError.cant_move_folder_into_itself = RelocationError('cant_move_folder_into_itself')
 RelocationError.too_many_files = RelocationError('too_many_files')
+RelocationError.duplicated_or_nested_paths = RelocationError('duplicated_or_nested_paths')
 RelocationError.other = RelocationError('other')
 
-RelocationBatchError._duplicated_or_nested_paths_validator = bv.Void()
 RelocationBatchError._too_many_write_operations_validator = bv.Void()
 RelocationBatchError._tagmap = {
-    'duplicated_or_nested_paths': RelocationBatchError._duplicated_or_nested_paths_validator,
     'too_many_write_operations': RelocationBatchError._too_many_write_operations_validator,
 }
 RelocationBatchError._tagmap.update(RelocationError._tagmap)
 
-RelocationBatchError.duplicated_or_nested_paths = RelocationBatchError('duplicated_or_nested_paths')
 RelocationBatchError.too_many_write_operations = RelocationBatchError('too_many_write_operations')
 
 RelocationBatchJobStatus._complete_validator = RelocationBatchResult_validator
@@ -9320,6 +9545,16 @@ RelocationBatchJobStatus._tagmap = {
     'failed': RelocationBatchJobStatus._failed_validator,
 }
 RelocationBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
+
+RelocationBatchLaunch._complete_validator = RelocationBatchResult_validator
+RelocationBatchLaunch._other_validator = bv.Void()
+RelocationBatchLaunch._tagmap = {
+    'complete': RelocationBatchLaunch._complete_validator,
+    'other': RelocationBatchLaunch._other_validator,
+}
+RelocationBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+
+RelocationBatchLaunch.other = RelocationBatchLaunch('other')
 
 RelocationBatchResult._entries_validator = bv.List(RelocationResult_validator)
 RelocationBatchResult._all_field_names_ = set(['entries'])
@@ -9663,6 +9898,16 @@ UploadSessionFinishBatchJobStatus._tagmap = {
 }
 UploadSessionFinishBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
 
+UploadSessionFinishBatchLaunch._complete_validator = UploadSessionFinishBatchResult_validator
+UploadSessionFinishBatchLaunch._other_validator = bv.Void()
+UploadSessionFinishBatchLaunch._tagmap = {
+    'complete': UploadSessionFinishBatchLaunch._complete_validator,
+    'other': UploadSessionFinishBatchLaunch._other_validator,
+}
+UploadSessionFinishBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+
+UploadSessionFinishBatchLaunch.other = UploadSessionFinishBatchLaunch('other')
+
 UploadSessionFinishBatchResult._entries_validator = bv.List(UploadSessionFinishBatchResultEntry_validator)
 UploadSessionFinishBatchResult._all_field_names_ = set(['entries'])
 UploadSessionFinishBatchResult._all_fields_ = [('entries', UploadSessionFinishBatchResult._entries_validator)]
@@ -9814,7 +10059,7 @@ copy_batch = bb.Route(
     'copy_batch',
     False,
     RelocationBatchArg_validator,
-    async.LaunchEmptyResult_validator,
+    RelocationBatchLaunch_validator,
     bv.Void(),
     {'host': u'api',
      'style': u'rpc'},
@@ -9868,7 +10113,7 @@ delete_batch = bb.Route(
     'delete_batch',
     False,
     DeleteBatchArg_validator,
-    async.LaunchEmptyResult_validator,
+    DeleteBatchLaunch_validator,
     bv.Void(),
     {'host': u'api',
      'style': u'rpc'},
@@ -9985,7 +10230,7 @@ move_batch = bb.Route(
     'move_batch',
     False,
     RelocationBatchArg_validator,
-    async.LaunchEmptyResult_validator,
+    RelocationBatchLaunch_validator,
     bv.Void(),
     {'host': u'api',
      'style': u'rpc'},
@@ -10138,7 +10383,7 @@ upload_session_finish_batch = bb.Route(
     'upload_session/finish_batch',
     False,
     UploadSessionFinishBatchArg_validator,
-    async.LaunchEmptyResult_validator,
+    UploadSessionFinishBatchLaunch_validator,
     bv.Void(),
     {'host': u'api',
      'style': u'rpc'},

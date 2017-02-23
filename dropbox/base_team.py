@@ -7,6 +7,7 @@ from . import (
     async,
     auth,
     files,
+    paper,
     properties,
     sharing,
     team,
@@ -25,138 +26,6 @@ class DropboxTeamBase(object):
 
     # ------------------------------------------
     # Routes in team namespace
-
-    def team_alpha_groups_create(self,
-                                 group_name,
-                                 group_external_id=None,
-                                 group_management_type=None):
-        """
-        Creates a new, empty group, with a requested name. Permission : Team
-        member management
-
-        :param str group_name: Group name.
-        :param Nullable group_external_id: The creator of a team can associate
-            an arbitrary external ID to the group.
-        :param Nullable group_management_type: Whether the team can be managed
-            by selected users, or only by team admins
-        :rtype: :class:`dropbox.team.GroupFullInfo`
-        :raises: :class:`dropbox.exceptions.ApiError`
-
-        If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.GroupCreateError`
-        """
-        arg = team.GroupCreateArg(group_name,
-                                  group_external_id,
-                                  group_management_type)
-        r = self.request(
-            team.alpha_groups_create,
-            'team',
-            arg,
-            None,
-        )
-        return r
-
-    def team_alpha_groups_get_info(self,
-                                   arg):
-        """
-        Retrieves information about one or more groups. Permission : Team
-        Information
-
-        :param arg: Argument for selecting a list of groups, either by
-            group_ids, or external group IDs.
-        :type arg: :class:`dropbox.team.GroupsSelector`
-        :rtype: list
-        :raises: :class:`dropbox.exceptions.ApiError`
-
-        If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.GroupsGetInfoError`
-        """
-        r = self.request(
-            team.alpha_groups_get_info,
-            'team',
-            arg,
-            None,
-        )
-        return r
-
-    def team_alpha_groups_list(self,
-                               limit=1000):
-        """
-        Lists groups on a team. Permission : Team Information
-
-        :param long limit: Number of results to return per call.
-        :rtype: :class:`dropbox.team.GroupsListResult`
-        """
-        arg = team.GroupsListArg(limit)
-        r = self.request(
-            team.alpha_groups_list,
-            'team',
-            arg,
-            None,
-        )
-        return r
-
-    def team_alpha_groups_list_continue(self,
-                                        cursor):
-        """
-        Once a cursor has been retrieved from :meth:`team_alpha_groups_list`,
-        use this to paginate through all groups. Permission : Team information
-
-        :param str cursor: Indicates from what point to get the next set of
-            groups.
-        :rtype: :class:`dropbox.team.GroupsListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
-
-        If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.GroupsListContinueError`
-        """
-        arg = team.GroupsListContinueArg(cursor)
-        r = self.request(
-            team.alpha_groups_list_continue,
-            'team',
-            arg,
-            None,
-        )
-        return r
-
-    def team_alpha_groups_update(self,
-                                 group,
-                                 return_members=True,
-                                 new_group_name=None,
-                                 new_group_external_id=None,
-                                 new_group_management_type=None):
-        """
-        Updates a group's name, external ID or management type. Permission :
-        Team member management
-
-        :param group: Specify a group.
-        :type group: :class:`dropbox.team.GroupSelector`
-        :param Nullable new_group_name: Optional argument. Set group name to
-            this if provided.
-        :param Nullable new_group_external_id: Optional argument. New group
-            external ID. If the argument is None, the group's external_id won't
-            be updated. If the argument is empty string, the group's external id
-            will be cleared.
-        :param Nullable new_group_management_type: Set new group management
-            type, if provided.
-        :rtype: :class:`dropbox.team.GroupFullInfo`
-        :raises: :class:`dropbox.exceptions.ApiError`
-
-        If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.GroupUpdateError`
-        """
-        arg = team.GroupUpdateArgs(group,
-                                   return_members,
-                                   new_group_name,
-                                   new_group_external_id,
-                                   new_group_management_type)
-        r = self.request(
-            team.alpha_groups_update,
-            'team',
-            arg,
-            None,
-        )
-        return r
 
     def team_devices_list_member_devices(self,
                                          team_member_id,
@@ -331,13 +200,13 @@ class DropboxTeamBase(object):
                            group_management_type=None):
         """
         Creates a new, empty group, with a requested name. Permission : Team
-        member management
+        member management.
 
         :param str group_name: Group name.
         :param Nullable group_external_id: The creator of a team can associate
             an arbitrary external ID to the group.
         :param Nullable group_management_type: Whether the team can be managed
-            by selected users, or only by team admins
+            by selected users, or only by team admins.
         :rtype: :class:`dropbox.team.GroupFullInfo`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -361,7 +230,7 @@ class DropboxTeamBase(object):
         Deletes a group. The group is deleted immediately. However the revoking
         of group-owned resources may take additional time. Use the
         :meth:`team_groups_job_status_get` to determine whether this process has
-        completed. Permission : Team member management
+        completed. Permission : Team member management.
 
         :param arg: Argument for selecting a single group, either by group_id or
             by external group ID.
@@ -383,8 +252,9 @@ class DropboxTeamBase(object):
     def team_groups_get_info(self,
                              arg):
         """
-        Retrieves information about one or more groups. Permission : Team
-        Information
+        Retrieves information about one or more groups. Note that the optional
+        field  ``GroupFullInfo.members`` is not returned for system-managed
+        groups. Permission : Team Information.
 
         :param arg: Argument for selecting a list of groups, either by
             group_ids, or external group IDs.
@@ -409,7 +279,7 @@ class DropboxTeamBase(object):
         Once an async_job_id is returned from :meth:`team_groups_delete`,
         :meth:`team_groups_members_add` , or :meth:`team_groups_members_remove`
         use this method to poll the status of granting/revoking group members'
-        access to group-owned resources. Permission : Team member management
+        access to group-owned resources. Permission : Team member management.
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -431,7 +301,7 @@ class DropboxTeamBase(object):
     def team_groups_list(self,
                          limit=1000):
         """
-        Lists groups on a team. Permission : Team Information
+        Lists groups on a team. Permission : Team Information.
 
         :param long limit: Number of results to return per call.
         :rtype: :class:`dropbox.team.GroupsListResult`
@@ -449,7 +319,7 @@ class DropboxTeamBase(object):
                                   cursor):
         """
         Once a cursor has been retrieved from :meth:`team_groups_list`, use this
-        to paginate through all groups. Permission : Team information
+        to paginate through all groups. Permission : Team Information.
 
         :param str cursor: Indicates from what point to get the next set of
             groups.
@@ -476,7 +346,7 @@ class DropboxTeamBase(object):
         Adds members to a group. The members are added immediately. However the
         granting of group-owned resources may take additional time. Use the
         :meth:`team_groups_job_status_get` to determine whether this process has
-        completed. Permission : Team member management
+        completed. Permission : Team member management.
 
         :param group: Group to which users will be added.
         :type group: :class:`dropbox.team.GroupSelector`
@@ -502,7 +372,7 @@ class DropboxTeamBase(object):
                                  group,
                                  limit=1000):
         """
-        Lists members of a group. Permission : Team Information
+        Lists members of a group. Permission : Team Information.
 
         :param group: The group whose members are to be listed.
         :type group: :class:`dropbox.team.GroupSelector`
@@ -528,7 +398,7 @@ class DropboxTeamBase(object):
         """
         Once a cursor has been retrieved from :meth:`team_groups_members_list`,
         use this to paginate through all members of the group. Permission : Team
-        information
+        information.
 
         :param str cursor: Indicates from what point to get the next set of
             groups.
@@ -557,7 +427,7 @@ class DropboxTeamBase(object):
         Use the :meth:`team_groups_job_status_get` to determine whether this
         process has completed. This method permits removing the only owner of a
         group, even in cases where this is not possible via the web client.
-        Permission : Team member management
+        Permission : Team member management.
 
         :param group: Group from which users will be removed.
         :type group: :class:`dropbox.team.GroupSelector`
@@ -586,7 +456,7 @@ class DropboxTeamBase(object):
                                             return_members=True):
         """
         Sets a member's access type in a group. Permission : Team member
-        management
+        management.
 
         :param access_type: New group access type the user will have.
         :type access_type: :class:`dropbox.team.GroupAccessType`
@@ -620,7 +490,7 @@ class DropboxTeamBase(object):
                            new_group_management_type=None):
         """
         Updates a group's name and/or external ID. Permission : Team member
-        management
+        management.
 
         :param group: Specify a group.
         :type group: :class:`dropbox.team.GroupSelector`
@@ -937,13 +807,14 @@ class DropboxTeamBase(object):
         """
         Removes a member from a team. Permission : Team member management
         Exactly one of team_member_id, email, or external_id must be provided to
-        identify the user account. This is not a deactivation where the account
-        can be re-activated again. Calling :meth:`team_members_add` with the
-        removed user's email address will create a new account with a new
-        team_member_id that will not have access to any content that was shared
-        with the initial account. This endpoint may initiate an asynchronous
-        job. To obtain the final result of the job, the client should
-        periodically poll :meth:`team_members_remove_job_status_get`.
+        identify the user account. Accounts can be recovered via
+        :meth:`team_members_recover` for a 7 day period or until the account has
+        been permanently deleted or transferred to another account (whichever
+        comes first). Calling :meth:`team_members_add` while a user is still
+        recoverable on your team will return with
+        ``MemberAddResult.user_already_on_team``. This endpoint may initiate an
+        asynchronous job. To obtain the final result of the job, the client
+        should periodically poll :meth:`team_members_remove_job_status_get`.
 
         :param Nullable transfer_dest_id: If provided, files from the deleted
             member account will be transferred to this user.
@@ -954,7 +825,8 @@ class DropboxTeamBase(object):
         :param bool keep_account: Downgrade the member to a Basic account. The
             user will retain the email address associated with their Dropbox
             account and data in their account that is not restricted to team
-            members.
+            members. In order to keep the account the argument wipe_data should
+            be set to False.
         :rtype: :class:`dropbox.team.LaunchEmptyResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1054,7 +926,8 @@ class DropboxTeamBase(object):
                                  new_email=None,
                                  new_external_id=None,
                                  new_given_name=None,
-                                 new_surname=None):
+                                 new_surname=None,
+                                 new_persistent_id=None):
         """
         Updates a team member's profile. Permission : Team member management
 
@@ -1064,6 +937,8 @@ class DropboxTeamBase(object):
         :param Nullable new_external_id: New external ID for member.
         :param Nullable new_given_name: New given name for member.
         :param Nullable new_surname: New surname for member.
+        :param Nullable new_persistent_id: New persistent ID. This field only
+            available to teams using persistent ID SAML configuration.
         :rtype: :class:`dropbox.team.TeamMemberInfo`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1074,7 +949,8 @@ class DropboxTeamBase(object):
                                         new_email,
                                         new_external_id,
                                         new_given_name,
-                                        new_surname)
+                                        new_surname,
+                                        new_persistent_id)
         r = self.request(
             team.members_set_profile,
             'team',
@@ -1328,6 +1204,171 @@ class DropboxTeamBase(object):
                              end_date)
         r = self.request(
             team.reports_get_storage,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_activate(self,
+                                  team_folder_id):
+        """
+        Sets an archived team folder's status to active. Permission : Team
+        member file access.
+
+        :param str team_folder_id: The ID of the team folder.
+        :rtype: :class:`dropbox.team.TeamFolderMetadata`
+        """
+        arg = team.TeamFolderIdArg(team_folder_id)
+        r = self.request(
+            team.team_folder_activate,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_archive(self,
+                                 team_folder_id,
+                                 force_async_off=False):
+        """
+        Sets an active team folder's status to archived and removes all folder
+        and file members. Permission : Team member file access.
+
+        :param bool force_async_off: Whether to force the archive to happen
+            synchronously.
+        :rtype: :class:`dropbox.team.TeamFolderArchiveLaunch`
+        """
+        arg = team.TeamFolderArchiveArg(team_folder_id,
+                                        force_async_off)
+        r = self.request(
+            team.team_folder_archive,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_archive_check(self,
+                                       async_job_id):
+        """
+        Returns the status of an asynchronous job for archiving a team folder.
+        Permission : Team member file access.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.team.TeamFolderArchiveJobStatus`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.PollError`
+        """
+        arg = async.PollArg(async_job_id)
+        r = self.request(
+            team.team_folder_archive_check,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_create(self,
+                                name):
+        """
+        Creates a new, active, team folder. Permission : Team member file
+        access.
+
+        :param str name: Name for the new team folder.
+        :rtype: :class:`dropbox.team.TeamFolderMetadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.TeamFolderCreateError`
+        """
+        arg = team.TeamFolderCreateArg(name)
+        r = self.request(
+            team.team_folder_create,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_get_info(self,
+                                  team_folder_ids):
+        """
+        Retrieves metadata for team folders. Permission : Team member file
+        access.
+
+        :param list team_folder_ids: The list of team folder IDs.
+        :rtype: list
+        """
+        arg = team.TeamFolderIdListArg(team_folder_ids)
+        r = self.request(
+            team.team_folder_get_info,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_list(self,
+                              limit=1000):
+        """
+        Lists all team folders. Permission : Team member file access.
+
+        :param long limit: The maximum number of results to return per request.
+        :rtype: :class:`dropbox.team.TeamFolderListResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.TeamFolderListError`
+        """
+        arg = team.TeamFolderListArg(limit)
+        r = self.request(
+            team.team_folder_list,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_permanently_delete(self,
+                                            team_folder_id):
+        """
+        Permanently deletes an archived team folder. Permission : Team member
+        file access.
+
+        :param str team_folder_id: The ID of the team folder.
+        :rtype: None
+        """
+        arg = team.TeamFolderIdArg(team_folder_id)
+        r = self.request(
+            team.team_folder_permanently_delete,
+            'team',
+            arg,
+            None,
+        )
+        return None
+
+    def team_team_folder_rename(self,
+                                team_folder_id,
+                                name):
+        """
+        Changes an active team folder's name. Permission : Team member file
+        access.
+
+        :param str name: New team folder name.
+        :rtype: :class:`dropbox.team.TeamFolderMetadata`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.TeamFolderRenameError`
+        """
+        arg = team.TeamFolderRenameArg(team_folder_id,
+                                       name)
+        r = self.request(
+            team.team_folder_rename,
             'team',
             arg,
             None,

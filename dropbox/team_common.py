@@ -9,6 +9,13 @@ except (SystemError, ValueError):
     import stone_validators as bv
     import stone_base as bb
 
+try:
+    from . import (
+        common,
+    )
+except (SystemError, ValueError):
+    import common
+
 class GroupManagementType(bb.Union):
     """
     The group type determines how a group is managed.
@@ -17,17 +24,28 @@ class GroupManagementType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar company_managed: A group which is managed by team admins only.
     :ivar user_managed: A group which is managed by selected users.
+    :ivar company_managed: A group which is managed by team admins only.
+    :ivar system_managed: A group which is managed automatically by Dropbox.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    company_managed = None
-    # Attribute is overwritten below the class definition
     user_managed = None
     # Attribute is overwritten below the class definition
+    company_managed = None
+    # Attribute is overwritten below the class definition
+    system_managed = None
+    # Attribute is overwritten below the class definition
     other = None
+
+    def is_user_managed(self):
+        """
+        Check if the union tag is ``user_managed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_managed'
 
     def is_company_managed(self):
         """
@@ -37,13 +55,13 @@ class GroupManagementType(bb.Union):
         """
         return self._tag == 'company_managed'
 
-    def is_user_managed(self):
+    def is_system_managed(self):
         """
-        Check if the union tag is ``user_managed``.
+        Check if the union tag is ``system_managed``.
 
         :rtype: bool
         """
-        return self._tag == 'user_managed'
+        return self._tag == 'system_managed'
 
     def is_other(self):
         """
@@ -289,23 +307,119 @@ class GroupType(bb.Union):
 
 GroupType_validator = bv.Union(GroupType)
 
+class TimeRange(object):
+    """
+    Time range.
+
+    :ivar start_time: Optional starting time (inclusive).
+    :ivar end_time: Optional ending time (exclusive).
+    """
+
+    __slots__ = [
+        '_start_time_value',
+        '_start_time_present',
+        '_end_time_value',
+        '_end_time_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 start_time=None,
+                 end_time=None):
+        self._start_time_value = None
+        self._start_time_present = False
+        self._end_time_value = None
+        self._end_time_present = False
+        if start_time is not None:
+            self.start_time = start_time
+        if end_time is not None:
+            self.end_time = end_time
+
+    @property
+    def start_time(self):
+        """
+        Optional starting time (inclusive).
+
+        :rtype: datetime.datetime
+        """
+        if self._start_time_present:
+            return self._start_time_value
+        else:
+            return None
+
+    @start_time.setter
+    def start_time(self, val):
+        if val is None:
+            del self.start_time
+            return
+        val = self._start_time_validator.validate(val)
+        self._start_time_value = val
+        self._start_time_present = True
+
+    @start_time.deleter
+    def start_time(self):
+        self._start_time_value = None
+        self._start_time_present = False
+
+    @property
+    def end_time(self):
+        """
+        Optional ending time (exclusive).
+
+        :rtype: datetime.datetime
+        """
+        if self._end_time_present:
+            return self._end_time_value
+        else:
+            return None
+
+    @end_time.setter
+    def end_time(self, val):
+        if val is None:
+            del self.end_time
+            return
+        val = self._end_time_validator.validate(val)
+        self._end_time_value = val
+        self._end_time_present = True
+
+    @end_time.deleter
+    def end_time(self):
+        self._end_time_value = None
+        self._end_time_present = False
+
+    def __repr__(self):
+        return 'TimeRange(start_time={!r}, end_time={!r})'.format(
+            self._start_time_value,
+            self._end_time_value,
+        )
+
+TimeRange_validator = bv.Struct(TimeRange)
+
+GroupExternalId_validator = bv.String()
 GroupId_validator = bv.String()
-GroupManagementType._company_managed_validator = bv.Void()
+MemberExternalId_validator = bv.String(max_length=64)
+ResellerId_validator = bv.String()
+TeamMemberId_validator = bv.String()
 GroupManagementType._user_managed_validator = bv.Void()
+GroupManagementType._company_managed_validator = bv.Void()
+GroupManagementType._system_managed_validator = bv.Void()
 GroupManagementType._other_validator = bv.Void()
 GroupManagementType._tagmap = {
-    'company_managed': GroupManagementType._company_managed_validator,
     'user_managed': GroupManagementType._user_managed_validator,
+    'company_managed': GroupManagementType._company_managed_validator,
+    'system_managed': GroupManagementType._system_managed_validator,
     'other': GroupManagementType._other_validator,
 }
 
-GroupManagementType.company_managed = GroupManagementType('company_managed')
 GroupManagementType.user_managed = GroupManagementType('user_managed')
+GroupManagementType.company_managed = GroupManagementType('company_managed')
+GroupManagementType.system_managed = GroupManagementType('system_managed')
 GroupManagementType.other = GroupManagementType('other')
 
 GroupSummary._group_name_validator = bv.String()
 GroupSummary._group_id_validator = GroupId_validator
-GroupSummary._group_external_id_validator = bv.Nullable(bv.String())
+GroupSummary._group_external_id_validator = bv.Nullable(GroupExternalId_validator)
 GroupSummary._member_count_validator = bv.Nullable(bv.UInt32())
 GroupSummary._group_management_type_validator = GroupManagementType_validator
 GroupSummary._all_field_names_ = set([
@@ -335,6 +449,17 @@ GroupType._tagmap = {
 GroupType.team = GroupType('team')
 GroupType.user_managed = GroupType('user_managed')
 GroupType.other = GroupType('other')
+
+TimeRange._start_time_validator = bv.Nullable(common.DropboxTimestamp_validator)
+TimeRange._end_time_validator = bv.Nullable(common.DropboxTimestamp_validator)
+TimeRange._all_field_names_ = set([
+    'start_time',
+    'end_time',
+])
+TimeRange._all_fields_ = [
+    ('start_time', TimeRange._start_time_validator),
+    ('end_time', TimeRange._end_time_validator),
+]
 
 ROUTES = {
 }
