@@ -759,6 +759,90 @@ class BaseDfbReport(object):
 
 BaseDfbReport_validator = bv.Struct(BaseDfbReport)
 
+class BaseTeamFolderError(bb.Union):
+    """
+    Base error that all errors for existing team folders should extend.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param TeamFolderAccessError val:
+        :rtype: BaseTeamFolderError
+        """
+        return cls('access_error', val)
+
+    @classmethod
+    def status_error(cls, val):
+        """
+        Create an instance of this class set to the ``status_error`` tag with
+        value ``val``.
+
+        :param TeamFolderInvalidStatusError val:
+        :rtype: BaseTeamFolderError
+        """
+        return cls('status_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_status_error(self):
+        """
+        Check if the union tag is ``status_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'status_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: TeamFolderAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def get_status_error(self):
+        """
+        Only call this if :meth:`is_status_error` is true.
+
+        :rtype: TeamFolderInvalidStatusError
+        """
+        if not self.is_status_error():
+            raise AttributeError("tag 'status_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'BaseTeamFolderError(%r, %r)' % (self._tag, self._value)
+
+BaseTeamFolderError_validator = bv.Union(BaseTeamFolderError)
+
 class DateRange(object):
     """
     Input arguments that can be provided for most reports.
@@ -2502,7 +2586,7 @@ class GroupCreateArg(object):
     :ivar group_external_id: The creator of a team can associate an arbitrary
         external ID to the group.
     :ivar group_management_type: Whether the team can be managed by selected
-        users, or only by team admins
+        users, or only by team admins.
     """
 
     __slots__ = [
@@ -2587,7 +2671,7 @@ class GroupCreateArg(object):
     def group_management_type(self):
         """
         Whether the team can be managed by selected users, or only by team
-        admins
+        admins.
 
         :rtype: team_common.GroupManagementType_validator
         """
@@ -2625,11 +2709,13 @@ class GroupCreateError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar group_name_already_used: There is already an existing group with the
-        requested name.
+    :ivar group_name_already_used: The requested group name is already being
+        used by another group.
     :ivar group_name_invalid: Group name is empty or has invalid characters.
-    :ivar external_id_already_in_use: The new external ID is already being used
-        by another group.
+    :ivar external_id_already_in_use: The requested external ID is already being
+        used by another group.
+    :ivar system_managed_group_disallowed: System-managed group cannot be
+        manually created.
     """
 
     _catch_all = 'other'
@@ -2639,6 +2725,8 @@ class GroupCreateError(bb.Union):
     group_name_invalid = None
     # Attribute is overwritten below the class definition
     external_id_already_in_use = None
+    # Attribute is overwritten below the class definition
+    system_managed_group_disallowed = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -2665,6 +2753,14 @@ class GroupCreateError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'external_id_already_in_use'
+
+    def is_system_managed_group_disallowed(self):
+        """
+        Check if the union tag is ``system_managed_group_disallowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'system_managed_group_disallowed'
 
     def is_other(self):
         """
@@ -2718,7 +2814,36 @@ class GroupSelectorError(bb.Union):
 
 GroupSelectorError_validator = bv.Union(GroupSelectorError)
 
-class GroupDeleteError(GroupSelectorError):
+class GroupSelectorWithTeamGroupError(GroupSelectorError):
+    """
+    Error that can be raised when :class:`GroupSelector` is used and team groups
+    are disallowed from being used.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar system_managed_group_disallowed: This operation is not supported on
+        system-managed groups.
+    """
+
+    # Attribute is overwritten below the class definition
+    system_managed_group_disallowed = None
+
+    def is_system_managed_group_disallowed(self):
+        """
+        Check if the union tag is ``system_managed_group_disallowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'system_managed_group_disallowed'
+
+    def __repr__(self):
+        return 'GroupSelectorWithTeamGroupError(%r, %r)' % (self._tag, self._value)
+
+GroupSelectorWithTeamGroupError_validator = bv.Union(GroupSelectorWithTeamGroupError)
+
+class GroupDeleteError(GroupSelectorWithTeamGroupError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -3012,7 +3137,7 @@ class GroupMemberSelector(object):
 
 GroupMemberSelector_validator = bv.Struct(GroupMemberSelector)
 
-class GroupMemberSelectorError(GroupSelectorError):
+class GroupMemberSelectorError(GroupSelectorWithTeamGroupError):
     """
     Error that can be raised when :class:`GroupMemberSelector` is used, and the
     user is required to be a member of the specified group.
@@ -3203,7 +3328,7 @@ class GroupMembersAddArg(IncludeMembersArg):
 
 GroupMembersAddArg_validator = bv.Struct(GroupMembersAddArg)
 
-class GroupMembersAddError(GroupSelectorError):
+class GroupMembersAddError(GroupSelectorWithTeamGroupError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -3530,7 +3655,7 @@ class GroupMembersRemoveArg(IncludeMembersArg):
 
 GroupMembersRemoveArg_validator = bv.Struct(GroupMembersRemoveArg)
 
-class GroupMembersSelectorError(GroupSelectorError):
+class GroupMembersSelectorError(GroupSelectorWithTeamGroupError):
     """
     Error that can be raised when :class:`GroupMembersSelector` is used, and the
     users are required to be members of the specified group.
@@ -3567,10 +3692,35 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
 
     :ivar group_not_in_team: Group is not in this team. You cannot remove
         members from a group that is outside of your team.
+    :ivar list of [str] members_not_in_team: These members are not part of your
+        team.
+    :ivar list of [str] users_not_found: These users were not found in Dropbox.
     """
 
     # Attribute is overwritten below the class definition
     group_not_in_team = None
+
+    @classmethod
+    def members_not_in_team(cls, val):
+        """
+        Create an instance of this class set to the ``members_not_in_team`` tag
+        with value ``val``.
+
+        :param list of [str] val:
+        :rtype: GroupMembersRemoveError
+        """
+        return cls('members_not_in_team', val)
+
+    @classmethod
+    def users_not_found(cls, val):
+        """
+        Create an instance of this class set to the ``users_not_found`` tag with
+        value ``val``.
+
+        :param list of [str] val:
+        :rtype: GroupMembersRemoveError
+        """
+        return cls('users_not_found', val)
 
     def is_group_not_in_team(self):
         """
@@ -3579,6 +3729,46 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
         :rtype: bool
         """
         return self._tag == 'group_not_in_team'
+
+    def is_members_not_in_team(self):
+        """
+        Check if the union tag is ``members_not_in_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'members_not_in_team'
+
+    def is_users_not_found(self):
+        """
+        Check if the union tag is ``users_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'users_not_found'
+
+    def get_members_not_in_team(self):
+        """
+        These members are not part of your team.
+
+        Only call this if :meth:`is_members_not_in_team` is true.
+
+        :rtype: list of [str]
+        """
+        if not self.is_members_not_in_team():
+            raise AttributeError("tag 'members_not_in_team' not set")
+        return self._value
+
+    def get_users_not_found(self):
+        """
+        These users were not found in Dropbox.
+
+        Only call this if :meth:`is_users_not_found` is true.
+
+        :rtype: list of [str]
+        """
+        if not self.is_users_not_found():
+            raise AttributeError("tag 'users_not_found' not set")
+        return self._value
 
     def __repr__(self):
         return 'GroupMembersRemoveError(%r, %r)' % (self._tag, self._value)
@@ -4002,18 +4192,41 @@ class GroupUpdateArgs(IncludeMembersArg):
 
 GroupUpdateArgs_validator = bv.Struct(GroupUpdateArgs)
 
-class GroupUpdateError(GroupSelectorError):
+class GroupUpdateError(GroupSelectorWithTeamGroupError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar external_id_already_in_use: The new external ID is already being used
-        by another group.
+    :ivar group_name_already_used: The requested group name is already being
+        used by another group.
+    :ivar group_name_invalid: Group name is empty or has invalid characters.
+    :ivar external_id_already_in_use: The requested external ID is already being
+        used by another group.
     """
 
     # Attribute is overwritten below the class definition
+    group_name_already_used = None
+    # Attribute is overwritten below the class definition
+    group_name_invalid = None
+    # Attribute is overwritten below the class definition
     external_id_already_in_use = None
+
+    def is_group_name_already_used(self):
+        """
+        Check if the union tag is ``group_name_already_used``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_name_already_used'
+
+    def is_group_name_invalid(self):
+        """
+        Check if the union tag is ``group_name_invalid``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_name_invalid'
 
     def is_external_id_already_in_use(self):
         """
@@ -6434,6 +6647,8 @@ class MemberAddArg(object):
     :ivar member_given_name: Member's first name.
     :ivar member_surname: Member's last name.
     :ivar member_external_id: External ID for member.
+    :ivar member_persistent_id: Persistent ID for member. This field is only
+        available to teams using persistent ID SAML configuration.
     :ivar send_welcome_email: Whether to send a welcome email to the member. If
         send_welcome_email is false, no email invitation will be sent to the
         user. This may be useful for apps using single sign-on (SSO) flows for
@@ -6449,6 +6664,8 @@ class MemberAddArg(object):
         '_member_surname_present',
         '_member_external_id_value',
         '_member_external_id_present',
+        '_member_persistent_id_value',
+        '_member_persistent_id_present',
         '_send_welcome_email_value',
         '_send_welcome_email_present',
         '_role_value',
@@ -6462,6 +6679,7 @@ class MemberAddArg(object):
                  member_given_name=None,
                  member_surname=None,
                  member_external_id=None,
+                 member_persistent_id=None,
                  send_welcome_email=None,
                  role=None):
         self._member_email_value = None
@@ -6472,6 +6690,8 @@ class MemberAddArg(object):
         self._member_surname_present = False
         self._member_external_id_value = None
         self._member_external_id_present = False
+        self._member_persistent_id_value = None
+        self._member_persistent_id_present = False
         self._send_welcome_email_value = None
         self._send_welcome_email_present = False
         self._role_value = None
@@ -6484,6 +6704,8 @@ class MemberAddArg(object):
             self.member_surname = member_surname
         if member_external_id is not None:
             self.member_external_id = member_external_id
+        if member_persistent_id is not None:
+            self.member_persistent_id = member_persistent_id
         if send_welcome_email is not None:
             self.send_welcome_email = send_welcome_email
         if role is not None:
@@ -6583,6 +6805,33 @@ class MemberAddArg(object):
         self._member_external_id_present = False
 
     @property
+    def member_persistent_id(self):
+        """
+        Persistent ID for member. This field is only available to teams using
+        persistent ID SAML configuration.
+
+        :rtype: str
+        """
+        if self._member_persistent_id_present:
+            return self._member_persistent_id_value
+        else:
+            return None
+
+    @member_persistent_id.setter
+    def member_persistent_id(self, val):
+        if val is None:
+            del self.member_persistent_id
+            return
+        val = self._member_persistent_id_validator.validate(val)
+        self._member_persistent_id_value = val
+        self._member_persistent_id_present = True
+
+    @member_persistent_id.deleter
+    def member_persistent_id(self):
+        self._member_persistent_id_value = None
+        self._member_persistent_id_present = False
+
+    @property
     def send_welcome_email(self):
         """
         Whether to send a welcome email to the member. If send_welcome_email is
@@ -6630,11 +6879,12 @@ class MemberAddArg(object):
         self._role_present = False
 
     def __repr__(self):
-        return 'MemberAddArg(member_email={!r}, member_given_name={!r}, member_surname={!r}, member_external_id={!r}, send_welcome_email={!r}, role={!r})'.format(
+        return 'MemberAddArg(member_email={!r}, member_given_name={!r}, member_surname={!r}, member_external_id={!r}, member_persistent_id={!r}, send_welcome_email={!r}, role={!r})'.format(
             self._member_email_value,
             self._member_given_name_value,
             self._member_surname_value,
             self._member_external_id_value,
+            self._member_persistent_id_value,
             self._send_welcome_email_value,
             self._role_value,
         )
@@ -6668,6 +6918,11 @@ class MemberAddResult(bb.Union):
     :ivar str user_migration_failed: User migration has failed.
     :ivar str duplicate_external_member_id: A user with the given external
         member ID already exists on the team (including in recoverable state).
+    :ivar str duplicate_member_persistent_id: A user with the given persistent
+        ID already exists on the team (including in recoverable state).
+    :ivar str persistent_id_disabled: Persistent ID is only available to teams
+        with persistent ID SAML configuration. Please contact Dropbox for more
+        information.
     :ivar str user_creation_failed: User creation has failed.
     """
 
@@ -6762,6 +7017,28 @@ class MemberAddResult(bb.Union):
         return cls('duplicate_external_member_id', val)
 
     @classmethod
+    def duplicate_member_persistent_id(cls, val):
+        """
+        Create an instance of this class set to the
+        ``duplicate_member_persistent_id`` tag with value ``val``.
+
+        :param str val:
+        :rtype: MemberAddResult
+        """
+        return cls('duplicate_member_persistent_id', val)
+
+    @classmethod
+    def persistent_id_disabled(cls, val):
+        """
+        Create an instance of this class set to the ``persistent_id_disabled``
+        tag with value ``val``.
+
+        :param str val:
+        :rtype: MemberAddResult
+        """
+        return cls('persistent_id_disabled', val)
+
+    @classmethod
     def user_creation_failed(cls, val):
         """
         Create an instance of this class set to the ``user_creation_failed`` tag
@@ -6835,6 +7112,22 @@ class MemberAddResult(bb.Union):
         :rtype: bool
         """
         return self._tag == 'duplicate_external_member_id'
+
+    def is_duplicate_member_persistent_id(self):
+        """
+        Check if the union tag is ``duplicate_member_persistent_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'duplicate_member_persistent_id'
+
+    def is_persistent_id_disabled(self):
+        """
+        Check if the union tag is ``persistent_id_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'persistent_id_disabled'
 
     def is_user_creation_failed(self):
         """
@@ -6943,6 +7236,32 @@ class MemberAddResult(bb.Union):
         """
         if not self.is_duplicate_external_member_id():
             raise AttributeError("tag 'duplicate_external_member_id' not set")
+        return self._value
+
+    def get_duplicate_member_persistent_id(self):
+        """
+        A user with the given persistent ID already exists on the team
+        (including in recoverable state).
+
+        Only call this if :meth:`is_duplicate_member_persistent_id` is true.
+
+        :rtype: str
+        """
+        if not self.is_duplicate_member_persistent_id():
+            raise AttributeError("tag 'duplicate_member_persistent_id' not set")
+        return self._value
+
+    def get_persistent_id_disabled(self):
+        """
+        Persistent ID is only available to teams with persistent ID SAML
+        configuration. Please contact Dropbox for more information.
+
+        Only call this if :meth:`is_persistent_id_disabled` is true.
+
+        :rtype: str
+        """
+        if not self.is_persistent_id_disabled():
+            raise AttributeError("tag 'persistent_id_disabled' not set")
         return self._value
 
     def get_user_creation_failed(self):
@@ -7219,6 +7538,10 @@ class MemberProfile(object):
     :ivar membership_type: The user's membership type: full (normal team member)
         vs limited (does not use a license; no access to the team's shared
         quota).
+    :ivar joined_on: The date and time the user joined as a member of a specific
+        team.
+    :ivar persistent_id: Persistent ID that a team can attach to the user. The
+        persistent ID is unique ID to be used for SAML authentication.
     """
 
     __slots__ = [
@@ -7238,6 +7561,10 @@ class MemberProfile(object):
         '_name_present',
         '_membership_type_value',
         '_membership_type_present',
+        '_joined_on_value',
+        '_joined_on_present',
+        '_persistent_id_value',
+        '_persistent_id_present',
     ]
 
     _has_required_fields = True
@@ -7250,7 +7577,9 @@ class MemberProfile(object):
                  name=None,
                  membership_type=None,
                  external_id=None,
-                 account_id=None):
+                 account_id=None,
+                 joined_on=None,
+                 persistent_id=None):
         self._team_member_id_value = None
         self._team_member_id_present = False
         self._external_id_value = None
@@ -7267,6 +7596,10 @@ class MemberProfile(object):
         self._name_present = False
         self._membership_type_value = None
         self._membership_type_present = False
+        self._joined_on_value = None
+        self._joined_on_present = False
+        self._persistent_id_value = None
+        self._persistent_id_present = False
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if external_id is not None:
@@ -7283,6 +7616,10 @@ class MemberProfile(object):
             self.name = name
         if membership_type is not None:
             self.membership_type = membership_type
+        if joined_on is not None:
+            self.joined_on = joined_on
+        if persistent_id is not None:
+            self.persistent_id = persistent_id
 
     @property
     def team_member_id(self):
@@ -7477,8 +7814,61 @@ class MemberProfile(object):
         self._membership_type_value = None
         self._membership_type_present = False
 
+    @property
+    def joined_on(self):
+        """
+        The date and time the user joined as a member of a specific team.
+
+        :rtype: datetime.datetime
+        """
+        if self._joined_on_present:
+            return self._joined_on_value
+        else:
+            return None
+
+    @joined_on.setter
+    def joined_on(self, val):
+        if val is None:
+            del self.joined_on
+            return
+        val = self._joined_on_validator.validate(val)
+        self._joined_on_value = val
+        self._joined_on_present = True
+
+    @joined_on.deleter
+    def joined_on(self):
+        self._joined_on_value = None
+        self._joined_on_present = False
+
+    @property
+    def persistent_id(self):
+        """
+        Persistent ID that a team can attach to the user. The persistent ID is
+        unique ID to be used for SAML authentication.
+
+        :rtype: str
+        """
+        if self._persistent_id_present:
+            return self._persistent_id_value
+        else:
+            return None
+
+    @persistent_id.setter
+    def persistent_id(self, val):
+        if val is None:
+            del self.persistent_id
+            return
+        val = self._persistent_id_validator.validate(val)
+        self._persistent_id_value = val
+        self._persistent_id_present = True
+
+    @persistent_id.deleter
+    def persistent_id(self):
+        self._persistent_id_value = None
+        self._persistent_id_present = False
+
     def __repr__(self):
-        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r})'.format(
+        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, persistent_id={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -7487,6 +7877,8 @@ class MemberProfile(object):
             self._membership_type_value,
             self._external_id_value,
             self._account_id_value,
+            self._joined_on_value,
+            self._persistent_id_value,
         )
 
 MemberProfile_validator = bv.Struct(MemberProfile)
@@ -8469,7 +8861,8 @@ class MembersRemoveArg(MembersDeactivateArg):
         was provided, then this argument must be provided as well.
     :ivar keep_account: Downgrade the member to a Basic account. The user will
         retain the email address associated with their Dropbox  account and data
-        in their account that is not restricted to team members.
+        in their account that is not restricted to team members. In order to
+        keep the account the argument wipe_data should be set to False.
     """
 
     __slots__ = [
@@ -8564,7 +8957,8 @@ class MembersRemoveArg(MembersDeactivateArg):
         """
         Downgrade the member to a Basic account. The user will retain the email
         address associated with their Dropbox  account and data in their account
-        that is not restricted to team members.
+        that is not restricted to team members. In order to keep the account the
+        argument wipe_data should be set to False.
 
         :rtype: bool
         """
@@ -8622,7 +9016,8 @@ class MembersRemoveError(MembersDeactivateError):
     :ivar cannot_keep_account_and_transfer: Cannot keep account and transfer the
         data to another user at the same time.
     :ivar cannot_keep_account_and_delete_data: Cannot keep account and delete
-        the data at the same time.
+        the data at the same time. To keep the account the argument wipe_data
+        should be set to False.
     :ivar email_address_too_long_to_be_disabled: The email address of the user
         is too long to be disabled.
     """
@@ -9024,6 +9419,8 @@ class MembersSetProfileArg(object):
     :ivar new_external_id: New external ID for member.
     :ivar new_given_name: New given name for member.
     :ivar new_surname: New surname for member.
+    :ivar new_persistent_id: New persistent ID. This field only available to
+        teams using persistent ID SAML configuration.
     """
 
     __slots__ = [
@@ -9037,6 +9434,8 @@ class MembersSetProfileArg(object):
         '_new_given_name_present',
         '_new_surname_value',
         '_new_surname_present',
+        '_new_persistent_id_value',
+        '_new_persistent_id_present',
     ]
 
     _has_required_fields = True
@@ -9046,7 +9445,8 @@ class MembersSetProfileArg(object):
                  new_email=None,
                  new_external_id=None,
                  new_given_name=None,
-                 new_surname=None):
+                 new_surname=None,
+                 new_persistent_id=None):
         self._user_value = None
         self._user_present = False
         self._new_email_value = None
@@ -9057,6 +9457,8 @@ class MembersSetProfileArg(object):
         self._new_given_name_present = False
         self._new_surname_value = None
         self._new_surname_present = False
+        self._new_persistent_id_value = None
+        self._new_persistent_id_present = False
         if user is not None:
             self.user = user
         if new_email is not None:
@@ -9067,6 +9469,8 @@ class MembersSetProfileArg(object):
             self.new_given_name = new_given_name
         if new_surname is not None:
             self.new_surname = new_surname
+        if new_persistent_id is not None:
+            self.new_persistent_id = new_persistent_id
 
     @property
     def user(self):
@@ -9195,13 +9599,41 @@ class MembersSetProfileArg(object):
         self._new_surname_value = None
         self._new_surname_present = False
 
+    @property
+    def new_persistent_id(self):
+        """
+        New persistent ID. This field only available to teams using persistent
+        ID SAML configuration.
+
+        :rtype: str
+        """
+        if self._new_persistent_id_present:
+            return self._new_persistent_id_value
+        else:
+            return None
+
+    @new_persistent_id.setter
+    def new_persistent_id(self, val):
+        if val is None:
+            del self.new_persistent_id
+            return
+        val = self._new_persistent_id_validator.validate(val)
+        self._new_persistent_id_value = val
+        self._new_persistent_id_present = True
+
+    @new_persistent_id.deleter
+    def new_persistent_id(self):
+        self._new_persistent_id_value = None
+        self._new_persistent_id_present = False
+
     def __repr__(self):
-        return 'MembersSetProfileArg(user={!r}, new_email={!r}, new_external_id={!r}, new_given_name={!r}, new_surname={!r})'.format(
+        return 'MembersSetProfileArg(user={!r}, new_email={!r}, new_external_id={!r}, new_given_name={!r}, new_surname={!r}, new_persistent_id={!r})'.format(
             self._user_value,
             self._new_email_value,
             self._new_external_id_value,
             self._new_given_name_value,
             self._new_surname_value,
+            self._new_persistent_id_value,
         )
 
 MembersSetProfileArg_validator = bv.Struct(MembersSetProfileArg)
@@ -9220,8 +9652,14 @@ class MembersSetProfileError(MemberSelectorError):
         user.
     :ivar external_id_used_by_other_user: The external ID is already in use by
         another team member.
-    :ivar set_profile_disallowed: Setting profile disallowed
+    :ivar set_profile_disallowed: Pending team member's email cannot be
+        modified.
     :ivar param_cannot_be_empty: Parameter new_email cannot be empty.
+    :ivar persistent_id_disabled: Persistent ID is only available to teams with
+        persistent ID SAML configuration. Please contact Dropbox for more
+        information.
+    :ivar persistent_id_used_by_other_user: The persistent ID is already in use
+        by another team member.
     """
 
     _catch_all = 'other'
@@ -9237,6 +9675,10 @@ class MembersSetProfileError(MemberSelectorError):
     set_profile_disallowed = None
     # Attribute is overwritten below the class definition
     param_cannot_be_empty = None
+    # Attribute is overwritten below the class definition
+    persistent_id_disabled = None
+    # Attribute is overwritten below the class definition
+    persistent_id_used_by_other_user = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -9287,6 +9729,22 @@ class MembersSetProfileError(MemberSelectorError):
         :rtype: bool
         """
         return self._tag == 'param_cannot_be_empty'
+
+    def is_persistent_id_disabled(self):
+        """
+        Check if the union tag is ``persistent_id_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'persistent_id_disabled'
+
+    def is_persistent_id_used_by_other_user(self):
+        """
+        Check if the union tag is ``persistent_id_used_by_other_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'persistent_id_used_by_other_user'
 
     def is_other(self):
         """
@@ -10637,6 +11095,1034 @@ class StorageBucket(object):
 
 StorageBucket_validator = bv.Struct(StorageBucket)
 
+class TeamFolderAccessError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_team_folder_id: The team folder ID is invalid.
+    :ivar no_access: The authenticated app does not have permission to manage
+        that team folder.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_team_folder_id = None
+    # Attribute is overwritten below the class definition
+    no_access = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invalid_team_folder_id(self):
+        """
+        Check if the union tag is ``invalid_team_folder_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_team_folder_id'
+
+    def is_no_access(self):
+        """
+        Check if the union tag is ``no_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_access'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'TeamFolderAccessError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderAccessError_validator = bv.Union(TeamFolderAccessError)
+
+class TeamFolderActivateError(BaseTeamFolderError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    def __repr__(self):
+        return 'TeamFolderActivateError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderActivateError_validator = bv.Union(TeamFolderActivateError)
+
+class TeamFolderIdArg(object):
+    """
+    :ivar team_folder_id: The ID of the team folder.
+    """
+
+    __slots__ = [
+        '_team_folder_id_value',
+        '_team_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_folder_id=None):
+        self._team_folder_id_value = None
+        self._team_folder_id_present = False
+        if team_folder_id is not None:
+            self.team_folder_id = team_folder_id
+
+    @property
+    def team_folder_id(self):
+        """
+        The ID of the team folder.
+
+        :rtype: str
+        """
+        if self._team_folder_id_present:
+            return self._team_folder_id_value
+        else:
+            raise AttributeError("missing required field 'team_folder_id'")
+
+    @team_folder_id.setter
+    def team_folder_id(self, val):
+        val = self._team_folder_id_validator.validate(val)
+        self._team_folder_id_value = val
+        self._team_folder_id_present = True
+
+    @team_folder_id.deleter
+    def team_folder_id(self):
+        self._team_folder_id_value = None
+        self._team_folder_id_present = False
+
+    def __repr__(self):
+        return 'TeamFolderIdArg(team_folder_id={!r})'.format(
+            self._team_folder_id_value,
+        )
+
+TeamFolderIdArg_validator = bv.Struct(TeamFolderIdArg)
+
+class TeamFolderArchiveArg(TeamFolderIdArg):
+    """
+    :ivar force_async_off: Whether to force the archive to happen synchronously.
+    """
+
+    __slots__ = [
+        '_force_async_off_value',
+        '_force_async_off_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_folder_id=None,
+                 force_async_off=None):
+        super(TeamFolderArchiveArg, self).__init__(team_folder_id)
+        self._force_async_off_value = None
+        self._force_async_off_present = False
+        if force_async_off is not None:
+            self.force_async_off = force_async_off
+
+    @property
+    def force_async_off(self):
+        """
+        Whether to force the archive to happen synchronously.
+
+        :rtype: bool
+        """
+        if self._force_async_off_present:
+            return self._force_async_off_value
+        else:
+            return False
+
+    @force_async_off.setter
+    def force_async_off(self, val):
+        val = self._force_async_off_validator.validate(val)
+        self._force_async_off_value = val
+        self._force_async_off_present = True
+
+    @force_async_off.deleter
+    def force_async_off(self):
+        self._force_async_off_value = None
+        self._force_async_off_present = False
+
+    def __repr__(self):
+        return 'TeamFolderArchiveArg(team_folder_id={!r}, force_async_off={!r})'.format(
+            self._team_folder_id_value,
+            self._force_async_off_value,
+        )
+
+TeamFolderArchiveArg_validator = bv.Struct(TeamFolderArchiveArg)
+
+class TeamFolderArchiveError(BaseTeamFolderError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    def __repr__(self):
+        return 'TeamFolderArchiveError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderArchiveError_validator = bv.Union(TeamFolderArchiveError)
+
+class TeamFolderArchiveJobStatus(async.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamFolderMetadata complete: The archive job has finished. The value
+        is the metadata for the resulting team folder.
+    :ivar TeamFolderArchiveError failed: Error occurred while performing an
+        asynchronous job from
+        :meth:`dropbox.dropbox.Dropbox.team_team_folder_archive`.
+    """
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param TeamFolderMetadata val:
+        :rtype: TeamFolderArchiveJobStatus
+        """
+        return cls('complete', val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param TeamFolderArchiveError val:
+        :rtype: TeamFolderArchiveJobStatus
+        """
+        return cls('failed', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failed'
+
+    def get_complete(self):
+        """
+        The archive job has finished. The value is the metadata for the
+        resulting team folder.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: TeamFolderMetadata
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Error occurred while performing an asynchronous job from
+        :meth:`dropbox.dropbox.Dropbox.team_team_folder_archive`.
+
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: TeamFolderArchiveError
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'TeamFolderArchiveJobStatus(%r, %r)' % (self._tag, self._value)
+
+TeamFolderArchiveJobStatus_validator = bv.Union(TeamFolderArchiveJobStatus)
+
+class TeamFolderArchiveLaunch(async.LaunchResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param TeamFolderMetadata val:
+        :rtype: TeamFolderArchiveLaunch
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: TeamFolderMetadata
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'TeamFolderArchiveLaunch(%r, %r)' % (self._tag, self._value)
+
+TeamFolderArchiveLaunch_validator = bv.Union(TeamFolderArchiveLaunch)
+
+class TeamFolderCreateArg(object):
+    """
+    :ivar name: Name for the new team folder.
+    """
+
+    __slots__ = [
+        '_name_value',
+        '_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 name=None):
+        self._name_value = None
+        self._name_present = False
+        if name is not None:
+            self.name = name
+
+    @property
+    def name(self):
+        """
+        Name for the new team folder.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    def __repr__(self):
+        return 'TeamFolderCreateArg(name={!r})'.format(
+            self._name_value,
+        )
+
+TeamFolderCreateArg_validator = bv.Struct(TeamFolderCreateArg)
+
+class TeamFolderCreateError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_folder_name: The provided name cannot be used.
+    :ivar folder_name_already_used: There is already a team folder with the
+        provided name.
+    :ivar folder_name_reserved: The provided name cannot be used because it is
+        reserved.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_folder_name = None
+    # Attribute is overwritten below the class definition
+    folder_name_already_used = None
+    # Attribute is overwritten below the class definition
+    folder_name_reserved = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invalid_folder_name(self):
+        """
+        Check if the union tag is ``invalid_folder_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_folder_name'
+
+    def is_folder_name_already_used(self):
+        """
+        Check if the union tag is ``folder_name_already_used``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_name_already_used'
+
+    def is_folder_name_reserved(self):
+        """
+        Check if the union tag is ``folder_name_reserved``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_name_reserved'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'TeamFolderCreateError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderCreateError_validator = bv.Union(TeamFolderCreateError)
+
+class TeamFolderGetInfoItem(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar str id_not_found: An ID that was provided as a parameter to
+        :route:`team_folder/get_info` did not match any of the team's team
+        folders.
+    :ivar TeamFolderMetadata team_folder_metadata: Properties of a team folder.
+    """
+
+    _catch_all = None
+
+    @classmethod
+    def id_not_found(cls, val):
+        """
+        Create an instance of this class set to the ``id_not_found`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: TeamFolderGetInfoItem
+        """
+        return cls('id_not_found', val)
+
+    @classmethod
+    def team_folder_metadata(cls, val):
+        """
+        Create an instance of this class set to the ``team_folder_metadata`` tag
+        with value ``val``.
+
+        :param TeamFolderMetadata val:
+        :rtype: TeamFolderGetInfoItem
+        """
+        return cls('team_folder_metadata', val)
+
+    def is_id_not_found(self):
+        """
+        Check if the union tag is ``id_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'id_not_found'
+
+    def is_team_folder_metadata(self):
+        """
+        Check if the union tag is ``team_folder_metadata``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder_metadata'
+
+    def get_id_not_found(self):
+        """
+        An ID that was provided as a parameter to
+        :meth:`dropbox.dropbox.Dropbox.team_team_folder_get_info` did not match
+        any of the team's team folders.
+
+        Only call this if :meth:`is_id_not_found` is true.
+
+        :rtype: str
+        """
+        if not self.is_id_not_found():
+            raise AttributeError("tag 'id_not_found' not set")
+        return self._value
+
+    def get_team_folder_metadata(self):
+        """
+        Properties of a team folder.
+
+        Only call this if :meth:`is_team_folder_metadata` is true.
+
+        :rtype: TeamFolderMetadata
+        """
+        if not self.is_team_folder_metadata():
+            raise AttributeError("tag 'team_folder_metadata' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'TeamFolderGetInfoItem(%r, %r)' % (self._tag, self._value)
+
+TeamFolderGetInfoItem_validator = bv.Union(TeamFolderGetInfoItem)
+
+class TeamFolderIdListArg(object):
+    """
+    :ivar team_folder_ids: The list of team folder IDs.
+    """
+
+    __slots__ = [
+        '_team_folder_ids_value',
+        '_team_folder_ids_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_folder_ids=None):
+        self._team_folder_ids_value = None
+        self._team_folder_ids_present = False
+        if team_folder_ids is not None:
+            self.team_folder_ids = team_folder_ids
+
+    @property
+    def team_folder_ids(self):
+        """
+        The list of team folder IDs.
+
+        :rtype: list of [str]
+        """
+        if self._team_folder_ids_present:
+            return self._team_folder_ids_value
+        else:
+            raise AttributeError("missing required field 'team_folder_ids'")
+
+    @team_folder_ids.setter
+    def team_folder_ids(self, val):
+        val = self._team_folder_ids_validator.validate(val)
+        self._team_folder_ids_value = val
+        self._team_folder_ids_present = True
+
+    @team_folder_ids.deleter
+    def team_folder_ids(self):
+        self._team_folder_ids_value = None
+        self._team_folder_ids_present = False
+
+    def __repr__(self):
+        return 'TeamFolderIdListArg(team_folder_ids={!r})'.format(
+            self._team_folder_ids_value,
+        )
+
+TeamFolderIdListArg_validator = bv.Struct(TeamFolderIdListArg)
+
+class TeamFolderInvalidStatusError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar active: The folder is active and the operation did not succeed.
+    :ivar archived: The folder is archived and the operation did not succeed.
+    :ivar archive_in_progress: The folder is being archived and the operation
+        did not succeed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    active = None
+    # Attribute is overwritten below the class definition
+    archived = None
+    # Attribute is overwritten below the class definition
+    archive_in_progress = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_active(self):
+        """
+        Check if the union tag is ``active``.
+
+        :rtype: bool
+        """
+        return self._tag == 'active'
+
+    def is_archived(self):
+        """
+        Check if the union tag is ``archived``.
+
+        :rtype: bool
+        """
+        return self._tag == 'archived'
+
+    def is_archive_in_progress(self):
+        """
+        Check if the union tag is ``archive_in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == 'archive_in_progress'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'TeamFolderInvalidStatusError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderInvalidStatusError_validator = bv.Union(TeamFolderInvalidStatusError)
+
+class TeamFolderListArg(object):
+    """
+    :ivar limit: The maximum number of results to return per request.
+    """
+
+    __slots__ = [
+        '_limit_value',
+        '_limit_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 limit=None):
+        self._limit_value = None
+        self._limit_present = False
+        if limit is not None:
+            self.limit = limit
+
+    @property
+    def limit(self):
+        """
+        The maximum number of results to return per request.
+
+        :rtype: long
+        """
+        if self._limit_present:
+            return self._limit_value
+        else:
+            return 1000
+
+    @limit.setter
+    def limit(self, val):
+        val = self._limit_validator.validate(val)
+        self._limit_value = val
+        self._limit_present = True
+
+    @limit.deleter
+    def limit(self):
+        self._limit_value = None
+        self._limit_present = False
+
+    def __repr__(self):
+        return 'TeamFolderListArg(limit={!r})'.format(
+            self._limit_value,
+        )
+
+TeamFolderListArg_validator = bv.Struct(TeamFolderListArg)
+
+class TeamFolderListError(object):
+
+    __slots__ = [
+        '_access_error_value',
+        '_access_error_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 access_error=None):
+        self._access_error_value = None
+        self._access_error_present = False
+        if access_error is not None:
+            self.access_error = access_error
+
+    @property
+    def access_error(self):
+        """
+        :rtype: TeamFolderAccessError
+        """
+        if self._access_error_present:
+            return self._access_error_value
+        else:
+            raise AttributeError("missing required field 'access_error'")
+
+    @access_error.setter
+    def access_error(self, val):
+        self._access_error_validator.validate_type_only(val)
+        self._access_error_value = val
+        self._access_error_present = True
+
+    @access_error.deleter
+    def access_error(self):
+        self._access_error_value = None
+        self._access_error_present = False
+
+    def __repr__(self):
+        return 'TeamFolderListError(access_error={!r})'.format(
+            self._access_error_value,
+        )
+
+TeamFolderListError_validator = bv.Struct(TeamFolderListError)
+
+class TeamFolderListResult(object):
+    """
+    Result for :meth:`dropbox.dropbox.Dropbox.team_team_folder_list`.
+
+    :ivar team_folders: List of all team folders in the authenticated team.
+    """
+
+    __slots__ = [
+        '_team_folders_value',
+        '_team_folders_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_folders=None):
+        self._team_folders_value = None
+        self._team_folders_present = False
+        if team_folders is not None:
+            self.team_folders = team_folders
+
+    @property
+    def team_folders(self):
+        """
+        List of all team folders in the authenticated team.
+
+        :rtype: list of [TeamFolderMetadata]
+        """
+        if self._team_folders_present:
+            return self._team_folders_value
+        else:
+            raise AttributeError("missing required field 'team_folders'")
+
+    @team_folders.setter
+    def team_folders(self, val):
+        val = self._team_folders_validator.validate(val)
+        self._team_folders_value = val
+        self._team_folders_present = True
+
+    @team_folders.deleter
+    def team_folders(self):
+        self._team_folders_value = None
+        self._team_folders_present = False
+
+    def __repr__(self):
+        return 'TeamFolderListResult(team_folders={!r})'.format(
+            self._team_folders_value,
+        )
+
+TeamFolderListResult_validator = bv.Struct(TeamFolderListResult)
+
+class TeamFolderMetadata(object):
+    """
+    Properties of a team folder.
+
+    :ivar team_folder_id: The ID of the team folder.
+    :ivar name: The name of the team folder.
+    :ivar status: The status of the team folder.
+    """
+
+    __slots__ = [
+        '_team_folder_id_value',
+        '_team_folder_id_present',
+        '_name_value',
+        '_name_present',
+        '_status_value',
+        '_status_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_folder_id=None,
+                 name=None,
+                 status=None):
+        self._team_folder_id_value = None
+        self._team_folder_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._status_value = None
+        self._status_present = False
+        if team_folder_id is not None:
+            self.team_folder_id = team_folder_id
+        if name is not None:
+            self.name = name
+        if status is not None:
+            self.status = status
+
+    @property
+    def team_folder_id(self):
+        """
+        The ID of the team folder.
+
+        :rtype: str
+        """
+        if self._team_folder_id_present:
+            return self._team_folder_id_value
+        else:
+            raise AttributeError("missing required field 'team_folder_id'")
+
+    @team_folder_id.setter
+    def team_folder_id(self, val):
+        val = self._team_folder_id_validator.validate(val)
+        self._team_folder_id_value = val
+        self._team_folder_id_present = True
+
+    @team_folder_id.deleter
+    def team_folder_id(self):
+        self._team_folder_id_value = None
+        self._team_folder_id_present = False
+
+    @property
+    def name(self):
+        """
+        The name of the team folder.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def status(self):
+        """
+        The status of the team folder.
+
+        :rtype: TeamFolderStatus
+        """
+        if self._status_present:
+            return self._status_value
+        else:
+            raise AttributeError("missing required field 'status'")
+
+    @status.setter
+    def status(self, val):
+        self._status_validator.validate_type_only(val)
+        self._status_value = val
+        self._status_present = True
+
+    @status.deleter
+    def status(self):
+        self._status_value = None
+        self._status_present = False
+
+    def __repr__(self):
+        return 'TeamFolderMetadata(team_folder_id={!r}, name={!r}, status={!r})'.format(
+            self._team_folder_id_value,
+            self._name_value,
+            self._status_value,
+        )
+
+TeamFolderMetadata_validator = bv.Struct(TeamFolderMetadata)
+
+class TeamFolderPermanentlyDeleteError(BaseTeamFolderError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    def __repr__(self):
+        return 'TeamFolderPermanentlyDeleteError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderPermanentlyDeleteError_validator = bv.Union(TeamFolderPermanentlyDeleteError)
+
+class TeamFolderRenameArg(TeamFolderIdArg):
+    """
+    :ivar name: New team folder name.
+    """
+
+    __slots__ = [
+        '_name_value',
+        '_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_folder_id=None,
+                 name=None):
+        super(TeamFolderRenameArg, self).__init__(team_folder_id)
+        self._name_value = None
+        self._name_present = False
+        if name is not None:
+            self.name = name
+
+    @property
+    def name(self):
+        """
+        New team folder name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    def __repr__(self):
+        return 'TeamFolderRenameArg(team_folder_id={!r}, name={!r})'.format(
+            self._team_folder_id_value,
+            self._name_value,
+        )
+
+TeamFolderRenameArg_validator = bv.Struct(TeamFolderRenameArg)
+
+class TeamFolderRenameError(BaseTeamFolderError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_folder_name: The provided folder name cannot be used.
+    :ivar folder_name_already_used: There is already a team folder with the same
+        name.
+    :ivar folder_name_reserved: The provided name cannot be used because it is
+        reserved.
+    """
+
+    # Attribute is overwritten below the class definition
+    invalid_folder_name = None
+    # Attribute is overwritten below the class definition
+    folder_name_already_used = None
+    # Attribute is overwritten below the class definition
+    folder_name_reserved = None
+
+    def is_invalid_folder_name(self):
+        """
+        Check if the union tag is ``invalid_folder_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_folder_name'
+
+    def is_folder_name_already_used(self):
+        """
+        Check if the union tag is ``folder_name_already_used``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_name_already_used'
+
+    def is_folder_name_reserved(self):
+        """
+        Check if the union tag is ``folder_name_reserved``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_name_reserved'
+
+    def __repr__(self):
+        return 'TeamFolderRenameError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderRenameError_validator = bv.Union(TeamFolderRenameError)
+
+class TeamFolderStatus(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar active: The team folder and sub-folders are available to all members.
+    :ivar archived: The team folder is not accessible outside of the team folder
+        manager.
+    :ivar archive_in_progress: The team folder is not accessible outside of the
+        team folder manager.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    active = None
+    # Attribute is overwritten below the class definition
+    archived = None
+    # Attribute is overwritten below the class definition
+    archive_in_progress = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_active(self):
+        """
+        Check if the union tag is ``active``.
+
+        :rtype: bool
+        """
+        return self._tag == 'active'
+
+    def is_archived(self):
+        """
+        Check if the union tag is ``archived``.
+
+        :rtype: bool
+        """
+        return self._tag == 'archived'
+
+    def is_archive_in_progress(self):
+        """
+        Check if the union tag is ``archive_in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == 'archive_in_progress'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'TeamFolderStatus(%r, %r)' % (self._tag, self._value)
+
+TeamFolderStatus_validator = bv.Union(TeamFolderStatus)
+
 class TeamGetInfoResult(object):
     """
     :ivar name: The name of the team.
@@ -10919,7 +12405,9 @@ class TeamMemberProfile(MemberProfile):
                  membership_type=None,
                  groups=None,
                  external_id=None,
-                 account_id=None):
+                 account_id=None,
+                 joined_on=None,
+                 persistent_id=None):
         super(TeamMemberProfile, self).__init__(team_member_id,
                                                 email,
                                                 email_verified,
@@ -10927,7 +12415,9 @@ class TeamMemberProfile(MemberProfile):
                                                 name,
                                                 membership_type,
                                                 external_id,
-                                                account_id)
+                                                account_id,
+                                                joined_on,
+                                                persistent_id)
         self._groups_value = None
         self._groups_present = False
         if groups is not None:
@@ -10957,7 +12447,7 @@ class TeamMemberProfile(MemberProfile):
         self._groups_present = False
 
     def __repr__(self):
-        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, external_id={!r}, account_id={!r})'.format(
+        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, persistent_id={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -10967,6 +12457,8 @@ class TeamMemberProfile(MemberProfile):
             self._groups_value,
             self._external_id_value,
             self._account_id_value,
+            self._joined_on_value,
+            self._persistent_id_value,
         )
 
 TeamMemberProfile_validator = bv.Struct(TeamMemberProfile)
@@ -11529,10 +13021,8 @@ class UsersSelectorArg(bb.Union):
 UsersSelectorArg_validator = bv.Union(UsersSelectorArg)
 
 GroupsGetInfoResult_validator = bv.List(GroupsGetInfoItem_validator)
-MemberExternalId_validator = bv.String(max_length=64)
 MembersGetInfoResult_validator = bv.List(MembersGetInfoItem_validator)
 NumberPerDay_validator = bv.List(bv.Nullable(bv.UInt64()))
-TeamMemberId_validator = bv.String()
 DeviceSession._session_id_validator = bv.String()
 DeviceSession._ip_address_validator = bv.Nullable(bv.String())
 DeviceSession._country_validator = bv.Nullable(bv.String())
@@ -11616,6 +13106,17 @@ ApiApp._all_fields_ = [
 BaseDfbReport._start_date_validator = bv.String()
 BaseDfbReport._all_field_names_ = set(['start_date'])
 BaseDfbReport._all_fields_ = [('start_date', BaseDfbReport._start_date_validator)]
+
+BaseTeamFolderError._access_error_validator = TeamFolderAccessError_validator
+BaseTeamFolderError._status_error_validator = TeamFolderInvalidStatusError_validator
+BaseTeamFolderError._other_validator = bv.Void()
+BaseTeamFolderError._tagmap = {
+    'access_error': BaseTeamFolderError._access_error_validator,
+    'status_error': BaseTeamFolderError._status_error_validator,
+    'other': BaseTeamFolderError._other_validator,
+}
+
+BaseTeamFolderError.other = BaseTeamFolderError('other')
 
 DateRange._start_date_validator = bv.Nullable(common.Date_validator)
 DateRange._end_date_validator = bv.Nullable(common.Date_validator)
@@ -11820,7 +13321,7 @@ GroupAccessType.member = GroupAccessType('member')
 GroupAccessType.owner = GroupAccessType('owner')
 
 GroupCreateArg._group_name_validator = bv.String()
-GroupCreateArg._group_external_id_validator = bv.Nullable(bv.String())
+GroupCreateArg._group_external_id_validator = bv.Nullable(team_common.GroupExternalId_validator)
 GroupCreateArg._group_management_type_validator = bv.Nullable(team_common.GroupManagementType_validator)
 GroupCreateArg._all_field_names_ = set([
     'group_name',
@@ -11836,17 +13337,20 @@ GroupCreateArg._all_fields_ = [
 GroupCreateError._group_name_already_used_validator = bv.Void()
 GroupCreateError._group_name_invalid_validator = bv.Void()
 GroupCreateError._external_id_already_in_use_validator = bv.Void()
+GroupCreateError._system_managed_group_disallowed_validator = bv.Void()
 GroupCreateError._other_validator = bv.Void()
 GroupCreateError._tagmap = {
     'group_name_already_used': GroupCreateError._group_name_already_used_validator,
     'group_name_invalid': GroupCreateError._group_name_invalid_validator,
     'external_id_already_in_use': GroupCreateError._external_id_already_in_use_validator,
+    'system_managed_group_disallowed': GroupCreateError._system_managed_group_disallowed_validator,
     'other': GroupCreateError._other_validator,
 }
 
 GroupCreateError.group_name_already_used = GroupCreateError('group_name_already_used')
 GroupCreateError.group_name_invalid = GroupCreateError('group_name_invalid')
 GroupCreateError.external_id_already_in_use = GroupCreateError('external_id_already_in_use')
+GroupCreateError.system_managed_group_disallowed = GroupCreateError('system_managed_group_disallowed')
 GroupCreateError.other = GroupCreateError('other')
 
 GroupSelectorError._group_not_found_validator = bv.Void()
@@ -11859,11 +13363,19 @@ GroupSelectorError._tagmap = {
 GroupSelectorError.group_not_found = GroupSelectorError('group_not_found')
 GroupSelectorError.other = GroupSelectorError('other')
 
+GroupSelectorWithTeamGroupError._system_managed_group_disallowed_validator = bv.Void()
+GroupSelectorWithTeamGroupError._tagmap = {
+    'system_managed_group_disallowed': GroupSelectorWithTeamGroupError._system_managed_group_disallowed_validator,
+}
+GroupSelectorWithTeamGroupError._tagmap.update(GroupSelectorError._tagmap)
+
+GroupSelectorWithTeamGroupError.system_managed_group_disallowed = GroupSelectorWithTeamGroupError('system_managed_group_disallowed')
+
 GroupDeleteError._group_already_deleted_validator = bv.Void()
 GroupDeleteError._tagmap = {
     'group_already_deleted': GroupDeleteError._group_already_deleted_validator,
 }
-GroupDeleteError._tagmap.update(GroupSelectorError._tagmap)
+GroupDeleteError._tagmap.update(GroupSelectorWithTeamGroupError._tagmap)
 
 GroupDeleteError.group_already_deleted = GroupDeleteError('group_already_deleted')
 
@@ -11904,7 +13416,7 @@ GroupMemberSelectorError._member_not_in_group_validator = bv.Void()
 GroupMemberSelectorError._tagmap = {
     'member_not_in_group': GroupMemberSelectorError._member_not_in_group_validator,
 }
-GroupMemberSelectorError._tagmap.update(GroupSelectorError._tagmap)
+GroupMemberSelectorError._tagmap.update(GroupSelectorWithTeamGroupError._tagmap)
 
 GroupMemberSelectorError.member_not_in_group = GroupMemberSelectorError('member_not_in_group')
 
@@ -11945,7 +13457,7 @@ GroupMembersAddError._tagmap = {
     'user_must_be_active_to_be_owner': GroupMembersAddError._user_must_be_active_to_be_owner_validator,
     'user_cannot_be_manager_of_company_managed_group': GroupMembersAddError._user_cannot_be_manager_of_company_managed_group_validator,
 }
-GroupMembersAddError._tagmap.update(GroupSelectorError._tagmap)
+GroupMembersAddError._tagmap.update(GroupSelectorWithTeamGroupError._tagmap)
 
 GroupMembersAddError.duplicate_user = GroupMembersAddError('duplicate_user')
 GroupMembersAddError.group_not_in_team = GroupMembersAddError('group_not_in_team')
@@ -11977,13 +13489,17 @@ GroupMembersSelectorError._member_not_in_group_validator = bv.Void()
 GroupMembersSelectorError._tagmap = {
     'member_not_in_group': GroupMembersSelectorError._member_not_in_group_validator,
 }
-GroupMembersSelectorError._tagmap.update(GroupSelectorError._tagmap)
+GroupMembersSelectorError._tagmap.update(GroupSelectorWithTeamGroupError._tagmap)
 
 GroupMembersSelectorError.member_not_in_group = GroupMembersSelectorError('member_not_in_group')
 
 GroupMembersRemoveError._group_not_in_team_validator = bv.Void()
+GroupMembersRemoveError._members_not_in_team_validator = bv.List(bv.String())
+GroupMembersRemoveError._users_not_found_validator = bv.List(bv.String())
 GroupMembersRemoveError._tagmap = {
     'group_not_in_team': GroupMembersRemoveError._group_not_in_team_validator,
+    'members_not_in_team': GroupMembersRemoveError._members_not_in_team_validator,
+    'users_not_found': GroupMembersRemoveError._users_not_found_validator,
 }
 GroupMembersRemoveError._tagmap.update(GroupMembersSelectorError._tagmap)
 
@@ -12012,7 +13528,7 @@ GroupMembersSetAccessTypeArg._all_fields_ = GroupMemberSelector._all_fields_ + [
 ]
 
 GroupSelector._group_id_validator = team_common.GroupId_validator
-GroupSelector._group_external_id_validator = bv.String()
+GroupSelector._group_external_id_validator = team_common.GroupExternalId_validator
 GroupSelector._tagmap = {
     'group_id': GroupSelector._group_id_validator,
     'group_external_id': GroupSelector._group_external_id_validator,
@@ -12020,7 +13536,7 @@ GroupSelector._tagmap = {
 
 GroupUpdateArgs._group_validator = GroupSelector_validator
 GroupUpdateArgs._new_group_name_validator = bv.Nullable(bv.String())
-GroupUpdateArgs._new_group_external_id_validator = bv.Nullable(bv.String())
+GroupUpdateArgs._new_group_external_id_validator = bv.Nullable(team_common.GroupExternalId_validator)
 GroupUpdateArgs._new_group_management_type_validator = bv.Nullable(team_common.GroupManagementType_validator)
 GroupUpdateArgs._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
     'group',
@@ -12035,12 +13551,18 @@ GroupUpdateArgs._all_fields_ = IncludeMembersArg._all_fields_ + [
     ('new_group_management_type', GroupUpdateArgs._new_group_management_type_validator),
 ]
 
+GroupUpdateError._group_name_already_used_validator = bv.Void()
+GroupUpdateError._group_name_invalid_validator = bv.Void()
 GroupUpdateError._external_id_already_in_use_validator = bv.Void()
 GroupUpdateError._tagmap = {
+    'group_name_already_used': GroupUpdateError._group_name_already_used_validator,
+    'group_name_invalid': GroupUpdateError._group_name_invalid_validator,
     'external_id_already_in_use': GroupUpdateError._external_id_already_in_use_validator,
 }
-GroupUpdateError._tagmap.update(GroupSelectorError._tagmap)
+GroupUpdateError._tagmap.update(GroupSelectorWithTeamGroupError._tagmap)
 
+GroupUpdateError.group_name_already_used = GroupUpdateError('group_name_already_used')
+GroupUpdateError.group_name_invalid = GroupUpdateError('group_name_invalid')
 GroupUpdateError.external_id_already_in_use = GroupUpdateError('external_id_already_in_use')
 
 GroupsGetInfoError._group_not_on_team_validator = bv.Void()
@@ -12357,7 +13879,8 @@ MemberAccess._all_fields_ = [
 MemberAddArg._member_email_validator = common.EmailAddress_validator
 MemberAddArg._member_given_name_validator = common.NamePart_validator
 MemberAddArg._member_surname_validator = common.NamePart_validator
-MemberAddArg._member_external_id_validator = bv.Nullable(MemberExternalId_validator)
+MemberAddArg._member_external_id_validator = bv.Nullable(team_common.MemberExternalId_validator)
+MemberAddArg._member_persistent_id_validator = bv.Nullable(bv.String())
 MemberAddArg._send_welcome_email_validator = bv.Boolean()
 MemberAddArg._role_validator = AdminTier_validator
 MemberAddArg._all_field_names_ = set([
@@ -12365,6 +13888,7 @@ MemberAddArg._all_field_names_ = set([
     'member_given_name',
     'member_surname',
     'member_external_id',
+    'member_persistent_id',
     'send_welcome_email',
     'role',
 ])
@@ -12373,6 +13897,7 @@ MemberAddArg._all_fields_ = [
     ('member_given_name', MemberAddArg._member_given_name_validator),
     ('member_surname', MemberAddArg._member_surname_validator),
     ('member_external_id', MemberAddArg._member_external_id_validator),
+    ('member_persistent_id', MemberAddArg._member_persistent_id_validator),
     ('send_welcome_email', MemberAddArg._send_welcome_email_validator),
     ('role', MemberAddArg._role_validator),
 ]
@@ -12385,6 +13910,8 @@ MemberAddResult._user_on_another_team_validator = common.EmailAddress_validator
 MemberAddResult._user_already_paired_validator = common.EmailAddress_validator
 MemberAddResult._user_migration_failed_validator = common.EmailAddress_validator
 MemberAddResult._duplicate_external_member_id_validator = common.EmailAddress_validator
+MemberAddResult._duplicate_member_persistent_id_validator = common.EmailAddress_validator
+MemberAddResult._persistent_id_disabled_validator = common.EmailAddress_validator
 MemberAddResult._user_creation_failed_validator = common.EmailAddress_validator
 MemberAddResult._tagmap = {
     'success': MemberAddResult._success_validator,
@@ -12395,6 +13922,8 @@ MemberAddResult._tagmap = {
     'user_already_paired': MemberAddResult._user_already_paired_validator,
     'user_migration_failed': MemberAddResult._user_migration_failed_validator,
     'duplicate_external_member_id': MemberAddResult._duplicate_external_member_id_validator,
+    'duplicate_member_persistent_id': MemberAddResult._duplicate_member_persistent_id_validator,
+    'persistent_id_disabled': MemberAddResult._persistent_id_disabled_validator,
     'user_creation_failed': MemberAddResult._user_creation_failed_validator,
 }
 
@@ -12426,7 +13955,7 @@ MemberLinkedApps._all_fields_ = [
     ('linked_api_apps', MemberLinkedApps._linked_api_apps_validator),
 ]
 
-MemberProfile._team_member_id_validator = TeamMemberId_validator
+MemberProfile._team_member_id_validator = team_common.TeamMemberId_validator
 MemberProfile._external_id_validator = bv.Nullable(bv.String())
 MemberProfile._account_id_validator = bv.Nullable(users.AccountId_validator)
 MemberProfile._email_validator = bv.String()
@@ -12434,6 +13963,8 @@ MemberProfile._email_verified_validator = bv.Boolean()
 MemberProfile._status_validator = TeamMemberStatus_validator
 MemberProfile._name_validator = users.Name_validator
 MemberProfile._membership_type_validator = TeamMembershipType_validator
+MemberProfile._joined_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
+MemberProfile._persistent_id_validator = bv.Nullable(bv.String())
 MemberProfile._all_field_names_ = set([
     'team_member_id',
     'external_id',
@@ -12443,6 +13974,8 @@ MemberProfile._all_field_names_ = set([
     'status',
     'name',
     'membership_type',
+    'joined_on',
+    'persistent_id',
 ])
 MemberProfile._all_fields_ = [
     ('team_member_id', MemberProfile._team_member_id_validator),
@@ -12453,6 +13986,8 @@ MemberProfile._all_fields_ = [
     ('status', MemberProfile._status_validator),
     ('name', MemberProfile._name_validator),
     ('membership_type', MemberProfile._membership_type_validator),
+    ('joined_on', MemberProfile._joined_on_validator),
+    ('persistent_id', MemberProfile._persistent_id_validator),
 ]
 
 UserSelectorError._user_not_found_validator = bv.Void()
@@ -12696,7 +14231,7 @@ MembersSetPermissionsError.cannot_set_permissions = MembersSetPermissionsError('
 MembersSetPermissionsError.team_license_limit = MembersSetPermissionsError('team_license_limit')
 MembersSetPermissionsError.other = MembersSetPermissionsError('other')
 
-MembersSetPermissionsResult._team_member_id_validator = TeamMemberId_validator
+MembersSetPermissionsResult._team_member_id_validator = team_common.TeamMemberId_validator
 MembersSetPermissionsResult._role_validator = AdminTier_validator
 MembersSetPermissionsResult._all_field_names_ = set([
     'team_member_id',
@@ -12709,15 +14244,17 @@ MembersSetPermissionsResult._all_fields_ = [
 
 MembersSetProfileArg._user_validator = UserSelectorArg_validator
 MembersSetProfileArg._new_email_validator = bv.Nullable(common.EmailAddress_validator)
-MembersSetProfileArg._new_external_id_validator = bv.Nullable(MemberExternalId_validator)
+MembersSetProfileArg._new_external_id_validator = bv.Nullable(team_common.MemberExternalId_validator)
 MembersSetProfileArg._new_given_name_validator = bv.Nullable(common.NamePart_validator)
 MembersSetProfileArg._new_surname_validator = bv.Nullable(common.NamePart_validator)
+MembersSetProfileArg._new_persistent_id_validator = bv.Nullable(bv.String())
 MembersSetProfileArg._all_field_names_ = set([
     'user',
     'new_email',
     'new_external_id',
     'new_given_name',
     'new_surname',
+    'new_persistent_id',
 ])
 MembersSetProfileArg._all_fields_ = [
     ('user', MembersSetProfileArg._user_validator),
@@ -12725,6 +14262,7 @@ MembersSetProfileArg._all_fields_ = [
     ('new_external_id', MembersSetProfileArg._new_external_id_validator),
     ('new_given_name', MembersSetProfileArg._new_given_name_validator),
     ('new_surname', MembersSetProfileArg._new_surname_validator),
+    ('new_persistent_id', MembersSetProfileArg._new_persistent_id_validator),
 ]
 
 MembersSetProfileError._external_id_and_new_external_id_unsafe_validator = bv.Void()
@@ -12733,6 +14271,8 @@ MembersSetProfileError._email_reserved_for_other_user_validator = bv.Void()
 MembersSetProfileError._external_id_used_by_other_user_validator = bv.Void()
 MembersSetProfileError._set_profile_disallowed_validator = bv.Void()
 MembersSetProfileError._param_cannot_be_empty_validator = bv.Void()
+MembersSetProfileError._persistent_id_disabled_validator = bv.Void()
+MembersSetProfileError._persistent_id_used_by_other_user_validator = bv.Void()
 MembersSetProfileError._other_validator = bv.Void()
 MembersSetProfileError._tagmap = {
     'external_id_and_new_external_id_unsafe': MembersSetProfileError._external_id_and_new_external_id_unsafe_validator,
@@ -12741,6 +14281,8 @@ MembersSetProfileError._tagmap = {
     'external_id_used_by_other_user': MembersSetProfileError._external_id_used_by_other_user_validator,
     'set_profile_disallowed': MembersSetProfileError._set_profile_disallowed_validator,
     'param_cannot_be_empty': MembersSetProfileError._param_cannot_be_empty_validator,
+    'persistent_id_disabled': MembersSetProfileError._persistent_id_disabled_validator,
+    'persistent_id_used_by_other_user': MembersSetProfileError._persistent_id_used_by_other_user_validator,
     'other': MembersSetProfileError._other_validator,
 }
 MembersSetProfileError._tagmap.update(MemberSelectorError._tagmap)
@@ -12751,6 +14293,8 @@ MembersSetProfileError.email_reserved_for_other_user = MembersSetProfileError('e
 MembersSetProfileError.external_id_used_by_other_user = MembersSetProfileError('external_id_used_by_other_user')
 MembersSetProfileError.set_profile_disallowed = MembersSetProfileError('set_profile_disallowed')
 MembersSetProfileError.param_cannot_be_empty = MembersSetProfileError('param_cannot_be_empty')
+MembersSetProfileError.persistent_id_disabled = MembersSetProfileError('persistent_id_disabled')
+MembersSetProfileError.persistent_id_used_by_other_user = MembersSetProfileError('persistent_id_used_by_other_user')
 MembersSetProfileError.other = MembersSetProfileError('other')
 
 MembersSuspendError._suspend_inactive_user_validator = bv.Void()
@@ -12944,6 +14488,160 @@ StorageBucket._all_fields_ = [
     ('users', StorageBucket._users_validator),
 ]
 
+TeamFolderAccessError._invalid_team_folder_id_validator = bv.Void()
+TeamFolderAccessError._no_access_validator = bv.Void()
+TeamFolderAccessError._other_validator = bv.Void()
+TeamFolderAccessError._tagmap = {
+    'invalid_team_folder_id': TeamFolderAccessError._invalid_team_folder_id_validator,
+    'no_access': TeamFolderAccessError._no_access_validator,
+    'other': TeamFolderAccessError._other_validator,
+}
+
+TeamFolderAccessError.invalid_team_folder_id = TeamFolderAccessError('invalid_team_folder_id')
+TeamFolderAccessError.no_access = TeamFolderAccessError('no_access')
+TeamFolderAccessError.other = TeamFolderAccessError('other')
+
+TeamFolderActivateError._tagmap = {
+}
+TeamFolderActivateError._tagmap.update(BaseTeamFolderError._tagmap)
+
+TeamFolderIdArg._team_folder_id_validator = common.SharedFolderId_validator
+TeamFolderIdArg._all_field_names_ = set(['team_folder_id'])
+TeamFolderIdArg._all_fields_ = [('team_folder_id', TeamFolderIdArg._team_folder_id_validator)]
+
+TeamFolderArchiveArg._force_async_off_validator = bv.Boolean()
+TeamFolderArchiveArg._all_field_names_ = TeamFolderIdArg._all_field_names_.union(set(['force_async_off']))
+TeamFolderArchiveArg._all_fields_ = TeamFolderIdArg._all_fields_ + [('force_async_off', TeamFolderArchiveArg._force_async_off_validator)]
+
+TeamFolderArchiveError._tagmap = {
+}
+TeamFolderArchiveError._tagmap.update(BaseTeamFolderError._tagmap)
+
+TeamFolderArchiveJobStatus._complete_validator = TeamFolderMetadata_validator
+TeamFolderArchiveJobStatus._failed_validator = TeamFolderArchiveError_validator
+TeamFolderArchiveJobStatus._tagmap = {
+    'complete': TeamFolderArchiveJobStatus._complete_validator,
+    'failed': TeamFolderArchiveJobStatus._failed_validator,
+}
+TeamFolderArchiveJobStatus._tagmap.update(async.PollResultBase._tagmap)
+
+TeamFolderArchiveLaunch._complete_validator = TeamFolderMetadata_validator
+TeamFolderArchiveLaunch._tagmap = {
+    'complete': TeamFolderArchiveLaunch._complete_validator,
+}
+TeamFolderArchiveLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+
+TeamFolderCreateArg._name_validator = bv.String()
+TeamFolderCreateArg._all_field_names_ = set(['name'])
+TeamFolderCreateArg._all_fields_ = [('name', TeamFolderCreateArg._name_validator)]
+
+TeamFolderCreateError._invalid_folder_name_validator = bv.Void()
+TeamFolderCreateError._folder_name_already_used_validator = bv.Void()
+TeamFolderCreateError._folder_name_reserved_validator = bv.Void()
+TeamFolderCreateError._other_validator = bv.Void()
+TeamFolderCreateError._tagmap = {
+    'invalid_folder_name': TeamFolderCreateError._invalid_folder_name_validator,
+    'folder_name_already_used': TeamFolderCreateError._folder_name_already_used_validator,
+    'folder_name_reserved': TeamFolderCreateError._folder_name_reserved_validator,
+    'other': TeamFolderCreateError._other_validator,
+}
+
+TeamFolderCreateError.invalid_folder_name = TeamFolderCreateError('invalid_folder_name')
+TeamFolderCreateError.folder_name_already_used = TeamFolderCreateError('folder_name_already_used')
+TeamFolderCreateError.folder_name_reserved = TeamFolderCreateError('folder_name_reserved')
+TeamFolderCreateError.other = TeamFolderCreateError('other')
+
+TeamFolderGetInfoItem._id_not_found_validator = bv.String()
+TeamFolderGetInfoItem._team_folder_metadata_validator = TeamFolderMetadata_validator
+TeamFolderGetInfoItem._tagmap = {
+    'id_not_found': TeamFolderGetInfoItem._id_not_found_validator,
+    'team_folder_metadata': TeamFolderGetInfoItem._team_folder_metadata_validator,
+}
+
+TeamFolderIdListArg._team_folder_ids_validator = bv.List(common.SharedFolderId_validator, min_items=1)
+TeamFolderIdListArg._all_field_names_ = set(['team_folder_ids'])
+TeamFolderIdListArg._all_fields_ = [('team_folder_ids', TeamFolderIdListArg._team_folder_ids_validator)]
+
+TeamFolderInvalidStatusError._active_validator = bv.Void()
+TeamFolderInvalidStatusError._archived_validator = bv.Void()
+TeamFolderInvalidStatusError._archive_in_progress_validator = bv.Void()
+TeamFolderInvalidStatusError._other_validator = bv.Void()
+TeamFolderInvalidStatusError._tagmap = {
+    'active': TeamFolderInvalidStatusError._active_validator,
+    'archived': TeamFolderInvalidStatusError._archived_validator,
+    'archive_in_progress': TeamFolderInvalidStatusError._archive_in_progress_validator,
+    'other': TeamFolderInvalidStatusError._other_validator,
+}
+
+TeamFolderInvalidStatusError.active = TeamFolderInvalidStatusError('active')
+TeamFolderInvalidStatusError.archived = TeamFolderInvalidStatusError('archived')
+TeamFolderInvalidStatusError.archive_in_progress = TeamFolderInvalidStatusError('archive_in_progress')
+TeamFolderInvalidStatusError.other = TeamFolderInvalidStatusError('other')
+
+TeamFolderListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
+TeamFolderListArg._all_field_names_ = set(['limit'])
+TeamFolderListArg._all_fields_ = [('limit', TeamFolderListArg._limit_validator)]
+
+TeamFolderListError._access_error_validator = TeamFolderAccessError_validator
+TeamFolderListError._all_field_names_ = set(['access_error'])
+TeamFolderListError._all_fields_ = [('access_error', TeamFolderListError._access_error_validator)]
+
+TeamFolderListResult._team_folders_validator = bv.List(TeamFolderMetadata_validator)
+TeamFolderListResult._all_field_names_ = set(['team_folders'])
+TeamFolderListResult._all_fields_ = [('team_folders', TeamFolderListResult._team_folders_validator)]
+
+TeamFolderMetadata._team_folder_id_validator = common.SharedFolderId_validator
+TeamFolderMetadata._name_validator = bv.String()
+TeamFolderMetadata._status_validator = TeamFolderStatus_validator
+TeamFolderMetadata._all_field_names_ = set([
+    'team_folder_id',
+    'name',
+    'status',
+])
+TeamFolderMetadata._all_fields_ = [
+    ('team_folder_id', TeamFolderMetadata._team_folder_id_validator),
+    ('name', TeamFolderMetadata._name_validator),
+    ('status', TeamFolderMetadata._status_validator),
+]
+
+TeamFolderPermanentlyDeleteError._tagmap = {
+}
+TeamFolderPermanentlyDeleteError._tagmap.update(BaseTeamFolderError._tagmap)
+
+TeamFolderRenameArg._name_validator = bv.String()
+TeamFolderRenameArg._all_field_names_ = TeamFolderIdArg._all_field_names_.union(set(['name']))
+TeamFolderRenameArg._all_fields_ = TeamFolderIdArg._all_fields_ + [('name', TeamFolderRenameArg._name_validator)]
+
+TeamFolderRenameError._invalid_folder_name_validator = bv.Void()
+TeamFolderRenameError._folder_name_already_used_validator = bv.Void()
+TeamFolderRenameError._folder_name_reserved_validator = bv.Void()
+TeamFolderRenameError._tagmap = {
+    'invalid_folder_name': TeamFolderRenameError._invalid_folder_name_validator,
+    'folder_name_already_used': TeamFolderRenameError._folder_name_already_used_validator,
+    'folder_name_reserved': TeamFolderRenameError._folder_name_reserved_validator,
+}
+TeamFolderRenameError._tagmap.update(BaseTeamFolderError._tagmap)
+
+TeamFolderRenameError.invalid_folder_name = TeamFolderRenameError('invalid_folder_name')
+TeamFolderRenameError.folder_name_already_used = TeamFolderRenameError('folder_name_already_used')
+TeamFolderRenameError.folder_name_reserved = TeamFolderRenameError('folder_name_reserved')
+
+TeamFolderStatus._active_validator = bv.Void()
+TeamFolderStatus._archived_validator = bv.Void()
+TeamFolderStatus._archive_in_progress_validator = bv.Void()
+TeamFolderStatus._other_validator = bv.Void()
+TeamFolderStatus._tagmap = {
+    'active': TeamFolderStatus._active_validator,
+    'archived': TeamFolderStatus._archived_validator,
+    'archive_in_progress': TeamFolderStatus._archive_in_progress_validator,
+    'other': TeamFolderStatus._other_validator,
+}
+
+TeamFolderStatus.active = TeamFolderStatus('active')
+TeamFolderStatus.archived = TeamFolderStatus('archived')
+TeamFolderStatus.archive_in_progress = TeamFolderStatus('archive_in_progress')
+TeamFolderStatus.other = TeamFolderStatus('other')
+
 TeamGetInfoResult._name_validator = bv.String()
 TeamGetInfoResult._team_id_validator = bv.String()
 TeamGetInfoResult._num_licensed_users_validator = bv.UInt32()
@@ -13025,8 +14723,8 @@ UpdatePropertyTemplateResult._template_id_validator = properties.TemplateId_vali
 UpdatePropertyTemplateResult._all_field_names_ = set(['template_id'])
 UpdatePropertyTemplateResult._all_fields_ = [('template_id', UpdatePropertyTemplateResult._template_id_validator)]
 
-UserSelectorArg._team_member_id_validator = TeamMemberId_validator
-UserSelectorArg._external_id_validator = MemberExternalId_validator
+UserSelectorArg._team_member_id_validator = team_common.TeamMemberId_validator
+UserSelectorArg._external_id_validator = team_common.MemberExternalId_validator
 UserSelectorArg._email_validator = common.EmailAddress_validator
 UserSelectorArg._tagmap = {
     'team_member_id': UserSelectorArg._team_member_id_validator,
@@ -13034,8 +14732,8 @@ UserSelectorArg._tagmap = {
     'email': UserSelectorArg._email_validator,
 }
 
-UsersSelectorArg._team_member_ids_validator = bv.List(TeamMemberId_validator)
-UsersSelectorArg._external_ids_validator = bv.List(MemberExternalId_validator)
+UsersSelectorArg._team_member_ids_validator = bv.List(team_common.TeamMemberId_validator)
+UsersSelectorArg._external_ids_validator = bv.List(team_common.MemberExternalId_validator)
 UsersSelectorArg._emails_validator = bv.List(common.EmailAddress_validator)
 UsersSelectorArg._tagmap = {
     'team_member_ids': UsersSelectorArg._team_member_ids_validator,
@@ -13043,51 +14741,6 @@ UsersSelectorArg._tagmap = {
     'emails': UsersSelectorArg._emails_validator,
 }
 
-alpha_groups_create = bb.Route(
-    'alpha/groups/create',
-    False,
-    GroupCreateArg_validator,
-    GroupFullInfo_validator,
-    GroupCreateError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
-)
-alpha_groups_get_info = bb.Route(
-    'alpha/groups/get_info',
-    False,
-    GroupsSelector_validator,
-    GroupsGetInfoResult_validator,
-    GroupsGetInfoError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
-)
-alpha_groups_list = bb.Route(
-    'alpha/groups/list',
-    False,
-    GroupsListArg_validator,
-    GroupsListResult_validator,
-    bv.Void(),
-    {'host': u'api',
-     'style': u'rpc'},
-)
-alpha_groups_list_continue = bb.Route(
-    'alpha/groups/list/continue',
-    False,
-    GroupsListContinueArg_validator,
-    GroupsListResult_validator,
-    GroupsListContinueError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
-)
-alpha_groups_update = bb.Route(
-    'alpha/groups/update',
-    False,
-    GroupUpdateArgs_validator,
-    GroupFullInfo_validator,
-    GroupUpdateError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
-)
 devices_list_member_devices = bb.Route(
     'devices/list_member_devices',
     False,
@@ -13484,13 +15137,80 @@ reports_get_storage = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+team_folder_activate = bb.Route(
+    'team_folder/activate',
+    False,
+    TeamFolderIdArg_validator,
+    TeamFolderMetadata_validator,
+    TeamFolderActivateError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+team_folder_archive = bb.Route(
+    'team_folder/archive',
+    False,
+    TeamFolderArchiveArg_validator,
+    TeamFolderArchiveLaunch_validator,
+    TeamFolderArchiveError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+team_folder_archive_check = bb.Route(
+    'team_folder/archive/check',
+    False,
+    async.PollArg_validator,
+    TeamFolderArchiveJobStatus_validator,
+    async.PollError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+team_folder_create = bb.Route(
+    'team_folder/create',
+    False,
+    TeamFolderCreateArg_validator,
+    TeamFolderMetadata_validator,
+    TeamFolderCreateError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+team_folder_get_info = bb.Route(
+    'team_folder/get_info',
+    False,
+    TeamFolderIdListArg_validator,
+    bv.List(TeamFolderGetInfoItem_validator),
+    bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
+team_folder_list = bb.Route(
+    'team_folder/list',
+    False,
+    TeamFolderListArg_validator,
+    TeamFolderListResult_validator,
+    TeamFolderListError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+team_folder_permanently_delete = bb.Route(
+    'team_folder/permanently_delete',
+    False,
+    TeamFolderIdArg_validator,
+    bv.Void(),
+    TeamFolderPermanentlyDeleteError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+team_folder_rename = bb.Route(
+    'team_folder/rename',
+    False,
+    TeamFolderRenameArg_validator,
+    TeamFolderMetadata_validator,
+    TeamFolderRenameError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 
 ROUTES = {
-    'alpha/groups/create': alpha_groups_create,
-    'alpha/groups/get_info': alpha_groups_get_info,
-    'alpha/groups/list': alpha_groups_list,
-    'alpha/groups/list/continue': alpha_groups_list_continue,
-    'alpha/groups/update': alpha_groups_update,
     'devices/list_member_devices': devices_list_member_devices,
     'devices/list_members_devices': devices_list_members_devices,
     'devices/list_team_devices': devices_list_team_devices,
@@ -13535,5 +15255,13 @@ ROUTES = {
     'reports/get_devices': reports_get_devices,
     'reports/get_membership': reports_get_membership,
     'reports/get_storage': reports_get_storage,
+    'team_folder/activate': team_folder_activate,
+    'team_folder/archive': team_folder_archive,
+    'team_folder/archive/check': team_folder_archive_check,
+    'team_folder/create': team_folder_create,
+    'team_folder/get_info': team_folder_get_info,
+    'team_folder/list': team_folder_list,
+    'team_folder/permanently_delete': team_folder_permanently_delete,
+    'team_folder/rename': team_folder_rename,
 }
 

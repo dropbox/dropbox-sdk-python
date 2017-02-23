@@ -7,6 +7,7 @@ from . import (
     async,
     auth,
     files,
+    paper,
     properties,
     sharing,
     team,
@@ -25,6 +26,32 @@ class DropboxBase(object):
 
     # ------------------------------------------
     # Routes in auth namespace
+
+    def auth_token_from_oauth1(self,
+                               oauth1_token,
+                               oauth1_token_secret):
+        """
+        Creates an OAuth 2.0 access token from the supplied OAuth 1.0 access
+        token.
+
+        :param str oauth1_token: The supplied OAuth 1.0 access token.
+        :param str oauth1_token_secret: The token secret associated with the
+            supplied access token.
+        :rtype: :class:`dropbox.auth.TokenFromOAuth1Result`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.auth.TokenFromOAuth1Error`
+        """
+        arg = auth.TokenFromOAuth1Arg(oauth1_token,
+                                      oauth1_token_secret)
+        r = self.request(
+            auth.token_from_oauth1,
+            'auth',
+            arg,
+            None,
+        )
+        return r
 
     def auth_token_revoke(self):
         """
@@ -172,7 +199,7 @@ class DropboxBase(object):
             always true for :meth:`files_move_batch`.
         :param bool autorename: If there's a conflict with any file, have the
             Dropbox server try to autorename that file to avoid the conflict.
-        :rtype: :class:`dropbox.files.LaunchEmptyResult`
+        :rtype: :class:`dropbox.files.RelocationBatchLaunch`
         """
         arg = files.RelocationBatchArg(entries,
                                        allow_shared_folder,
@@ -317,7 +344,7 @@ class DropboxBase(object):
         Use :meth:`files_delete_batch_check` to check the job status.
 
         :type entries: list
-        :rtype: :class:`dropbox.files.LaunchEmptyResult`
+        :rtype: :class:`dropbox.files.DeleteBatchLaunch`
         """
         arg = files.DeleteBatchArg(entries)
         r = self.request(
@@ -855,7 +882,7 @@ class DropboxBase(object):
             always true for :meth:`files_move_batch`.
         :param bool autorename: If there's a conflict with any file, have the
             Dropbox server try to autorename that file to avoid the conflict.
-        :rtype: :class:`dropbox.files.LaunchEmptyResult`
+        :rtype: :class:`dropbox.files.RelocationBatchLaunch`
         """
         arg = files.RelocationBatchArg(entries,
                                        allow_shared_folder,
@@ -1343,7 +1370,7 @@ class DropboxBase(object):
         up to 1000 entries in a single request.
 
         :param list entries: Commit information for each file in the batch.
-        :rtype: :class:`dropbox.files.LaunchEmptyResult`
+        :rtype: :class:`dropbox.files.UploadSessionFinishBatchLaunch`
         """
         arg = files.UploadSessionFinishBatchArg(entries)
         r = self.request(
@@ -1405,6 +1432,422 @@ class DropboxBase(object):
             f,
         )
         return r
+
+    # ------------------------------------------
+    # Routes in paper namespace
+
+    def paper_docs_archive(self,
+                           doc_id):
+        """
+        Marks the given Paper doc as deleted. This operation is non-destructive
+        and the doc can be revived by the owner.  Note: This action can be
+        performed only by the doc owner.
+
+        :type doc_id: str
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.RefPaperDoc(doc_id)
+        r = self.request(
+            paper.docs_archive,
+            'paper',
+            arg,
+            None,
+        )
+        return None
+
+    def paper_docs_download(self,
+                            doc_id,
+                            export_format):
+        """
+        Exports and downloads Paper doc either as HTML or markdown.
+
+        :type export_format: :class:`dropbox.paper.ExportFormat`
+        :rtype: (:class:`dropbox.paper.PaperDocExportResult`,
+                 :class:`requests.models.Response`)
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+
+        If you do not consume the entire response body, then you must call close
+        on the response object, otherwise you will max out your available
+        connections. We recommend using the `contextlib.closing
+        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
+        context manager to ensure this.
+        """
+        arg = paper.PaperDocExport(doc_id,
+                                   export_format)
+        r = self.request(
+            paper.docs_download,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_download_to_file(self,
+                                    download_path,
+                                    doc_id,
+                                    export_format):
+        """
+        Exports and downloads Paper doc either as HTML or markdown.
+
+        :param str download_path: Path on local machine to save file.
+        :type export_format: :class:`dropbox.paper.ExportFormat`
+        :rtype: (:class:`dropbox.paper.PaperDocExportResult`,
+                 :class:`requests.models.Response`)
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.PaperDocExport(doc_id,
+                                   export_format)
+        r = self.request(
+            paper.docs_download,
+            'paper',
+            arg,
+            None,
+        )
+        self._save_body_to_file(download_path, r[1])
+        return r[0]
+
+    def paper_docs_folder_users_list(self,
+                                     doc_id,
+                                     limit=1000):
+        """
+        Lists the users who are explicitly invited to the Paper folder in which
+        the Paper doc is contained. For private folders all users (including
+        owner) shared on the folder are listed and for team folders all non-team
+        users shared on the folder are returned.
+
+        :param int limit: Size limit per batch. The maximum number of users that
+            can be retrieved per batch is 1000. Higher value results in invalid
+            arguments error.
+        :rtype: :class:`dropbox.paper.ListUsersOnFolderResponse`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.ListUsersOnFolderArgs(doc_id,
+                                          limit)
+        r = self.request(
+            paper.docs_folder_users_list,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_folder_users_list_continue(self,
+                                              doc_id,
+                                              cursor):
+        """
+        Once a cursor has been retrieved from
+        :meth:`paper_docs_folder_users_list`, use this to paginate through all
+        users on the Paper folder.
+
+        :param str cursor: The cursor obtained from
+            :meth:`paper_docs_folder_users_list` or
+            :meth:`paper_docs_folder_users_list_continue`. Allows for
+            pagination.
+        :rtype: :class:`dropbox.paper.ListUsersOnFolderResponse`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.ListUsersCursorError`
+        """
+        arg = paper.ListUsersOnFolderContinueArgs(doc_id,
+                                                  cursor)
+        r = self.request(
+            paper.docs_folder_users_list_continue,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_get_folder_info(self,
+                                   doc_id):
+        """
+        Retrieves folder information for the given Paper doc. This includes:   -
+        folder sharing policy; permissions for subfolders are set by the
+        top-level folder.   - full 'filepath', i.e. the list of folders (both
+        folderId and folderName) from the root folder to the folder directly
+        containing the Paper doc.  Note: If the Paper doc is not in any folder
+        (aka unfiled) the response will be empty.
+
+        :type doc_id: str
+        :rtype: :class:`dropbox.paper.FoldersContainingPaperDoc`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.RefPaperDoc(doc_id)
+        r = self.request(
+            paper.docs_get_folder_info,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_list(self,
+                        filter_by=paper.ListPaperDocsFilterBy.docs_accessed,
+                        sort_by=paper.ListPaperDocsSortBy.accessed,
+                        sort_order=paper.ListPaperDocsSortOrder.ascending,
+                        limit=1000):
+        """
+        Return the list of all Paper docs according to the argument
+        specifications. To iterate over through the full pagination, pass the
+        cursor to :meth:`paper_docs_list_continue`.
+
+        :param filter_by: Allows user to specify how the Paper docs should be
+            filtered.
+        :type filter_by: :class:`dropbox.paper.ListPaperDocsFilterBy`
+        :param sort_by: Allows user to specify how the Paper docs should be
+            sorted.
+        :type sort_by: :class:`dropbox.paper.ListPaperDocsSortBy`
+        :param sort_order: Allows user to specify the sort order of the result.
+        :type sort_order: :class:`dropbox.paper.ListPaperDocsSortOrder`
+        :param int limit: Size limit per batch. The maximum number of docs that
+            can be retrieved per batch is 1000. Higher value results in invalid
+            arguments error.
+        :rtype: :class:`dropbox.paper.ListPaperDocsResponse`
+        """
+        arg = paper.ListPaperDocsArgs(filter_by,
+                                      sort_by,
+                                      sort_order,
+                                      limit)
+        r = self.request(
+            paper.docs_list,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_list_continue(self,
+                                 cursor):
+        """
+        Once a cursor has been retrieved from :meth:`paper_docs_list`, use this
+        to paginate through all Paper doc.
+
+        :param str cursor: The cursor obtained from :meth:`paper_docs_list` or
+            :meth:`paper_docs_list_continue`. Allows for pagination.
+        :rtype: :class:`dropbox.paper.ListPaperDocsResponse`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.ListDocsCursorError`
+        """
+        arg = paper.ListPaperDocsContinueArgs(cursor)
+        r = self.request(
+            paper.docs_list_continue,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_permanently_delete(self,
+                                      doc_id):
+        """
+        Permanently deletes the given Paper doc. This operation is final as the
+        doc cannot be recovered.  Note: This action can be performed only by the
+        doc owner.
+
+        :type doc_id: str
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.RefPaperDoc(doc_id)
+        r = self.request(
+            paper.docs_permanently_delete,
+            'paper',
+            arg,
+            None,
+        )
+        return None
+
+    def paper_docs_sharing_policy_get(self,
+                                      doc_id):
+        """
+        Gets the default sharing policy for the given Paper doc.
+
+        :type doc_id: str
+        :rtype: :class:`dropbox.paper.SharingPolicy`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.RefPaperDoc(doc_id)
+        r = self.request(
+            paper.docs_sharing_policy_get,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_sharing_policy_set(self,
+                                      doc_id,
+                                      sharing_policy):
+        """
+        Sets the default sharing policy for the given Paper doc. The default
+        'team_sharing_policy' can be changed only by teams, omit this field for
+        personal accounts.  Note: 'public_sharing_policy' cannot be set to the
+        value 'disabled' because this setting can be changed only via the team
+        admin console.
+
+        :param sharing_policy: The default sharing policy to be set for the
+            Paper doc.
+        :type sharing_policy: :class:`dropbox.paper.SharingPolicy`
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.PaperDocSharingPolicy(doc_id,
+                                          sharing_policy)
+        r = self.request(
+            paper.docs_sharing_policy_set,
+            'paper',
+            arg,
+            None,
+        )
+        return None
+
+    def paper_docs_users_add(self,
+                             doc_id,
+                             members,
+                             custom_message=None,
+                             quiet=False):
+        """
+        Allows an owner or editor to add users to a Paper doc or change their
+        permissions using their email or Dropbox account id.  Note: The Doc
+        owner's permissions cannot be changed.
+
+        :param list members: User which should be added to the Paper doc.
+            Specify only email or Dropbox account id.
+        :param Nullable custom_message: A personal message that will be emailed
+            to each successfully added member.
+        :param bool quiet: Clients should set this to true if no email shall be
+            sent to added users.
+        :rtype: list
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.AddPaperDocUser(doc_id,
+                                    members,
+                                    custom_message,
+                                    quiet)
+        r = self.request(
+            paper.docs_users_add,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_users_list(self,
+                              doc_id,
+                              limit=1000,
+                              filter_by=paper.UserOnPaperDocFilter.shared):
+        """
+        Lists all users who visited the Paper doc or users with explicit access.
+        This call excludes users who have been removed. The list is sorted by
+        the date of the visit or the share date. The list will include both
+        users, the explicitly shared ones as well as those who came in using the
+        Paper url link.
+
+        :param int limit: Size limit per batch. The maximum number of users that
+            can be retrieved per batch is 1000. Higher value results in invalid
+            arguments error.
+        :param filter_by: Specify this attribute if you want to obtain users
+            that have already accessed the Paper doc.
+        :type filter_by: :class:`dropbox.paper.UserOnPaperDocFilter`
+        :rtype: :class:`dropbox.paper.ListUsersOnPaperDocResponse`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.ListUsersOnPaperDocArgs(doc_id,
+                                            limit,
+                                            filter_by)
+        r = self.request(
+            paper.docs_users_list,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_users_list_continue(self,
+                                       doc_id,
+                                       cursor):
+        """
+        Once a cursor has been retrieved from :meth:`paper_docs_users_list`, use
+        this to paginate through all users on the Paper doc.
+
+        :param str cursor: The cursor obtained from
+            :meth:`paper_docs_users_list` or
+            :meth:`paper_docs_users_list_continue`. Allows for pagination.
+        :rtype: :class:`dropbox.paper.ListUsersOnPaperDocResponse`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.ListUsersCursorError`
+        """
+        arg = paper.ListUsersOnPaperDocContinueArgs(doc_id,
+                                                    cursor)
+        r = self.request(
+            paper.docs_users_list_continue,
+            'paper',
+            arg,
+            None,
+        )
+        return r
+
+    def paper_docs_users_remove(self,
+                                doc_id,
+                                member):
+        """
+        Allows an owner or editor to remove users from a Paper doc using their
+        email or Dropbox account id.  Note: Doc owner cannot be removed.
+
+        :param member: User which should be removed from the Paper doc. Specify
+            only email or Dropbox account id.
+        :type member: :class:`dropbox.paper.MemberSelector`
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.paper.DocLookupError`
+        """
+        arg = paper.RemovePaperDocUser(doc_id,
+                                       member)
+        r = self.request(
+            paper.docs_users_remove,
+            'paper',
+            arg,
+            None,
+        )
+        return None
 
     # ------------------------------------------
     # Routes in sharing namespace
@@ -1494,7 +1937,7 @@ class DropboxBase(object):
                                           member,
                                           access_level):
         """
-        Changes a member's access on a shared file.
+        Identical to update_file_member but with less information returned.
 
         :param str file: File for which we are changing a member's access.
         :param member: The member whose access we are changing.
@@ -1507,6 +1950,10 @@ class DropboxBase(object):
         If this raises, ApiError.reason is of type:
             :class:`dropbox.sharing.FileMemberActionError`
         """
+        warnings.warn(
+            'change_file_member_access is deprecated. Use update_file_member.',
+            DeprecationWarning,
+        )
         arg = sharing.ChangeFileMemberAccessArgs(file,
                                                  member,
                                                  access_level)
@@ -1876,7 +2323,7 @@ class DropboxBase(object):
 
         :param str file: The file for which you want to see members.
         :param Nullable actions: The actions for which to return permissions on
-            a member
+            a member.
         :param bool include_inherited: Whether to include members who only have
             access from a parent shared folder.
         :param long limit: Number of members to return max per query. Defaults
@@ -1906,8 +2353,8 @@ class DropboxBase(object):
         Get members of multiple files at once. The arguments to this route are
         more limited, and the limit on query result size per file is more
         strict. To customize the results more, use the individual file endpoint.
-        Inherited users are not included in the result, and permissions are not
-        returned for this endpoint.
+        Inherited users and groups are not included in the result, and
+        permissions are not returned for this endpoint.
 
         :param list files: Files for which to return members.
         :param long limit: Number of members to return max per query. Defaults
@@ -2139,7 +2586,7 @@ class DropboxBase(object):
         """
         Get more results with a cursor from :meth:`sharing_list_received_files`.
 
-        :param str cursor: Cursor in ``ListFilesResult.cursor``
+        :param str cursor: Cursor in ``ListFilesResult.cursor``.
         :rtype: :class:`dropbox.sharing.ListFilesResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -2424,10 +2871,13 @@ class DropboxBase(object):
 
     def sharing_share_folder(self,
                              path,
-                             member_policy=sharing.MemberPolicy.anyone,
-                             acl_update_policy=sharing.AclUpdatePolicy.owner,
-                             shared_link_policy=sharing.SharedLinkPolicy.anyone,
-                             force_async=False):
+                             member_policy=None,
+                             acl_update_policy=None,
+                             shared_link_policy=None,
+                             force_async=False,
+                             actions=None,
+                             link_settings=None,
+                             viewer_info_policy=None):
         """
         Share a folder with collaborators. Most sharing will be completed
         synchronously. Large folders will be completed asynchronously. To make
@@ -2439,18 +2889,23 @@ class DropboxBase(object):
 
         :param str path: The path to the folder to share. If it does not exist,
             then a new one is created.
-        :param member_policy: Who can be a member of this shared folder. Only
-            applicable if the current user is on a team.
-        :type member_policy: :class:`dropbox.sharing.MemberPolicy`
-        :param acl_update_policy: Who can add and remove members of this shared
-            folder.
-        :type acl_update_policy: :class:`dropbox.sharing.AclUpdatePolicy`
-        :param shared_link_policy: The policy to apply to shared links created
-            for content inside this shared folder.  The current user must be on
-            a team to set this policy to ``SharedLinkPolicy.members``.
-        :type shared_link_policy: :class:`dropbox.sharing.SharedLinkPolicy`
+        :param Nullable member_policy: Who can be a member of this shared
+            folder. Only applicable if the current user is on a team.
+        :param Nullable acl_update_policy: Who can add and remove members of
+            this shared folder.
+        :param Nullable shared_link_policy: The policy to apply to shared links
+            created for content inside this shared folder.  The current user
+            must be on a team to set this policy to
+            ``SharedLinkPolicy.members``.
         :param bool force_async: Whether to force the share to happen
             asynchronously.
+        :param Nullable actions: This is a list indicating whether each returned
+            folder data entry will include a boolean field
+            ``FolderPermission.allow`` that describes whether the current user
+            can perform the `FolderAction` on the folder.
+        :param Nullable link_settings: Settings on the link for this folder.
+        :param Nullable viewer_info_policy: Who can enable/disable viewer info
+            for this shared folder.
         :rtype: :class:`dropbox.sharing.ShareFolderLaunch`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -2461,7 +2916,10 @@ class DropboxBase(object):
                                      member_policy,
                                      acl_update_policy,
                                      shared_link_policy,
-                                     force_async)
+                                     force_async,
+                                     actions,
+                                     link_settings,
+                                     viewer_info_policy)
         r = self.request(
             sharing.share_folder,
             'sharing',
@@ -2572,6 +3030,30 @@ class DropboxBase(object):
         )
         return r
 
+    def sharing_update_file_member(self,
+                                   file,
+                                   member,
+                                   access_level):
+        """
+        Changes a member's access on a shared file.
+
+        :rtype: :class:`dropbox.sharing.MemberAccessLevelResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.sharing.FileMemberActionError`
+        """
+        arg = sharing.UpdateFileMemberArgs(file,
+                                           member,
+                                           access_level)
+        r = self.request(
+            sharing.update_file_member,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
     def sharing_update_folder_member(self,
                                      shared_folder_id,
                                      member,
@@ -2608,7 +3090,9 @@ class DropboxBase(object):
                                      shared_folder_id,
                                      member_policy=None,
                                      acl_update_policy=None,
-                                     shared_link_policy=None):
+                                     viewer_info_policy=None,
+                                     shared_link_policy=None,
+                                     link_settings=None):
         """
         Update the sharing policies for a shared folder. User must have
         ``AccessLevel.owner`` access to the shared folder to update its
@@ -2619,9 +3103,12 @@ class DropboxBase(object):
             folder. Only applicable if the current user is on a team.
         :param Nullable acl_update_policy: Who can add and remove members of
             this shared folder.
+        :param Nullable viewer_info_policy: Who can enable/disable viewer info
+            for this shared folder.
         :param Nullable shared_link_policy: The policy to apply to shared links
             created for content inside this shared folder. The current user must
             be on a team to set this policy to ``SharedLinkPolicy.members``.
+        :param Nullable link_settings: Settings on the link for this folder.
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -2631,7 +3118,9 @@ class DropboxBase(object):
         arg = sharing.UpdateFolderPolicyArg(shared_folder_id,
                                             member_policy,
                                             acl_update_policy,
-                                            shared_link_policy)
+                                            viewer_info_policy,
+                                            shared_link_policy,
+                                            link_settings)
         r = self.request(
             sharing.update_folder_policy,
             'sharing',

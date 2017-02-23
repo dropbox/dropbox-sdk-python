@@ -170,7 +170,8 @@ SharedFolderMemberPolicy_validator = bv.Union(SharedFolderMemberPolicy)
 
 class SharedLinkCreatePolicy(bb.Union):
     """
-    Policy governing the visibility of newly created shared links.
+    Policy governing the visibility of shared links. This policy can apply to
+    newly created shared links, or all shared links.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -182,8 +183,8 @@ class SharedLinkCreatePolicy(bb.Union):
     :ivar default_team_only: By default, only members of the same team can
         access newly created shared links. Login will be required to access the
         shared links unless overridden.
-    :ivar team_only: Only members of the same team can access newly created
-        shared links. Login will be required to access the shared links.
+    :ivar team_only: Only members of the same team can access all shared links.
+        Login will be required to access all shared links.
     """
 
     _catch_all = 'other'
@@ -333,8 +334,8 @@ class TeamSharingPolicies(object):
     :ivar shared_folder_member_policy: Who can join folders shared by team
         members.
     :ivar shared_folder_join_policy: Which shared folders team members can join.
-    :ivar shared_link_create_policy: What is the visibility of newly created
-        shared links.
+    :ivar shared_link_create_policy: Who can view shared links owned by team
+        members.
     """
 
     __slots__ = [
@@ -414,7 +415,7 @@ class TeamSharingPolicies(object):
     @property
     def shared_link_create_policy(self):
         """
-        What is the visibility of newly created shared links.
+        Who can view shared links owned by team members.
 
         :rtype: SharedLinkCreatePolicy
         """
