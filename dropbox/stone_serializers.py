@@ -17,18 +17,348 @@ import collections
 import datetime
 import functools
 import json
+import re
 import six
+import time
 
 try:
+    from . import stone_base as bb  # noqa: F401 # pylint: disable=unused-import
     from . import stone_validators as bv
 except (SystemError, ValueError):
     # Catch errors raised when importing a relative module when not in a package.
     # This makes testing this file directly (outside of a package) easier.
+    import stone_validators as bb  # type: ignore # noqa: F401 # pylint: disable=unused-import
     import stone_validators as bv  # type: ignore
 
+_MYPY = False
+if _MYPY:
+    import typing  # noqa: F401 # pylint: disable=import-error,unused-import,useless-suppression
+
+
+# ------------------------------------------------------------------------
+class StoneEncoderInterface(object):
+    """
+    Interface defining a stone object encoder.
+    """
+
+    def encode(self, validator, value):
+        # type: (bv.Validator, typing.Any) -> typing.Any
+        """
+        Validate ``value`` using ``validator`` and return the encoding.
+
+        Args:
+            validator: the ``stone_validators.Validator`` used to validate
+                ``value``
+            value: the object to encode
+
+        Returns:
+            The encoded object. This is implementation-defined.
+
+        Raises:
+            stone_validators.ValidationError: Raised if ``value`` (or one
+                of its sub-values).
+        """
+        raise NotImplementedError
+
+# ------------------------------------------------------------------------
+class StoneSerializerBase(StoneEncoderInterface):
+
+    def __init__(self, alias_validators=None):
+        # type: (typing.Mapping[bv.Validator, typing.Callable[[typing.Any], None]]) -> None
+        """
+        Constructor, `obviously
+        <http://www.geekalerts.com/ew-hand-sanitizer/>`.
+
+        Args:
+            alias_validators (``typing.Mapping``, optional): A mapping of
+                custom validation callables in the format
+                ``{stone_validators.Validator:
+                typing.Callable[[typing.Any], None], ...}``. These callables must
+                raise a ``stone_validators.ValidationError`` on failure.
+                Defaults to ``None``.
+        """
+        self._alias_validators = {}  # type: typing.Dict[bv.Validator, typing.Callable[[typing.Any], None]] # noqa: E501
+
+        if alias_validators is not None:
+            self._alias_validators.update(alias_validators)
+
+    @property
+    def alias_validators(self):
+        """
+        A ``typing.Mapping`` of custom validation callables in the format
+        ``{stone_validators.Validator: typing.Callable[typing.Any],
+        ...}``.
+        """
+        return self._alias_validators
+
+    def encode(self, validator, value):
+        return self.encode_sub(validator, value)
+
+    def encode_sub(self, validator, value):
+        # type: (bv.Validator, typing.Any) -> typing.Any
+        """
+        Callback intended to be called by other ``encode`` methods to
+        delegate encoding of sub-values. Arguments have the same semantics
+        as with the ``encode`` method.
+        """
+        if isinstance(validator, bv.List):
+            # Because Lists are mutable, we always validate them during
+            # serialization
+            validate_f = validator.validate
+            encode_f = self.encode_list
+        elif isinstance(validator, bv.Nullable):
+            validate_f = validator.validate
+            encode_f = self.encode_nullable
+        elif isinstance(validator, bv.Primitive):
+            validate_f = validator.validate
+            encode_f = self.encode_primitive
+        elif isinstance(validator, bv.Struct):
+            if isinstance(validator, bv.StructTree):
+                validate_f = validator.validate
+                encode_f = self.encode_struct_tree
+            else:
+                # Fields are already validated on assignment
+                validate_f = validator.validate_type_only
+                encode_f = self.encode_struct
+        elif isinstance(validator, bv.Union):
+            # Fields are already validated on assignment
+            validate_f = validator.validate_type_only
+            encode_f = self.encode_union
+        else:
+            raise bv.ValidationError('Unsupported data type {}'.format(type(validator).__name__))
+
+        validate_f(value)
+
+        return encode_f(validator, value)
+
+    def encode_list(self, validator, value):
+        # type: (bv.List, typing.Any) -> typing.Any
+        """
+        Callback for serializing a ``stone_validators.List``. Arguments
+        have the same semantics as with the ``encode`` method.
+        """
+        raise NotImplementedError
+
+    def encode_nullable(self, validator, value):
+        # type: (bv.Nullable, typing.Any) -> typing.Any
+        """
+        Callback for serializing a ``stone_validators.Nullable``.
+        Arguments have the same semantics as with the ``encode`` method.
+        """
+        raise NotImplementedError
+
+    def encode_primitive(self, validator, value):
+        # type: (bv.Primitive, typing.Any) -> typing.Any
+        """
+        Callback for serializing a ``stone_validators.Primitive``.
+        Arguments have the same semantics as with the ``encode`` method.
+        """
+        raise NotImplementedError
+
+    def encode_struct(self, validator, value):
+        # type: (bv.Struct, typing.Any) -> typing.Any
+        """
+        Callback for serializing a ``stone_validators.Struct``. Arguments
+        have the same semantics as with the ``encode`` method.
+        """
+        raise NotImplementedError
+
+    def encode_struct_tree(self, validator, value):
+        # type: (bv.StructTree, typing.Any) -> typing.Any
+        """
+        Callback for serializing a ``stone_validators.StructTree``.
+        Arguments have the same semantics as with the ``encode`` method.
+        """
+        raise NotImplementedError
+
+    def encode_union(self, validator, value):
+        # type: (bv.Union, bb.Union) -> typing.Any
+        """
+        Callback for serializing a ``stone_validators.Union``. Arguments
+        have the same semantics as with the ``encode`` method.
+        """
+        raise NotImplementedError
+
+# ------------------------------------------------------------------------
+class StoneToPythonPrimitiveSerializer(StoneSerializerBase):
+
+    def __init__(self, alias_validators=None, for_msgpack=False, old_style=False):
+        # type: (typing.Mapping[bv.Validator, typing.Callable[[typing.Any], None]], bool, bool) -> None # noqa: E501
+        """
+        Args:
+            alias_validators (``typing.Mapping``, optional): Passed
+                to ``StoneSerializer.__init__``. Defaults to ``None``.
+            for_msgpack (bool, optional): See the like-named property.
+                Defaults to ``False``.
+            old_style (bool, optional): See the like-named property.
+                Defaults to ``False``.
+        """
+        super(StoneToPythonPrimitiveSerializer, self).__init__(alias_validators=alias_validators)
+        self._for_msgpack = for_msgpack
+        self._old_style = old_style
+
+    @property
+    def for_msgpack(self):
+        """
+        EXPERIMENTAL: A flag associated with the serializer indicating
+        whether objects produced by the ``encode`` method should be
+        encoded for msgpack.
+
+        """
+        return self._for_msgpack
+
+    @property
+    def old_style(self):
+        """
+        A flag associated with the serializer indicating whether objects
+        produced by the ``encode`` method should be encoded according to
+        Dropbox's old or new API styles.
+        """
+        return self._old_style
+
+    def encode_list(self, validator, value):
+        validated_value = validator.validate(value)
+
+        return [self.encode_sub(validator.item_validator, value_item) for value_item in
+                validated_value]
+
+    def encode_nullable(self, validator, value):
+        if value is None:
+            return None
+
+        return self.encode_sub(validator.validator, value)
+
+    def encode_primitive(self, validator, value):
+        if validator in self.alias_validators:
+            self.alias_validators[validator](value)
+
+        if isinstance(validator, bv.Void):
+            return None
+        elif isinstance(validator, bv.Timestamp):
+            return _strftime(value, validator.format)
+        elif isinstance(validator, bv.Bytes):
+            if self.for_msgpack:
+                return value
+            else:
+                return base64.b64encode(value).decode('ascii')
+        elif isinstance(validator, bv.Integer) \
+                    and isinstance(value, bool):
+            # bool is sub-class of int so it passes Integer validation,
+            # but we want the bool to be encoded as ``0`` or ``1``, rather
+            # than ``False`` or ``True``, respectively
+            return int(value)
+        else:
+            return value
+
+    def encode_struct(self, validator, value):
+        # Skip validation of fields with primitive data types because
+        # they've already been validated on assignment
+        d = collections.OrderedDict()  # type: typing.Dict[str, typing.Any]
+
+        for field_name, field_validator in validator.definition._all_fields_:
+            try:
+                field_value = getattr(value, field_name)
+            except AttributeError as exc:
+                raise bv.ValidationError(exc.args[0])
+
+            presence_key = '_%s_present' % field_name
+
+            if field_value is not None \
+                    and getattr(value, presence_key):
+                # Only serialize struct fields that have been explicitly
+                # set, even if there is a default
+                try:
+                    d[field_name] = self.encode_sub(field_validator, field_value)
+                except bv.ValidationError as exc:
+                    exc.add_parent(field_name)
+
+                    raise
+        return d
+
+    def encode_struct_tree(self, validator, value):
+        assert type(value) in validator.definition._pytype_to_tag_and_subtype_, \
+            '%r is not a serializable subtype of %r.' % (type(value), validator.definition)
+
+        tags, subtype = validator.definition._pytype_to_tag_and_subtype_[type(value)]
+
+        assert len(tags) == 1, tags
+        assert not isinstance(subtype, bv.StructTree), \
+            'Cannot serialize type %r because it enumerates subtypes.' % subtype.definition
+
+        if self.old_style:
+            d = {
+                tags[0]: self.encode_struct(subtype, value),
+            }
+        else:
+            d = collections.OrderedDict()
+            d['.tag'] = tags[0]
+            d.update(self.encode_struct(subtype, value))
+
+        return d
+
+    def encode_union(self, validator, value):
+        if value._tag is None:
+            raise bv.ValidationError('no tag set')
+
+        field_validator = validator.definition._tagmap[value._tag]
+        is_none = isinstance(field_validator, bv.Void) \
+                or (isinstance(field_validator, bv.Nullable)
+                    and value._value is None)
+
+        def encode_sub(sub_validator, sub_value, parent_tag):
+            try:
+                encoded_val = self.encode_sub(sub_validator, sub_value)
+            except bv.ValidationError as exc:
+                exc.add_parent(parent_tag)
+
+                raise
+            else:
+                return encoded_val
+
+        if self.old_style:
+            if field_validator is None:
+                return value._tag
+            elif is_none:
+                return value._tag
+            else:
+                encoded_val = encode_sub(field_validator, value._value, value._tag)
+
+                return {value._tag: encoded_val}
+        elif is_none:
+            return {'.tag': value._tag}
+        else:
+            encoded_val = encode_sub(field_validator, value._value, value._tag)
+
+            if isinstance(field_validator, bv.Nullable):
+                # We've already checked for the null case above,
+                # so now we're only interested in what the
+                # wrapped validator is
+                field_validator = field_validator.validator
+
+            if isinstance(field_validator, bv.Struct) \
+                    and not isinstance(field_validator, bv.StructTree):
+                d = collections.OrderedDict()  # type: typing.Dict[str, typing.Any]
+                d['.tag'] = value._tag
+                d.update(encoded_val)
+
+                return d
+            else:
+                return collections.OrderedDict((
+                    ('.tag', value._tag),
+                    (value._tag, encoded_val),
+                ))
+
+# ------------------------------------------------------------------------
+class StoneToJsonSerializer(StoneToPythonPrimitiveSerializer):
+
+    def encode(self, validator, value):
+        return json.dumps(super(StoneToJsonSerializer, self).encode(validator, value))
 
 # --------------------------------------------------------------
 # JSON Encoder
+#
+# These interfaces are preserved for backward compatibility and symmetry with deserialization
+# functions.
 
 def json_encode(data_type, obj, alias_validators=None, old_style=False):
     """Encodes an object into JSON based on its type.
@@ -81,10 +411,9 @@ def json_encode(data_type, obj, alias_validators=None, old_style=False):
     > JsonEncoder.encode(um)
     "{'update': {'path': 'a/b/c', 'rev': '1234'}}"
     """
-    return json.dumps(
-        json_compat_obj_encode(
-            data_type, obj, alias_validators, old_style))
-
+    for_msgpack = False
+    serializer = StoneToJsonSerializer(alias_validators, for_msgpack, old_style)
+    return serializer.encode(data_type, obj)
 
 def json_compat_obj_encode(
         data_type, obj, alias_validators=None, old_style=False,
@@ -101,223 +430,8 @@ def json_compat_obj_encode(
 
     See json_encode() for additional information about validation.
     """
-    if isinstance(data_type, (bv.Struct, bv.Union)):
-        # Only validate the type because fields are validated on assignment.
-        data_type.validate_type_only(obj)
-    else:
-        data_type.validate(obj)
-    return _json_compat_obj_encode_helper(
-        data_type, obj, alias_validators, old_style, for_msgpack)
-
-
-def _json_compat_obj_encode_helper(
-        data_type, obj, alias_validators, old_style, for_msgpack):
-    """
-    See json_encode() for argument descriptions.
-    """
-    if isinstance(data_type, bv.List):
-        return _encode_list(
-            data_type, obj, alias_validators, old_style=old_style,
-            for_msgpack=for_msgpack)
-    elif isinstance(data_type, bv.Nullable):
-        return _encode_nullable(
-            data_type, obj, alias_validators, old_style=old_style,
-            for_msgpack=for_msgpack)
-    elif isinstance(data_type, bv.Primitive):
-        return _make_json_friendly(
-            data_type, obj, alias_validators, for_msgpack=for_msgpack)
-    elif isinstance(data_type, bv.StructTree):
-        return _encode_struct_tree(
-            data_type, obj, alias_validators, old_style=old_style,
-            for_msgpack=for_msgpack)
-    elif isinstance(data_type, bv.Struct):
-        return _encode_struct(
-            data_type, obj, alias_validators, old_style=old_style,
-            for_msgpack=for_msgpack)
-    elif isinstance(data_type, bv.Union):
-        if old_style:
-            return _encode_union_old(
-                data_type, obj, alias_validators, for_msgpack=for_msgpack)
-        else:
-            return _encode_union(
-                data_type, obj, alias_validators, for_msgpack=for_msgpack)
-    else:
-        raise AssertionError('Unsupported data type %r' %
-                             type(data_type).__name__)
-
-
-def _encode_list(data_type, obj, alias_validators, old_style, for_msgpack):
-    """
-    The data_type argument must be a List.
-    See json_encode() for argument descriptions.
-    """
-    # Because Lists are mutable, we always validate them during serialization.
-    obj = data_type.validate(obj)
-    return [
-        _json_compat_obj_encode_helper(
-            data_type.item_validator, item, alias_validators, old_style, for_msgpack)
-        for item in obj
-    ]
-
-
-def _encode_nullable(data_type, obj, alias_validators, old_style, for_msgpack):
-    """
-    The data_type argument must be a Nullable.
-    See json_encode() for argument descriptions.
-    """
-    if obj is not None:
-        return _json_compat_obj_encode_helper(
-            data_type.validator, obj, alias_validators, old_style, for_msgpack)
-    else:
-        return None
-
-
-def _encode_struct(data_type, obj, alias_validators, old_style, for_msgpack):
-    """
-    The data_type argument must be a Struct or StructTree.
-    See json_encode() for argument descriptions.
-    """
-    # We skip validation of fields with primitive data types in structs and
-    # unions because they've already been validated on assignment.
-    d = collections.OrderedDict()
-    for field_name, field_data_type in data_type.definition._all_fields_:
-        try:
-            val = getattr(obj, field_name)
-        except AttributeError as e:
-            raise bv.ValidationError(e.args[0])
-        presence_key = '_%s_present' % field_name
-        if val is not None and getattr(obj, presence_key):
-            # This check makes sure that we don't serialize absent struct
-            # fields as null, even if there is a default.
-            try:
-                d[field_name] = _json_compat_obj_encode_helper(
-                    field_data_type, val, alias_validators, old_style,
-                    for_msgpack)
-            except bv.ValidationError as e:
-                e.add_parent(field_name)
-                raise
-    return d
-
-
-def _encode_union(data_type, obj, alias_validators, for_msgpack):
-    """
-    The data_type argument must be a Union.
-    See json_encode() for argument descriptions.
-    """
-    if obj._tag is None:
-        raise bv.ValidationError('no tag set')
-    field_data_type = data_type.definition._tagmap[obj._tag]
-
-    if (isinstance(field_data_type, bv.Void) or
-            (isinstance(field_data_type, bv.Nullable) and obj._value is None)):
-        return {'.tag': obj._tag}
-    else:
-        try:
-            encoded_val = _json_compat_obj_encode_helper(
-                field_data_type, obj._value, alias_validators, False,
-                for_msgpack)
-        except bv.ValidationError as e:
-            e.add_parent(obj._tag)
-            raise
-        else:
-            if isinstance(field_data_type, bv.Nullable):
-                # We've already checked for the null case above, so now we're
-                # only interested in what the wrapped validator is.
-                field_data_type = field_data_type.validator
-            if (isinstance(field_data_type, bv.Struct) and
-                    not isinstance(field_data_type, bv.StructTree)):
-                d = collections.OrderedDict()
-                d['.tag'] = obj._tag
-                d.update(encoded_val)
-                return d
-            else:
-                return collections.OrderedDict([
-                    ('.tag', obj._tag),
-                    (obj._tag, encoded_val)])
-
-
-def _encode_union_old(data_type, obj, alias_validators, for_msgpack):
-    """
-    The data_type argument must be a Union.
-    See json_encode() for argument descriptions.
-    """
-    if obj._tag is None:
-        raise bv.ValidationError('no tag set')
-    field_data_type = data_type.definition._tagmap[obj._tag]
-    if field_data_type is None:
-        return obj._tag
-    else:
-        if (isinstance(field_data_type, bv.Void) or
-                (isinstance(field_data_type, bv.Nullable) and
-                 obj._value is None)):
-            return obj._tag
-        else:
-            try:
-                encoded_val = _json_compat_obj_encode_helper(
-                    field_data_type, obj._value, alias_validators, True,
-                    for_msgpack)
-            except bv.ValidationError as e:
-                e.add_parent(obj._tag)
-                raise
-            else:
-                return {obj._tag: encoded_val}
-
-
-def _encode_struct_tree(
-        data_type, obj, alias_validators, old_style, for_msgpack):
-    """
-    Args:
-        data_type (StructTree)
-        as_root (bool): If a struct with enumerated subtypes is designated as a
-            root, then its fields including those that are inherited are
-            encoded in the outermost JSON object together.
-
-    See json_encode() for other argument descriptions.
-    """
-    assert type(obj) in data_type.definition._pytype_to_tag_and_subtype_, (
-        '%r is not a serializable subtype of %r.' %
-        (type(obj), data_type.definition))
-    tags, subtype = data_type.definition._pytype_to_tag_and_subtype_[type(obj)]
-    assert len(tags) == 1, tags
-    assert not isinstance(subtype, bv.StructTree), (
-        'Cannot serialize type %r because it enumerates subtypes.' %
-        subtype.definition)
-    if old_style:
-        return {
-            tags[0]:
-                _encode_struct(
-                    subtype, obj, alias_validators, old_style, for_msgpack)
-        }
-    d = collections.OrderedDict()
-    d['.tag'] = tags[0]
-    d.update(
-        _encode_struct(subtype, obj, alias_validators, old_style, for_msgpack))
-    return d
-
-
-def _make_json_friendly(data_type, val, alias_validators, for_msgpack):
-    """
-    Convert a primitive type to a Python type that can be serialized by the
-    json package.
-    """
-    if alias_validators is not None and data_type in alias_validators:
-        alias_validators[data_type](val)
-    if isinstance(data_type, bv.Void):
-        return None
-    elif isinstance(data_type, bv.Timestamp):
-        return val.strftime(data_type.format)
-    elif isinstance(data_type, bv.Bytes):
-        if for_msgpack:
-            return val
-        else:
-            return base64.b64encode(val).decode('ascii')
-    elif isinstance(data_type, bv.Integer) and isinstance(val, bool):
-        # A bool is a subclass of an int so it passes Integer validation. But,
-        # we want the bool to be encoded as an Integer (1/0) rather than T/F.
-        return int(val)
-    else:
-        return val
-
+    serializer = StoneToPythonPrimitiveSerializer(alias_validators, for_msgpack, old_style)
+    return serializer.encode(data_type, obj)
 
 # --------------------------------------------------------------
 # JSON Decoder
@@ -744,6 +858,74 @@ def _make_stone_friendly(
     if alias_validators is not None and data_type in alias_validators:
         alias_validators[data_type](ret)
     return ret
+
+# Adapted from:
+# http://code.activestate.com/recipes/306860-proleptic-gregorian-dates-and-strftime-before-1900/
+# Remove the unsupposed "%s" command. But don't do it if there's an odd
+# number of %s before the s because those are all escaped. Can't simply
+# remove the s because the result of %sY should be %Y if %s isn't
+# supported, not the 4 digit year.
+_ILLEGAL_S = re.compile(r'((^|[^%])(%%)*%s)')
+
+def _findall(text, substr):
+    # Also finds overlaps
+    sites = []
+    i = 0
+
+    while 1:
+        j = text.find(substr, i)
+
+        if j == -1:
+            break
+
+        sites.append(j)
+        i = j + 1
+
+    return sites
+
+# Every 28 years the calendar repeats, except through century leap years
+# where it's 6 years. But only if you're using the Gregorian calendar. ;)
+def _strftime(dt, fmt):
+    try:
+        return dt.strftime(fmt)
+    except ValueError:
+        if not six.PY2 or dt.year > 1900:
+            raise
+
+    if _ILLEGAL_S.search(fmt):
+        raise TypeError("This strftime implementation does not handle %s")
+
+    year = dt.year
+
+    # For every non-leap year century, advance by 6 years to get into the
+    # 28-year repeat cycle
+    delta = 2000 - year
+    off = 6 * (delta // 100 + delta // 400)
+    year = year + off
+
+    # Move to around the year 2000
+    year = year + ((2000 - year) // 28) * 28
+    timetuple = dt.timetuple()
+    s1 = time.strftime(fmt, (year,) + timetuple[1:])
+    sites1 = _findall(s1, str(year))
+
+    s2 = time.strftime(fmt, (year + 28,) + timetuple[1:])
+    sites2 = _findall(s2, str(year + 28))
+
+    sites = []
+
+    for site in sites1:
+        if site in sites2:
+            sites.append(site)
+
+    s = s1
+    syear = '%4d' % (dt.year,)
+
+    for site in sites:
+        s = s[:site] + syear + s[site + 4:]
+
+    return s
+
 
 try:
     import msgpack

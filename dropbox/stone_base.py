@@ -15,12 +15,16 @@ except (SystemError, ValueError):
     # This makes testing this file directly (outside of a package) easier.
     import stone_validators as bv  # type: ignore
 
+_MYPY = False
+if _MYPY:
+    import typing  # noqa: F401 # pylint: disable=import-error,unused-import,useless-suppression
+
 
 class Union(object):
-
     # TODO(kelkabany): Possible optimization is to remove _value if a
     # union is composed of only symbols.
     __slots__ = ['_tag', '_value']
+    _tagmap = {}  # type: typing.Dict[typing.Text, bv.Validator]
 
     def __init__(self, tag, value=None):
         assert tag in self._tagmap, 'Invalid tag %r.' % tag

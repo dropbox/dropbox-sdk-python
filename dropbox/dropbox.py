@@ -4,7 +4,7 @@ __all__ = [
     'create_session',
 ]
 
-__version__ = '7.2.0'
+__version__ = '7.2.1'
 
 import contextlib
 import json
