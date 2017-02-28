@@ -32,13 +32,21 @@ SDK Documentation
    :show-inheritance:
    :undoc-members:
 
-:mod:`dropbox.sharing` -- Sharing
+:mod:`dropbox.paper` -- Paper
 ============================================
-.. automodule:: dropbox.sharing
+.. automodule:: dropbox.paper
    :members:
    :show-inheritance:
    :special-members: __init__
    :undoc-members:
+
+:mod:`dropbox.sharing` -- Sharing
+============================================
+.. automodule:: dropbox.sharing
+  :members:
+  :show-inheritance:
+  :special-members: __init__
+  :undoc-members:
 
 :mod:`dropbox.team` -- Team
 ============================================
@@ -63,4 +71,3 @@ SDK Documentation
    :show-inheritance:
    :special-members: __init__
    :undoc-members:
-
