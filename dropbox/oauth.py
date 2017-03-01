@@ -24,8 +24,6 @@ else:
     url_path_quote = urllib.quote
     url_encode = urllib.urlencode
 
-OAUTH_ROUTE_VERSION = '1'
-
 
 class OAuth2FlowNoRedirectResult(object):
     """
@@ -153,9 +151,9 @@ class DropboxOAuth2FlowBase(object):
 
         if params:
             query_string = _params_to_urlencoded(params)
-            return "/%s%s?%s" % (OAUTH_ROUTE_VERSION, target_path, query_string)
+            return "%s?%s" % (target_path, query_string)
         else:
-            return "/%s%s" % (OAUTH_ROUTE_VERSION, target_path)
+            return target_path
 
     def build_url(self, target, params=None):
         """Build an API URL.
