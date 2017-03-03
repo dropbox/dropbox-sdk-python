@@ -15,10 +15,9 @@ import time
 import unicodedata
 
 if sys.version.startswith('2'):
-    input = raw_input
+    input = raw_input  # noqa: E501,F821; pylint: disable=redefined-builtin,undefined-variable,useless-suppression
 
 import dropbox
-from dropbox.files import FileMetadata, FolderMetadata
 
 # OAuth2 access token.  TODO: login etc.
 TOKEN = ''
@@ -90,7 +89,7 @@ def main():
                 mtime_dt = datetime.datetime(*time.gmtime(mtime)[:6])
                 size = os.path.getsize(fullname)
                 if (isinstance(md, dropbox.files.FileMetadata) and
-                    mtime_dt == md.client_modified and size == md.size):
+                        mtime_dt == md.client_modified and size == md.size):
                     print(name, 'is already synced [stats match]')
                 else:
                     print(name, 'exists with different stats, downloading')
@@ -245,4 +244,3 @@ def stopwatch(message):
 
 if __name__ == '__main__':
     main()
-

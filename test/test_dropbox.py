@@ -2,19 +2,22 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import datetime
 import os
+import posixpath
 import random
 import string
 import sys
+import threading
 import unittest
 
 try:
-    from StringIO import StringIO as BytesIO
-except ImportError:
     from io import BytesIO
+except ImportError:
+    from StringIO import StringIO as BytesIO
 
 from dropbox import (
     Dropbox,
     DropboxTeam,
+    client,
 )
 from dropbox.exceptions import (
     ApiError,
@@ -24,6 +27,7 @@ from dropbox.exceptions import (
 from dropbox.files import (
     ListFolderError,
 )
+from dropbox.rest import ErrorResponse
 
 # Get token from environment variable.
 oauth2_token = os.environ.get('DROPBOX_TOKEN')
@@ -91,7 +95,7 @@ class TestDropbox(unittest.TestCase):
         self.dbx.files_upload(test_contents, random_path)
 
         # Download file
-        metadata, resp = self.dbx.files_download(random_path)
+        _, resp = self.dbx.files_download(random_path)
         self.assertEqual(DUMMY_PAYLOAD, resp.content)
 
         # Cleanup folder
@@ -106,24 +110,11 @@ class TestDropbox(unittest.TestCase):
         dbxt = DropboxTeam(token)
         dbxt.team_groups_list()
         r = dbxt.team_members_list()
-        if r.members:
+        if r.members:  # pylint: disable=no-member
             # Only test assuming a member if there is a member
-            dbxt.as_user(r.members[0].profile.team_member_id).files_list_folder('')
+            team_member_id = r.members[0].profile.team_member_id  # pylint: disable=no-member
+            dbxt.as_user(team_member_id).files_list_folder('')
 
-
-from io import BytesIO
-import os
-import posixpath
-import sys
-import threading
-
-from dropbox import client
-from dropbox.rest import ErrorResponse
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
 
 PY3 = sys.version_info[0] == 3
 
@@ -158,34 +149,32 @@ class BaseClientTests(unittest.TestCase):
             self.assertEqual(value, dictionary[key])
 
     def assert_file(self, dictionary, filename, *args, **kwargs):
-        import os
         defaults = dict(
-            bytes = os.path.getsize(filename),
-            is_dir = False
+            bytes=os.path.getsize(filename),
+            is_dir=False
         )
         combined = dict(list(defaults.items()) + list(kwargs.items()))
-        self.dict_has(dictionary, *args,
-            **combined
-        )
+        self.dict_has(dictionary, *args, **combined)
 
     def test_account_info(self):
         """Tests if the account_info returns the expected fields."""
         account_info = self.client.account_info()
-        self.dict_has(account_info,
+        self.dict_has(
+            account_info,
             "country",
             "display_name",
             "referral_link",
             "quota_info",
-            "uid"
+            "uid",
         )
 
     def test_put_file(self):
         """Tests if put_file returns the expected metadata"""
-        def test_put(file, path):
+        def test_put(file, path):  # pylint: disable=redefined-builtin,useless-suppression
             file_path = posixpath.join(self.test_dir, path)
             f = open(file, "rb")
             metadata = self.client.put_file(file_path, f)
-            self.assert_file(metadata, file, path = file_path)
+            self.assert_file(metadata, file, path=file_path)
         test_put(self.foo, "put_foo.txt")
         test_put(self.song, "put_song.mp3")
         test_put(self.frog, "put_frog.jpg")
@@ -196,17 +185,18 @@ class BaseClientTests(unittest.TestCase):
         self.upload_file(self.foo, path)
         f = BytesIO(b"This Overwrites")
         metadata = self.client.put_file(path, f, overwrite=True)
-        self.dict_has(metadata,
-            size = "15 bytes",
-            bytes = 15,
-            is_dir = False,
-            path = path,
-            mime_type = "text/plain"
+        self.dict_has(
+            metadata,
+            size="15 bytes",
+            bytes=15,
+            is_dir=False,
+            path=path,
+            mime_type="text/plain",
         )
 
     def test_get_file(self):
         """Tests if storing and retrieving a file returns the same file"""
-        def test_get(file, path):
+        def test_get(file, path):  # pylint: disable=redefined-builtin,useless-suppression
             file_path = posixpath.join(self.test_dir, path)
             self.upload_file(file, file_path)
             downloaded = self.client.get_file(file_path).read()
@@ -219,7 +209,7 @@ class BaseClientTests(unittest.TestCase):
 
     def test_get_partial_file(self):
         """Tests if storing a file and retrieving part of it returns the correct part"""
-        def test_get(file, path, start_frac, download_frac):
+        def test_get(file, path, start_frac, download_frac):  # noqa: E501; pylint: disable=redefined-builtin,useless-suppression
             file_path = posixpath.join(self.test_dir, path)
             self.upload_file(file, file_path)
             local = open(file, "rb").read()
@@ -252,7 +242,7 @@ class BaseClientTests(unittest.TestCase):
         path = posixpath.join(self.test_dir, "foo_upload.txt")
         self.upload_file(self.foo, path)
         metadata = self.client.metadata(path)
-        self.assert_file(metadata, self.foo, path = path)
+        self.assert_file(metadata, self.foo, path=path)
 
         # Test root metadata
         self.client.metadata('/')
@@ -277,7 +267,7 @@ class BaseClientTests(unittest.TestCase):
 
     def test_create_folder_dupe(self):
         """Tests if creating a folder fails correctly if one already exists"""
-        path = posixpath.join(self.test_dir,  u"new_fold\xe9r_dupe")
+        path = posixpath.join(self.test_dir, u"new_fold\xe9r_dupe")
         self.client.file_create_folder(path)
         self.assertRaises(
             ErrorResponse,
@@ -289,15 +279,17 @@ class BaseClientTests(unittest.TestCase):
         path = posixpath.join(self.test_dir, u"d\xe9lfoo.txt")
         self.upload_file(self.foo, path)
         metadata = self.client.metadata(path)
-        self.assert_file(metadata, self.foo, path = path)
+        self.assert_file(metadata, self.foo, path=path)
         self.client.file_delete(path)
 
         metadata = self.client.metadata(path)
-        self.assert_file(metadata, self.foo,
-            path = path,
-            bytes = 0,
-            size = "0 bytes",
-            is_deleted = True
+        self.assert_file(
+            metadata,
+            self.foo,
+            path=path,
+            bytes=0,
+            size="0 bytes",
+            is_deleted=True,
         )
 
     def test_copy(self):
@@ -308,8 +300,8 @@ class BaseClientTests(unittest.TestCase):
         self.client.file_copy(path, path2)
         metadata = self.client.metadata(path)
         metadata2 = self.client.metadata(path2)
-        self.assert_file(metadata, self.foo, path = path)
-        self.assert_file(metadata2, self.foo, path = path2)
+        self.assert_file(metadata, self.foo, path=path)
+        self.assert_file(metadata2, self.foo, path=path2)
 
     def test_move(self):
         """Tests moving a file, to ensure the new copy exists and the old copy is removed"""
@@ -319,10 +311,10 @@ class BaseClientTests(unittest.TestCase):
         self.client.file_move(path, path2)
 
         metadata = self.client.metadata(path)
-        self.assert_file(metadata, self.foo, path = path, is_deleted = True, size = "0 bytes", bytes = 0)
+        self.assert_file(metadata, self.foo, path=path, is_deleted=True, size="0 bytes", bytes=0)
 
         metadata = self.client.metadata(path2)
-        self.assert_file(metadata, self.foo, path = path2)
+        self.assert_file(metadata, self.foo, path=path2)
 
     def test_thumbnail(self):
         path = posixpath.join(self.test_dir, "frog.jpeg")
@@ -334,10 +326,10 @@ class BaseClientTests(unittest.TestCase):
             for ident in ('xs', 's', 'm', 'l', 'xl'):
                 with self.client.thumbnail(path, ident, fmt) as r:
                     data1 = r.read()
-                r, md = self.client.thumbnail_and_metadata(path, ident, fmt)
+                r, _ = self.client.thumbnail_and_metadata(path, ident, fmt)
                 with r:
                     data2 = r.read()
-                self.assertEquals(data1, data2)
+                self.assertEqual(data1, data2)
                 # Make sure the amount of data returned increases as we increase the size.
                 self.assertTrue(len(data1) > prev_len)
                 prev_len = len(data1)
@@ -347,7 +339,7 @@ class BaseClientTests(unittest.TestCase):
             data_m = r.read()
         with self.client.thumbnail(path) as r:
             data1 = r.read()
-        r, md = self.client.thumbnail_and_metadata(path)
+        r, _ = self.client.thumbnail_and_metadata(path)
         with r:
             data2 = r.read()
         self.assertEqual(data_m, data1)
@@ -358,7 +350,8 @@ class BaseClientTests(unittest.TestCase):
         path = posixpath.join(self.test_dir, "stream_song.mp3")
         self.upload_file(self.song, path)
         link = self.client.media(path)
-        self.dict_has(link,
+        self.dict_has(
+            link,
             "url",
             "expires",
         )
@@ -368,7 +361,8 @@ class BaseClientTests(unittest.TestCase):
         path = posixpath.join(self.test_dir, "stream_song.mp3")
         self.upload_file(self.song, path)
         link = self.client.share(path)
-        self.dict_has(link,
+        self.dict_has(
+            link,
             "url",
             "expires",
         )
@@ -387,44 +381,44 @@ class BaseClientTests(unittest.TestCase):
         self.upload_file(self.frog, j(path, "subFolder/frog2.jpg"))
 
         results = self.client.search(path, "sasdfasdf")
-        self.assertEquals(results, [])
+        self.assertEqual(results, [])
 
         results = self.client.search(path, "jpg")
-        self.assertEquals(len(results), 3)
+        self.assertEqual(len(results), 3)
         for metadata in results:
             self.assert_file(metadata, self.frog)
 
         results = self.client.search(j(path, "subFolder"), "jpg")
-        self.assertEquals(len(results), 1)
+        self.assertEqual(len(results), 1)
         self.assert_file(results[0], self.frog)
 
         all_tex_files = {j(path, n) for n in ["text.txt", u"t\xe9xt.txt", "subFolder/text.txt"]}
 
         results = self.client.search(path, "tex")
-        self.assertEquals({r["path"] for r in results}, all_tex_files)
+        self.assertEqual({r["path"] for r in results}, all_tex_files)
 
         results = self.client.search(path, u"t\xe9x")
-        self.assertEquals({r["path"] for r in results}, all_tex_files)
+        self.assertEqual({r["path"] for r in results}, all_tex_files)
 
     def test_revisions_restore(self):
         """Tests getting the old revisions of a file"""
         path = posixpath.join(self.test_dir, "foo_revs.txt")
         self.upload_file(self.foo, path)
-        self.upload_file(self.frog, path, overwrite = True)
-        self.upload_file(self.song, path, overwrite = True)
+        self.upload_file(self.frog, path, overwrite=True)
+        self.upload_file(self.song, path, overwrite=True)
         revs = self.client.revisions(path)
         metadata = self.client.metadata(path)
-        self.assert_file(metadata, self.song, path = path, mime_type = "text/plain")
+        self.assert_file(metadata, self.song, path=path, mime_type="text/plain")
 
-        self.assertEquals(len(revs), 3)
-        self.assert_file(revs[0], self.song, path = path, mime_type = "text/plain")
-        self.assert_file(revs[1], self.frog, path = path, mime_type = "text/plain")
-        self.assert_file(revs[2], self.foo, path = path, mime_type = "text/plain")
+        self.assertEqual(len(revs), 3)
+        self.assert_file(revs[0], self.song, path=path, mime_type="text/plain")
+        self.assert_file(revs[1], self.frog, path=path, mime_type="text/plain")
+        self.assert_file(revs[2], self.foo, path=path, mime_type="text/plain")
 
         metadata = self.client.restore(path, revs[2]["rev"])
-        self.assert_file(metadata, self.foo, path = path, mime_type = "text/plain")
+        self.assert_file(metadata, self.foo, path=path, mime_type="text/plain")
         metadata = self.client.metadata(path)
-        self.assert_file(metadata, self.foo, path = path, mime_type = "text/plain")
+        self.assert_file(metadata, self.foo, path=path, mime_type="text/plain")
 
     def test_copy_ref(self):
         """Tests using the /copy_ref endpoint to move data within a single dropbox"""
@@ -433,60 +427,60 @@ class BaseClientTests(unittest.TestCase):
 
         self.upload_file(self.foo, path)
         copy_ref = self.client.create_copy_ref(path)
-        self.dict_has(copy_ref,
+        self.dict_has(
+            copy_ref,
             "expires",
             "copy_ref"
         )
 
         self.client.add_copy_ref(copy_ref["copy_ref"], path2)
         metadata = self.client.metadata(path2)
-        self.assert_file(metadata, self.foo, path = path2)
+        self.assert_file(metadata, self.foo, path=path2)
         copied_foo = self.client.get_file(path2).read()
         local_foo = open(self.foo, "rb").read()
         self.assertEqual(len(copied_foo), len(local_foo))
         self.assertEqual(copied_foo, local_foo)
 
-
     def test_chunked_upload2(self):
         target_path = posixpath.join(self.test_dir, 'chunked_upload_file.txt')
         chunk_size = 4 * 1024
-        random_string1, random_data1 = make_random_data(chunk_size)
-        random_string2, random_data2 = make_random_data(chunk_size)
+        _, random_data1 = make_random_data(chunk_size)
+        _, random_data2 = make_random_data(chunk_size)
 
         new_offset, upload_id = self.client.upload_chunk(BytesIO(random_data1), 0)
-        self.assertEquals(new_offset, chunk_size)
+        self.assertEqual(new_offset, chunk_size)
         self.assertIsNotNone(upload_id)
 
         new_offset, upload_id2 = self.client.upload_chunk(BytesIO(random_data2), 0,
                                                           new_offset, upload_id)
-        self.assertEquals(new_offset, chunk_size * 2)
-        self.assertEquals(upload_id2, upload_id)
+        self.assertEqual(new_offset, chunk_size * 2)
+        self.assertEqual(upload_id2, upload_id)
 
         metadata = self.client.commit_chunked_upload('/auto' + target_path, upload_id,
                                                      overwrite=True)
         self.dict_has(metadata, bytes=chunk_size * 2, path=target_path)
 
         downloaded = self.client.get_file(target_path).read()
-        self.assertEquals(chunk_size * 2, len(downloaded))
-        self.assertEquals(random_data1, downloaded[:chunk_size])
-        self.assertEquals(random_data2, downloaded[chunk_size:])
+        self.assertEqual(chunk_size * 2, len(downloaded))
+        self.assertEqual(random_data1, downloaded[:chunk_size])
+        self.assertEqual(random_data2, downloaded[chunk_size:])
 
     def test_chunked_uploader(self):
         path = posixpath.join(self.test_dir, "chunked_uploader_file.txt")
         size = 10 * 1024 * 1024
         chunk_size = 4 * 1024 * 1102
-        random_string, random_data = make_random_data(size)
+        _, random_data = make_random_data(size)
         uploader = self.client.get_chunked_uploader(BytesIO(random_data), len(random_data))
         error_count = 0
         while uploader.offset < size and error_count < 5:
             try:
-                upload = uploader.upload_chunked(chunk_size=chunk_size)
-            except ErrorResponse as e:
+                uploader.upload_chunked(chunk_size=chunk_size)
+            except ErrorResponse:
                 error_count += 1
         uploader.finish(path)
         downloaded = self.client.get_file(path).read()
-        self.assertEquals(size, len(downloaded))
-        self.assertEquals(random_data, downloaded)
+        self.assertEqual(size, len(downloaded))
+        self.assertEqual(random_data, downloaded)
 
     def test_delta(self):
         prefix = posixpath.join(self.test_dir, "delta")
@@ -505,7 +499,7 @@ class BaseClientTests(unittest.TestCase):
         c_lc = c.lower()
 
         # /delta on everything
-        expected = { p.lower() for p in (prefix, a, b, c, c_1, c_2) }
+        expected = {p.lower() for p in (prefix, a, b, c, c_1, c_2)}
         entries = set()
         cursor = None
         while True:
@@ -521,7 +515,7 @@ class BaseClientTests(unittest.TestCase):
         self.assertEqual(expected, entries)
 
         # /delta where path_prefix=c
-        expected = { p.lower() for p in (c, c_1, c_2) }
+        expected = {p.lower() for p in (c, c_1, c_2)}
         entries = set()
         cursor = None
         while True:

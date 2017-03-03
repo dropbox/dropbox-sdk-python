@@ -218,7 +218,6 @@ class _DropboxTransport(object):
         serialized_arg = stone_serializers.json_encode(route.arg_type,
                                                        request_arg)
 
-
         if (timeout is None and
                 route == files.list_folder_longpoll):
             # The client normally sends a timeout value to the
@@ -245,11 +244,10 @@ class _DropboxTransport(object):
             obj = decoded_obj_result['error']
             user_message = decoded_obj_result.get('user_message')
             user_message_text = user_message and user_message.get('text')
-            user_message_locale =  user_message and user_message.get('locale')
+            user_message_locale = user_message and user_message.get('locale')
         else:
             raise AssertionError('Expected RouteResult or RouteErrorResult, '
                                  'but res is %s' % type(res))
-
 
         deserialized_result = stone_serializers.json_compat_obj_decode(
             returned_data_type, obj, strict=False)
@@ -431,7 +429,7 @@ class _DropboxTransport(object):
             if r.headers.get('content-type') == 'application/json':
                 err = stone_serializers.json_compat_obj_decode(
                     RateLimitError_validator, r.json()['error'])
-                retry_after = err.retry_after
+                retry_after = err.retry_after  # pylint: disable=no-member
             else:
                 retry_after_str = r.headers.get('retry-after')
                 if retry_after_str is not None:

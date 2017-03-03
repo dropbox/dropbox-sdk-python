@@ -18,11 +18,11 @@ import urllib
 from .session import pinned_session
 
 if six.PY3:
-    url_path_quote = urllib.parse.quote
-    url_encode = urllib.parse.urlencode
+    url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
+    url_encode = urllib.parse.urlencode  # pylint: disable=no-member,useless-suppression
 else:
-    url_path_quote = urllib.quote
-    url_encode = urllib.urlencode
+    url_path_quote = urllib.quote  # pylint: disable=no-member,useless-suppression
+    url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
 
 
 class OAuth2FlowNoRedirectResult(object):

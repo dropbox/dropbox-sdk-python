@@ -22,7 +22,7 @@ import six
 if six.PY3:
     _binary_types = (bytes, memoryview)
 else:
-    _binary_types = (bytes, buffer)
+    _binary_types = (bytes, buffer)  # noqa: E501,F821; pylint: disable=undefined-variable,useless-suppression
 
 
 class ValidationError(Exception):
@@ -103,7 +103,7 @@ class Validator(object):
         raise AssertionError('No default available.')
 
 
-class Primitive(Validator):
+class Primitive(Validator):  # pylint: disable=abstract-method
     """A basic type that is defined by Babel."""
     pass
 
@@ -346,7 +346,7 @@ class Timestamp(Primitive):
     since a native Python datetime object is preferred. The format, however,
     can and should be used by serializers."""
 
-    def __init__(self, format):
+    def __init__(self, format):  # pylint: disable=redefined-builtin
         """format must be composed of format codes that the C standard (1989)
         supports, most notably in its strftime() function."""
         assert isinstance(format, six.text_type), 'format must be a string'
@@ -363,7 +363,7 @@ class Timestamp(Primitive):
         return val
 
 
-class Composite(Validator):
+class Composite(Validator):  # pylint: disable=abstract-method
     """Validator for a type that builds on other primitive and composite
     types."""
     pass

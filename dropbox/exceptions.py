@@ -42,8 +42,8 @@ class HttpError(DropboxException):
         self.body = body
 
     def __repr__(self):
-        return 'HttpError({!r}, {}, {!r})'.format(
-                self.request_id, self.status_code, self.body)
+        return 'HttpError({!r}, {}, {!r})'.format(self.request_id,
+            self.status_code, self.body)
 
 
 class BadInputError(HttpError):

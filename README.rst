@@ -1,6 +1,34 @@
 Dropbox for Python
 ==================
 
+.. image:: https://travis-ci.org/dropbox/dropbox-sdk-python.svg?branch=master
+    :target: https://travis-ci.org/dropbox/dropbox-sdk-python
+
+.. image:: https://readthedocs.org/projects/dropbox-sdk-python/badge/?version=latest
+    :target: https://dropbox-sdk-python.readthedocs.org/en/latest/
+    :alt: [Latest Documentation]
+
+.. image:: https://img.shields.io/pypi/v/dropbox.svg
+    :target: https://pypi.python.org/pypi/dropbox
+    :alt: [Latest Release Version]
+
+.. image:: https://img.shields.io/pypi/l/dropbox.svg
+    :target: http://opensource.org/licenses/MIT
+    :alt: [Latest Release License]
+
+.. image:: https://img.shields.io/pypi/pyversions/dropbox.svg
+    :target: https://pypi.python.org/pypi/dropbox
+    :alt: [Latest Release Supported Python Versions]
+
+.. image:: https://img.shields.io/pypi/implementation/dropbox.svg
+    :target: https://pypi.python.org/pypi/dropbox
+    :alt: [Latest Release Supported Python Implementations]
+
+.. image:: https://img.shields.io/pypi/status/dropbox.svg
+    :target: https://pypi.python.org/pypi/dropbox
+    :alt: [Latest Release Development Stage]
+
+
 A Python SDK for integrating with the Dropbox API v2. Compatible with Python
 2.7 and 3.4+. Documentation is available on `Read the Docs
 <http://dropbox-sdk-python.readthedocs.org/>`_.
@@ -56,8 +84,7 @@ Documentation
 
 Documentation can be compiled by running ``make html`` from the ``docs``
 folder. After compilation, open ``docs/_build/html/index.html``. Alternatively,
-you can read a hosted version from `Read the Docs
-<http://dropbox-sdk-python.readthedocs.org/>`_.
+you can read a hosted version from `Read the Docs`_.
 
 Updating API specification
 --------------------------
