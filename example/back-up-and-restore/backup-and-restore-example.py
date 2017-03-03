@@ -1,6 +1,6 @@
 """
 Backs up and restores a settings file to Dropbox.
-This is an example app for API v2. 
+This is an example app for API v2.
 """
 
 import sys
@@ -8,7 +8,7 @@ import dropbox
 from dropbox.files import WriteMode
 from dropbox.exceptions import ApiError, AuthError
 
-# Add OAuth2 access token here. 
+# Add OAuth2 access token here.
 # You can generate one for yourself in the App Console.
 # See <https://blogs.dropbox.com/developers/2014/05/generate-an-access-token-for-your-own-account/>
 TOKEN = ''
@@ -58,8 +58,8 @@ def restore(rev=None):
 def select_revision():
     # Get the revisions for a file (and sort by the datetime object, "server_modified")
     print("Finding available revisions on Dropbox...")
-    revisions = sorted(dbx.files_list_revisions(BACKUPPATH, limit=30).entries,
-                       key=lambda entry: entry.server_modified)
+    entries = dbx.files_list_revisions(BACKUPPATH, limit=30).entries  # pylint: disable=no-member
+    revisions = sorted(entries, key=lambda entry: entry.server_modified)
 
     for revision in revisions:
         print(revision.rev, revision.server_modified)
@@ -70,7 +70,9 @@ def select_revision():
 if __name__ == '__main__':
     # Check for an access token
     if (len(TOKEN) == 0):
-        sys.exit("ERROR: Looks like you didn't add your access token. Open up backup-and-restore-example.py in a text editor and paste in your token in line 14.")
+        sys.exit("ERROR: Looks like you didn't add your access token. "
+            "Open up backup-and-restore-example.py in a text editor and "
+            "paste in your token in line 14.")
 
     # Create an instance of a Dropbox class, which can make requests to the API.
     print("Creating a Dropbox object...")
@@ -80,7 +82,8 @@ if __name__ == '__main__':
     try:
         dbx.users_get_current_account()
     except AuthError as err:
-        sys.exit("ERROR: Invalid access token; try re-generating an access token from the app console on the web.")
+        sys.exit("ERROR: Invalid access token; try re-generating an "
+            "access token from the app console on the web.")
 
     # Create a backup of the current settings file
     backup()

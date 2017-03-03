@@ -1,7 +1,6 @@
 import os
 import pkg_resources
 import ssl
-import sys
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -31,11 +30,11 @@ def pinned_session(pool_maxsize=8):
 
     return _session
 
-"""
-Deprecated: The code below is included only to support the use of the old v1
-client class. It will be removed once v2 is at parity with v1. Do not use this
-for any new functionality.
-"""
+# ========================================================================
+# Deprecated: The code below is included only to support the use of the
+# old v1 client class. It will be removed once v2 is at parity with v1. Do
+# not use this for any new functionality.
+# ========================================================================
 
 import random
 import six
@@ -45,13 +44,13 @@ import urllib
 from . import rest
 
 if six.PY2:
-    from urlparse import parse_qs
-    url_path_quote = urllib.quote
-    url_encode = urllib.urlencode
+    from urlparse import parse_qs  # pylint: disable=import-error,useless-suppression
+    url_path_quote = urllib.quote  # pylint: disable=no-member,useless-suppression
+    url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
 else:
-    from urllib.parse import parse_qs
-    url_path_quote = urllib.parse.quote
-    url_encode = urllib.parse.urlencode
+    from urllib.parse import parse_qs  # noqa: E501; pylint: disable=import-error,no-name-in-module,useless-suppression
+    url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
+    url_encode = urllib.parse.urlencode  # pylint: disable=no-member,useless-suppression
 
 DOMAIN = os.environ.get('DROPBOX_DOMAIN', '.dropboxapi.com')
 
@@ -84,7 +83,8 @@ class OAuthToken(object):
 class BaseSession(object):
     API_VERSION = 1
 
-    def __init__(self, consumer_key, consumer_secret, access_type="auto", locale=None, rest_client=rest.RESTClient):
+    def __init__(self, consumer_key, consumer_secret, access_type="auto",
+            locale=None, rest_client=rest.RESTClient):
         """Initialize a DropboxSession object.
 
         Your consumer key and secret are available
@@ -104,7 +104,8 @@ class BaseSession(object):
                 messages in rest.ErrorResponse exceptions as e.user_error_msg.
 
         """
-        assert access_type in ['dropbox', 'app_folder', 'auto'], "expected access_type of 'dropbox' or 'app_folder'"
+        assert access_type in ['dropbox', 'app_folder', 'auto'], \
+            "expected access_type of 'dropbox' or 'app_folder'"
         self.consumer_creds = OAuthToken(consumer_key, consumer_secret)
         self.token = None
         self.request_token = None
@@ -228,9 +229,9 @@ class DropboxSession(BaseSession):
               request token Dropbox assigned to this app. Also attaches the
               request token as self.request_token.
         """
-        self.token = None # clear any token currently on the request
+        self.token = None  # clear any token currently on the request
         url = self.build_url(self.API_HOST, '/oauth/request_token')
-        headers, params = self.build_access_headers('POST', url)
+        headers, params = self.build_access_headers()
 
         response = self.rest_client.POST(url, headers=headers, params=params, raw_response=True)
         self.request_token = self._parse_token(response.read())
@@ -260,13 +261,13 @@ class DropboxSession(BaseSession):
         request_token = request_token or self.request_token
         assert request_token, "No request_token available on the session. Please pass one."
         url = self.build_url(self.API_HOST, '/oauth/access_token')
-        headers, params = self.build_access_headers('POST', url, request_token=request_token)
+        headers, params = self.build_access_headers(request_token=request_token)
 
         response = self.rest_client.POST(url, headers=headers, params=params, raw_response=True)
         self.token = self._parse_token(response.read())
         return self.token
 
-    def build_access_headers(self, method, resource_url, params=None, request_token=None):
+    def build_access_headers(self, params=None, request_token=None):
         """Build OAuth access headers for a future request.
 
         Args:
@@ -285,10 +286,10 @@ class DropboxSession(BaseSession):
             params = params.copy()
 
         oauth_params = {
-            'oauth_consumer_key' : self.consumer_creds.key,
-            'oauth_timestamp' : self._generate_oauth_timestamp(),
-            'oauth_nonce' : self._generate_oauth_nonce(),
-            'oauth_version' : self._oauth_version(),
+            'oauth_consumer_key': self.consumer_creds.key,
+            'oauth_timestamp': self._generate_oauth_timestamp(),
+            'oauth_nonce': self._generate_oauth_nonce(),
+            'oauth_version': self._oauth_version(),
         }
 
         token = request_token if request_token is not None else self.token
@@ -307,8 +308,8 @@ class DropboxSession(BaseSession):
 
     @classmethod
     def _oauth_sign_request(cls, params, consumer_pair, token_pair):
-        params.update({'oauth_signature_method' : 'PLAINTEXT',
-                       'oauth_signature' : ('%s&%s' % (consumer_pair.secret, token_pair.secret)
+        params.update({'oauth_signature_method': 'PLAINTEXT',
+                       'oauth_signature': ('%s&%s' % (consumer_pair.secret, token_pair.secret)
                                             if token_pair is not None else
                                             '%s&' % (consumer_pair.secret,))})
 
@@ -318,7 +319,7 @@ class DropboxSession(BaseSession):
 
     @classmethod
     def _generate_oauth_nonce(cls, length=8):
-        return ''.join([str(random.SystemRandom().randint(0, 9)) for i in range(length)])
+        return ''.join([str(random.SystemRandom().randint(0, 9)) for _ in range(length)])
 
     @classmethod
     def _oauth_version(cls):
@@ -356,10 +357,11 @@ class DropboxSession(BaseSession):
 class DropboxOAuth2Session(BaseSession):
 
     def __init__(self, oauth2_access_token, locale, rest_client=rest.RESTClient):
-        super(DropboxOAuth2Session, self).__init__("", "", "auto", locale=locale, rest_client=rest_client)
+        super(DropboxOAuth2Session, self).__init__("", "", "auto",
+            locale=locale, rest_client=rest_client)
         self.access_token = oauth2_access_token
 
-    def build_access_headers(self, method, resource_url, params=None, token=None):
+    def build_access_headers(self, params=None, token=None):
         assert token is None
         headers = {"Authorization": "Bearer " + self.access_token}
         return headers, params

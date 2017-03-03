@@ -8,6 +8,8 @@ A simple JSON REST request abstraction layer that is used by the
 this.
 """
 
+from __future__ import absolute_import
+
 import io
 import pkg_resources
 import six
@@ -22,14 +24,14 @@ except ImportError:
     import simplejson as json
 
 try:
-   import urllib3
+    import urllib3
 except ImportError:
     raise ImportError('Dropbox python client requires urllib3.')
 
 if six.PY3:
-    url_encode = urllib.parse.urlencode
+    url_encode = urllib.parse.urlencode  # pylint: disable=no-member,useless-suppression
 else:
-    url_encode = urllib.urlencode
+    url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
 
 TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 
@@ -47,6 +49,7 @@ class RESTResponse(io.IOBase):
     """
 
     def __init__(self, resp):
+        super(RESTResponse, self).__init__()
         # arg: A urllib3.HTTPResponse object
         self.urllib3_response = resp
         self.status = resp.status
@@ -87,7 +90,7 @@ class RESTResponse(io.IOBase):
             raise ValueError('Response already closed')
         return self.urllib3_response.read(amt)
 
-    BLOCKSIZE = 4 * 1024 * 1024 # 4MB at a time just because
+    BLOCKSIZE = 4 * 1024 * 1024  # 4MB at a time just because
 
     def close(self):
         """Closes the underlying socket."""
@@ -104,7 +107,6 @@ class RESTResponse(io.IOBase):
     def closed(self):
         return self.is_closed
 
-
     # ---------------------------------
     # Backwards compat for HTTPResponse
     # ---------------------------------
@@ -118,20 +120,21 @@ class RESTResponse(io.IOBase):
 
     # Some compat functions showed up recently in urllib3
     try:
-        urllib3.HTTPResponse.flush
-        urllib3.HTTPResponse.fileno
+        urllib3.HTTPResponse.flush  # pylint: disable=pointless-statement
+        urllib3.HTTPResponse.fileno  # pylint: disable=pointless-statement
+    except AttributeError:
+        pass
+    else:
         def fileno(self):
             return self.urllib3_response.fileno()
         def flush(self):
             return self.urllib3_response.flush()
-    except AttributeError:
-        pass
 
 def create_connection(address):
     host, port = address
     err = None
     for res in socket.getaddrinfo(host, port, 0, socket.SOCK_STREAM):
-        af, socktype, proto, canonname, sa = res
+        af, socktype, proto, _, sa = res
         sock = None
         try:
             sock = socket.socket(af, socktype, proto)
@@ -144,7 +147,7 @@ def create_connection(address):
                 sock.close()
 
     if err is not None:
-        raise err
+        raise err  # pylint: disable=raising-bad-type
     else:
         raise socket.error("getaddrinfo returns an empty list")
 
@@ -176,10 +179,10 @@ class RESTClientObject(object):
         """
         self.mock_urlopen = mock_urlopen
         self.pool_manager = urllib3.PoolManager(
-            num_pools=4, # only a handful of hosts. api.dropbox.com, api-content.dropbox.com
+            num_pools=4,  # only a handful of hosts. api.dropbox.com, api-content.dropbox.com
             maxsize=max_reusable_connections,
             block=False,
-            timeout=60.0, # long enough so datastores await doesn't get interrupted
+            timeout=60.0,  # long enough so datastores await doesn't get interrupted
             cert_reqs=ssl.CERT_REQUIRED,
             ca_certs=TRUSTED_CERT_FILE,
             ssl_version=ssl.PROTOCOL_TLSv1,
@@ -191,7 +194,7 @@ class RESTClientObject(object):
 
         headers = headers or {}
 
-        from dropbox import __version__
+        from .dropbox import __version__
         headers['User-Agent'] = 'OfficialDropboxPythonSDK/' + __version__
 
         if post_params is not None:
@@ -206,7 +209,7 @@ class RESTClientObject(object):
 
         # Handle StringIO/BytesIO instances, because urllib3 doesn't.
         if hasattr(body, 'getvalue'):
-            body = body.getvalue()
+            body = body.getvalue()  # pylint: disable=no-member
 
         # Reject any headers containing newlines; the error from the server isn't pretty.
         for key, value in headers.items():
@@ -225,7 +228,7 @@ class RESTClientObject(object):
                 headers=headers,
                 preload_content=False
             )
-            r = RESTResponse(r) # wrap up the urllib3 response before proceeding
+            r = RESTResponse(r)  # wrap up the urllib3 response before proceeding
         except socket.error as e:
             raise RESTSocketError(url, e)
         except urllib3.exceptions.SSLError as e:
@@ -377,11 +380,12 @@ class ErrorResponse(Exception):
                       Since it can't be called more than once,
                       we have to pass the string body in separately
         """
+        Exception.__init__(self)
         self.status = http_resp.status
         self.reason = http_resp.reason
         self.body = body
         self.headers = http_resp.getheaders()
-        http_resp.close() # won't need this connection anymore
+        http_resp.close()  # won't need this connection anymore
 
         try:
             self.body = json_loadb(self.body)
@@ -409,7 +413,7 @@ class ErrorResponse(Exception):
 def params_to_urlencoded(params):
     """
     Returns a application/x-www-form-urlencoded 'str' representing the key/value pairs in 'params'.
-    
+
     Keys are values are str()'d before calling urllib.urlencode, with the exception of unicode
     objects which are utf8-encoded.
     """

@@ -13,10 +13,10 @@ import urllib
 import warnings
 
 if six.PY3:
-    basestring = str
-    url_path_quote = urllib.parse.quote
+    basestring = str  # pylint: disable=redefined-builtin,useless-suppression
+    url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
 else:
-    url_path_quote = urllib.quote
+    url_path_quote = urllib.quote  # pylint: disable=no-member,useless-suppression
 
 try:
     import json
@@ -132,8 +132,7 @@ class DropboxClient(object):
         else:
             host = self.session.API_HOST
 
-        base = self.session.build_url(host, target)
-        headers, params = self.session.build_access_headers(method, base, params)
+        headers, params = self.session.build_access_headers(params)
 
         if method in ('GET', 'PUT'):
             url = self.session.build_url(host, target, params)
@@ -151,7 +150,7 @@ class DropboxClient(object):
               For a detailed description of what this call returns, visit:
               https://www.dropbox.com/developers/core/docs#account-info
         """
-        url, params, headers = self.request("/account/info", method='GET')
+        url, _, headers = self.request("/account/info", method='GET')
         return self.rest_client.GET(url, headers)
 
     def disable_access_token(self):
@@ -174,7 +173,8 @@ class DropboxClient(object):
             from dropbox.client import DropboxClient
             from dropbox.session import DropboxSession
             session = DropboxSession(APP_KEY, APP_SECRET)
-            access_key, access_secret = '123abc', 'xyz456'  # Previously obtained OAuth 1 credentials
+            access_key, access_secret = \
+                '123abc', 'xyz456'  # Previously obtained OAuth 1 credentials
             session.set_token(access_key, access_secret)
             client = DropboxClient(session)
             token = client.create_oauth2_access_token()
@@ -218,7 +218,8 @@ class DropboxClient(object):
         """
         return ChunkedUploader(self, file_obj, length)
 
-    def upload_chunk(self, file_obj, length=None, offset=0, upload_id=None):
+    def upload_chunk(self, file_obj, length=None, offset=0,  # pylint: disable=unused-argument
+             upload_id=None):
         """Uploads a single chunk of data from a string or file-like object. The majority of users
         should use the :class:`ChunkedUploader` object, which provides a simpler interface to the
         chunked_upload API endpoint.
@@ -252,8 +253,8 @@ class DropboxClient(object):
             params['upload_id'] = upload_id
             params['offset'] = offset
 
-        url, ignored_params, headers = self.request("/chunked_upload", params,
-                                                    method='PUT', content_server=True)
+        url, _, headers = self.request("/chunked_upload", params,
+            method='PUT', content_server=True)
 
         try:
             reply = self.rest_client.PUT(url, file_obj, headers)
@@ -298,7 +299,7 @@ class DropboxClient(object):
         params = {
             'upload_id': upload_id,
             'overwrite': overwrite,
-            }
+        }
 
         if parent_rev is not None:
             params['parent_rev'] = parent_rev
@@ -373,7 +374,7 @@ class DropboxClient(object):
 
         params = {
             'overwrite': bool(overwrite),
-            }
+        }
 
         if parent_rev is not None:
             params['parent_rev'] = parent_rev
@@ -425,9 +426,9 @@ class DropboxClient(object):
         url, params, headers = self.request(path, params, method='GET', content_server=True)
         if start is not None:
             if length:
-              headers['Range'] = 'bytes=%s-%s' % (start, start + length - 1)
+                headers['Range'] = 'bytes=%s-%s' % (start, start + length - 1)
             else:
-              headers['Range'] = 'bytes=%s-' % start
+                headers['Range'] = 'bytes=%s-' % start
         elif length is not None:
             headers['Range'] = 'bytes=-%s' % length
         return self.rest_client.request("GET", url, headers=headers, raw_response=True)
@@ -484,8 +485,8 @@ class DropboxClient(object):
                 try:
                     metadata = json.loads(header_val)
                 except ValueError:
-                    raise ErrorResponse(dropbox_raw_response)
-        if not metadata: raise ErrorResponse(dropbox_raw_response)
+                    raise ErrorResponse(dropbox_raw_response, '')
+        if not metadata: raise ErrorResponse(dropbox_raw_response, '')
         return metadata
 
     def delta(self, cursor=None, path_prefix=None, include_media_info=False):
@@ -631,7 +632,7 @@ class DropboxClient(object):
         """
         path = "/copy_ref/%s%s" % (self.session.root, format_path(from_path))
 
-        url, params, headers = self.request(path, {}, method='GET')
+        url, _, headers = self.request(path, {}, method='GET')
 
         return self.rest_client.GET(url, headers)
 
@@ -686,10 +687,11 @@ class DropboxClient(object):
               - 404: No file was found at given from_path.
               - 503: User over storage quota.
         """
-        params = {'root': self.session.root,
-                  'from_path': format_path(from_path),
-                  'to_path': format_path(to_path),
-                  }
+        params = {
+            'root': self.session.root,
+            'from_path': format_path(from_path),
+            'to_path': format_path(to_path),
+        }
 
         url, params, headers = self.request("/fileops/copy", params)
 
@@ -782,8 +784,9 @@ class DropboxClient(object):
 
         return self.rest_client.POST(url, params, headers)
 
-    def metadata(self, path, list=True, file_limit=25000, hash=None,
-                 rev=None, include_deleted=False, include_media_info=False):
+    def metadata(self, path, list=True, file_limit=25000,  # pylint: disable=redefined-builtin
+            hash=None, rev=None, include_deleted=False,  # pylint: disable=redefined-builtin
+            include_media_info=False):
         """Retrieve metadata for a file or folder.
 
         A typical use would be::
@@ -879,11 +882,12 @@ class DropboxClient(object):
         """
         path = "/metadata/%s%s" % (self.session.root, format_path(path))
 
-        params = {'file_limit': file_limit,
-                  'list': 'true',
-                  'include_deleted': include_deleted,
-                  'include_media_info': include_media_info,
-                  }
+        params = {
+            'file_limit': file_limit,
+            'list': 'true',
+            'include_deleted': include_deleted,
+            'include_media_info': include_media_info,
+        }
 
         if not list:
             params['list'] = 'false'
@@ -896,7 +900,7 @@ class DropboxClient(object):
 
         return self.rest_client.GET(url, headers)
 
-    def thumbnail(self, from_path, size='m', format='JPEG'):
+    def thumbnail(self, from_path, size='m', format='JPEG'):  # pylint: disable=redefined-builtin
         """Download a thumbnail for an image.
 
         Parameters
@@ -930,11 +934,11 @@ class DropboxClient(object):
 
         path = "/thumbnails/%s%s" % (self.session.root, format_path(from_path))
 
-        url, params, headers = self.request(path, {'size': size, 'format': format},
+        url, _, headers = self.request(path, {'size': size, 'format': format},
                                             method='GET', content_server=True)
         return self.rest_client.request("GET", url, headers=headers, raw_response=True)
 
-    def thumbnail_and_metadata(self, from_path, size='m', format='JPEG'):
+    def thumbnail_and_metadata(self, from_path, size='m', format='JPEG'):  # noqa: E501; pylint: disable=redefined-builtin
         """Download a thumbnail for an image alongwith its metadata.
 
         Acts as a thin wrapper around thumbnail() (see :meth:`thumbnail()` comments for
@@ -1007,7 +1011,7 @@ class DropboxClient(object):
             'query': query,
             'file_limit': file_limit,
             'include_deleted': include_deleted,
-            }
+        }
 
         url, params, headers = self.request(path, params)
 
@@ -1040,7 +1044,7 @@ class DropboxClient(object):
 
         params = {
             'rev_limit': rev_limit,
-            }
+        }
 
         url, params, headers = self.request(path, params, method='GET')
 
@@ -1071,7 +1075,7 @@ class DropboxClient(object):
 
         params = {
             'rev': rev,
-            }
+        }
 
         url, params, headers = self.request(path, params)
 
@@ -1107,7 +1111,7 @@ class DropboxClient(object):
         """
         path = "/media/%s%s" % (self.session.root, format_path(path))
 
-        url, params, headers = self.request(path, method='GET')
+        url, _, headers = self.request(path, method='GET')
 
         return self.rest_client.GET(url, headers)
 
@@ -1141,7 +1145,7 @@ class DropboxClient(object):
 
         params = {
             'short_url': short_url,
-            }
+        }
 
         url, params, headers = self.request(path, params, method='GET')
 
@@ -1162,7 +1166,7 @@ class ChunkedUploader(object):
         self.file_obj = file_obj
         self.target_length = length
 
-    def upload_chunked(self, chunk_size = 4 * 1024 * 1024):
+    def upload_chunked(self, chunk_size=4 * 1024 * 1024):
         """Uploads data from this ChunkedUploader's file_obj in chunks, until
         an error occurs. Throws an exception when an error occurs, and can
         be called again to resume the upload.
@@ -1174,7 +1178,7 @@ class ChunkedUploader(object):
 
         while self.offset < self.target_length:
             next_chunk_size = min(chunk_size, self.target_length - self.offset)
-            if self.last_block == None:
+            if self.last_block is None:
                 self.last_block = self.file_obj.read(next_chunk_size)
 
             try:
@@ -1222,8 +1226,8 @@ class ChunkedUploader(object):
         path = "/commit_chunked_upload/%s%s" % (self.client.session.root, format_path(path))
 
         params = dict(
-            overwrite = bool(overwrite),
-            upload_id = self.upload_id
+            overwrite=bool(overwrite),
+            upload_id=self.upload_id,
         )
 
         if parent_rev is not None:
@@ -1258,11 +1262,12 @@ class DropboxOAuth2FlowBase(object):
 
     def _finish(self, code, redirect_uri):
         url = self.build_url(BaseSession.API_HOST, '/oauth2/token')
-        params = {'grant_type': 'authorization_code',
-                  'code': code,
-                  'client_id': self.consumer_key,
-                  'client_secret': self.consumer_secret,
-                  }
+        params = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'client_id': self.consumer_key,
+            'client_secret': self.consumer_secret,
+        }
         if self.locale is not None:
             params['locale'] = self.locale
         if redirect_uri is not None:
@@ -1655,6 +1660,5 @@ def _safe_equals(a, b):
         res |= ord(ca) ^ ord(cb)
     return res == 0
 
-
+# From the "Bearer" token spec, RFC 6750.
 _OAUTH2_ACCESS_TOKEN_PATTERN = re.compile(r'\A[-_~/A-Za-z0-9\.\+]+=*\Z')
-    # From the "Bearer" token spec, RFC 6750.

@@ -11,6 +11,8 @@ than being added to a project.
 EDITING THIS FILE? Please modify the version in the babelapi repo,
 """
 
+from __future__ import absolute_import
+
 import base64
 import collections
 import datetime
