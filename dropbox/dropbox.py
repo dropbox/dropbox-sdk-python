@@ -9,7 +9,6 @@ __version__ = '7.2.1'
 import contextlib
 import json
 import logging
-import os
 import random
 import six
 import time
@@ -31,7 +30,15 @@ from .exceptions import (
     InternalServerError,
     RateLimitError,
 )
-from .session import pinned_session
+from .session import (
+    API_CONTENT_HOST,
+    API_HOST,
+    API_NOTIFICATION_HOST,
+    HOST_API,
+    HOST_CONTENT,
+    HOST_NOTIFY,
+    pinned_session,
+)
 
 
 class RouteResult(object):
@@ -97,17 +104,6 @@ class _DropboxTransport(object):
     """
 
     _API_VERSION = '2'
-
-    _DEFAULT_DOMAIN = '.dropboxapi.com'
-
-    # Host for RPC-style routes.
-    _HOST_API = 'api'
-
-    # Host for upload and download-style routes.
-    _HOST_CONTENT = 'content'
-
-    # Host for longpoll routes.
-    _HOST_NOTIFY = 'notify'
 
     # Download style means that the route argument goes in a Dropbox-API-Arg
     # header, and the result comes back in a Dropbox-API-Result header. The
@@ -183,16 +179,9 @@ class _DropboxTransport(object):
 
         self._logger = logging.getLogger('dropbox')
 
-        self._domain = os.environ.get('DROPBOX_DOMAIN', Dropbox._DEFAULT_DOMAIN)
-        self._api_hostname = os.environ.get(
-            'DROPBOX_API_HOST', 'api' + self._domain)
-        self._api_content_hostname = os.environ.get(
-            'DROPBOX_API_CONTENT_HOST', 'content' + self._domain)
-        self._api_notify_hostname = os.environ.get(
-            'DROPBOX_API_NOTIFY_HOST', 'notify' + self._domain)
-        self._host_map = {self._HOST_API: self._api_hostname,
-                          self._HOST_CONTENT: self._api_content_hostname,
-                          self._HOST_NOTIFY: self._api_notify_hostname}
+        self._host_map = {HOST_API: API_HOST,
+                          HOST_CONTENT: API_CONTENT_HOST,
+                          HOST_NOTIFY: API_NOTIFICATION_HOST}
 
         self._timeout = timeout
 
@@ -389,7 +378,7 @@ class _DropboxTransport(object):
         url = self._get_route_url(fq_hostname, func_name)
 
         headers = {'User-Agent': self._user_agent}
-        if host != self._HOST_NOTIFY:
+        if host != HOST_NOTIFY:
             headers['Authorization'] = 'Bearer %s' % self._oauth2_access_token
             if self._headers:
                 headers.update(self._headers)

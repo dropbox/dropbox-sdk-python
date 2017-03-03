@@ -1,3 +1,4 @@
+import os
 import pkg_resources
 import ssl
 import sys
@@ -52,6 +53,24 @@ else:
     url_path_quote = urllib.parse.quote
     url_encode = urllib.parse.urlencode
 
+DOMAIN = os.environ.get('DROPBOX_DOMAIN', '.dropboxapi.com')
+
+# Default short hostname for RPC-style routes.
+HOST_API = 'api'
+
+# Default short hostname for upload and download-style routes.
+HOST_CONTENT = 'content'
+
+# Default short hostname for longpoll routes.
+HOST_NOTIFY = 'notify'
+
+# Default short hostname for the Drobox website.
+HOST_WWW = 'www'
+
+API_HOST = os.environ.get('DROPBOX_API_HOST', HOST_API + DOMAIN)
+API_CONTENT_HOST = os.environ.get('DROPBOX_API_CONTENT_HOST', HOST_CONTENT + DOMAIN)
+API_NOTIFICATION_HOST = os.environ.get('DROPBOX_API_NOTIFY_HOST', HOST_NOTIFY + DOMAIN)
+WEB_HOST = os.environ.get('DROPBOX_WEB_HOST', HOST_WWW + DOMAIN)
 
 class OAuthToken(object):
     """
@@ -64,11 +83,6 @@ class OAuthToken(object):
 
 class BaseSession(object):
     API_VERSION = 1
-
-    API_HOST = "api.dropbox.com"
-    WEB_HOST = "www.dropbox.com"
-    API_CONTENT_HOST = "api-content.dropbox.com"
-    API_NOTIFICATION_HOST = "api-notify.dropbox.com"
 
     def __init__(self, consumer_key, consumer_secret, access_type="auto", locale=None, rest_client=rest.RESTClient):
         """Initialize a DropboxSession object.
@@ -150,6 +164,11 @@ class BaseSession(object):
             - The full API URL.
         """
         return "https://%s%s" % (host, self.build_path(target, params))
+
+BaseSession.API_HOST = API_HOST
+BaseSession.API_CONTENT_HOST = API_CONTENT_HOST
+BaseSession.API_NOTIFICATION_HOST = API_NOTIFICATION_HOST
+BaseSession.WEB_HOST = WEB_HOST
 
 class DropboxSession(BaseSession):
 
@@ -251,8 +270,6 @@ class DropboxSession(BaseSession):
         """Build OAuth access headers for a future request.
 
         Args:
-            - ``method``: The HTTP method being used (e.g. 'GET' or 'POST').
-            - ``resource_url``: The full url the request will be made to.
             - ``params``: A dictionary of parameters to add to what's already on the url.
               Typically, this would consist of POST parameters.
 
