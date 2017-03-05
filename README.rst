@@ -28,7 +28,6 @@ Dropbox for Python
     :target: https://pypi.python.org/pypi/dropbox
     :alt: [Latest Release Development Stage]
 
-
 A Python SDK for integrating with the Dropbox API v2. Compatible with Python
 2.7 and 3.4+. Documentation is available on `Read the Docs
 <http://dropbox-sdk-python.readthedocs.org/>`_.
@@ -38,14 +37,13 @@ Installation
 
 Install via ``pip``:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ pip install dropbox
 
-
 Install from source:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git clone git://github.com/dropbox/dropbox-sdk-python.git
     $ cd dropbox-sdk-python
@@ -53,7 +51,7 @@ Install from source:
 
 After installation, to get started, open a Python console:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import dropbox
     >>> dbx = dropbox.Dropbox("YOUR_ACCESS_TOKEN")
@@ -76,8 +74,7 @@ token for your own Dropbox account.
 Examples
 --------
 
-An example, `updown.py <example/updown.py>`_, can be found in the examples directory, which
-demonstrates how to sync a local directory with a Dropbox.
+``example/updown.py`` demonstrates how to sync a local directory with a Dropbox.
 
 Documentation
 -------------
@@ -97,7 +94,7 @@ pin to a version of our `API spec
 
 To prepare the repo for generation, run these commands after cloning:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git submodule init
     $ git submodule update
@@ -107,7 +104,7 @@ version.
 
 Now, run the included script:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ ./generate_base_client.py
 
@@ -126,7 +123,7 @@ We use the `tox <https://tox.readthedocs.org/>`_ package to run tests in Python
 2 and 3. To install, use :code:`pip install tox`. Once installed, run `tox` from the
 root directory. You'll need to specify a working Dropbox OAuth2 token:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ DROPBOX_TOKEN=YOUR_TOKEN tox -- -k "'not test_team'"
 
@@ -135,12 +132,12 @@ Note that we skip ``test_team`` which requires a team token with `Member File Ac
 To test this functionality, specify a ``DROPBOX_TEAM_TOKEN`` environment
 variable.
 
-.. code-block:: bash
+.. code-block:: console
 
     $ DROPBOX_TOKEN=... DROPBOX_TEAM_TOKEN=... tox
 
 If you only want to test the API v2 client, use:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ DROPBOX_TOKEN=... DROPBOX_TEAM_TOKEN=... tox -- -k TestDropbox
