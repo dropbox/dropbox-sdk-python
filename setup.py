@@ -2,6 +2,7 @@
 # where package_data is expected to be str and not unicode.
 from __future__ import absolute_import, division, print_function
 
+import codecs
 import os
 import sys
 
@@ -43,46 +44,38 @@ test_reqs = [
 with open('test/requirements.txt') as f:
     test_reqs += f.read().splitlines()
 
-with open('LICENSE') as f:
-    LICENSE = f.read()
-
-with open('README.rst') as f:
+with codecs.open('README.rst', encoding='utf-8') as f:
     README = f.read()
 
 dist = setup(
     name='dropbox',
     version=version,
-    description='Official Dropbox API Client',
-    author='Dropbox',
-    author_email='dev-platform@dropbox.com',
-    url='http://www.dropbox.com/developers',
     install_requires=install_reqs,
     setup_requires=setup_requires,
     tests_require=test_reqs,
-    license=LICENSE,
-    zip_safe=False,
     packages=['dropbox'],
     package_data={'dropbox': ['trusted-certs.crt']},
+    zip_safe=False,
+    author_email='dev-platform@dropbox.com',
+    author='Dropbox',
+    description='Official Dropbox API Client',
+    license='MIT License',
     long_description=README,
-    platforms=[
-        'CPython 2.7',
-        'CPython 3.3',
-        'CPython 3.4',
-        'CPython 3.5',
-        'CPython 3.6',
-    ],
+    url='http://www.dropbox.com/developers',
+    # From <https://pypi.python.org/pypi?%3Aaction=list_classifiers>
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Operating System :: POSIX',
-        'Operating System :: Microsoft :: Windows',
-        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 )
