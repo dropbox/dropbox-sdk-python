@@ -12,10 +12,10 @@ import contextlib
 import json
 import logging
 import random
-import six
 import time
 
 import requests
+import six
 
 from . import files, stone_serializers
 from .auth import (
@@ -33,15 +33,14 @@ from .exceptions import (
     RateLimitError,
 )
 from .session import (
-    API_CONTENT_HOST,
     API_HOST,
+    API_CONTENT_HOST,
     API_NOTIFICATION_HOST,
     HOST_API,
     HOST_CONTENT,
     HOST_NOTIFY,
     pinned_session,
 )
-
 
 class RouteResult(object):
     """The successful result of a call to a route."""
@@ -62,7 +61,6 @@ class RouteResult(object):
         self.obj_result = obj_result
         self.http_resp = http_resp
 
-
 class RouteErrorResult(object):
     """The error result of a call to a route."""
 
@@ -76,13 +74,11 @@ class RouteErrorResult(object):
         self.request_id = request_id
         self.obj_result = obj_result
 
-
 def create_session(max_connections=8, proxies=None):
     """
     Creates a session object that can be used by multiple :class:`Dropbox` and
     :class:`DropboxTeam` instances. This lets you share a connection pool
     amongst them, as well as proxy parameters.
-
 
     :param int max_connections: Maximum connection pool size.
     :param dict proxies: See the `requests module
@@ -97,7 +93,6 @@ def create_session(max_connections=8, proxies=None):
     if proxies:
         session.proxies = proxies
     return session
-
 
 class _DropboxTransport(object):
     """
@@ -484,7 +479,6 @@ class _DropboxTransport(object):
                 for c in http_resp.iter_content(chunksize):
                     f.write(c)
 
-
 class Dropbox(_DropboxTransport, DropboxBase):
     """
     Use this class to make requests to the Dropbox API using a user's access
@@ -492,7 +486,6 @@ class Dropbox(_DropboxTransport, DropboxBase):
     Dropbox.
     """
     pass
-
 
 class DropboxTeam(_DropboxTransport, DropboxTeamBase):
     """

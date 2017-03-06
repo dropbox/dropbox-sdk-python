@@ -108,14 +108,6 @@ Now, run the included script:
 
     $ ./generate_base_client.py
 
-Upgrading from v1
------------------
-
-To ease the transition to the new API and SDK, you can still use the old
-``dropbox.client.DropboxClient`` class. In fact, v2 and v1 can be used
-simultaneously.  Support for the old client will be dropped once the new SDK is
-at functional parity.
-
 Testing
 -------
 
@@ -135,9 +127,3 @@ variable.
 .. code-block:: console
 
     $ DROPBOX_TOKEN=... DROPBOX_TEAM_TOKEN=... tox
-
-If you only want to test the API v2 client, use:
-
-.. code-block:: console
-
-    $ DROPBOX_TOKEN=... DROPBOX_TEAM_TOKEN=... tox -- -k TestDropbox
