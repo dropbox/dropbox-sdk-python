@@ -39,10 +39,8 @@ class OAuth2FlowNoRedirectResult(object):
         Args:
             access_token (str): Token to be used to authenticate later
                 requests.
-            account_id (str): The Dropbox user's account ID. Please use this
-                instead of the user_id.
-            user_id (str): For backwards compatibility with API v1, please
-                avoid using this if possible.
+            account_id (str): The Dropbox user's account ID.
+            user_id (str): Deprecated (use account_id instead).
         """
         self.access_token = access_token
         self.account_id = account_id
@@ -197,7 +195,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         dbx = Dropbox(oauth_result.access_token)
     """
 
-    def __init__(self, consumer_key, consumer_secret, locale=None):
+    def __init__(self, consumer_key, consumer_secret, locale=None):  # noqa: E501; pylint: disable=useless-super-delegation
         """
         Construct an instance.
 
