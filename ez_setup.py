@@ -13,17 +13,17 @@ the appropriate options to ``use_setuptools()``.
 
 This file can also be run as a script to install or upgrade setuptools.
 """
+import contextlib
+import optparse
 import os
+import platform
 import shutil
+import subprocess
 import sys
 import tempfile
-import zipfile
-import optparse
-import subprocess
-import platform
 import textwrap
-import contextlib
-
+import time
+import zipfile
 from distutils import log
 
 try:
@@ -181,7 +181,7 @@ def has_powershell():
     try:
         try:
             subprocess.check_call(cmd, stdout=devnull, stderr=devnull)
-        except:
+        except Exception as error:
             return False
     finally:
         devnull.close()
@@ -199,7 +199,7 @@ def has_curl():
     try:
         try:
             subprocess.check_call(cmd, stdout=devnull, stderr=devnull)
-        except:
+        except Exception as error:
             return False
     finally:
         devnull.close()
@@ -217,7 +217,7 @@ def has_wget():
     try:
         try:
             subprocess.check_call(cmd, stdout=devnull, stderr=devnull)
-        except:
+        except Exception as error:
             return False
     finally:
         devnull.close()
@@ -284,6 +284,7 @@ def download_setuptools(version=DEFAULT_VERSION, download_base=DEFAULT_URL,
     if not os.path.exists(saveto):  # Avoid repeated downloads
         log.warn("Downloading %s", url)
         downloader = downloader_factory()
+        time.sleep(delay)
         downloader(url, saveto)
     return os.path.realpath(saveto)
 

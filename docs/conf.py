@@ -12,15 +12,16 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
+import sys
+
+import dropbox
 
 # Assumes that the dropbox package to generate docs for is one-level above in
 # the directory hierarchy. This takes precendence over other dropbox packages
 # that may be in the sys.path.
 sys.path.insert(0, os.path.abspath('..'))
 
-import dropbox
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
