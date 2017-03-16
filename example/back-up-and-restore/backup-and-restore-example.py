@@ -85,7 +85,7 @@ def select_revision():
     """
     print("Finding available revisions on Dropbox...")
     entry_revisions = dbx.files_list_revisions(BACKUPPATH, limit=30)
-    entries = entry_revisions.entries # pylint: disable=no-member
+    entries = entry_revisions.entries  # pylint: disable=no-member
     revisions = sorted(entries, key=lambda entry: entry.server_modified)
 
     for revision in revisions:
