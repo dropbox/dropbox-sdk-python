@@ -20,10 +20,10 @@ TOKEN = ''
 LOCALFILE = 'my-file.txt'
 BACKUPPATH = '/my-file-backup.txt'
 
-# Uploads contents of LOCALFILE to Dropbox
-
-
 def backup():
+    """
+    Upload contents of LOCALFILE to Dropbox
+    """
     with open(LOCALFILE, 'rb') as f:
         # We use WriteMode=overwrite to make sure that the settings in the file
         # are changed on upload
@@ -84,8 +84,8 @@ def select_revision():
     Return: Revisions in descending order by date modified
     """
     print("Finding available revisions on Dropbox...")
-    entries = dbx.files_list_revisions(
-        BACKUPPATH, limit=30).entries  # pylint: disable=no-member
+    entry_revisions = dbx.files_list_revisions(BACKUPPATH, limit=30)
+    entries = entry_revisions.entries # pylint: disable=no-member
     revisions = sorted(entries, key=lambda entry: entry.server_modified)
 
     for revision in revisions:
