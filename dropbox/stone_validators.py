@@ -363,7 +363,7 @@ class Timestamp(Primitive):
             raise ValidationError('expected timestamp, got %s'
                                   % generic_type_name(val))
         elif val.tzinfo is not None and \
-                        val.tzinfo.utcoffset(val).total_seconds() != 0:
+                val.tzinfo.utcoffset(val).total_seconds() != 0:
             raise ValidationError('timestamp should have either a UTC '
                                   'timezone or none set at all')
         return val

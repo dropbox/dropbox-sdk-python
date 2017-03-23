@@ -391,7 +391,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             url_state = None
         else:
             given_csrf_token = state[0:split_pos]
-            url_state = state[split_pos+1:]
+            url_state = state[split_pos + 1:]
 
         if not _safe_equals(csrf_token_from_session, given_csrf_token):
             raise CsrfException('expected %r, got %r' %
@@ -475,7 +475,8 @@ class ProviderException(Exception):
 
 
 def _safe_equals(a, b):
-    if len(a) != len(b): return False
+    if len(a) != len(b):
+        return False
     res = 0
     for ca, cb in zip(a, b):
         res |= ord(ca) ^ ord(cb)

@@ -242,7 +242,7 @@ class StoneToPythonPrimitiveSerializer(StoneSerializerBase):
             else:
                 return base64.b64encode(value).decode('ascii')
         elif isinstance(validator, bv.Integer) \
-                    and isinstance(value, bool):
+                and isinstance(value, bool):
             # bool is sub-class of int so it passes Integer validation,
             # but we want the bool to be encoded as ``0`` or ``1``, rather
             # than ``False`` or ``True``, respectively
@@ -302,8 +302,8 @@ class StoneToPythonPrimitiveSerializer(StoneSerializerBase):
 
         field_validator = validator.definition._tagmap[value._tag]
         is_none = isinstance(field_validator, bv.Void) \
-                or (isinstance(field_validator, bv.Nullable)
-                    and value._value is None)
+            or (isinstance(field_validator, bv.Nullable)
+                and value._value is None)
 
         def encode_sub(sub_validator, sub_value, parent_tag):
             try:
@@ -361,7 +361,8 @@ class StoneToJsonSerializer(StoneToPythonPrimitiveSerializer):
 # functions.
 
 def json_encode(data_type, obj, alias_validators=None, old_style=False):
-    """Encodes an object into JSON based on its type.
+    """
+    Encodes an object into JSON based on its type.
 
     Args:
         data_type (Validator): Validator for obj.

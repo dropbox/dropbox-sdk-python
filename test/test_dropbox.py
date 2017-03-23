@@ -115,9 +115,9 @@ class TestDropbox(unittest.TestCase):
     def test_team(self, dbxt):
         dbxt.team_groups_list()
         r = dbxt.team_members_list()
-        if r.members:  # pylint: disable=no-member
+        if r.members:
             # Only test assuming a member if there is a member
-            team_member_id = r.members[0].profile.team_member_id  # pylint: disable=no-member
+            team_member_id = r.members[0].profile.team_member_id
             dbxt.as_user(team_member_id).files_list_folder('')
 
 
@@ -190,7 +190,7 @@ class BaseClientTests(unittest.TestCase):
     @dbx_v1_client_from_env_with_test_dir
     def test_put_file(self, dbx_client, test_dir):
         """Tests if put_file returns the expected metadata"""
-        def test_put(file, path):  # pylint: disable=redefined-builtin,useless-suppression
+        def test_put(file, path):  # pylint: disable=redefined-builtin
             file_path = posixpath.join(test_dir, path)
             f = open(file, "rb")
             metadata = dbx_client.put_file(file_path, f)
@@ -218,7 +218,7 @@ class BaseClientTests(unittest.TestCase):
     @dbx_v1_client_from_env_with_test_dir
     def test_get_file(self, dbx_client, test_dir):
         """Tests if storing and retrieving a file returns the same file"""
-        def test_get(file, path):  # pylint: disable=redefined-builtin,useless-suppression
+        def test_get(file, path):  # pylint: disable=redefined-builtin
             file_path = posixpath.join(test_dir, path)
             self.upload_file(dbx_client, file, file_path)
             downloaded = dbx_client.get_file(file_path).read()
@@ -232,7 +232,7 @@ class BaseClientTests(unittest.TestCase):
     @dbx_v1_client_from_env_with_test_dir
     def test_get_partial_file(self, dbx_client, test_dir):
         """Tests if storing a file and retrieving part of it returns the correct part"""
-        def test_get(file, path, start_frac, download_frac):  # noqa: E501; pylint: disable=redefined-builtin,useless-suppression
+        def test_get(file, path, start_frac, download_frac):  # noqa: E501; pylint: disable=redefined-builtin
             file_path = posixpath.join(test_dir, path)
             self.upload_file(dbx_client, file, file_path)
             local = open(file, "rb").read()
@@ -241,7 +241,7 @@ class BaseClientTests(unittest.TestCase):
             download_start = int(start_frac * local_len) if start_frac is not None else None
             download_length = int(download_frac * local_len) if download_frac is not None else None
             downloaded = dbx_client.get_file(file_path, start=download_start,
-                                              length=download_length).read()
+                length=download_length).read()
 
             local_file = open(file, "rb")
             if download_start:
@@ -489,13 +489,20 @@ class BaseClientTests(unittest.TestCase):
         self.assertEqual(new_offset, chunk_size)
         self.assertIsNotNone(upload_id)
 
-        new_offset, upload_id2 = dbx_client.upload_chunk(BytesIO(random_data2), 0,
-                                                          new_offset, upload_id)
+        new_offset, upload_id2 = dbx_client.upload_chunk(
+            BytesIO(random_data2),
+            0,
+            new_offset,
+            upload_id,
+        )
         self.assertEqual(new_offset, chunk_size * 2)
         self.assertEqual(upload_id2, upload_id)
 
-        metadata = dbx_client.commit_chunked_upload('/auto' + target_path, upload_id,
-                                                     overwrite=True)
+        metadata = dbx_client.commit_chunked_upload(
+            '/auto' + target_path,
+            upload_id,
+            overwrite=True,
+        )
         self.dict_has(metadata, bytes=chunk_size * 2, path=target_path)
 
         downloaded = dbx_client.get_file(target_path).read()
@@ -544,12 +551,14 @@ class BaseClientTests(unittest.TestCase):
         cursor = None
         while True:
             r = dbx_client.delta(cursor)
-            if r['reset']: entries = set()
+            if r['reset']:
+                entries = set()
             for path_lc, md in r['entries']:
-                if path_lc.startswith(prefix_lc+'/') or path_lc == prefix_lc:
+                if path_lc.startswith(prefix_lc + '/') or path_lc == prefix_lc:
                     assert md is not None, "we should never get deletes under 'prefix'"
                     entries.add(path_lc)
-            if not r['has_more']: break
+            if not r['has_more']:
+                break
             cursor = r['cursor']
 
         self.assertEqual(expected, entries)
@@ -560,12 +569,14 @@ class BaseClientTests(unittest.TestCase):
         cursor = None
         while True:
             r = dbx_client.delta(cursor, path_prefix=c)
-            if r['reset']: entries = set()
+            if r['reset']:
+                entries = set()
             for path_lc, md in r['entries']:
-                assert path_lc.startswith(c_lc+'/') or path_lc == c_lc
+                assert path_lc.startswith(c_lc + '/') or path_lc == c_lc
                 assert md is not None, "we should never get deletes"
                 entries.add(path_lc)
-            if not r['has_more']: break
+            if not r['has_more']:
+                break
             cursor = r['cursor']
 
         self.assertEqual(expected, entries)
