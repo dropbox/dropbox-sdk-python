@@ -76,7 +76,8 @@ class DropboxClient(object):
             'You are using a deprecated client. Please use the new v2 client '
             'located at dropbox.Dropbox.', DeprecationWarning, stacklevel=2)
 
-        if rest_client is None: rest_client = RESTClient
+        if rest_client is None:
+            rest_client = RESTClient
         if isinstance(oauth2_access_token, basestring):
             if not _OAUTH2_ACCESS_TOKEN_PATTERN.match(oauth2_access_token):
                 raise ValueError("invalid format for oauth2_access_token: %r"
@@ -118,7 +119,7 @@ class DropboxClient(object):
               A tuple of ``(url, params, headers)`` that should be used to make the request.
               OAuth will be added as needed within these fields.
         """
-        assert method in ['GET','POST', 'PUT'], "Only 'GET', 'POST', and 'PUT' are allowed."
+        assert method in ['GET', 'POST', 'PUT'], "Only 'GET', 'POST', and 'PUT' are allowed."
         assert not (content_server and notification_server), \
             "Cannot construct request simultaneously for content and notification servers."
 
@@ -219,7 +220,7 @@ class DropboxClient(object):
         return ChunkedUploader(self, file_obj, length)
 
     def upload_chunk(self, file_obj, length=None, offset=0,  # pylint: disable=unused-argument
-             upload_id=None):
+            upload_id=None):
         """Uploads a single chunk of data from a string or file-like object. The majority of users
         should use the :class:`ChunkedUploader` object, which provides a simpler interface to the
         chunked_upload API endpoint.
@@ -486,7 +487,8 @@ class DropboxClient(object):
                     metadata = json.loads(header_val)
                 except ValueError:
                     raise ErrorResponse(dropbox_raw_response, '')
-        if not metadata: raise ErrorResponse(dropbox_raw_response, '')
+        if not metadata:
+            raise ErrorResponse(dropbox_raw_response, '')
         return metadata
 
     def delta(self, cursor=None, path_prefix=None, include_media_info=False):
@@ -930,12 +932,11 @@ class DropboxClient(object):
               - 415: Image is invalid and cannot be thumbnailed.
         """
         assert format in ['JPEG', 'PNG'], \
-               "expected a thumbnail format of 'JPEG' or 'PNG', got %s" % format
+            "expected a thumbnail format of 'JPEG' or 'PNG', got %s" % format
 
         path = "/thumbnails/%s%s" % (self.session.root, format_path(from_path))
-
         url, _, headers = self.request(path, {'size': size, 'format': format},
-                                            method='GET', content_server=True)
+                method='GET', content_server=True)
         return self.rest_client.request("GET", url, headers=headers, raw_response=True)
 
     def thumbnail_and_metadata(self, from_path, size='m', format='JPEG'):  # noqa: E501; pylint: disable=redefined-builtin
@@ -1373,7 +1374,8 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             Optional :class:`dropbox.rest.RESTClient`-like object to use for making
             requests.
         """
-        if rest_client is None: rest_client = RESTClient
+        if rest_client is None:
+            rest_client = RESTClient
         super(DropboxOAuth2FlowNoRedirect, self).__init__(consumer_key, consumer_secret,
                                                           locale, rest_client)
 
@@ -1480,7 +1482,8 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             Optional :class:`dropbox.rest.RESTClient`-like object to use for making
             requests.
         """
-        if rest_client is None: rest_client = RESTClient
+        if rest_client is None:
+            rest_client = RESTClient
         super(DropboxOAuth2Flow, self).__init__(consumer_key, consumer_secret, locale, rest_client)
         self.redirect_uri = redirect_uri
         self.session = session
@@ -1578,7 +1581,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             url_state = None
         else:
             given_csrf_token = state[0:split_pos]
-            url_state = state[split_pos+1:]
+            url_state = state[split_pos + 1:]
 
         if not _safe_equals(csrf_token_from_session, given_csrf_token):
             raise self.CsrfException("expected %r, got %r" % (csrf_token_from_session,
@@ -1654,7 +1657,8 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
 
 def _safe_equals(a, b):
-    if len(a) != len(b): return False
+    if len(a) != len(b):
+        return False
     res = 0
     for ca, cb in zip(a, b):
         res |= ord(ca) ^ ord(cb)

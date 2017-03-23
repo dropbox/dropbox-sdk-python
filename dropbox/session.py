@@ -309,9 +309,8 @@ class DropboxSession(BaseSession):
     @classmethod
     def _oauth_sign_request(cls, params, consumer_pair, token_pair):
         params.update({'oauth_signature_method': 'PLAINTEXT',
-                       'oauth_signature': ('%s&%s' % (consumer_pair.secret, token_pair.secret)
-                                            if token_pair is not None else
-                                            '%s&' % (consumer_pair.secret,))})
+            'oauth_signature': ('%s&%s' % (consumer_pair.secret, token_pair.secret)
+                if token_pair is not None else '%s&' % (consumer_pair.secret,))})
 
     @classmethod
     def _generate_oauth_timestamp(cls):
