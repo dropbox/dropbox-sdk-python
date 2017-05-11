@@ -361,8 +361,7 @@ class StoneToJsonSerializer(StoneToPythonPrimitiveSerializer):
 # functions.
 
 def json_encode(data_type, obj, alias_validators=None, old_style=False):
-    """
-    Encodes an object into JSON based on its type.
+    """Encodes an object into JSON based on its type.
 
     Args:
         data_type (Validator): Validator for obj.

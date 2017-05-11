@@ -27,6 +27,7 @@ class Union(object):
     _tagmap = {}  # type: typing.Dict[typing.Text, bv.Validator]
 
     def __init__(self, tag, value=None):
+        # type: (typing.Text, typing.Optional[typing.Any]) -> None
         assert tag in self._tagmap, 'Invalid tag %r.' % tag
         validator = self._tagmap[tag]
         if isinstance(validator, bv.Void):

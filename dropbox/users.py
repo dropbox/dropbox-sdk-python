@@ -18,9 +18,11 @@ except (SystemError, ValueError):
 try:
     from . import (
         team_policies,
+        users_common,
     )
 except (SystemError, ValueError):
     import team_policies
+    import users_common
 
 class Account(object):
     """
@@ -241,56 +243,6 @@ class Account(object):
         )
 
 Account_validator = bv.Struct(Account)
-
-class AccountType(bb.Union):
-    """
-    What type of account this user has.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar basic: The basic account type.
-    :ivar pro: The Dropbox Pro account type.
-    :ivar business: The Dropbox Business account type.
-    """
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    basic = None
-    # Attribute is overwritten below the class definition
-    pro = None
-    # Attribute is overwritten below the class definition
-    business = None
-
-    def is_basic(self):
-        """
-        Check if the union tag is ``basic``.
-
-        :rtype: bool
-        """
-        return self._tag == 'basic'
-
-    def is_pro(self):
-        """
-        Check if the union tag is ``pro``.
-
-        :rtype: bool
-        """
-        return self._tag == 'pro'
-
-    def is_business(self):
-        """
-        Check if the union tag is ``business``.
-
-        :rtype: bool
-        """
-        return self._tag == 'business'
-
-    def __repr__(self):
-        return 'AccountType(%r, %r)' % (self._tag, self._value)
-
-AccountType_validator = bv.Union(AccountType)
 
 class BasicAccount(Account):
     """
@@ -647,7 +599,7 @@ class FullAccount(Account):
         """
         What type of account this user has.
 
-        :rtype: AccountType
+        :rtype: users_common.AccountType_validator
         """
         if self._account_type_present:
             return self._account_type_value
@@ -1512,9 +1464,8 @@ class TeamSpaceAllocation(object):
 
 TeamSpaceAllocation_validator = bv.Struct(TeamSpaceAllocation)
 
-AccountId_validator = bv.String(min_length=40, max_length=40)
 GetAccountBatchResult_validator = bv.List(BasicAccount_validator)
-Account._account_id_validator = AccountId_validator
+Account._account_id_validator = users_common.AccountId_validator
 Account._name_validator = Name_validator
 Account._email_validator = bv.String()
 Account._email_verified_validator = bv.Boolean()
@@ -1537,19 +1488,6 @@ Account._all_fields_ = [
     ('disabled', Account._disabled_validator),
 ]
 
-AccountType._basic_validator = bv.Void()
-AccountType._pro_validator = bv.Void()
-AccountType._business_validator = bv.Void()
-AccountType._tagmap = {
-    'basic': AccountType._basic_validator,
-    'pro': AccountType._pro_validator,
-    'business': AccountType._business_validator,
-}
-
-AccountType.basic = AccountType('basic')
-AccountType.pro = AccountType('pro')
-AccountType.business = AccountType('business')
-
 BasicAccount._is_teammate_validator = bv.Boolean()
 BasicAccount._team_member_id_validator = bv.Nullable(bv.String())
 BasicAccount._all_field_names_ = Account._all_field_names_.union(set([
@@ -1567,7 +1505,7 @@ FullAccount._referral_link_validator = bv.String()
 FullAccount._team_validator = bv.Nullable(FullTeam_validator)
 FullAccount._team_member_id_validator = bv.Nullable(bv.String())
 FullAccount._is_paired_validator = bv.Boolean()
-FullAccount._account_type_validator = AccountType_validator
+FullAccount._account_type_validator = users_common.AccountType_validator
 FullAccount._all_field_names_ = Account._all_field_names_.union(set([
     'country',
     'locale',
@@ -1602,15 +1540,15 @@ FullTeam._sharing_policies_validator = team_policies.TeamSharingPolicies_validat
 FullTeam._all_field_names_ = Team._all_field_names_.union(set(['sharing_policies']))
 FullTeam._all_fields_ = Team._all_fields_ + [('sharing_policies', FullTeam._sharing_policies_validator)]
 
-GetAccountArg._account_id_validator = AccountId_validator
+GetAccountArg._account_id_validator = users_common.AccountId_validator
 GetAccountArg._all_field_names_ = set(['account_id'])
 GetAccountArg._all_fields_ = [('account_id', GetAccountArg._account_id_validator)]
 
-GetAccountBatchArg._account_ids_validator = bv.List(AccountId_validator, min_items=1)
+GetAccountBatchArg._account_ids_validator = bv.List(users_common.AccountId_validator, min_items=1)
 GetAccountBatchArg._all_field_names_ = set(['account_ids'])
 GetAccountBatchArg._all_fields_ = [('account_ids', GetAccountBatchArg._account_ids_validator)]
 
-GetAccountBatchError._no_account_validator = AccountId_validator
+GetAccountBatchError._no_account_validator = users_common.AccountId_validator
 GetAccountBatchError._other_validator = bv.Void()
 GetAccountBatchError._tagmap = {
     'no_account': GetAccountBatchError._no_account_validator,
@@ -1729,3 +1667,4 @@ ROUTES = {
     'get_current_account': get_current_account,
     'get_space_usage': get_space_usage,
 }
+

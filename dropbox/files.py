@@ -20,13 +20,13 @@ try:
         async,
         common,
         properties,
-        users,
+        users_common,
     )
 except (SystemError, ValueError):
     import async
     import common
     import properties
-    import users
+    import users_common
 
 class PropertiesError(properties.PropertyTemplateError):
     """
@@ -4145,8 +4145,6 @@ class LookupError(bb.Union):
     :ivar restricted_content: The file cannot be transferred because the content
         is restricted.  For example, sometimes there are legal restrictions due
         to copyright claims.
-    :ivar PathRootError invalid_path_root: The path root parameter provided is
-        invalid.
     """
 
     _catch_all = 'other'
@@ -4171,17 +4169,6 @@ class LookupError(bb.Union):
         :rtype: LookupError
         """
         return cls('malformed_path', val)
-
-    @classmethod
-    def invalid_path_root(cls, val):
-        """
-        Create an instance of this class set to the ``invalid_path_root`` tag
-        with value ``val``.
-
-        :param PathRootError val:
-        :rtype: LookupError
-        """
-        return cls('invalid_path_root', val)
 
     def is_malformed_path(self):
         """
@@ -4223,14 +4210,6 @@ class LookupError(bb.Union):
         """
         return self._tag == 'restricted_content'
 
-    def is_invalid_path_root(self):
-        """
-        Check if the union tag is ``invalid_path_root``.
-
-        :rtype: bool
-        """
-        return self._tag == 'invalid_path_root'
-
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -4247,18 +4226,6 @@ class LookupError(bb.Union):
         """
         if not self.is_malformed_path():
             raise AttributeError("tag 'malformed_path' not set")
-        return self._value
-
-    def get_invalid_path_root(self):
-        """
-        The path root parameter provided is invalid.
-
-        Only call this if :meth:`is_invalid_path_root` is true.
-
-        :rtype: PathRootError
-        """
-        if not self.is_invalid_path_root():
-            raise AttributeError("tag 'invalid_path_root' not set")
         return self._value
 
     def __repr__(self):
@@ -4448,60 +4415,6 @@ class MediaMetadata(object):
         )
 
 MediaMetadata_validator = bv.StructTree(MediaMetadata)
-
-class PathRootError(object):
-    """
-    :ivar path_root: The user's latest path root value. None if the user no
-        longer has a path root.
-    """
-
-    __slots__ = [
-        '_path_root_value',
-        '_path_root_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 path_root=None):
-        self._path_root_value = None
-        self._path_root_present = False
-        if path_root is not None:
-            self.path_root = path_root
-
-    @property
-    def path_root(self):
-        """
-        The user's latest path root value. None if the user no longer has a path
-        root.
-
-        :rtype: str
-        """
-        if self._path_root_present:
-            return self._path_root_value
-        else:
-            return None
-
-    @path_root.setter
-    def path_root(self, val):
-        if val is None:
-            del self.path_root
-            return
-        val = self._path_root_validator.validate(val)
-        self._path_root_value = val
-        self._path_root_present = True
-
-    @path_root.deleter
-    def path_root(self):
-        self._path_root_value = None
-        self._path_root_present = False
-
-    def __repr__(self):
-        return 'PathRootError(path_root={!r})'.format(
-            self._path_root_value,
-        )
-
-PathRootError_validator = bv.Struct(PathRootError)
 
 class PhotoMetadata(MediaMetadata):
     """
@@ -8065,11 +7978,15 @@ class UploadSessionFinishError(bb.Union):
     :ivar too_many_shared_folder_targets: The batch request commits files into
         too many different shared folders. Please limit your batch request to
         files contained in a single shared folder.
+    :ivar too_many_write_operations: There are too many write operations
+        happening in the user's Dropbox. You should retry uploading this file.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     too_many_shared_folder_targets = None
+    # Attribute is overwritten below the class definition
+    too_many_write_operations = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -8119,6 +8036,14 @@ class UploadSessionFinishError(bb.Union):
         """
         return self._tag == 'too_many_shared_folder_targets'
 
+    def is_too_many_write_operations(self):
+        """
+        Check if the union tag is ``too_many_write_operations``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_write_operations'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -8162,7 +8087,8 @@ class UploadSessionLookupError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar not_found: The upload session id was not found.
+    :ivar not_found: The upload session ID was not found or has expired. Upload
+        sessions are valid for 48 hours.
     :ivar UploadSessionOffsetError incorrect_offset: The specified offset was
         incorrect. See the value for the correct offset. This error may occur
         when a previous request was received and processed successfully but the
@@ -8629,6 +8555,7 @@ class WriteError(bb.Union):
         (bytes) to write more data.
     :ivar disallowed_name: Dropbox will not save the file or folder because of
         its name.
+    :ivar team_folder: This endpoint cannot modify or delete team folders.
     """
 
     _catch_all = 'other'
@@ -8638,6 +8565,8 @@ class WriteError(bb.Union):
     insufficient_space = None
     # Attribute is overwritten below the class definition
     disallowed_name = None
+    # Attribute is overwritten below the class definition
+    team_folder = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -8702,6 +8631,14 @@ class WriteError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'disallowed_name'
+
+    def is_team_folder(self):
+        """
+        Check if the union tag is ``team_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder'
 
     def is_other(self):
         """
@@ -9109,7 +9046,7 @@ SharingInfo._all_field_names_ = set(['read_only'])
 SharingInfo._all_fields_ = [('read_only', SharingInfo._read_only_validator)]
 
 FileSharingInfo._parent_shared_folder_id_validator = common.SharedFolderId_validator
-FileSharingInfo._modified_by_validator = bv.Nullable(users.AccountId_validator)
+FileSharingInfo._modified_by_validator = bv.Nullable(users_common.AccountId_validator)
 FileSharingInfo._all_field_names_ = SharingInfo._all_field_names_.union(set([
     'parent_shared_folder_id',
     'modified_by',
@@ -9355,7 +9292,6 @@ LookupError._not_found_validator = bv.Void()
 LookupError._not_file_validator = bv.Void()
 LookupError._not_folder_validator = bv.Void()
 LookupError._restricted_content_validator = bv.Void()
-LookupError._invalid_path_root_validator = PathRootError_validator
 LookupError._other_validator = bv.Void()
 LookupError._tagmap = {
     'malformed_path': LookupError._malformed_path_validator,
@@ -9363,7 +9299,6 @@ LookupError._tagmap = {
     'not_file': LookupError._not_file_validator,
     'not_folder': LookupError._not_folder_validator,
     'restricted_content': LookupError._restricted_content_validator,
-    'invalid_path_root': LookupError._invalid_path_root_validator,
     'other': LookupError._other_validator,
 }
 
@@ -9407,10 +9342,6 @@ MediaMetadata._pytype_to_tag_and_subtype_ = {
     VideoMetadata: ((u'video',), VideoMetadata_validator),
 }
 MediaMetadata._is_catch_all_ = False
-
-PathRootError._path_root_validator = bv.Nullable(bv.String())
-PathRootError._all_field_names_ = set(['path_root'])
-PathRootError._all_fields_ = [('path_root', PathRootError._path_root_validator)]
 
 PhotoMetadata._field_names_ = set([])
 PhotoMetadata._all_field_names_ = MediaMetadata._all_field_names_.union(PhotoMetadata._field_names_)
@@ -9924,15 +9855,18 @@ UploadSessionFinishBatchResultEntry._tagmap = {
 UploadSessionFinishError._lookup_failed_validator = UploadSessionLookupError_validator
 UploadSessionFinishError._path_validator = WriteError_validator
 UploadSessionFinishError._too_many_shared_folder_targets_validator = bv.Void()
+UploadSessionFinishError._too_many_write_operations_validator = bv.Void()
 UploadSessionFinishError._other_validator = bv.Void()
 UploadSessionFinishError._tagmap = {
     'lookup_failed': UploadSessionFinishError._lookup_failed_validator,
     'path': UploadSessionFinishError._path_validator,
     'too_many_shared_folder_targets': UploadSessionFinishError._too_many_shared_folder_targets_validator,
+    'too_many_write_operations': UploadSessionFinishError._too_many_write_operations_validator,
     'other': UploadSessionFinishError._other_validator,
 }
 
 UploadSessionFinishError.too_many_shared_folder_targets = UploadSessionFinishError('too_many_shared_folder_targets')
+UploadSessionFinishError.too_many_write_operations = UploadSessionFinishError('too_many_write_operations')
 UploadSessionFinishError.other = UploadSessionFinishError('other')
 
 UploadSessionLookupError._not_found_validator = bv.Void()
@@ -10003,6 +9937,7 @@ WriteError._conflict_validator = WriteConflictError_validator
 WriteError._no_write_permission_validator = bv.Void()
 WriteError._insufficient_space_validator = bv.Void()
 WriteError._disallowed_name_validator = bv.Void()
+WriteError._team_folder_validator = bv.Void()
 WriteError._other_validator = bv.Void()
 WriteError._tagmap = {
     'malformed_path': WriteError._malformed_path_validator,
@@ -10010,12 +9945,14 @@ WriteError._tagmap = {
     'no_write_permission': WriteError._no_write_permission_validator,
     'insufficient_space': WriteError._insufficient_space_validator,
     'disallowed_name': WriteError._disallowed_name_validator,
+    'team_folder': WriteError._team_folder_validator,
     'other': WriteError._other_validator,
 }
 
 WriteError.no_write_permission = WriteError('no_write_permission')
 WriteError.insufficient_space = WriteError('insufficient_space')
 WriteError.disallowed_name = WriteError('disallowed_name')
+WriteError.team_folder = WriteError('team_folder')
 WriteError.other = WriteError('other')
 
 WriteMode._add_validator = bv.Void()
@@ -10453,3 +10390,4 @@ ROUTES = {
     'upload_session/finish_batch/check': upload_session_finish_batch_check,
     'upload_session/start': upload_session_start,
 }
+

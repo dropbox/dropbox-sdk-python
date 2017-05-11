@@ -423,6 +423,7 @@ class Struct(Composite):
                     field_name: Name of the field (str).
                     validator: Validator object.
         """
+        super(Struct, self).__init__()
         self.definition = definition
 
     def validate(self, val):
@@ -477,7 +478,9 @@ class StructTree(Struct):
     struct, but does not do any validation specific to the subtype.
     """
 
-    def __init__(self, definition):
+    # See PyCQA/pylint#1043 for why this is disabled; this should show up
+    # as a usless-suppression (and can be removed) once a fix is released
+    def __init__(self, definition):  # pylint: disable=useless-super-delegation
         super(StructTree, self).__init__(definition)
 
 

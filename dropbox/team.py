@@ -19,6 +19,7 @@ try:
         team_common,
         team_policies,
         users,
+        users_common,
     )
 except (SystemError, ValueError):
     import async
@@ -27,6 +28,7 @@ except (SystemError, ValueError):
     import team_common
     import team_policies
     import users
+    import users_common
 
 class DeviceSession(object):
     """
@@ -225,6 +227,7 @@ class ActiveWebSession(DeviceSession):
     :ivar user_agent: Information on the hosting device
     :ivar os: Information on the hosting operating system
     :ivar browser: Information on the browser used for this web session
+    :ivar expires: The time this session expires
     """
 
     __slots__ = [
@@ -234,6 +237,8 @@ class ActiveWebSession(DeviceSession):
         '_os_present',
         '_browser_value',
         '_browser_present',
+        '_expires_value',
+        '_expires_present',
     ]
 
     _has_required_fields = True
@@ -246,7 +251,8 @@ class ActiveWebSession(DeviceSession):
                  ip_address=None,
                  country=None,
                  created=None,
-                 updated=None):
+                 updated=None,
+                 expires=None):
         super(ActiveWebSession, self).__init__(session_id,
                                                ip_address,
                                                country,
@@ -258,12 +264,16 @@ class ActiveWebSession(DeviceSession):
         self._os_present = False
         self._browser_value = None
         self._browser_present = False
+        self._expires_value = None
+        self._expires_present = False
         if user_agent is not None:
             self.user_agent = user_agent
         if os is not None:
             self.os = os
         if browser is not None:
             self.browser = browser
+        if expires is not None:
+            self.expires = expires
 
     @property
     def user_agent(self):
@@ -334,8 +344,34 @@ class ActiveWebSession(DeviceSession):
         self._browser_value = None
         self._browser_present = False
 
+    @property
+    def expires(self):
+        """
+        The time this session expires
+
+        :rtype: datetime.datetime
+        """
+        if self._expires_present:
+            return self._expires_value
+        else:
+            return None
+
+    @expires.setter
+    def expires(self, val):
+        if val is None:
+            del self.expires
+            return
+        val = self._expires_validator.validate(val)
+        self._expires_value = val
+        self._expires_present = True
+
+    @expires.deleter
+    def expires(self):
+        self._expires_value = None
+        self._expires_present = False
+
     def __repr__(self):
-        return 'ActiveWebSession(session_id={!r}, user_agent={!r}, os={!r}, browser={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r})'.format(
+        return 'ActiveWebSession(session_id={!r}, user_agent={!r}, os={!r}, browser={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r}, expires={!r})'.format(
             self._session_id_value,
             self._user_agent_value,
             self._os_value,
@@ -344,6 +380,7 @@ class ActiveWebSession(DeviceSession):
             self._country_value,
             self._created_value,
             self._updated_value,
+            self._expires_value,
         )
 
 ActiveWebSession_validator = bv.Struct(ActiveWebSession)
@@ -1542,6 +1579,233 @@ class DevicesActive(object):
         )
 
 DevicesActive_validator = bv.Struct(DevicesActive)
+
+class Feature(bb.Union):
+    """
+    A set of features that Dropbox for Business account support.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar upload_api_rate_limit: The number of upload API calls allowed per
+        month.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    upload_api_rate_limit = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_upload_api_rate_limit(self):
+        """
+        Check if the union tag is ``upload_api_rate_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'upload_api_rate_limit'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'Feature(%r, %r)' % (self._tag, self._value)
+
+Feature_validator = bv.Union(Feature)
+
+class FeatureValue(bb.Union):
+    """
+    The values correspond to entries in :class:`Feature`. You may get different
+    value according to your Dropbox for Business plan.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def upload_api_rate_limit(cls, val):
+        """
+        Create an instance of this class set to the ``upload_api_rate_limit``
+        tag with value ``val``.
+
+        :param UploadApiRateLimitValue val:
+        :rtype: FeatureValue
+        """
+        return cls('upload_api_rate_limit', val)
+
+    def is_upload_api_rate_limit(self):
+        """
+        Check if the union tag is ``upload_api_rate_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'upload_api_rate_limit'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_upload_api_rate_limit(self):
+        """
+        Only call this if :meth:`is_upload_api_rate_limit` is true.
+
+        :rtype: UploadApiRateLimitValue
+        """
+        if not self.is_upload_api_rate_limit():
+            raise AttributeError("tag 'upload_api_rate_limit' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'FeatureValue(%r, %r)' % (self._tag, self._value)
+
+FeatureValue_validator = bv.Union(FeatureValue)
+
+class FeaturesGetValuesBatchArg(object):
+    """
+    :ivar features: A list of features in :class:`Feature`. If the list is
+        empty, this route will return :class:`FeaturesGetValuesBatchError`.
+    """
+
+    __slots__ = [
+        '_features_value',
+        '_features_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 features=None):
+        self._features_value = None
+        self._features_present = False
+        if features is not None:
+            self.features = features
+
+    @property
+    def features(self):
+        """
+        A list of features in :class:`Feature`. If the list is empty, this route
+        will return :class:`FeaturesGetValuesBatchError`.
+
+        :rtype: list of [Feature]
+        """
+        if self._features_present:
+            return self._features_value
+        else:
+            raise AttributeError("missing required field 'features'")
+
+    @features.setter
+    def features(self, val):
+        val = self._features_validator.validate(val)
+        self._features_value = val
+        self._features_present = True
+
+    @features.deleter
+    def features(self):
+        self._features_value = None
+        self._features_present = False
+
+    def __repr__(self):
+        return 'FeaturesGetValuesBatchArg(features={!r})'.format(
+            self._features_value,
+        )
+
+FeaturesGetValuesBatchArg_validator = bv.Struct(FeaturesGetValuesBatchArg)
+
+class FeaturesGetValuesBatchError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar empty_features_list: At least one :class:`Feature` must be included in
+        the :class:`FeaturesGetValuesBatchArg`.features list.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    empty_features_list = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_empty_features_list(self):
+        """
+        Check if the union tag is ``empty_features_list``.
+
+        :rtype: bool
+        """
+        return self._tag == 'empty_features_list'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'FeaturesGetValuesBatchError(%r, %r)' % (self._tag, self._value)
+
+FeaturesGetValuesBatchError_validator = bv.Union(FeaturesGetValuesBatchError)
+
+class FeaturesGetValuesBatchResult(object):
+
+    __slots__ = [
+        '_values_value',
+        '_values_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 values=None):
+        self._values_value = None
+        self._values_present = False
+        if values is not None:
+            self.values = values
+
+    @property
+    def values(self):
+        """
+        :rtype: list of [FeatureValue]
+        """
+        if self._values_present:
+            return self._values_value
+        else:
+            raise AttributeError("missing required field 'values'")
+
+    @values.setter
+    def values(self, val):
+        val = self._values_validator.validate(val)
+        self._values_value = val
+        self._values_present = True
+
+    @values.deleter
+    def values(self):
+        self._values_value = None
+        self._values_present = False
+
+    def __repr__(self):
+        return 'FeaturesGetValuesBatchResult(values={!r})'.format(
+            self._values_value,
+        )
+
+FeaturesGetValuesBatchResult_validator = bv.Struct(FeaturesGetValuesBatchResult)
 
 class GetActivityReport(BaseDfbReport):
     """
@@ -6744,10 +7008,13 @@ class MemberAddArg(object):
         if self._member_given_name_present:
             return self._member_given_name_value
         else:
-            raise AttributeError("missing required field 'member_given_name'")
+            return None
 
     @member_given_name.setter
     def member_given_name(self, val):
+        if val is None:
+            del self.member_given_name
+            return
         val = self._member_given_name_validator.validate(val)
         self._member_given_name_value = val
         self._member_given_name_present = True
@@ -6767,10 +7034,13 @@ class MemberAddArg(object):
         if self._member_surname_present:
             return self._member_surname_value
         else:
-            raise AttributeError("missing required field 'member_surname'")
+            return None
 
     @member_surname.setter
     def member_surname(self, val):
+        if val is None:
+            del self.member_surname
+            return
         val = self._member_surname_validator.validate(val)
         self._member_surname_value = val
         self._member_surname_present = True
@@ -10186,7 +10456,7 @@ MobileClientSession_validator = bv.Struct(MobileClientSession)
 
 class RemovedStatus(object):
     """
-    :ivar is_recoverable: True if the removed team member is recoverable
+    :ivar is_recoverable: True if the removed team member is recoverable.
     """
 
     __slots__ = [
@@ -10206,7 +10476,7 @@ class RemovedStatus(object):
     @property
     def is_recoverable(self):
         """
-        True if the removed team member is recoverable
+        True if the removed team member is recoverable.
 
         :rtype: bool
         """
@@ -11742,6 +12012,91 @@ class TeamFolderListArg(object):
 
 TeamFolderListArg_validator = bv.Struct(TeamFolderListArg)
 
+class TeamFolderListContinueArg(object):
+    """
+    :ivar cursor: Indicates from what point to get the next set of team folders.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        Indicates from what point to get the next set of team folders.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def __repr__(self):
+        return 'TeamFolderListContinueArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+TeamFolderListContinueArg_validator = bv.Struct(TeamFolderListContinueArg)
+
+class TeamFolderListContinueError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_cursor: The cursor is invalid.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_cursor = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invalid_cursor(self):
+        """
+        Check if the union tag is ``invalid_cursor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_cursor'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'TeamFolderListContinueError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderListContinueError_validator = bv.Union(TeamFolderListContinueError)
+
 class TeamFolderListError(object):
 
     __slots__ = [
@@ -11788,24 +12143,46 @@ TeamFolderListError_validator = bv.Struct(TeamFolderListError)
 
 class TeamFolderListResult(object):
     """
-    Result for :meth:`dropbox.dropbox.Dropbox.team_team_folder_list`.
+    Result for :meth:`dropbox.dropbox.Dropbox.team_team_folder_list` and
+    :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue`.
 
     :ivar team_folders: List of all team folders in the authenticated team.
+    :ivar cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` to obtain
+        additional team folders.
+    :ivar has_more: Is true if there are additional team folders that have not
+        been returned yet. An additional call to
+        :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` can
+        retrieve them.
     """
 
     __slots__ = [
         '_team_folders_value',
         '_team_folders_present',
+        '_cursor_value',
+        '_cursor_present',
+        '_has_more_value',
+        '_has_more_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 team_folders=None):
+                 team_folders=None,
+                 cursor=None,
+                 has_more=None):
         self._team_folders_value = None
         self._team_folders_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        self._has_more_value = None
+        self._has_more_present = False
         if team_folders is not None:
             self.team_folders = team_folders
+        if cursor is not None:
+            self.cursor = cursor
+        if has_more is not None:
+            self.has_more = has_more
 
     @property
     def team_folders(self):
@@ -11830,9 +12207,62 @@ class TeamFolderListResult(object):
         self._team_folders_value = None
         self._team_folders_present = False
 
+    @property
+    def cursor(self):
+        """
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` to obtain
+        additional team folders.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def has_more(self):
+        """
+        Is true if there are additional team folders that have not been returned
+        yet. An additional call to
+        :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` can
+        retrieve them.
+
+        :rtype: bool
+        """
+        if self._has_more_present:
+            return self._has_more_value
+        else:
+            raise AttributeError("missing required field 'has_more'")
+
+    @has_more.setter
+    def has_more(self, val):
+        val = self._has_more_validator.validate(val)
+        self._has_more_value = val
+        self._has_more_present = True
+
+    @has_more.deleter
+    def has_more(self):
+        self._has_more_value = None
+        self._has_more_present = False
+
     def __repr__(self):
-        return 'TeamFolderListResult(team_folders={!r})'.format(
+        return 'TeamFolderListResult(team_folders={!r}, cursor={!r}, has_more={!r})'.format(
             self._team_folders_value,
+            self._cursor_value,
+            self._has_more_value,
         )
 
 TeamFolderListResult_validator = bv.Struct(TeamFolderListResult)
@@ -12590,6 +13020,112 @@ class TeamMembershipType(bb.Union):
 
 TeamMembershipType_validator = bv.Union(TeamMembershipType)
 
+class TokenGetAuthenticatedAdminError(bb.Union):
+    """
+    Error returned by
+    :meth:`dropbox.dropbox.Dropbox.team_token_get_authenticated_admin`.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar mapping_not_found: The current token is not associated with a team
+        admin, because mappings were not recorded when the token was created.
+        Consider re-authorizing a new access token to record its authenticating
+        admin.
+    :ivar admin_not_active: Either the team admin that authorized this token is
+        no longer an active member of the team or no longer a team admin.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    mapping_not_found = None
+    # Attribute is overwritten below the class definition
+    admin_not_active = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_mapping_not_found(self):
+        """
+        Check if the union tag is ``mapping_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'mapping_not_found'
+
+    def is_admin_not_active(self):
+        """
+        Check if the union tag is ``admin_not_active``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_not_active'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'TokenGetAuthenticatedAdminError(%r, %r)' % (self._tag, self._value)
+
+TokenGetAuthenticatedAdminError_validator = bv.Union(TokenGetAuthenticatedAdminError)
+
+class TokenGetAuthenticatedAdminResult(object):
+    """
+    Results for
+    :meth:`dropbox.dropbox.Dropbox.team_token_get_authenticated_admin`.
+
+    :ivar admin_profile: The admin who authorized the token.
+    """
+
+    __slots__ = [
+        '_admin_profile_value',
+        '_admin_profile_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 admin_profile=None):
+        self._admin_profile_value = None
+        self._admin_profile_present = False
+        if admin_profile is not None:
+            self.admin_profile = admin_profile
+
+    @property
+    def admin_profile(self):
+        """
+        The admin who authorized the token.
+
+        :rtype: TeamMemberProfile
+        """
+        if self._admin_profile_present:
+            return self._admin_profile_value
+        else:
+            raise AttributeError("missing required field 'admin_profile'")
+
+    @admin_profile.setter
+    def admin_profile(self, val):
+        self._admin_profile_validator.validate_type_only(val)
+        self._admin_profile_value = val
+        self._admin_profile_present = True
+
+    @admin_profile.deleter
+    def admin_profile(self):
+        self._admin_profile_value = None
+        self._admin_profile_present = False
+
+    def __repr__(self):
+        return 'TokenGetAuthenticatedAdminResult(admin_profile={!r})'.format(
+            self._admin_profile_value,
+        )
+
+TokenGetAuthenticatedAdminResult_validator = bv.Struct(TokenGetAuthenticatedAdminResult)
+
 class UpdatePropertyTemplateArg(object):
     """
     :ivar template_id: An identifier for property template added by
@@ -12803,6 +13339,78 @@ class UpdatePropertyTemplateResult(object):
         )
 
 UpdatePropertyTemplateResult_validator = bv.Struct(UpdatePropertyTemplateResult)
+
+class UploadApiRateLimitValue(bb.Union):
+    """
+    The value for ``Feature.upload_api_rate_limit``.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar unlimited: This team has unlimited upload API quota. So far both
+        server version account and legacy  account type have unlimited monthly
+        upload api quota.
+    :ivar long limit: The number of upload API calls allowed per month.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unlimited = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def limit(cls, val):
+        """
+        Create an instance of this class set to the ``limit`` tag with value
+        ``val``.
+
+        :param long val:
+        :rtype: UploadApiRateLimitValue
+        """
+        return cls('limit', val)
+
+    def is_unlimited(self):
+        """
+        Check if the union tag is ``unlimited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unlimited'
+
+    def is_limit(self):
+        """
+        Check if the union tag is ``limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'limit'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_limit(self):
+        """
+        The number of upload API calls allowed per month.
+
+        Only call this if :meth:`is_limit` is true.
+
+        :rtype: long
+        """
+        if not self.is_limit():
+            raise AttributeError("tag 'limit' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'UploadApiRateLimitValue(%r, %r)' % (self._tag, self._value)
+
+UploadApiRateLimitValue_validator = bv.Union(UploadApiRateLimitValue)
 
 class UserSelectorArg(bb.Union):
     """
@@ -13048,15 +13656,18 @@ DeviceSession._all_fields_ = [
 ActiveWebSession._user_agent_validator = bv.String()
 ActiveWebSession._os_validator = bv.String()
 ActiveWebSession._browser_validator = bv.String()
+ActiveWebSession._expires_validator = bv.Nullable(common.DropboxTimestamp_validator)
 ActiveWebSession._all_field_names_ = DeviceSession._all_field_names_.union(set([
     'user_agent',
     'os',
     'browser',
+    'expires',
 ]))
 ActiveWebSession._all_fields_ = DeviceSession._all_fields_ + [
     ('user_agent', ActiveWebSession._user_agent_validator),
     ('os', ActiveWebSession._os_validator),
     ('browser', ActiveWebSession._browser_validator),
+    ('expires', ActiveWebSession._expires_validator),
 ]
 
 AddPropertyTemplateArg._all_field_names_ = properties.PropertyGroupTemplate._all_field_names_.union(set([]))
@@ -13210,6 +13821,43 @@ DevicesActive._all_fields_ = [
     ('other', DevicesActive._other_validator),
     ('total', DevicesActive._total_validator),
 ]
+
+Feature._upload_api_rate_limit_validator = bv.Void()
+Feature._other_validator = bv.Void()
+Feature._tagmap = {
+    'upload_api_rate_limit': Feature._upload_api_rate_limit_validator,
+    'other': Feature._other_validator,
+}
+
+Feature.upload_api_rate_limit = Feature('upload_api_rate_limit')
+Feature.other = Feature('other')
+
+FeatureValue._upload_api_rate_limit_validator = UploadApiRateLimitValue_validator
+FeatureValue._other_validator = bv.Void()
+FeatureValue._tagmap = {
+    'upload_api_rate_limit': FeatureValue._upload_api_rate_limit_validator,
+    'other': FeatureValue._other_validator,
+}
+
+FeatureValue.other = FeatureValue('other')
+
+FeaturesGetValuesBatchArg._features_validator = bv.List(Feature_validator)
+FeaturesGetValuesBatchArg._all_field_names_ = set(['features'])
+FeaturesGetValuesBatchArg._all_fields_ = [('features', FeaturesGetValuesBatchArg._features_validator)]
+
+FeaturesGetValuesBatchError._empty_features_list_validator = bv.Void()
+FeaturesGetValuesBatchError._other_validator = bv.Void()
+FeaturesGetValuesBatchError._tagmap = {
+    'empty_features_list': FeaturesGetValuesBatchError._empty_features_list_validator,
+    'other': FeaturesGetValuesBatchError._other_validator,
+}
+
+FeaturesGetValuesBatchError.empty_features_list = FeaturesGetValuesBatchError('empty_features_list')
+FeaturesGetValuesBatchError.other = FeaturesGetValuesBatchError('other')
+
+FeaturesGetValuesBatchResult._values_validator = bv.List(FeatureValue_validator)
+FeaturesGetValuesBatchResult._all_field_names_ = set(['values'])
+FeaturesGetValuesBatchResult._all_fields_ = [('values', FeaturesGetValuesBatchResult._values_validator)]
 
 GetActivityReport._adds_validator = NumberPerDay_validator
 GetActivityReport._edits_validator = NumberPerDay_validator
@@ -13879,8 +14527,8 @@ MemberAccess._all_fields_ = [
 ]
 
 MemberAddArg._member_email_validator = common.EmailAddress_validator
-MemberAddArg._member_given_name_validator = common.NamePart_validator
-MemberAddArg._member_surname_validator = common.NamePart_validator
+MemberAddArg._member_given_name_validator = bv.Nullable(common.NamePart_validator)
+MemberAddArg._member_surname_validator = bv.Nullable(common.NamePart_validator)
 MemberAddArg._member_external_id_validator = bv.Nullable(team_common.MemberExternalId_validator)
 MemberAddArg._member_persistent_id_validator = bv.Nullable(bv.String())
 MemberAddArg._send_welcome_email_validator = bv.Boolean()
@@ -13959,7 +14607,7 @@ MemberLinkedApps._all_fields_ = [
 
 MemberProfile._team_member_id_validator = team_common.TeamMemberId_validator
 MemberProfile._external_id_validator = bv.Nullable(bv.String())
-MemberProfile._account_id_validator = bv.Nullable(users.AccountId_validator)
+MemberProfile._account_id_validator = bv.Nullable(users_common.AccountId_validator)
 MemberProfile._email_validator = bv.String()
 MemberProfile._email_verified_validator = bv.Boolean()
 MemberProfile._status_validator = TeamMemberStatus_validator
@@ -14584,13 +15232,37 @@ TeamFolderListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
 TeamFolderListArg._all_field_names_ = set(['limit'])
 TeamFolderListArg._all_fields_ = [('limit', TeamFolderListArg._limit_validator)]
 
+TeamFolderListContinueArg._cursor_validator = bv.String()
+TeamFolderListContinueArg._all_field_names_ = set(['cursor'])
+TeamFolderListContinueArg._all_fields_ = [('cursor', TeamFolderListContinueArg._cursor_validator)]
+
+TeamFolderListContinueError._invalid_cursor_validator = bv.Void()
+TeamFolderListContinueError._other_validator = bv.Void()
+TeamFolderListContinueError._tagmap = {
+    'invalid_cursor': TeamFolderListContinueError._invalid_cursor_validator,
+    'other': TeamFolderListContinueError._other_validator,
+}
+
+TeamFolderListContinueError.invalid_cursor = TeamFolderListContinueError('invalid_cursor')
+TeamFolderListContinueError.other = TeamFolderListContinueError('other')
+
 TeamFolderListError._access_error_validator = TeamFolderAccessError_validator
 TeamFolderListError._all_field_names_ = set(['access_error'])
 TeamFolderListError._all_fields_ = [('access_error', TeamFolderListError._access_error_validator)]
 
 TeamFolderListResult._team_folders_validator = bv.List(TeamFolderMetadata_validator)
-TeamFolderListResult._all_field_names_ = set(['team_folders'])
-TeamFolderListResult._all_fields_ = [('team_folders', TeamFolderListResult._team_folders_validator)]
+TeamFolderListResult._cursor_validator = bv.String()
+TeamFolderListResult._has_more_validator = bv.Boolean()
+TeamFolderListResult._all_field_names_ = set([
+    'team_folders',
+    'cursor',
+    'has_more',
+])
+TeamFolderListResult._all_fields_ = [
+    ('team_folders', TeamFolderListResult._team_folders_validator),
+    ('cursor', TeamFolderListResult._cursor_validator),
+    ('has_more', TeamFolderListResult._has_more_validator),
+]
 
 TeamFolderMetadata._team_folder_id_validator = common.SharedFolderId_validator
 TeamFolderMetadata._name_validator = bv.String()
@@ -14704,6 +15376,23 @@ TeamMembershipType._tagmap = {
 TeamMembershipType.full = TeamMembershipType('full')
 TeamMembershipType.limited = TeamMembershipType('limited')
 
+TokenGetAuthenticatedAdminError._mapping_not_found_validator = bv.Void()
+TokenGetAuthenticatedAdminError._admin_not_active_validator = bv.Void()
+TokenGetAuthenticatedAdminError._other_validator = bv.Void()
+TokenGetAuthenticatedAdminError._tagmap = {
+    'mapping_not_found': TokenGetAuthenticatedAdminError._mapping_not_found_validator,
+    'admin_not_active': TokenGetAuthenticatedAdminError._admin_not_active_validator,
+    'other': TokenGetAuthenticatedAdminError._other_validator,
+}
+
+TokenGetAuthenticatedAdminError.mapping_not_found = TokenGetAuthenticatedAdminError('mapping_not_found')
+TokenGetAuthenticatedAdminError.admin_not_active = TokenGetAuthenticatedAdminError('admin_not_active')
+TokenGetAuthenticatedAdminError.other = TokenGetAuthenticatedAdminError('other')
+
+TokenGetAuthenticatedAdminResult._admin_profile_validator = TeamMemberProfile_validator
+TokenGetAuthenticatedAdminResult._all_field_names_ = set(['admin_profile'])
+TokenGetAuthenticatedAdminResult._all_fields_ = [('admin_profile', TokenGetAuthenticatedAdminResult._admin_profile_validator)]
+
 UpdatePropertyTemplateArg._template_id_validator = properties.TemplateId_validator
 UpdatePropertyTemplateArg._name_validator = bv.Nullable(bv.String())
 UpdatePropertyTemplateArg._description_validator = bv.Nullable(bv.String())
@@ -14724,6 +15413,18 @@ UpdatePropertyTemplateArg._all_fields_ = [
 UpdatePropertyTemplateResult._template_id_validator = properties.TemplateId_validator
 UpdatePropertyTemplateResult._all_field_names_ = set(['template_id'])
 UpdatePropertyTemplateResult._all_fields_ = [('template_id', UpdatePropertyTemplateResult._template_id_validator)]
+
+UploadApiRateLimitValue._unlimited_validator = bv.Void()
+UploadApiRateLimitValue._limit_validator = bv.UInt32()
+UploadApiRateLimitValue._other_validator = bv.Void()
+UploadApiRateLimitValue._tagmap = {
+    'unlimited': UploadApiRateLimitValue._unlimited_validator,
+    'limit': UploadApiRateLimitValue._limit_validator,
+    'other': UploadApiRateLimitValue._other_validator,
+}
+
+UploadApiRateLimitValue.unlimited = UploadApiRateLimitValue('unlimited')
+UploadApiRateLimitValue.other = UploadApiRateLimitValue('other')
 
 UserSelectorArg._team_member_id_validator = team_common.TeamMemberId_validator
 UserSelectorArg._external_id_validator = team_common.MemberExternalId_validator
@@ -14785,6 +15486,15 @@ devices_revoke_device_session_batch = bb.Route(
     RevokeDeviceSessionBatchArg_validator,
     RevokeDeviceSessionBatchResult_validator,
     RevokeDeviceSessionBatchError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+features_get_values = bb.Route(
+    'features/get_values',
+    False,
+    FeaturesGetValuesBatchArg_validator,
+    FeaturesGetValuesBatchResult_validator,
+    FeaturesGetValuesBatchError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -15193,6 +15903,15 @@ team_folder_list = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+team_folder_list_continue = bb.Route(
+    'team_folder/list/continue',
+    False,
+    TeamFolderListContinueArg_validator,
+    TeamFolderListResult_validator,
+    TeamFolderListContinueError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 team_folder_permanently_delete = bb.Route(
     'team_folder/permanently_delete',
     False,
@@ -15211,6 +15930,15 @@ team_folder_rename = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+token_get_authenticated_admin = bb.Route(
+    'token/get_authenticated_admin',
+    False,
+    bv.Void(),
+    TokenGetAuthenticatedAdminResult_validator,
+    TokenGetAuthenticatedAdminError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 
 ROUTES = {
     'devices/list_member_devices': devices_list_member_devices,
@@ -15218,6 +15946,7 @@ ROUTES = {
     'devices/list_team_devices': devices_list_team_devices,
     'devices/revoke_device_session': devices_revoke_device_session,
     'devices/revoke_device_session_batch': devices_revoke_device_session_batch,
+    'features/get_values': features_get_values,
     'get_info': get_info,
     'groups/create': groups_create,
     'groups/delete': groups_delete,
@@ -15263,6 +15992,9 @@ ROUTES = {
     'team_folder/create': team_folder_create,
     'team_folder/get_info': team_folder_get_info,
     'team_folder/list': team_folder_list,
+    'team_folder/list/continue': team_folder_list_continue,
     'team_folder/permanently_delete': team_folder_permanently_delete,
     'team_folder/rename': team_folder_rename,
+    'token/get_authenticated_admin': token_get_authenticated_admin,
 }
+

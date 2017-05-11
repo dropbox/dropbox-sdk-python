@@ -25,6 +25,14 @@ SDK Documentation
    :special-members: __init__
    :undoc-members:
 
+:mod:`dropbox.auth` -- Auth
+============================================
+.. automodule:: dropbox.auth
+   :members:
+   :show-inheritance:
+   :special-members: __init__
+   :undoc-members:
+
 :mod:`dropbox.files` -- Files
 ============================================
 .. automodule:: dropbox.files
@@ -51,6 +59,14 @@ SDK Documentation
 :mod:`dropbox.team` -- Team
 ============================================
 .. automodule:: dropbox.team
+   :members:
+   :show-inheritance:
+   :special-members: __init__
+   :undoc-members:
+
+:mod:`dropbox.team_log` -- Team Log
+============================================
+.. automodule:: dropbox.team_log
    :members:
    :show-inheritance:
    :special-members: __init__

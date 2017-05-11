@@ -28,7 +28,7 @@ class AddMember(object):
     """
     :ivar permission_level: Permission for the user.
     :ivar member: User which should be added to the Paper doc. Specify only
-        email or Dropbox account id.
+        email address or Dropbox account ID.
     """
 
     __slots__ = [
@@ -78,8 +78,8 @@ class AddMember(object):
     @property
     def member(self):
         """
-        User which should be added to the Paper doc. Specify only email or
-        Dropbox account id.
+        User which should be added to the Paper doc. Specify only email address
+        or Dropbox account ID.
 
         :rtype: sharing.MemberSelector_validator
         """
@@ -108,6 +108,9 @@ class AddMember(object):
 AddMember_validator = bv.Struct(AddMember)
 
 class RefPaperDoc(object):
+    """
+    :ivar doc_id: The Paper doc ID.
+    """
 
     __slots__ = [
         '_doc_id_value',
@@ -126,6 +129,8 @@ class RefPaperDoc(object):
     @property
     def doc_id(self):
         """
+        The Paper doc ID.
+
         :rtype: str
         """
         if self._doc_id_present:
@@ -154,11 +159,11 @@ RefPaperDoc_validator = bv.Struct(RefPaperDoc)
 class AddPaperDocUser(RefPaperDoc):
     """
     :ivar members: User which should be added to the Paper doc. Specify only
-        email or Dropbox account id.
+        email address or Dropbox account ID.
     :ivar custom_message: A personal message that will be emailed to each
         successfully added member.
-    :ivar quiet: Clients should set this to true if no email shall be sent to
-        added users.
+    :ivar quiet: Clients should set this to true if no email message shall be
+        sent to added users.
     """
 
     __slots__ = [
@@ -194,8 +199,8 @@ class AddPaperDocUser(RefPaperDoc):
     @property
     def members(self):
         """
-        User which should be added to the Paper doc. Specify only email or
-        Dropbox account id.
+        User which should be added to the Paper doc. Specify only email address
+        or Dropbox account ID.
 
         :rtype: list of [AddMember]
         """
@@ -245,8 +250,8 @@ class AddPaperDocUser(RefPaperDoc):
     @property
     def quiet(self):
         """
-        Clients should set this to true if no email shall be sent to added
-        users.
+        Clients should set this to true if no email message shall be sent to
+        added users.
 
         :rtype: bool
         """
@@ -644,13 +649,13 @@ class DocSubscriptionLevel(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar default: No change e-mails unless you're the creator.
-    :ivar ignore: Ignored: Not shown in pad lists or activity and no email is
-        sent.
-    :ivar every: Subscribed: Shown in pad lists and activity and change e-mails
-        are sent.
+    :ivar default: No change email messages unless you're the creator.
+    :ivar ignore: Ignored: Not shown in pad lists or activity and no email
+        message is sent.
+    :ivar every: Subscribed: Shown in pad lists and activity and change email
+        messages are sent.
     :ivar no_email: Unsubscribed: Shown in pad lists, but not in activity and no
-        change e-mails are sent.
+        change email messages are sent.
     """
 
     _catch_all = None
@@ -753,7 +758,7 @@ class Folder(object):
     """
     Data structure representing a Paper folder.
 
-    :ivar id: Paper folder id. This id uniquely identifies the folder.
+    :ivar id: Paper folder ID. This ID uniquely identifies the folder.
     :ivar name: Paper folder name.
     """
 
@@ -781,7 +786,7 @@ class Folder(object):
     @property
     def id(self):
         """
-        Paper folder id. This id uniquely identifies the folder.
+        Paper folder ID. This ID uniquely identifies the folder.
 
         :rtype: str
         """
@@ -881,10 +886,10 @@ class FolderSubscriptionLevel(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar none: Not shown in activity, no e-mails.
-    :ivar activity_only: Shown in activity, no e-mails.
-    :ivar daily_emails: Shown in activity, daily e-mails.
-    :ivar weekly_emails: Shown in activity, weekly e-mails.
+    :ivar none: Not shown in activity, no email messages.
+    :ivar activity_only: Shown in activity, no email messages.
+    :ivar daily_emails: Shown in activity, daily email messages.
+    :ivar weekly_emails: Shown in activity, weekly email messages.
     """
 
     _catch_all = None
@@ -1027,7 +1032,7 @@ FoldersContainingPaperDoc_validator = bv.Struct(FoldersContainingPaperDoc)
 
 class InviteeInfoWithPermissionLevel(object):
     """
-    :ivar invitee: Email invited to the Paper doc.
+    :ivar invitee: Email address invited to the Paper doc.
     :ivar permission_level: Permission level for the invitee.
     """
 
@@ -1055,7 +1060,7 @@ class InviteeInfoWithPermissionLevel(object):
     @property
     def invitee(self):
         """
-        Email invited to the Paper doc.
+        Email address invited to the Paper doc.
 
         :rtype: sharing.InviteeInfo_validator
         """
@@ -1368,9 +1373,9 @@ class ListPaperDocsFilterBy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar docs_accessed: Fetches all Paper doc ids that the user has ever
+    :ivar docs_accessed: Fetches all Paper doc IDs that the user has ever
         accessed.
-    :ivar docs_created: Fetches only the Paper doc ids that the user has
+    :ivar docs_created: Fetches only the Paper doc IDs that the user has
         created.
     """
 
@@ -1413,7 +1418,7 @@ ListPaperDocsFilterBy_validator = bv.Union(ListPaperDocsFilterBy)
 
 class ListPaperDocsResponse(object):
     """
-    :ivar doc_ids: The list of Paper doc ids that can be used to access the
+    :ivar doc_ids: The list of Paper doc IDs that can be used to access the
         given Paper docs or supplied to other API methods. The list is sorted in
         the order specified by the initial call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
@@ -1459,7 +1464,7 @@ class ListPaperDocsResponse(object):
     @property
     def doc_ids(self):
         """
-        The list of Paper doc ids that can be used to access the given Paper
+        The list of Paper doc IDs that can be used to access the given Paper
         docs or supplied to other API methods. The list is sorted in the order
         specified by the initial call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
@@ -2443,7 +2448,7 @@ PaperDocExport_validator = bv.Struct(PaperDocExport)
 
 class PaperDocExportResult(object):
     """
-    :ivar owner: The Paper doc owner's email.
+    :ivar owner: The Paper doc owner's email address.
     :ivar title: The Paper doc title.
     :ivar revision: The Paper doc revision. Simply an ever increasing number.
     :ivar mime_type: MIME type of the export. This corresponds to
@@ -2488,7 +2493,7 @@ class PaperDocExportResult(object):
     @property
     def owner(self):
         """
-        The Paper doc owner's email.
+        The Paper doc owner's email address.
 
         :rtype: str
         """
@@ -2691,7 +2696,7 @@ PaperDocSharingPolicy_validator = bv.Struct(PaperDocSharingPolicy)
 class RemovePaperDocUser(RefPaperDoc):
     """
     :ivar member: User which should be removed from the Paper doc. Specify only
-        email or Dropbox account id.
+        email address or Dropbox account ID.
     """
 
     __slots__ = [
@@ -2713,8 +2718,8 @@ class RemovePaperDocUser(RefPaperDoc):
     @property
     def member(self):
         """
-        User which should be removed from the Paper doc. Specify only email or
-        Dropbox account id.
+        User which should be removed from the Paper doc. Specify only email
+        address or Dropbox account ID.
 
         :rtype: sharing.MemberSelector_validator
         """
@@ -3040,7 +3045,7 @@ class UserOnPaperDocFilter(bb.Union):
 
 UserOnPaperDocFilter_validator = bv.Union(UserOnPaperDocFilter)
 
-# Paper doc id.
+# Paper doc ID.
 PaperDocId_validator = bv.String()
 AddMember._permission_level_validator = PaperDocPermissionLevel_validator
 AddMember._member_validator = sharing.MemberSelector_validator
@@ -3643,3 +3648,4 @@ ROUTES = {
     'docs/users/list/continue': docs_users_list_continue,
     'docs/users/remove': docs_users_remove,
 }
+
