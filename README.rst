@@ -1,12 +1,12 @@
 Dropbox for Python
 ==================
 
-.. image:: https://travis-ci.org/dropbox/dropbox-sdk-python.svg?branch=master
+.. image:: https://travis-ci.org/dropbox/dropbox-sdk-python.svg?branch=v7.3.0
     :target: https://travis-ci.org/dropbox/dropbox-sdk-python
 
-.. image:: https://readthedocs.org/projects/dropbox-sdk-python/badge/?version=latest
-    :target: https://dropbox-sdk-python.readthedocs.org/en/latest/
-    :alt: [Latest Documentation]
+.. image:: https://readthedocs.org/projects/dropbox-sdk-python/badge/?version=stable
+    :target: https://dropbox-sdk-python.readthedocs.org/en/stable/
+    :alt: [Latest Release Documentation]
 
 .. image:: https://img.shields.io/pypi/v/dropbox.svg
     :target: https://pypi.python.org/pypi/dropbox
