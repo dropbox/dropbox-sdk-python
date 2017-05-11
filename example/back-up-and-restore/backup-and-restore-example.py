@@ -58,7 +58,7 @@ def restore(rev=None):
 def select_revision():
     # Get the revisions for a file (and sort by the datetime object, "server_modified")
     print("Finding available revisions on Dropbox...")
-    entries = dbx.files_list_revisions(BACKUPPATH, limit=30).entries  # pylint: disable=no-member
+    entries = dbx.files_list_revisions(BACKUPPATH, limit=30).entries
     revisions = sorted(entries, key=lambda entry: entry.server_modified)
 
     for revision in revisions:

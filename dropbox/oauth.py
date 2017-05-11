@@ -207,9 +207,12 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             error messages; this setting tells the server which locale to use.
             By default, the server uses "en_US".
         """
-        super(DropboxOAuth2FlowNoRedirect, self).__init__(consumer_key,
-                                                          consumer_secret,
-                                                          locale)
+        # pylint: disable=useless-super-delegation
+        super(DropboxOAuth2FlowNoRedirect, self).__init__(
+            consumer_key,
+            consumer_secret,
+            locale,
+        )
 
     def start(self):
         """

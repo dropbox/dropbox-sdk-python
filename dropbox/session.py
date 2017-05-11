@@ -13,7 +13,7 @@ _TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.cr
 # TODO(kelkabany): We probably only want to instantiate this once so that even
 # if multiple Dropbox objects are instantiated, they all share the same pool.
 class _SSLAdapter(HTTPAdapter):
-    def init_poolmanager(self, connections, maxsize, block=False):
+    def init_poolmanager(self, connections, maxsize, block=False):  # noqa: E501; pylint: disable=arguments-differ
         self.poolmanager = PoolManager(num_pools=connections,
                                        maxsize=maxsize,
                                        block=block,

@@ -209,7 +209,7 @@ class RESTClientObject(object):
 
         # Handle StringIO/BytesIO instances, because urllib3 doesn't.
         if hasattr(body, 'getvalue'):
-            body = body.getvalue()  # pylint: disable=no-member
+            body = body.getvalue()
 
         # Reject any headers containing newlines; the error from the server isn't pretty.
         for key, value in headers.items():

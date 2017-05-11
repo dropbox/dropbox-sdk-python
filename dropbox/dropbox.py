@@ -4,7 +4,9 @@ __all__ = [
     'create_session',
 ]
 
-__version__ = '7.3.0'
+# This should always be 0.0.0 in master. Only update this after tagging
+# before release.
+__version__ = '0.0.0'
 
 import contextlib
 import json
@@ -429,7 +431,7 @@ class _DropboxTransport(object):
             if r.headers.get('content-type') == 'application/json':
                 err = stone_serializers.json_compat_obj_decode(
                     RateLimitError_validator, r.json()['error'])
-                retry_after = err.retry_after  # pylint: disable=no-member
+                retry_after = err.retry_after
             else:
                 retry_after_str = r.headers.get('retry-after')
                 if retry_after_str is not None:
