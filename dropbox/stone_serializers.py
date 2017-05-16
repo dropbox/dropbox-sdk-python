@@ -643,13 +643,17 @@ def _decode_union_dict(data_type, obj, alias_validators, strict, for_msgpack):
         nullable = False
 
     if isinstance(val_data_type, bv.Void):
-        if tag in obj:
-            if obj[tag] is not None:
-                raise bv.ValidationError('expected null, got %s' %
-                                         bv.generic_type_name(obj[tag]))
-        for key in obj:
-            if key != tag and key != '.tag':
-                raise bv.ValidationError("unexpected key '%s'" % key)
+        if strict:
+            # In strict mode, ensure there are no extraneous keys set. In
+            # non-strict mode, we accept that other keys may be set due to a
+            # change of the void type to another.
+            if tag in obj:
+                if obj[tag] is not None:
+                    raise bv.ValidationError('expected null, got %s' %
+                                             bv.generic_type_name(obj[tag]))
+            for key in obj:
+                if key != tag and key != '.tag':
+                    raise bv.ValidationError("unexpected key '%s'" % key)
         val = None
     elif isinstance(val_data_type,
                     (bv.Primitive, bv.List, bv.StructTree, bv.Union)):
