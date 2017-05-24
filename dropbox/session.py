@@ -52,7 +52,7 @@ else:
     url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
     url_encode = urllib.parse.urlencode  # pylint: disable=no-member,useless-suppression
 
-DOMAIN = os.environ.get('DROPBOX_DOMAIN', '.dropboxapi.com')
+DOMAIN = os.environ.get('DROPBOX_DOMAIN', '.dropbox.com')
 
 # Default short hostname for RPC-style routes.
 HOST_API = 'api'
