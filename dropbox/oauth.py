@@ -15,7 +15,11 @@ import os
 import six
 import urllib
 
-from .session import pinned_session
+from .session import (
+    API_HOST,
+    WEB_HOST,
+    pinned_session,
+)
 
 if six.PY3:
     url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
@@ -92,8 +96,6 @@ class DropboxOAuth2FlowBase(object):
         self.locale = locale
         self.requests_session = pinned_session()
 
-        self._host = os.environ.get('DROPBOX_WEB_HOST', 'www.dropbox.com')
-
     def _get_authorize_url(self, redirect_uri, state):
         params = dict(response_type='code',
                       client_id=self.consumer_key)
@@ -102,7 +104,7 @@ class DropboxOAuth2FlowBase(object):
         if state is not None:
             params['state'] = state
 
-        return self.build_url('/oauth2/authorize', params)
+        return self.build_url('/oauth2/authorize', params, WEB_HOST)
 
     def _finish(self, code, redirect_uri):
         url = self.build_url('/oauth2/token')
@@ -155,7 +157,7 @@ class DropboxOAuth2FlowBase(object):
         else:
             return target_path
 
-    def build_url(self, target, params=None):
+    def build_url(self, target, params=None, host=API_HOST):
         """Build an API URL.
 
         This method adds scheme and hostname to the path
@@ -166,7 +168,7 @@ class DropboxOAuth2FlowBase(object):
         :return: The full API URL.
         :rtype: str
         """
-        return "https://%s%s" % (self._host, self.build_path(target, params))
+        return "https://%s%s" % (host, self.build_path(target, params))
 
 
 class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
