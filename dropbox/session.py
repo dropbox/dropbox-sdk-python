@@ -4,7 +4,7 @@ import ssl
 
 import requests
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.poolmanager import PoolManager
+from urllib3.poolmanager import PoolManager
 
 
 _TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
@@ -52,7 +52,11 @@ else:
     url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
     url_encode = urllib.parse.urlencode  # pylint: disable=no-member,useless-suppression
 
-DOMAIN = os.environ.get('DROPBOX_DOMAIN', '.dropboxapi.com')
+API_DOMAIN = os.environ.get('DROPBOX_API_DOMAIN',
+    os.environ.get('DROPBOX_DOMAIN', '.dropboxapi.com'))
+
+WEB_DOMAIN = os.environ.get('DROPBOX_WEB_DOMAIN',
+    os.environ.get('DROPBOX_DOMAIN', '.dropbox.com'))
 
 # Default short hostname for RPC-style routes.
 HOST_API = 'api'
@@ -66,10 +70,10 @@ HOST_NOTIFY = 'notify'
 # Default short hostname for the Drobox website.
 HOST_WWW = 'www'
 
-API_HOST = os.environ.get('DROPBOX_API_HOST', HOST_API + DOMAIN)
-API_CONTENT_HOST = os.environ.get('DROPBOX_API_CONTENT_HOST', HOST_CONTENT + DOMAIN)
-API_NOTIFICATION_HOST = os.environ.get('DROPBOX_API_NOTIFY_HOST', HOST_NOTIFY + DOMAIN)
-WEB_HOST = os.environ.get('DROPBOX_WEB_HOST', HOST_WWW + DOMAIN)
+API_HOST = os.environ.get('DROPBOX_API_HOST', HOST_API + API_DOMAIN)
+API_CONTENT_HOST = os.environ.get('DROPBOX_API_CONTENT_HOST', HOST_CONTENT + API_DOMAIN)
+API_NOTIFICATION_HOST = os.environ.get('DROPBOX_API_NOTIFY_HOST', HOST_NOTIFY + API_DOMAIN)
+WEB_HOST = os.environ.get('DROPBOX_WEB_HOST', HOST_WWW + WEB_DOMAIN)
 
 class OAuthToken(object):
     """

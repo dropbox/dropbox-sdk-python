@@ -7,6 +7,8 @@ import functools
 import os
 import posixpath
 import random
+import re
+import six
 import string
 import sys
 import threading
@@ -19,8 +21,10 @@ except ImportError:
 
 from dropbox import (
     Dropbox,
+    DropboxOAuth2Flow,
     DropboxTeam,
     client,
+    session,
 )
 from dropbox.exceptions import (
     ApiError,
@@ -65,6 +69,25 @@ INVALID_TOKEN = 'z' * 62
 DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
 class TestDropbox(unittest.TestCase):
+
+    def test_default_oauth2_urls(self):
+        flow_obj = DropboxOAuth2Flow('dummy_app_key', 'dummy_app_secret',
+            'http://localhost/dummy', 'dummy_session', 'dbx-auth-csrf-token')
+
+        six.assertRegex(
+            flow_obj._get_authorize_url('http://localhost/redirect', 'state'),
+            r'^https://{}/oauth2/authorize\?'.format(re.escape(session.WEB_HOST)),
+        )
+
+        self.assertEqual(
+            flow_obj.build_url('/oauth2/authorize'),
+            'https://{}/oauth2/authorize'.format(session.API_HOST),
+        )
+
+        self.assertEqual(
+            flow_obj.build_url('/oauth2/authorize', host=session.WEB_HOST),
+            'https://{}/oauth2/authorize'.format(session.WEB_HOST),
+        )
 
     def test_bad_auth(self):
         # Test malformed token
