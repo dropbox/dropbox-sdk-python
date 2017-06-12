@@ -4030,6 +4030,8 @@ class ListRevisionsResult(object):
     """
 
     __slots__ = [
+        '_server_deleted_value',
+        '_server_deleted_present',
         '_is_deleted_value',
         '_is_deleted_present',
         '_entries_value',
@@ -4043,6 +4045,8 @@ class ListRevisionsResult(object):
                  entries=None):
         self._is_deleted_value = None
         self._is_deleted_present = False
+        self._server_deleted_value = None
+        self._server_deleted_present = False
         self._entries_value = None
         self._entries_present = False
         if is_deleted is not None:
@@ -4074,6 +4078,29 @@ class ListRevisionsResult(object):
         self._is_deleted_present = False
 
     @property
+    def server_deleted(self):
+        """
+        Datetime when file was deleted
+
+        :rtype: datetime.datetime
+        """
+        if self._server_deleted_present:
+            return self._server_deleted_value
+        else:
+            return None
+
+    @server_deleted.setter
+    def server_deleted(self, val):
+        val = self._server_deleted_validator.validate(val)
+        self._server_deleted_value = val
+        self._server_deleted_present = True
+
+    @server_deleted.deleter
+    def server_deleted(self):
+        self._server_deleted_value = None
+        self._server_deleted_present = False
+
+    @property
     def entries(self):
         """
         The revisions for the file. Only non-delete revisions will show up here.
@@ -4097,8 +4124,9 @@ class ListRevisionsResult(object):
         self._entries_present = False
 
     def __repr__(self):
-        return 'ListRevisionsResult(is_deleted={!r}, entries={!r})'.format(
+        return 'ListRevisionsResult(server_deleted={!r}, is_deleted={!r}, entries={!r})'.format(
             self._is_deleted_value,
+            self._server_deleted_value,
             self._entries_value,
         )
 
@@ -9270,13 +9298,16 @@ ListRevisionsError._tagmap = {
 ListRevisionsError.other = ListRevisionsError('other')
 
 ListRevisionsResult._is_deleted_validator = bv.Boolean()
+ListRevisionsResult._server_deleted_validator = common.DropboxTimestamp_validator
 ListRevisionsResult._entries_validator = bv.List(FileMetadata_validator)
 ListRevisionsResult._all_field_names_ = set([
     'is_deleted',
+    'server_deleted',
     'entries',
 ])
 ListRevisionsResult._all_fields_ = [
     ('is_deleted', ListRevisionsResult._is_deleted_validator),
+    ('server_deleted', ListRevisionsResult._server_deleted_validator),
     ('entries', ListRevisionsResult._entries_validator),
 ]
 
