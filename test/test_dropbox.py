@@ -12,21 +12,32 @@ import string
 import sys
 import unittest
 
+_MYPY = False
+if _MYPY:
+    import typing  # noqa: F401 # pylint: disable=import-error,unused-import,useless-suppression
+
 try:
     from io import BytesIO
 except ImportError:
-    from StringIO import StringIO as BytesIO
+    from StringIO import StringIO as BytesIO  # type: ignore
 
 from dropbox import (
     Dropbox,
     DropboxOAuth2Flow,
     DropboxTeam,
     session,
+    stone_serializers,
 )
+from dropbox.common import (
+    PathRoot,
+    PathRoot_validator,
+)
+from dropbox.dropbox import PATH_ROOT_HEADER
 from dropbox.exceptions import (
     ApiError,
     AuthError,
     BadInputError,
+    PathRootError,
 )
 from dropbox.files import (
     ListFolderError,
@@ -136,6 +147,47 @@ class TestDropbox(unittest.TestCase):
             # Only test assuming a member if there is a member
             team_member_id = r.members[0].profile.team_member_id
             dbxt.as_user(team_member_id).files_list_folder('')
+
+    @dbx_from_env
+    def test_path_root(
+            self,
+            dbx,  # type: Dropbox
+    ):  # type: (...) -> None
+        dbx_none = dbx.with_path_root()
+        self.assertEqual(dbx_none._headers, dbx._headers)
+        for val in (
+            PathRoot.home,
+            PathRoot.member_home,
+            PathRoot.namespace_id("123"),
+            PathRoot.team("321"),
+            PathRoot.user_home,
+        ):
+            dbx_new = dbx.with_path_root(val)
+            self.assertIsNot(dbx_new, dbx)
+            expected = stone_serializers.json_encode(PathRoot_validator, val)
+            self.assertEqual(dbx_new._headers.get(PATH_ROOT_HEADER), expected)
+
+    @dbx_from_env
+    def test_path_root_err(
+            self,
+            dbx,  # type: Dropbox
+    ):  # type: (...) -> None
+        dbx.files_list_folder('')
+        dbx_new = dbx.with_path_root(PathRoot.team("123"))
+        with self.assertRaises(PathRootError) as cm:
+            dbx_new.files_list_folder('')
+        exc = cm.exception
+        self.assertTrue(exc.error.is_invalid())
+
+    def test_path_root_headers(self):
+        headers = {}
+        orig_path_root = PathRoot.team("123")
+        Dropbox.set_path_root_header(headers, orig_path_root)
+        parsed_path_root = stone_serializers.json_decode(PathRoot_validator,
+            headers[PATH_ROOT_HEADER])
+        self.assertEqual(orig_path_root, parsed_path_root)
+        Dropbox.clear_path_root_header(headers)
+        self.assertNotIn(PATH_ROOT_HEADER, headers)
 
 if __name__ == '__main__':
     unittest.main()
