@@ -408,6 +408,26 @@ class List(Composite):
         return [self.item_validator.validate(item) for item in val]
 
 
+class Map(Composite):
+    """Assumes map keys and values are homogeneous with respect to types."""
+
+    def __init__(self, key_validator, value_validator):
+        """
+        Every Map key/value pair will be validated with item_validator.
+        key validators must be a subclass of a String validator
+        """
+        self.key_validator = key_validator
+        self.value_validator = value_validator
+
+    def validate(self, val):
+        if not isinstance(val, dict):
+            raise ValidationError('%r is not a valid dict' % val)
+        return {
+            self.key_validator.validate(key):
+                self.value_validator.validate(value) for key, value in val.items()
+        }
+
+
 class Struct(Composite):
 
     def __init__(self, definition):

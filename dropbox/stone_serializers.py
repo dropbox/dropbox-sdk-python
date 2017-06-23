@@ -106,6 +106,10 @@ class StoneSerializerBase(StoneEncoderInterface):
             # serialization
             validate_f = validator.validate
             encode_f = self.encode_list
+        elif isinstance(validator, bv.Map):
+            # Also validate maps during serialization because they are also mutable
+            validate_f = validator.validate
+            encode_f = self.encode_map
         elif isinstance(validator, bv.Nullable):
             validate_f = validator.validate
             encode_f = self.encode_nullable
@@ -135,6 +139,14 @@ class StoneSerializerBase(StoneEncoderInterface):
         # type: (bv.List, typing.Any) -> typing.Any
         """
         Callback for serializing a ``stone_validators.List``. Arguments
+        have the same semantics as with the ``encode`` method.
+        """
+        raise NotImplementedError
+
+    def encode_map(self, validator, value):
+        # type: (bv.Map, typing.Any) -> typing.Any
+        """
+        Callback for serializing a ``stone_validators.Map``. Arguments
         have the same semantics as with the ``encode`` method.
         """
         raise NotImplementedError
@@ -221,6 +233,15 @@ class StoneToPythonPrimitiveSerializer(StoneSerializerBase):
 
         return [self.encode_sub(validator.item_validator, value_item) for value_item in
                 validated_value]
+
+    def encode_map(self, validator, value):
+        validated_value = validator.validate(value)
+
+        return {
+            self.encode_sub(validator.key_validator, key):
+                self.encode_sub(validator.value_validator, value) for
+            key, value in validated_value.items()
+        }
 
     def encode_nullable(self, validator, value):
         if value is None:
@@ -461,6 +482,7 @@ def json_decode(
             - Float -> float
             - Integer -> long
             - List -> list
+            - Map -> dict
             - Nullable -> None or its wrapped type.
             - String -> unicode (PY2) or str (PY3)
             - Struct -> An instance of its definition attribute.
@@ -521,6 +543,9 @@ def _json_compat_obj_decode_helper(
                 data_type, obj, alias_validators, strict, for_msgpack)
     elif isinstance(data_type, bv.List):
         return _decode_list(
+            data_type, obj, alias_validators, strict, old_style, for_msgpack)
+    elif isinstance(data_type, bv.Map):
+        return _decode_map(
             data_type, obj, alias_validators, strict, old_style, for_msgpack)
     elif isinstance(data_type, bv.Nullable):
         return _decode_nullable(
@@ -656,7 +681,7 @@ def _decode_union_dict(data_type, obj, alias_validators, strict, for_msgpack):
                     raise bv.ValidationError("unexpected key '%s'" % key)
         val = None
     elif isinstance(val_data_type,
-                    (bv.Primitive, bv.List, bv.StructTree, bv.Union)):
+                    (bv.Primitive, bv.List, bv.StructTree, bv.Union, bv.Map)):
         if tag in obj:
             raw_val = obj[tag]
             try:
@@ -810,6 +835,26 @@ def _decode_list(
             data_type.item_validator, item, alias_validators, strict,
             old_style, for_msgpack)
         for item in obj]
+
+
+def _decode_map(
+        data_type, obj, alias_validators, strict, old_style, for_msgpack):
+    """
+    The data_type argument must be a Map.
+    See json_compat_obj_decode() for argument descriptions.
+    """
+    if not isinstance(obj, dict):
+        raise bv.ValidationError(
+            'expected dict, got %s' % bv.generic_type_name(obj))
+    return {
+        _json_compat_obj_decode_helper(
+            data_type.key_validator, key, alias_validators, strict,
+            old_style, for_msgpack):
+        _json_compat_obj_decode_helper(
+            data_type.value_validator, value, alias_validators, strict,
+            old_style, for_msgpack)
+        for key, value in obj.items()
+    }
 
 
 def _decode_nullable(
