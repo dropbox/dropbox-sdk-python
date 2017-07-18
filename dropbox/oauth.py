@@ -120,14 +120,14 @@ class DropboxOAuth2FlowBase(object):
         resp.raise_for_status()
 
         d = resp.json()
-        
-        access_token = d['access_token']
-        uid = d['uid']
+
         if 'team_id' in d:
             account_id = d['team_id']
         else:
             account_id = d['account_id']
 
+        access_token = d['access_token']
+        uid = d['uid']
 
         return OAuth2FlowNoRedirectResult(
             access_token,
