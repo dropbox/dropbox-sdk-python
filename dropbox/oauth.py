@@ -120,11 +120,19 @@ class DropboxOAuth2FlowBase(object):
         resp.raise_for_status()
 
         d = resp.json()
+        
+        access_token = d['access_token']
+        uid = d['uid']
+        if 'team_id' in d:
+            account_id = d['team_id']
+        else:
+            account_id = d['account_id']
+
 
         return OAuth2FlowNoRedirectResult(
-            d['access_token'],
-            d['account_id'],
-            d['uid'])
+            access_token,
+            account_id,
+            uid)
 
     def build_path(self, target, params=None):
         """Build the path component for an API URL.
