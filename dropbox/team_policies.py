@@ -17,9 +17,9 @@ class EmmState(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Emm token is disabled
-    :ivar optional: Emm token is optional
-    :ivar required: Emm token is required
+    :ivar disabled: Emm token is disabled.
+    :ivar optional: Emm token is optional.
+    :ivar required: Emm token is required.
     """
 
     _catch_all = 'other'
@@ -68,6 +68,53 @@ class EmmState(bb.Union):
         return 'EmmState(%r, %r)' % (self._tag, self._value)
 
 EmmState_validator = bv.Union(EmmState)
+
+class OfficeAddInPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar disabled: Office Add-In is disabled.
+    :ivar enabled: Office Add-In is enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'OfficeAddInPolicy(%r, %r)' % (self._tag, self._value)
+
+OfficeAddInPolicy_validator = bv.Union(OfficeAddInPolicy)
 
 class SharedFolderJoinPolicy(bb.Union):
     """
@@ -247,6 +294,8 @@ class TeamMemberPolicies(object):
         manage and apply restrictions upon the team's Dropbox usage on mobile
         devices. This is a new feature and in the future we'll be adding more
         new fields and additional documentation.
+    :ivar office_addin: The admin policy around the Dropbox Office Add-In for
+        this team.
     """
 
     __slots__ = [
@@ -254,21 +303,28 @@ class TeamMemberPolicies(object):
         '_sharing_present',
         '_emm_state_value',
         '_emm_state_present',
+        '_office_addin_value',
+        '_office_addin_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  sharing=None,
-                 emm_state=None):
+                 emm_state=None,
+                 office_addin=None):
         self._sharing_value = None
         self._sharing_present = False
         self._emm_state_value = None
         self._emm_state_present = False
+        self._office_addin_value = None
+        self._office_addin_present = False
         if sharing is not None:
             self.sharing = sharing
         if emm_state is not None:
             self.emm_state = emm_state
+        if office_addin is not None:
+            self.office_addin = office_addin
 
     @property
     def sharing(self):
@@ -321,10 +377,34 @@ class TeamMemberPolicies(object):
         self._emm_state_value = None
         self._emm_state_present = False
 
+    @property
+    def office_addin(self):
+        """
+        The admin policy around the Dropbox Office Add-In for this team.
+
+        :rtype: OfficeAddInPolicy
+        """
+        if self._office_addin_present:
+            return self._office_addin_value
+        else:
+            raise AttributeError("missing required field 'office_addin'")
+
+    @office_addin.setter
+    def office_addin(self, val):
+        self._office_addin_validator.validate_type_only(val)
+        self._office_addin_value = val
+        self._office_addin_present = True
+
+    @office_addin.deleter
+    def office_addin(self):
+        self._office_addin_value = None
+        self._office_addin_present = False
+
     def __repr__(self):
-        return 'TeamMemberPolicies(sharing={!r}, emm_state={!r})'.format(
+        return 'TeamMemberPolicies(sharing={!r}, emm_state={!r}, office_addin={!r})'.format(
             self._sharing_value,
             self._emm_state_value,
+            self._office_addin_value,
         )
 
 TeamMemberPolicies_validator = bv.Struct(TeamMemberPolicies)
@@ -462,6 +542,19 @@ EmmState.optional = EmmState('optional')
 EmmState.required = EmmState('required')
 EmmState.other = EmmState('other')
 
+OfficeAddInPolicy._disabled_validator = bv.Void()
+OfficeAddInPolicy._enabled_validator = bv.Void()
+OfficeAddInPolicy._other_validator = bv.Void()
+OfficeAddInPolicy._tagmap = {
+    'disabled': OfficeAddInPolicy._disabled_validator,
+    'enabled': OfficeAddInPolicy._enabled_validator,
+    'other': OfficeAddInPolicy._other_validator,
+}
+
+OfficeAddInPolicy.disabled = OfficeAddInPolicy('disabled')
+OfficeAddInPolicy.enabled = OfficeAddInPolicy('enabled')
+OfficeAddInPolicy.other = OfficeAddInPolicy('other')
+
 SharedFolderJoinPolicy._from_team_only_validator = bv.Void()
 SharedFolderJoinPolicy._from_anyone_validator = bv.Void()
 SharedFolderJoinPolicy._other_validator = bv.Void()
@@ -506,13 +599,16 @@ SharedLinkCreatePolicy.other = SharedLinkCreatePolicy('other')
 
 TeamMemberPolicies._sharing_validator = TeamSharingPolicies_validator
 TeamMemberPolicies._emm_state_validator = EmmState_validator
+TeamMemberPolicies._office_addin_validator = OfficeAddInPolicy_validator
 TeamMemberPolicies._all_field_names_ = set([
     'sharing',
     'emm_state',
+    'office_addin',
 ])
 TeamMemberPolicies._all_fields_ = [
     ('sharing', TeamMemberPolicies._sharing_validator),
     ('emm_state', TeamMemberPolicies._emm_state_validator),
+    ('office_addin', TeamMemberPolicies._office_addin_validator),
 ]
 
 TeamSharingPolicies._shared_folder_member_policy_validator = SharedFolderMemberPolicy_validator

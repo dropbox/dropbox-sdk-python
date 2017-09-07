@@ -724,11 +724,15 @@ class FullTeam(Team):
     Detailed information about a team.
 
     :ivar sharing_policies: Team policies governing sharing.
+    :ivar office_addin_policy: Team policy governing the use of the Office
+        Add-In.
     """
 
     __slots__ = [
         '_sharing_policies_value',
         '_sharing_policies_present',
+        '_office_addin_policy_value',
+        '_office_addin_policy_present',
     ]
 
     _has_required_fields = True
@@ -736,13 +740,18 @@ class FullTeam(Team):
     def __init__(self,
                  id=None,
                  name=None,
-                 sharing_policies=None):
+                 sharing_policies=None,
+                 office_addin_policy=None):
         super(FullTeam, self).__init__(id,
                                        name)
         self._sharing_policies_value = None
         self._sharing_policies_present = False
+        self._office_addin_policy_value = None
+        self._office_addin_policy_present = False
         if sharing_policies is not None:
             self.sharing_policies = sharing_policies
+        if office_addin_policy is not None:
+            self.office_addin_policy = office_addin_policy
 
     @property
     def sharing_policies(self):
@@ -767,11 +776,35 @@ class FullTeam(Team):
         self._sharing_policies_value = None
         self._sharing_policies_present = False
 
+    @property
+    def office_addin_policy(self):
+        """
+        Team policy governing the use of the Office Add-In.
+
+        :rtype: team_policies.OfficeAddInPolicy_validator
+        """
+        if self._office_addin_policy_present:
+            return self._office_addin_policy_value
+        else:
+            raise AttributeError("missing required field 'office_addin_policy'")
+
+    @office_addin_policy.setter
+    def office_addin_policy(self, val):
+        self._office_addin_policy_validator.validate_type_only(val)
+        self._office_addin_policy_value = val
+        self._office_addin_policy_present = True
+
+    @office_addin_policy.deleter
+    def office_addin_policy(self):
+        self._office_addin_policy_value = None
+        self._office_addin_policy_present = False
+
     def __repr__(self):
-        return 'FullTeam(id={!r}, name={!r}, sharing_policies={!r})'.format(
+        return 'FullTeam(id={!r}, name={!r}, sharing_policies={!r}, office_addin_policy={!r})'.format(
             self._id_value,
             self._name_value,
             self._sharing_policies_value,
+            self._office_addin_policy_value,
         )
 
 FullTeam_validator = bv.Struct(FullTeam)
@@ -1537,8 +1570,15 @@ Team._all_fields_ = [
 ]
 
 FullTeam._sharing_policies_validator = team_policies.TeamSharingPolicies_validator
-FullTeam._all_field_names_ = Team._all_field_names_.union(set(['sharing_policies']))
-FullTeam._all_fields_ = Team._all_fields_ + [('sharing_policies', FullTeam._sharing_policies_validator)]
+FullTeam._office_addin_policy_validator = team_policies.OfficeAddInPolicy_validator
+FullTeam._all_field_names_ = Team._all_field_names_.union(set([
+    'sharing_policies',
+    'office_addin_policy',
+]))
+FullTeam._all_fields_ = Team._all_fields_ + [
+    ('sharing_policies', FullTeam._sharing_policies_validator),
+    ('office_addin_policy', FullTeam._office_addin_policy_validator),
+]
 
 GetAccountArg._account_id_validator = users_common.AccountId_validator
 GetAccountArg._all_field_names_ = set(['account_id'])

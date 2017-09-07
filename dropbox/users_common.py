@@ -3,7 +3,7 @@
 # flake8: noqa
 # pylint: skip-file
 """
-This namespace contains common data types used within the users namespace
+This namespace contains common data types used within the users namespace.
 """
 
 try:

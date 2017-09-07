@@ -825,6 +825,71 @@ class CreateFolderError(bb.Union):
 
 CreateFolderError_validator = bv.Union(CreateFolderError)
 
+class FileOpsResult(object):
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return 'FileOpsResult()'
+
+FileOpsResult_validator = bv.Struct(FileOpsResult)
+
+class CreateFolderResult(FileOpsResult):
+    """
+    :ivar metadata: Metadata of the created folder.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None):
+        super(CreateFolderResult, self).__init__()
+        self._metadata_value = None
+        self._metadata_present = False
+        if metadata is not None:
+            self.metadata = metadata
+
+    @property
+    def metadata(self):
+        """
+        Metadata of the created folder.
+
+        :rtype: FolderMetadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    def __repr__(self):
+        return 'CreateFolderResult(metadata={!r})'.format(
+            self._metadata_value,
+        )
+
+CreateFolderResult_validator = bv.Struct(CreateFolderResult)
+
 class DeleteArg(object):
     """
     :ivar path: Path in the user's Dropbox to delete.
@@ -924,8 +989,10 @@ class DeleteBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar too_many_write_operations: There are too many write operations in
-        user's Dropbox. Please retry this request.
+    :ivar too_many_write_operations: Use
+        ``DeleteError.too_many_write_operations``.
+        :meth:`dropbox.dropbox.Dropbox.files_delete_batch` now provides smaller
+        granularity about which entry has failed because of this.
     """
 
     _catch_all = 'other'
@@ -1100,7 +1167,7 @@ class DeleteBatchLaunch(async.LaunchResultBase):
 
 DeleteBatchLaunch_validator = bv.Union(DeleteBatchLaunch)
 
-class DeleteBatchResult(object):
+class DeleteBatchResult(FileOpsResult):
 
     __slots__ = [
         '_entries_value',
@@ -1111,6 +1178,7 @@ class DeleteBatchResult(object):
 
     def __init__(self,
                  entries=None):
+        super(DeleteBatchResult, self).__init__()
         self._entries_value = None
         self._entries_present = False
         if entries is not None:
@@ -1144,6 +1212,55 @@ class DeleteBatchResult(object):
 
 DeleteBatchResult_validator = bv.Struct(DeleteBatchResult)
 
+class DeleteBatchResultData(object):
+    """
+    :ivar metadata: Metadata of the deleted object.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        if metadata is not None:
+            self.metadata = metadata
+
+    @property
+    def metadata(self):
+        """
+        Metadata of the deleted object.
+
+        :rtype: Metadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    def __repr__(self):
+        return 'DeleteBatchResultData(metadata={!r})'.format(
+            self._metadata_value,
+        )
+
+DeleteBatchResultData_validator = bv.Struct(DeleteBatchResultData)
+
 class DeleteBatchResultEntry(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -1159,7 +1276,7 @@ class DeleteBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param DeleteResult val:
+        :param DeleteBatchResultData val:
         :rtype: DeleteBatchResultEntry
         """
         return cls('success', val)
@@ -1195,7 +1312,7 @@ class DeleteBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_success` is true.
 
-        :rtype: DeleteResult
+        :rtype: DeleteBatchResultData
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -1221,9 +1338,18 @@ class DeleteError(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar too_many_write_operations: There are too many write operations in
+        user's Dropbox. Please retry this request.
+    :ivar too_many_files: There are too many files in one request. Please retry
+        with fewer files.
     """
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    too_many_write_operations = None
+    # Attribute is overwritten below the class definition
+    too_many_files = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -1265,6 +1391,22 @@ class DeleteError(bb.Union):
         """
         return self._tag == 'path_write'
 
+    def is_too_many_write_operations(self):
+        """
+        Check if the union tag is ``too_many_write_operations``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_write_operations'
+
+    def is_too_many_files(self):
+        """
+        Check if the union tag is ``too_many_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_files'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -1298,7 +1440,10 @@ class DeleteError(bb.Union):
 
 DeleteError_validator = bv.Union(DeleteError)
 
-class DeleteResult(object):
+class DeleteResult(FileOpsResult):
+    """
+    :ivar metadata: Metadata of the deleted object.
+    """
 
     __slots__ = [
         '_metadata_value',
@@ -1309,6 +1454,7 @@ class DeleteResult(object):
 
     def __init__(self,
                  metadata=None):
+        super(DeleteResult, self).__init__()
         self._metadata_value = None
         self._metadata_present = False
         if metadata is not None:
@@ -1317,6 +1463,8 @@ class DeleteResult(object):
     @property
     def metadata(self):
         """
+        Metadata of the deleted object.
+
         :rtype: Metadata
         """
         if self._metadata_present:
@@ -1358,7 +1506,7 @@ class Metadata(object):
         casing. Changes to only the casing of paths won't be returned by
         :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`. This field
         will be null if the file or folder is not mounted.
-    :ivar parent_shared_folder_id: Deprecated. Please use
+    :ivar parent_shared_folder_id: Please use
         ``FileSharingInfo.parent_shared_folder_id`` or
         ``FolderSharingInfo.parent_shared_folder_id`` instead.
     """
@@ -1484,7 +1632,7 @@ class Metadata(object):
     @property
     def parent_shared_folder_id(self):
         """
-        Deprecated. Please use ``FileSharingInfo.parent_shared_folder_id`` or
+        Please use ``FileSharingInfo.parent_shared_folder_id`` or
         ``FolderSharingInfo.parent_shared_folder_id`` instead.
 
         :rtype: str
@@ -1635,7 +1783,7 @@ Dimensions_validator = bv.Struct(Dimensions)
 class DownloadArg(object):
     """
     :ivar path: The path of the file to download.
-    :ivar rev: Deprecated. Please specify revision in ``path`` instead.
+    :ivar rev: Please specify revision in ``path`` instead.
     """
 
     __slots__ = [
@@ -1685,7 +1833,7 @@ class DownloadArg(object):
     @property
     def rev(self):
         """
-        Deprecated. Please specify revision in ``path`` instead.
+        Please specify revision in ``path`` instead.
 
         :rtype: str
         """
@@ -2311,7 +2459,7 @@ FileSharingInfo_validator = bv.Struct(FileSharingInfo)
 class FolderMetadata(Metadata):
     """
     :ivar id: A unique identifier for the folder.
-    :ivar shared_folder_id: Deprecated. Please use ``sharing_info`` instead.
+    :ivar shared_folder_id: Please use ``sharing_info`` instead.
     :ivar sharing_info: Set if the folder is contained in a shared folder or is
         a shared folder mount point.
     :ivar property_groups: Additional information if the file has custom
@@ -2387,7 +2535,7 @@ class FolderMetadata(Metadata):
     @property
     def shared_folder_id(self):
         """
-        Deprecated. Please use ``sharing_info`` instead.
+        Please use ``sharing_info`` instead.
 
         :rtype: str
         """
@@ -3047,6 +3195,301 @@ class GetTemporaryLinkResult(object):
 
 GetTemporaryLinkResult_validator = bv.Struct(GetTemporaryLinkResult)
 
+class GetThumbnailBatchArg(object):
+    """
+    Arguments for :meth:`dropbox.dropbox.Dropbox.files_get_thumbnail_batch`.
+
+    :ivar entries: List of files to get thumbnails.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        List of files to get thumbnails.
+
+        :rtype: list of [ThumbnailArg]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def __repr__(self):
+        return 'GetThumbnailBatchArg(entries={!r})'.format(
+            self._entries_value,
+        )
+
+GetThumbnailBatchArg_validator = bv.Struct(GetThumbnailBatchArg)
+
+class GetThumbnailBatchError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar too_many_files: The operation involves more than 25 files.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    too_many_files = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_too_many_files(self):
+        """
+        Check if the union tag is ``too_many_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_files'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'GetThumbnailBatchError(%r, %r)' % (self._tag, self._value)
+
+GetThumbnailBatchError_validator = bv.Union(GetThumbnailBatchError)
+
+class GetThumbnailBatchResult(object):
+    """
+    :ivar entries: List of files and their thumbnails.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        List of files and their thumbnails.
+
+        :rtype: list of [GetThumbnailBatchResultEntry]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def __repr__(self):
+        return 'GetThumbnailBatchResult(entries={!r})'.format(
+            self._entries_value,
+        )
+
+GetThumbnailBatchResult_validator = bv.Struct(GetThumbnailBatchResult)
+
+class GetThumbnailBatchResultData(object):
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+        '_thumbnail_value',
+        '_thumbnail_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None,
+                 thumbnail=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        self._thumbnail_value = None
+        self._thumbnail_present = False
+        if metadata is not None:
+            self.metadata = metadata
+        if thumbnail is not None:
+            self.thumbnail = thumbnail
+
+    @property
+    def metadata(self):
+        """
+        :rtype: FileMetadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    @property
+    def thumbnail(self):
+        """
+        :rtype: str
+        """
+        if self._thumbnail_present:
+            return self._thumbnail_value
+        else:
+            raise AttributeError("missing required field 'thumbnail'")
+
+    @thumbnail.setter
+    def thumbnail(self, val):
+        val = self._thumbnail_validator.validate(val)
+        self._thumbnail_value = val
+        self._thumbnail_present = True
+
+    @thumbnail.deleter
+    def thumbnail(self):
+        self._thumbnail_value = None
+        self._thumbnail_present = False
+
+    def __repr__(self):
+        return 'GetThumbnailBatchResultData(metadata={!r}, thumbnail={!r})'.format(
+            self._metadata_value,
+            self._thumbnail_value,
+        )
+
+GetThumbnailBatchResultData_validator = bv.Struct(GetThumbnailBatchResultData)
+
+class GetThumbnailBatchResultEntry(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar ThumbnailError failure: The result for this file if it was an error.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param GetThumbnailBatchResultData val:
+        :rtype: GetThumbnailBatchResultEntry
+        """
+        return cls('success', val)
+
+    @classmethod
+    def failure(cls, val):
+        """
+        Create an instance of this class set to the ``failure`` tag with value
+        ``val``.
+
+        :param ThumbnailError val:
+        :rtype: GetThumbnailBatchResultEntry
+        """
+        return cls('failure', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_failure(self):
+        """
+        Check if the union tag is ``failure``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failure'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: GetThumbnailBatchResultData
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_failure(self):
+        """
+        The result for this file if it was an error.
+
+        Only call this if :meth:`is_failure` is true.
+
+        :rtype: ThumbnailError
+        """
+        if not self.is_failure():
+            raise AttributeError("tag 'failure' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'GetThumbnailBatchResultEntry(%r, %r)' % (self._tag, self._value)
+
+GetThumbnailBatchResultEntry_validator = bv.Union(GetThumbnailBatchResultEntry)
+
 class GpsCoordinates(object):
     """
     GPS coordinates for a photo or video.
@@ -3132,7 +3575,7 @@ GpsCoordinates_validator = bv.Struct(GpsCoordinates)
 
 class ListFolderArg(object):
     """
-    :ivar path: The path to the folder you want to see the contents of.
+    :ivar path: A unique identifier for the file.
     :ivar recursive: If true, the list folder operation will be applied
         recursively to all subfolders and the response will contain contents of
         all subfolders.
@@ -3143,6 +3586,12 @@ class ListFolderArg(object):
     :ivar include_has_explicit_shared_members: If true, the results will include
         a flag for each file indicating whether or not  that file has any
         explicit members.
+    :ivar include_mounted_folders: If true, the results will include entries
+        under mounted folders which includes app folder, shared folder and team
+        folder.
+    :ivar limit: The maximum number of results to return per request. Note: This
+        is an approximate number and there can be slightly more entries returned
+        in some cases.
     """
 
     __slots__ = [
@@ -3156,6 +3605,10 @@ class ListFolderArg(object):
         '_include_deleted_present',
         '_include_has_explicit_shared_members_value',
         '_include_has_explicit_shared_members_present',
+        '_include_mounted_folders_value',
+        '_include_mounted_folders_present',
+        '_limit_value',
+        '_limit_present',
     ]
 
     _has_required_fields = True
@@ -3165,7 +3618,9 @@ class ListFolderArg(object):
                  recursive=None,
                  include_media_info=None,
                  include_deleted=None,
-                 include_has_explicit_shared_members=None):
+                 include_has_explicit_shared_members=None,
+                 include_mounted_folders=None,
+                 limit=None):
         self._path_value = None
         self._path_present = False
         self._recursive_value = None
@@ -3176,6 +3631,10 @@ class ListFolderArg(object):
         self._include_deleted_present = False
         self._include_has_explicit_shared_members_value = None
         self._include_has_explicit_shared_members_present = False
+        self._include_mounted_folders_value = None
+        self._include_mounted_folders_present = False
+        self._limit_value = None
+        self._limit_present = False
         if path is not None:
             self.path = path
         if recursive is not None:
@@ -3186,11 +3645,15 @@ class ListFolderArg(object):
             self.include_deleted = include_deleted
         if include_has_explicit_shared_members is not None:
             self.include_has_explicit_shared_members = include_has_explicit_shared_members
+        if include_mounted_folders is not None:
+            self.include_mounted_folders = include_mounted_folders
+        if limit is not None:
+            self.limit = limit
 
     @property
     def path(self):
         """
-        The path to the folder you want to see the contents of.
+        A unique identifier for the file.
 
         :rtype: str
         """
@@ -3305,13 +3768,67 @@ class ListFolderArg(object):
         self._include_has_explicit_shared_members_value = None
         self._include_has_explicit_shared_members_present = False
 
+    @property
+    def include_mounted_folders(self):
+        """
+        If true, the results will include entries under mounted folders which
+        includes app folder, shared folder and team folder.
+
+        :rtype: bool
+        """
+        if self._include_mounted_folders_present:
+            return self._include_mounted_folders_value
+        else:
+            return True
+
+    @include_mounted_folders.setter
+    def include_mounted_folders(self, val):
+        val = self._include_mounted_folders_validator.validate(val)
+        self._include_mounted_folders_value = val
+        self._include_mounted_folders_present = True
+
+    @include_mounted_folders.deleter
+    def include_mounted_folders(self):
+        self._include_mounted_folders_value = None
+        self._include_mounted_folders_present = False
+
+    @property
+    def limit(self):
+        """
+        The maximum number of results to return per request. Note: This is an
+        approximate number and there can be slightly more entries returned in
+        some cases.
+
+        :rtype: long
+        """
+        if self._limit_present:
+            return self._limit_value
+        else:
+            return None
+
+    @limit.setter
+    def limit(self, val):
+        if val is None:
+            del self.limit
+            return
+        val = self._limit_validator.validate(val)
+        self._limit_value = val
+        self._limit_present = True
+
+    @limit.deleter
+    def limit(self):
+        self._limit_value = None
+        self._limit_present = False
+
     def __repr__(self):
-        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r})'.format(
+        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_mounted_folders={!r}, limit={!r})'.format(
             self._path_value,
             self._recursive_value,
             self._include_media_info_value,
             self._include_deleted_value,
             self._include_has_explicit_shared_members_value,
+            self._include_mounted_folders_value,
+            self._limit_value,
         )
 
 ListFolderArg_validator = bv.Struct(ListFolderArg)
@@ -4025,13 +4542,16 @@ ListRevisionsError_validator = bv.Union(ListRevisionsError)
 class ListRevisionsResult(object):
     """
     :ivar is_deleted: If the file is deleted.
-    :ivar entries: The revisions for the file. Only non-delete revisions will
-        show up here.
+    :ivar server_deleted: The time of deletion if the file was deleted.
+    :ivar entries: The revisions for the file. Only revisions that are not
+        deleted will show up here.
     """
 
     __slots__ = [
         '_is_deleted_value',
         '_is_deleted_present',
+        '_server_deleted_value',
+        '_server_deleted_present',
         '_entries_value',
         '_entries_present',
     ]
@@ -4040,13 +4560,18 @@ class ListRevisionsResult(object):
 
     def __init__(self,
                  is_deleted=None,
-                 entries=None):
+                 entries=None,
+                 server_deleted=None):
         self._is_deleted_value = None
         self._is_deleted_present = False
+        self._server_deleted_value = None
+        self._server_deleted_present = False
         self._entries_value = None
         self._entries_present = False
         if is_deleted is not None:
             self.is_deleted = is_deleted
+        if server_deleted is not None:
+            self.server_deleted = server_deleted
         if entries is not None:
             self.entries = entries
 
@@ -4074,9 +4599,36 @@ class ListRevisionsResult(object):
         self._is_deleted_present = False
 
     @property
+    def server_deleted(self):
+        """
+        The time of deletion if the file was deleted.
+
+        :rtype: datetime.datetime
+        """
+        if self._server_deleted_present:
+            return self._server_deleted_value
+        else:
+            return None
+
+    @server_deleted.setter
+    def server_deleted(self, val):
+        if val is None:
+            del self.server_deleted
+            return
+        val = self._server_deleted_validator.validate(val)
+        self._server_deleted_value = val
+        self._server_deleted_present = True
+
+    @server_deleted.deleter
+    def server_deleted(self):
+        self._server_deleted_value = None
+        self._server_deleted_present = False
+
+    @property
     def entries(self):
         """
-        The revisions for the file. Only non-delete revisions will show up here.
+        The revisions for the file. Only revisions that are not deleted will
+        show up here.
 
         :rtype: list of [FileMetadata]
         """
@@ -4097,9 +4649,10 @@ class ListRevisionsResult(object):
         self._entries_present = False
 
     def __repr__(self):
-        return 'ListRevisionsResult(is_deleted={!r}, entries={!r})'.format(
+        return 'ListRevisionsResult(is_deleted={!r}, entries={!r}, server_deleted={!r})'.format(
             self._is_deleted_value,
             self._entries_value,
+            self._server_deleted_value,
         )
 
 ListRevisionsResult_validator = bv.Struct(ListRevisionsResult)
@@ -4446,7 +4999,7 @@ PhotoMetadata_validator = bv.Struct(PhotoMetadata)
 class PreviewArg(object):
     """
     :ivar path: The path of the file to preview.
-    :ivar rev: Deprecated. Please specify revision in ``path`` instead.
+    :ivar rev: Please specify revision in ``path`` instead.
     """
 
     __slots__ = [
@@ -4496,7 +5049,7 @@ class PreviewArg(object):
     @property
     def rev(self):
         """
-        Deprecated. Please specify revision in ``path`` instead.
+        Please specify revision in ``path`` instead.
 
         :rtype: str
         """
@@ -4907,6 +5460,9 @@ class RelocationArg(RelocationPath):
         true for :meth:`dropbox.dropbox.Dropbox.files_move`.
     :ivar autorename: If there's a conflict, have the Dropbox server try to
         autorename the file to avoid the conflict.
+    :ivar allow_ownership_transfer: Allow moves by owner even if it would result
+        in an ownership transfer for the content being moved. This does not
+        apply to copies.
     """
 
     __slots__ = [
@@ -4914,6 +5470,8 @@ class RelocationArg(RelocationPath):
         '_allow_shared_folder_present',
         '_autorename_value',
         '_autorename_present',
+        '_allow_ownership_transfer_value',
+        '_allow_ownership_transfer_present',
     ]
 
     _has_required_fields = True
@@ -4922,17 +5480,22 @@ class RelocationArg(RelocationPath):
                  from_path=None,
                  to_path=None,
                  allow_shared_folder=None,
-                 autorename=None):
+                 autorename=None,
+                 allow_ownership_transfer=None):
         super(RelocationArg, self).__init__(from_path,
                                             to_path)
         self._allow_shared_folder_value = None
         self._allow_shared_folder_present = False
         self._autorename_value = None
         self._autorename_present = False
+        self._allow_ownership_transfer_value = None
+        self._allow_ownership_transfer_present = False
         if allow_shared_folder is not None:
             self.allow_shared_folder = allow_shared_folder
         if autorename is not None:
             self.autorename = autorename
+        if allow_ownership_transfer is not None:
+            self.allow_ownership_transfer = allow_ownership_transfer
 
     @property
     def allow_shared_folder(self):
@@ -4984,12 +5547,37 @@ class RelocationArg(RelocationPath):
         self._autorename_value = None
         self._autorename_present = False
 
+    @property
+    def allow_ownership_transfer(self):
+        """
+        Allow moves by owner even if it would result in an ownership transfer
+        for the content being moved. This does not apply to copies.
+
+        :rtype: bool
+        """
+        if self._allow_ownership_transfer_present:
+            return self._allow_ownership_transfer_value
+        else:
+            return False
+
+    @allow_ownership_transfer.setter
+    def allow_ownership_transfer(self, val):
+        val = self._allow_ownership_transfer_validator.validate(val)
+        self._allow_ownership_transfer_value = val
+        self._allow_ownership_transfer_present = True
+
+    @allow_ownership_transfer.deleter
+    def allow_ownership_transfer(self):
+        self._allow_ownership_transfer_value = None
+        self._allow_ownership_transfer_present = False
+
     def __repr__(self):
-        return 'RelocationArg(from_path={!r}, to_path={!r}, allow_shared_folder={!r}, autorename={!r})'.format(
+        return 'RelocationArg(from_path={!r}, to_path={!r}, allow_shared_folder={!r}, autorename={!r}, allow_ownership_transfer={!r})'.format(
             self._from_path_value,
             self._to_path_value,
             self._allow_shared_folder_value,
             self._autorename_value,
+            self._allow_ownership_transfer_value,
         )
 
 RelocationArg_validator = bv.Struct(RelocationArg)
@@ -5006,6 +5594,9 @@ class RelocationBatchArg(object):
         :meth:`dropbox.dropbox.Dropbox.files_move_batch`.
     :ivar autorename: If there's a conflict with any file, have the Dropbox
         server try to autorename that file to avoid the conflict.
+    :ivar allow_ownership_transfer: Allow moves by owner even if it would result
+        in an ownership transfer for the content being moved. This does not
+        apply to copies.
     """
 
     __slots__ = [
@@ -5015,6 +5606,8 @@ class RelocationBatchArg(object):
         '_allow_shared_folder_present',
         '_autorename_value',
         '_autorename_present',
+        '_allow_ownership_transfer_value',
+        '_allow_ownership_transfer_present',
     ]
 
     _has_required_fields = True
@@ -5022,19 +5615,24 @@ class RelocationBatchArg(object):
     def __init__(self,
                  entries=None,
                  allow_shared_folder=None,
-                 autorename=None):
+                 autorename=None,
+                 allow_ownership_transfer=None):
         self._entries_value = None
         self._entries_present = False
         self._allow_shared_folder_value = None
         self._allow_shared_folder_present = False
         self._autorename_value = None
         self._autorename_present = False
+        self._allow_ownership_transfer_value = None
+        self._allow_ownership_transfer_present = False
         if entries is not None:
             self.entries = entries
         if allow_shared_folder is not None:
             self.allow_shared_folder = allow_shared_folder
         if autorename is not None:
             self.autorename = autorename
+        if allow_ownership_transfer is not None:
+            self.allow_ownership_transfer = allow_ownership_transfer
 
     @property
     def entries(self):
@@ -5111,11 +5709,36 @@ class RelocationBatchArg(object):
         self._autorename_value = None
         self._autorename_present = False
 
+    @property
+    def allow_ownership_transfer(self):
+        """
+        Allow moves by owner even if it would result in an ownership transfer
+        for the content being moved. This does not apply to copies.
+
+        :rtype: bool
+        """
+        if self._allow_ownership_transfer_present:
+            return self._allow_ownership_transfer_value
+        else:
+            return False
+
+    @allow_ownership_transfer.setter
+    def allow_ownership_transfer(self, val):
+        val = self._allow_ownership_transfer_validator.validate(val)
+        self._allow_ownership_transfer_value = val
+        self._allow_ownership_transfer_present = True
+
+    @allow_ownership_transfer.deleter
+    def allow_ownership_transfer(self):
+        self._allow_ownership_transfer_value = None
+        self._allow_ownership_transfer_present = False
+
     def __repr__(self):
-        return 'RelocationBatchArg(entries={!r}, allow_shared_folder={!r}, autorename={!r})'.format(
+        return 'RelocationBatchArg(entries={!r}, allow_shared_folder={!r}, autorename={!r}, allow_ownership_transfer={!r})'.format(
             self._entries_value,
             self._allow_shared_folder_value,
             self._autorename_value,
+            self._allow_ownership_transfer_value,
         )
 
 RelocationBatchArg_validator = bv.Struct(RelocationBatchArg)
@@ -5134,6 +5757,9 @@ class RelocationError(bb.Union):
         folders.
     :ivar duplicated_or_nested_paths: There are duplicated/nested paths among
         ``RelocationArg.from_path`` and ``RelocationArg.to_path``.
+    :ivar cant_transfer_ownership: Your move operation would result in an
+        ownership transfer. You may reissue the request with the field
+        ``RelocationArg.allow_ownership_transfer`` to true.
     """
 
     _catch_all = 'other'
@@ -5147,6 +5773,8 @@ class RelocationError(bb.Union):
     too_many_files = None
     # Attribute is overwritten below the class definition
     duplicated_or_nested_paths = None
+    # Attribute is overwritten below the class definition
+    cant_transfer_ownership = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -5246,6 +5874,14 @@ class RelocationError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'duplicated_or_nested_paths'
+
+    def is_cant_transfer_ownership(self):
+        """
+        Check if the union tag is ``cant_transfer_ownership``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cant_transfer_ownership'
 
     def is_other(self):
         """
@@ -5452,7 +6088,7 @@ class RelocationBatchLaunch(async.LaunchResultBase):
 
 RelocationBatchLaunch_validator = bv.Union(RelocationBatchLaunch)
 
-class RelocationBatchResult(object):
+class RelocationBatchResult(FileOpsResult):
 
     __slots__ = [
         '_entries_value',
@@ -5463,6 +6099,7 @@ class RelocationBatchResult(object):
 
     def __init__(self,
                  entries=None):
+        super(RelocationBatchResult, self).__init__()
         self._entries_value = None
         self._entries_present = False
         if entries is not None:
@@ -5471,7 +6108,7 @@ class RelocationBatchResult(object):
     @property
     def entries(self):
         """
-        :rtype: list of [RelocationResult]
+        :rtype: list of [RelocationBatchResultData]
         """
         if self._entries_present:
             return self._entries_value
@@ -5496,7 +6133,10 @@ class RelocationBatchResult(object):
 
 RelocationBatchResult_validator = bv.Struct(RelocationBatchResult)
 
-class RelocationResult(object):
+class RelocationBatchResultData(object):
+    """
+    :ivar metadata: Metadata of the relocated object.
+    """
 
     __slots__ = [
         '_metadata_value',
@@ -5515,6 +6155,58 @@ class RelocationResult(object):
     @property
     def metadata(self):
         """
+        Metadata of the relocated object.
+
+        :rtype: Metadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    def __repr__(self):
+        return 'RelocationBatchResultData(metadata={!r})'.format(
+            self._metadata_value,
+        )
+
+RelocationBatchResultData_validator = bv.Struct(RelocationBatchResultData)
+
+class RelocationResult(FileOpsResult):
+    """
+    :ivar metadata: Metadata of the relocated object.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None):
+        super(RelocationResult, self).__init__()
+        self._metadata_value = None
+        self._metadata_present = False
+        if metadata is not None:
+            self.metadata = metadata
+
+    @property
+    def metadata(self):
+        """
+        Metadata of the relocated object.
+
         :rtype: Metadata
         """
         if self._metadata_present:
@@ -8681,12 +9373,12 @@ class WriteMode(bb.Union):
     Your intent when writing a file to some path. This is used to determine what
     constitutes a conflict and what the autorename strategy is. In some
     situations, the conflict behavior is identical: (a) If the target path
-    doesn't contain anything, the file is always written; no conflict. (b) If
-    the target path contains a folder, it's always a conflict. (c) If the target
-    path contains a file with identical contents, nothing gets written; no
-    conflict. The conflict checking differs in the case where there's a file at
-    the target path with contents different from the contents you're trying to
-    write.
+    doesn't refer to anything, the file is always written; no conflict. (b) If
+    the target path refers to a folder, it's always a conflict. (c) If the
+    target path refers to a file with identical contents, nothing gets written;
+    no conflict. The conflict checking differs in the case where there's a file
+    at the target path with contents different from the contents you're trying
+    to write.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -8770,10 +9462,12 @@ MalformedPathError_validator = bv.Nullable(bv.String())
 Path_validator = bv.String(pattern=u'/(.|[\\r\\n])*')
 PathOrId_validator = bv.String(pattern=u'/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)')
 PathR_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?|(ns:[0-9]+(/.*)?)')
+PathROrId_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?|id:.*|(ns:[0-9]+(/.*)?)')
 ReadPath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/.*)?)')
 Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
 Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
 WritePath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
+WritePathOrId_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)|(id:.*)')
 PropertiesError._path_validator = LookupError_validator
 PropertiesError._tagmap = {
     'path': PropertiesError._path_validator,
@@ -8831,7 +9525,7 @@ AlphaGetMetadataError._tagmap = {
 }
 AlphaGetMetadataError._tagmap.update(GetMetadataError._tagmap)
 
-CommitInfo._path_validator = WritePath_validator
+CommitInfo._path_validator = WritePathOrId_validator
 CommitInfo._mode_validator = WriteMode_validator
 CommitInfo._autorename_validator = bv.Boolean()
 CommitInfo._client_modified_validator = bv.Nullable(common.DropboxTimestamp_validator)
@@ -8871,7 +9565,14 @@ CreateFolderError._tagmap = {
     'path': CreateFolderError._path_validator,
 }
 
-DeleteArg._path_validator = WritePath_validator
+FileOpsResult._all_field_names_ = set([])
+FileOpsResult._all_fields_ = []
+
+CreateFolderResult._metadata_validator = FolderMetadata_validator
+CreateFolderResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['metadata']))
+CreateFolderResult._all_fields_ = FileOpsResult._all_fields_ + [('metadata', CreateFolderResult._metadata_validator)]
+
+DeleteArg._path_validator = WritePathOrId_validator
 DeleteArg._all_field_names_ = set(['path'])
 DeleteArg._all_fields_ = [('path', DeleteArg._path_validator)]
 
@@ -8912,10 +9613,14 @@ DeleteBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
 DeleteBatchLaunch.other = DeleteBatchLaunch('other')
 
 DeleteBatchResult._entries_validator = bv.List(DeleteBatchResultEntry_validator)
-DeleteBatchResult._all_field_names_ = set(['entries'])
-DeleteBatchResult._all_fields_ = [('entries', DeleteBatchResult._entries_validator)]
+DeleteBatchResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['entries']))
+DeleteBatchResult._all_fields_ = FileOpsResult._all_fields_ + [('entries', DeleteBatchResult._entries_validator)]
 
-DeleteBatchResultEntry._success_validator = DeleteResult_validator
+DeleteBatchResultData._metadata_validator = Metadata_validator
+DeleteBatchResultData._all_field_names_ = set(['metadata'])
+DeleteBatchResultData._all_fields_ = [('metadata', DeleteBatchResultData._metadata_validator)]
+
+DeleteBatchResultEntry._success_validator = DeleteBatchResultData_validator
 DeleteBatchResultEntry._failure_validator = DeleteError_validator
 DeleteBatchResultEntry._tagmap = {
     'success': DeleteBatchResultEntry._success_validator,
@@ -8924,18 +9629,24 @@ DeleteBatchResultEntry._tagmap = {
 
 DeleteError._path_lookup_validator = LookupError_validator
 DeleteError._path_write_validator = WriteError_validator
+DeleteError._too_many_write_operations_validator = bv.Void()
+DeleteError._too_many_files_validator = bv.Void()
 DeleteError._other_validator = bv.Void()
 DeleteError._tagmap = {
     'path_lookup': DeleteError._path_lookup_validator,
     'path_write': DeleteError._path_write_validator,
+    'too_many_write_operations': DeleteError._too_many_write_operations_validator,
+    'too_many_files': DeleteError._too_many_files_validator,
     'other': DeleteError._other_validator,
 }
 
+DeleteError.too_many_write_operations = DeleteError('too_many_write_operations')
+DeleteError.too_many_files = DeleteError('too_many_files')
 DeleteError.other = DeleteError('other')
 
 DeleteResult._metadata_validator = Metadata_validator
-DeleteResult._all_field_names_ = set(['metadata'])
-DeleteResult._all_fields_ = [('metadata', DeleteResult._metadata_validator)]
+DeleteResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['metadata']))
+DeleteResult._all_fields_ = FileOpsResult._all_fields_ + [('metadata', DeleteResult._metadata_validator)]
 
 Metadata._name_validator = bv.String()
 Metadata._path_lower_validator = bv.Nullable(bv.String())
@@ -9143,6 +9854,46 @@ GetTemporaryLinkResult._all_fields_ = [
     ('link', GetTemporaryLinkResult._link_validator),
 ]
 
+GetThumbnailBatchArg._entries_validator = bv.List(ThumbnailArg_validator)
+GetThumbnailBatchArg._all_field_names_ = set(['entries'])
+GetThumbnailBatchArg._all_fields_ = [('entries', GetThumbnailBatchArg._entries_validator)]
+
+GetThumbnailBatchError._too_many_files_validator = bv.Void()
+GetThumbnailBatchError._other_validator = bv.Void()
+GetThumbnailBatchError._tagmap = {
+    'too_many_files': GetThumbnailBatchError._too_many_files_validator,
+    'other': GetThumbnailBatchError._other_validator,
+}
+
+GetThumbnailBatchError.too_many_files = GetThumbnailBatchError('too_many_files')
+GetThumbnailBatchError.other = GetThumbnailBatchError('other')
+
+GetThumbnailBatchResult._entries_validator = bv.List(GetThumbnailBatchResultEntry_validator)
+GetThumbnailBatchResult._all_field_names_ = set(['entries'])
+GetThumbnailBatchResult._all_fields_ = [('entries', GetThumbnailBatchResult._entries_validator)]
+
+GetThumbnailBatchResultData._metadata_validator = FileMetadata_validator
+GetThumbnailBatchResultData._thumbnail_validator = bv.String()
+GetThumbnailBatchResultData._all_field_names_ = set([
+    'metadata',
+    'thumbnail',
+])
+GetThumbnailBatchResultData._all_fields_ = [
+    ('metadata', GetThumbnailBatchResultData._metadata_validator),
+    ('thumbnail', GetThumbnailBatchResultData._thumbnail_validator),
+]
+
+GetThumbnailBatchResultEntry._success_validator = GetThumbnailBatchResultData_validator
+GetThumbnailBatchResultEntry._failure_validator = ThumbnailError_validator
+GetThumbnailBatchResultEntry._other_validator = bv.Void()
+GetThumbnailBatchResultEntry._tagmap = {
+    'success': GetThumbnailBatchResultEntry._success_validator,
+    'failure': GetThumbnailBatchResultEntry._failure_validator,
+    'other': GetThumbnailBatchResultEntry._other_validator,
+}
+
+GetThumbnailBatchResultEntry.other = GetThumbnailBatchResultEntry('other')
+
 GpsCoordinates._latitude_validator = bv.Float64()
 GpsCoordinates._longitude_validator = bv.Float64()
 GpsCoordinates._all_field_names_ = set([
@@ -9154,17 +9905,21 @@ GpsCoordinates._all_fields_ = [
     ('longitude', GpsCoordinates._longitude_validator),
 ]
 
-ListFolderArg._path_validator = PathR_validator
+ListFolderArg._path_validator = PathROrId_validator
 ListFolderArg._recursive_validator = bv.Boolean()
 ListFolderArg._include_media_info_validator = bv.Boolean()
 ListFolderArg._include_deleted_validator = bv.Boolean()
 ListFolderArg._include_has_explicit_shared_members_validator = bv.Boolean()
+ListFolderArg._include_mounted_folders_validator = bv.Boolean()
+ListFolderArg._limit_validator = bv.Nullable(bv.UInt32(min_value=1, max_value=2000))
 ListFolderArg._all_field_names_ = set([
     'path',
     'recursive',
     'include_media_info',
     'include_deleted',
     'include_has_explicit_shared_members',
+    'include_mounted_folders',
+    'limit',
 ])
 ListFolderArg._all_fields_ = [
     ('path', ListFolderArg._path_validator),
@@ -9172,6 +9927,8 @@ ListFolderArg._all_fields_ = [
     ('include_media_info', ListFolderArg._include_media_info_validator),
     ('include_deleted', ListFolderArg._include_deleted_validator),
     ('include_has_explicit_shared_members', ListFolderArg._include_has_explicit_shared_members_validator),
+    ('include_mounted_folders', ListFolderArg._include_mounted_folders_validator),
+    ('limit', ListFolderArg._limit_validator),
 ]
 
 ListFolderContinueArg._cursor_validator = ListFolderCursor_validator
@@ -9270,13 +10027,16 @@ ListRevisionsError._tagmap = {
 ListRevisionsError.other = ListRevisionsError('other')
 
 ListRevisionsResult._is_deleted_validator = bv.Boolean()
+ListRevisionsResult._server_deleted_validator = bv.Nullable(common.DropboxTimestamp_validator)
 ListRevisionsResult._entries_validator = bv.List(FileMetadata_validator)
 ListRevisionsResult._all_field_names_ = set([
     'is_deleted',
+    'server_deleted',
     'entries',
 ])
 ListRevisionsResult._all_fields_ = [
     ('is_deleted', ListRevisionsResult._is_deleted_validator),
+    ('server_deleted', ListRevisionsResult._server_deleted_validator),
     ('entries', ListRevisionsResult._entries_validator),
 ]
 
@@ -9399,8 +10159,8 @@ PropertyGroupWithPath._all_fields_ = [
     ('property_groups', PropertyGroupWithPath._property_groups_validator),
 ]
 
-RelocationPath._from_path_validator = WritePath_validator
-RelocationPath._to_path_validator = WritePath_validator
+RelocationPath._from_path_validator = WritePathOrId_validator
+RelocationPath._to_path_validator = WritePathOrId_validator
 RelocationPath._all_field_names_ = set([
     'from_path',
     'to_path',
@@ -9412,27 +10172,33 @@ RelocationPath._all_fields_ = [
 
 RelocationArg._allow_shared_folder_validator = bv.Boolean()
 RelocationArg._autorename_validator = bv.Boolean()
+RelocationArg._allow_ownership_transfer_validator = bv.Boolean()
 RelocationArg._all_field_names_ = RelocationPath._all_field_names_.union(set([
     'allow_shared_folder',
     'autorename',
+    'allow_ownership_transfer',
 ]))
 RelocationArg._all_fields_ = RelocationPath._all_fields_ + [
     ('allow_shared_folder', RelocationArg._allow_shared_folder_validator),
     ('autorename', RelocationArg._autorename_validator),
+    ('allow_ownership_transfer', RelocationArg._allow_ownership_transfer_validator),
 ]
 
 RelocationBatchArg._entries_validator = bv.List(RelocationPath_validator)
 RelocationBatchArg._allow_shared_folder_validator = bv.Boolean()
 RelocationBatchArg._autorename_validator = bv.Boolean()
+RelocationBatchArg._allow_ownership_transfer_validator = bv.Boolean()
 RelocationBatchArg._all_field_names_ = set([
     'entries',
     'allow_shared_folder',
     'autorename',
+    'allow_ownership_transfer',
 ])
 RelocationBatchArg._all_fields_ = [
     ('entries', RelocationBatchArg._entries_validator),
     ('allow_shared_folder', RelocationBatchArg._allow_shared_folder_validator),
     ('autorename', RelocationBatchArg._autorename_validator),
+    ('allow_ownership_transfer', RelocationBatchArg._allow_ownership_transfer_validator),
 ]
 
 RelocationError._from_lookup_validator = LookupError_validator
@@ -9443,6 +10209,7 @@ RelocationError._cant_nest_shared_folder_validator = bv.Void()
 RelocationError._cant_move_folder_into_itself_validator = bv.Void()
 RelocationError._too_many_files_validator = bv.Void()
 RelocationError._duplicated_or_nested_paths_validator = bv.Void()
+RelocationError._cant_transfer_ownership_validator = bv.Void()
 RelocationError._other_validator = bv.Void()
 RelocationError._tagmap = {
     'from_lookup': RelocationError._from_lookup_validator,
@@ -9453,6 +10220,7 @@ RelocationError._tagmap = {
     'cant_move_folder_into_itself': RelocationError._cant_move_folder_into_itself_validator,
     'too_many_files': RelocationError._too_many_files_validator,
     'duplicated_or_nested_paths': RelocationError._duplicated_or_nested_paths_validator,
+    'cant_transfer_ownership': RelocationError._cant_transfer_ownership_validator,
     'other': RelocationError._other_validator,
 }
 
@@ -9461,6 +10229,7 @@ RelocationError.cant_nest_shared_folder = RelocationError('cant_nest_shared_fold
 RelocationError.cant_move_folder_into_itself = RelocationError('cant_move_folder_into_itself')
 RelocationError.too_many_files = RelocationError('too_many_files')
 RelocationError.duplicated_or_nested_paths = RelocationError('duplicated_or_nested_paths')
+RelocationError.cant_transfer_ownership = RelocationError('cant_transfer_ownership')
 RelocationError.other = RelocationError('other')
 
 RelocationBatchError._too_many_write_operations_validator = bv.Void()
@@ -9489,13 +10258,17 @@ RelocationBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
 
 RelocationBatchLaunch.other = RelocationBatchLaunch('other')
 
-RelocationBatchResult._entries_validator = bv.List(RelocationResult_validator)
-RelocationBatchResult._all_field_names_ = set(['entries'])
-RelocationBatchResult._all_fields_ = [('entries', RelocationBatchResult._entries_validator)]
+RelocationBatchResult._entries_validator = bv.List(RelocationBatchResultData_validator)
+RelocationBatchResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['entries']))
+RelocationBatchResult._all_fields_ = FileOpsResult._all_fields_ + [('entries', RelocationBatchResult._entries_validator)]
+
+RelocationBatchResultData._metadata_validator = Metadata_validator
+RelocationBatchResultData._all_field_names_ = set(['metadata'])
+RelocationBatchResultData._all_fields_ = [('metadata', RelocationBatchResultData._metadata_validator)]
 
 RelocationResult._metadata_validator = Metadata_validator
-RelocationResult._all_field_names_ = set(['metadata'])
-RelocationResult._all_fields_ = [('metadata', RelocationResult._metadata_validator)]
+RelocationResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['metadata']))
+RelocationResult._all_fields_ = FileOpsResult._all_fields_ + [('metadata', RelocationResult._metadata_validator)]
 
 RemovePropertiesArg._path_validator = PathOrId_validator
 RemovePropertiesArg._property_template_ids_validator = bv.List(properties.TemplateId_validator)
@@ -9618,7 +10391,7 @@ SaveUrlResult._tagmap = {
 }
 SaveUrlResult._tagmap.update(async.LaunchResultBase._tagmap)
 
-SearchArg._path_validator = PathR_validator
+SearchArg._path_validator = PathROrId_validator
 SearchArg._query_validator = bv.String()
 SearchArg._start_validator = bv.UInt64()
 SearchArg._max_results_validator = bv.UInt64(min_value=1, max_value=1000)
@@ -9987,7 +10760,7 @@ alpha_upload = bb.Route(
 )
 copy = bb.Route(
     'copy',
-    False,
+    True,
     RelocationArg_validator,
     Metadata_validator,
     RelocationError_validator,
@@ -10030,18 +10803,36 @@ copy_reference_save = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+copy_v2 = bb.Route(
+    'copy_v2',
+    False,
+    RelocationArg_validator,
+    RelocationResult_validator,
+    RelocationError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 create_folder = bb.Route(
     'create_folder',
-    False,
+    True,
     CreateFolderArg_validator,
     FolderMetadata_validator,
     CreateFolderError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
+create_folder_v2 = bb.Route(
+    'create_folder_v2',
+    False,
+    CreateFolderArg_validator,
+    CreateFolderResult_validator,
+    CreateFolderError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 delete = bb.Route(
     'delete',
-    False,
+    True,
     DeleteArg_validator,
     Metadata_validator,
     DeleteError_validator,
@@ -10063,6 +10854,15 @@ delete_batch_check = bb.Route(
     async.PollArg_validator,
     DeleteBatchJobStatus_validator,
     async.PollError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+delete_v2 = bb.Route(
+    'delete_v2',
+    False,
+    DeleteArg_validator,
+    DeleteResult_validator,
+    DeleteError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -10111,6 +10911,15 @@ get_thumbnail = bb.Route(
     {'host': u'content',
      'style': u'download'},
 )
+get_thumbnail_batch = bb.Route(
+    'get_thumbnail_batch',
+    False,
+    GetThumbnailBatchArg_validator,
+    GetThumbnailBatchResult_validator,
+    GetThumbnailBatchError_validator,
+    {'host': u'content',
+     'style': u'rpc'},
+)
 list_folder = bb.Route(
     'list_folder',
     False,
@@ -10158,7 +10967,7 @@ list_revisions = bb.Route(
 )
 move = bb.Route(
     'move',
-    False,
+    True,
     RelocationArg_validator,
     Metadata_validator,
     RelocationError_validator,
@@ -10180,6 +10989,15 @@ move_batch_check = bb.Route(
     async.PollArg_validator,
     RelocationBatchJobStatus_validator,
     async.PollError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+move_v2 = bb.Route(
+    'move_v2',
+    False,
+    RelocationArg_validator,
+    RelocationResult_validator,
+    RelocationError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -10354,15 +11172,19 @@ ROUTES = {
     'copy_batch/check': copy_batch_check,
     'copy_reference/get': copy_reference_get,
     'copy_reference/save': copy_reference_save,
+    'copy_v2': copy_v2,
     'create_folder': create_folder,
+    'create_folder_v2': create_folder_v2,
     'delete': delete,
     'delete_batch': delete_batch,
     'delete_batch/check': delete_batch_check,
+    'delete_v2': delete_v2,
     'download': download,
     'get_metadata': get_metadata,
     'get_preview': get_preview,
     'get_temporary_link': get_temporary_link,
     'get_thumbnail': get_thumbnail,
+    'get_thumbnail_batch': get_thumbnail_batch,
     'list_folder': list_folder,
     'list_folder/continue': list_folder_continue,
     'list_folder/get_latest_cursor': list_folder_get_latest_cursor,
@@ -10371,6 +11193,7 @@ ROUTES = {
     'move': move,
     'move_batch': move_batch,
     'move_batch/check': move_batch_check,
+    'move_v2': move_v2,
     'permanently_delete': permanently_delete,
     'properties/add': properties_add,
     'properties/overwrite': properties_overwrite,

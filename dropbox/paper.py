@@ -1030,6 +1030,68 @@ class FoldersContainingPaperDoc(object):
 
 FoldersContainingPaperDoc_validator = bv.Struct(FoldersContainingPaperDoc)
 
+class ImportFormat(bb.Union):
+    """
+    The import format of the incoming data.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar html: The provided data is interpreted as standard HTML.
+    :ivar markdown: The provided data is interpreted as markdown. Note: The
+        first line of the provided document will be used as the doc title.
+    :ivar plain_text: The provided data is interpreted as plain text. Note: The
+        first line of the provided document will be used as the doc title.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    html = None
+    # Attribute is overwritten below the class definition
+    markdown = None
+    # Attribute is overwritten below the class definition
+    plain_text = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_html(self):
+        """
+        Check if the union tag is ``html``.
+
+        :rtype: bool
+        """
+        return self._tag == 'html'
+
+    def is_markdown(self):
+        """
+        Check if the union tag is ``markdown``.
+
+        :rtype: bool
+        """
+        return self._tag == 'markdown'
+
+    def is_plain_text(self):
+        """
+        Check if the union tag is ``plain_text``.
+
+        :rtype: bool
+        """
+        return self._tag == 'plain_text'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ImportFormat(%r, %r)' % (self._tag, self._value)
+
+ImportFormat_validator = bv.Union(ImportFormat)
+
 class InviteeInfoWithPermissionLevel(object):
     """
     :ivar invitee: Email address invited to the Paper doc.
@@ -2399,6 +2461,268 @@ class PaperApiCursorError(bb.Union):
 
 PaperApiCursorError_validator = bv.Union(PaperApiCursorError)
 
+class PaperDocCreateArgs(object):
+    """
+    :ivar parent_folder_id: The Paper folder ID where the Paper document should
+        be created. The API user has to have write access to this folder or
+        error is thrown.
+    :ivar import_format: The format of provided data.
+    """
+
+    __slots__ = [
+        '_parent_folder_id_value',
+        '_parent_folder_id_present',
+        '_import_format_value',
+        '_import_format_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 import_format=None,
+                 parent_folder_id=None):
+        self._parent_folder_id_value = None
+        self._parent_folder_id_present = False
+        self._import_format_value = None
+        self._import_format_present = False
+        if parent_folder_id is not None:
+            self.parent_folder_id = parent_folder_id
+        if import_format is not None:
+            self.import_format = import_format
+
+    @property
+    def parent_folder_id(self):
+        """
+        The Paper folder ID where the Paper document should be created. The API
+        user has to have write access to this folder or error is thrown.
+
+        :rtype: str
+        """
+        if self._parent_folder_id_present:
+            return self._parent_folder_id_value
+        else:
+            return None
+
+    @parent_folder_id.setter
+    def parent_folder_id(self, val):
+        if val is None:
+            del self.parent_folder_id
+            return
+        val = self._parent_folder_id_validator.validate(val)
+        self._parent_folder_id_value = val
+        self._parent_folder_id_present = True
+
+    @parent_folder_id.deleter
+    def parent_folder_id(self):
+        self._parent_folder_id_value = None
+        self._parent_folder_id_present = False
+
+    @property
+    def import_format(self):
+        """
+        The format of provided data.
+
+        :rtype: ImportFormat
+        """
+        if self._import_format_present:
+            return self._import_format_value
+        else:
+            raise AttributeError("missing required field 'import_format'")
+
+    @import_format.setter
+    def import_format(self, val):
+        self._import_format_validator.validate_type_only(val)
+        self._import_format_value = val
+        self._import_format_present = True
+
+    @import_format.deleter
+    def import_format(self):
+        self._import_format_value = None
+        self._import_format_present = False
+
+    def __repr__(self):
+        return 'PaperDocCreateArgs(import_format={!r}, parent_folder_id={!r})'.format(
+            self._import_format_value,
+            self._parent_folder_id_value,
+        )
+
+PaperDocCreateArgs_validator = bv.Struct(PaperDocCreateArgs)
+
+class PaperDocCreateError(PaperApiBaseError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar content_malformed: The provided content was malformed and cannot be
+        imported to Paper.
+    :ivar folder_not_found: The specified Paper folder is cannot be found.
+    :ivar doc_length_exceeded: The newly created Paper doc would be too large.
+        Please split the content into multiple docs.
+    :ivar image_size_exceeded: The imported document contains an image that is
+        too large. The current limit is 1MB. Note: This only applies to HTML
+        with data uri.
+    """
+
+    # Attribute is overwritten below the class definition
+    content_malformed = None
+    # Attribute is overwritten below the class definition
+    folder_not_found = None
+    # Attribute is overwritten below the class definition
+    doc_length_exceeded = None
+    # Attribute is overwritten below the class definition
+    image_size_exceeded = None
+
+    def is_content_malformed(self):
+        """
+        Check if the union tag is ``content_malformed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_malformed'
+
+    def is_folder_not_found(self):
+        """
+        Check if the union tag is ``folder_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_not_found'
+
+    def is_doc_length_exceeded(self):
+        """
+        Check if the union tag is ``doc_length_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'doc_length_exceeded'
+
+    def is_image_size_exceeded(self):
+        """
+        Check if the union tag is ``image_size_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'image_size_exceeded'
+
+    def __repr__(self):
+        return 'PaperDocCreateError(%r, %r)' % (self._tag, self._value)
+
+PaperDocCreateError_validator = bv.Union(PaperDocCreateError)
+
+class PaperDocCreateUpdateResult(object):
+    """
+    :ivar doc_id: Doc ID of the newly created doc.
+    :ivar revision: The Paper doc revision. Simply an ever increasing number.
+    :ivar title: The Paper doc title.
+    """
+
+    __slots__ = [
+        '_doc_id_value',
+        '_doc_id_present',
+        '_revision_value',
+        '_revision_present',
+        '_title_value',
+        '_title_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 doc_id=None,
+                 revision=None,
+                 title=None):
+        self._doc_id_value = None
+        self._doc_id_present = False
+        self._revision_value = None
+        self._revision_present = False
+        self._title_value = None
+        self._title_present = False
+        if doc_id is not None:
+            self.doc_id = doc_id
+        if revision is not None:
+            self.revision = revision
+        if title is not None:
+            self.title = title
+
+    @property
+    def doc_id(self):
+        """
+        Doc ID of the newly created doc.
+
+        :rtype: str
+        """
+        if self._doc_id_present:
+            return self._doc_id_value
+        else:
+            raise AttributeError("missing required field 'doc_id'")
+
+    @doc_id.setter
+    def doc_id(self, val):
+        val = self._doc_id_validator.validate(val)
+        self._doc_id_value = val
+        self._doc_id_present = True
+
+    @doc_id.deleter
+    def doc_id(self):
+        self._doc_id_value = None
+        self._doc_id_present = False
+
+    @property
+    def revision(self):
+        """
+        The Paper doc revision. Simply an ever increasing number.
+
+        :rtype: long
+        """
+        if self._revision_present:
+            return self._revision_value
+        else:
+            raise AttributeError("missing required field 'revision'")
+
+    @revision.setter
+    def revision(self, val):
+        val = self._revision_validator.validate(val)
+        self._revision_value = val
+        self._revision_present = True
+
+    @revision.deleter
+    def revision(self):
+        self._revision_value = None
+        self._revision_present = False
+
+    @property
+    def title(self):
+        """
+        The Paper doc title.
+
+        :rtype: str
+        """
+        if self._title_present:
+            return self._title_value
+        else:
+            raise AttributeError("missing required field 'title'")
+
+    @title.setter
+    def title(self, val):
+        val = self._title_validator.validate(val)
+        self._title_value = val
+        self._title_present = True
+
+    @title.deleter
+    def title(self):
+        self._title_value = None
+        self._title_present = False
+
+    def __repr__(self):
+        return 'PaperDocCreateUpdateResult(doc_id={!r}, revision={!r}, title={!r})'.format(
+            self._doc_id_value,
+            self._revision_value,
+            self._title_value,
+        )
+
+PaperDocCreateUpdateResult_validator = bv.Struct(PaperDocCreateUpdateResult)
+
 class PaperDocExport(RefPaperDoc):
 
     __slots__ = [
@@ -2692,6 +3016,270 @@ class PaperDocSharingPolicy(RefPaperDoc):
         )
 
 PaperDocSharingPolicy_validator = bv.Struct(PaperDocSharingPolicy)
+
+class PaperDocUpdateArgs(RefPaperDoc):
+    """
+    :ivar doc_update_policy: The policy used for the current update call.
+    :ivar revision: The latest doc revision. This value must match the head
+        revision or an error code will be returned. This is to prevent colliding
+        writes.
+    :ivar import_format: The format of provided data.
+    """
+
+    __slots__ = [
+        '_doc_update_policy_value',
+        '_doc_update_policy_present',
+        '_revision_value',
+        '_revision_present',
+        '_import_format_value',
+        '_import_format_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 doc_id=None,
+                 doc_update_policy=None,
+                 revision=None,
+                 import_format=None):
+        super(PaperDocUpdateArgs, self).__init__(doc_id)
+        self._doc_update_policy_value = None
+        self._doc_update_policy_present = False
+        self._revision_value = None
+        self._revision_present = False
+        self._import_format_value = None
+        self._import_format_present = False
+        if doc_update_policy is not None:
+            self.doc_update_policy = doc_update_policy
+        if revision is not None:
+            self.revision = revision
+        if import_format is not None:
+            self.import_format = import_format
+
+    @property
+    def doc_update_policy(self):
+        """
+        The policy used for the current update call.
+
+        :rtype: PaperDocUpdatePolicy
+        """
+        if self._doc_update_policy_present:
+            return self._doc_update_policy_value
+        else:
+            raise AttributeError("missing required field 'doc_update_policy'")
+
+    @doc_update_policy.setter
+    def doc_update_policy(self, val):
+        self._doc_update_policy_validator.validate_type_only(val)
+        self._doc_update_policy_value = val
+        self._doc_update_policy_present = True
+
+    @doc_update_policy.deleter
+    def doc_update_policy(self):
+        self._doc_update_policy_value = None
+        self._doc_update_policy_present = False
+
+    @property
+    def revision(self):
+        """
+        The latest doc revision. This value must match the head revision or an
+        error code will be returned. This is to prevent colliding writes.
+
+        :rtype: long
+        """
+        if self._revision_present:
+            return self._revision_value
+        else:
+            raise AttributeError("missing required field 'revision'")
+
+    @revision.setter
+    def revision(self, val):
+        val = self._revision_validator.validate(val)
+        self._revision_value = val
+        self._revision_present = True
+
+    @revision.deleter
+    def revision(self):
+        self._revision_value = None
+        self._revision_present = False
+
+    @property
+    def import_format(self):
+        """
+        The format of provided data.
+
+        :rtype: ImportFormat
+        """
+        if self._import_format_present:
+            return self._import_format_value
+        else:
+            raise AttributeError("missing required field 'import_format'")
+
+    @import_format.setter
+    def import_format(self, val):
+        self._import_format_validator.validate_type_only(val)
+        self._import_format_value = val
+        self._import_format_present = True
+
+    @import_format.deleter
+    def import_format(self):
+        self._import_format_value = None
+        self._import_format_present = False
+
+    def __repr__(self):
+        return 'PaperDocUpdateArgs(doc_id={!r}, doc_update_policy={!r}, revision={!r}, import_format={!r})'.format(
+            self._doc_id_value,
+            self._doc_update_policy_value,
+            self._revision_value,
+            self._import_format_value,
+        )
+
+PaperDocUpdateArgs_validator = bv.Struct(PaperDocUpdateArgs)
+
+class PaperDocUpdateError(DocLookupError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar content_malformed: The provided content was malformed and cannot be
+        imported to Paper.
+    :ivar revision_mismatch: The provided revision does not match the document
+        head.
+    :ivar doc_length_exceeded: The newly created Paper doc would be too large,
+        split the content into multiple docs.
+    :ivar image_size_exceeded: The imported document contains an image that is
+        too large. The current limit is 1MB. Note: This only applies to HTML
+        with data uri.
+    :ivar doc_archived: This operation is not allowed on archived Paper docs.
+    :ivar doc_deleted: This operation is not allowed on deleted Paper docs.
+    """
+
+    # Attribute is overwritten below the class definition
+    content_malformed = None
+    # Attribute is overwritten below the class definition
+    revision_mismatch = None
+    # Attribute is overwritten below the class definition
+    doc_length_exceeded = None
+    # Attribute is overwritten below the class definition
+    image_size_exceeded = None
+    # Attribute is overwritten below the class definition
+    doc_archived = None
+    # Attribute is overwritten below the class definition
+    doc_deleted = None
+
+    def is_content_malformed(self):
+        """
+        Check if the union tag is ``content_malformed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_malformed'
+
+    def is_revision_mismatch(self):
+        """
+        Check if the union tag is ``revision_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'revision_mismatch'
+
+    def is_doc_length_exceeded(self):
+        """
+        Check if the union tag is ``doc_length_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'doc_length_exceeded'
+
+    def is_image_size_exceeded(self):
+        """
+        Check if the union tag is ``image_size_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'image_size_exceeded'
+
+    def is_doc_archived(self):
+        """
+        Check if the union tag is ``doc_archived``.
+
+        :rtype: bool
+        """
+        return self._tag == 'doc_archived'
+
+    def is_doc_deleted(self):
+        """
+        Check if the union tag is ``doc_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'doc_deleted'
+
+    def __repr__(self):
+        return 'PaperDocUpdateError(%r, %r)' % (self._tag, self._value)
+
+PaperDocUpdateError_validator = bv.Union(PaperDocUpdateError)
+
+class PaperDocUpdatePolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar append: The content will be appended to the doc.
+    :ivar prepend: The content will be prepended to the doc. Note: the doc title
+        will not be affected.
+    :ivar overwrite_all: The document will be overwitten at the head with the
+        provided content.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    append = None
+    # Attribute is overwritten below the class definition
+    prepend = None
+    # Attribute is overwritten below the class definition
+    overwrite_all = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_append(self):
+        """
+        Check if the union tag is ``append``.
+
+        :rtype: bool
+        """
+        return self._tag == 'append'
+
+    def is_prepend(self):
+        """
+        Check if the union tag is ``prepend``.
+
+        :rtype: bool
+        """
+        return self._tag == 'prepend'
+
+    def is_overwrite_all(self):
+        """
+        Check if the union tag is ``overwrite_all``.
+
+        :rtype: bool
+        """
+        return self._tag == 'overwrite_all'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'PaperDocUpdatePolicy(%r, %r)' % (self._tag, self._value)
+
+PaperDocUpdatePolicy_validator = bv.Union(PaperDocUpdatePolicy)
 
 class RemovePaperDocUser(RefPaperDoc):
     """
@@ -3221,6 +3809,22 @@ FoldersContainingPaperDoc._all_fields_ = [
     ('folders', FoldersContainingPaperDoc._folders_validator),
 ]
 
+ImportFormat._html_validator = bv.Void()
+ImportFormat._markdown_validator = bv.Void()
+ImportFormat._plain_text_validator = bv.Void()
+ImportFormat._other_validator = bv.Void()
+ImportFormat._tagmap = {
+    'html': ImportFormat._html_validator,
+    'markdown': ImportFormat._markdown_validator,
+    'plain_text': ImportFormat._plain_text_validator,
+    'other': ImportFormat._other_validator,
+}
+
+ImportFormat.html = ImportFormat('html')
+ImportFormat.markdown = ImportFormat('markdown')
+ImportFormat.plain_text = ImportFormat('plain_text')
+ImportFormat.other = ImportFormat('other')
+
 InviteeInfoWithPermissionLevel._invitee_validator = sharing.InviteeInfo_validator
 InviteeInfoWithPermissionLevel._permission_level_validator = PaperDocPermissionLevel_validator
 InviteeInfoWithPermissionLevel._all_field_names_ = set([
@@ -3407,6 +4011,48 @@ PaperApiCursorError.wrong_user_in_cursor = PaperApiCursorError('wrong_user_in_cu
 PaperApiCursorError.reset = PaperApiCursorError('reset')
 PaperApiCursorError.other = PaperApiCursorError('other')
 
+PaperDocCreateArgs._parent_folder_id_validator = bv.Nullable(bv.String())
+PaperDocCreateArgs._import_format_validator = ImportFormat_validator
+PaperDocCreateArgs._all_field_names_ = set([
+    'parent_folder_id',
+    'import_format',
+])
+PaperDocCreateArgs._all_fields_ = [
+    ('parent_folder_id', PaperDocCreateArgs._parent_folder_id_validator),
+    ('import_format', PaperDocCreateArgs._import_format_validator),
+]
+
+PaperDocCreateError._content_malformed_validator = bv.Void()
+PaperDocCreateError._folder_not_found_validator = bv.Void()
+PaperDocCreateError._doc_length_exceeded_validator = bv.Void()
+PaperDocCreateError._image_size_exceeded_validator = bv.Void()
+PaperDocCreateError._tagmap = {
+    'content_malformed': PaperDocCreateError._content_malformed_validator,
+    'folder_not_found': PaperDocCreateError._folder_not_found_validator,
+    'doc_length_exceeded': PaperDocCreateError._doc_length_exceeded_validator,
+    'image_size_exceeded': PaperDocCreateError._image_size_exceeded_validator,
+}
+PaperDocCreateError._tagmap.update(PaperApiBaseError._tagmap)
+
+PaperDocCreateError.content_malformed = PaperDocCreateError('content_malformed')
+PaperDocCreateError.folder_not_found = PaperDocCreateError('folder_not_found')
+PaperDocCreateError.doc_length_exceeded = PaperDocCreateError('doc_length_exceeded')
+PaperDocCreateError.image_size_exceeded = PaperDocCreateError('image_size_exceeded')
+
+PaperDocCreateUpdateResult._doc_id_validator = bv.String()
+PaperDocCreateUpdateResult._revision_validator = bv.Int64()
+PaperDocCreateUpdateResult._title_validator = bv.String()
+PaperDocCreateUpdateResult._all_field_names_ = set([
+    'doc_id',
+    'revision',
+    'title',
+])
+PaperDocCreateUpdateResult._all_fields_ = [
+    ('doc_id', PaperDocCreateUpdateResult._doc_id_validator),
+    ('revision', PaperDocCreateUpdateResult._revision_validator),
+    ('title', PaperDocCreateUpdateResult._title_validator),
+]
+
 PaperDocExport._export_format_validator = ExportFormat_validator
 PaperDocExport._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['export_format']))
 PaperDocExport._all_fields_ = RefPaperDoc._all_fields_ + [('export_format', PaperDocExport._export_format_validator)]
@@ -3444,6 +4090,59 @@ PaperDocPermissionLevel.other = PaperDocPermissionLevel('other')
 PaperDocSharingPolicy._sharing_policy_validator = SharingPolicy_validator
 PaperDocSharingPolicy._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['sharing_policy']))
 PaperDocSharingPolicy._all_fields_ = RefPaperDoc._all_fields_ + [('sharing_policy', PaperDocSharingPolicy._sharing_policy_validator)]
+
+PaperDocUpdateArgs._doc_update_policy_validator = PaperDocUpdatePolicy_validator
+PaperDocUpdateArgs._revision_validator = bv.Int64()
+PaperDocUpdateArgs._import_format_validator = ImportFormat_validator
+PaperDocUpdateArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
+    'doc_update_policy',
+    'revision',
+    'import_format',
+]))
+PaperDocUpdateArgs._all_fields_ = RefPaperDoc._all_fields_ + [
+    ('doc_update_policy', PaperDocUpdateArgs._doc_update_policy_validator),
+    ('revision', PaperDocUpdateArgs._revision_validator),
+    ('import_format', PaperDocUpdateArgs._import_format_validator),
+]
+
+PaperDocUpdateError._content_malformed_validator = bv.Void()
+PaperDocUpdateError._revision_mismatch_validator = bv.Void()
+PaperDocUpdateError._doc_length_exceeded_validator = bv.Void()
+PaperDocUpdateError._image_size_exceeded_validator = bv.Void()
+PaperDocUpdateError._doc_archived_validator = bv.Void()
+PaperDocUpdateError._doc_deleted_validator = bv.Void()
+PaperDocUpdateError._tagmap = {
+    'content_malformed': PaperDocUpdateError._content_malformed_validator,
+    'revision_mismatch': PaperDocUpdateError._revision_mismatch_validator,
+    'doc_length_exceeded': PaperDocUpdateError._doc_length_exceeded_validator,
+    'image_size_exceeded': PaperDocUpdateError._image_size_exceeded_validator,
+    'doc_archived': PaperDocUpdateError._doc_archived_validator,
+    'doc_deleted': PaperDocUpdateError._doc_deleted_validator,
+}
+PaperDocUpdateError._tagmap.update(DocLookupError._tagmap)
+
+PaperDocUpdateError.content_malformed = PaperDocUpdateError('content_malformed')
+PaperDocUpdateError.revision_mismatch = PaperDocUpdateError('revision_mismatch')
+PaperDocUpdateError.doc_length_exceeded = PaperDocUpdateError('doc_length_exceeded')
+PaperDocUpdateError.image_size_exceeded = PaperDocUpdateError('image_size_exceeded')
+PaperDocUpdateError.doc_archived = PaperDocUpdateError('doc_archived')
+PaperDocUpdateError.doc_deleted = PaperDocUpdateError('doc_deleted')
+
+PaperDocUpdatePolicy._append_validator = bv.Void()
+PaperDocUpdatePolicy._prepend_validator = bv.Void()
+PaperDocUpdatePolicy._overwrite_all_validator = bv.Void()
+PaperDocUpdatePolicy._other_validator = bv.Void()
+PaperDocUpdatePolicy._tagmap = {
+    'append': PaperDocUpdatePolicy._append_validator,
+    'prepend': PaperDocUpdatePolicy._prepend_validator,
+    'overwrite_all': PaperDocUpdatePolicy._overwrite_all_validator,
+    'other': PaperDocUpdatePolicy._other_validator,
+}
+
+PaperDocUpdatePolicy.append = PaperDocUpdatePolicy('append')
+PaperDocUpdatePolicy.prepend = PaperDocUpdatePolicy('prepend')
+PaperDocUpdatePolicy.overwrite_all = PaperDocUpdatePolicy('overwrite_all')
+PaperDocUpdatePolicy.other = PaperDocUpdatePolicy('other')
 
 RemovePaperDocUser._member_validator = sharing.MemberSelector_validator
 RemovePaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['member']))
@@ -3513,6 +4212,15 @@ docs_archive = bb.Route(
     DocLookupError_validator,
     {'host': u'api',
      'style': u'rpc'},
+)
+docs_create = bb.Route(
+    'docs/create',
+    False,
+    PaperDocCreateArgs_validator,
+    PaperDocCreateUpdateResult_validator,
+    PaperDocCreateError_validator,
+    {'host': u'api',
+     'style': u'upload'},
 )
 docs_download = bb.Route(
     'docs/download',
@@ -3595,6 +4303,15 @@ docs_sharing_policy_set = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+docs_update = bb.Route(
+    'docs/update',
+    False,
+    PaperDocUpdateArgs_validator,
+    PaperDocCreateUpdateResult_validator,
+    PaperDocUpdateError_validator,
+    {'host': u'api',
+     'style': u'upload'},
+)
 docs_users_add = bb.Route(
     'docs/users/add',
     False,
@@ -3634,6 +4351,7 @@ docs_users_remove = bb.Route(
 
 ROUTES = {
     'docs/archive': docs_archive,
+    'docs/create': docs_create,
     'docs/download': docs_download,
     'docs/folder_users/list': docs_folder_users_list,
     'docs/folder_users/list/continue': docs_folder_users_list_continue,
@@ -3643,6 +4361,7 @@ ROUTES = {
     'docs/permanently_delete': docs_permanently_delete,
     'docs/sharing_policy/get': docs_sharing_policy_get,
     'docs/sharing_policy/set': docs_sharing_policy_set,
+    'docs/update': docs_update,
     'docs/users/add': docs_users_add,
     'docs/users/list': docs_users_list,
     'docs/users/list/continue': docs_users_list_continue,
