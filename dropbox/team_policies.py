@@ -116,6 +116,221 @@ class OfficeAddInPolicy(bb.Union):
 
 OfficeAddInPolicy_validator = bv.Union(OfficeAddInPolicy)
 
+class PaperDeploymentPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar full: All team members have access to Paper.
+    :ivar partial: Only whitelisted team members can access Paper. To see which
+        user is whitelisted, check 'is_paper_whitelisted' on 'account/info'.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    full = None
+    # Attribute is overwritten below the class definition
+    partial = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_full(self):
+        """
+        Check if the union tag is ``full``.
+
+        :rtype: bool
+        """
+        return self._tag == 'full'
+
+    def is_partial(self):
+        """
+        Check if the union tag is ``partial``.
+
+        :rtype: bool
+        """
+        return self._tag == 'partial'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'PaperDeploymentPolicy(%r, %r)' % (self._tag, self._value)
+
+PaperDeploymentPolicy_validator = bv.Union(PaperDeploymentPolicy)
+
+class PaperEnabledPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar disabled: Paper is disabled.
+    :ivar enabled: Paper is enabled.
+    :ivar unspecified: Unspecified policy.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    unspecified = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_unspecified(self):
+        """
+        Check if the union tag is ``unspecified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unspecified'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'PaperEnabledPolicy(%r, %r)' % (self._tag, self._value)
+
+PaperEnabledPolicy_validator = bv.Union(PaperEnabledPolicy)
+
+class PasswordStrengthPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar minimal_requirements: User passwords will adhere to the minimal
+        password strength policy.
+    :ivar moderate_password: User passwords will adhere to the moderate password
+        strength policy.
+    :ivar strong_password: User passwords will adhere to the very strong
+        password strength policy.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    minimal_requirements = None
+    # Attribute is overwritten below the class definition
+    moderate_password = None
+    # Attribute is overwritten below the class definition
+    strong_password = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_minimal_requirements(self):
+        """
+        Check if the union tag is ``minimal_requirements``.
+
+        :rtype: bool
+        """
+        return self._tag == 'minimal_requirements'
+
+    def is_moderate_password(self):
+        """
+        Check if the union tag is ``moderate_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'moderate_password'
+
+    def is_strong_password(self):
+        """
+        Check if the union tag is ``strong_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'strong_password'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'PasswordStrengthPolicy(%r, %r)' % (self._tag, self._value)
+
+PasswordStrengthPolicy_validator = bv.Union(PasswordStrengthPolicy)
+
+class RolloutMethod(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar unlink_all: Unlink all.
+    :ivar unlink_most_inactive: Unlink devices with the most inactivity.
+    :ivar add_member_to_exceptions: Add member to Exceptions.
+    """
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    unlink_all = None
+    # Attribute is overwritten below the class definition
+    unlink_most_inactive = None
+    # Attribute is overwritten below the class definition
+    add_member_to_exceptions = None
+
+    def is_unlink_all(self):
+        """
+        Check if the union tag is ``unlink_all``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unlink_all'
+
+    def is_unlink_most_inactive(self):
+        """
+        Check if the union tag is ``unlink_most_inactive``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unlink_most_inactive'
+
+    def is_add_member_to_exceptions(self):
+        """
+        Check if the union tag is ``add_member_to_exceptions``.
+
+        :rtype: bool
+        """
+        return self._tag == 'add_member_to_exceptions'
+
+    def __repr__(self):
+        return 'RolloutMethod(%r, %r)' % (self._tag, self._value)
+
+RolloutMethod_validator = bv.Union(RolloutMethod)
+
 class SharedFolderJoinPolicy(bb.Union):
     """
     Policy governing which shared folders a team member can join.
@@ -282,6 +497,67 @@ class SharedLinkCreatePolicy(bb.Union):
         return 'SharedLinkCreatePolicy(%r, %r)' % (self._tag, self._value)
 
 SharedLinkCreatePolicy_validator = bv.Union(SharedLinkCreatePolicy)
+
+class SsoPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar disabled: Users will be able to sign in with their Dropbox
+        credentials.
+    :ivar optional: Users will be able to sign in with either their Dropbox or
+        single sign-on credentials.
+    :ivar required: Users will be required to sign in with their single sign-on
+        credentials.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    optional = None
+    # Attribute is overwritten below the class definition
+    required = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_optional(self):
+        """
+        Check if the union tag is ``optional``.
+
+        :rtype: bool
+        """
+        return self._tag == 'optional'
+
+    def is_required(self):
+        """
+        Check if the union tag is ``required``.
+
+        :rtype: bool
+        """
+        return self._tag == 'required'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'SsoPolicy(%r, %r)' % (self._tag, self._value)
+
+SsoPolicy_validator = bv.Union(SsoPolicy)
 
 class TeamMemberPolicies(object):
     """
@@ -555,6 +831,64 @@ OfficeAddInPolicy.disabled = OfficeAddInPolicy('disabled')
 OfficeAddInPolicy.enabled = OfficeAddInPolicy('enabled')
 OfficeAddInPolicy.other = OfficeAddInPolicy('other')
 
+PaperDeploymentPolicy._full_validator = bv.Void()
+PaperDeploymentPolicy._partial_validator = bv.Void()
+PaperDeploymentPolicy._other_validator = bv.Void()
+PaperDeploymentPolicy._tagmap = {
+    'full': PaperDeploymentPolicy._full_validator,
+    'partial': PaperDeploymentPolicy._partial_validator,
+    'other': PaperDeploymentPolicy._other_validator,
+}
+
+PaperDeploymentPolicy.full = PaperDeploymentPolicy('full')
+PaperDeploymentPolicy.partial = PaperDeploymentPolicy('partial')
+PaperDeploymentPolicy.other = PaperDeploymentPolicy('other')
+
+PaperEnabledPolicy._disabled_validator = bv.Void()
+PaperEnabledPolicy._enabled_validator = bv.Void()
+PaperEnabledPolicy._unspecified_validator = bv.Void()
+PaperEnabledPolicy._other_validator = bv.Void()
+PaperEnabledPolicy._tagmap = {
+    'disabled': PaperEnabledPolicy._disabled_validator,
+    'enabled': PaperEnabledPolicy._enabled_validator,
+    'unspecified': PaperEnabledPolicy._unspecified_validator,
+    'other': PaperEnabledPolicy._other_validator,
+}
+
+PaperEnabledPolicy.disabled = PaperEnabledPolicy('disabled')
+PaperEnabledPolicy.enabled = PaperEnabledPolicy('enabled')
+PaperEnabledPolicy.unspecified = PaperEnabledPolicy('unspecified')
+PaperEnabledPolicy.other = PaperEnabledPolicy('other')
+
+PasswordStrengthPolicy._minimal_requirements_validator = bv.Void()
+PasswordStrengthPolicy._moderate_password_validator = bv.Void()
+PasswordStrengthPolicy._strong_password_validator = bv.Void()
+PasswordStrengthPolicy._other_validator = bv.Void()
+PasswordStrengthPolicy._tagmap = {
+    'minimal_requirements': PasswordStrengthPolicy._minimal_requirements_validator,
+    'moderate_password': PasswordStrengthPolicy._moderate_password_validator,
+    'strong_password': PasswordStrengthPolicy._strong_password_validator,
+    'other': PasswordStrengthPolicy._other_validator,
+}
+
+PasswordStrengthPolicy.minimal_requirements = PasswordStrengthPolicy('minimal_requirements')
+PasswordStrengthPolicy.moderate_password = PasswordStrengthPolicy('moderate_password')
+PasswordStrengthPolicy.strong_password = PasswordStrengthPolicy('strong_password')
+PasswordStrengthPolicy.other = PasswordStrengthPolicy('other')
+
+RolloutMethod._unlink_all_validator = bv.Void()
+RolloutMethod._unlink_most_inactive_validator = bv.Void()
+RolloutMethod._add_member_to_exceptions_validator = bv.Void()
+RolloutMethod._tagmap = {
+    'unlink_all': RolloutMethod._unlink_all_validator,
+    'unlink_most_inactive': RolloutMethod._unlink_most_inactive_validator,
+    'add_member_to_exceptions': RolloutMethod._add_member_to_exceptions_validator,
+}
+
+RolloutMethod.unlink_all = RolloutMethod('unlink_all')
+RolloutMethod.unlink_most_inactive = RolloutMethod('unlink_most_inactive')
+RolloutMethod.add_member_to_exceptions = RolloutMethod('add_member_to_exceptions')
+
 SharedFolderJoinPolicy._from_team_only_validator = bv.Void()
 SharedFolderJoinPolicy._from_anyone_validator = bv.Void()
 SharedFolderJoinPolicy._other_validator = bv.Void()
@@ -596,6 +930,22 @@ SharedLinkCreatePolicy.default_public = SharedLinkCreatePolicy('default_public')
 SharedLinkCreatePolicy.default_team_only = SharedLinkCreatePolicy('default_team_only')
 SharedLinkCreatePolicy.team_only = SharedLinkCreatePolicy('team_only')
 SharedLinkCreatePolicy.other = SharedLinkCreatePolicy('other')
+
+SsoPolicy._disabled_validator = bv.Void()
+SsoPolicy._optional_validator = bv.Void()
+SsoPolicy._required_validator = bv.Void()
+SsoPolicy._other_validator = bv.Void()
+SsoPolicy._tagmap = {
+    'disabled': SsoPolicy._disabled_validator,
+    'optional': SsoPolicy._optional_validator,
+    'required': SsoPolicy._required_validator,
+    'other': SsoPolicy._other_validator,
+}
+
+SsoPolicy.disabled = SsoPolicy('disabled')
+SsoPolicy.optional = SsoPolicy('optional')
+SsoPolicy.required = SsoPolicy('required')
+SsoPolicy.other = SsoPolicy('other')
 
 TeamMemberPolicies._sharing_validator = TeamSharingPolicies_validator
 TeamMemberPolicies._emm_state_validator = EmmState_validator

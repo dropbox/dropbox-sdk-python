@@ -73,16 +73,16 @@ class PathRoot(bb.Union):
     :ivar home: Paths are relative to the authenticating user's home directory,
         whether or not that user belongs to a team.
     :ivar member_home: Paths are relative to the authenticating team member's
-        home directory. (This results in :field:`PathRootError.invalid' if the
-        user does not belong to a team.)
+        home directory. (This results in ``PathRootError.invalid`` if the user
+        does not belong to a team.).
     :ivar str team: Paths are relative to the given team directory. (This
         results in :field:`PathRootError.invalid` if the user is not a member of
-        the team associated with that path root id.)
+        the team associated with that path root id.).
     :ivar user_home: Paths are relative to the user's home directory. (This
-        results in ``PathRootError.invalid`` if the belongs to a team.)
+        results in ``PathRootError.invalid`` if the belongs to a team.).
     :ivar str namespace_id: Paths are relative to given namespace id (This
         results in :field:`PathRootError.no_permission` if you don't have access
-        to this namespace.)
+        to this namespace.).
     """
 
     _catch_all = 'other'
@@ -169,7 +169,7 @@ class PathRoot(bb.Union):
         """
         Paths are relative to the given team directory. (This results in
         ``PathRootError.invalid`` if the user is not a member of the team
-        associated with that path root id.)
+        associated with that path root id.).
 
         Only call this if :meth:`is_team` is true.
 
@@ -183,7 +183,7 @@ class PathRoot(bb.Union):
         """
         Paths are relative to given namespace id (This results in
         ``PathRootError.no_permission`` if you don't have access to this
-        namespace.)
+        namespace.).
 
         Only call this if :meth:`is_namespace_id` is true.
 

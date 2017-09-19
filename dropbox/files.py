@@ -19,119 +19,14 @@ try:
     from . import (
         async,
         common,
-        properties,
+        file_properties,
         users_common,
     )
 except (SystemError, ValueError):
     import async
     import common
-    import properties
+    import file_properties
     import users_common
-
-class PropertiesError(properties.PropertyTemplateError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    @classmethod
-    def path(cls, val):
-        """
-        Create an instance of this class set to the ``path`` tag with value
-        ``val``.
-
-        :param LookupError val:
-        :rtype: PropertiesError
-        """
-        return cls('path', val)
-
-    def is_path(self):
-        """
-        Check if the union tag is ``path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path'
-
-    def get_path(self):
-        """
-        Only call this if :meth:`is_path` is true.
-
-        :rtype: LookupError
-        """
-        if not self.is_path():
-            raise AttributeError("tag 'path' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'PropertiesError(%r, %r)' % (self._tag, self._value)
-
-PropertiesError_validator = bv.Union(PropertiesError)
-
-class InvalidPropertyGroupError(PropertiesError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar property_field_too_large: A field value in this property group is too
-        large.
-    :ivar does_not_fit_template: The property group specified does not conform
-        to the property template.
-    """
-
-    # Attribute is overwritten below the class definition
-    property_field_too_large = None
-    # Attribute is overwritten below the class definition
-    does_not_fit_template = None
-
-    def is_property_field_too_large(self):
-        """
-        Check if the union tag is ``property_field_too_large``.
-
-        :rtype: bool
-        """
-        return self._tag == 'property_field_too_large'
-
-    def is_does_not_fit_template(self):
-        """
-        Check if the union tag is ``does_not_fit_template``.
-
-        :rtype: bool
-        """
-        return self._tag == 'does_not_fit_template'
-
-    def __repr__(self):
-        return 'InvalidPropertyGroupError(%r, %r)' % (self._tag, self._value)
-
-InvalidPropertyGroupError_validator = bv.Union(InvalidPropertyGroupError)
-
-class AddPropertiesError(InvalidPropertyGroupError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar property_group_already_exists: This property group already exists for
-        this file.
-    """
-
-    # Attribute is overwritten below the class definition
-    property_group_already_exists = None
-
-    def is_property_group_already_exists(self):
-        """
-        Check if the union tag is ``property_group_already_exists``.
-
-        :rtype: bool
-        """
-        return self._tag == 'property_group_already_exists'
-
-    def __repr__(self):
-        return 'AddPropertiesError(%r, %r)' % (self._tag, self._value)
-
-AddPropertiesError_validator = bv.Union(AddPropertiesError)
 
 class GetMetadataArg(object):
     """
@@ -408,7 +303,7 @@ class AlphaGetMetadataError(GetMetadataError):
         Create an instance of this class set to the ``properties_error`` tag
         with value ``val``.
 
-        :param LookUpPropertiesError val:
+        :param file_properties.LookUpPropertiesError_validator val:
         :rtype: AlphaGetMetadataError
         """
         return cls('properties_error', val)
@@ -425,7 +320,7 @@ class AlphaGetMetadataError(GetMetadataError):
         """
         Only call this if :meth:`is_properties_error` is true.
 
-        :rtype: LookUpPropertiesError
+        :rtype: file_properties.LookUpPropertiesError_validator
         """
         if not self.is_properties_error():
             raise AttributeError("tag 'properties_error' not set")
@@ -666,7 +561,7 @@ class CommitInfoWithProperties(CommitInfo):
         """
         List of custom properties to add to file.
 
-        :rtype: list of [properties.PropertyGroup_validator]
+        :rtype: list of [file_properties.PropertyGroup_validator]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -2212,7 +2107,7 @@ class FileMetadata(Metadata):
         Additional information if the file has custom properties with the
         property template specified.
 
-        :rtype: list of [properties.PropertyGroup_validator]
+        :rtype: list of [file_properties.PropertyGroup_validator]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -2591,7 +2486,7 @@ class FolderMetadata(Metadata):
         Additional information if the file has custom properties with the
         property template specified.
 
-        :rtype: list of [properties.PropertyGroup_validator]
+        :rtype: list of [file_properties.PropertyGroup_validator]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -4657,33 +4552,6 @@ class ListRevisionsResult(object):
 
 ListRevisionsResult_validator = bv.Struct(ListRevisionsResult)
 
-class LookUpPropertiesError(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar property_group_not_found: This property group does not exist for this
-        file.
-    """
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    property_group_not_found = None
-
-    def is_property_group_not_found(self):
-        """
-        Check if the union tag is ``property_group_not_found``.
-
-        :rtype: bool
-        """
-        return self._tag == 'property_group_not_found'
-
-    def __repr__(self):
-        return 'LookUpPropertiesError(%r, %r)' % (self._tag, self._value)
-
-LookUpPropertiesError_validator = bv.Union(LookUpPropertiesError)
-
 class LookupError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -5163,212 +5031,6 @@ class PreviewError(bb.Union):
         return 'PreviewError(%r, %r)' % (self._tag, self._value)
 
 PreviewError_validator = bv.Union(PreviewError)
-
-class PropertyGroupUpdate(object):
-    """
-    :ivar template_id: A unique identifier for a property template.
-    :ivar add_or_update_fields: List of property fields to update if the field
-        already exists. If the field doesn't exist, add the field to the
-        property group.
-    :ivar remove_fields: List of property field names to remove from property
-        group if the field exists.
-    """
-
-    __slots__ = [
-        '_template_id_value',
-        '_template_id_present',
-        '_add_or_update_fields_value',
-        '_add_or_update_fields_present',
-        '_remove_fields_value',
-        '_remove_fields_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 template_id=None,
-                 add_or_update_fields=None,
-                 remove_fields=None):
-        self._template_id_value = None
-        self._template_id_present = False
-        self._add_or_update_fields_value = None
-        self._add_or_update_fields_present = False
-        self._remove_fields_value = None
-        self._remove_fields_present = False
-        if template_id is not None:
-            self.template_id = template_id
-        if add_or_update_fields is not None:
-            self.add_or_update_fields = add_or_update_fields
-        if remove_fields is not None:
-            self.remove_fields = remove_fields
-
-    @property
-    def template_id(self):
-        """
-        A unique identifier for a property template.
-
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
-
-    @property
-    def add_or_update_fields(self):
-        """
-        List of property fields to update if the field already exists. If the
-        field doesn't exist, add the field to the property group.
-
-        :rtype: list of [properties.PropertyField_validator]
-        """
-        if self._add_or_update_fields_present:
-            return self._add_or_update_fields_value
-        else:
-            return None
-
-    @add_or_update_fields.setter
-    def add_or_update_fields(self, val):
-        if val is None:
-            del self.add_or_update_fields
-            return
-        val = self._add_or_update_fields_validator.validate(val)
-        self._add_or_update_fields_value = val
-        self._add_or_update_fields_present = True
-
-    @add_or_update_fields.deleter
-    def add_or_update_fields(self):
-        self._add_or_update_fields_value = None
-        self._add_or_update_fields_present = False
-
-    @property
-    def remove_fields(self):
-        """
-        List of property field names to remove from property group if the field
-        exists.
-
-        :rtype: list of [str]
-        """
-        if self._remove_fields_present:
-            return self._remove_fields_value
-        else:
-            return None
-
-    @remove_fields.setter
-    def remove_fields(self, val):
-        if val is None:
-            del self.remove_fields
-            return
-        val = self._remove_fields_validator.validate(val)
-        self._remove_fields_value = val
-        self._remove_fields_present = True
-
-    @remove_fields.deleter
-    def remove_fields(self):
-        self._remove_fields_value = None
-        self._remove_fields_present = False
-
-    def __repr__(self):
-        return 'PropertyGroupUpdate(template_id={!r}, add_or_update_fields={!r}, remove_fields={!r})'.format(
-            self._template_id_value,
-            self._add_or_update_fields_value,
-            self._remove_fields_value,
-        )
-
-PropertyGroupUpdate_validator = bv.Struct(PropertyGroupUpdate)
-
-class PropertyGroupWithPath(object):
-    """
-    :ivar path: A unique identifier for the file.
-    :ivar property_groups: Filled custom property templates associated with a
-        file.
-    """
-
-    __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_property_groups_value',
-        '_property_groups_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 property_groups=None):
-        self._path_value = None
-        self._path_present = False
-        self._property_groups_value = None
-        self._property_groups_present = False
-        if path is not None:
-            self.path = path
-        if property_groups is not None:
-            self.property_groups = property_groups
-
-    @property
-    def path(self):
-        """
-        A unique identifier for the file.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def property_groups(self):
-        """
-        Filled custom property templates associated with a file.
-
-        :rtype: list of [properties.PropertyGroup_validator]
-        """
-        if self._property_groups_present:
-            return self._property_groups_value
-        else:
-            raise AttributeError("missing required field 'property_groups'")
-
-    @property_groups.setter
-    def property_groups(self, val):
-        val = self._property_groups_validator.validate(val)
-        self._property_groups_value = val
-        self._property_groups_present = True
-
-    @property_groups.deleter
-    def property_groups(self):
-        self._property_groups_value = None
-        self._property_groups_present = False
-
-    def __repr__(self):
-        return 'PropertyGroupWithPath(path={!r}, property_groups={!r})'.format(
-            self._path_value,
-            self._property_groups_value,
-        )
-
-PropertyGroupWithPath_validator = bv.Struct(PropertyGroupWithPath)
 
 class RelocationPath(object):
     """
@@ -6231,130 +5893,6 @@ class RelocationResult(FileOpsResult):
         )
 
 RelocationResult_validator = bv.Struct(RelocationResult)
-
-class RemovePropertiesArg(object):
-    """
-    :ivar path: A unique identifier for the file.
-    :ivar property_template_ids: A list of identifiers for a property template
-        created by route properties/template/add.
-    """
-
-    __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_property_template_ids_value',
-        '_property_template_ids_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 property_template_ids=None):
-        self._path_value = None
-        self._path_present = False
-        self._property_template_ids_value = None
-        self._property_template_ids_present = False
-        if path is not None:
-            self.path = path
-        if property_template_ids is not None:
-            self.property_template_ids = property_template_ids
-
-    @property
-    def path(self):
-        """
-        A unique identifier for the file.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def property_template_ids(self):
-        """
-        A list of identifiers for a property template created by route
-        properties/template/add.
-
-        :rtype: list of [str]
-        """
-        if self._property_template_ids_present:
-            return self._property_template_ids_value
-        else:
-            raise AttributeError("missing required field 'property_template_ids'")
-
-    @property_template_ids.setter
-    def property_template_ids(self, val):
-        val = self._property_template_ids_validator.validate(val)
-        self._property_template_ids_value = val
-        self._property_template_ids_present = True
-
-    @property_template_ids.deleter
-    def property_template_ids(self):
-        self._property_template_ids_value = None
-        self._property_template_ids_present = False
-
-    def __repr__(self):
-        return 'RemovePropertiesArg(path={!r}, property_template_ids={!r})'.format(
-            self._path_value,
-            self._property_template_ids_value,
-        )
-
-RemovePropertiesArg_validator = bv.Struct(RemovePropertiesArg)
-
-class RemovePropertiesError(PropertiesError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    @classmethod
-    def property_group_lookup(cls, val):
-        """
-        Create an instance of this class set to the ``property_group_lookup``
-        tag with value ``val``.
-
-        :param LookUpPropertiesError val:
-        :rtype: RemovePropertiesError
-        """
-        return cls('property_group_lookup', val)
-
-    def is_property_group_lookup(self):
-        """
-        Check if the union tag is ``property_group_lookup``.
-
-        :rtype: bool
-        """
-        return self._tag == 'property_group_lookup'
-
-    def get_property_group_lookup(self):
-        """
-        Only call this if :meth:`is_property_group_lookup` is true.
-
-        :rtype: LookUpPropertiesError
-        """
-        if not self.is_property_group_lookup():
-            raise AttributeError("tag 'property_group_lookup' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'RemovePropertiesError(%r, %r)' % (self._tag, self._value)
-
-RemovePropertiesError_validator = bv.Union(RemovePropertiesError)
 
 class RestoreArg(object):
     """
@@ -7906,129 +7444,6 @@ class ThumbnailSize(bb.Union):
 
 ThumbnailSize_validator = bv.Union(ThumbnailSize)
 
-class UpdatePropertiesError(InvalidPropertyGroupError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    @classmethod
-    def property_group_lookup(cls, val):
-        """
-        Create an instance of this class set to the ``property_group_lookup``
-        tag with value ``val``.
-
-        :param LookUpPropertiesError val:
-        :rtype: UpdatePropertiesError
-        """
-        return cls('property_group_lookup', val)
-
-    def is_property_group_lookup(self):
-        """
-        Check if the union tag is ``property_group_lookup``.
-
-        :rtype: bool
-        """
-        return self._tag == 'property_group_lookup'
-
-    def get_property_group_lookup(self):
-        """
-        Only call this if :meth:`is_property_group_lookup` is true.
-
-        :rtype: LookUpPropertiesError
-        """
-        if not self.is_property_group_lookup():
-            raise AttributeError("tag 'property_group_lookup' not set")
-        return self._value
-
-    def __repr__(self):
-        return 'UpdatePropertiesError(%r, %r)' % (self._tag, self._value)
-
-UpdatePropertiesError_validator = bv.Union(UpdatePropertiesError)
-
-class UpdatePropertyGroupArg(object):
-    """
-    :ivar path: A unique identifier for the file.
-    :ivar update_property_groups: Filled custom property templates associated
-        with a file.
-    """
-
-    __slots__ = [
-        '_path_value',
-        '_path_present',
-        '_update_property_groups_value',
-        '_update_property_groups_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 update_property_groups=None):
-        self._path_value = None
-        self._path_present = False
-        self._update_property_groups_value = None
-        self._update_property_groups_present = False
-        if path is not None:
-            self.path = path
-        if update_property_groups is not None:
-            self.update_property_groups = update_property_groups
-
-    @property
-    def path(self):
-        """
-        A unique identifier for the file.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def update_property_groups(self):
-        """
-        Filled custom property templates associated with a file.
-
-        :rtype: list of [PropertyGroupUpdate]
-        """
-        if self._update_property_groups_present:
-            return self._update_property_groups_value
-        else:
-            raise AttributeError("missing required field 'update_property_groups'")
-
-    @update_property_groups.setter
-    def update_property_groups(self, val):
-        val = self._update_property_groups_validator.validate(val)
-        self._update_property_groups_value = val
-        self._update_property_groups_present = True
-
-    @update_property_groups.deleter
-    def update_property_groups(self):
-        self._update_property_groups_value = None
-        self._update_property_groups_present = False
-
-    def __repr__(self):
-        return 'UpdatePropertyGroupArg(path={!r}, update_property_groups={!r})'.format(
-            self._path_value,
-            self._update_property_groups_value,
-        )
-
-UpdatePropertyGroupArg_validator = bv.Struct(UpdatePropertyGroupArg)
-
 class UploadError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -8100,7 +7515,7 @@ class UploadErrorWithProperties(UploadError):
         Create an instance of this class set to the ``properties_error`` tag
         with value ``val``.
 
-        :param InvalidPropertyGroupError val:
+        :param file_properties.InvalidPropertyGroupError_validator val:
         :rtype: UploadErrorWithProperties
         """
         return cls('properties_error', val)
@@ -8117,7 +7532,7 @@ class UploadErrorWithProperties(UploadError):
         """
         Only call this if :meth:`is_properties_error` is true.
 
-        :rtype: InvalidPropertyGroupError
+        :rtype: file_properties.InvalidPropertyGroupError_validator
         """
         if not self.is_properties_error():
             raise AttributeError("tag 'properties_error' not set")
@@ -9468,31 +8883,6 @@ Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
 Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
 WritePath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
 WritePathOrId_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)|(id:.*)')
-PropertiesError._path_validator = LookupError_validator
-PropertiesError._tagmap = {
-    'path': PropertiesError._path_validator,
-}
-PropertiesError._tagmap.update(properties.PropertyTemplateError._tagmap)
-
-InvalidPropertyGroupError._property_field_too_large_validator = bv.Void()
-InvalidPropertyGroupError._does_not_fit_template_validator = bv.Void()
-InvalidPropertyGroupError._tagmap = {
-    'property_field_too_large': InvalidPropertyGroupError._property_field_too_large_validator,
-    'does_not_fit_template': InvalidPropertyGroupError._does_not_fit_template_validator,
-}
-InvalidPropertyGroupError._tagmap.update(PropertiesError._tagmap)
-
-InvalidPropertyGroupError.property_field_too_large = InvalidPropertyGroupError('property_field_too_large')
-InvalidPropertyGroupError.does_not_fit_template = InvalidPropertyGroupError('does_not_fit_template')
-
-AddPropertiesError._property_group_already_exists_validator = bv.Void()
-AddPropertiesError._tagmap = {
-    'property_group_already_exists': AddPropertiesError._property_group_already_exists_validator,
-}
-AddPropertiesError._tagmap.update(InvalidPropertyGroupError._tagmap)
-
-AddPropertiesError.property_group_already_exists = AddPropertiesError('property_group_already_exists')
-
 GetMetadataArg._path_validator = ReadPath_validator
 GetMetadataArg._include_media_info_validator = bv.Boolean()
 GetMetadataArg._include_deleted_validator = bv.Boolean()
@@ -9510,7 +8900,7 @@ GetMetadataArg._all_fields_ = [
     ('include_has_explicit_shared_members', GetMetadataArg._include_has_explicit_shared_members_validator),
 ]
 
-AlphaGetMetadataArg._include_property_templates_validator = bv.Nullable(bv.List(properties.TemplateId_validator))
+AlphaGetMetadataArg._include_property_templates_validator = bv.Nullable(bv.List(file_properties.TemplateId_validator))
 AlphaGetMetadataArg._all_field_names_ = GetMetadataArg._all_field_names_.union(set(['include_property_templates']))
 AlphaGetMetadataArg._all_fields_ = GetMetadataArg._all_fields_ + [('include_property_templates', AlphaGetMetadataArg._include_property_templates_validator)]
 
@@ -9519,7 +8909,7 @@ GetMetadataError._tagmap = {
     'path': GetMetadataError._path_validator,
 }
 
-AlphaGetMetadataError._properties_error_validator = LookUpPropertiesError_validator
+AlphaGetMetadataError._properties_error_validator = file_properties.LookUpPropertiesError_validator
 AlphaGetMetadataError._tagmap = {
     'properties_error': AlphaGetMetadataError._properties_error_validator,
 }
@@ -9545,7 +8935,7 @@ CommitInfo._all_fields_ = [
     ('mute', CommitInfo._mute_validator),
 ]
 
-CommitInfoWithProperties._property_groups_validator = bv.Nullable(bv.List(properties.PropertyGroup_validator))
+CommitInfoWithProperties._property_groups_validator = bv.Nullable(bv.List(file_properties.PropertyGroup_validator))
 CommitInfoWithProperties._all_field_names_ = CommitInfo._all_field_names_.union(set(['property_groups']))
 CommitInfoWithProperties._all_fields_ = CommitInfo._all_fields_ + [('property_groups', CommitInfoWithProperties._property_groups_validator)]
 
@@ -9722,7 +9112,7 @@ FileMetadata._rev_validator = Rev_validator
 FileMetadata._size_validator = bv.UInt64()
 FileMetadata._media_info_validator = bv.Nullable(MediaInfo_validator)
 FileMetadata._sharing_info_validator = bv.Nullable(FileSharingInfo_validator)
-FileMetadata._property_groups_validator = bv.Nullable(bv.List(properties.PropertyGroup_validator))
+FileMetadata._property_groups_validator = bv.Nullable(bv.List(file_properties.PropertyGroup_validator))
 FileMetadata._has_explicit_shared_members_validator = bv.Nullable(bv.Boolean())
 FileMetadata._content_hash_validator = bv.Nullable(Sha256HexHash_validator)
 FileMetadata._field_names_ = set([
@@ -9770,7 +9160,7 @@ FileSharingInfo._all_fields_ = SharingInfo._all_fields_ + [
 FolderMetadata._id_validator = Id_validator
 FolderMetadata._shared_folder_id_validator = bv.Nullable(common.SharedFolderId_validator)
 FolderMetadata._sharing_info_validator = bv.Nullable(FolderSharingInfo_validator)
-FolderMetadata._property_groups_validator = bv.Nullable(bv.List(properties.PropertyGroup_validator))
+FolderMetadata._property_groups_validator = bv.Nullable(bv.List(file_properties.PropertyGroup_validator))
 FolderMetadata._field_names_ = set([
     'id',
     'shared_folder_id',
@@ -10040,13 +9430,6 @@ ListRevisionsResult._all_fields_ = [
     ('entries', ListRevisionsResult._entries_validator),
 ]
 
-LookUpPropertiesError._property_group_not_found_validator = bv.Void()
-LookUpPropertiesError._tagmap = {
-    'property_group_not_found': LookUpPropertiesError._property_group_not_found_validator,
-}
-
-LookUpPropertiesError.property_group_not_found = LookUpPropertiesError('property_group_not_found')
-
 LookupError._malformed_path_validator = MalformedPathError_validator
 LookupError._not_found_validator = bv.Void()
 LookupError._not_file_validator = bv.Void()
@@ -10133,31 +9516,6 @@ PreviewError._tagmap = {
 PreviewError.in_progress = PreviewError('in_progress')
 PreviewError.unsupported_extension = PreviewError('unsupported_extension')
 PreviewError.unsupported_content = PreviewError('unsupported_content')
-
-PropertyGroupUpdate._template_id_validator = properties.TemplateId_validator
-PropertyGroupUpdate._add_or_update_fields_validator = bv.Nullable(bv.List(properties.PropertyField_validator))
-PropertyGroupUpdate._remove_fields_validator = bv.Nullable(bv.List(bv.String()))
-PropertyGroupUpdate._all_field_names_ = set([
-    'template_id',
-    'add_or_update_fields',
-    'remove_fields',
-])
-PropertyGroupUpdate._all_fields_ = [
-    ('template_id', PropertyGroupUpdate._template_id_validator),
-    ('add_or_update_fields', PropertyGroupUpdate._add_or_update_fields_validator),
-    ('remove_fields', PropertyGroupUpdate._remove_fields_validator),
-]
-
-PropertyGroupWithPath._path_validator = PathOrId_validator
-PropertyGroupWithPath._property_groups_validator = bv.List(properties.PropertyGroup_validator)
-PropertyGroupWithPath._all_field_names_ = set([
-    'path',
-    'property_groups',
-])
-PropertyGroupWithPath._all_fields_ = [
-    ('path', PropertyGroupWithPath._path_validator),
-    ('property_groups', PropertyGroupWithPath._property_groups_validator),
-]
 
 RelocationPath._from_path_validator = WritePathOrId_validator
 RelocationPath._to_path_validator = WritePathOrId_validator
@@ -10269,23 +9627,6 @@ RelocationBatchResultData._all_fields_ = [('metadata', RelocationBatchResultData
 RelocationResult._metadata_validator = Metadata_validator
 RelocationResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['metadata']))
 RelocationResult._all_fields_ = FileOpsResult._all_fields_ + [('metadata', RelocationResult._metadata_validator)]
-
-RemovePropertiesArg._path_validator = PathOrId_validator
-RemovePropertiesArg._property_template_ids_validator = bv.List(properties.TemplateId_validator)
-RemovePropertiesArg._all_field_names_ = set([
-    'path',
-    'property_template_ids',
-])
-RemovePropertiesArg._all_fields_ = [
-    ('path', RemovePropertiesArg._path_validator),
-    ('property_template_ids', RemovePropertiesArg._property_template_ids_validator),
-]
-
-RemovePropertiesError._property_group_lookup_validator = LookUpPropertiesError_validator
-RemovePropertiesError._tagmap = {
-    'property_group_lookup': RemovePropertiesError._property_group_lookup_validator,
-}
-RemovePropertiesError._tagmap.update(PropertiesError._tagmap)
 
 RestoreArg._path_validator = WritePath_validator
 RestoreArg._rev_validator = Rev_validator
@@ -10529,23 +9870,6 @@ ThumbnailSize.w128h128 = ThumbnailSize('w128h128')
 ThumbnailSize.w640h480 = ThumbnailSize('w640h480')
 ThumbnailSize.w1024h768 = ThumbnailSize('w1024h768')
 
-UpdatePropertiesError._property_group_lookup_validator = LookUpPropertiesError_validator
-UpdatePropertiesError._tagmap = {
-    'property_group_lookup': UpdatePropertiesError._property_group_lookup_validator,
-}
-UpdatePropertiesError._tagmap.update(InvalidPropertyGroupError._tagmap)
-
-UpdatePropertyGroupArg._path_validator = PathOrId_validator
-UpdatePropertyGroupArg._update_property_groups_validator = bv.List(PropertyGroupUpdate_validator)
-UpdatePropertyGroupArg._all_field_names_ = set([
-    'path',
-    'update_property_groups',
-])
-UpdatePropertyGroupArg._all_fields_ = [
-    ('path', UpdatePropertyGroupArg._path_validator),
-    ('update_property_groups', UpdatePropertyGroupArg._update_property_groups_validator),
-]
-
 UploadError._path_validator = UploadWriteFailed_validator
 UploadError._other_validator = bv.Void()
 UploadError._tagmap = {
@@ -10555,7 +9879,7 @@ UploadError._tagmap = {
 
 UploadError.other = UploadError('other')
 
-UploadErrorWithProperties._properties_error_validator = InvalidPropertyGroupError_validator
+UploadErrorWithProperties._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
 UploadErrorWithProperties._tagmap = {
     'properties_error': UploadErrorWithProperties._properties_error_validator,
 }
@@ -11012,55 +10336,55 @@ permanently_delete = bb.Route(
 )
 properties_add = bb.Route(
     'properties/add',
-    False,
-    PropertyGroupWithPath_validator,
+    True,
+    file_properties.AddPropertiesArg_validator,
     bv.Void(),
-    AddPropertiesError_validator,
+    file_properties.AddPropertiesError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
 properties_overwrite = bb.Route(
     'properties/overwrite',
-    False,
-    PropertyGroupWithPath_validator,
+    True,
+    file_properties.OverwritePropertyGroupArg_validator,
     bv.Void(),
-    InvalidPropertyGroupError_validator,
+    file_properties.InvalidPropertyGroupError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
 properties_remove = bb.Route(
     'properties/remove',
-    False,
-    RemovePropertiesArg_validator,
+    True,
+    file_properties.RemovePropertiesArg_validator,
     bv.Void(),
-    RemovePropertiesError_validator,
+    file_properties.RemovePropertiesError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
 properties_template_get = bb.Route(
     'properties/template/get',
-    False,
-    properties.GetPropertyTemplateArg_validator,
-    properties.GetPropertyTemplateResult_validator,
-    properties.PropertyTemplateError_validator,
+    True,
+    file_properties.GetTemplateArg_validator,
+    file_properties.GetTemplateResult_validator,
+    file_properties.TemplateError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
 properties_template_list = bb.Route(
     'properties/template/list',
-    False,
+    True,
     bv.Void(),
-    properties.ListPropertyTemplateIds_validator,
-    properties.PropertyTemplateError_validator,
+    file_properties.ListTemplateResult_validator,
+    file_properties.TemplateError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
 properties_update = bb.Route(
     'properties/update',
-    False,
-    UpdatePropertyGroupArg_validator,
+    True,
+    file_properties.UpdatePropertiesArg_validator,
     bv.Void(),
-    UpdatePropertiesError_validator,
+    file_properties.UpdatePropertiesError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )

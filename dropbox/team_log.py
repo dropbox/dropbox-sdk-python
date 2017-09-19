@@ -16,12 +16,14 @@ try:
         common,
         files,
         team_common,
+        team_policies,
         users_common,
     )
 except (SystemError, ValueError):
     import common
     import files
     import team_common
+    import team_policies
     import users_common
 
 class AccessMethodLogInfo(bb.Union):
@@ -2274,7 +2276,7 @@ DeviceApprovalsChangeMobilePolicyDetails_validator = bv.Struct(DeviceApprovalsCh
 class DeviceApprovalsChangeOverageActionDetails(object):
     """
     Changed the action taken when a team member is already over the limits (e.g
-    when they join the team, an admin lowers limits, etc).
+    when they join the team, an admin lowers limits, etc.).
 
     :ivar new_value: New over the limits policy. Might be missing due to
         historical data gap.
@@ -2308,7 +2310,7 @@ class DeviceApprovalsChangeOverageActionDetails(object):
         """
         New over the limits policy. Might be missing due to historical data gap.
 
-        :rtype: DeviceApprovalsRolloutPolicy
+        :rtype: team_policies.RolloutMethod_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -2335,7 +2337,7 @@ class DeviceApprovalsChangeOverageActionDetails(object):
         Previous over the limit policy. Might be missing due to historical data
         gap.
 
-        :rtype: DeviceApprovalsRolloutPolicy
+        :rtype: team_policies.RolloutMethod_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -2500,60 +2502,6 @@ class DeviceApprovalsPolicy(bb.Union):
         return 'DeviceApprovalsPolicy(%r, %r)' % (self._tag, self._value)
 
 DeviceApprovalsPolicy_validator = bv.Union(DeviceApprovalsPolicy)
-
-class DeviceApprovalsRolloutPolicy(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    remove_oldest = None
-    # Attribute is overwritten below the class definition
-    remove_all = None
-    # Attribute is overwritten below the class definition
-    add_exception = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_remove_oldest(self):
-        """
-        Check if the union tag is ``remove_oldest``.
-
-        :rtype: bool
-        """
-        return self._tag == 'remove_oldest'
-
-    def is_remove_all(self):
-        """
-        Check if the union tag is ``remove_all``.
-
-        :rtype: bool
-        """
-        return self._tag == 'remove_all'
-
-    def is_add_exception(self):
-        """
-        Check if the union tag is ``add_exception``.
-
-        :rtype: bool
-        """
-        return self._tag == 'add_exception'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'DeviceApprovalsRolloutPolicy(%r, %r)' % (self._tag, self._value)
-
-DeviceApprovalsRolloutPolicy_validator = bv.Union(DeviceApprovalsRolloutPolicy)
 
 class DeviceChangeIpDesktopDetails(object):
     """
@@ -4196,7 +4144,7 @@ class EmmChangePolicyDetails(object):
         """
         New enterprise mobility management policy.
 
-        :rtype: EmmPolicy
+        :rtype: team_policies.EmmState_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -4220,7 +4168,7 @@ class EmmChangePolicyDetails(object):
         Previous enterprise mobility management policy. Might be missing due to
         historical data gap.
 
-        :rtype: EmmPolicy
+        :rtype: team_policies.EmmState_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -4302,62 +4250,6 @@ class EmmLoginSuccessDetails(object):
         return 'EmmLoginSuccessDetails()'
 
 EmmLoginSuccessDetails_validator = bv.Struct(EmmLoginSuccessDetails)
-
-class EmmPolicy(bb.Union):
-    """
-    Enterprise mobility management policy
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    disabled = None
-    # Attribute is overwritten below the class definition
-    optional = None
-    # Attribute is overwritten below the class definition
-    required = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_disabled(self):
-        """
-        Check if the union tag is ``disabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'disabled'
-
-    def is_optional(self):
-        """
-        Check if the union tag is ``optional``.
-
-        :rtype: bool
-        """
-        return self._tag == 'optional'
-
-    def is_required(self):
-        """
-        Check if the union tag is ``required``.
-
-        :rtype: bool
-        """
-        return self._tag == 'required'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'EmmPolicy(%r, %r)' % (self._tag, self._value)
-
-EmmPolicy_validator = bv.Union(EmmPolicy)
 
 class EmmRefreshAuthTokenDetails(object):
     """
@@ -4977,10 +4869,6 @@ class EventDetails(bb.Union):
         the manager permissions belonging to a group member.
     :ivar GroupCreateDetails group_create_details: Created a group.
     :ivar GroupDeleteDetails group_delete_details: Deleted a group.
-    :ivar GroupDescriptionUpdatedDetails group_description_updated_details:
-        Updated a group.
-    :ivar GroupJoinPolicyUpdatedDetails group_join_policy_updated_details:
-        Updated a group join policy.
     :ivar GroupMovedDetails group_moved_details: Moved a group.
     :ivar GroupRemoveExternalIdDetails group_remove_external_id_details: Removed
         the external ID for group.
@@ -5023,9 +4911,6 @@ class EventDetails(bb.Union):
         Added Paper doc or folder to a folder.
     :ivar PaperContentArchiveDetails paper_content_archive_details: Archived
         Paper doc or folder.
-    :ivar PaperContentChangeSubscriptionDetails
-        paper_content_change_subscription_details: Followed or unfollowed a
-        Paper doc or folder.
     :ivar PaperContentCreateDetails paper_content_create_details: Created a
         Paper doc or folder.
     :ivar PaperContentPermanentlyDeleteDetails
@@ -5047,6 +4932,9 @@ class EventDetails(bb.Union):
     :ivar PaperDocChangeSharingPolicyDetails
         paper_doc_change_sharing_policy_details: Changed the sharing policy for
         Paper doc.
+    :ivar PaperDocChangeSubscriptionDetails
+        paper_doc_change_subscription_details: Followed or unfollowed a Paper
+        doc.
     :ivar PaperDocDeletedDetails paper_doc_deleted_details: Paper doc archived.
     :ivar PaperDocDeleteCommentDetails paper_doc_delete_comment_details: Deleted
         a Paper doc comment.
@@ -5069,9 +4957,15 @@ class EventDetails(bb.Union):
         link shared via slack.
     :ivar PaperDocTeamInviteDetails paper_doc_team_invite_details: Paper doc
         shared with team member.
+    :ivar PaperDocTrashedDetails paper_doc_trashed_details: Paper doc trashed.
     :ivar PaperDocUnresolveCommentDetails paper_doc_unresolve_comment_details:
         Unresolved a Paper doc comment.
+    :ivar PaperDocUntrashedDetails paper_doc_untrashed_details: Paper doc
+        untrashed.
     :ivar PaperDocViewDetails paper_doc_view_details: Viewed Paper doc.
+    :ivar PaperFolderChangeSubscriptionDetails
+        paper_folder_change_subscription_details: Followed or unfollowed a Paper
+        folder.
     :ivar PaperFolderDeletedDetails paper_folder_deleted_details: Paper folder
         archived.
     :ivar PaperFolderFollowedDetails paper_folder_followed_details: Followed a
@@ -5289,7 +5183,7 @@ class EventDetails(bb.Union):
     :ivar DeviceApprovalsChangeOverageActionDetails
         device_approvals_change_overage_action_details: Changed the action taken
         when a team member is already over the limits (e.g when they join the
-        team, an admin lowers limits, etc).
+        team, an admin lowers limits, etc.).
     :ivar DeviceApprovalsChangeUnlinkActionDetails
         device_approvals_change_unlink_action_details: Changed the action taken
         with respect to approval limits when a team member unlinks an approved
@@ -6289,28 +6183,6 @@ class EventDetails(bb.Union):
         return cls('group_delete_details', val)
 
     @classmethod
-    def group_description_updated_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``group_description_updated_details`` tag with value ``val``.
-
-        :param GroupDescriptionUpdatedDetails val:
-        :rtype: EventDetails
-        """
-        return cls('group_description_updated_details', val)
-
-    @classmethod
-    def group_join_policy_updated_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``group_join_policy_updated_details`` tag with value ``val``.
-
-        :param GroupJoinPolicyUpdatedDetails val:
-        :rtype: EventDetails
-        """
-        return cls('group_join_policy_updated_details', val)
-
-    @classmethod
     def group_moved_details(cls, val):
         """
         Create an instance of this class set to the ``group_moved_details`` tag
@@ -6553,17 +6425,6 @@ class EventDetails(bb.Union):
         return cls('paper_content_archive_details', val)
 
     @classmethod
-    def paper_content_change_subscription_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``paper_content_change_subscription_details`` tag with value ``val``.
-
-        :param PaperContentChangeSubscriptionDetails val:
-        :rtype: EventDetails
-        """
-        return cls('paper_content_change_subscription_details', val)
-
-    @classmethod
     def paper_content_create_details(cls, val):
         """
         Create an instance of this class set to the
@@ -6661,6 +6522,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('paper_doc_change_sharing_policy_details', val)
+
+    @classmethod
+    def paper_doc_change_subscription_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_doc_change_subscription_details`` tag with value ``val``.
+
+        :param PaperDocChangeSubscriptionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('paper_doc_change_subscription_details', val)
 
     @classmethod
     def paper_doc_deleted_details(cls, val):
@@ -6795,6 +6667,17 @@ class EventDetails(bb.Union):
         return cls('paper_doc_team_invite_details', val)
 
     @classmethod
+    def paper_doc_trashed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_doc_trashed_details`` tag with value ``val``.
+
+        :param PaperDocTrashedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('paper_doc_trashed_details', val)
+
+    @classmethod
     def paper_doc_unresolve_comment_details(cls, val):
         """
         Create an instance of this class set to the
@@ -6806,6 +6689,17 @@ class EventDetails(bb.Union):
         return cls('paper_doc_unresolve_comment_details', val)
 
     @classmethod
+    def paper_doc_untrashed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_doc_untrashed_details`` tag with value ``val``.
+
+        :param PaperDocUntrashedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('paper_doc_untrashed_details', val)
+
+    @classmethod
     def paper_doc_view_details(cls, val):
         """
         Create an instance of this class set to the ``paper_doc_view_details``
@@ -6815,6 +6709,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('paper_doc_view_details', val)
+
+    @classmethod
+    def paper_folder_change_subscription_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_folder_change_subscription_details`` tag with value ``val``.
+
+        :param PaperFolderChangeSubscriptionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('paper_folder_change_subscription_details', val)
 
     @classmethod
     def paper_folder_deleted_details(cls, val):
@@ -8992,22 +8897,6 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'group_delete_details'
 
-    def is_group_description_updated_details(self):
-        """
-        Check if the union tag is ``group_description_updated_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'group_description_updated_details'
-
-    def is_group_join_policy_updated_details(self):
-        """
-        Check if the union tag is ``group_join_policy_updated_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'group_join_policy_updated_details'
-
     def is_group_moved_details(self):
         """
         Check if the union tag is ``group_moved_details``.
@@ -9184,14 +9073,6 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'paper_content_archive_details'
 
-    def is_paper_content_change_subscription_details(self):
-        """
-        Check if the union tag is ``paper_content_change_subscription_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'paper_content_change_subscription_details'
-
     def is_paper_content_create_details(self):
         """
         Check if the union tag is ``paper_content_create_details``.
@@ -9263,6 +9144,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'paper_doc_change_sharing_policy_details'
+
+    def is_paper_doc_change_subscription_details(self):
+        """
+        Check if the union tag is ``paper_doc_change_subscription_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_change_subscription_details'
 
     def is_paper_doc_deleted_details(self):
         """
@@ -9360,6 +9249,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'paper_doc_team_invite_details'
 
+    def is_paper_doc_trashed_details(self):
+        """
+        Check if the union tag is ``paper_doc_trashed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_trashed_details'
+
     def is_paper_doc_unresolve_comment_details(self):
         """
         Check if the union tag is ``paper_doc_unresolve_comment_details``.
@@ -9368,6 +9265,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'paper_doc_unresolve_comment_details'
 
+    def is_paper_doc_untrashed_details(self):
+        """
+        Check if the union tag is ``paper_doc_untrashed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_untrashed_details'
+
     def is_paper_doc_view_details(self):
         """
         Check if the union tag is ``paper_doc_view_details``.
@@ -9375,6 +9280,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'paper_doc_view_details'
+
+    def is_paper_folder_change_subscription_details(self):
+        """
+        Check if the union tag is ``paper_folder_change_subscription_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_folder_change_subscription_details'
 
     def is_paper_folder_deleted_details(self):
         """
@@ -11450,30 +11363,6 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'group_delete_details' not set")
         return self._value
 
-    def get_group_description_updated_details(self):
-        """
-        Updated a group.
-
-        Only call this if :meth:`is_group_description_updated_details` is true.
-
-        :rtype: GroupDescriptionUpdatedDetails
-        """
-        if not self.is_group_description_updated_details():
-            raise AttributeError("tag 'group_description_updated_details' not set")
-        return self._value
-
-    def get_group_join_policy_updated_details(self):
-        """
-        Updated a group join policy.
-
-        Only call this if :meth:`is_group_join_policy_updated_details` is true.
-
-        :rtype: GroupJoinPolicyUpdatedDetails
-        """
-        if not self.is_group_join_policy_updated_details():
-            raise AttributeError("tag 'group_join_policy_updated_details' not set")
-        return self._value
-
     def get_group_moved_details(self):
         """
         Moved a group.
@@ -11738,18 +11627,6 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'paper_content_archive_details' not set")
         return self._value
 
-    def get_paper_content_change_subscription_details(self):
-        """
-        Followed or unfollowed a Paper doc or folder.
-
-        Only call this if :meth:`is_paper_content_change_subscription_details` is true.
-
-        :rtype: PaperContentChangeSubscriptionDetails
-        """
-        if not self.is_paper_content_change_subscription_details():
-            raise AttributeError("tag 'paper_content_change_subscription_details' not set")
-        return self._value
-
     def get_paper_content_create_details(self):
         """
         Created a Paper doc or folder.
@@ -11856,6 +11733,18 @@ class EventDetails(bb.Union):
         """
         if not self.is_paper_doc_change_sharing_policy_details():
             raise AttributeError("tag 'paper_doc_change_sharing_policy_details' not set")
+        return self._value
+
+    def get_paper_doc_change_subscription_details(self):
+        """
+        Followed or unfollowed a Paper doc.
+
+        Only call this if :meth:`is_paper_doc_change_subscription_details` is true.
+
+        :rtype: PaperDocChangeSubscriptionDetails
+        """
+        if not self.is_paper_doc_change_subscription_details():
+            raise AttributeError("tag 'paper_doc_change_subscription_details' not set")
         return self._value
 
     def get_paper_doc_deleted_details(self):
@@ -12002,6 +11891,18 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'paper_doc_team_invite_details' not set")
         return self._value
 
+    def get_paper_doc_trashed_details(self):
+        """
+        Paper doc trashed.
+
+        Only call this if :meth:`is_paper_doc_trashed_details` is true.
+
+        :rtype: PaperDocTrashedDetails
+        """
+        if not self.is_paper_doc_trashed_details():
+            raise AttributeError("tag 'paper_doc_trashed_details' not set")
+        return self._value
+
     def get_paper_doc_unresolve_comment_details(self):
         """
         Unresolved a Paper doc comment.
@@ -12014,6 +11915,18 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'paper_doc_unresolve_comment_details' not set")
         return self._value
 
+    def get_paper_doc_untrashed_details(self):
+        """
+        Paper doc untrashed.
+
+        Only call this if :meth:`is_paper_doc_untrashed_details` is true.
+
+        :rtype: PaperDocUntrashedDetails
+        """
+        if not self.is_paper_doc_untrashed_details():
+            raise AttributeError("tag 'paper_doc_untrashed_details' not set")
+        return self._value
+
     def get_paper_doc_view_details(self):
         """
         Viewed Paper doc.
@@ -12024,6 +11937,18 @@ class EventDetails(bb.Union):
         """
         if not self.is_paper_doc_view_details():
             raise AttributeError("tag 'paper_doc_view_details' not set")
+        return self._value
+
+    def get_paper_folder_change_subscription_details(self):
+        """
+        Followed or unfollowed a Paper folder.
+
+        Only call this if :meth:`is_paper_folder_change_subscription_details` is true.
+
+        :rtype: PaperFolderChangeSubscriptionDetails
+        """
+        if not self.is_paper_folder_change_subscription_details():
+            raise AttributeError("tag 'paper_folder_change_subscription_details' not set")
         return self._value
 
     def get_paper_folder_deleted_details(self):
@@ -13154,7 +13079,7 @@ class EventDetails(bb.Union):
     def get_device_approvals_change_overage_action_details(self):
         """
         Changed the action taken when a team member is already over the limits
-        (e.g when they join the team, an admin lowers limits, etc).
+        (e.g when they join the team, an admin lowers limits, etc.).
 
         Only call this if :meth:`is_device_approvals_change_overage_action_details` is true.
 
@@ -13869,8 +13794,6 @@ class EventType(bb.Union):
         a group member.
     :ivar group_create: Created a group.
     :ivar group_delete: Deleted a group.
-    :ivar group_description_updated: Updated a group.
-    :ivar group_join_policy_updated: Updated a group join policy.
     :ivar group_moved: Moved a group. This event is deprecated and will not be
         logged going forward as the associated product functionality no longer
         exists.
@@ -13897,8 +13820,6 @@ class EventType(bb.Union):
         or folder.
     :ivar paper_content_add_to_folder: Added Paper doc or folder to a folder.
     :ivar paper_content_archive: Archived Paper doc or folder.
-    :ivar paper_content_change_subscription: Followed or unfollowed a Paper doc
-        or folder.
     :ivar paper_content_create: Created a Paper doc or folder.
     :ivar paper_content_permanently_delete: Permanently deleted a Paper doc or
         folder.
@@ -13913,6 +13834,7 @@ class EventType(bb.Union):
         member.
     :ivar paper_doc_change_sharing_policy: Changed the sharing policy for Paper
         doc.
+    :ivar paper_doc_change_subscription: Followed or unfollowed a Paper doc.
     :ivar paper_doc_deleted: Paper doc archived. This event is deprecated and
         will not be logged going forward as the associated product functionality
         no longer exists.
@@ -13922,7 +13844,7 @@ class EventType(bb.Union):
     :ivar paper_doc_edit: Edited a Paper doc.
     :ivar paper_doc_edit_comment: Edited a Paper doc comment.
     :ivar paper_doc_followed: Followed a Paper doc. This event is replaced by
-        paper_content_change_subscription and will not be logged going forward.
+        paper_doc_change_subscription and will not be logged going forward.
     :ivar paper_doc_mention: Mentioned a member in a Paper doc.
     :ivar paper_doc_request_access: Requested to be a member on a Paper doc.
     :ivar paper_doc_resolve_comment: Paper doc comment resolved.
@@ -13931,13 +13853,17 @@ class EventType(bb.Union):
     :ivar paper_doc_team_invite: Paper doc shared with team member. This event
         is deprecated and will not be logged going forward as the associated
         product functionality no longer exists.
+    :ivar paper_doc_trashed: Paper doc trashed.
     :ivar paper_doc_unresolve_comment: Unresolved a Paper doc comment.
+    :ivar paper_doc_untrashed: Paper doc untrashed.
     :ivar paper_doc_view: Viewed Paper doc.
+    :ivar paper_folder_change_subscription: Followed or unfollowed a Paper
+        folder.
     :ivar paper_folder_deleted: Paper folder archived. This event is deprecated
         and will not be logged going forward as the associated product
         functionality no longer exists.
     :ivar paper_folder_followed: Followed a Paper folder. This event is replaced
-        by paper_content_change_subscription and will not be logged going
+        by paper_folder_change_subscription and will not be logged going
         forward.
     :ivar paper_folder_team_invite: Paper folder shared with team member. This
         event is deprecated and will not be logged going forward as the
@@ -14113,7 +14039,7 @@ class EventType(bb.Union):
         Dropbox account.
     :ivar device_approvals_change_overage_action: Changed the action taken when
         a team member is already over the limits (e.g when they join the team,
-        an admin lowers limits, etc).
+        an admin lowers limits, etc.).
     :ivar device_approvals_change_unlink_action: Changed the action taken with
         respect to approval limits when a team member unlinks an approved
         device.
@@ -14359,10 +14285,6 @@ class EventType(bb.Union):
     # Attribute is overwritten below the class definition
     group_delete = None
     # Attribute is overwritten below the class definition
-    group_description_updated = None
-    # Attribute is overwritten below the class definition
-    group_join_policy_updated = None
-    # Attribute is overwritten below the class definition
     group_moved = None
     # Attribute is overwritten below the class definition
     group_remove_external_id = None
@@ -14407,8 +14329,6 @@ class EventType(bb.Union):
     # Attribute is overwritten below the class definition
     paper_content_archive = None
     # Attribute is overwritten below the class definition
-    paper_content_change_subscription = None
-    # Attribute is overwritten below the class definition
     paper_content_create = None
     # Attribute is overwritten below the class definition
     paper_content_permanently_delete = None
@@ -14426,6 +14346,8 @@ class EventType(bb.Union):
     paper_doc_change_member_role = None
     # Attribute is overwritten below the class definition
     paper_doc_change_sharing_policy = None
+    # Attribute is overwritten below the class definition
+    paper_doc_change_subscription = None
     # Attribute is overwritten below the class definition
     paper_doc_deleted = None
     # Attribute is overwritten below the class definition
@@ -14451,9 +14373,15 @@ class EventType(bb.Union):
     # Attribute is overwritten below the class definition
     paper_doc_team_invite = None
     # Attribute is overwritten below the class definition
+    paper_doc_trashed = None
+    # Attribute is overwritten below the class definition
     paper_doc_unresolve_comment = None
     # Attribute is overwritten below the class definition
+    paper_doc_untrashed = None
+    # Attribute is overwritten below the class definition
     paper_doc_view = None
+    # Attribute is overwritten below the class definition
+    paper_folder_change_subscription = None
     # Attribute is overwritten below the class definition
     paper_folder_deleted = None
     # Attribute is overwritten below the class definition
@@ -15365,22 +15293,6 @@ class EventType(bb.Union):
         """
         return self._tag == 'group_delete'
 
-    def is_group_description_updated(self):
-        """
-        Check if the union tag is ``group_description_updated``.
-
-        :rtype: bool
-        """
-        return self._tag == 'group_description_updated'
-
-    def is_group_join_policy_updated(self):
-        """
-        Check if the union tag is ``group_join_policy_updated``.
-
-        :rtype: bool
-        """
-        return self._tag == 'group_join_policy_updated'
-
     def is_group_moved(self):
         """
         Check if the union tag is ``group_moved``.
@@ -15557,14 +15469,6 @@ class EventType(bb.Union):
         """
         return self._tag == 'paper_content_archive'
 
-    def is_paper_content_change_subscription(self):
-        """
-        Check if the union tag is ``paper_content_change_subscription``.
-
-        :rtype: bool
-        """
-        return self._tag == 'paper_content_change_subscription'
-
     def is_paper_content_create(self):
         """
         Check if the union tag is ``paper_content_create``.
@@ -15636,6 +15540,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'paper_doc_change_sharing_policy'
+
+    def is_paper_doc_change_subscription(self):
+        """
+        Check if the union tag is ``paper_doc_change_subscription``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_change_subscription'
 
     def is_paper_doc_deleted(self):
         """
@@ -15733,6 +15645,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'paper_doc_team_invite'
 
+    def is_paper_doc_trashed(self):
+        """
+        Check if the union tag is ``paper_doc_trashed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_trashed'
+
     def is_paper_doc_unresolve_comment(self):
         """
         Check if the union tag is ``paper_doc_unresolve_comment``.
@@ -15741,6 +15661,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'paper_doc_unresolve_comment'
 
+    def is_paper_doc_untrashed(self):
+        """
+        Check if the union tag is ``paper_doc_untrashed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_untrashed'
+
     def is_paper_doc_view(self):
         """
         Check if the union tag is ``paper_doc_view``.
@@ -15748,6 +15676,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'paper_doc_view'
+
+    def is_paper_folder_change_subscription(self):
+        """
+        Check if the union tag is ``paper_folder_change_subscription``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_folder_change_subscription'
 
     def is_paper_folder_deleted(self):
         """
@@ -20043,7 +19979,7 @@ class GroupChangeManagementTypeDetails(object):
         """
         New group management type.
 
-        :rtype: GroupManagementType
+        :rtype: team_common.GroupManagementType_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -20067,7 +20003,7 @@ class GroupChangeManagementTypeDetails(object):
         Previous group management type. Might be missing due to historical data
         gap.
 
-        :rtype: GroupManagementType
+        :rtype: team_common.GroupManagementType_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -20289,24 +20225,6 @@ class GroupDeleteDetails(object):
 
 GroupDeleteDetails_validator = bv.Struct(GroupDeleteDetails)
 
-class GroupDescriptionUpdatedDetails(object):
-    """
-    Updated a group.
-    """
-
-    __slots__ = [
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self):
-        pass
-
-    def __repr__(self):
-        return 'GroupDescriptionUpdatedDetails()'
-
-GroupDescriptionUpdatedDetails_validator = bv.Struct(GroupDescriptionUpdatedDetails)
-
 class GroupJoinPolicy(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -20350,93 +20268,6 @@ class GroupJoinPolicy(bb.Union):
         return 'GroupJoinPolicy(%r, %r)' % (self._tag, self._value)
 
 GroupJoinPolicy_validator = bv.Union(GroupJoinPolicy)
-
-class GroupJoinPolicyUpdatedDetails(object):
-    """
-    Updated a group join policy.
-
-    :ivar is_admin_managed: Is admin managed group. Might be missing due to
-        historical data gap.
-    :ivar join_policy: Group join policy.
-    """
-
-    __slots__ = [
-        '_is_admin_managed_value',
-        '_is_admin_managed_present',
-        '_join_policy_value',
-        '_join_policy_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 join_policy=None,
-                 is_admin_managed=None):
-        self._is_admin_managed_value = None
-        self._is_admin_managed_present = False
-        self._join_policy_value = None
-        self._join_policy_present = False
-        if is_admin_managed is not None:
-            self.is_admin_managed = is_admin_managed
-        if join_policy is not None:
-            self.join_policy = join_policy
-
-    @property
-    def is_admin_managed(self):
-        """
-        Is admin managed group. Might be missing due to historical data gap.
-
-        :rtype: bool
-        """
-        if self._is_admin_managed_present:
-            return self._is_admin_managed_value
-        else:
-            return None
-
-    @is_admin_managed.setter
-    def is_admin_managed(self, val):
-        if val is None:
-            del self.is_admin_managed
-            return
-        val = self._is_admin_managed_validator.validate(val)
-        self._is_admin_managed_value = val
-        self._is_admin_managed_present = True
-
-    @is_admin_managed.deleter
-    def is_admin_managed(self):
-        self._is_admin_managed_value = None
-        self._is_admin_managed_present = False
-
-    @property
-    def join_policy(self):
-        """
-        Group join policy.
-
-        :rtype: GroupJoinPolicy
-        """
-        if self._join_policy_present:
-            return self._join_policy_value
-        else:
-            raise AttributeError("missing required field 'join_policy'")
-
-    @join_policy.setter
-    def join_policy(self, val):
-        self._join_policy_validator.validate_type_only(val)
-        self._join_policy_value = val
-        self._join_policy_present = True
-
-    @join_policy.deleter
-    def join_policy(self):
-        self._join_policy_value = None
-        self._join_policy_present = False
-
-    def __repr__(self):
-        return 'GroupJoinPolicyUpdatedDetails(join_policy={!r}, is_admin_managed={!r})'.format(
-            self._join_policy_value,
-            self._is_admin_managed_value,
-        )
-
-GroupJoinPolicyUpdatedDetails_validator = bv.Struct(GroupJoinPolicyUpdatedDetails)
 
 class GroupLogInfo(object):
     """
@@ -20562,50 +20393,6 @@ class GroupLogInfo(object):
 
 GroupLogInfo_validator = bv.Struct(GroupLogInfo)
 
-class GroupManagementType(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    admin_management_group = None
-    # Attribute is overwritten below the class definition
-    member_management_group = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_admin_management_group(self):
-        """
-        Check if the union tag is ``admin_management_group``.
-
-        :rtype: bool
-        """
-        return self._tag == 'admin_management_group'
-
-    def is_member_management_group(self):
-        """
-        Check if the union tag is ``member_management_group``.
-
-        :rtype: bool
-        """
-        return self._tag == 'member_management_group'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'GroupManagementType(%r, %r)' % (self._tag, self._value)
-
-GroupManagementType_validator = bv.Union(GroupManagementType)
-
 class GroupMovedDetails(object):
     """
     Moved a group.
@@ -20698,21 +20485,29 @@ class GroupRenameDetails(object):
     Renamed a group.
 
     :ivar previous_value: Previous display name.
+    :ivar new_value: New display name.
     """
 
     __slots__ = [
         '_previous_value_value',
         '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 previous_value=None):
+                 previous_value=None,
+                 new_value=None):
         self._previous_value_value = None
         self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
         if previous_value is not None:
             self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
 
     @property
     def previous_value(self):
@@ -20737,9 +20532,33 @@ class GroupRenameDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    @property
+    def new_value(self):
+        """
+        New display name.
+
+        :rtype: str
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
     def __repr__(self):
-        return 'GroupRenameDetails(previous_value={!r})'.format(
+        return 'GroupRenameDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
+            self._new_value_value,
         )
 
 GroupRenameDetails_validator = bv.Struct(GroupRenameDetails)
@@ -23244,7 +23063,7 @@ class PaperChangeDeploymentPolicyDetails(object):
         """
         New Dropbox Paper deployment policy.
 
-        :rtype: PaperDeploymentPolicy
+        :rtype: team_policies.PaperDeploymentPolicy_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -23268,7 +23087,7 @@ class PaperChangeDeploymentPolicyDetails(object):
         Previous Dropbox Paper deployment policy. Might be missing due to
         historical data gap.
 
-        :rtype: PaperDeploymentPolicy
+        :rtype: team_policies.PaperDeploymentPolicy_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -23422,7 +23241,7 @@ class PaperChangePolicyDetails(object):
         """
         New Dropbox Paper policy.
 
-        :rtype: PaperPolicy
+        :rtype: team_policies.PaperEnabledPolicy_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -23446,7 +23265,7 @@ class PaperChangePolicyDetails(object):
         Previous Dropbox Paper policy. Might be missing due to historical data
         gap.
 
-        :rtype: PaperPolicy
+        :rtype: team_policies.PaperEnabledPolicy_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -23691,126 +23510,6 @@ class PaperContentArchiveDetails(object):
         )
 
 PaperContentArchiveDetails_validator = bv.Struct(PaperContentArchiveDetails)
-
-class PaperContentChangeSubscriptionDetails(object):
-    """
-    Followed or unfollowed a Paper doc or folder.
-
-    :ivar event_uuid: Event unique identifier.
-    :ivar new_subscription_level: New subscription level.
-    :ivar previous_subscription_level: Previous subscription level. Might be
-        missing due to historical data gap.
-    """
-
-    __slots__ = [
-        '_event_uuid_value',
-        '_event_uuid_present',
-        '_new_subscription_level_value',
-        '_new_subscription_level_present',
-        '_previous_subscription_level_value',
-        '_previous_subscription_level_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 event_uuid=None,
-                 new_subscription_level=None,
-                 previous_subscription_level=None):
-        self._event_uuid_value = None
-        self._event_uuid_present = False
-        self._new_subscription_level_value = None
-        self._new_subscription_level_present = False
-        self._previous_subscription_level_value = None
-        self._previous_subscription_level_present = False
-        if event_uuid is not None:
-            self.event_uuid = event_uuid
-        if new_subscription_level is not None:
-            self.new_subscription_level = new_subscription_level
-        if previous_subscription_level is not None:
-            self.previous_subscription_level = previous_subscription_level
-
-    @property
-    def event_uuid(self):
-        """
-        Event unique identifier.
-
-        :rtype: str
-        """
-        if self._event_uuid_present:
-            return self._event_uuid_value
-        else:
-            raise AttributeError("missing required field 'event_uuid'")
-
-    @event_uuid.setter
-    def event_uuid(self, val):
-        val = self._event_uuid_validator.validate(val)
-        self._event_uuid_value = val
-        self._event_uuid_present = True
-
-    @event_uuid.deleter
-    def event_uuid(self):
-        self._event_uuid_value = None
-        self._event_uuid_present = False
-
-    @property
-    def new_subscription_level(self):
-        """
-        New subscription level.
-
-        :rtype: PaperTaggedValue
-        """
-        if self._new_subscription_level_present:
-            return self._new_subscription_level_value
-        else:
-            raise AttributeError("missing required field 'new_subscription_level'")
-
-    @new_subscription_level.setter
-    def new_subscription_level(self, val):
-        self._new_subscription_level_validator.validate_type_only(val)
-        self._new_subscription_level_value = val
-        self._new_subscription_level_present = True
-
-    @new_subscription_level.deleter
-    def new_subscription_level(self):
-        self._new_subscription_level_value = None
-        self._new_subscription_level_present = False
-
-    @property
-    def previous_subscription_level(self):
-        """
-        Previous subscription level. Might be missing due to historical data
-        gap.
-
-        :rtype: PaperTaggedValue
-        """
-        if self._previous_subscription_level_present:
-            return self._previous_subscription_level_value
-        else:
-            return None
-
-    @previous_subscription_level.setter
-    def previous_subscription_level(self, val):
-        if val is None:
-            del self.previous_subscription_level
-            return
-        self._previous_subscription_level_validator.validate_type_only(val)
-        self._previous_subscription_level_value = val
-        self._previous_subscription_level_present = True
-
-    @previous_subscription_level.deleter
-    def previous_subscription_level(self):
-        self._previous_subscription_level_value = None
-        self._previous_subscription_level_present = False
-
-    def __repr__(self):
-        return 'PaperContentChangeSubscriptionDetails(event_uuid={!r}, new_subscription_level={!r}, previous_subscription_level={!r})'.format(
-            self._event_uuid_value,
-            self._new_subscription_level_value,
-            self._previous_subscription_level_value,
-        )
-
-PaperContentChangeSubscriptionDetails_validator = bv.Struct(PaperContentChangeSubscriptionDetails)
 
 class PaperContentCreateDetails(object):
     """
@@ -24118,50 +23817,6 @@ class PaperContentRestoreDetails(object):
 
 PaperContentRestoreDetails_validator = bv.Struct(PaperContentRestoreDetails)
 
-class PaperDeploymentPolicy(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    full = None
-    # Attribute is overwritten below the class definition
-    partial = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_full(self):
-        """
-        Check if the union tag is ``full``.
-
-        :rtype: bool
-        """
-        return self._tag == 'full'
-
-    def is_partial(self):
-        """
-        Check if the union tag is ``partial``.
-
-        :rtype: bool
-        """
-        return self._tag == 'partial'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'PaperDeploymentPolicy(%r, %r)' % (self._tag, self._value)
-
-PaperDeploymentPolicy_validator = bv.Union(PaperDeploymentPolicy)
-
 class PaperDocAddCommentDetails(object):
     """
     Added a Paper doc comment.
@@ -24455,6 +24110,126 @@ class PaperDocChangeSharingPolicyDetails(object):
         )
 
 PaperDocChangeSharingPolicyDetails_validator = bv.Struct(PaperDocChangeSharingPolicyDetails)
+
+class PaperDocChangeSubscriptionDetails(object):
+    """
+    Followed or unfollowed a Paper doc.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar new_subscription_level: New doc subscription level.
+    :ivar previous_subscription_level: Previous doc subscription level. Might be
+        missing due to historical data gap.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_new_subscription_level_value',
+        '_new_subscription_level_present',
+        '_previous_subscription_level_value',
+        '_previous_subscription_level_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 new_subscription_level=None,
+                 previous_subscription_level=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._new_subscription_level_value = None
+        self._new_subscription_level_present = False
+        self._previous_subscription_level_value = None
+        self._previous_subscription_level_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if new_subscription_level is not None:
+            self.new_subscription_level = new_subscription_level
+        if previous_subscription_level is not None:
+            self.previous_subscription_level = previous_subscription_level
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def new_subscription_level(self):
+        """
+        New doc subscription level.
+
+        :rtype: str
+        """
+        if self._new_subscription_level_present:
+            return self._new_subscription_level_value
+        else:
+            raise AttributeError("missing required field 'new_subscription_level'")
+
+    @new_subscription_level.setter
+    def new_subscription_level(self, val):
+        val = self._new_subscription_level_validator.validate(val)
+        self._new_subscription_level_value = val
+        self._new_subscription_level_present = True
+
+    @new_subscription_level.deleter
+    def new_subscription_level(self):
+        self._new_subscription_level_value = None
+        self._new_subscription_level_present = False
+
+    @property
+    def previous_subscription_level(self):
+        """
+        Previous doc subscription level. Might be missing due to historical data
+        gap.
+
+        :rtype: str
+        """
+        if self._previous_subscription_level_present:
+            return self._previous_subscription_level_value
+        else:
+            return None
+
+    @previous_subscription_level.setter
+    def previous_subscription_level(self, val):
+        if val is None:
+            del self.previous_subscription_level
+            return
+        val = self._previous_subscription_level_validator.validate(val)
+        self._previous_subscription_level_value = val
+        self._previous_subscription_level_present = True
+
+    @previous_subscription_level.deleter
+    def previous_subscription_level(self):
+        self._previous_subscription_level_value = None
+        self._previous_subscription_level_present = False
+
+    def __repr__(self):
+        return 'PaperDocChangeSubscriptionDetails(event_uuid={!r}, new_subscription_level={!r}, previous_subscription_level={!r})'.format(
+            self._event_uuid_value,
+            self._new_subscription_level_value,
+            self._previous_subscription_level_value,
+        )
+
+PaperDocChangeSubscriptionDetails_validator = bv.Struct(PaperDocChangeSubscriptionDetails)
 
 class PaperDocDeleteCommentDetails(object):
     """
@@ -25208,6 +24983,57 @@ class PaperDocTeamInviteDetails(object):
 
 PaperDocTeamInviteDetails_validator = bv.Struct(PaperDocTeamInviteDetails)
 
+class PaperDocTrashedDetails(object):
+    """
+    Paper doc trashed.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'PaperDocTrashedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+PaperDocTrashedDetails_validator = bv.Struct(PaperDocTrashedDetails)
+
 class PaperDocUnresolveCommentDetails(object):
     """
     Unresolved a Paper doc comment.
@@ -25294,6 +25120,57 @@ class PaperDocUnresolveCommentDetails(object):
         )
 
 PaperDocUnresolveCommentDetails_validator = bv.Struct(PaperDocUnresolveCommentDetails)
+
+class PaperDocUntrashedDetails(object):
+    """
+    Paper doc untrashed.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'PaperDocUntrashedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+PaperDocUntrashedDetails_validator = bv.Struct(PaperDocUntrashedDetails)
 
 class PaperDocViewDetails(object):
     """
@@ -25572,6 +25449,126 @@ class PaperExternalViewForbidDetails(object):
         return 'PaperExternalViewForbidDetails()'
 
 PaperExternalViewForbidDetails_validator = bv.Struct(PaperExternalViewForbidDetails)
+
+class PaperFolderChangeSubscriptionDetails(object):
+    """
+    Followed or unfollowed a Paper folder.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar new_subscription_level: New folder subscription level.
+    :ivar previous_subscription_level: Previous folder subscription level. Might
+        be missing due to historical data gap.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_new_subscription_level_value',
+        '_new_subscription_level_present',
+        '_previous_subscription_level_value',
+        '_previous_subscription_level_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 new_subscription_level=None,
+                 previous_subscription_level=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._new_subscription_level_value = None
+        self._new_subscription_level_present = False
+        self._previous_subscription_level_value = None
+        self._previous_subscription_level_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if new_subscription_level is not None:
+            self.new_subscription_level = new_subscription_level
+        if previous_subscription_level is not None:
+            self.previous_subscription_level = previous_subscription_level
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def new_subscription_level(self):
+        """
+        New folder subscription level.
+
+        :rtype: str
+        """
+        if self._new_subscription_level_present:
+            return self._new_subscription_level_value
+        else:
+            raise AttributeError("missing required field 'new_subscription_level'")
+
+    @new_subscription_level.setter
+    def new_subscription_level(self, val):
+        val = self._new_subscription_level_validator.validate(val)
+        self._new_subscription_level_value = val
+        self._new_subscription_level_present = True
+
+    @new_subscription_level.deleter
+    def new_subscription_level(self):
+        self._new_subscription_level_value = None
+        self._new_subscription_level_present = False
+
+    @property
+    def previous_subscription_level(self):
+        """
+        Previous folder subscription level. Might be missing due to historical
+        data gap.
+
+        :rtype: str
+        """
+        if self._previous_subscription_level_present:
+            return self._previous_subscription_level_value
+        else:
+            return None
+
+    @previous_subscription_level.setter
+    def previous_subscription_level(self, val):
+        if val is None:
+            del self.previous_subscription_level
+            return
+        val = self._previous_subscription_level_validator.validate(val)
+        self._previous_subscription_level_value = val
+        self._previous_subscription_level_present = True
+
+    @previous_subscription_level.deleter
+    def previous_subscription_level(self):
+        self._previous_subscription_level_value = None
+        self._previous_subscription_level_present = False
+
+    def __repr__(self):
+        return 'PaperFolderChangeSubscriptionDetails(event_uuid={!r}, new_subscription_level={!r}, previous_subscription_level={!r})'.format(
+            self._event_uuid_value,
+            self._new_subscription_level_value,
+            self._previous_subscription_level_value,
+        )
+
+PaperFolderChangeSubscriptionDetails_validator = bv.Struct(PaperFolderChangeSubscriptionDetails)
 
 class PaperFolderDeletedDetails(object):
     """
@@ -25864,113 +25861,6 @@ class PaperMemberPolicy(bb.Union):
         return 'PaperMemberPolicy(%r, %r)' % (self._tag, self._value)
 
 PaperMemberPolicy_validator = bv.Union(PaperMemberPolicy)
-
-class PaperPolicy(bb.Union):
-    """
-    Policy for enabling or disabling Dropbox Paper for the team.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    disabled = None
-    # Attribute is overwritten below the class definition
-    enabled = None
-    # Attribute is overwritten below the class definition
-    unspecified = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_disabled(self):
-        """
-        Check if the union tag is ``disabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'disabled'
-
-    def is_enabled(self):
-        """
-        Check if the union tag is ``enabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'enabled'
-
-    def is_unspecified(self):
-        """
-        Check if the union tag is ``unspecified``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unspecified'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'PaperPolicy(%r, %r)' % (self._tag, self._value)
-
-PaperPolicy_validator = bv.Union(PaperPolicy)
-
-class PaperTaggedValue(object):
-    """
-    Paper tagged value.
-
-    :ivar ptag: Tag.
-    """
-
-    __slots__ = [
-        '_ptag_value',
-        '_ptag_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 ptag=None):
-        self._ptag_value = None
-        self._ptag_present = False
-        if ptag is not None:
-            self.ptag = ptag
-
-    @property
-    def ptag(self):
-        """
-        Tag.
-
-        :rtype: str
-        """
-        if self._ptag_present:
-            return self._ptag_value
-        else:
-            raise AttributeError("missing required field 'ptag'")
-
-    @ptag.setter
-    def ptag(self, val):
-        val = self._ptag_validator.validate(val)
-        self._ptag_value = val
-        self._ptag_present = True
-
-    @ptag.deleter
-    def ptag(self):
-        self._ptag_value = None
-        self._ptag_present = False
-
-    def __repr__(self):
-        return 'PaperTaggedValue(ptag={!r})'.format(
-            self._ptag_value,
-        )
-
-PaperTaggedValue_validator = bv.Struct(PaperTaggedValue)
 
 class ParticipantLogInfo(bb.Union):
     """
@@ -34152,7 +34042,7 @@ class SsoChangePolicyDetails(object):
         """
         New single sign-on policy.
 
-        :rtype: SsoPolicy
+        :rtype: team_policies.SsoPolicy_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -34176,7 +34066,7 @@ class SsoChangePolicyDetails(object):
         Previous single sign-on policy. Might be missing due to historical data
         gap.
 
-        :rtype: SsoPolicy
+        :rtype: team_policies.SsoPolicy_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -34338,62 +34228,6 @@ class SsoLoginFailDetails(object):
         )
 
 SsoLoginFailDetails_validator = bv.Struct(SsoLoginFailDetails)
-
-class SsoPolicy(bb.Union):
-    """
-    SSO policy
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    disabled = None
-    # Attribute is overwritten below the class definition
-    optional = None
-    # Attribute is overwritten below the class definition
-    required = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_disabled(self):
-        """
-        Check if the union tag is ``disabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'disabled'
-
-    def is_optional(self):
-        """
-        Check if the union tag is ``optional``.
-
-        :rtype: bool
-        """
-        return self._tag == 'optional'
-
-    def is_required(self):
-        """
-        Check if the union tag is ``required``.
-
-        :rtype: bool
-        """
-        return self._tag == 'required'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SsoPolicy(%r, %r)' % (self._tag, self._value)
-
-SsoPolicy_validator = bv.Union(SsoPolicy)
 
 class SsoRemoveLoginUrlDetails(object):
     """
@@ -37215,8 +37049,8 @@ DeviceApprovalsChangeMobilePolicyDetails._all_fields_ = [
     ('previous_value', DeviceApprovalsChangeMobilePolicyDetails._previous_value_validator),
 ]
 
-DeviceApprovalsChangeOverageActionDetails._new_value_validator = bv.Nullable(DeviceApprovalsRolloutPolicy_validator)
-DeviceApprovalsChangeOverageActionDetails._previous_value_validator = bv.Nullable(DeviceApprovalsRolloutPolicy_validator)
+DeviceApprovalsChangeOverageActionDetails._new_value_validator = bv.Nullable(team_policies.RolloutMethod_validator)
+DeviceApprovalsChangeOverageActionDetails._previous_value_validator = bv.Nullable(team_policies.RolloutMethod_validator)
 DeviceApprovalsChangeOverageActionDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
@@ -37249,22 +37083,6 @@ DeviceApprovalsPolicy._tagmap = {
 DeviceApprovalsPolicy.unlimited = DeviceApprovalsPolicy('unlimited')
 DeviceApprovalsPolicy.limited = DeviceApprovalsPolicy('limited')
 DeviceApprovalsPolicy.other = DeviceApprovalsPolicy('other')
-
-DeviceApprovalsRolloutPolicy._remove_oldest_validator = bv.Void()
-DeviceApprovalsRolloutPolicy._remove_all_validator = bv.Void()
-DeviceApprovalsRolloutPolicy._add_exception_validator = bv.Void()
-DeviceApprovalsRolloutPolicy._other_validator = bv.Void()
-DeviceApprovalsRolloutPolicy._tagmap = {
-    'remove_oldest': DeviceApprovalsRolloutPolicy._remove_oldest_validator,
-    'remove_all': DeviceApprovalsRolloutPolicy._remove_all_validator,
-    'add_exception': DeviceApprovalsRolloutPolicy._add_exception_validator,
-    'other': DeviceApprovalsRolloutPolicy._other_validator,
-}
-
-DeviceApprovalsRolloutPolicy.remove_oldest = DeviceApprovalsRolloutPolicy('remove_oldest')
-DeviceApprovalsRolloutPolicy.remove_all = DeviceApprovalsRolloutPolicy('remove_all')
-DeviceApprovalsRolloutPolicy.add_exception = DeviceApprovalsRolloutPolicy('add_exception')
-DeviceApprovalsRolloutPolicy.other = DeviceApprovalsRolloutPolicy('other')
 
 DeviceChangeIpDesktopDetails._device_info_validator = DeviceLogInfo_validator
 DeviceChangeIpDesktopDetails._all_field_names_ = set(['device_info'])
@@ -37469,8 +37287,8 @@ DurationLogInfo._all_fields_ = [
 EmmAddExceptionDetails._all_field_names_ = set([])
 EmmAddExceptionDetails._all_fields_ = []
 
-EmmChangePolicyDetails._new_value_validator = EmmPolicy_validator
-EmmChangePolicyDetails._previous_value_validator = bv.Nullable(EmmPolicy_validator)
+EmmChangePolicyDetails._new_value_validator = team_policies.EmmState_validator
+EmmChangePolicyDetails._previous_value_validator = bv.Nullable(team_policies.EmmState_validator)
 EmmChangePolicyDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
@@ -37488,22 +37306,6 @@ EmmCreateUsageReportDetails._all_fields_ = []
 
 EmmLoginSuccessDetails._all_field_names_ = set([])
 EmmLoginSuccessDetails._all_fields_ = []
-
-EmmPolicy._disabled_validator = bv.Void()
-EmmPolicy._optional_validator = bv.Void()
-EmmPolicy._required_validator = bv.Void()
-EmmPolicy._other_validator = bv.Void()
-EmmPolicy._tagmap = {
-    'disabled': EmmPolicy._disabled_validator,
-    'optional': EmmPolicy._optional_validator,
-    'required': EmmPolicy._required_validator,
-    'other': EmmPolicy._other_validator,
-}
-
-EmmPolicy.disabled = EmmPolicy('disabled')
-EmmPolicy.optional = EmmPolicy('optional')
-EmmPolicy.required = EmmPolicy('required')
-EmmPolicy.other = EmmPolicy('other')
 
 EmmRefreshAuthTokenDetails._all_field_names_ = set([])
 EmmRefreshAuthTokenDetails._all_fields_ = []
@@ -37693,8 +37495,6 @@ EventDetails._group_change_management_type_details_validator = GroupChangeManage
 EventDetails._group_change_member_role_details_validator = GroupChangeMemberRoleDetails_validator
 EventDetails._group_create_details_validator = GroupCreateDetails_validator
 EventDetails._group_delete_details_validator = GroupDeleteDetails_validator
-EventDetails._group_description_updated_details_validator = GroupDescriptionUpdatedDetails_validator
-EventDetails._group_join_policy_updated_details_validator = GroupJoinPolicyUpdatedDetails_validator
 EventDetails._group_moved_details_validator = GroupMovedDetails_validator
 EventDetails._group_remove_external_id_details_validator = GroupRemoveExternalIdDetails_validator
 EventDetails._group_remove_member_details_validator = GroupRemoveMemberDetails_validator
@@ -37717,7 +37517,6 @@ EventDetails._member_suggest_details_validator = MemberSuggestDetails_validator
 EventDetails._paper_content_add_member_details_validator = PaperContentAddMemberDetails_validator
 EventDetails._paper_content_add_to_folder_details_validator = PaperContentAddToFolderDetails_validator
 EventDetails._paper_content_archive_details_validator = PaperContentArchiveDetails_validator
-EventDetails._paper_content_change_subscription_details_validator = PaperContentChangeSubscriptionDetails_validator
 EventDetails._paper_content_create_details_validator = PaperContentCreateDetails_validator
 EventDetails._paper_content_permanently_delete_details_validator = PaperContentPermanentlyDeleteDetails_validator
 EventDetails._paper_content_remove_from_folder_details_validator = PaperContentRemoveFromFolderDetails_validator
@@ -37727,6 +37526,7 @@ EventDetails._paper_content_restore_details_validator = PaperContentRestoreDetai
 EventDetails._paper_doc_add_comment_details_validator = PaperDocAddCommentDetails_validator
 EventDetails._paper_doc_change_member_role_details_validator = PaperDocChangeMemberRoleDetails_validator
 EventDetails._paper_doc_change_sharing_policy_details_validator = PaperDocChangeSharingPolicyDetails_validator
+EventDetails._paper_doc_change_subscription_details_validator = PaperDocChangeSubscriptionDetails_validator
 EventDetails._paper_doc_deleted_details_validator = PaperDocDeletedDetails_validator
 EventDetails._paper_doc_delete_comment_details_validator = PaperDocDeleteCommentDetails_validator
 EventDetails._paper_doc_download_details_validator = PaperDocDownloadDetails_validator
@@ -37739,8 +37539,11 @@ EventDetails._paper_doc_resolve_comment_details_validator = PaperDocResolveComme
 EventDetails._paper_doc_revert_details_validator = PaperDocRevertDetails_validator
 EventDetails._paper_doc_slack_share_details_validator = PaperDocSlackShareDetails_validator
 EventDetails._paper_doc_team_invite_details_validator = PaperDocTeamInviteDetails_validator
+EventDetails._paper_doc_trashed_details_validator = PaperDocTrashedDetails_validator
 EventDetails._paper_doc_unresolve_comment_details_validator = PaperDocUnresolveCommentDetails_validator
+EventDetails._paper_doc_untrashed_details_validator = PaperDocUntrashedDetails_validator
 EventDetails._paper_doc_view_details_validator = PaperDocViewDetails_validator
+EventDetails._paper_folder_change_subscription_details_validator = PaperFolderChangeSubscriptionDetails_validator
 EventDetails._paper_folder_deleted_details_validator = PaperFolderDeletedDetails_validator
 EventDetails._paper_folder_followed_details_validator = PaperFolderFollowedDetails_validator
 EventDetails._paper_folder_team_invite_details_validator = PaperFolderTeamInviteDetails_validator
@@ -37961,8 +37764,6 @@ EventDetails._tagmap = {
     'group_change_member_role_details': EventDetails._group_change_member_role_details_validator,
     'group_create_details': EventDetails._group_create_details_validator,
     'group_delete_details': EventDetails._group_delete_details_validator,
-    'group_description_updated_details': EventDetails._group_description_updated_details_validator,
-    'group_join_policy_updated_details': EventDetails._group_join_policy_updated_details_validator,
     'group_moved_details': EventDetails._group_moved_details_validator,
     'group_remove_external_id_details': EventDetails._group_remove_external_id_details_validator,
     'group_remove_member_details': EventDetails._group_remove_member_details_validator,
@@ -37985,7 +37786,6 @@ EventDetails._tagmap = {
     'paper_content_add_member_details': EventDetails._paper_content_add_member_details_validator,
     'paper_content_add_to_folder_details': EventDetails._paper_content_add_to_folder_details_validator,
     'paper_content_archive_details': EventDetails._paper_content_archive_details_validator,
-    'paper_content_change_subscription_details': EventDetails._paper_content_change_subscription_details_validator,
     'paper_content_create_details': EventDetails._paper_content_create_details_validator,
     'paper_content_permanently_delete_details': EventDetails._paper_content_permanently_delete_details_validator,
     'paper_content_remove_from_folder_details': EventDetails._paper_content_remove_from_folder_details_validator,
@@ -37995,6 +37795,7 @@ EventDetails._tagmap = {
     'paper_doc_add_comment_details': EventDetails._paper_doc_add_comment_details_validator,
     'paper_doc_change_member_role_details': EventDetails._paper_doc_change_member_role_details_validator,
     'paper_doc_change_sharing_policy_details': EventDetails._paper_doc_change_sharing_policy_details_validator,
+    'paper_doc_change_subscription_details': EventDetails._paper_doc_change_subscription_details_validator,
     'paper_doc_deleted_details': EventDetails._paper_doc_deleted_details_validator,
     'paper_doc_delete_comment_details': EventDetails._paper_doc_delete_comment_details_validator,
     'paper_doc_download_details': EventDetails._paper_doc_download_details_validator,
@@ -38007,8 +37808,11 @@ EventDetails._tagmap = {
     'paper_doc_revert_details': EventDetails._paper_doc_revert_details_validator,
     'paper_doc_slack_share_details': EventDetails._paper_doc_slack_share_details_validator,
     'paper_doc_team_invite_details': EventDetails._paper_doc_team_invite_details_validator,
+    'paper_doc_trashed_details': EventDetails._paper_doc_trashed_details_validator,
     'paper_doc_unresolve_comment_details': EventDetails._paper_doc_unresolve_comment_details_validator,
+    'paper_doc_untrashed_details': EventDetails._paper_doc_untrashed_details_validator,
     'paper_doc_view_details': EventDetails._paper_doc_view_details_validator,
+    'paper_folder_change_subscription_details': EventDetails._paper_folder_change_subscription_details_validator,
     'paper_folder_deleted_details': EventDetails._paper_folder_deleted_details_validator,
     'paper_folder_followed_details': EventDetails._paper_folder_followed_details_validator,
     'paper_folder_team_invite_details': EventDetails._paper_folder_team_invite_details_validator,
@@ -38232,8 +38036,6 @@ EventType._group_change_management_type_validator = bv.Void()
 EventType._group_change_member_role_validator = bv.Void()
 EventType._group_create_validator = bv.Void()
 EventType._group_delete_validator = bv.Void()
-EventType._group_description_updated_validator = bv.Void()
-EventType._group_join_policy_updated_validator = bv.Void()
 EventType._group_moved_validator = bv.Void()
 EventType._group_remove_external_id_validator = bv.Void()
 EventType._group_remove_member_validator = bv.Void()
@@ -38256,7 +38058,6 @@ EventType._member_suggest_validator = bv.Void()
 EventType._paper_content_add_member_validator = bv.Void()
 EventType._paper_content_add_to_folder_validator = bv.Void()
 EventType._paper_content_archive_validator = bv.Void()
-EventType._paper_content_change_subscription_validator = bv.Void()
 EventType._paper_content_create_validator = bv.Void()
 EventType._paper_content_permanently_delete_validator = bv.Void()
 EventType._paper_content_remove_from_folder_validator = bv.Void()
@@ -38266,6 +38067,7 @@ EventType._paper_content_restore_validator = bv.Void()
 EventType._paper_doc_add_comment_validator = bv.Void()
 EventType._paper_doc_change_member_role_validator = bv.Void()
 EventType._paper_doc_change_sharing_policy_validator = bv.Void()
+EventType._paper_doc_change_subscription_validator = bv.Void()
 EventType._paper_doc_deleted_validator = bv.Void()
 EventType._paper_doc_delete_comment_validator = bv.Void()
 EventType._paper_doc_download_validator = bv.Void()
@@ -38278,8 +38080,11 @@ EventType._paper_doc_resolve_comment_validator = bv.Void()
 EventType._paper_doc_revert_validator = bv.Void()
 EventType._paper_doc_slack_share_validator = bv.Void()
 EventType._paper_doc_team_invite_validator = bv.Void()
+EventType._paper_doc_trashed_validator = bv.Void()
 EventType._paper_doc_unresolve_comment_validator = bv.Void()
+EventType._paper_doc_untrashed_validator = bv.Void()
 EventType._paper_doc_view_validator = bv.Void()
+EventType._paper_folder_change_subscription_validator = bv.Void()
 EventType._paper_folder_deleted_validator = bv.Void()
 EventType._paper_folder_followed_validator = bv.Void()
 EventType._paper_folder_team_invite_validator = bv.Void()
@@ -38499,8 +38304,6 @@ EventType._tagmap = {
     'group_change_member_role': EventType._group_change_member_role_validator,
     'group_create': EventType._group_create_validator,
     'group_delete': EventType._group_delete_validator,
-    'group_description_updated': EventType._group_description_updated_validator,
-    'group_join_policy_updated': EventType._group_join_policy_updated_validator,
     'group_moved': EventType._group_moved_validator,
     'group_remove_external_id': EventType._group_remove_external_id_validator,
     'group_remove_member': EventType._group_remove_member_validator,
@@ -38523,7 +38326,6 @@ EventType._tagmap = {
     'paper_content_add_member': EventType._paper_content_add_member_validator,
     'paper_content_add_to_folder': EventType._paper_content_add_to_folder_validator,
     'paper_content_archive': EventType._paper_content_archive_validator,
-    'paper_content_change_subscription': EventType._paper_content_change_subscription_validator,
     'paper_content_create': EventType._paper_content_create_validator,
     'paper_content_permanently_delete': EventType._paper_content_permanently_delete_validator,
     'paper_content_remove_from_folder': EventType._paper_content_remove_from_folder_validator,
@@ -38533,6 +38335,7 @@ EventType._tagmap = {
     'paper_doc_add_comment': EventType._paper_doc_add_comment_validator,
     'paper_doc_change_member_role': EventType._paper_doc_change_member_role_validator,
     'paper_doc_change_sharing_policy': EventType._paper_doc_change_sharing_policy_validator,
+    'paper_doc_change_subscription': EventType._paper_doc_change_subscription_validator,
     'paper_doc_deleted': EventType._paper_doc_deleted_validator,
     'paper_doc_delete_comment': EventType._paper_doc_delete_comment_validator,
     'paper_doc_download': EventType._paper_doc_download_validator,
@@ -38545,8 +38348,11 @@ EventType._tagmap = {
     'paper_doc_revert': EventType._paper_doc_revert_validator,
     'paper_doc_slack_share': EventType._paper_doc_slack_share_validator,
     'paper_doc_team_invite': EventType._paper_doc_team_invite_validator,
+    'paper_doc_trashed': EventType._paper_doc_trashed_validator,
     'paper_doc_unresolve_comment': EventType._paper_doc_unresolve_comment_validator,
+    'paper_doc_untrashed': EventType._paper_doc_untrashed_validator,
     'paper_doc_view': EventType._paper_doc_view_validator,
+    'paper_folder_change_subscription': EventType._paper_folder_change_subscription_validator,
     'paper_folder_deleted': EventType._paper_folder_deleted_validator,
     'paper_folder_followed': EventType._paper_folder_followed_validator,
     'paper_folder_team_invite': EventType._paper_folder_team_invite_validator,
@@ -38767,8 +38573,6 @@ EventType.group_change_management_type = EventType('group_change_management_type
 EventType.group_change_member_role = EventType('group_change_member_role')
 EventType.group_create = EventType('group_create')
 EventType.group_delete = EventType('group_delete')
-EventType.group_description_updated = EventType('group_description_updated')
-EventType.group_join_policy_updated = EventType('group_join_policy_updated')
 EventType.group_moved = EventType('group_moved')
 EventType.group_remove_external_id = EventType('group_remove_external_id')
 EventType.group_remove_member = EventType('group_remove_member')
@@ -38791,7 +38595,6 @@ EventType.member_suggest = EventType('member_suggest')
 EventType.paper_content_add_member = EventType('paper_content_add_member')
 EventType.paper_content_add_to_folder = EventType('paper_content_add_to_folder')
 EventType.paper_content_archive = EventType('paper_content_archive')
-EventType.paper_content_change_subscription = EventType('paper_content_change_subscription')
 EventType.paper_content_create = EventType('paper_content_create')
 EventType.paper_content_permanently_delete = EventType('paper_content_permanently_delete')
 EventType.paper_content_remove_from_folder = EventType('paper_content_remove_from_folder')
@@ -38801,6 +38604,7 @@ EventType.paper_content_restore = EventType('paper_content_restore')
 EventType.paper_doc_add_comment = EventType('paper_doc_add_comment')
 EventType.paper_doc_change_member_role = EventType('paper_doc_change_member_role')
 EventType.paper_doc_change_sharing_policy = EventType('paper_doc_change_sharing_policy')
+EventType.paper_doc_change_subscription = EventType('paper_doc_change_subscription')
 EventType.paper_doc_deleted = EventType('paper_doc_deleted')
 EventType.paper_doc_delete_comment = EventType('paper_doc_delete_comment')
 EventType.paper_doc_download = EventType('paper_doc_download')
@@ -38813,8 +38617,11 @@ EventType.paper_doc_resolve_comment = EventType('paper_doc_resolve_comment')
 EventType.paper_doc_revert = EventType('paper_doc_revert')
 EventType.paper_doc_slack_share = EventType('paper_doc_slack_share')
 EventType.paper_doc_team_invite = EventType('paper_doc_team_invite')
+EventType.paper_doc_trashed = EventType('paper_doc_trashed')
 EventType.paper_doc_unresolve_comment = EventType('paper_doc_unresolve_comment')
+EventType.paper_doc_untrashed = EventType('paper_doc_untrashed')
 EventType.paper_doc_view = EventType('paper_doc_view')
+EventType.paper_folder_change_subscription = EventType('paper_folder_change_subscription')
 EventType.paper_folder_deleted = EventType('paper_folder_deleted')
 EventType.paper_folder_followed = EventType('paper_folder_followed')
 EventType.paper_folder_team_invite = EventType('paper_folder_team_invite')
@@ -39363,8 +39170,8 @@ GroupChangeExternalIdDetails._all_fields_ = [
     ('previous_value', GroupChangeExternalIdDetails._previous_value_validator),
 ]
 
-GroupChangeManagementTypeDetails._new_value_validator = GroupManagementType_validator
-GroupChangeManagementTypeDetails._previous_value_validator = bv.Nullable(GroupManagementType_validator)
+GroupChangeManagementTypeDetails._new_value_validator = team_common.GroupManagementType_validator
+GroupChangeManagementTypeDetails._previous_value_validator = bv.Nullable(team_common.GroupManagementType_validator)
 GroupChangeManagementTypeDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
@@ -39393,9 +39200,6 @@ GroupDeleteDetails._is_admin_managed_validator = bv.Nullable(bv.Boolean())
 GroupDeleteDetails._all_field_names_ = set(['is_admin_managed'])
 GroupDeleteDetails._all_fields_ = [('is_admin_managed', GroupDeleteDetails._is_admin_managed_validator)]
 
-GroupDescriptionUpdatedDetails._all_field_names_ = set([])
-GroupDescriptionUpdatedDetails._all_fields_ = []
-
 GroupJoinPolicy._open_validator = bv.Void()
 GroupJoinPolicy._request_to_join_validator = bv.Void()
 GroupJoinPolicy._other_validator = bv.Void()
@@ -39408,17 +39212,6 @@ GroupJoinPolicy._tagmap = {
 GroupJoinPolicy.open = GroupJoinPolicy('open')
 GroupJoinPolicy.request_to_join = GroupJoinPolicy('request_to_join')
 GroupJoinPolicy.other = GroupJoinPolicy('other')
-
-GroupJoinPolicyUpdatedDetails._is_admin_managed_validator = bv.Nullable(bv.Boolean())
-GroupJoinPolicyUpdatedDetails._join_policy_validator = GroupJoinPolicy_validator
-GroupJoinPolicyUpdatedDetails._all_field_names_ = set([
-    'is_admin_managed',
-    'join_policy',
-])
-GroupJoinPolicyUpdatedDetails._all_fields_ = [
-    ('is_admin_managed', GroupJoinPolicyUpdatedDetails._is_admin_managed_validator),
-    ('join_policy', GroupJoinPolicyUpdatedDetails._join_policy_validator),
-]
 
 GroupLogInfo._group_id_validator = bv.Nullable(team_common.GroupId_validator)
 GroupLogInfo._display_name_validator = bv.String()
@@ -39434,19 +39227,6 @@ GroupLogInfo._all_fields_ = [
     ('external_id', GroupLogInfo._external_id_validator),
 ]
 
-GroupManagementType._admin_management_group_validator = bv.Void()
-GroupManagementType._member_management_group_validator = bv.Void()
-GroupManagementType._other_validator = bv.Void()
-GroupManagementType._tagmap = {
-    'admin_management_group': GroupManagementType._admin_management_group_validator,
-    'member_management_group': GroupManagementType._member_management_group_validator,
-    'other': GroupManagementType._other_validator,
-}
-
-GroupManagementType.admin_management_group = GroupManagementType('admin_management_group')
-GroupManagementType.member_management_group = GroupManagementType('member_management_group')
-GroupManagementType.other = GroupManagementType('other')
-
 GroupMovedDetails._all_field_names_ = set([])
 GroupMovedDetails._all_fields_ = []
 
@@ -39458,8 +39238,15 @@ GroupRemoveMemberDetails._all_field_names_ = set([])
 GroupRemoveMemberDetails._all_fields_ = []
 
 GroupRenameDetails._previous_value_validator = bv.String()
-GroupRenameDetails._all_field_names_ = set(['previous_value'])
-GroupRenameDetails._all_fields_ = [('previous_value', GroupRenameDetails._previous_value_validator)]
+GroupRenameDetails._new_value_validator = bv.String()
+GroupRenameDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+GroupRenameDetails._all_fields_ = [
+    ('previous_value', GroupRenameDetails._previous_value_validator),
+    ('new_value', GroupRenameDetails._new_value_validator),
+]
 
 GroupUserManagementChangePolicyDetails._new_value_validator = GroupUserManagementPolicy_validator
 GroupUserManagementChangePolicyDetails._previous_value_validator = bv.Nullable(GroupUserManagementPolicy_validator)
@@ -39858,8 +39645,8 @@ PaperAccessType.other = PaperAccessType('other')
 PaperAdminExportStartDetails._all_field_names_ = set([])
 PaperAdminExportStartDetails._all_fields_ = []
 
-PaperChangeDeploymentPolicyDetails._new_value_validator = PaperDeploymentPolicy_validator
-PaperChangeDeploymentPolicyDetails._previous_value_validator = bv.Nullable(PaperDeploymentPolicy_validator)
+PaperChangeDeploymentPolicyDetails._new_value_validator = team_policies.PaperDeploymentPolicy_validator
+PaperChangeDeploymentPolicyDetails._previous_value_validator = bv.Nullable(team_policies.PaperDeploymentPolicy_validator)
 PaperChangeDeploymentPolicyDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
@@ -39880,8 +39667,8 @@ PaperChangeMemberPolicyDetails._all_fields_ = [
     ('previous_value', PaperChangeMemberPolicyDetails._previous_value_validator),
 ]
 
-PaperChangePolicyDetails._new_value_validator = PaperPolicy_validator
-PaperChangePolicyDetails._previous_value_validator = bv.Nullable(PaperPolicy_validator)
+PaperChangePolicyDetails._new_value_validator = team_policies.PaperEnabledPolicy_validator
+PaperChangePolicyDetails._previous_value_validator = bv.Nullable(team_policies.PaperEnabledPolicy_validator)
 PaperChangePolicyDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
@@ -39913,20 +39700,6 @@ PaperContentArchiveDetails._event_uuid_validator = bv.String()
 PaperContentArchiveDetails._all_field_names_ = set(['event_uuid'])
 PaperContentArchiveDetails._all_fields_ = [('event_uuid', PaperContentArchiveDetails._event_uuid_validator)]
 
-PaperContentChangeSubscriptionDetails._event_uuid_validator = bv.String()
-PaperContentChangeSubscriptionDetails._new_subscription_level_validator = PaperTaggedValue_validator
-PaperContentChangeSubscriptionDetails._previous_subscription_level_validator = bv.Nullable(PaperTaggedValue_validator)
-PaperContentChangeSubscriptionDetails._all_field_names_ = set([
-    'event_uuid',
-    'new_subscription_level',
-    'previous_subscription_level',
-])
-PaperContentChangeSubscriptionDetails._all_fields_ = [
-    ('event_uuid', PaperContentChangeSubscriptionDetails._event_uuid_validator),
-    ('new_subscription_level', PaperContentChangeSubscriptionDetails._new_subscription_level_validator),
-    ('previous_subscription_level', PaperContentChangeSubscriptionDetails._previous_subscription_level_validator),
-]
-
 PaperContentCreateDetails._event_uuid_validator = bv.String()
 PaperContentCreateDetails._all_field_names_ = set(['event_uuid'])
 PaperContentCreateDetails._all_fields_ = [('event_uuid', PaperContentCreateDetails._event_uuid_validator)]
@@ -39950,19 +39723,6 @@ PaperContentRenameDetails._all_fields_ = [('event_uuid', PaperContentRenameDetai
 PaperContentRestoreDetails._event_uuid_validator = bv.String()
 PaperContentRestoreDetails._all_field_names_ = set(['event_uuid'])
 PaperContentRestoreDetails._all_fields_ = [('event_uuid', PaperContentRestoreDetails._event_uuid_validator)]
-
-PaperDeploymentPolicy._full_validator = bv.Void()
-PaperDeploymentPolicy._partial_validator = bv.Void()
-PaperDeploymentPolicy._other_validator = bv.Void()
-PaperDeploymentPolicy._tagmap = {
-    'full': PaperDeploymentPolicy._full_validator,
-    'partial': PaperDeploymentPolicy._partial_validator,
-    'other': PaperDeploymentPolicy._other_validator,
-}
-
-PaperDeploymentPolicy.full = PaperDeploymentPolicy('full')
-PaperDeploymentPolicy.partial = PaperDeploymentPolicy('partial')
-PaperDeploymentPolicy.other = PaperDeploymentPolicy('other')
 
 PaperDocAddCommentDetails._event_uuid_validator = bv.String()
 PaperDocAddCommentDetails._comment_text_validator = bv.Nullable(bv.String())
@@ -39998,6 +39758,20 @@ PaperDocChangeSharingPolicyDetails._all_fields_ = [
     ('event_uuid', PaperDocChangeSharingPolicyDetails._event_uuid_validator),
     ('public_sharing_policy', PaperDocChangeSharingPolicyDetails._public_sharing_policy_validator),
     ('team_sharing_policy', PaperDocChangeSharingPolicyDetails._team_sharing_policy_validator),
+]
+
+PaperDocChangeSubscriptionDetails._event_uuid_validator = bv.String()
+PaperDocChangeSubscriptionDetails._new_subscription_level_validator = bv.String()
+PaperDocChangeSubscriptionDetails._previous_subscription_level_validator = bv.Nullable(bv.String())
+PaperDocChangeSubscriptionDetails._all_field_names_ = set([
+    'event_uuid',
+    'new_subscription_level',
+    'previous_subscription_level',
+])
+PaperDocChangeSubscriptionDetails._all_fields_ = [
+    ('event_uuid', PaperDocChangeSubscriptionDetails._event_uuid_validator),
+    ('new_subscription_level', PaperDocChangeSubscriptionDetails._new_subscription_level_validator),
+    ('previous_subscription_level', PaperDocChangeSubscriptionDetails._previous_subscription_level_validator),
 ]
 
 PaperDocDeleteCommentDetails._event_uuid_validator = bv.String()
@@ -40076,6 +39850,10 @@ PaperDocTeamInviteDetails._event_uuid_validator = bv.String()
 PaperDocTeamInviteDetails._all_field_names_ = set(['event_uuid'])
 PaperDocTeamInviteDetails._all_fields_ = [('event_uuid', PaperDocTeamInviteDetails._event_uuid_validator)]
 
+PaperDocTrashedDetails._event_uuid_validator = bv.String()
+PaperDocTrashedDetails._all_field_names_ = set(['event_uuid'])
+PaperDocTrashedDetails._all_fields_ = [('event_uuid', PaperDocTrashedDetails._event_uuid_validator)]
+
 PaperDocUnresolveCommentDetails._event_uuid_validator = bv.String()
 PaperDocUnresolveCommentDetails._comment_text_validator = bv.Nullable(bv.String())
 PaperDocUnresolveCommentDetails._all_field_names_ = set([
@@ -40086,6 +39864,10 @@ PaperDocUnresolveCommentDetails._all_fields_ = [
     ('event_uuid', PaperDocUnresolveCommentDetails._event_uuid_validator),
     ('comment_text', PaperDocUnresolveCommentDetails._comment_text_validator),
 ]
+
+PaperDocUntrashedDetails._event_uuid_validator = bv.String()
+PaperDocUntrashedDetails._all_field_names_ = set(['event_uuid'])
+PaperDocUntrashedDetails._all_fields_ = [('event_uuid', PaperDocUntrashedDetails._event_uuid_validator)]
 
 PaperDocViewDetails._event_uuid_validator = bv.String()
 PaperDocViewDetails._all_field_names_ = set(['event_uuid'])
@@ -40133,6 +39915,20 @@ PaperExternalViewDefaultTeamDetails._all_fields_ = []
 PaperExternalViewForbidDetails._all_field_names_ = set([])
 PaperExternalViewForbidDetails._all_fields_ = []
 
+PaperFolderChangeSubscriptionDetails._event_uuid_validator = bv.String()
+PaperFolderChangeSubscriptionDetails._new_subscription_level_validator = bv.String()
+PaperFolderChangeSubscriptionDetails._previous_subscription_level_validator = bv.Nullable(bv.String())
+PaperFolderChangeSubscriptionDetails._all_field_names_ = set([
+    'event_uuid',
+    'new_subscription_level',
+    'previous_subscription_level',
+])
+PaperFolderChangeSubscriptionDetails._all_fields_ = [
+    ('event_uuid', PaperFolderChangeSubscriptionDetails._event_uuid_validator),
+    ('new_subscription_level', PaperFolderChangeSubscriptionDetails._new_subscription_level_validator),
+    ('previous_subscription_level', PaperFolderChangeSubscriptionDetails._previous_subscription_level_validator),
+]
+
 PaperFolderDeletedDetails._event_uuid_validator = bv.String()
 PaperFolderDeletedDetails._all_field_names_ = set(['event_uuid'])
 PaperFolderDeletedDetails._all_fields_ = [('event_uuid', PaperFolderDeletedDetails._event_uuid_validator)]
@@ -40171,26 +39967,6 @@ PaperMemberPolicy.anyone_with_link = PaperMemberPolicy('anyone_with_link')
 PaperMemberPolicy.only_team = PaperMemberPolicy('only_team')
 PaperMemberPolicy.team_and_explicitly_shared = PaperMemberPolicy('team_and_explicitly_shared')
 PaperMemberPolicy.other = PaperMemberPolicy('other')
-
-PaperPolicy._disabled_validator = bv.Void()
-PaperPolicy._enabled_validator = bv.Void()
-PaperPolicy._unspecified_validator = bv.Void()
-PaperPolicy._other_validator = bv.Void()
-PaperPolicy._tagmap = {
-    'disabled': PaperPolicy._disabled_validator,
-    'enabled': PaperPolicy._enabled_validator,
-    'unspecified': PaperPolicy._unspecified_validator,
-    'other': PaperPolicy._other_validator,
-}
-
-PaperPolicy.disabled = PaperPolicy('disabled')
-PaperPolicy.enabled = PaperPolicy('enabled')
-PaperPolicy.unspecified = PaperPolicy('unspecified')
-PaperPolicy.other = PaperPolicy('other')
-
-PaperTaggedValue._ptag_validator = bv.String()
-PaperTaggedValue._all_field_names_ = set(['ptag'])
-PaperTaggedValue._all_fields_ = [('ptag', PaperTaggedValue._ptag_validator)]
 
 ParticipantLogInfo._user_validator = UserLogInfo_validator
 ParticipantLogInfo._group_validator = GroupLogInfo_validator
@@ -41255,8 +41031,8 @@ SsoChangeLogoutUrlDetails._all_fields_ = [
     ('new_value', SsoChangeLogoutUrlDetails._new_value_validator),
 ]
 
-SsoChangePolicyDetails._new_value_validator = SsoPolicy_validator
-SsoChangePolicyDetails._previous_value_validator = bv.Nullable(SsoPolicy_validator)
+SsoChangePolicyDetails._new_value_validator = team_policies.SsoPolicy_validator
+SsoChangePolicyDetails._previous_value_validator = bv.Nullable(team_policies.SsoPolicy_validator)
 SsoChangePolicyDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
@@ -41281,22 +41057,6 @@ SsoLoginFailDetails._error_details_validator = FailureDetailsLogInfo_validator
 SsoLoginFailDetails._all_field_names_ = set(['error_details'])
 SsoLoginFailDetails._all_fields_ = [('error_details', SsoLoginFailDetails._error_details_validator)]
 
-SsoPolicy._disabled_validator = bv.Void()
-SsoPolicy._optional_validator = bv.Void()
-SsoPolicy._required_validator = bv.Void()
-SsoPolicy._other_validator = bv.Void()
-SsoPolicy._tagmap = {
-    'disabled': SsoPolicy._disabled_validator,
-    'optional': SsoPolicy._optional_validator,
-    'required': SsoPolicy._required_validator,
-    'other': SsoPolicy._other_validator,
-}
-
-SsoPolicy.disabled = SsoPolicy('disabled')
-SsoPolicy.optional = SsoPolicy('optional')
-SsoPolicy.required = SsoPolicy('required')
-SsoPolicy.other = SsoPolicy('other')
-
 SsoRemoveLoginUrlDetails._previous_value_validator = bv.String()
 SsoRemoveLoginUrlDetails._all_field_names_ = set(['previous_value'])
 SsoRemoveLoginUrlDetails._all_fields_ = [('previous_value', SsoRemoveLoginUrlDetails._previous_value_validator)]
@@ -41305,8 +41065,8 @@ SsoRemoveLogoutUrlDetails._previous_value_validator = bv.String()
 SsoRemoveLogoutUrlDetails._all_field_names_ = set(['previous_value'])
 SsoRemoveLogoutUrlDetails._all_fields_ = [('previous_value', SsoRemoveLogoutUrlDetails._previous_value_validator)]
 
-TeamActivityCreateReportDetails._start_date_validator = common.Date_validator
-TeamActivityCreateReportDetails._end_date_validator = common.Date_validator
+TeamActivityCreateReportDetails._start_date_validator = common.DropboxTimestamp_validator
+TeamActivityCreateReportDetails._end_date_validator = common.DropboxTimestamp_validator
 TeamActivityCreateReportDetails._all_field_names_ = set([
     'start_date',
     'end_date',

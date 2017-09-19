@@ -40,6 +40,20 @@ SDK Documentation
    :show-inheritance:
    :undoc-members:
 
+:mod:`dropbox.file_properties` -- File Properties
+============================================
+.. automodule:: dropbox.file_properties
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+:mod:`dropbox.file_requests` -- File Requests
+============================================
+.. automodule:: dropbox.file_request
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 :mod:`dropbox.paper` -- Paper
 ============================================
 .. automodule:: dropbox.paper

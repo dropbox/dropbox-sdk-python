@@ -10,9 +10,10 @@ from . import (
     async,
     auth,
     common,
+    file_properties,
+    file_requests,
     files,
     paper,
-    properties,
     sharing,
     team,
     team_common,
@@ -73,6 +74,473 @@ class DropboxBase(object):
             None,
         )
         return None
+
+    # ------------------------------------------
+    # Routes in file_properties namespace
+
+    def file_properties_properties_add(self,
+                                       path,
+                                       property_groups):
+        """
+        Add property groups to a Dropbox file. See
+        :meth:`file_properties_templates_add_for_user` or
+        :meth:`file_properties_templates_add_for_team` to create new templates.
+
+        :param str path: A unique identifier for the file or folder.
+        :param list property_groups: The property groups which are to be added
+            to a Dropbox file.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.AddPropertiesError`
+        """
+        arg = file_properties.AddPropertiesArg(path,
+                                               property_groups)
+        r = self.request(
+            file_properties.properties_add,
+            'file_properties',
+            arg,
+            None,
+        )
+        return None
+
+    def file_properties_properties_overwrite(self,
+                                             path,
+                                             property_groups):
+        """
+        Overwrite property groups associated with a file. This endpoint should
+        be used instead of :meth:`file_properties_properties_update` when
+        property groups are being updated via a "snapshot" instead of via a
+        "delta". In other words, this endpoint will delete all omitted fields
+        from a property group, whereas :meth:`file_properties_properties_update`
+        will only delete fields that are explicitly marked for deletion.
+
+        :param str path: A unique identifier for the file or folder.
+        :param list property_groups: The property groups "snapshot" updates to
+            force apply.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.InvalidPropertyGroupError`
+        """
+        arg = file_properties.OverwritePropertyGroupArg(path,
+                                                        property_groups)
+        r = self.request(
+            file_properties.properties_overwrite,
+            'file_properties',
+            arg,
+            None,
+        )
+        return None
+
+    def file_properties_properties_remove(self,
+                                          path,
+                                          property_template_ids):
+        """
+        Remove the specified property group from the file. To remove specific
+        property field key value pairs, see route
+        :meth:`file_properties_properties_update`. To update a template, see
+        :meth:`file_properties_templates_update_for_user` or
+        :meth:`file_properties_templates_update_for_team`. Templates can't be
+        removed once created.
+
+        :param str path: A unique identifier for the file or folder.
+        :param list property_template_ids: A list of identifiers for a template
+            created by :meth:`file_properties_templates_add_for_user` or
+            :meth:`file_properties_templates_add_for_team`.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.RemovePropertiesError`
+        """
+        arg = file_properties.RemovePropertiesArg(path,
+                                                  property_template_ids)
+        r = self.request(
+            file_properties.properties_remove,
+            'file_properties',
+            arg,
+            None,
+        )
+        return None
+
+    def file_properties_properties_search(self,
+                                          queries,
+                                          template_filter=file_properties.TemplateFilter.filter_none):
+        """
+        Search across property templates for particular property field values.
+
+        :param list queries: Queries to search.
+        :param template_filter: Filter results to contain only properties
+            associated with these template IDs.
+        :type template_filter: :class:`dropbox.file_properties.TemplateFilter`
+        :rtype: :class:`dropbox.file_properties.PropertiesSearchResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.PropertiesSearchError`
+        """
+        arg = file_properties.PropertiesSearchArg(queries,
+                                                  template_filter)
+        r = self.request(
+            file_properties.properties_search,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    def file_properties_properties_update(self,
+                                          path,
+                                          update_property_groups):
+        """
+        Add, update or remove properties associated with the supplied file and
+        templates. This endpoint should be used instead of
+        :meth:`file_properties_properties_overwrite` when property groups are
+        being updated via a "delta" instead of via a "snapshot" . In other
+        words, this endpoint will not delete any omitted fields from a property
+        group, whereas :meth:`file_properties_properties_overwrite` will delete
+        any fields that are omitted from a property group.
+
+        :param str path: A unique identifier for the file or folder.
+        :param list update_property_groups: The property groups "delta" updates
+            to apply.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.UpdatePropertiesError`
+        """
+        arg = file_properties.UpdatePropertiesArg(path,
+                                                  update_property_groups)
+        r = self.request(
+            file_properties.properties_update,
+            'file_properties',
+            arg,
+            None,
+        )
+        return None
+
+    def file_properties_templates_add_for_team(self,
+                                               name,
+                                               description,
+                                               fields):
+        """
+        Add a template associated with a team. See route
+        :meth:`file_properties_properties_add` to add properties to a file or
+        folder.
+
+        :rtype: :class:`dropbox.file_properties.AddTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.ModifyTemplateError`
+        """
+        arg = file_properties.AddTemplateArg(name,
+                                             description,
+                                             fields)
+        r = self.request(
+            file_properties.templates_add_for_team,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    def file_properties_templates_add_for_user(self,
+                                               name,
+                                               description,
+                                               fields):
+        """
+        Add a template associated with a user. See route
+        :meth:`file_properties_properties_add` to add properties to a file.
+
+        :rtype: :class:`dropbox.file_properties.AddTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.ModifyTemplateError`
+        """
+        arg = file_properties.AddTemplateArg(name,
+                                             description,
+                                             fields)
+        r = self.request(
+            file_properties.templates_add_for_user,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    def file_properties_templates_get_for_team(self,
+                                               template_id):
+        """
+        Get the schema for a specified template.
+
+        :param str template_id: An identifier for template added by route  See
+            :meth:`file_properties_templates_add_for_user` or
+            :meth:`file_properties_templates_add_for_team`.
+        :rtype: :class:`dropbox.file_properties.GetTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.TemplateError`
+        """
+        arg = file_properties.GetTemplateArg(template_id)
+        r = self.request(
+            file_properties.templates_get_for_team,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    def file_properties_templates_get_for_user(self,
+                                               template_id):
+        """
+        Get the schema for a specified template.
+
+        :param str template_id: An identifier for template added by route  See
+            :meth:`file_properties_templates_add_for_user` or
+            :meth:`file_properties_templates_add_for_team`.
+        :rtype: :class:`dropbox.file_properties.GetTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.TemplateError`
+        """
+        arg = file_properties.GetTemplateArg(template_id)
+        r = self.request(
+            file_properties.templates_get_for_user,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    def file_properties_templates_list_for_team(self):
+        """
+        Get the template identifiers for a team. To get the schema of each
+        template use :meth:`file_properties_templates_get_for_team`.
+
+        :rtype: :class:`dropbox.file_properties.ListTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.TemplateError`
+        """
+        arg = None
+        r = self.request(
+            file_properties.templates_list_for_team,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    def file_properties_templates_list_for_user(self):
+        """
+        Get the template identifiers for a team. To get the schema of each
+        template use :meth:`file_properties_templates_get_for_user`.
+
+        :rtype: :class:`dropbox.file_properties.ListTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.TemplateError`
+        """
+        arg = None
+        r = self.request(
+            file_properties.templates_list_for_user,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    def file_properties_templates_update_for_team(self,
+                                                  template_id,
+                                                  name=None,
+                                                  description=None,
+                                                  add_fields=None):
+        """
+        Update a template associated with a team. This route can update the
+        template name, the template description and add optional properties to
+        templates.
+
+        :param str template_id: An identifier for template added by  See
+            :meth:`file_properties_templates_add_for_user` or
+            :meth:`file_properties_templates_add_for_team`.
+        :param Nullable name: A display name for the template. template names
+            can be up to 256 bytes.
+        :param Nullable description: Description for the new template. Template
+            descriptions can be up to 1024 bytes.
+        :param Nullable add_fields: Property field templates to be added to the
+            group template. There can be up to 32 properties in a single
+            template.
+        :rtype: :class:`dropbox.file_properties.UpdateTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.ModifyTemplateError`
+        """
+        arg = file_properties.UpdateTemplateArg(template_id,
+                                                name,
+                                                description,
+                                                add_fields)
+        r = self.request(
+            file_properties.templates_update_for_team,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    def file_properties_templates_update_for_user(self,
+                                                  template_id,
+                                                  name=None,
+                                                  description=None,
+                                                  add_fields=None):
+        """
+        Update a template associated with a user. This route can update the
+        template name, the template description and add optional properties to
+        templates.
+
+        :param str template_id: An identifier for template added by  See
+            :meth:`file_properties_templates_add_for_user` or
+            :meth:`file_properties_templates_add_for_team`.
+        :param Nullable name: A display name for the template. template names
+            can be up to 256 bytes.
+        :param Nullable description: Description for the new template. Template
+            descriptions can be up to 1024 bytes.
+        :param Nullable add_fields: Property field templates to be added to the
+            group template. There can be up to 32 properties in a single
+            template.
+        :rtype: :class:`dropbox.file_properties.UpdateTemplateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.ModifyTemplateError`
+        """
+        arg = file_properties.UpdateTemplateArg(template_id,
+                                                name,
+                                                description,
+                                                add_fields)
+        r = self.request(
+            file_properties.templates_update_for_user,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
+    # ------------------------------------------
+    # Routes in file_requests namespace
+
+    def file_requests_create(self,
+                             title,
+                             destination,
+                             deadline=None,
+                             open=True):
+        """
+        Creates a file request for this user.
+
+        :param str title: The title of the file request. Must not be empty.
+        :param str destination: The path of the folder in the Dropbox where
+            uploaded files will be sent. For apps with the app folder
+            permission, this will be relative to the app folder.
+        :param Nullable deadline: The deadline for the file request. Deadlines
+            can only be set by Pro and Business accounts.
+        :param bool open: Whether or not the file request should be open. If the
+            file request is closed, it will not accept any file submissions, but
+            it can be opened later.
+        :rtype: :class:`dropbox.file_requests.FileRequest`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_requests.CreateFileRequestError`
+        """
+        arg = file_requests.CreateFileRequestArgs(title,
+                                                  destination,
+                                                  deadline,
+                                                  open)
+        r = self.request(
+            file_requests.create,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
+
+    def file_requests_get(self,
+                          id):
+        """
+        Returns the specified file request.
+
+        :param str id: The ID of the file request to retrieve.
+        :rtype: :class:`dropbox.file_requests.FileRequest`
+        """
+        arg = file_requests.GetFileRequestArgs(id)
+        r = self.request(
+            file_requests.get,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
+
+    def file_requests_list(self):
+        """
+        Returns a list of file requests owned by this user. For apps with the
+        app folder permission, this will only return file requests with
+        destinations in the app folder.
+
+        :rtype: :class:`dropbox.file_requests.ListFileRequestsResult`
+        """
+        arg = None
+        r = self.request(
+            file_requests.list,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
+
+    def file_requests_update(self,
+                             id,
+                             title=None,
+                             destination=None,
+                             deadline=file_requests.UpdateFileRequestDeadline.no_update,
+                             open=None):
+        """
+        Update a file request.
+
+        :param str id: The ID of the file request to update.
+        :param Nullable title: The new title of the file request. Must not be
+            empty.
+        :param Nullable destination: The new path of the folder in the Dropbox
+            where uploaded files will be sent. For apps with the app folder
+            permission, this will be relative to the app folder.
+        :param deadline: The new deadline for the file request.
+        :type deadline: :class:`dropbox.file_requests.UpdateFileRequestDeadline`
+        :param Nullable open: Whether to set this file request as open or
+            closed.
+        :rtype: :class:`dropbox.file_requests.FileRequest`
+        """
+        arg = file_requests.UpdateFileRequestArgs(id,
+                                                  title,
+                                                  destination,
+                                                  deadline,
+                                                  open)
+        r = self.request(
+            file_requests.update,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
 
     # ------------------------------------------
     # Routes in files namespace
@@ -1165,20 +1633,21 @@ class DropboxBase(object):
                              path,
                              property_groups):
         """
-        Add custom properties to a file using a filled property template. See
-        properties/template/add to create new property templates.
-
-        :param str path: A unique identifier for the file.
-        :param list property_groups: Filled custom property templates associated
-            with a file.
+        :param str path: A unique identifier for the file or folder.
+        :param list property_groups: The property groups which are to be added
+            to a Dropbox file.
         :rtype: None
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.AddPropertiesError`
         """
-        arg = files.PropertyGroupWithPath(path,
-                                          property_groups)
+        warnings.warn(
+            'properties/add is deprecated.',
+            DeprecationWarning,
+        )
+        arg = file_properties.AddPropertiesArg(path,
+                                               property_groups)
         r = self.request(
             files.properties_add,
             'files',
@@ -1191,20 +1660,21 @@ class DropboxBase(object):
                                    path,
                                    property_groups):
         """
-        Overwrite custom properties from a specified template associated with a
-        file.
-
-        :param str path: A unique identifier for the file.
-        :param list property_groups: Filled custom property templates associated
-            with a file.
+        :param str path: A unique identifier for the file or folder.
+        :param list property_groups: The property groups "snapshot" updates to
+            force apply.
         :rtype: None
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.InvalidPropertyGroupError`
         """
-        arg = files.PropertyGroupWithPath(path,
-                                          property_groups)
+        warnings.warn(
+            'properties/overwrite is deprecated.',
+            DeprecationWarning,
+        )
+        arg = file_properties.OverwritePropertyGroupArg(path,
+                                                        property_groups)
         r = self.request(
             files.properties_overwrite,
             'files',
@@ -1217,23 +1687,22 @@ class DropboxBase(object):
                                 path,
                                 property_template_ids):
         """
-        Remove all custom properties from a specified template associated with a
-        file. To remove specific property key value pairs, see
-        :meth:`files_properties_update`. To update a property template, see
-        properties/template/update. Property templates can't be removed once
-        created.
-
-        :param str path: A unique identifier for the file.
-        :param list property_template_ids: A list of identifiers for a property
-            template created by route properties/template/add.
+        :param str path: A unique identifier for the file or folder.
+        :param list property_template_ids: A list of identifiers for a template
+            created by :meth:`files_templates_add_for_user` or
+            :meth:`files_templates_add_for_team`.
         :rtype: None
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.RemovePropertiesError`
         """
-        arg = files.RemovePropertiesArg(path,
-                                        property_template_ids)
+        warnings.warn(
+            'properties/remove is deprecated.',
+            DeprecationWarning,
+        )
+        arg = file_properties.RemovePropertiesArg(path,
+                                                  property_template_ids)
         r = self.request(
             files.properties_remove,
             'files',
@@ -1245,17 +1714,20 @@ class DropboxBase(object):
     def files_properties_template_get(self,
                                       template_id):
         """
-        Get the schema for a specified template.
-
-        :param str template_id: An identifier for property template added by
-            route properties/template/add.
-        :rtype: :class:`dropbox.files.GetPropertyTemplateResult`
+        :param str template_id: An identifier for template added by route  See
+            :meth:`files_templates_add_for_user` or
+            :meth:`files_templates_add_for_team`.
+        :rtype: :class:`dropbox.files.GetTemplateResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.files.PropertyTemplateError`
+            :class:`dropbox.files.TemplateError`
         """
-        arg = properties.GetPropertyTemplateArg(template_id)
+        warnings.warn(
+            'properties/template/get is deprecated.',
+            DeprecationWarning,
+        )
+        arg = file_properties.GetTemplateArg(template_id)
         r = self.request(
             files.properties_template_get,
             'files',
@@ -1265,16 +1737,10 @@ class DropboxBase(object):
         return r
 
     def files_properties_template_list(self):
-        """
-        Get the property template identifiers for a user. To get the schema of
-        each template use :meth:`files_properties_template_get`.
-
-        :rtype: :class:`dropbox.files.ListPropertyTemplateIds`
-        :raises: :class:`dropbox.exceptions.ApiError`
-
-        If this raises, ApiError.reason is of type:
-            :class:`dropbox.files.PropertyTemplateError`
-        """
+        warnings.warn(
+            'properties/template/list is deprecated.',
+            DeprecationWarning,
+        )
         arg = None
         r = self.request(
             files.properties_template_list,
@@ -1288,21 +1754,21 @@ class DropboxBase(object):
                                 path,
                                 update_property_groups):
         """
-        Add, update or remove custom properties from a specified template
-        associated with a file. Fields that already exist and not described in
-        the request will not be modified.
-
-        :param str path: A unique identifier for the file.
-        :param list update_property_groups: Filled custom property templates
-            associated with a file.
+        :param str path: A unique identifier for the file or folder.
+        :param list update_property_groups: The property groups "delta" updates
+            to apply.
         :rtype: None
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.UpdatePropertiesError`
         """
-        arg = files.UpdatePropertyGroupArg(path,
-                                           update_property_groups)
+        warnings.warn(
+            'properties/update is deprecated.',
+            DeprecationWarning,
+        )
+        arg = file_properties.UpdatePropertiesArg(path,
+                                                  update_property_groups)
         r = self.request(
             files.properties_update,
             'files',

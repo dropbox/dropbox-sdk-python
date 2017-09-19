@@ -13632,7 +13632,7 @@ class SharedLinkSettingsError(bb.Union):
         attributes of the :class:`SharedLinkSettings` are empty, the requested
         visibility is ``RequestedVisibility.password`` but the
         ``SharedLinkSettings.link_password`` is missing,
-        ``SharedLinkSettings.expires`` is set to the past, etc.)
+        ``SharedLinkSettings.expires`` is set to the past, etc.).
     :ivar not_authorized: User is not allowed to modify the settings of this
         link. Note that basic users can only set ``RequestedVisibility.public``
         as the ``SharedLinkSettings.requested_visibility`` and cannot set

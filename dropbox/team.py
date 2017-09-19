@@ -15,7 +15,7 @@ try:
     from . import (
         async,
         common,
-        properties,
+        file_properties,
         team_common,
         team_policies,
         users,
@@ -24,7 +24,7 @@ try:
 except (SystemError, ValueError):
     import async
     import common
-    import properties
+    import file_properties
     import team_common
     import team_policies
     import users
@@ -384,84 +384,6 @@ class ActiveWebSession(DeviceSession):
         )
 
 ActiveWebSession_validator = bv.Struct(ActiveWebSession)
-
-class AddPropertyTemplateArg(properties.PropertyGroupTemplate):
-    """
-    Arguments for adding property templates.
-    """
-
-    __slots__ = [
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 name=None,
-                 description=None,
-                 fields=None):
-        super(AddPropertyTemplateArg, self).__init__(name,
-                                                     description,
-                                                     fields)
-
-    def __repr__(self):
-        return 'AddPropertyTemplateArg(name={!r}, description={!r}, fields={!r})'.format(
-            self._name_value,
-            self._description_value,
-            self._fields_value,
-        )
-
-AddPropertyTemplateArg_validator = bv.Struct(AddPropertyTemplateArg)
-
-class AddPropertyTemplateResult(object):
-    """
-    :ivar template_id: An identifier for property template added by
-        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
-    """
-
-    __slots__ = [
-        '_template_id_value',
-        '_template_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 template_id=None):
-        self._template_id_value = None
-        self._template_id_present = False
-        if template_id is not None:
-            self.template_id = template_id
-
-    @property
-    def template_id(self):
-        """
-        An identifier for property template added by
-        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
-
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
-
-    def __repr__(self):
-        return 'AddPropertyTemplateResult(template_id={!r})'.format(
-            self._template_id_value,
-        )
-
-AddPropertyTemplateResult_validator = bv.Struct(AddPropertyTemplateResult)
 
 class AdminTier(bb.Union):
     """
@@ -14155,220 +14077,6 @@ class TokenGetAuthenticatedAdminResult(object):
 
 TokenGetAuthenticatedAdminResult_validator = bv.Struct(TokenGetAuthenticatedAdminResult)
 
-class UpdatePropertyTemplateArg(object):
-    """
-    :ivar template_id: An identifier for property template added by
-        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
-    :ivar name: A display name for the property template. Property template
-        names can be up to 256 bytes.
-    :ivar description: Description for new property template. Property template
-        descriptions can be up to 1024 bytes.
-    :ivar add_fields: This is a list of custom properties to add to the property
-        template. There can be up to 64 properties in a single property
-        template.
-    """
-
-    __slots__ = [
-        '_template_id_value',
-        '_template_id_present',
-        '_name_value',
-        '_name_present',
-        '_description_value',
-        '_description_present',
-        '_add_fields_value',
-        '_add_fields_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 template_id=None,
-                 name=None,
-                 description=None,
-                 add_fields=None):
-        self._template_id_value = None
-        self._template_id_present = False
-        self._name_value = None
-        self._name_present = False
-        self._description_value = None
-        self._description_present = False
-        self._add_fields_value = None
-        self._add_fields_present = False
-        if template_id is not None:
-            self.template_id = template_id
-        if name is not None:
-            self.name = name
-        if description is not None:
-            self.description = description
-        if add_fields is not None:
-            self.add_fields = add_fields
-
-    @property
-    def template_id(self):
-        """
-        An identifier for property template added by
-        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
-
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
-
-    @property
-    def name(self):
-        """
-        A display name for the property template. Property template names can be
-        up to 256 bytes.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            return None
-
-    @name.setter
-    def name(self, val):
-        if val is None:
-            del self.name
-            return
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def description(self):
-        """
-        Description for new property template. Property template descriptions
-        can be up to 1024 bytes.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            return None
-
-    @description.setter
-    def description(self, val):
-        if val is None:
-            del self.description
-            return
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    @property
-    def add_fields(self):
-        """
-        This is a list of custom properties to add to the property template.
-        There can be up to 64 properties in a single property template.
-
-        :rtype: list of [properties.PropertyFieldTemplate_validator]
-        """
-        if self._add_fields_present:
-            return self._add_fields_value
-        else:
-            return None
-
-    @add_fields.setter
-    def add_fields(self, val):
-        if val is None:
-            del self.add_fields
-            return
-        val = self._add_fields_validator.validate(val)
-        self._add_fields_value = val
-        self._add_fields_present = True
-
-    @add_fields.deleter
-    def add_fields(self):
-        self._add_fields_value = None
-        self._add_fields_present = False
-
-    def __repr__(self):
-        return 'UpdatePropertyTemplateArg(template_id={!r}, name={!r}, description={!r}, add_fields={!r})'.format(
-            self._template_id_value,
-            self._name_value,
-            self._description_value,
-            self._add_fields_value,
-        )
-
-UpdatePropertyTemplateArg_validator = bv.Struct(UpdatePropertyTemplateArg)
-
-class UpdatePropertyTemplateResult(object):
-    """
-    :ivar template_id: An identifier for property template added by
-        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
-    """
-
-    __slots__ = [
-        '_template_id_value',
-        '_template_id_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 template_id=None):
-        self._template_id_value = None
-        self._template_id_present = False
-        if template_id is not None:
-            self.template_id = template_id
-
-    @property
-    def template_id(self):
-        """
-        An identifier for property template added by
-        :meth:`dropbox.dropbox.Dropbox.team_properties_template_add`.
-
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
-
-    def __repr__(self):
-        return 'UpdatePropertyTemplateResult(template_id={!r})'.format(
-            self._template_id_value,
-        )
-
-UpdatePropertyTemplateResult_validator = bv.Struct(UpdatePropertyTemplateResult)
-
 class UploadApiRateLimitValue(bb.Union):
     """
     The value for ``Feature.upload_api_rate_limit``.
@@ -14855,13 +14563,6 @@ ActiveWebSession._all_fields_ = DeviceSession._all_fields_ + [
     ('browser', ActiveWebSession._browser_validator),
     ('expires', ActiveWebSession._expires_validator),
 ]
-
-AddPropertyTemplateArg._all_field_names_ = properties.PropertyGroupTemplate._all_field_names_.union(set([]))
-AddPropertyTemplateArg._all_fields_ = properties.PropertyGroupTemplate._all_fields_ + []
-
-AddPropertyTemplateResult._template_id_validator = properties.TemplateId_validator
-AddPropertyTemplateResult._all_field_names_ = set(['template_id'])
-AddPropertyTemplateResult._all_fields_ = [('template_id', AddPropertyTemplateResult._template_id_validator)]
 
 AdminTier._team_admin_validator = bv.Void()
 AdminTier._user_management_admin_validator = bv.Void()
@@ -15754,8 +15455,8 @@ MemberAccess._all_fields_ = [
 ]
 
 MemberAddArg._member_email_validator = common.EmailAddress_validator
-MemberAddArg._member_given_name_validator = bv.Nullable(common.NamePart_validator)
-MemberAddArg._member_surname_validator = bv.Nullable(common.NamePart_validator)
+MemberAddArg._member_given_name_validator = bv.Nullable(common.OptionalNamePart_validator)
+MemberAddArg._member_surname_validator = bv.Nullable(common.OptionalNamePart_validator)
 MemberAddArg._member_external_id_validator = bv.Nullable(team_common.MemberExternalId_validator)
 MemberAddArg._member_persistent_id_validator = bv.Nullable(bv.String())
 MemberAddArg._send_welcome_email_validator = bv.Boolean()
@@ -16723,27 +16424,6 @@ TokenGetAuthenticatedAdminResult._admin_profile_validator = TeamMemberProfile_va
 TokenGetAuthenticatedAdminResult._all_field_names_ = set(['admin_profile'])
 TokenGetAuthenticatedAdminResult._all_fields_ = [('admin_profile', TokenGetAuthenticatedAdminResult._admin_profile_validator)]
 
-UpdatePropertyTemplateArg._template_id_validator = properties.TemplateId_validator
-UpdatePropertyTemplateArg._name_validator = bv.Nullable(bv.String())
-UpdatePropertyTemplateArg._description_validator = bv.Nullable(bv.String())
-UpdatePropertyTemplateArg._add_fields_validator = bv.Nullable(bv.List(properties.PropertyFieldTemplate_validator))
-UpdatePropertyTemplateArg._all_field_names_ = set([
-    'template_id',
-    'name',
-    'description',
-    'add_fields',
-])
-UpdatePropertyTemplateArg._all_fields_ = [
-    ('template_id', UpdatePropertyTemplateArg._template_id_validator),
-    ('name', UpdatePropertyTemplateArg._name_validator),
-    ('description', UpdatePropertyTemplateArg._description_validator),
-    ('add_fields', UpdatePropertyTemplateArg._add_fields_validator),
-]
-
-UpdatePropertyTemplateResult._template_id_validator = properties.TemplateId_validator
-UpdatePropertyTemplateResult._all_field_names_ = set(['template_id'])
-UpdatePropertyTemplateResult._all_fields_ = [('template_id', UpdatePropertyTemplateResult._template_id_validator)]
-
 UploadApiRateLimitValue._unlimited_validator = bv.Void()
 UploadApiRateLimitValue._limit_validator = bv.UInt32()
 UploadApiRateLimitValue._other_validator = bv.Void()
@@ -17176,37 +16856,37 @@ namespaces_list_continue = bb.Route(
 )
 properties_template_add = bb.Route(
     'properties/template/add',
-    False,
-    AddPropertyTemplateArg_validator,
-    AddPropertyTemplateResult_validator,
-    properties.ModifyPropertyTemplateError_validator,
+    True,
+    file_properties.AddTemplateArg_validator,
+    file_properties.AddTemplateResult_validator,
+    file_properties.ModifyTemplateError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
 properties_template_get = bb.Route(
     'properties/template/get',
-    False,
-    properties.GetPropertyTemplateArg_validator,
-    properties.GetPropertyTemplateResult_validator,
-    properties.PropertyTemplateError_validator,
+    True,
+    file_properties.GetTemplateArg_validator,
+    file_properties.GetTemplateResult_validator,
+    file_properties.TemplateError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
 properties_template_list = bb.Route(
     'properties/template/list',
-    False,
+    True,
     bv.Void(),
-    properties.ListPropertyTemplateIds_validator,
-    properties.PropertyTemplateError_validator,
+    file_properties.ListTemplateResult_validator,
+    file_properties.TemplateError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
 properties_template_update = bb.Route(
     'properties/template/update',
-    False,
-    UpdatePropertyTemplateArg_validator,
-    UpdatePropertyTemplateResult_validator,
-    properties.ModifyPropertyTemplateError_validator,
+    True,
+    file_properties.UpdateTemplateArg_validator,
+    file_properties.UpdateTemplateResult_validator,
+    file_properties.ModifyTemplateError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )

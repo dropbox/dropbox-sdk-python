@@ -10,9 +10,10 @@ from . import (
     async,
     auth,
     common,
+    file_properties,
+    file_requests,
     files,
     paper,
-    properties,
     sharing,
     team,
     team_common,
@@ -911,9 +912,12 @@ class DropboxTeamBase(object):
         been permanently deleted or transferred to another account (whichever
         comes first). Calling :meth:`team_members_add` while a user is still
         recoverable on your team will return with
-        ``MemberAddResult.user_already_on_team``. This endpoint may initiate an
-        asynchronous job. To obtain the final result of the job, the client
-        should periodically poll :meth:`team_members_remove_job_status_get`.
+        ``MemberAddResult.user_already_on_team``. Accounts can have their files
+        transferred via the admin console for a limited time, based on the
+        version history length associated with the team (120 days for most
+        teams). This endpoint may initiate an asynchronous job. To obtain the
+        final result of the job, the client should periodically poll
+        :meth:`team_members_remove_job_status_get`.
 
         :param Nullable transfer_dest_id: If provided, files from the deleted
             member account will be transferred to this user.
@@ -1161,19 +1165,13 @@ class DropboxTeamBase(object):
                                      name,
                                      description,
                                      fields):
-        """
-        Add a property template. See route files/properties/add to add
-        properties to a file.
-
-        :rtype: :class:`dropbox.team.AddPropertyTemplateResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
-
-        If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.ModifyPropertyTemplateError`
-        """
-        arg = team.AddPropertyTemplateArg(name,
-                                          description,
-                                          fields)
+        warnings.warn(
+            'properties/template/add is deprecated.',
+            DeprecationWarning,
+        )
+        arg = file_properties.AddTemplateArg(name,
+                                             description,
+                                             fields)
         r = self.request(
             team.properties_template_add,
             'team',
@@ -1185,17 +1183,20 @@ class DropboxTeamBase(object):
     def team_properties_template_get(self,
                                      template_id):
         """
-        Get the schema for a specified template.
-
-        :param str template_id: An identifier for property template added by
-            route properties/template/add.
-        :rtype: :class:`dropbox.team.GetPropertyTemplateResult`
+        :param str template_id: An identifier for template added by route  See
+            :meth:`team_templates_add_for_user` or
+            :meth:`team_templates_add_for_team`.
+        :rtype: :class:`dropbox.team.GetTemplateResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.PropertyTemplateError`
+            :class:`dropbox.team.TemplateError`
         """
-        arg = properties.GetPropertyTemplateArg(template_id)
+        warnings.warn(
+            'properties/template/get is deprecated.',
+            DeprecationWarning,
+        )
+        arg = file_properties.GetTemplateArg(template_id)
         r = self.request(
             team.properties_template_get,
             'team',
@@ -1205,16 +1206,10 @@ class DropboxTeamBase(object):
         return r
 
     def team_properties_template_list(self):
-        """
-        Get the property template identifiers for a team. To get the schema of
-        each template use :meth:`team_properties_template_get`.
-
-        :rtype: :class:`dropbox.team.ListPropertyTemplateIds`
-        :raises: :class:`dropbox.exceptions.ApiError`
-
-        If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.PropertyTemplateError`
-        """
+        warnings.warn(
+            'properties/template/list is deprecated.',
+            DeprecationWarning,
+        )
         arg = None
         r = self.request(
             team.properties_template_list,
@@ -1230,28 +1225,30 @@ class DropboxTeamBase(object):
                                         description=None,
                                         add_fields=None):
         """
-        Update a property template. This route can update the template name, the
-        template description and add optional properties to templates.
-
-        :param str template_id: An identifier for property template added by
-            :meth:`team_properties_template_add`.
-        :param Nullable name: A display name for the property template. Property
-            template names can be up to 256 bytes.
-        :param Nullable description: Description for new property template.
-            Property template descriptions can be up to 1024 bytes.
-        :param Nullable add_fields: This is a list of custom properties to add
-            to the property template. There can be up to 64 properties in a
-            single property template.
-        :rtype: :class:`dropbox.team.UpdatePropertyTemplateResult`
+        :param str template_id: An identifier for template added by  See
+            :meth:`team_templates_add_for_user` or
+            :meth:`team_templates_add_for_team`.
+        :param Nullable name: A display name for the template. template names
+            can be up to 256 bytes.
+        :param Nullable description: Description for the new template. Template
+            descriptions can be up to 1024 bytes.
+        :param Nullable add_fields: Property field templates to be added to the
+            group template. There can be up to 32 properties in a single
+            template.
+        :rtype: :class:`dropbox.team.UpdateTemplateResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.ModifyPropertyTemplateError`
+            :class:`dropbox.team.ModifyTemplateError`
         """
-        arg = team.UpdatePropertyTemplateArg(template_id,
-                                             name,
-                                             description,
-                                             add_fields)
+        warnings.warn(
+            'properties/template/update is deprecated.',
+            DeprecationWarning,
+        )
+        arg = file_properties.UpdateTemplateArg(template_id,
+                                                name,
+                                                description,
+                                                add_fields)
         r = self.request(
             team.properties_template_update,
             'team',
