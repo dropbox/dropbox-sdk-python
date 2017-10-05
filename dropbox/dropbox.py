@@ -6,7 +6,7 @@ __all__ = [
 
 # This should always be 0.0.0 in master. Only update this after tagging
 # before release.
-__version__ = '0.0.0'
+__version__ = '8.3.0'
 
 import contextlib
 import json
