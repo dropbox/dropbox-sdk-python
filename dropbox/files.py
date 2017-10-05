@@ -3471,6 +3471,10 @@ GpsCoordinates_validator = bv.Struct(GpsCoordinates)
 class ListFolderArg(object):
     """
     :ivar path: A unique identifier for the file.
+    :ivar shared_link: A shared link to list the contents of, if the link is
+        protected provide the password. if this field is present,
+        ``ListFolderArg.path`` will be relative to root of the shared link. Only
+        non-recursive mode is supported for shared link.
     :ivar recursive: If true, the list folder operation will be applied
         recursively to all subfolders and the response will contain contents of
         all subfolders.
@@ -3492,6 +3496,8 @@ class ListFolderArg(object):
     __slots__ = [
         '_path_value',
         '_path_present',
+        '_shared_link_value',
+        '_shared_link_present',
         '_recursive_value',
         '_recursive_present',
         '_include_media_info_value',
@@ -3510,6 +3516,7 @@ class ListFolderArg(object):
 
     def __init__(self,
                  path=None,
+                 shared_link=None,
                  recursive=None,
                  include_media_info=None,
                  include_deleted=None,
@@ -3518,6 +3525,8 @@ class ListFolderArg(object):
                  limit=None):
         self._path_value = None
         self._path_present = False
+        self._shared_link_value = None
+        self._shared_link_present = False
         self._recursive_value = None
         self._recursive_present = False
         self._include_media_info_value = None
@@ -3532,6 +3541,8 @@ class ListFolderArg(object):
         self._limit_present = False
         if path is not None:
             self.path = path
+        if shared_link is not None:
+            self.shared_link = shared_link
         if recursive is not None:
             self.recursive = recursive
         if include_media_info is not None:
@@ -3567,6 +3578,35 @@ class ListFolderArg(object):
     def path(self):
         self._path_value = None
         self._path_present = False
+
+    @property
+    def shared_link(self):
+        """
+        A shared link to list the contents of, if the link is protected provide
+        the password. if this field is present, ``ListFolderArg.path`` will be
+        relative to root of the shared link. Only non-recursive mode is
+        supported for shared link.
+
+        :rtype: SharedLink
+        """
+        if self._shared_link_present:
+            return self._shared_link_value
+        else:
+            return None
+
+    @shared_link.setter
+    def shared_link(self, val):
+        if val is None:
+            del self.shared_link
+            return
+        self._shared_link_validator.validate_type_only(val)
+        self._shared_link_value = val
+        self._shared_link_present = True
+
+    @shared_link.deleter
+    def shared_link(self):
+        self._shared_link_value = None
+        self._shared_link_present = False
 
     @property
     def recursive(self):
@@ -3716,8 +3756,9 @@ class ListFolderArg(object):
         self._limit_present = False
 
     def __repr__(self):
-        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_mounted_folders={!r}, limit={!r})'.format(
+        return 'ListFolderArg(path={!r}, shared_link={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_mounted_folders={!r}, limit={!r})'.format(
             self._path_value,
+            self._shared_link_value,
             self._recursive_value,
             self._include_media_info_value,
             self._include_deleted_value,
@@ -7141,6 +7182,90 @@ class SearchResult(object):
 
 SearchResult_validator = bv.Struct(SearchResult)
 
+class SharedLink(object):
+    """
+    :ivar url: Shared link url.
+    :ivar password: Password for the shared link.
+    """
+
+    __slots__ = [
+        '_url_value',
+        '_url_present',
+        '_password_value',
+        '_password_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 url=None,
+                 password=None):
+        self._url_value = None
+        self._url_present = False
+        self._password_value = None
+        self._password_present = False
+        if url is not None:
+            self.url = url
+        if password is not None:
+            self.password = password
+
+    @property
+    def url(self):
+        """
+        Shared link url.
+
+        :rtype: str
+        """
+        if self._url_present:
+            return self._url_value
+        else:
+            raise AttributeError("missing required field 'url'")
+
+    @url.setter
+    def url(self, val):
+        val = self._url_validator.validate(val)
+        self._url_value = val
+        self._url_present = True
+
+    @url.deleter
+    def url(self):
+        self._url_value = None
+        self._url_present = False
+
+    @property
+    def password(self):
+        """
+        Password for the shared link.
+
+        :rtype: str
+        """
+        if self._password_present:
+            return self._password_value
+        else:
+            return None
+
+    @password.setter
+    def password(self, val):
+        if val is None:
+            del self.password
+            return
+        val = self._password_validator.validate(val)
+        self._password_value = val
+        self._password_present = True
+
+    @password.deleter
+    def password(self):
+        self._password_value = None
+        self._password_present = False
+
+    def __repr__(self):
+        return 'SharedLink(url={!r}, password={!r})'.format(
+            self._url_value,
+            self._password_value,
+        )
+
+SharedLink_validator = bv.Struct(SharedLink)
+
 class ThumbnailArg(object):
     """
     :ivar path: The path to the image file you want to thumbnail.
@@ -8662,7 +8787,7 @@ class WriteError(bb.Union):
         (bytes) to write more data.
     :ivar disallowed_name: Dropbox will not save the file or folder because of
         its name.
-    :ivar team_folder: This endpoint cannot modify or delete team folders.
+    :ivar team_folder: This endpoint cannot move or delete team folders.
     """
 
     _catch_all = 'other'
@@ -8881,6 +9006,7 @@ PathROrId_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?|id:.*|(ns:[0-9]+(/.*
 ReadPath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/.*)?)')
 Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
 Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
+SharedLinkUrl_validator = bv.String()
 WritePath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
 WritePathOrId_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)|(id:.*)')
 GetMetadataArg._path_validator = ReadPath_validator
@@ -9296,6 +9422,7 @@ GpsCoordinates._all_fields_ = [
 ]
 
 ListFolderArg._path_validator = PathROrId_validator
+ListFolderArg._shared_link_validator = bv.Nullable(SharedLink_validator)
 ListFolderArg._recursive_validator = bv.Boolean()
 ListFolderArg._include_media_info_validator = bv.Boolean()
 ListFolderArg._include_deleted_validator = bv.Boolean()
@@ -9304,6 +9431,7 @@ ListFolderArg._include_mounted_folders_validator = bv.Boolean()
 ListFolderArg._limit_validator = bv.Nullable(bv.UInt32(min_value=1, max_value=2000))
 ListFolderArg._all_field_names_ = set([
     'path',
+    'shared_link',
     'recursive',
     'include_media_info',
     'include_deleted',
@@ -9313,6 +9441,7 @@ ListFolderArg._all_field_names_ = set([
 ])
 ListFolderArg._all_fields_ = [
     ('path', ListFolderArg._path_validator),
+    ('shared_link', ListFolderArg._shared_link_validator),
     ('recursive', ListFolderArg._recursive_validator),
     ('include_media_info', ListFolderArg._include_media_info_validator),
     ('include_deleted', ListFolderArg._include_deleted_validator),
@@ -9810,6 +9939,17 @@ SearchResult._all_fields_ = [
     ('matches', SearchResult._matches_validator),
     ('more', SearchResult._more_validator),
     ('start', SearchResult._start_validator),
+]
+
+SharedLink._url_validator = SharedLinkUrl_validator
+SharedLink._password_validator = bv.Nullable(bv.String())
+SharedLink._all_field_names_ = set([
+    'url',
+    'password',
+])
+SharedLink._all_fields_ = [
+    ('url', SharedLink._url_validator),
+    ('password', SharedLink._password_validator),
 ]
 
 ThumbnailArg._path_validator = ReadPath_validator

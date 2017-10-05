@@ -11866,7 +11866,7 @@ class SharedFileMembers(object):
         """
         The list of user members of the shared file.
 
-        :rtype: list of [UserMembershipInfo]
+        :rtype: list of [UserFileMembershipInfo]
         """
         if self._users_present:
             return self._users_value
@@ -15229,6 +15229,141 @@ class UpdateFolderPolicyError(bb.Union):
 
 UpdateFolderPolicyError_validator = bv.Union(UpdateFolderPolicyError)
 
+class UserMembershipInfo(MembershipInfo):
+    """
+    The information about a user member of the shared content.
+
+    :ivar user: The account information for the membership user.
+    """
+
+    __slots__ = [
+        '_user_value',
+        '_user_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 access_type=None,
+                 user=None,
+                 permissions=None,
+                 initials=None,
+                 is_inherited=None):
+        super(UserMembershipInfo, self).__init__(access_type,
+                                                 permissions,
+                                                 initials,
+                                                 is_inherited)
+        self._user_value = None
+        self._user_present = False
+        if user is not None:
+            self.user = user
+
+    @property
+    def user(self):
+        """
+        The account information for the membership user.
+
+        :rtype: UserInfo
+        """
+        if self._user_present:
+            return self._user_value
+        else:
+            raise AttributeError("missing required field 'user'")
+
+    @user.setter
+    def user(self, val):
+        self._user_validator.validate_type_only(val)
+        self._user_value = val
+        self._user_present = True
+
+    @user.deleter
+    def user(self):
+        self._user_value = None
+        self._user_present = False
+
+    def __repr__(self):
+        return 'UserMembershipInfo(access_type={!r}, user={!r}, permissions={!r}, initials={!r}, is_inherited={!r})'.format(
+            self._access_type_value,
+            self._user_value,
+            self._permissions_value,
+            self._initials_value,
+            self._is_inherited_value,
+        )
+
+UserMembershipInfo_validator = bv.Struct(UserMembershipInfo)
+
+class UserFileMembershipInfo(UserMembershipInfo):
+    """
+    The information about a user member of the shared content with an appended
+    last seen timestamp.
+
+    :ivar time_last_seen: The UTC timestamp of when the user has last seen the
+        content, if they have.
+    """
+
+    __slots__ = [
+        '_time_last_seen_value',
+        '_time_last_seen_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 access_type=None,
+                 user=None,
+                 permissions=None,
+                 initials=None,
+                 is_inherited=None,
+                 time_last_seen=None):
+        super(UserFileMembershipInfo, self).__init__(access_type,
+                                                     user,
+                                                     permissions,
+                                                     initials,
+                                                     is_inherited)
+        self._time_last_seen_value = None
+        self._time_last_seen_present = False
+        if time_last_seen is not None:
+            self.time_last_seen = time_last_seen
+
+    @property
+    def time_last_seen(self):
+        """
+        The UTC timestamp of when the user has last seen the content, if they
+        have.
+
+        :rtype: datetime.datetime
+        """
+        if self._time_last_seen_present:
+            return self._time_last_seen_value
+        else:
+            return None
+
+    @time_last_seen.setter
+    def time_last_seen(self, val):
+        if val is None:
+            del self.time_last_seen
+            return
+        val = self._time_last_seen_validator.validate(val)
+        self._time_last_seen_value = val
+        self._time_last_seen_present = True
+
+    @time_last_seen.deleter
+    def time_last_seen(self):
+        self._time_last_seen_value = None
+        self._time_last_seen_present = False
+
+    def __repr__(self):
+        return 'UserFileMembershipInfo(access_type={!r}, user={!r}, permissions={!r}, initials={!r}, is_inherited={!r}, time_last_seen={!r})'.format(
+            self._access_type_value,
+            self._user_value,
+            self._permissions_value,
+            self._initials_value,
+            self._is_inherited_value,
+            self._time_last_seen_value,
+        )
+
+UserFileMembershipInfo_validator = bv.Struct(UserFileMembershipInfo)
+
 class UserInfo(object):
     """
     Basic information about a user. Use
@@ -15351,69 +15486,6 @@ class UserInfo(object):
         )
 
 UserInfo_validator = bv.Struct(UserInfo)
-
-class UserMembershipInfo(MembershipInfo):
-    """
-    The information about a user member of the shared content.
-
-    :ivar user: The account information for the membership user.
-    """
-
-    __slots__ = [
-        '_user_value',
-        '_user_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 access_type=None,
-                 user=None,
-                 permissions=None,
-                 initials=None,
-                 is_inherited=None):
-        super(UserMembershipInfo, self).__init__(access_type,
-                                                 permissions,
-                                                 initials,
-                                                 is_inherited)
-        self._user_value = None
-        self._user_present = False
-        if user is not None:
-            self.user = user
-
-    @property
-    def user(self):
-        """
-        The account information for the membership user.
-
-        :rtype: UserInfo
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    def __repr__(self):
-        return 'UserMembershipInfo(access_type={!r}, user={!r}, permissions={!r}, initials={!r}, is_inherited={!r})'.format(
-            self._access_type_value,
-            self._user_value,
-            self._permissions_value,
-            self._initials_value,
-            self._is_inherited_value,
-        )
-
-UserMembershipInfo_validator = bv.Struct(UserMembershipInfo)
 
 class ViewerInfoPolicy(bb.Union):
     """
@@ -17208,7 +17280,7 @@ SharedContentLinkMetadata._all_fields_ = SharedContentLinkMetadataBase._all_fiel
     ('url', SharedContentLinkMetadata._url_validator),
 ]
 
-SharedFileMembers._users_validator = bv.List(UserMembershipInfo_validator)
+SharedFileMembers._users_validator = bv.List(UserFileMembershipInfo_validator)
 SharedFileMembers._groups_validator = bv.List(GroupMembershipInfo_validator)
 SharedFileMembers._invitees_validator = bv.List(InviteeMembershipInfo_validator)
 SharedFileMembers._cursor_validator = bv.Nullable(bv.String())
@@ -17670,6 +17742,14 @@ UpdateFolderPolicyError.no_permission = UpdateFolderPolicyError('no_permission')
 UpdateFolderPolicyError.team_folder = UpdateFolderPolicyError('team_folder')
 UpdateFolderPolicyError.other = UpdateFolderPolicyError('other')
 
+UserMembershipInfo._user_validator = UserInfo_validator
+UserMembershipInfo._all_field_names_ = MembershipInfo._all_field_names_.union(set(['user']))
+UserMembershipInfo._all_fields_ = MembershipInfo._all_fields_ + [('user', UserMembershipInfo._user_validator)]
+
+UserFileMembershipInfo._time_last_seen_validator = bv.Nullable(common.DropboxTimestamp_validator)
+UserFileMembershipInfo._all_field_names_ = UserMembershipInfo._all_field_names_.union(set(['time_last_seen']))
+UserFileMembershipInfo._all_fields_ = UserMembershipInfo._all_fields_ + [('time_last_seen', UserFileMembershipInfo._time_last_seen_validator)]
+
 UserInfo._account_id_validator = users_common.AccountId_validator
 UserInfo._same_team_validator = bv.Boolean()
 UserInfo._team_member_id_validator = bv.Nullable(bv.String())
@@ -17683,10 +17763,6 @@ UserInfo._all_fields_ = [
     ('same_team', UserInfo._same_team_validator),
     ('team_member_id', UserInfo._team_member_id_validator),
 ]
-
-UserMembershipInfo._user_validator = UserInfo_validator
-UserMembershipInfo._all_field_names_ = MembershipInfo._all_field_names_.union(set(['user']))
-UserMembershipInfo._all_fields_ = MembershipInfo._all_fields_ + [('user', UserMembershipInfo._user_validator)]
 
 ViewerInfoPolicy._enabled_validator = bv.Void()
 ViewerInfoPolicy._disabled_validator = bv.Void()

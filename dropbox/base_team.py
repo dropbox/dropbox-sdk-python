@@ -1418,8 +1418,8 @@ class DropboxTeamBase(object):
     def team_team_folder_create(self,
                                 name):
         """
-        Creates a new, active, team folder. Permission : Team member file
-        access.
+        Creates a new, active, team folder with no members. Permission : Team
+        member file access.
 
         :param str name: Name for the new team folder.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`

@@ -140,7 +140,7 @@ class DropboxBase(object):
                                           property_template_ids):
         """
         Remove the specified property group from the file. To remove specific
-        property field key value pairs, see route
+        property field key value pairs, see
         :meth:`file_properties_properties_update`. To update a template, see
         :meth:`file_properties_templates_update_for_user` or
         :meth:`file_properties_templates_update_for_team`. Templates can't be
@@ -228,7 +228,7 @@ class DropboxBase(object):
                                                description,
                                                fields):
         """
-        Add a template associated with a team. See route
+        Add a template associated with a team. See
         :meth:`file_properties_properties_add` to add properties to a file or
         folder.
 
@@ -254,8 +254,9 @@ class DropboxBase(object):
                                                description,
                                                fields):
         """
-        Add a template associated with a user. See route
-        :meth:`file_properties_properties_add` to add properties to a file.
+        Add a template associated with a user. See
+        :meth:`file_properties_properties_add` to add properties to a file. This
+        endpoint can't be called on a team member or admin's behalf.
 
         :rtype: :class:`dropbox.file_properties.AddTemplateResult`
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -300,7 +301,8 @@ class DropboxBase(object):
     def file_properties_templates_get_for_user(self,
                                                template_id):
         """
-        Get the schema for a specified template.
+        Get the schema for a specified template. This endpoint can't be called
+        on a team member or admin's behalf.
 
         :param str template_id: An identifier for template added by route  See
             :meth:`file_properties_templates_add_for_user` or
@@ -343,7 +345,8 @@ class DropboxBase(object):
     def file_properties_templates_list_for_user(self):
         """
         Get the template identifiers for a team. To get the schema of each
-        template use :meth:`file_properties_templates_get_for_user`.
+        template use :meth:`file_properties_templates_get_for_user`. This
+        endpoint can't be called on a team member or admin's behalf.
 
         :rtype: :class:`dropbox.file_properties.ListTemplateResult`
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -406,7 +409,8 @@ class DropboxBase(object):
         """
         Update a template associated with a user. This route can update the
         template name, the template description and add optional properties to
-        templates.
+        templates. This endpoint can't be called on a team member or admin's
+        behalf.
 
         :param str template_id: An identifier for template added by  See
             :meth:`file_properties_templates_add_for_user` or
@@ -1256,6 +1260,7 @@ class DropboxBase(object):
 
     def files_list_folder(self,
                           path,
+                          shared_link=None,
                           recursive=False,
                           include_media_info=False,
                           include_deleted=False,
@@ -1289,6 +1294,10 @@ class DropboxBase(object):
         until the previous request finishes.
 
         :param str path: A unique identifier for the file.
+        :param Nullable shared_link: A shared link to list the contents of, if
+            the link is protected provide the password. if this field is
+            present, ``ListFolderArg.path`` will be relative to root of the
+            shared link. Only non-recursive mode is supported for shared link.
         :param bool recursive: If true, the list folder operation will be
             applied recursively to all subfolders and the response will contain
             contents of all subfolders.
@@ -1312,6 +1321,7 @@ class DropboxBase(object):
             :class:`dropbox.files.ListFolderError`
         """
         arg = files.ListFolderArg(path,
+                                  shared_link,
                                   recursive,
                                   include_media_info,
                                   include_deleted,
@@ -1352,6 +1362,7 @@ class DropboxBase(object):
 
     def files_list_folder_get_latest_cursor(self,
                                             path,
+                                            shared_link=None,
                                             recursive=False,
                                             include_media_info=False,
                                             include_deleted=False,
@@ -1366,6 +1377,10 @@ class DropboxBase(object):
         files that already exist in Dropbox.
 
         :param str path: A unique identifier for the file.
+        :param Nullable shared_link: A shared link to list the contents of, if
+            the link is protected provide the password. if this field is
+            present, ``ListFolderArg.path`` will be relative to root of the
+            shared link. Only non-recursive mode is supported for shared link.
         :param bool recursive: If true, the list folder operation will be
             applied recursively to all subfolders and the response will contain
             contents of all subfolders.
@@ -1389,6 +1404,7 @@ class DropboxBase(object):
             :class:`dropbox.files.ListFolderError`
         """
         arg = files.ListFolderArg(path,
+                                  shared_link,
                                   recursive,
                                   include_media_info,
                                   include_deleted,

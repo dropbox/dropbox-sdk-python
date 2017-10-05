@@ -802,6 +802,53 @@ class TeamSharingPolicies(object):
 
 TeamSharingPolicies_validator = bv.Struct(TeamSharingPolicies)
 
+class TwoStepVerificationPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar require_tfa_enable: Enabled require two factor authorization.
+    :ivar require_tfa_disable: Disabled require two factor authorization.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    require_tfa_enable = None
+    # Attribute is overwritten below the class definition
+    require_tfa_disable = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_require_tfa_enable(self):
+        """
+        Check if the union tag is ``require_tfa_enable``.
+
+        :rtype: bool
+        """
+        return self._tag == 'require_tfa_enable'
+
+    def is_require_tfa_disable(self):
+        """
+        Check if the union tag is ``require_tfa_disable``.
+
+        :rtype: bool
+        """
+        return self._tag == 'require_tfa_disable'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'TwoStepVerificationPolicy(%r, %r)' % (self._tag, self._value)
+
+TwoStepVerificationPolicy_validator = bv.Union(TwoStepVerificationPolicy)
+
 EmmState._disabled_validator = bv.Void()
 EmmState._optional_validator = bv.Void()
 EmmState._required_validator = bv.Void()
@@ -974,6 +1021,19 @@ TeamSharingPolicies._all_fields_ = [
     ('shared_folder_join_policy', TeamSharingPolicies._shared_folder_join_policy_validator),
     ('shared_link_create_policy', TeamSharingPolicies._shared_link_create_policy_validator),
 ]
+
+TwoStepVerificationPolicy._require_tfa_enable_validator = bv.Void()
+TwoStepVerificationPolicy._require_tfa_disable_validator = bv.Void()
+TwoStepVerificationPolicy._other_validator = bv.Void()
+TwoStepVerificationPolicy._tagmap = {
+    'require_tfa_enable': TwoStepVerificationPolicy._require_tfa_enable_validator,
+    'require_tfa_disable': TwoStepVerificationPolicy._require_tfa_disable_validator,
+    'other': TwoStepVerificationPolicy._other_validator,
+}
+
+TwoStepVerificationPolicy.require_tfa_enable = TwoStepVerificationPolicy('require_tfa_enable')
+TwoStepVerificationPolicy.require_tfa_disable = TwoStepVerificationPolicy('require_tfa_disable')
+TwoStepVerificationPolicy.other = TwoStepVerificationPolicy('other')
 
 ROUTES = {
 }

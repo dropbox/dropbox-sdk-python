@@ -3924,30 +3924,21 @@ class DomainVerificationRemoveDomainDetails(object):
     Removed a domain from the list of verified domains belonging to the team.
 
     :ivar domain_names: Domain names.
-    :ivar verification_method: Domain name verification method. Might be missing
-        due to historical data gap.
     """
 
     __slots__ = [
         '_domain_names_value',
         '_domain_names_present',
-        '_verification_method_value',
-        '_verification_method_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 domain_names=None,
-                 verification_method=None):
+                 domain_names=None):
         self._domain_names_value = None
         self._domain_names_present = False
-        self._verification_method_value = None
-        self._verification_method_present = False
         if domain_names is not None:
             self.domain_names = domain_names
-        if verification_method is not None:
-            self.verification_method = verification_method
 
     @property
     def domain_names(self):
@@ -3972,37 +3963,9 @@ class DomainVerificationRemoveDomainDetails(object):
         self._domain_names_value = None
         self._domain_names_present = False
 
-    @property
-    def verification_method(self):
-        """
-        Domain name verification method. Might be missing due to historical data
-        gap.
-
-        :rtype: str
-        """
-        if self._verification_method_present:
-            return self._verification_method_value
-        else:
-            return None
-
-    @verification_method.setter
-    def verification_method(self, val):
-        if val is None:
-            del self.verification_method
-            return
-        val = self._verification_method_validator.validate(val)
-        self._verification_method_value = val
-        self._verification_method_present = True
-
-    @verification_method.deleter
-    def verification_method(self):
-        self._verification_method_value = None
-        self._verification_method_present = False
-
     def __repr__(self):
-        return 'DomainVerificationRemoveDomainDetails(domain_names={!r}, verification_method={!r})'.format(
+        return 'DomainVerificationRemoveDomainDetails(domain_names={!r})'.format(
             self._domain_names_value,
-            self._verification_method_value,
         )
 
 DomainVerificationRemoveDomainDetails_validator = bv.Struct(DomainVerificationRemoveDomainDetails)
@@ -5129,6 +5092,8 @@ class EventDetails(bb.Union):
         a file/folder visible to anyone with the link.
     :ivar ShmodelVisibilityTeamOnlyDetails shmodel_visibility_team_only_details:
         Made a file/folder visible only to team members with the link.
+    :ivar SsoAddCertDetails sso_add_cert_details: Added the X.509 certificate
+        for SSO.
     :ivar SsoAddLoginUrlDetails sso_add_login_url_details: Added sign-in URL for
         SSO.
     :ivar SsoAddLogoutUrlDetails sso_add_logout_url_details: Added sign-out URL
@@ -5142,6 +5107,8 @@ class EventDetails(bb.Union):
     :ivar SsoChangeSamlIdentityModeDetails
         sso_change_saml_identity_mode_details: Changed the SAML identity mode
         for SSO.
+    :ivar SsoRemoveCertDetails sso_remove_cert_details: Removed the X.509
+        certificate for SSO.
     :ivar SsoRemoveLoginUrlDetails sso_remove_login_url_details: Removed the
         sign-in URL for SSO.
     :ivar SsoRemoveLogoutUrlDetails sso_remove_logout_url_details: Removed
@@ -5239,6 +5206,9 @@ class EventDetails(bb.Union):
         paper_change_deployment_policy_details: Changed whether Dropbox Paper,
         when enabled, is deployed to all teams or to specific members of the
         team.
+    :ivar PaperChangeMemberLinkPolicyDetails
+        paper_change_member_link_policy_details: Changed whether non team
+        members can view Paper documents using a link.
     :ivar PaperChangeMemberPolicyDetails paper_change_member_policy_details:
         Changed whether team members can share Paper documents externally (i.e.
         outside the team), and if so, whether they should be accessible only by
@@ -5279,6 +5249,9 @@ class EventDetails(bb.Union):
         members can be idle while signed in to Dropbox on the web.
     :ivar TeamProfileAddLogoDetails team_profile_add_logo_details: Added a team
         logo to be displayed on shared link headers.
+    :ivar TeamProfileChangeDefaultLanguageDetails
+        team_profile_change_default_language_details: Changed the default
+        language for the team.
     :ivar TeamProfileChangeLogoDetails team_profile_change_logo_details: Changed
         the team logo to be displayed on shared link headers.
     :ivar TeamProfileChangeNameDetails team_profile_change_name_details: Changed
@@ -7530,6 +7503,17 @@ class EventDetails(bb.Union):
         return cls('shmodel_visibility_team_only_details', val)
 
     @classmethod
+    def sso_add_cert_details(cls, val):
+        """
+        Create an instance of this class set to the ``sso_add_cert_details`` tag
+        with value ``val``.
+
+        :param SsoAddCertDetails val:
+        :rtype: EventDetails
+        """
+        return cls('sso_add_cert_details', val)
+
+    @classmethod
     def sso_add_login_url_details(cls, val):
         """
         Create an instance of this class set to the
@@ -7594,6 +7578,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('sso_change_saml_identity_mode_details', val)
+
+    @classmethod
+    def sso_remove_cert_details(cls, val):
+        """
+        Create an instance of this class set to the ``sso_remove_cert_details``
+        tag with value ``val``.
+
+        :param SsoRemoveCertDetails val:
+        :rtype: EventDetails
+        """
+        return cls('sso_remove_cert_details', val)
 
     @classmethod
     def sso_remove_login_url_details(cls, val):
@@ -7978,6 +7973,17 @@ class EventDetails(bb.Union):
         return cls('paper_change_deployment_policy_details', val)
 
     @classmethod
+    def paper_change_member_link_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_change_member_link_policy_details`` tag with value ``val``.
+
+        :param PaperChangeMemberLinkPolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('paper_change_member_link_policy_details', val)
+
+    @classmethod
     def paper_change_member_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -8143,6 +8149,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('team_profile_add_logo_details', val)
+
+    @classmethod
+    def team_profile_change_default_language_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_profile_change_default_language_details`` tag with value ``val``.
+
+        :param TeamProfileChangeDefaultLanguageDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_profile_change_default_language_details', val)
 
     @classmethod
     def team_profile_change_logo_details(cls, val):
@@ -9873,6 +9890,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'shmodel_visibility_team_only_details'
 
+    def is_sso_add_cert_details(self):
+        """
+        Check if the union tag is ``sso_add_cert_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_add_cert_details'
+
     def is_sso_add_login_url_details(self):
         """
         Check if the union tag is ``sso_add_login_url_details``.
@@ -9920,6 +9945,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sso_change_saml_identity_mode_details'
+
+    def is_sso_remove_cert_details(self):
+        """
+        Check if the union tag is ``sso_remove_cert_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_remove_cert_details'
 
     def is_sso_remove_login_url_details(self):
         """
@@ -10193,6 +10226,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'paper_change_deployment_policy_details'
 
+    def is_paper_change_member_link_policy_details(self):
+        """
+        Check if the union tag is ``paper_change_member_link_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_change_member_link_policy_details'
+
     def is_paper_change_member_policy_details(self):
         """
         Check if the union tag is ``paper_change_member_policy_details``.
@@ -10312,6 +10353,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_profile_add_logo_details'
+
+    def is_team_profile_change_default_language_details(self):
+        """
+        Check if the union tag is ``team_profile_change_default_language_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_change_default_language_details'
 
     def is_team_profile_change_logo_details(self):
         """
@@ -12831,6 +12880,18 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shmodel_visibility_team_only_details' not set")
         return self._value
 
+    def get_sso_add_cert_details(self):
+        """
+        Added the X.509 certificate for SSO.
+
+        Only call this if :meth:`is_sso_add_cert_details` is true.
+
+        :rtype: SsoAddCertDetails
+        """
+        if not self.is_sso_add_cert_details():
+            raise AttributeError("tag 'sso_add_cert_details' not set")
+        return self._value
+
     def get_sso_add_login_url_details(self):
         """
         Added sign-in URL for SSO.
@@ -12901,6 +12962,18 @@ class EventDetails(bb.Union):
         """
         if not self.is_sso_change_saml_identity_mode_details():
             raise AttributeError("tag 'sso_change_saml_identity_mode_details' not set")
+        return self._value
+
+    def get_sso_remove_cert_details(self):
+        """
+        Removed the X.509 certificate for SSO.
+
+        Only call this if :meth:`is_sso_remove_cert_details` is true.
+
+        :rtype: SsoRemoveCertDetails
+        """
+        if not self.is_sso_remove_cert_details():
+            raise AttributeError("tag 'sso_remove_cert_details' not set")
         return self._value
 
     def get_sso_remove_login_url_details(self):
@@ -13325,6 +13398,18 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'paper_change_deployment_policy_details' not set")
         return self._value
 
+    def get_paper_change_member_link_policy_details(self):
+        """
+        Changed whether non team members can view Paper documents using a link.
+
+        Only call this if :meth:`is_paper_change_member_link_policy_details` is true.
+
+        :rtype: PaperChangeMemberLinkPolicyDetails
+        """
+        if not self.is_paper_change_member_link_policy_details():
+            raise AttributeError("tag 'paper_change_member_link_policy_details' not set")
+        return self._value
+
     def get_paper_change_member_policy_details(self):
         """
         Changed whether team members can share Paper documents externally (i.e.
@@ -13512,6 +13597,18 @@ class EventDetails(bb.Union):
         """
         if not self.is_team_profile_add_logo_details():
             raise AttributeError("tag 'team_profile_add_logo_details' not set")
+        return self._value
+
+    def get_team_profile_change_default_language_details(self):
+        """
+        Changed the default language for the team.
+
+        Only call this if :meth:`is_team_profile_change_default_language_details` is true.
+
+        :rtype: TeamProfileChangeDefaultLanguageDetails
+        """
+        if not self.is_team_profile_change_default_language_details():
+            raise AttributeError("tag 'team_profile_change_default_language_details' not set")
         return self._value
 
     def get_team_profile_change_logo_details(self):
@@ -14001,12 +14098,14 @@ class EventType(bb.Union):
         the link.
     :ivar shmodel_visibility_team_only: Made a file/folder visible only to team
         members with the link.
+    :ivar sso_add_cert: Added the X.509 certificate for SSO.
     :ivar sso_add_login_url: Added sign-in URL for SSO.
     :ivar sso_add_logout_url: Added sign-out URL for SSO.
     :ivar sso_change_cert: Changed the X.509 certificate for SSO.
     :ivar sso_change_login_url: Changed the sign-in URL for SSO.
     :ivar sso_change_logout_url: Changed the sign-out URL for SSO.
     :ivar sso_change_saml_identity_mode: Changed the SAML identity mode for SSO.
+    :ivar sso_remove_cert: Removed the X.509 certificate for SSO.
     :ivar sso_remove_login_url: Removed the sign-in URL for SSO.
     :ivar sso_remove_logout_url: Removed single sign-on logout URL.
     :ivar team_folder_change_status: Changed the archival status of a team
@@ -14079,6 +14178,10 @@ class EventType(bb.Union):
     :ivar network_control_change_policy: Enabled or disabled network control.
     :ivar paper_change_deployment_policy: Changed whether Dropbox Paper, when
         enabled, is deployed to all teams or to specific members of the team.
+    :ivar paper_change_member_link_policy: Changed whether non team members can
+        view Paper documents using a link. This event is deprecated and will not
+        be logged going forward as the associated product functionality no
+        longer exists.
     :ivar paper_change_member_policy: Changed whether team members can share
         Paper documents externally (i.e. outside the team), and if so, whether
         they should be accessible only by team members or anyone by default.
@@ -14107,6 +14210,8 @@ class EventType(bb.Union):
         can be idle while signed in to Dropbox on the web.
     :ivar team_profile_add_logo: Added a team logo to be displayed on shared
         link headers.
+    :ivar team_profile_change_default_language: Changed the default language for
+        the team.
     :ivar team_profile_change_logo: Changed the team logo to be displayed on
         shared link headers.
     :ivar team_profile_change_name: Changed the team name.
@@ -14529,6 +14634,8 @@ class EventType(bb.Union):
     # Attribute is overwritten below the class definition
     shmodel_visibility_team_only = None
     # Attribute is overwritten below the class definition
+    sso_add_cert = None
+    # Attribute is overwritten below the class definition
     sso_add_login_url = None
     # Attribute is overwritten below the class definition
     sso_add_logout_url = None
@@ -14540,6 +14647,8 @@ class EventType(bb.Union):
     sso_change_logout_url = None
     # Attribute is overwritten below the class definition
     sso_change_saml_identity_mode = None
+    # Attribute is overwritten below the class definition
+    sso_remove_cert = None
     # Attribute is overwritten below the class definition
     sso_remove_login_url = None
     # Attribute is overwritten below the class definition
@@ -14609,6 +14718,8 @@ class EventType(bb.Union):
     # Attribute is overwritten below the class definition
     paper_change_deployment_policy = None
     # Attribute is overwritten below the class definition
+    paper_change_member_link_policy = None
+    # Attribute is overwritten below the class definition
     paper_change_member_policy = None
     # Attribute is overwritten below the class definition
     paper_change_policy = None
@@ -14638,6 +14749,8 @@ class EventType(bb.Union):
     web_sessions_change_idle_length_policy = None
     # Attribute is overwritten below the class definition
     team_profile_add_logo = None
+    # Attribute is overwritten below the class definition
+    team_profile_change_default_language = None
     # Attribute is overwritten below the class definition
     team_profile_change_logo = None
     # Attribute is overwritten below the class definition
@@ -16269,6 +16382,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'shmodel_visibility_team_only'
 
+    def is_sso_add_cert(self):
+        """
+        Check if the union tag is ``sso_add_cert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_add_cert'
+
     def is_sso_add_login_url(self):
         """
         Check if the union tag is ``sso_add_login_url``.
@@ -16316,6 +16437,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sso_change_saml_identity_mode'
+
+    def is_sso_remove_cert(self):
+        """
+        Check if the union tag is ``sso_remove_cert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_remove_cert'
 
     def is_sso_remove_login_url(self):
         """
@@ -16589,6 +16718,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'paper_change_deployment_policy'
 
+    def is_paper_change_member_link_policy(self):
+        """
+        Check if the union tag is ``paper_change_member_link_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_change_member_link_policy'
+
     def is_paper_change_member_policy(self):
         """
         Check if the union tag is ``paper_change_member_policy``.
@@ -16708,6 +16845,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_profile_add_logo'
+
+    def is_team_profile_change_default_language(self):
+        """
+        Check if the union tag is ``team_profile_change_default_language``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_change_default_language'
 
     def is_team_profile_change_logo(self):
         """
@@ -20087,14 +20232,14 @@ class GroupCreateDetails(object):
     """
     Created a group.
 
-    :ivar is_admin_managed: Is admin managed group. Might be missing due to
+    :ivar is_company_managed: Is company managed group. Might be missing due to
         historical data gap.
     :ivar join_policy: Group join policy.
     """
 
     __slots__ = [
-        '_is_admin_managed_value',
-        '_is_admin_managed_present',
+        '_is_company_managed_value',
+        '_is_company_managed_present',
         '_join_policy_value',
         '_join_policy_present',
     ]
@@ -20103,41 +20248,41 @@ class GroupCreateDetails(object):
 
     def __init__(self,
                  join_policy=None,
-                 is_admin_managed=None):
-        self._is_admin_managed_value = None
-        self._is_admin_managed_present = False
+                 is_company_managed=None):
+        self._is_company_managed_value = None
+        self._is_company_managed_present = False
         self._join_policy_value = None
         self._join_policy_present = False
-        if is_admin_managed is not None:
-            self.is_admin_managed = is_admin_managed
+        if is_company_managed is not None:
+            self.is_company_managed = is_company_managed
         if join_policy is not None:
             self.join_policy = join_policy
 
     @property
-    def is_admin_managed(self):
+    def is_company_managed(self):
         """
-        Is admin managed group. Might be missing due to historical data gap.
+        Is company managed group. Might be missing due to historical data gap.
 
         :rtype: bool
         """
-        if self._is_admin_managed_present:
-            return self._is_admin_managed_value
+        if self._is_company_managed_present:
+            return self._is_company_managed_value
         else:
             return None
 
-    @is_admin_managed.setter
-    def is_admin_managed(self, val):
+    @is_company_managed.setter
+    def is_company_managed(self, val):
         if val is None:
-            del self.is_admin_managed
+            del self.is_company_managed
             return
-        val = self._is_admin_managed_validator.validate(val)
-        self._is_admin_managed_value = val
-        self._is_admin_managed_present = True
+        val = self._is_company_managed_validator.validate(val)
+        self._is_company_managed_value = val
+        self._is_company_managed_present = True
 
-    @is_admin_managed.deleter
-    def is_admin_managed(self):
-        self._is_admin_managed_value = None
-        self._is_admin_managed_present = False
+    @is_company_managed.deleter
+    def is_company_managed(self):
+        self._is_company_managed_value = None
+        self._is_company_managed_present = False
 
     @property
     def join_policy(self):
@@ -20163,9 +20308,9 @@ class GroupCreateDetails(object):
         self._join_policy_present = False
 
     def __repr__(self):
-        return 'GroupCreateDetails(join_policy={!r}, is_admin_managed={!r})'.format(
+        return 'GroupCreateDetails(join_policy={!r}, is_company_managed={!r})'.format(
             self._join_policy_value,
-            self._is_admin_managed_value,
+            self._is_company_managed_value,
         )
 
 GroupCreateDetails_validator = bv.Struct(GroupCreateDetails)
@@ -20174,53 +20319,53 @@ class GroupDeleteDetails(object):
     """
     Deleted a group.
 
-    :ivar is_admin_managed: Is admin managed group. Might be missing due to
+    :ivar is_company_managed: Is company managed group. Might be missing due to
         historical data gap.
     """
 
     __slots__ = [
-        '_is_admin_managed_value',
-        '_is_admin_managed_present',
+        '_is_company_managed_value',
+        '_is_company_managed_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
-                 is_admin_managed=None):
-        self._is_admin_managed_value = None
-        self._is_admin_managed_present = False
-        if is_admin_managed is not None:
-            self.is_admin_managed = is_admin_managed
+                 is_company_managed=None):
+        self._is_company_managed_value = None
+        self._is_company_managed_present = False
+        if is_company_managed is not None:
+            self.is_company_managed = is_company_managed
 
     @property
-    def is_admin_managed(self):
+    def is_company_managed(self):
         """
-        Is admin managed group. Might be missing due to historical data gap.
+        Is company managed group. Might be missing due to historical data gap.
 
         :rtype: bool
         """
-        if self._is_admin_managed_present:
-            return self._is_admin_managed_value
+        if self._is_company_managed_present:
+            return self._is_company_managed_value
         else:
             return None
 
-    @is_admin_managed.setter
-    def is_admin_managed(self, val):
+    @is_company_managed.setter
+    def is_company_managed(self, val):
         if val is None:
-            del self.is_admin_managed
+            del self.is_company_managed
             return
-        val = self._is_admin_managed_validator.validate(val)
-        self._is_admin_managed_value = val
-        self._is_admin_managed_present = True
+        val = self._is_company_managed_validator.validate(val)
+        self._is_company_managed_value = val
+        self._is_company_managed_present = True
 
-    @is_admin_managed.deleter
-    def is_admin_managed(self):
-        self._is_admin_managed_value = None
-        self._is_admin_managed_present = False
+    @is_company_managed.deleter
+    def is_company_managed(self):
+        self._is_company_managed_value = None
+        self._is_company_managed_present = False
 
     def __repr__(self):
-        return 'GroupDeleteDetails(is_admin_managed={!r})'.format(
-            self._is_admin_managed_value,
+        return 'GroupDeleteDetails(is_company_managed={!r})'.format(
+            self._is_company_managed_value,
         )
 
 GroupDeleteDetails_validator = bv.Struct(GroupDeleteDetails)
@@ -23115,6 +23260,57 @@ class PaperChangeDeploymentPolicyDetails(object):
         )
 
 PaperChangeDeploymentPolicyDetails_validator = bv.Struct(PaperChangeDeploymentPolicyDetails)
+
+class PaperChangeMemberLinkPolicyDetails(object):
+    """
+    Changed whether non team members can view Paper documents using a link.
+
+    :ivar new_value: New paper external link accessibility policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def new_value(self):
+        """
+        New paper external link accessibility policy.
+
+        :rtype: PaperMemberPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def __repr__(self):
+        return 'PaperChangeMemberLinkPolicyDetails(new_value={!r})'.format(
+            self._new_value_value,
+        )
+
+PaperChangeMemberLinkPolicyDetails_validator = bv.Struct(PaperChangeMemberLinkPolicyDetails)
 
 class PaperChangeMemberPolicyDetails(object):
     """
@@ -33673,6 +33869,57 @@ class SpaceLimitsStatus(bb.Union):
 
 SpaceLimitsStatus_validator = bv.Union(SpaceLimitsStatus)
 
+class SsoAddCertDetails(object):
+    """
+    Added the X.509 certificate for SSO.
+
+    :ivar certificate_details: SSO certificate details.
+    """
+
+    __slots__ = [
+        '_certificate_details_value',
+        '_certificate_details_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 certificate_details=None):
+        self._certificate_details_value = None
+        self._certificate_details_present = False
+        if certificate_details is not None:
+            self.certificate_details = certificate_details
+
+    @property
+    def certificate_details(self):
+        """
+        SSO certificate details.
+
+        :rtype: Certificate
+        """
+        if self._certificate_details_present:
+            return self._certificate_details_value
+        else:
+            raise AttributeError("missing required field 'certificate_details'")
+
+    @certificate_details.setter
+    def certificate_details(self, val):
+        self._certificate_details_validator.validate_type_only(val)
+        self._certificate_details_value = val
+        self._certificate_details_present = True
+
+    @certificate_details.deleter
+    def certificate_details(self):
+        self._certificate_details_value = None
+        self._certificate_details_present = False
+
+    def __repr__(self):
+        return 'SsoAddCertDetails(certificate_details={!r})'.format(
+            self._certificate_details_value,
+        )
+
+SsoAddCertDetails_validator = bv.Struct(SsoAddCertDetails)
+
 class SsoAddLoginUrlDetails(object):
     """
     Added sign-in URL for SSO.
@@ -33784,49 +34031,84 @@ class SsoChangeCertDetails(object):
     """
     Changed the X.509 certificate for SSO.
 
-    :ivar certificate_details: SSO certificate details.
+    :ivar previous_certificate_details: Previous SSO certificate details.
+    :ivar new_certificate_details: New SSO certificate details.
     """
 
     __slots__ = [
-        '_certificate_details_value',
-        '_certificate_details_present',
+        '_previous_certificate_details_value',
+        '_previous_certificate_details_present',
+        '_new_certificate_details_value',
+        '_new_certificate_details_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 certificate_details=None):
-        self._certificate_details_value = None
-        self._certificate_details_present = False
-        if certificate_details is not None:
-            self.certificate_details = certificate_details
+                 new_certificate_details=None,
+                 previous_certificate_details=None):
+        self._previous_certificate_details_value = None
+        self._previous_certificate_details_present = False
+        self._new_certificate_details_value = None
+        self._new_certificate_details_present = False
+        if previous_certificate_details is not None:
+            self.previous_certificate_details = previous_certificate_details
+        if new_certificate_details is not None:
+            self.new_certificate_details = new_certificate_details
 
     @property
-    def certificate_details(self):
+    def previous_certificate_details(self):
         """
-        SSO certificate details.
+        Previous SSO certificate details.
 
         :rtype: Certificate
         """
-        if self._certificate_details_present:
-            return self._certificate_details_value
+        if self._previous_certificate_details_present:
+            return self._previous_certificate_details_value
         else:
-            raise AttributeError("missing required field 'certificate_details'")
+            return None
 
-    @certificate_details.setter
-    def certificate_details(self, val):
-        self._certificate_details_validator.validate_type_only(val)
-        self._certificate_details_value = val
-        self._certificate_details_present = True
+    @previous_certificate_details.setter
+    def previous_certificate_details(self, val):
+        if val is None:
+            del self.previous_certificate_details
+            return
+        self._previous_certificate_details_validator.validate_type_only(val)
+        self._previous_certificate_details_value = val
+        self._previous_certificate_details_present = True
 
-    @certificate_details.deleter
-    def certificate_details(self):
-        self._certificate_details_value = None
-        self._certificate_details_present = False
+    @previous_certificate_details.deleter
+    def previous_certificate_details(self):
+        self._previous_certificate_details_value = None
+        self._previous_certificate_details_present = False
+
+    @property
+    def new_certificate_details(self):
+        """
+        New SSO certificate details.
+
+        :rtype: Certificate
+        """
+        if self._new_certificate_details_present:
+            return self._new_certificate_details_value
+        else:
+            raise AttributeError("missing required field 'new_certificate_details'")
+
+    @new_certificate_details.setter
+    def new_certificate_details(self, val):
+        self._new_certificate_details_validator.validate_type_only(val)
+        self._new_certificate_details_value = val
+        self._new_certificate_details_present = True
+
+    @new_certificate_details.deleter
+    def new_certificate_details(self):
+        self._new_certificate_details_value = None
+        self._new_certificate_details_present = False
 
     def __repr__(self):
-        return 'SsoChangeCertDetails(certificate_details={!r})'.format(
-            self._certificate_details_value,
+        return 'SsoChangeCertDetails(new_certificate_details={!r}, previous_certificate_details={!r})'.format(
+            self._new_certificate_details_value,
+            self._previous_certificate_details_value,
         )
 
 SsoChangeCertDetails_validator = bv.Struct(SsoChangeCertDetails)
@@ -34228,6 +34510,24 @@ class SsoLoginFailDetails(object):
         )
 
 SsoLoginFailDetails_validator = bv.Struct(SsoLoginFailDetails)
+
+class SsoRemoveCertDetails(object):
+    """
+    Removed the X.509 certificate for SSO.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return 'SsoRemoveCertDetails()'
+
+SsoRemoveCertDetails_validator = bv.Struct(SsoRemoveCertDetails)
 
 class SsoRemoveLoginUrlDetails(object):
     """
@@ -35422,6 +35722,89 @@ class TeamProfileAddLogoDetails(object):
 
 TeamProfileAddLogoDetails_validator = bv.Struct(TeamProfileAddLogoDetails)
 
+class TeamProfileChangeDefaultLanguageDetails(object):
+    """
+    Changed the default language for the team.
+
+    :ivar new_value: New team's default language.
+    :ivar previous_value: Previous team's default language.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New team's default language.
+
+        :rtype: str
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous team's default language.
+
+        :rtype: str
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def __repr__(self):
+        return 'TeamProfileChangeDefaultLanguageDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+TeamProfileChangeDefaultLanguageDetails_validator = bv.Struct(TeamProfileChangeDefaultLanguageDetails)
+
 class TeamProfileChangeLogoDetails(object):
     """
     Changed the team logo to be displayed on shared link headers.
@@ -35634,7 +36017,7 @@ class TfaChangePolicyDetails(object):
         """
         New change policy.
 
-        :rtype: TfaPolicy
+        :rtype: team_policies.TwoStepVerificationPolicy_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -35657,7 +36040,7 @@ class TfaChangePolicyDetails(object):
         """
         Previous change policy. Might be missing due to historical data gap.
 
-        :rtype: TfaPolicy
+        :rtype: team_policies.TwoStepVerificationPolicy_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -35878,52 +36261,6 @@ class TfaConfiguration(bb.Union):
         return 'TfaConfiguration(%r, %r)' % (self._tag, self._value)
 
 TfaConfiguration_validator = bv.Union(TfaConfiguration)
-
-class TfaPolicy(bb.Union):
-    """
-    Two factor authentication policy
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    allow_disable = None
-    # Attribute is overwritten below the class definition
-    sticky_enable = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_allow_disable(self):
-        """
-        Check if the union tag is ``allow_disable``.
-
-        :rtype: bool
-        """
-        return self._tag == 'allow_disable'
-
-    def is_sticky_enable(self):
-        """
-        Check if the union tag is ``sticky_enable``.
-
-        :rtype: bool
-        """
-        return self._tag == 'sticky_enable'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'TfaPolicy(%r, %r)' % (self._tag, self._value)
-
-TfaPolicy_validator = bv.Union(TfaPolicy)
 
 class TfaRemoveBackupPhoneDetails(object):
     """
@@ -36734,6 +37071,7 @@ WebSessionsIdleLengthPolicy_validator = bv.Union(WebSessionsIdleLengthPolicy)
 AppId_validator = bv.String()
 IpAddress_validator = bv.String()
 RequestId_validator = bv.String()
+TeamEventList_validator = bv.List(TeamEvent_validator)
 AccessMethodLogInfo._end_user_validator = SessionLogInfo_validator
 AccessMethodLogInfo._sign_in_as_validator = WebSessionLogInfo_validator
 AccessMethodLogInfo._content_manager_validator = WebSessionLogInfo_validator
@@ -37263,15 +37601,8 @@ DomainVerificationAddDomainSuccessDetails._all_fields_ = [
 ]
 
 DomainVerificationRemoveDomainDetails._domain_names_validator = bv.List(bv.String())
-DomainVerificationRemoveDomainDetails._verification_method_validator = bv.Nullable(bv.String())
-DomainVerificationRemoveDomainDetails._all_field_names_ = set([
-    'domain_names',
-    'verification_method',
-])
-DomainVerificationRemoveDomainDetails._all_fields_ = [
-    ('domain_names', DomainVerificationRemoveDomainDetails._domain_names_validator),
-    ('verification_method', DomainVerificationRemoveDomainDetails._verification_method_validator),
-]
+DomainVerificationRemoveDomainDetails._all_field_names_ = set(['domain_names'])
+DomainVerificationRemoveDomainDetails._all_fields_ = [('domain_names', DomainVerificationRemoveDomainDetails._domain_names_validator)]
 
 DurationLogInfo._unit_validator = TimeUnit_validator
 DurationLogInfo._amount_validator = bv.UInt64()
@@ -37617,12 +37948,14 @@ EventDetails._shmodel_team_view_details_validator = ShmodelTeamViewDetails_valid
 EventDetails._shmodel_visibility_password_details_validator = ShmodelVisibilityPasswordDetails_validator
 EventDetails._shmodel_visibility_public_details_validator = ShmodelVisibilityPublicDetails_validator
 EventDetails._shmodel_visibility_team_only_details_validator = ShmodelVisibilityTeamOnlyDetails_validator
+EventDetails._sso_add_cert_details_validator = SsoAddCertDetails_validator
 EventDetails._sso_add_login_url_details_validator = SsoAddLoginUrlDetails_validator
 EventDetails._sso_add_logout_url_details_validator = SsoAddLogoutUrlDetails_validator
 EventDetails._sso_change_cert_details_validator = SsoChangeCertDetails_validator
 EventDetails._sso_change_login_url_details_validator = SsoChangeLoginUrlDetails_validator
 EventDetails._sso_change_logout_url_details_validator = SsoChangeLogoutUrlDetails_validator
 EventDetails._sso_change_saml_identity_mode_details_validator = SsoChangeSamlIdentityModeDetails_validator
+EventDetails._sso_remove_cert_details_validator = SsoRemoveCertDetails_validator
 EventDetails._sso_remove_login_url_details_validator = SsoRemoveLoginUrlDetails_validator
 EventDetails._sso_remove_logout_url_details_validator = SsoRemoveLogoutUrlDetails_validator
 EventDetails._team_folder_change_status_details_validator = TeamFolderChangeStatusDetails_validator
@@ -37657,6 +37990,7 @@ EventDetails._member_suggestions_change_policy_details_validator = MemberSuggest
 EventDetails._microsoft_office_addin_change_policy_details_validator = MicrosoftOfficeAddinChangePolicyDetails_validator
 EventDetails._network_control_change_policy_details_validator = NetworkControlChangePolicyDetails_validator
 EventDetails._paper_change_deployment_policy_details_validator = PaperChangeDeploymentPolicyDetails_validator
+EventDetails._paper_change_member_link_policy_details_validator = PaperChangeMemberLinkPolicyDetails_validator
 EventDetails._paper_change_member_policy_details_validator = PaperChangeMemberPolicyDetails_validator
 EventDetails._paper_change_policy_details_validator = PaperChangePolicyDetails_validator
 EventDetails._permanent_delete_change_policy_details_validator = PermanentDeleteChangePolicyDetails_validator
@@ -37672,6 +38006,7 @@ EventDetails._two_account_change_policy_details_validator = TwoAccountChangePoli
 EventDetails._web_sessions_change_fixed_length_policy_details_validator = WebSessionsChangeFixedLengthPolicyDetails_validator
 EventDetails._web_sessions_change_idle_length_policy_details_validator = WebSessionsChangeIdleLengthPolicyDetails_validator
 EventDetails._team_profile_add_logo_details_validator = TeamProfileAddLogoDetails_validator
+EventDetails._team_profile_change_default_language_details_validator = TeamProfileChangeDefaultLanguageDetails_validator
 EventDetails._team_profile_change_logo_details_validator = TeamProfileChangeLogoDetails_validator
 EventDetails._team_profile_change_name_details_validator = TeamProfileChangeNameDetails_validator
 EventDetails._team_profile_remove_logo_details_validator = TeamProfileRemoveLogoDetails_validator
@@ -37886,12 +38221,14 @@ EventDetails._tagmap = {
     'shmodel_visibility_password_details': EventDetails._shmodel_visibility_password_details_validator,
     'shmodel_visibility_public_details': EventDetails._shmodel_visibility_public_details_validator,
     'shmodel_visibility_team_only_details': EventDetails._shmodel_visibility_team_only_details_validator,
+    'sso_add_cert_details': EventDetails._sso_add_cert_details_validator,
     'sso_add_login_url_details': EventDetails._sso_add_login_url_details_validator,
     'sso_add_logout_url_details': EventDetails._sso_add_logout_url_details_validator,
     'sso_change_cert_details': EventDetails._sso_change_cert_details_validator,
     'sso_change_login_url_details': EventDetails._sso_change_login_url_details_validator,
     'sso_change_logout_url_details': EventDetails._sso_change_logout_url_details_validator,
     'sso_change_saml_identity_mode_details': EventDetails._sso_change_saml_identity_mode_details_validator,
+    'sso_remove_cert_details': EventDetails._sso_remove_cert_details_validator,
     'sso_remove_login_url_details': EventDetails._sso_remove_login_url_details_validator,
     'sso_remove_logout_url_details': EventDetails._sso_remove_logout_url_details_validator,
     'team_folder_change_status_details': EventDetails._team_folder_change_status_details_validator,
@@ -37926,6 +38263,7 @@ EventDetails._tagmap = {
     'microsoft_office_addin_change_policy_details': EventDetails._microsoft_office_addin_change_policy_details_validator,
     'network_control_change_policy_details': EventDetails._network_control_change_policy_details_validator,
     'paper_change_deployment_policy_details': EventDetails._paper_change_deployment_policy_details_validator,
+    'paper_change_member_link_policy_details': EventDetails._paper_change_member_link_policy_details_validator,
     'paper_change_member_policy_details': EventDetails._paper_change_member_policy_details_validator,
     'paper_change_policy_details': EventDetails._paper_change_policy_details_validator,
     'permanent_delete_change_policy_details': EventDetails._permanent_delete_change_policy_details_validator,
@@ -37941,6 +38279,7 @@ EventDetails._tagmap = {
     'web_sessions_change_fixed_length_policy_details': EventDetails._web_sessions_change_fixed_length_policy_details_validator,
     'web_sessions_change_idle_length_policy_details': EventDetails._web_sessions_change_idle_length_policy_details_validator,
     'team_profile_add_logo_details': EventDetails._team_profile_add_logo_details_validator,
+    'team_profile_change_default_language_details': EventDetails._team_profile_change_default_language_details_validator,
     'team_profile_change_logo_details': EventDetails._team_profile_change_logo_details_validator,
     'team_profile_change_name_details': EventDetails._team_profile_change_name_details_validator,
     'team_profile_remove_logo_details': EventDetails._team_profile_remove_logo_details_validator,
@@ -38158,12 +38497,14 @@ EventType._shmodel_team_view_validator = bv.Void()
 EventType._shmodel_visibility_password_validator = bv.Void()
 EventType._shmodel_visibility_public_validator = bv.Void()
 EventType._shmodel_visibility_team_only_validator = bv.Void()
+EventType._sso_add_cert_validator = bv.Void()
 EventType._sso_add_login_url_validator = bv.Void()
 EventType._sso_add_logout_url_validator = bv.Void()
 EventType._sso_change_cert_validator = bv.Void()
 EventType._sso_change_login_url_validator = bv.Void()
 EventType._sso_change_logout_url_validator = bv.Void()
 EventType._sso_change_saml_identity_mode_validator = bv.Void()
+EventType._sso_remove_cert_validator = bv.Void()
 EventType._sso_remove_login_url_validator = bv.Void()
 EventType._sso_remove_logout_url_validator = bv.Void()
 EventType._team_folder_change_status_validator = bv.Void()
@@ -38198,6 +38539,7 @@ EventType._member_suggestions_change_policy_validator = bv.Void()
 EventType._microsoft_office_addin_change_policy_validator = bv.Void()
 EventType._network_control_change_policy_validator = bv.Void()
 EventType._paper_change_deployment_policy_validator = bv.Void()
+EventType._paper_change_member_link_policy_validator = bv.Void()
 EventType._paper_change_member_policy_validator = bv.Void()
 EventType._paper_change_policy_validator = bv.Void()
 EventType._permanent_delete_change_policy_validator = bv.Void()
@@ -38213,6 +38555,7 @@ EventType._two_account_change_policy_validator = bv.Void()
 EventType._web_sessions_change_fixed_length_policy_validator = bv.Void()
 EventType._web_sessions_change_idle_length_policy_validator = bv.Void()
 EventType._team_profile_add_logo_validator = bv.Void()
+EventType._team_profile_change_default_language_validator = bv.Void()
 EventType._team_profile_change_logo_validator = bv.Void()
 EventType._team_profile_change_name_validator = bv.Void()
 EventType._team_profile_remove_logo_validator = bv.Void()
@@ -38426,12 +38769,14 @@ EventType._tagmap = {
     'shmodel_visibility_password': EventType._shmodel_visibility_password_validator,
     'shmodel_visibility_public': EventType._shmodel_visibility_public_validator,
     'shmodel_visibility_team_only': EventType._shmodel_visibility_team_only_validator,
+    'sso_add_cert': EventType._sso_add_cert_validator,
     'sso_add_login_url': EventType._sso_add_login_url_validator,
     'sso_add_logout_url': EventType._sso_add_logout_url_validator,
     'sso_change_cert': EventType._sso_change_cert_validator,
     'sso_change_login_url': EventType._sso_change_login_url_validator,
     'sso_change_logout_url': EventType._sso_change_logout_url_validator,
     'sso_change_saml_identity_mode': EventType._sso_change_saml_identity_mode_validator,
+    'sso_remove_cert': EventType._sso_remove_cert_validator,
     'sso_remove_login_url': EventType._sso_remove_login_url_validator,
     'sso_remove_logout_url': EventType._sso_remove_logout_url_validator,
     'team_folder_change_status': EventType._team_folder_change_status_validator,
@@ -38466,6 +38811,7 @@ EventType._tagmap = {
     'microsoft_office_addin_change_policy': EventType._microsoft_office_addin_change_policy_validator,
     'network_control_change_policy': EventType._network_control_change_policy_validator,
     'paper_change_deployment_policy': EventType._paper_change_deployment_policy_validator,
+    'paper_change_member_link_policy': EventType._paper_change_member_link_policy_validator,
     'paper_change_member_policy': EventType._paper_change_member_policy_validator,
     'paper_change_policy': EventType._paper_change_policy_validator,
     'permanent_delete_change_policy': EventType._permanent_delete_change_policy_validator,
@@ -38481,6 +38827,7 @@ EventType._tagmap = {
     'web_sessions_change_fixed_length_policy': EventType._web_sessions_change_fixed_length_policy_validator,
     'web_sessions_change_idle_length_policy': EventType._web_sessions_change_idle_length_policy_validator,
     'team_profile_add_logo': EventType._team_profile_add_logo_validator,
+    'team_profile_change_default_language': EventType._team_profile_change_default_language_validator,
     'team_profile_change_logo': EventType._team_profile_change_logo_validator,
     'team_profile_change_name': EventType._team_profile_change_name_validator,
     'team_profile_remove_logo': EventType._team_profile_remove_logo_validator,
@@ -38695,12 +39042,14 @@ EventType.shmodel_team_view = EventType('shmodel_team_view')
 EventType.shmodel_visibility_password = EventType('shmodel_visibility_password')
 EventType.shmodel_visibility_public = EventType('shmodel_visibility_public')
 EventType.shmodel_visibility_team_only = EventType('shmodel_visibility_team_only')
+EventType.sso_add_cert = EventType('sso_add_cert')
 EventType.sso_add_login_url = EventType('sso_add_login_url')
 EventType.sso_add_logout_url = EventType('sso_add_logout_url')
 EventType.sso_change_cert = EventType('sso_change_cert')
 EventType.sso_change_login_url = EventType('sso_change_login_url')
 EventType.sso_change_logout_url = EventType('sso_change_logout_url')
 EventType.sso_change_saml_identity_mode = EventType('sso_change_saml_identity_mode')
+EventType.sso_remove_cert = EventType('sso_remove_cert')
 EventType.sso_remove_login_url = EventType('sso_remove_login_url')
 EventType.sso_remove_logout_url = EventType('sso_remove_logout_url')
 EventType.team_folder_change_status = EventType('team_folder_change_status')
@@ -38735,6 +39084,7 @@ EventType.member_suggestions_change_policy = EventType('member_suggestions_chang
 EventType.microsoft_office_addin_change_policy = EventType('microsoft_office_addin_change_policy')
 EventType.network_control_change_policy = EventType('network_control_change_policy')
 EventType.paper_change_deployment_policy = EventType('paper_change_deployment_policy')
+EventType.paper_change_member_link_policy = EventType('paper_change_member_link_policy')
 EventType.paper_change_member_policy = EventType('paper_change_member_policy')
 EventType.paper_change_policy = EventType('paper_change_policy')
 EventType.permanent_delete_change_policy = EventType('permanent_delete_change_policy')
@@ -38750,6 +39100,7 @@ EventType.two_account_change_policy = EventType('two_account_change_policy')
 EventType.web_sessions_change_fixed_length_policy = EventType('web_sessions_change_fixed_length_policy')
 EventType.web_sessions_change_idle_length_policy = EventType('web_sessions_change_idle_length_policy')
 EventType.team_profile_add_logo = EventType('team_profile_add_logo')
+EventType.team_profile_change_default_language = EventType('team_profile_change_default_language')
 EventType.team_profile_change_logo = EventType('team_profile_change_logo')
 EventType.team_profile_change_name = EventType('team_profile_change_name')
 EventType.team_profile_remove_logo = EventType('team_profile_remove_logo')
@@ -39185,20 +39536,20 @@ GroupChangeMemberRoleDetails._is_group_owner_validator = bv.Boolean()
 GroupChangeMemberRoleDetails._all_field_names_ = set(['is_group_owner'])
 GroupChangeMemberRoleDetails._all_fields_ = [('is_group_owner', GroupChangeMemberRoleDetails._is_group_owner_validator)]
 
-GroupCreateDetails._is_admin_managed_validator = bv.Nullable(bv.Boolean())
+GroupCreateDetails._is_company_managed_validator = bv.Nullable(bv.Boolean())
 GroupCreateDetails._join_policy_validator = GroupJoinPolicy_validator
 GroupCreateDetails._all_field_names_ = set([
-    'is_admin_managed',
+    'is_company_managed',
     'join_policy',
 ])
 GroupCreateDetails._all_fields_ = [
-    ('is_admin_managed', GroupCreateDetails._is_admin_managed_validator),
+    ('is_company_managed', GroupCreateDetails._is_company_managed_validator),
     ('join_policy', GroupCreateDetails._join_policy_validator),
 ]
 
-GroupDeleteDetails._is_admin_managed_validator = bv.Nullable(bv.Boolean())
-GroupDeleteDetails._all_field_names_ = set(['is_admin_managed'])
-GroupDeleteDetails._all_fields_ = [('is_admin_managed', GroupDeleteDetails._is_admin_managed_validator)]
+GroupDeleteDetails._is_company_managed_validator = bv.Nullable(bv.Boolean())
+GroupDeleteDetails._all_field_names_ = set(['is_company_managed'])
+GroupDeleteDetails._all_fields_ = [('is_company_managed', GroupDeleteDetails._is_company_managed_validator)]
 
 GroupJoinPolicy._open_validator = bv.Void()
 GroupJoinPolicy._request_to_join_validator = bv.Void()
@@ -39655,6 +40006,10 @@ PaperChangeDeploymentPolicyDetails._all_fields_ = [
     ('new_value', PaperChangeDeploymentPolicyDetails._new_value_validator),
     ('previous_value', PaperChangeDeploymentPolicyDetails._previous_value_validator),
 ]
+
+PaperChangeMemberLinkPolicyDetails._new_value_validator = PaperMemberPolicy_validator
+PaperChangeMemberLinkPolicyDetails._all_field_names_ = set(['new_value'])
+PaperChangeMemberLinkPolicyDetails._all_fields_ = [('new_value', PaperChangeMemberLinkPolicyDetails._new_value_validator)]
 
 PaperChangeMemberPolicyDetails._new_value_validator = PaperMemberPolicy_validator
 PaperChangeMemberPolicyDetails._previous_value_validator = bv.Nullable(PaperMemberPolicy_validator)
@@ -40997,6 +41352,10 @@ SpaceLimitsStatus.near_quota = SpaceLimitsStatus('near_quota')
 SpaceLimitsStatus.over_quota = SpaceLimitsStatus('over_quota')
 SpaceLimitsStatus.other = SpaceLimitsStatus('other')
 
+SsoAddCertDetails._certificate_details_validator = Certificate_validator
+SsoAddCertDetails._all_field_names_ = set(['certificate_details'])
+SsoAddCertDetails._all_fields_ = [('certificate_details', SsoAddCertDetails._certificate_details_validator)]
+
 SsoAddLoginUrlDetails._new_value_validator = bv.String()
 SsoAddLoginUrlDetails._all_field_names_ = set(['new_value'])
 SsoAddLoginUrlDetails._all_fields_ = [('new_value', SsoAddLoginUrlDetails._new_value_validator)]
@@ -41005,9 +41364,16 @@ SsoAddLogoutUrlDetails._new_value_validator = bv.Nullable(bv.String())
 SsoAddLogoutUrlDetails._all_field_names_ = set(['new_value'])
 SsoAddLogoutUrlDetails._all_fields_ = [('new_value', SsoAddLogoutUrlDetails._new_value_validator)]
 
-SsoChangeCertDetails._certificate_details_validator = Certificate_validator
-SsoChangeCertDetails._all_field_names_ = set(['certificate_details'])
-SsoChangeCertDetails._all_fields_ = [('certificate_details', SsoChangeCertDetails._certificate_details_validator)]
+SsoChangeCertDetails._previous_certificate_details_validator = bv.Nullable(Certificate_validator)
+SsoChangeCertDetails._new_certificate_details_validator = Certificate_validator
+SsoChangeCertDetails._all_field_names_ = set([
+    'previous_certificate_details',
+    'new_certificate_details',
+])
+SsoChangeCertDetails._all_fields_ = [
+    ('previous_certificate_details', SsoChangeCertDetails._previous_certificate_details_validator),
+    ('new_certificate_details', SsoChangeCertDetails._new_certificate_details_validator),
+]
 
 SsoChangeLoginUrlDetails._previous_value_validator = bv.String()
 SsoChangeLoginUrlDetails._new_value_validator = bv.String()
@@ -41056,6 +41422,9 @@ SsoChangeSamlIdentityModeDetails._all_fields_ = [
 SsoLoginFailDetails._error_details_validator = FailureDetailsLogInfo_validator
 SsoLoginFailDetails._all_field_names_ = set(['error_details'])
 SsoLoginFailDetails._all_fields_ = [('error_details', SsoLoginFailDetails._error_details_validator)]
+
+SsoRemoveCertDetails._all_field_names_ = set([])
+SsoRemoveCertDetails._all_fields_ = []
 
 SsoRemoveLoginUrlDetails._previous_value_validator = bv.String()
 SsoRemoveLoginUrlDetails._all_field_names_ = set(['previous_value'])
@@ -41202,6 +41571,17 @@ TeamName._all_fields_ = [
 TeamProfileAddLogoDetails._all_field_names_ = set([])
 TeamProfileAddLogoDetails._all_fields_ = []
 
+TeamProfileChangeDefaultLanguageDetails._new_value_validator = common.LanguageCode_validator
+TeamProfileChangeDefaultLanguageDetails._previous_value_validator = common.LanguageCode_validator
+TeamProfileChangeDefaultLanguageDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+TeamProfileChangeDefaultLanguageDetails._all_fields_ = [
+    ('new_value', TeamProfileChangeDefaultLanguageDetails._new_value_validator),
+    ('previous_value', TeamProfileChangeDefaultLanguageDetails._previous_value_validator),
+]
+
 TeamProfileChangeLogoDetails._all_field_names_ = set([])
 TeamProfileChangeLogoDetails._all_fields_ = []
 
@@ -41228,8 +41608,8 @@ TfaAddSecurityKeyDetails._all_fields_ = []
 TfaChangeBackupPhoneDetails._all_field_names_ = set([])
 TfaChangeBackupPhoneDetails._all_fields_ = []
 
-TfaChangePolicyDetails._new_value_validator = TfaPolicy_validator
-TfaChangePolicyDetails._previous_value_validator = bv.Nullable(TfaPolicy_validator)
+TfaChangePolicyDetails._new_value_validator = team_policies.TwoStepVerificationPolicy_validator
+TfaChangePolicyDetails._previous_value_validator = bv.Nullable(team_policies.TwoStepVerificationPolicy_validator)
 TfaChangePolicyDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
@@ -41271,19 +41651,6 @@ TfaConfiguration.enabled = TfaConfiguration('enabled')
 TfaConfiguration.sms = TfaConfiguration('sms')
 TfaConfiguration.authenticator = TfaConfiguration('authenticator')
 TfaConfiguration.other = TfaConfiguration('other')
-
-TfaPolicy._allow_disable_validator = bv.Void()
-TfaPolicy._sticky_enable_validator = bv.Void()
-TfaPolicy._other_validator = bv.Void()
-TfaPolicy._tagmap = {
-    'allow_disable': TfaPolicy._allow_disable_validator,
-    'sticky_enable': TfaPolicy._sticky_enable_validator,
-    'other': TfaPolicy._other_validator,
-}
-
-TfaPolicy.allow_disable = TfaPolicy('allow_disable')
-TfaPolicy.sticky_enable = TfaPolicy('sticky_enable')
-TfaPolicy.other = TfaPolicy('other')
 
 TfaRemoveBackupPhoneDetails._all_field_names_ = set([])
 TfaRemoveBackupPhoneDetails._all_fields_ = []

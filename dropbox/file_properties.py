@@ -183,8 +183,8 @@ class PropertiesError(TemplateError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar unsupported_folder: This folder cannot be tagged. Shared folders and
-        team folders are not supported for team-owned tags.
+    :ivar unsupported_folder: This folder cannot be tagged. Tagging folders is
+        not supported for team-owned templates.
     """
 
     # Attribute is overwritten below the class definition
