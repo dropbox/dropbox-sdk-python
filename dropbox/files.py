@@ -3471,10 +3471,6 @@ GpsCoordinates_validator = bv.Struct(GpsCoordinates)
 class ListFolderArg(object):
     """
     :ivar path: A unique identifier for the file.
-    :ivar shared_link: A shared link to list the contents of, if the link is
-        protected provide the password. if this field is present,
-        ``ListFolderArg.path`` will be relative to root of the shared link. Only
-        non-recursive mode is supported for shared link.
     :ivar recursive: If true, the list folder operation will be applied
         recursively to all subfolders and the response will contain contents of
         all subfolders.
@@ -3491,13 +3487,15 @@ class ListFolderArg(object):
     :ivar limit: The maximum number of results to return per request. Note: This
         is an approximate number and there can be slightly more entries returned
         in some cases.
+    :ivar shared_link: A shared link to list the contents of. If the link is
+        password-protected, the password must be provided. If this field is
+        present, ``ListFolderArg.path`` will be relative to root of the shared
+        link. Only non-recursive mode is supported for shared link.
     """
 
     __slots__ = [
         '_path_value',
         '_path_present',
-        '_shared_link_value',
-        '_shared_link_present',
         '_recursive_value',
         '_recursive_present',
         '_include_media_info_value',
@@ -3510,23 +3508,23 @@ class ListFolderArg(object):
         '_include_mounted_folders_present',
         '_limit_value',
         '_limit_present',
+        '_shared_link_value',
+        '_shared_link_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  path=None,
-                 shared_link=None,
                  recursive=None,
                  include_media_info=None,
                  include_deleted=None,
                  include_has_explicit_shared_members=None,
                  include_mounted_folders=None,
-                 limit=None):
+                 limit=None,
+                 shared_link=None):
         self._path_value = None
         self._path_present = False
-        self._shared_link_value = None
-        self._shared_link_present = False
         self._recursive_value = None
         self._recursive_present = False
         self._include_media_info_value = None
@@ -3539,10 +3537,10 @@ class ListFolderArg(object):
         self._include_mounted_folders_present = False
         self._limit_value = None
         self._limit_present = False
+        self._shared_link_value = None
+        self._shared_link_present = False
         if path is not None:
             self.path = path
-        if shared_link is not None:
-            self.shared_link = shared_link
         if recursive is not None:
             self.recursive = recursive
         if include_media_info is not None:
@@ -3555,6 +3553,8 @@ class ListFolderArg(object):
             self.include_mounted_folders = include_mounted_folders
         if limit is not None:
             self.limit = limit
+        if shared_link is not None:
+            self.shared_link = shared_link
 
     @property
     def path(self):
@@ -3578,35 +3578,6 @@ class ListFolderArg(object):
     def path(self):
         self._path_value = None
         self._path_present = False
-
-    @property
-    def shared_link(self):
-        """
-        A shared link to list the contents of, if the link is protected provide
-        the password. if this field is present, ``ListFolderArg.path`` will be
-        relative to root of the shared link. Only non-recursive mode is
-        supported for shared link.
-
-        :rtype: SharedLink
-        """
-        if self._shared_link_present:
-            return self._shared_link_value
-        else:
-            return None
-
-    @shared_link.setter
-    def shared_link(self, val):
-        if val is None:
-            del self.shared_link
-            return
-        self._shared_link_validator.validate_type_only(val)
-        self._shared_link_value = val
-        self._shared_link_present = True
-
-    @shared_link.deleter
-    def shared_link(self):
-        self._shared_link_value = None
-        self._shared_link_present = False
 
     @property
     def recursive(self):
@@ -3755,16 +3726,45 @@ class ListFolderArg(object):
         self._limit_value = None
         self._limit_present = False
 
+    @property
+    def shared_link(self):
+        """
+        A shared link to list the contents of. If the link is
+        password-protected, the password must be provided. If this field is
+        present, ``ListFolderArg.path`` will be relative to root of the shared
+        link. Only non-recursive mode is supported for shared link.
+
+        :rtype: SharedLink
+        """
+        if self._shared_link_present:
+            return self._shared_link_value
+        else:
+            return None
+
+    @shared_link.setter
+    def shared_link(self, val):
+        if val is None:
+            del self.shared_link
+            return
+        self._shared_link_validator.validate_type_only(val)
+        self._shared_link_value = val
+        self._shared_link_present = True
+
+    @shared_link.deleter
+    def shared_link(self):
+        self._shared_link_value = None
+        self._shared_link_present = False
+
     def __repr__(self):
-        return 'ListFolderArg(path={!r}, shared_link={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_mounted_folders={!r}, limit={!r})'.format(
+        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_mounted_folders={!r}, limit={!r}, shared_link={!r})'.format(
             self._path_value,
-            self._shared_link_value,
             self._recursive_value,
             self._include_media_info_value,
             self._include_deleted_value,
             self._include_has_explicit_shared_members_value,
             self._include_mounted_folders_value,
             self._limit_value,
+            self._shared_link_value,
         )
 
 ListFolderArg_validator = bv.Struct(ListFolderArg)
@@ -4344,12 +4344,16 @@ ListFolderResult_validator = bv.Struct(ListFolderResult)
 class ListRevisionsArg(object):
     """
     :ivar path: The path to the file you want to see the revisions of.
+    :ivar mode: Determines the behavior of the API in listing the revisions for
+        a given file path or id.
     :ivar limit: The maximum number of revision entries returned.
     """
 
     __slots__ = [
         '_path_value',
         '_path_present',
+        '_mode_value',
+        '_mode_present',
         '_limit_value',
         '_limit_present',
     ]
@@ -4358,13 +4362,18 @@ class ListRevisionsArg(object):
 
     def __init__(self,
                  path=None,
+                 mode=None,
                  limit=None):
         self._path_value = None
         self._path_present = False
+        self._mode_value = None
+        self._mode_present = False
         self._limit_value = None
         self._limit_present = False
         if path is not None:
             self.path = path
+        if mode is not None:
+            self.mode = mode
         if limit is not None:
             self.limit = limit
 
@@ -4392,6 +4401,30 @@ class ListRevisionsArg(object):
         self._path_present = False
 
     @property
+    def mode(self):
+        """
+        Determines the behavior of the API in listing the revisions for a given
+        file path or id.
+
+        :rtype: ListRevisionsMode
+        """
+        if self._mode_present:
+            return self._mode_value
+        else:
+            return ListRevisionsMode.path
+
+    @mode.setter
+    def mode(self, val):
+        self._mode_validator.validate_type_only(val)
+        self._mode_value = val
+        self._mode_present = True
+
+    @mode.deleter
+    def mode(self):
+        self._mode_value = None
+        self._mode_present = False
+
+    @property
     def limit(self):
         """
         The maximum number of revision entries returned.
@@ -4415,8 +4448,9 @@ class ListRevisionsArg(object):
         self._limit_present = False
 
     def __repr__(self):
-        return 'ListRevisionsArg(path={!r}, limit={!r})'.format(
+        return 'ListRevisionsArg(path={!r}, mode={!r}, limit={!r})'.format(
             self._path_value,
+            self._mode_value,
             self._limit_value,
         )
 
@@ -4475,9 +4509,59 @@ class ListRevisionsError(bb.Union):
 
 ListRevisionsError_validator = bv.Union(ListRevisionsError)
 
+class ListRevisionsMode(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar path: Returns revisions with the same file path as identified by the
+        latest file entry at the given file path or id.
+    :ivar id: Returns revisions with the same file id as identified by the
+        latest file entry at the given file path or id.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    path = None
+    # Attribute is overwritten below the class definition
+    id = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_id(self):
+        """
+        Check if the union tag is ``id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'id'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ListRevisionsMode(%r, %r)' % (self._tag, self._value)
+
+ListRevisionsMode_validator = bv.Union(ListRevisionsMode)
+
 class ListRevisionsResult(object):
     """
-    :ivar is_deleted: If the file is deleted.
+    :ivar is_deleted: If the file identified by the latest revision in the
+        response is either deleted or moved.
     :ivar server_deleted: The time of deletion if the file was deleted.
     :ivar entries: The revisions for the file. Only revisions that are not
         deleted will show up here.
@@ -4514,7 +4598,8 @@ class ListRevisionsResult(object):
     @property
     def is_deleted(self):
         """
-        If the file is deleted.
+        If the file identified by the latest revision in the response is either
+        deleted or moved.
 
         :rtype: bool
         """
@@ -9422,32 +9507,32 @@ GpsCoordinates._all_fields_ = [
 ]
 
 ListFolderArg._path_validator = PathROrId_validator
-ListFolderArg._shared_link_validator = bv.Nullable(SharedLink_validator)
 ListFolderArg._recursive_validator = bv.Boolean()
 ListFolderArg._include_media_info_validator = bv.Boolean()
 ListFolderArg._include_deleted_validator = bv.Boolean()
 ListFolderArg._include_has_explicit_shared_members_validator = bv.Boolean()
 ListFolderArg._include_mounted_folders_validator = bv.Boolean()
 ListFolderArg._limit_validator = bv.Nullable(bv.UInt32(min_value=1, max_value=2000))
+ListFolderArg._shared_link_validator = bv.Nullable(SharedLink_validator)
 ListFolderArg._all_field_names_ = set([
     'path',
-    'shared_link',
     'recursive',
     'include_media_info',
     'include_deleted',
     'include_has_explicit_shared_members',
     'include_mounted_folders',
     'limit',
+    'shared_link',
 ])
 ListFolderArg._all_fields_ = [
     ('path', ListFolderArg._path_validator),
-    ('shared_link', ListFolderArg._shared_link_validator),
     ('recursive', ListFolderArg._recursive_validator),
     ('include_media_info', ListFolderArg._include_media_info_validator),
     ('include_deleted', ListFolderArg._include_deleted_validator),
     ('include_has_explicit_shared_members', ListFolderArg._include_has_explicit_shared_members_validator),
     ('include_mounted_folders', ListFolderArg._include_mounted_folders_validator),
     ('limit', ListFolderArg._limit_validator),
+    ('shared_link', ListFolderArg._shared_link_validator),
 ]
 
 ListFolderContinueArg._cursor_validator = ListFolderCursor_validator
@@ -9526,13 +9611,16 @@ ListFolderResult._all_fields_ = [
 ]
 
 ListRevisionsArg._path_validator = PathOrId_validator
+ListRevisionsArg._mode_validator = ListRevisionsMode_validator
 ListRevisionsArg._limit_validator = bv.UInt64(min_value=1, max_value=100)
 ListRevisionsArg._all_field_names_ = set([
     'path',
+    'mode',
     'limit',
 ])
 ListRevisionsArg._all_fields_ = [
     ('path', ListRevisionsArg._path_validator),
+    ('mode', ListRevisionsArg._mode_validator),
     ('limit', ListRevisionsArg._limit_validator),
 ]
 
@@ -9544,6 +9632,19 @@ ListRevisionsError._tagmap = {
 }
 
 ListRevisionsError.other = ListRevisionsError('other')
+
+ListRevisionsMode._path_validator = bv.Void()
+ListRevisionsMode._id_validator = bv.Void()
+ListRevisionsMode._other_validator = bv.Void()
+ListRevisionsMode._tagmap = {
+    'path': ListRevisionsMode._path_validator,
+    'id': ListRevisionsMode._id_validator,
+    'other': ListRevisionsMode._other_validator,
+}
+
+ListRevisionsMode.path = ListRevisionsMode('path')
+ListRevisionsMode.id = ListRevisionsMode('id')
+ListRevisionsMode.other = ListRevisionsMode('other')
 
 ListRevisionsResult._is_deleted_validator = bv.Boolean()
 ListRevisionsResult._server_deleted_validator = bv.Nullable(common.DropboxTimestamp_validator)

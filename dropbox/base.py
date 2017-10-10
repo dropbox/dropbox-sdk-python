@@ -1260,13 +1260,13 @@ class DropboxBase(object):
 
     def files_list_folder(self,
                           path,
-                          shared_link=None,
                           recursive=False,
                           include_media_info=False,
                           include_deleted=False,
                           include_has_explicit_shared_members=False,
                           include_mounted_folders=True,
-                          limit=None):
+                          limit=None,
+                          shared_link=None):
         """
         Starts returning the contents of a folder. If the result's
         ``ListFolderResult.has_more`` field is ``True``, call
@@ -1294,10 +1294,6 @@ class DropboxBase(object):
         until the previous request finishes.
 
         :param str path: A unique identifier for the file.
-        :param Nullable shared_link: A shared link to list the contents of, if
-            the link is protected provide the password. if this field is
-            present, ``ListFolderArg.path`` will be relative to root of the
-            shared link. Only non-recursive mode is supported for shared link.
         :param bool recursive: If true, the list folder operation will be
             applied recursively to all subfolders and the response will contain
             contents of all subfolders.
@@ -1314,6 +1310,11 @@ class DropboxBase(object):
         :param Nullable limit: The maximum number of results to return per
             request. Note: This is an approximate number and there can be
             slightly more entries returned in some cases.
+        :param Nullable shared_link: A shared link to list the contents of. If
+            the link is password-protected, the password must be provided. If
+            this field is present, ``ListFolderArg.path`` will be relative to
+            root of the shared link. Only non-recursive mode is supported for
+            shared link.
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1321,13 +1322,13 @@ class DropboxBase(object):
             :class:`dropbox.files.ListFolderError`
         """
         arg = files.ListFolderArg(path,
-                                  shared_link,
                                   recursive,
                                   include_media_info,
                                   include_deleted,
                                   include_has_explicit_shared_members,
                                   include_mounted_folders,
-                                  limit)
+                                  limit,
+                                  shared_link)
         r = self.request(
             files.list_folder,
             'files',
@@ -1362,13 +1363,13 @@ class DropboxBase(object):
 
     def files_list_folder_get_latest_cursor(self,
                                             path,
-                                            shared_link=None,
                                             recursive=False,
                                             include_media_info=False,
                                             include_deleted=False,
                                             include_has_explicit_shared_members=False,
                                             include_mounted_folders=True,
-                                            limit=None):
+                                            limit=None,
+                                            shared_link=None):
         """
         A way to quickly get a cursor for the folder's state. Unlike
         :meth:`files_list_folder`, :meth:`files_list_folder_get_latest_cursor`
@@ -1377,10 +1378,6 @@ class DropboxBase(object):
         files that already exist in Dropbox.
 
         :param str path: A unique identifier for the file.
-        :param Nullable shared_link: A shared link to list the contents of, if
-            the link is protected provide the password. if this field is
-            present, ``ListFolderArg.path`` will be relative to root of the
-            shared link. Only non-recursive mode is supported for shared link.
         :param bool recursive: If true, the list folder operation will be
             applied recursively to all subfolders and the response will contain
             contents of all subfolders.
@@ -1397,6 +1394,11 @@ class DropboxBase(object):
         :param Nullable limit: The maximum number of results to return per
             request. Note: This is an approximate number and there can be
             slightly more entries returned in some cases.
+        :param Nullable shared_link: A shared link to list the contents of. If
+            the link is password-protected, the password must be provided. If
+            this field is present, ``ListFolderArg.path`` will be relative to
+            root of the shared link. Only non-recursive mode is supported for
+            shared link.
         :rtype: :class:`dropbox.files.ListFolderGetLatestCursorResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1404,13 +1406,13 @@ class DropboxBase(object):
             :class:`dropbox.files.ListFolderError`
         """
         arg = files.ListFolderArg(path,
-                                  shared_link,
                                   recursive,
                                   include_media_info,
                                   include_deleted,
                                   include_has_explicit_shared_members,
                                   include_mounted_folders,
-                                  limit)
+                                  limit,
+                                  shared_link)
         r = self.request(
             files.list_folder_get_latest_cursor,
             'files',
@@ -1457,11 +1459,23 @@ class DropboxBase(object):
 
     def files_list_revisions(self,
                              path,
+                             mode=files.ListRevisionsMode.path,
                              limit=10):
         """
-        Return revisions of a file.
+        Returns revisions for files based on a file path or a file id. The file
+        path or file id is identified from the latest file entry at the given
+        file path or id. This end point allows your app to query either by file
+        path or file id by setting the mode parameter appropriately. In the
+        ``ListRevisionsMode.path`` (default) mode, all revisions at the same
+        file path as the latest file entry are returned. If revisions with the
+        same file id are desired, then mode must be set to
+        ``ListRevisionsMode.id``. The ``ListRevisionsMode.id`` mode is useful to
+        retrieve revisions for a given file across moves or renames.
 
         :param str path: The path to the file you want to see the revisions of.
+        :param mode: Determines the behavior of the API in listing the revisions
+            for a given file path or id.
+        :type mode: :class:`dropbox.files.ListRevisionsMode`
         :param long limit: The maximum number of revision entries returned.
         :rtype: :class:`dropbox.files.ListRevisionsResult`
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -1470,6 +1484,7 @@ class DropboxBase(object):
             :class:`dropbox.files.ListRevisionsError`
         """
         arg = files.ListRevisionsArg(path,
+                                     mode,
                                      limit)
         r = self.request(
             files.list_revisions,
