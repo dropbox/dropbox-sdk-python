@@ -41,7 +41,6 @@ class _SSLAdapter(HTTPAdapter):
             block=block,
             cert_reqs=ssl.CERT_REQUIRED,
             ca_certs=_TRUSTED_CERT_FILE,
-            ssl_version=ssl.PROTOCOL_TLSv1,
         )
 
 def pinned_session(pool_maxsize=8):
