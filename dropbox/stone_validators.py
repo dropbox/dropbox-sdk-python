@@ -14,6 +14,7 @@ from __future__ import absolute_import, unicode_literals
 
 from abc import ABCMeta, abstractmethod
 import datetime
+import hashlib
 import math
 import numbers
 import re
@@ -455,6 +456,16 @@ class Struct(Composite):
         self.validate_fields_only(val)
         return val
 
+    def validate_with_permissions(self, val, caller_permissions):
+        """
+        For a val to pass validation, val must be of the correct type and have
+        all required permissioned fields present. Should only be called
+        for callers with extra permissions.
+        """
+        self.validate(val)
+        self.validate_fields_only_with_permissions(val, caller_permissions)
+        return val
+
     def validate_fields_only(self, val):
         """
         To pass field validation, no required field should be missing.
@@ -465,10 +476,26 @@ class Struct(Composite):
         FIXME(kelkabany): Since the definition object does not maintain a list
         of which fields are required, all fields are scanned.
         """
-        for field_name, _ in self.definition._all_fields_:
+        for field_name in self.definition._all_field_names_:
             if not hasattr(val, field_name):
                 raise ValidationError("missing required field '%s'" %
                                       field_name)
+
+    def validate_fields_only_with_permissions(self, val, caller_permissions):
+        """
+        To pass field validation, no required field should be missing.
+        This method assumes that the contents of each field have already been
+        validated on assignment, so it's merely a presence check.
+        Should only be called for callers with extra permissions.
+        """
+        self.validate_fields_only(val)
+
+        # check if type has been patched
+        for extra_permission in caller_permissions.permissions:
+            all_field_names = '_all_{}_field_names_'.format(extra_permission)
+            for field_name in getattr(self.definition, all_field_names, set()):
+                if not hasattr(val, field_name):
+                    raise ValidationError("missing required field '%s'" % field_name)
 
     def validate_type_only(self, val):
         """
@@ -590,3 +617,54 @@ class Nullable(Validator):
 
     def get_default(self):
         return None
+
+class Redactor(object):
+    def __init__(self, regex):
+        """
+        Args:
+            regex: What parts of the field to redact.
+        """
+        self.regex = regex
+
+    @abstractmethod
+    def apply(self, val):
+        """Redacts information from annotated field.
+        Returns: A redacted version of the string provided.
+        """
+        pass
+
+    def _get_matches(self, val):
+        if not self.regex:
+            return None
+        try:
+            return re.search(self.regex, val)
+        except TypeError:
+            return None
+
+
+class HashRedactor(Redactor):
+    def apply(self, val):
+        matches = self._get_matches(val)
+
+        val_to_hash = str(val) if isinstance(val, int) or isinstance(val, float) else val
+
+        try:
+            # add string literal to ensure unicode
+            hashed = hashlib.md5(val_to_hash.encode('utf-8')).hexdigest() + ''
+        except [AttributeError, ValueError]:
+            hashed = None
+
+        if matches:
+            blotted = '***'.join(matches.groups())
+            if hashed:
+                return '{} ({})'.format(hashed, blotted)
+            return blotted
+        return hashed
+
+
+class BlotRedactor(Redactor):
+    def apply(self, val):
+        matches = self._get_matches(val)
+        if matches:
+            return '***'.join(matches.groups())
+        return '********'

@@ -25,11 +25,15 @@ class Union(object):
     # union is composed of only symbols.
     __slots__ = ['_tag', '_value']
     _tagmap = {}  # type: typing.Dict[typing.Text, bv.Validator]
+    _permissioned_tagmaps = set()  # type: typing.Set[typing.Text]
 
     def __init__(self, tag, value=None):
-        # type: (typing.Text, typing.Optional[typing.Any]) -> None
-        assert tag in self._tagmap, 'Invalid tag %r.' % tag
-        validator = self._tagmap[tag]
+        validator = None
+        tagmap_names = ['_{}_tagmap'.format(map_name) for map_name in self._permissioned_tagmaps]
+        for tagmap_name in ['_tagmap'] + tagmap_names:
+            if tag in getattr(self, tagmap_name):
+                validator = getattr(self, tagmap_name)[tag]
+        assert validator is not None, 'Invalid tag %r.' % tag
         if isinstance(validator, bv.Void):
             assert value is None, 'Void type union member must have None value.'
         elif isinstance(validator, (bv.Struct, bv.Union)):
@@ -53,6 +57,31 @@ class Union(object):
 
     def __hash__(self):
         return hash((self._tag, self._value))
+
+    @classmethod
+    def _is_tag_present(cls, tag, caller_permissions):
+        assert tag, 'tag value should not be None'
+
+        if tag in cls._tagmap:
+            return True
+
+        for extra_permission in caller_permissions.permissions:
+            tagmap_name = '_{}_tagmap'.format(extra_permission)
+            if hasattr(cls, tagmap_name) and tag in getattr(cls, tagmap_name):
+                return True
+
+        return False
+
+    @classmethod
+    def _get_val_data_type(cls, tag, caller_permissions):
+        assert tag, 'tag value should not be None'
+
+        for extra_permission in caller_permissions.permissions:
+            tagmap_name = '_{}_tagmap'.format(extra_permission)
+            if hasattr(cls, tagmap_name) and tag in getattr(cls, tagmap_name):
+                return getattr(cls, tagmap_name)[tag]
+
+        return cls._tagmap[tag]
 
 class Route(object):
 

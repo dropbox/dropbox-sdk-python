@@ -139,8 +139,8 @@ class DropboxBase(object):
                                           path,
                                           property_template_ids):
         """
-        Remove the specified property group from the file. To remove specific
-        property field key value pairs, see
+        Permanently removes the specified property group from the file. To
+        remove specific property field key value pairs, see
         :meth:`file_properties_properties_update`. To update a template, see
         :meth:`file_properties_templates_update_for_user` or
         :meth:`file_properties_templates_update_for_team`. Templates can't be
@@ -192,6 +192,31 @@ class DropboxBase(object):
         )
         return r
 
+    def file_properties_properties_search_continue(self,
+                                                   cursor):
+        """
+        Once a cursor has been retrieved from
+        :meth:`file_properties_properties_search`, use this to paginate through
+        all search results.
+
+        :param str cursor: The cursor returned by your last call to
+            :meth:`file_properties_properties_search` or
+            :meth:`file_properties_properties_search_continue`.
+        :rtype: :class:`dropbox.file_properties.PropertiesSearchResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.PropertiesSearchContinueError`
+        """
+        arg = file_properties.PropertiesSearchContinueArg(cursor)
+        r = self.request(
+            file_properties.properties_search_continue,
+            'file_properties',
+            arg,
+            None,
+        )
+        return r
+
     def file_properties_properties_update(self,
                                           path,
                                           update_property_groups):
@@ -230,7 +255,7 @@ class DropboxBase(object):
         """
         Add a template associated with a team. See
         :meth:`file_properties_properties_add` to add properties to a file or
-        folder.
+        folder. Note: this endpoint will create team-owned templates.
 
         :rtype: :class:`dropbox.file_properties.AddTemplateResult`
         :raises: :class:`dropbox.exceptions.ApiError`
@@ -362,6 +387,58 @@ class DropboxBase(object):
             None,
         )
         return r
+
+    def file_properties_templates_remove_for_team(self,
+                                                  template_id):
+        """
+        Permanently removes the specified template created from
+        :meth:`file_properties_templates_add_for_user`. All properties
+        associated with the template will also be removed. This action cannot be
+        undone.
+
+        :param str template_id: An identifier for a template created by
+            :meth:`file_properties_templates_add_for_user` or
+            :meth:`file_properties_templates_add_for_team`.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.TemplateError`
+        """
+        arg = file_properties.RemoveTemplateArg(template_id)
+        r = self.request(
+            file_properties.templates_remove_for_team,
+            'file_properties',
+            arg,
+            None,
+        )
+        return None
+
+    def file_properties_templates_remove_for_user(self,
+                                                  template_id):
+        """
+        Permanently removes the specified template created from
+        :meth:`file_properties_templates_add_for_user`. All properties
+        associated with the template will also be removed. This action cannot be
+        undone.
+
+        :param str template_id: An identifier for a template created by
+            :meth:`file_properties_templates_add_for_user` or
+            :meth:`file_properties_templates_add_for_team`.
+        :rtype: None
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.file_properties.TemplateError`
+        """
+        arg = file_properties.RemoveTemplateArg(template_id)
+        r = self.request(
+            file_properties.templates_remove_for_user,
+            'file_properties',
+            arg,
+            None,
+        )
+        return None
 
     def file_properties_templates_update_for_team(self,
                                                   template_id,
@@ -554,6 +631,7 @@ class DropboxBase(object):
                                  include_media_info=False,
                                  include_deleted=False,
                                  include_has_explicit_shared_members=False,
+                                 include_property_groups=None,
                                  include_property_templates=None):
         """
         Returns the metadata for a file or folder. This is an alpha endpoint
@@ -569,10 +647,15 @@ class DropboxBase(object):
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.AlphaGetMetadataError`
         """
+        warnings.warn(
+            'alpha/get_metadata is deprecated. Use get_metadata.',
+            DeprecationWarning,
+        )
         arg = files.AlphaGetMetadataArg(path,
                                         include_media_info,
                                         include_deleted,
                                         include_has_explicit_shared_members,
+                                        include_property_groups,
                                         include_property_templates)
         r = self.request(
             files.alpha_get_metadata,
@@ -598,14 +681,16 @@ class DropboxBase(object):
         :meth:`files_upload_session_start`.
 
         :param bytes f: Contents to upload.
-        :param Nullable property_groups: List of custom properties to add to
-            file.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
             :class:`dropbox.files.UploadErrorWithProperties`
         """
+        warnings.warn(
+            'alpha/upload is deprecated. Use alpha/upload.',
+            DeprecationWarning,
+        )
         arg = files.CommitInfoWithProperties(path,
                                              mode,
                                              autorename,
@@ -1032,7 +1117,8 @@ class DropboxBase(object):
                            path,
                            include_media_info=False,
                            include_deleted=False,
-                           include_has_explicit_shared_members=False):
+                           include_has_explicit_shared_members=False,
+                           include_property_groups=None):
         """
         Returns the metadata for a file or folder. Note: Metadata for the root
         folder is unsupported.
@@ -1047,6 +1133,10 @@ class DropboxBase(object):
         :param bool include_has_explicit_shared_members: If true, the results
             will include a flag for each file indicating whether or not  that
             file has any explicit members.
+        :param Nullable include_property_groups: If set to a valid list of
+            template IDs, ``FileMetadata.property_groups`` is set if there
+            exists property data associated with the file and each of the listed
+            templates.
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1056,7 +1146,8 @@ class DropboxBase(object):
         arg = files.GetMetadataArg(path,
                                    include_media_info,
                                    include_deleted,
-                                   include_has_explicit_shared_members)
+                                   include_has_explicit_shared_members,
+                                   include_property_groups)
         r = self.request(
             files.get_metadata,
             'files',
@@ -1266,7 +1357,8 @@ class DropboxBase(object):
                           include_has_explicit_shared_members=False,
                           include_mounted_folders=True,
                           limit=None,
-                          shared_link=None):
+                          shared_link=None,
+                          include_property_groups=None):
         """
         Starts returning the contents of a folder. If the result's
         ``ListFolderResult.has_more`` field is ``True``, call
@@ -1315,6 +1407,10 @@ class DropboxBase(object):
             this field is present, ``ListFolderArg.path`` will be relative to
             root of the shared link. Only non-recursive mode is supported for
             shared link.
+        :param Nullable include_property_groups: If set to a valid list of
+            template IDs, ``FileMetadata.property_groups`` is set if there
+            exists property data associated with the file and each of the listed
+            templates.
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1328,7 +1424,8 @@ class DropboxBase(object):
                                   include_has_explicit_shared_members,
                                   include_mounted_folders,
                                   limit,
-                                  shared_link)
+                                  shared_link,
+                                  include_property_groups)
         r = self.request(
             files.list_folder,
             'files',
@@ -1369,7 +1466,8 @@ class DropboxBase(object):
                                             include_has_explicit_shared_members=False,
                                             include_mounted_folders=True,
                                             limit=None,
-                                            shared_link=None):
+                                            shared_link=None,
+                                            include_property_groups=None):
         """
         A way to quickly get a cursor for the folder's state. Unlike
         :meth:`files_list_folder`, :meth:`files_list_folder_get_latest_cursor`
@@ -1399,6 +1497,10 @@ class DropboxBase(object):
             this field is present, ``ListFolderArg.path`` will be relative to
             root of the shared link. Only non-recursive mode is supported for
             shared link.
+        :param Nullable include_property_groups: If set to a valid list of
+            template IDs, ``FileMetadata.property_groups`` is set if there
+            exists property data associated with the file and each of the listed
+            templates.
         :rtype: :class:`dropbox.files.ListFolderGetLatestCursorResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1412,7 +1514,8 @@ class DropboxBase(object):
                                   include_has_explicit_shared_members,
                                   include_mounted_folders,
                                   limit,
-                                  shared_link)
+                                  shared_link,
+                                  include_property_groups)
         r = self.request(
             files.list_folder_get_latest_cursor,
             'files',
@@ -1928,7 +2031,8 @@ class DropboxBase(object):
                      mode=files.WriteMode.add,
                      autorename=False,
                      client_modified=None,
-                     mute=False):
+                     mute=False,
+                     property_groups=None):
         """
         Create a new file with the contents provided in the request. Do not use
         this to upload a file larger than 150 MB. Instead, create an upload
@@ -1951,6 +2055,8 @@ class DropboxBase(object):
             modifications in their Dropbox account via notifications in the
             client software. If ``True``, this tells the clients that this
             modification shouldn't result in a user notification.
+        :param Nullable property_groups: List of custom properties to add to
+            file.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
@@ -1961,7 +2067,8 @@ class DropboxBase(object):
                                mode,
                                autorename,
                                client_modified,
-                               mute)
+                               mute,
+                               property_groups)
         r = self.request(
             files.upload,
             'files',

@@ -681,6 +681,91 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_member_space_limits_excluded_users_add(self,
+                                                    users=None):
+        """
+        Add users to member space limits excluded users list.
+
+        :param Nullable users: List of users to be added/removed.
+        :rtype: :class:`dropbox.team.ExcludedUsersUpdateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.ExcludedUsersUpdateError`
+        """
+        arg = team.ExcludedUsersUpdateArg(users)
+        r = self.request(
+            team.member_space_limits_excluded_users_add,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_member_space_limits_excluded_users_list(self,
+                                                     limit=1000):
+        """
+        List member space limits excluded users.
+
+        :param long limit: Number of results to return per call.
+        :rtype: :class:`dropbox.team.ExcludedUsersListResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.ExcludedUsersListError`
+        """
+        arg = team.ExcludedUsersListArg(limit)
+        r = self.request(
+            team.member_space_limits_excluded_users_list,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_member_space_limits_excluded_users_list_continue(self,
+                                                              cursor):
+        """
+        Continue listing member space limits excluded users.
+
+        :param str cursor: Indicates from what point to get the next set of
+            users.
+        :rtype: :class:`dropbox.team.ExcludedUsersListResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.ExcludedUsersListContinueError`
+        """
+        arg = team.ExcludedUsersListContinueArg(cursor)
+        r = self.request(
+            team.member_space_limits_excluded_users_list_continue,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_member_space_limits_excluded_users_remove(self,
+                                                       users=None):
+        """
+        Remove users from member space limits excluded users list.
+
+        :param Nullable users: List of users to be added/removed.
+        :rtype: :class:`dropbox.team.ExcludedUsersUpdateResult`
+        :raises: :class:`dropbox.exceptions.ApiError`
+
+        If this raises, ApiError.reason is of type:
+            :class:`dropbox.team.ExcludedUsersUpdateError`
+        """
+        arg = team.ExcludedUsersUpdateArg(users)
+        r = self.request(
+            team.member_space_limits_excluded_users_remove,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_member_space_limits_get_custom_quota(self,
                                                   users):
         """
@@ -728,7 +813,7 @@ class DropboxTeamBase(object):
     def team_member_space_limits_set_custom_quota(self,
                                                   users_and_quotas):
         """
-        Set users custom quota. Custom quota has to be at least 25GB. A maximum
+        Set users custom quota. Custom quota has to be at least 15GB. A maximum
         of 1000 members can be specified in a single call.
 
         :param list users_and_quotas: List of users and their custom quotas.
@@ -736,7 +821,7 @@ class DropboxTeamBase(object):
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
-            :class:`dropbox.team.CustomQuotaError`
+            :class:`dropbox.team.SetCustomQuotaError`
         """
         arg = team.SetCustomQuotaArg(users_and_quotas)
         r = self.request(
