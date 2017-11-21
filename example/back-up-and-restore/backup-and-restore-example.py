@@ -28,7 +28,7 @@ def backup():
             # This checks for the specific error where a user doesn't have
             # enough Dropbox space quota to upload this file
             if (err.error.is_path() and
-                    err.error.get_path().error.is_insufficient_space()):
+                    err.error.get_path().reason.is_insufficient_space()):
                 sys.exit("ERROR: Cannot back up; insufficient space.")
             elif err.user_message_text:
                 print(err.user_message_text)
