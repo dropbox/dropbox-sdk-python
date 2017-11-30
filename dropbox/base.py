@@ -1095,8 +1095,7 @@ class DropboxBase(object):
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to download.
         :param Nullable rev: Please specify revision in ``path`` instead.
-        :rtype: (:class:`dropbox.files.FileMetadata`,
-                 :class:`requests.models.Response`)
+        :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
@@ -1205,8 +1204,7 @@ class DropboxBase(object):
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to preview.
         :param Nullable rev: Please specify revision in ``path`` instead.
-        :rtype: (:class:`dropbox.files.FileMetadata`,
-                 :class:`requests.models.Response`)
+        :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
@@ -1306,8 +1304,7 @@ class DropboxBase(object):
         :type format: :class:`dropbox.files.ThumbnailFormat`
         :param size: The size for the thumbnail image.
         :type size: :class:`dropbox.files.ThumbnailSize`
-        :rtype: (:class:`dropbox.files.FileMetadata`,
-                 :class:`requests.models.Response`)
+        :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
@@ -2353,8 +2350,7 @@ class DropboxBase(object):
 
         :param str download_path: Path on local machine to save file.
         :type export_format: :class:`dropbox.paper.ExportFormat`
-        :rtype: (:class:`dropbox.paper.PaperDocExportResult`,
-                 :class:`requests.models.Response`)
+        :rtype: :class:`dropbox.paper.PaperDocExportResult`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
@@ -3128,8 +3124,7 @@ class DropboxBase(object):
             sub-folder in this folder. A relative path should be used.
         :param Nullable link_password: If the shared link has a password, this
             parameter can be used.
-        :rtype: (:class:`dropbox.sharing.SharedLinkMetadata`,
-                 :class:`requests.models.Response`)
+        :rtype: :class:`dropbox.sharing.SharedLinkMetadata`
         :raises: :class:`dropbox.exceptions.ApiError`
 
         If this raises, ApiError.reason is of type:
