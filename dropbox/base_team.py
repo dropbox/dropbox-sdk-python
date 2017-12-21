@@ -50,9 +50,9 @@ class DropboxTeamBase(object):
         :param bool include_mobile_clients: Whether to list linked mobile
             devices of the team's member.
         :rtype: :class:`dropbox.team.ListMemberDevicesResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ListMemberDevicesError`
         """
         arg = team.ListMemberDevicesArg(team_member_id,
@@ -87,9 +87,9 @@ class DropboxTeamBase(object):
         :param bool include_mobile_clients: Whether to list mobile clients of
             the team members.
         :rtype: :class:`dropbox.team.ListMembersDevicesResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ListMembersDevicesError`
         """
         arg = team.ListMembersDevicesArg(cursor,
@@ -124,9 +124,9 @@ class DropboxTeamBase(object):
         :param bool include_mobile_clients: Whether to list mobile clients of
             the team members.
         :rtype: :class:`dropbox.team.ListTeamDevicesResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ListTeamDevicesError`
         """
         warnings.warn(
@@ -152,9 +152,9 @@ class DropboxTeamBase(object):
 
         :type arg: :class:`dropbox.team.RevokeDeviceSessionArg`
         :rtype: None
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.RevokeDeviceSessionError`
         """
         r = self.request(
@@ -172,9 +172,9 @@ class DropboxTeamBase(object):
 
         :type revoke_devices: list
         :rtype: :class:`dropbox.team.RevokeDeviceSessionBatchResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.RevokeDeviceSessionBatchError`
         """
         arg = team.RevokeDeviceSessionBatchArg(revoke_devices)
@@ -197,9 +197,9 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.Feature`. If the list is empty, this route will
             return :class:`dropbox.team.FeaturesGetValuesBatchError`.
         :rtype: :class:`dropbox.team.FeaturesGetValuesBatchResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.FeaturesGetValuesBatchError`
         """
         arg = team.FeaturesGetValuesBatchArg(features)
@@ -240,9 +240,9 @@ class DropboxTeamBase(object):
         :param Nullable group_management_type: Whether the team can be managed
             by selected users, or only by team admins.
         :rtype: :class:`dropbox.team.GroupFullInfo`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupCreateError`
         """
         arg = team.GroupCreateArg(group_name,
@@ -268,9 +268,9 @@ class DropboxTeamBase(object):
             by external group ID.
         :type arg: :class:`dropbox.team.GroupSelector`
         :rtype: :class:`dropbox.team.LaunchEmptyResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupDeleteError`
         """
         r = self.request(
@@ -292,9 +292,9 @@ class DropboxTeamBase(object):
             group_ids, or external group IDs.
         :type arg: :class:`dropbox.team.GroupsSelector`
         :rtype: list
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupsGetInfoError`
         """
         r = self.request(
@@ -316,9 +316,9 @@ class DropboxTeamBase(object):
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
         :rtype: :class:`dropbox.team.PollEmptyResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupsPollError`
         """
         arg = async.PollArg(async_job_id)
@@ -356,9 +356,9 @@ class DropboxTeamBase(object):
         :param str cursor: Indicates from what point to get the next set of
             groups.
         :rtype: :class:`dropbox.team.GroupsListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupsListContinueError`
         """
         arg = team.GroupsListContinueArg(cursor)
@@ -384,9 +384,9 @@ class DropboxTeamBase(object):
         :type group: :class:`dropbox.team.GroupSelector`
         :param list members: List of users to be added to the group.
         :rtype: :class:`dropbox.team.GroupMembersChangeResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupMembersAddError`
         """
         arg = team.GroupMembersAddArg(group,
@@ -410,9 +410,9 @@ class DropboxTeamBase(object):
         :type group: :class:`dropbox.team.GroupSelector`
         :param long limit: Number of results to return per call.
         :rtype: :class:`dropbox.team.GroupsMembersListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupSelectorError`
         """
         arg = team.GroupsMembersListArg(group,
@@ -435,9 +435,9 @@ class DropboxTeamBase(object):
         :param str cursor: Indicates from what point to get the next set of
             groups.
         :rtype: :class:`dropbox.team.GroupsMembersListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupsMembersListContinueError`
         """
         arg = team.GroupsMembersListContinueArg(cursor)
@@ -465,9 +465,9 @@ class DropboxTeamBase(object):
         :type group: :class:`dropbox.team.GroupSelector`
         :param list users: List of users to be removed from the group.
         :rtype: :class:`dropbox.team.GroupMembersChangeResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupMembersRemoveError`
         """
         arg = team.GroupMembersRemoveArg(group,
@@ -497,9 +497,9 @@ class DropboxTeamBase(object):
             to be returned in the response. This may take a long time for large
             groups.
         :rtype: list
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupMemberSetAccessTypeError`
         """
         arg = team.GroupMembersSetAccessTypeArg(group,
@@ -535,9 +535,9 @@ class DropboxTeamBase(object):
         :param Nullable new_group_management_type: Set new group management
             type, if provided.
         :rtype: :class:`dropbox.team.GroupFullInfo`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.GroupUpdateError`
         """
         arg = team.GroupUpdateArgs(group,
@@ -561,9 +561,9 @@ class DropboxTeamBase(object):
 
         :param str team_member_id: The team member id.
         :rtype: :class:`dropbox.team.ListMemberAppsResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ListMemberAppsError`
         """
         arg = team.ListMemberAppsArg(team_member_id)
@@ -587,9 +587,9 @@ class DropboxTeamBase(object):
             cursor, the following requests should include the received cursors
             in order to receive the next sub list of the team applications.
         :rtype: :class:`dropbox.team.ListMembersAppsResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ListMembersAppsError`
         """
         arg = team.ListMembersAppsArg(cursor)
@@ -613,9 +613,9 @@ class DropboxTeamBase(object):
             following requests should include the received cursors in order to
             receive the next sub list of the team applications.
         :rtype: :class:`dropbox.team.ListTeamAppsResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ListTeamAppsError`
         """
         warnings.warn(
@@ -644,9 +644,9 @@ class DropboxTeamBase(object):
         :param bool keep_app_folder: Whether to keep the application dedicated
             folder (in case the application uses  one).
         :rtype: None
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.RevokeLinkedAppError`
         """
         arg = team.RevokeLinkedApiAppArg(app_id,
@@ -667,9 +667,9 @@ class DropboxTeamBase(object):
 
         :type revoke_linked_app: list
         :rtype: :class:`dropbox.team.RevokeLinkedAppBatchResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.RevokeLinkedAppBatchError`
         """
         arg = team.RevokeLinkedApiAppBatchArg(revoke_linked_app)
@@ -688,9 +688,9 @@ class DropboxTeamBase(object):
 
         :param Nullable users: List of users to be added/removed.
         :rtype: :class:`dropbox.team.ExcludedUsersUpdateResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ExcludedUsersUpdateError`
         """
         arg = team.ExcludedUsersUpdateArg(users)
@@ -709,9 +709,9 @@ class DropboxTeamBase(object):
 
         :param long limit: Number of results to return per call.
         :rtype: :class:`dropbox.team.ExcludedUsersListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ExcludedUsersListError`
         """
         arg = team.ExcludedUsersListArg(limit)
@@ -731,9 +731,9 @@ class DropboxTeamBase(object):
         :param str cursor: Indicates from what point to get the next set of
             users.
         :rtype: :class:`dropbox.team.ExcludedUsersListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ExcludedUsersListContinueError`
         """
         arg = team.ExcludedUsersListContinueArg(cursor)
@@ -752,9 +752,9 @@ class DropboxTeamBase(object):
 
         :param Nullable users: List of users to be added/removed.
         :rtype: :class:`dropbox.team.ExcludedUsersUpdateResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ExcludedUsersUpdateError`
         """
         arg = team.ExcludedUsersUpdateArg(users)
@@ -774,9 +774,9 @@ class DropboxTeamBase(object):
 
         :param list users: List of users.
         :rtype: list
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.CustomQuotaError`
         """
         arg = team.CustomQuotaUsersArg(users)
@@ -796,9 +796,9 @@ class DropboxTeamBase(object):
 
         :param list users: List of users.
         :rtype: list
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.CustomQuotaError`
         """
         arg = team.CustomQuotaUsersArg(users)
@@ -818,9 +818,9 @@ class DropboxTeamBase(object):
 
         :param list users_and_quotas: List of users and their custom quotas.
         :rtype: list
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.SetCustomQuotaError`
         """
         arg = team.SetCustomQuotaArg(users_and_quotas)
@@ -873,9 +873,9 @@ class DropboxTeamBase(object):
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
         :rtype: :class:`dropbox.team.MembersAddJobStatus`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.PollError`
         """
         arg = async.PollArg(async_job_id)
@@ -897,9 +897,9 @@ class DropboxTeamBase(object):
 
         :param list members: List of team members.
         :rtype: list
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersGetInfoError`
         """
         arg = team.MembersGetInfoArgs(members)
@@ -920,9 +920,9 @@ class DropboxTeamBase(object):
         :param long limit: Number of results to return per call.
         :param bool include_removed: Whether to return removed members.
         :rtype: :class:`dropbox.team.MembersListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersListError`
         """
         arg = team.MembersListArg(limit,
@@ -945,9 +945,9 @@ class DropboxTeamBase(object):
         :param str cursor: Indicates from what point to get the next set of
             members.
         :rtype: :class:`dropbox.team.MembersListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersListContinueError`
         """
         arg = team.MembersListContinueArg(cursor)
@@ -969,9 +969,9 @@ class DropboxTeamBase(object):
         :param user: Identity of user to recover.
         :type user: :class:`dropbox.team.UserSelectorArg`
         :rtype: None
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersRecoverError`
         """
         arg = team.MembersRecoverArg(user)
@@ -1016,9 +1016,9 @@ class DropboxTeamBase(object):
             members. In order to keep the account the argument wipe_data should
             be set to False.
         :rtype: :class:`dropbox.team.LaunchEmptyResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersRemoveError`
         """
         arg = team.MembersRemoveArg(user,
@@ -1044,9 +1044,9 @@ class DropboxTeamBase(object):
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
         :rtype: :class:`dropbox.team.PollEmptyResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.PollError`
         """
         arg = async.PollArg(async_job_id)
@@ -1070,9 +1070,9 @@ class DropboxTeamBase(object):
             team_member_id, external_id or email.
         :type arg: :class:`dropbox.team.UserSelectorArg`
         :rtype: None
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersSendWelcomeError`
         """
         r = self.request(
@@ -1095,9 +1095,9 @@ class DropboxTeamBase(object):
         :param new_role: The new role of the member.
         :type new_role: :class:`dropbox.team.AdminTier`
         :rtype: :class:`dropbox.team.MembersSetPermissionsResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersSetPermissionsError`
         """
         arg = team.MembersSetPermissionsArg(user,
@@ -1129,9 +1129,9 @@ class DropboxTeamBase(object):
         :param Nullable new_persistent_id: New persistent ID. This field only
             available to teams using persistent ID SAML configuration.
         :rtype: :class:`dropbox.team.TeamMemberInfo`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersSetProfileError`
         """
         arg = team.MembersSetProfileArg(user,
@@ -1161,9 +1161,9 @@ class DropboxTeamBase(object):
         :param bool wipe_data: If provided, controls if the user's data will be
             deleted on their linked devices.
         :rtype: None
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersSuspendError`
         """
         arg = team.MembersDeactivateArg(user,
@@ -1186,9 +1186,9 @@ class DropboxTeamBase(object):
         :param user: Identity of user to unsuspend.
         :type user: :class:`dropbox.team.UserSelectorArg`
         :rtype: None
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.MembersUnsuspendError`
         """
         arg = team.MembersUnsuspendArg(user)
@@ -1232,9 +1232,9 @@ class DropboxTeamBase(object):
         :param str cursor: Indicates from what point to get the next set of
             team-accessible namespaces.
         :rtype: :class:`dropbox.team.TeamNamespacesListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.TeamNamespacesListContinueError`
         """
         arg = team.TeamNamespacesListContinueArg(cursor)
@@ -1272,9 +1272,9 @@ class DropboxTeamBase(object):
             :meth:`team_templates_add_for_user` or
             :meth:`team_templates_add_for_team`.
         :rtype: :class:`dropbox.team.GetTemplateResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.TemplateError`
         """
         warnings.warn(
@@ -1321,9 +1321,9 @@ class DropboxTeamBase(object):
             group template. There can be up to 32 properties in a single
             template.
         :rtype: :class:`dropbox.team.UpdateTemplateResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.ModifyTemplateError`
         """
         warnings.warn(
@@ -1351,9 +1351,9 @@ class DropboxTeamBase(object):
         :param Nullable start_date: Optional starting date (inclusive).
         :param Nullable end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetActivityReport`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
         arg = team.DateRange(start_date,
@@ -1375,9 +1375,9 @@ class DropboxTeamBase(object):
         :param Nullable start_date: Optional starting date (inclusive).
         :param Nullable end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetDevicesReport`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
         arg = team.DateRange(start_date,
@@ -1399,9 +1399,9 @@ class DropboxTeamBase(object):
         :param Nullable start_date: Optional starting date (inclusive).
         :param Nullable end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetMembershipReport`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
         arg = team.DateRange(start_date,
@@ -1423,9 +1423,9 @@ class DropboxTeamBase(object):
         :param Nullable start_date: Optional starting date (inclusive).
         :param Nullable end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetStorageReport`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
         arg = team.DateRange(start_date,
@@ -1486,9 +1486,9 @@ class DropboxTeamBase(object):
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
         :rtype: :class:`dropbox.team.TeamFolderArchiveJobStatus`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.PollError`
         """
         arg = async.PollArg(async_job_id)
@@ -1508,9 +1508,9 @@ class DropboxTeamBase(object):
 
         :param str name: Name for the new team folder.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.TeamFolderCreateError`
         """
         arg = team.TeamFolderCreateArg(name)
@@ -1547,9 +1547,9 @@ class DropboxTeamBase(object):
 
         :param long limit: The maximum number of results to return per request.
         :rtype: :class:`dropbox.team.TeamFolderListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.TeamFolderListError`
         """
         arg = team.TeamFolderListArg(limit)
@@ -1571,9 +1571,9 @@ class DropboxTeamBase(object):
         :param str cursor: Indicates from what point to get the next set of team
             folders.
         :rtype: :class:`dropbox.team.TeamFolderListResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.TeamFolderListContinueError`
         """
         arg = team.TeamFolderListContinueArg(cursor)
@@ -1612,9 +1612,9 @@ class DropboxTeamBase(object):
 
         :param str name: New team folder name.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.TeamFolderRenameError`
         """
         arg = team.TeamFolderRenameArg(team_folder_id,
@@ -1633,9 +1633,9 @@ class DropboxTeamBase(object):
         token used to make the call.
 
         :rtype: :class:`dropbox.team.TokenGetAuthenticatedAdminResult`
-        :raises: :class:`dropbox.exceptions.ApiError`
+        :raises: :class:`.exceptions.ApiError`
 
-        If this raises, ApiError.reason is of type:
+        If this raises, ApiError will contain:
             :class:`dropbox.team.TokenGetAuthenticatedAdminError`
         """
         arg = None

@@ -10,7 +10,7 @@ from __future__ import absolute_import, unicode_literals
 
 try:
     from . import stone_validators as bv
-except (SystemError, ValueError):
+except (ImportError, SystemError, ValueError):
     # Catch errors raised when importing a relative module when not in a package.
     # This makes testing this file directly (outside of a package) easier.
     import stone_validators as bv  # type: ignore

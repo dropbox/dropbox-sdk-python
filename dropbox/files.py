@@ -10,7 +10,7 @@ This namespace contains endpoints and data types for basic file operations.
 try:
     from . import stone_validators as bv
     from . import stone_base as bb
-except (SystemError, ValueError):
+except (ImportError, SystemError, ValueError):
     # Catch errors raised when importing a relative module when not in a package.
     # This makes testing this file directly (outside of a package) easier.
     import stone_validators as bv
@@ -23,7 +23,7 @@ try:
         file_properties,
         users_common,
     )
-except (SystemError, ValueError):
+except (ImportError, SystemError, ValueError):
     import async
     import common
     import file_properties
@@ -1855,6 +1855,175 @@ class DownloadError(bb.Union):
         return 'DownloadError(%r, %r)' % (self._tag, self._value)
 
 DownloadError_validator = bv.Union(DownloadError)
+
+class DownloadZipArg(object):
+    """
+    :ivar path: The path of the folder to download.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None):
+        self._path_value = None
+        self._path_present = False
+        if path is not None:
+            self.path = path
+
+    @property
+    def path(self):
+        """
+        The path of the folder to download.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    def __repr__(self):
+        return 'DownloadZipArg(path={!r})'.format(
+            self._path_value,
+        )
+
+DownloadZipArg_validator = bv.Struct(DownloadZipArg)
+
+class DownloadZipError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar too_large: The folder is too large to download.
+    :ivar too_many_files: The folder has too many files to download.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    too_large = None
+    # Attribute is overwritten below the class definition
+    too_many_files = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: DownloadZipError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_too_large(self):
+        """
+        Check if the union tag is ``too_large``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_large'
+
+    def is_too_many_files(self):
+        """
+        Check if the union tag is ``too_many_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_files'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'DownloadZipError(%r, %r)' % (self._tag, self._value)
+
+DownloadZipError_validator = bv.Union(DownloadZipError)
+
+class DownloadZipResult(object):
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        if metadata is not None:
+            self.metadata = metadata
+
+    @property
+    def metadata(self):
+        """
+        :rtype: FolderMetadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    def __repr__(self):
+        return 'DownloadZipResult(metadata={!r})'.format(
+            self._metadata_value,
+        )
+
+DownloadZipResult_validator = bv.Struct(DownloadZipResult)
 
 class FileMetadata(Metadata):
     """
@@ -7761,6 +7930,8 @@ class UploadError(bb.Union):
 
     :ivar UploadWriteFailed path: Unable to save the uploaded contents to a
         file.
+    :ivar InvalidPropertyGroupError properties_error: The supplied property
+        group is invalid.
     """
 
     _catch_all = 'other'
@@ -7778,6 +7949,17 @@ class UploadError(bb.Union):
         """
         return cls('path', val)
 
+    @classmethod
+    def properties_error(cls, val):
+        """
+        Create an instance of this class set to the ``properties_error`` tag
+        with value ``val``.
+
+        :param file_properties.InvalidPropertyGroupError_validator val:
+        :rtype: UploadError
+        """
+        return cls('properties_error', val)
+
     def is_path(self):
         """
         Check if the union tag is ``path``.
@@ -7785,6 +7967,14 @@ class UploadError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'path'
+
+    def is_properties_error(self):
+        """
+        Check if the union tag is ``properties_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'properties_error'
 
     def is_other(self):
         """
@@ -7806,6 +7996,18 @@ class UploadError(bb.Union):
             raise AttributeError("tag 'path' not set")
         return self._value
 
+    def get_properties_error(self):
+        """
+        The supplied property group is invalid.
+
+        Only call this if :meth:`is_properties_error` is true.
+
+        :rtype: file_properties.InvalidPropertyGroupError_validator
+        """
+        if not self.is_properties_error():
+            raise AttributeError("tag 'properties_error' not set")
+        return self._value
+
     def __repr__(self):
         return 'UploadError(%r, %r)' % (self._tag, self._value)
 
@@ -7817,35 +8019,6 @@ class UploadErrorWithProperties(UploadError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
     """
-
-    @classmethod
-    def properties_error(cls, val):
-        """
-        Create an instance of this class set to the ``properties_error`` tag
-        with value ``val``.
-
-        :param file_properties.InvalidPropertyGroupError_validator val:
-        :rtype: UploadErrorWithProperties
-        """
-        return cls('properties_error', val)
-
-    def is_properties_error(self):
-        """
-        Check if the union tag is ``properties_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'properties_error'
-
-    def get_properties_error(self):
-        """
-        Only call this if :meth:`is_properties_error` is true.
-
-        :rtype: file_properties.InvalidPropertyGroupError_validator
-        """
-        if not self.is_properties_error():
-            raise AttributeError("tag 'properties_error' not set")
-        return self._value
 
     def __repr__(self):
         return 'UploadErrorWithProperties(%r, %r)' % (self._tag, self._value)
@@ -9420,6 +9593,29 @@ DownloadError._tagmap = {
 
 DownloadError.other = DownloadError('other')
 
+DownloadZipArg._path_validator = ReadPath_validator
+DownloadZipArg._all_field_names_ = set(['path'])
+DownloadZipArg._all_fields_ = [('path', DownloadZipArg._path_validator)]
+
+DownloadZipError._path_validator = LookupError_validator
+DownloadZipError._too_large_validator = bv.Void()
+DownloadZipError._too_many_files_validator = bv.Void()
+DownloadZipError._other_validator = bv.Void()
+DownloadZipError._tagmap = {
+    'path': DownloadZipError._path_validator,
+    'too_large': DownloadZipError._too_large_validator,
+    'too_many_files': DownloadZipError._too_many_files_validator,
+    'other': DownloadZipError._other_validator,
+}
+
+DownloadZipError.too_large = DownloadZipError('too_large')
+DownloadZipError.too_many_files = DownloadZipError('too_many_files')
+DownloadZipError.other = DownloadZipError('other')
+
+DownloadZipResult._metadata_validator = FolderMetadata_validator
+DownloadZipResult._all_field_names_ = set(['metadata'])
+DownloadZipResult._all_fields_ = [('metadata', DownloadZipResult._metadata_validator)]
+
 FileMetadata._id_validator = Id_validator
 FileMetadata._client_modified_validator = common.DropboxTimestamp_validator
 FileMetadata._server_modified_validator = common.DropboxTimestamp_validator
@@ -10222,17 +10418,17 @@ ThumbnailSize.w640h480 = ThumbnailSize('w640h480')
 ThumbnailSize.w1024h768 = ThumbnailSize('w1024h768')
 
 UploadError._path_validator = UploadWriteFailed_validator
+UploadError._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
 UploadError._other_validator = bv.Void()
 UploadError._tagmap = {
     'path': UploadError._path_validator,
+    'properties_error': UploadError._properties_error_validator,
     'other': UploadError._other_validator,
 }
 
 UploadError.other = UploadError('other')
 
-UploadErrorWithProperties._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
 UploadErrorWithProperties._tagmap = {
-    'properties_error': UploadErrorWithProperties._properties_error_validator,
 }
 UploadErrorWithProperties._tagmap.update(UploadError._tagmap)
 
@@ -10550,6 +10746,15 @@ download = bb.Route(
     {'host': u'content',
      'style': u'download'},
 )
+download_zip = bb.Route(
+    'download_zip',
+    False,
+    DownloadZipArg_validator,
+    DownloadZipResult_validator,
+    DownloadZipError_validator,
+    {'host': u'content',
+     'style': u'download'},
+)
 get_metadata = bb.Route(
     'get_metadata',
     False,
@@ -10855,6 +11060,7 @@ ROUTES = {
     'delete_batch/check': delete_batch_check,
     'delete_v2': delete_v2,
     'download': download,
+    'download_zip': download_zip,
     'get_metadata': get_metadata,
     'get_preview': get_preview,
     'get_temporary_link': get_temporary_link,

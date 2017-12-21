@@ -10,7 +10,7 @@ This namespace contains endpoints and data types for file request operations.
 try:
     from . import stone_validators as bv
     from . import stone_base as bb
-except (SystemError, ValueError):
+except (ImportError, SystemError, ValueError):
     # Catch errors raised when importing a relative module when not in a package.
     # This makes testing this file directly (outside of a package) easier.
     import stone_validators as bv
@@ -21,7 +21,7 @@ try:
         common,
         files,
     )
-except (SystemError, ValueError):
+except (ImportError, SystemError, ValueError):
     import common
     import files
 
@@ -649,7 +649,7 @@ class FileRequestDeadline(object):
     """
     :ivar deadline: The deadline for this file request.
     :ivar allow_late_uploads: If set, allow uploads after the deadline has
-        passed. These uploads will be marked overdue.
+        passed. These     uploads will be marked overdue.
     """
 
     __slots__ = [
@@ -699,8 +699,8 @@ class FileRequestDeadline(object):
     @property
     def allow_late_uploads(self):
         """
-        If set, allow uploads after the deadline has passed. These uploads will
-        be marked overdue.
+        If set, allow uploads after the deadline has passed. These     uploads
+        will be marked overdue.
 
         :rtype: GracePeriod
         """

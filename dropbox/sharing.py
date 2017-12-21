@@ -10,7 +10,7 @@ This namespace contains endpoints and data types for creating and managing share
 try:
     from . import stone_validators as bv
     from . import stone_base as bb
-except (SystemError, ValueError):
+except (ImportError, SystemError, ValueError):
     # Catch errors raised when importing a relative module when not in a package.
     # This makes testing this file directly (outside of a package) easier.
     import stone_validators as bv
@@ -25,7 +25,7 @@ try:
         users,
         users_common,
     )
-except (SystemError, ValueError):
+except (ImportError, SystemError, ValueError):
     import async
     import common
     import files

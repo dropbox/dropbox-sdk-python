@@ -6,7 +6,7 @@
 try:
     from . import stone_validators as bv
     from . import stone_base as bb
-except (SystemError, ValueError):
+except (ImportError, SystemError, ValueError):
     # Catch errors raised when importing a relative module when not in a package.
     # This makes testing this file directly (outside of a package) easier.
     import stone_validators as bv
@@ -196,10 +196,11 @@ class RootInfo(object):
     """
     Information about current user's root.
 
-    :ivar root_namespace_id: The namespace id for user's root namespace. It will
-        be the namespace id of the shared team root if the user is member of a
-        CDM team. Otherwise it will be same as ``RootInfo.home_namespace_id``.
-    :ivar home_namespace_id: The namespace id for user's home namespace.
+    :ivar root_namespace_id: The namespace ID for user's root namespace. It will
+        be the namespace ID of the shared team root if the user is member of a
+        team with a separate team root. Otherwise it will be same as
+        ``RootInfo.home_namespace_id``.
+    :ivar home_namespace_id: The namespace ID for user's home namespace.
     """
 
     __slots__ = [
@@ -226,9 +227,9 @@ class RootInfo(object):
     @property
     def root_namespace_id(self):
         """
-        The namespace id for user's root namespace. It will be the namespace id
-        of the shared team root if the user is member of a CDM team. Otherwise
-        it will be same as ``RootInfo.home_namespace_id``.
+        The namespace ID for user's root namespace. It will be the namespace ID
+        of the shared team root if the user is member of a team with a separate
+        team root. Otherwise it will be same as ``RootInfo.home_namespace_id``.
 
         :rtype: str
         """
@@ -251,7 +252,7 @@ class RootInfo(object):
     @property
     def home_namespace_id(self):
         """
-        The namespace id for user's home namespace.
+        The namespace ID for user's home namespace.
 
         :rtype: str
         """
@@ -281,7 +282,7 @@ RootInfo_validator = bv.StructTree(RootInfo)
 
 class TeamRootInfo(RootInfo):
     """
-    Root info when user is member of a CDM team.
+    Root info when user is member of a team with a separate root namespace ID.
 
     :ivar home_path: The path for user's home directory under the shared team
         root.
@@ -339,7 +340,8 @@ TeamRootInfo_validator = bv.Struct(TeamRootInfo)
 
 class UserRootInfo(RootInfo):
     """
-    Root info when user is not member of a CDM team.
+    Root info when user is not member of a team or the user is a member of a
+    team and the team does not have a separate root namespace.
     """
 
     __slots__ = [
