@@ -493,22 +493,50 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
     token. Methods of this class are meant to act on the team, but there is
     also an :meth:`as_user` method for assuming a team member's identity.
     """
+    def as_admin(self, team_member_id):
+        """
+        Allows a team credential to assume the identity of an administrator on the team
+        and perform operations on any team-owned content.
+
+        :param str team_member_id: team member id of administrator to perform actions with
+        :return: A :class:`Dropbox` object that can be used to query on behalf
+            of this admin of the team.
+        :rtype: Dropbox
+        """
+        return self._get_dropbox_client_with_select_header('Dropbox-API-Select-Admin',
+                                                           team_member_id)
 
     def as_user(self, team_member_id):
         """
         Allows a team credential to assume the identity of a member of the
         team.
 
+        :param str team_member_id: team member id of team member to perform actions with
         :return: A :class:`Dropbox` object that can be used to query on behalf
             of this member of the team.
         :rtype: Dropbox
         """
+        return self._get_dropbox_client_with_select_header('Dropbox-API-Select-User',
+                                                           team_member_id)
+
+    def _get_dropbox_client_with_select_header(self, select_header_name, team_member_id):
+        """
+        Get Dropbox client with modified headers
+
+        :param str select_header_name: Header name used to select users
+        :param str team_member_id: team member id of team member to perform actions with
+        :return: A :class:`Dropbox` object that can be used to query on behalf
+            of a member or admin of the team
+        :rtype: Dropbox
+        """
+
         new_headers = self._headers.copy() if self._headers else {}
-        new_headers['Dropbox-API-Select-User'] = team_member_id
+        new_headers[select_header_name] = team_member_id
         return Dropbox(
             self._oauth2_access_token,
             max_retries_on_error=self._max_retries_on_error,
             max_retries_on_rate_limit=self._max_retries_on_rate_limit,
+            timeout=self._timeout,
             user_agent=self._raw_user_agent,
             session=self._session,
             headers=new_headers,
