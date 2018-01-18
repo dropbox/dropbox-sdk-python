@@ -10123,6 +10123,8 @@ class MembersRemoveError(MembersDeactivateError):
         should be set to False.
     :ivar email_address_too_long_to_be_disabled: The email address of the user
         is too long to be disabled.
+    :ivar cannot_keep_invited_user_account: Cannot keep account of an invited
+        user.
     """
 
     # Attribute is overwritten below the class definition
@@ -10149,6 +10151,8 @@ class MembersRemoveError(MembersDeactivateError):
     cannot_keep_account_and_delete_data = None
     # Attribute is overwritten below the class definition
     email_address_too_long_to_be_disabled = None
+    # Attribute is overwritten below the class definition
+    cannot_keep_invited_user_account = None
 
     def is_remove_last_admin(self):
         """
@@ -10245,6 +10249,14 @@ class MembersRemoveError(MembersDeactivateError):
         :rtype: bool
         """
         return self._tag == 'email_address_too_long_to_be_disabled'
+
+    def is_cannot_keep_invited_user_account(self):
+        """
+        Check if the union tag is ``cannot_keep_invited_user_account``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_keep_invited_user_account'
 
     def __repr__(self):
         return 'MembersRemoveError(%r, %r)' % (self._tag, self._value)
@@ -11291,8 +11303,8 @@ class NamespaceMetadata(object):
     :ivar name: The name of this namespace.
     :ivar namespace_id: The ID of this namespace.
     :ivar namespace_type: The type of this namespace.
-    :ivar team_member_id: If this is a team member folder, the ID of the team
-        member. Otherwise, this field is not present.
+    :ivar team_member_id: If this is a team member or app folder, the ID of the
+        owning team member. Otherwise, this field is not present.
     """
 
     __slots__ = [
@@ -11402,8 +11414,8 @@ class NamespaceMetadata(object):
     @property
     def team_member_id(self):
         """
-        If this is a team member folder, the ID of the team member. Otherwise,
-        this field is not present.
+        If this is a team member or app folder, the ID of the owning team
+        member. Otherwise, this field is not present.
 
         :rtype: str
         """
@@ -16454,6 +16466,7 @@ MembersRemoveError._transfer_admin_is_not_admin_validator = bv.Void()
 MembersRemoveError._cannot_keep_account_and_transfer_validator = bv.Void()
 MembersRemoveError._cannot_keep_account_and_delete_data_validator = bv.Void()
 MembersRemoveError._email_address_too_long_to_be_disabled_validator = bv.Void()
+MembersRemoveError._cannot_keep_invited_user_account_validator = bv.Void()
 MembersRemoveError._tagmap = {
     'remove_last_admin': MembersRemoveError._remove_last_admin_validator,
     'removed_and_transfer_dest_should_differ': MembersRemoveError._removed_and_transfer_dest_should_differ_validator,
@@ -16467,6 +16480,7 @@ MembersRemoveError._tagmap = {
     'cannot_keep_account_and_transfer': MembersRemoveError._cannot_keep_account_and_transfer_validator,
     'cannot_keep_account_and_delete_data': MembersRemoveError._cannot_keep_account_and_delete_data_validator,
     'email_address_too_long_to_be_disabled': MembersRemoveError._email_address_too_long_to_be_disabled_validator,
+    'cannot_keep_invited_user_account': MembersRemoveError._cannot_keep_invited_user_account_validator,
 }
 MembersRemoveError._tagmap.update(MembersDeactivateError._tagmap)
 
@@ -16482,6 +16496,7 @@ MembersRemoveError.transfer_admin_is_not_admin = MembersRemoveError('transfer_ad
 MembersRemoveError.cannot_keep_account_and_transfer = MembersRemoveError('cannot_keep_account_and_transfer')
 MembersRemoveError.cannot_keep_account_and_delete_data = MembersRemoveError('cannot_keep_account_and_delete_data')
 MembersRemoveError.email_address_too_long_to_be_disabled = MembersRemoveError('email_address_too_long_to_be_disabled')
+MembersRemoveError.cannot_keep_invited_user_account = MembersRemoveError('cannot_keep_invited_user_account')
 
 MembersSendWelcomeError._other_validator = bv.Void()
 MembersSendWelcomeError._tagmap = {

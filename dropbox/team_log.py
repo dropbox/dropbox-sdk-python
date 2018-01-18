@@ -16,6 +16,7 @@ try:
     from . import (
         common,
         file_requests,
+        sharing,
         team,
         team_common,
         team_policies,
@@ -24,6 +25,7 @@ try:
 except (ImportError, SystemError, ValueError):
     import common
     import file_requests
+    import sharing
     import team
     import team_common
     import team_policies
@@ -620,6 +622,101 @@ class AccountCaptureMigrateAccountType(object):
 
 AccountCaptureMigrateAccountType_validator = bv.Struct(AccountCaptureMigrateAccountType)
 
+class AccountCaptureNotificationEmailsSentDetails(object):
+    """
+    Proactive account capture email sent to all unmanaged members.
+
+    :ivar domain_name: Domain name.
+    """
+
+    __slots__ = [
+        '_domain_name_value',
+        '_domain_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 domain_name=None):
+        self._domain_name_value = None
+        self._domain_name_present = False
+        if domain_name is not None:
+            self.domain_name = domain_name
+
+    @property
+    def domain_name(self):
+        """
+        Domain name.
+
+        :rtype: str
+        """
+        if self._domain_name_present:
+            return self._domain_name_value
+        else:
+            raise AttributeError("missing required field 'domain_name'")
+
+    @domain_name.setter
+    def domain_name(self, val):
+        val = self._domain_name_validator.validate(val)
+        self._domain_name_value = val
+        self._domain_name_present = True
+
+    @domain_name.deleter
+    def domain_name(self):
+        self._domain_name_value = None
+        self._domain_name_present = False
+
+    def __repr__(self):
+        return 'AccountCaptureNotificationEmailsSentDetails(domain_name={!r})'.format(
+            self._domain_name_value,
+        )
+
+AccountCaptureNotificationEmailsSentDetails_validator = bv.Struct(AccountCaptureNotificationEmailsSentDetails)
+
+class AccountCaptureNotificationEmailsSentType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'AccountCaptureNotificationEmailsSentType(description={!r})'.format(
+            self._description_value,
+        )
+
+AccountCaptureNotificationEmailsSentType_validator = bv.Struct(AccountCaptureNotificationEmailsSentType)
+
 class AccountCapturePolicy(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -769,6 +866,100 @@ class AccountCaptureRelinquishAccountType(object):
         )
 
 AccountCaptureRelinquishAccountType_validator = bv.Struct(AccountCaptureRelinquishAccountType)
+
+class ActionDetails(bb.Union):
+    """
+    Additional information indicating the action taken that caused status
+    change.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar JoinTeamDetails team_join_details: Additional information relevant
+        when a new member joins the team.
+    :ivar MemberRemoveActionType remove_action: Define how the user was removed
+        from the team.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def team_join_details(cls, val):
+        """
+        Create an instance of this class set to the ``team_join_details`` tag
+        with value ``val``.
+
+        :param JoinTeamDetails val:
+        :rtype: ActionDetails
+        """
+        return cls('team_join_details', val)
+
+    @classmethod
+    def remove_action(cls, val):
+        """
+        Create an instance of this class set to the ``remove_action`` tag with
+        value ``val``.
+
+        :param MemberRemoveActionType val:
+        :rtype: ActionDetails
+        """
+        return cls('remove_action', val)
+
+    def is_team_join_details(self):
+        """
+        Check if the union tag is ``team_join_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_join_details'
+
+    def is_remove_action(self):
+        """
+        Check if the union tag is ``remove_action``.
+
+        :rtype: bool
+        """
+        return self._tag == 'remove_action'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_team_join_details(self):
+        """
+        Additional information relevant when a new member joins the team.
+
+        Only call this if :meth:`is_team_join_details` is true.
+
+        :rtype: JoinTeamDetails
+        """
+        if not self.is_team_join_details():
+            raise AttributeError("tag 'team_join_details' not set")
+        return self._value
+
+    def get_remove_action(self):
+        """
+        Define how the user was removed from the team.
+
+        Only call this if :meth:`is_remove_action` is true.
+
+        :rtype: MemberRemoveActionType
+        """
+        if not self.is_remove_action():
+            raise AttributeError("tag 'remove_action' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'ActionDetails(%r, %r)' % (self._tag, self._value)
+
+ActionDetails_validator = bv.Union(ActionDetails)
 
 class ActorLogInfo(bb.Union):
     """
@@ -2162,50 +2353,6 @@ class CollectionShareType(object):
 
 CollectionShareType_validator = bv.Struct(CollectionShareType)
 
-class Confidentiality(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    confidential = None
-    # Attribute is overwritten below the class definition
-    non_confidential = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_confidential(self):
-        """
-        Check if the union tag is ``confidential``.
-
-        :rtype: bool
-        """
-        return self._tag == 'confidential'
-
-    def is_non_confidential(self):
-        """
-        Check if the union tag is ``non_confidential``.
-
-        :rtype: bool
-        """
-        return self._tag == 'non_confidential'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'Confidentiality(%r, %r)' % (self._tag, self._value)
-
-Confidentiality_validator = bv.Union(Confidentiality)
-
 class ContentPermanentDeletePolicy(bb.Union):
     """
     Policy for pemanent content deletion
@@ -2653,6 +2800,368 @@ class DataPlacementRestrictionSatisfyPolicyType(object):
         )
 
 DataPlacementRestrictionSatisfyPolicyType_validator = bv.Struct(DataPlacementRestrictionSatisfyPolicyType)
+
+class DeviceSessionLogInfo(object):
+    """
+    Device's session logged information.
+
+    :ivar session_id: Session unique id. Might be missing due to historical data
+        gap.
+    :ivar ip_address: The IP address of the last activity from this session.
+        Might be missing due to historical data gap.
+    :ivar created: The time this session was created. Might be missing due to
+        historical data gap.
+    :ivar updated: The time of the last activity from this session. Might be
+        missing due to historical data gap.
+    """
+
+    __slots__ = [
+        '_session_id_value',
+        '_session_id_present',
+        '_ip_address_value',
+        '_ip_address_present',
+        '_created_value',
+        '_created_present',
+        '_updated_value',
+        '_updated_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 session_id=None,
+                 ip_address=None,
+                 created=None,
+                 updated=None):
+        self._session_id_value = None
+        self._session_id_present = False
+        self._ip_address_value = None
+        self._ip_address_present = False
+        self._created_value = None
+        self._created_present = False
+        self._updated_value = None
+        self._updated_present = False
+        if session_id is not None:
+            self.session_id = session_id
+        if ip_address is not None:
+            self.ip_address = ip_address
+        if created is not None:
+            self.created = created
+        if updated is not None:
+            self.updated = updated
+
+    @property
+    def session_id(self):
+        """
+        Session unique id. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._session_id_present:
+            return self._session_id_value
+        else:
+            return None
+
+    @session_id.setter
+    def session_id(self, val):
+        if val is None:
+            del self.session_id
+            return
+        val = self._session_id_validator.validate(val)
+        self._session_id_value = val
+        self._session_id_present = True
+
+    @session_id.deleter
+    def session_id(self):
+        self._session_id_value = None
+        self._session_id_present = False
+
+    @property
+    def ip_address(self):
+        """
+        The IP address of the last activity from this session. Might be missing
+        due to historical data gap.
+
+        :rtype: str
+        """
+        if self._ip_address_present:
+            return self._ip_address_value
+        else:
+            return None
+
+    @ip_address.setter
+    def ip_address(self, val):
+        if val is None:
+            del self.ip_address
+            return
+        val = self._ip_address_validator.validate(val)
+        self._ip_address_value = val
+        self._ip_address_present = True
+
+    @ip_address.deleter
+    def ip_address(self):
+        self._ip_address_value = None
+        self._ip_address_present = False
+
+    @property
+    def created(self):
+        """
+        The time this session was created. Might be missing due to historical
+        data gap.
+
+        :rtype: datetime.datetime
+        """
+        if self._created_present:
+            return self._created_value
+        else:
+            return None
+
+    @created.setter
+    def created(self, val):
+        if val is None:
+            del self.created
+            return
+        val = self._created_validator.validate(val)
+        self._created_value = val
+        self._created_present = True
+
+    @created.deleter
+    def created(self):
+        self._created_value = None
+        self._created_present = False
+
+    @property
+    def updated(self):
+        """
+        The time of the last activity from this session. Might be missing due to
+        historical data gap.
+
+        :rtype: datetime.datetime
+        """
+        if self._updated_present:
+            return self._updated_value
+        else:
+            return None
+
+    @updated.setter
+    def updated(self, val):
+        if val is None:
+            del self.updated
+            return
+        val = self._updated_validator.validate(val)
+        self._updated_value = val
+        self._updated_present = True
+
+    @updated.deleter
+    def updated(self):
+        self._updated_value = None
+        self._updated_present = False
+
+    def __repr__(self):
+        return 'DeviceSessionLogInfo(session_id={!r}, ip_address={!r}, created={!r}, updated={!r})'.format(
+            self._session_id_value,
+            self._ip_address_value,
+            self._created_value,
+            self._updated_value,
+        )
+
+DeviceSessionLogInfo_validator = bv.StructTree(DeviceSessionLogInfo)
+
+class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
+    """
+    Information about linked Dropbox desktop client sessions
+
+    :ivar host_name: Name of the hosting desktop.
+    :ivar client_type: The Dropbox desktop client type.
+    :ivar client_version: The Dropbox client version.
+    :ivar platform: Information on the hosting platform.
+    :ivar is_delete_on_unlink_supported: Whether itu2019s possible to delete all
+        of the account files upon unlinking.
+    """
+
+    __slots__ = [
+        '_host_name_value',
+        '_host_name_present',
+        '_client_type_value',
+        '_client_type_present',
+        '_client_version_value',
+        '_client_version_present',
+        '_platform_value',
+        '_platform_present',
+        '_is_delete_on_unlink_supported_value',
+        '_is_delete_on_unlink_supported_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 host_name=None,
+                 client_type=None,
+                 platform=None,
+                 is_delete_on_unlink_supported=None,
+                 session_id=None,
+                 ip_address=None,
+                 created=None,
+                 updated=None,
+                 client_version=None):
+        super(DesktopDeviceSessionLogInfo, self).__init__(session_id,
+                                                          ip_address,
+                                                          created,
+                                                          updated)
+        self._host_name_value = None
+        self._host_name_present = False
+        self._client_type_value = None
+        self._client_type_present = False
+        self._client_version_value = None
+        self._client_version_present = False
+        self._platform_value = None
+        self._platform_present = False
+        self._is_delete_on_unlink_supported_value = None
+        self._is_delete_on_unlink_supported_present = False
+        if host_name is not None:
+            self.host_name = host_name
+        if client_type is not None:
+            self.client_type = client_type
+        if client_version is not None:
+            self.client_version = client_version
+        if platform is not None:
+            self.platform = platform
+        if is_delete_on_unlink_supported is not None:
+            self.is_delete_on_unlink_supported = is_delete_on_unlink_supported
+
+    @property
+    def host_name(self):
+        """
+        Name of the hosting desktop.
+
+        :rtype: str
+        """
+        if self._host_name_present:
+            return self._host_name_value
+        else:
+            raise AttributeError("missing required field 'host_name'")
+
+    @host_name.setter
+    def host_name(self, val):
+        val = self._host_name_validator.validate(val)
+        self._host_name_value = val
+        self._host_name_present = True
+
+    @host_name.deleter
+    def host_name(self):
+        self._host_name_value = None
+        self._host_name_present = False
+
+    @property
+    def client_type(self):
+        """
+        The Dropbox desktop client type.
+
+        :rtype: team.DesktopPlatform_validator
+        """
+        if self._client_type_present:
+            return self._client_type_value
+        else:
+            raise AttributeError("missing required field 'client_type'")
+
+    @client_type.setter
+    def client_type(self, val):
+        self._client_type_validator.validate_type_only(val)
+        self._client_type_value = val
+        self._client_type_present = True
+
+    @client_type.deleter
+    def client_type(self):
+        self._client_type_value = None
+        self._client_type_present = False
+
+    @property
+    def client_version(self):
+        """
+        The Dropbox client version.
+
+        :rtype: str
+        """
+        if self._client_version_present:
+            return self._client_version_value
+        else:
+            return None
+
+    @client_version.setter
+    def client_version(self, val):
+        if val is None:
+            del self.client_version
+            return
+        val = self._client_version_validator.validate(val)
+        self._client_version_value = val
+        self._client_version_present = True
+
+    @client_version.deleter
+    def client_version(self):
+        self._client_version_value = None
+        self._client_version_present = False
+
+    @property
+    def platform(self):
+        """
+        Information on the hosting platform.
+
+        :rtype: str
+        """
+        if self._platform_present:
+            return self._platform_value
+        else:
+            raise AttributeError("missing required field 'platform'")
+
+    @platform.setter
+    def platform(self, val):
+        val = self._platform_validator.validate(val)
+        self._platform_value = val
+        self._platform_present = True
+
+    @platform.deleter
+    def platform(self):
+        self._platform_value = None
+        self._platform_present = False
+
+    @property
+    def is_delete_on_unlink_supported(self):
+        """
+        Whether itu2019s possible to delete all of the account files upon
+        unlinking.
+
+        :rtype: bool
+        """
+        if self._is_delete_on_unlink_supported_present:
+            return self._is_delete_on_unlink_supported_value
+        else:
+            raise AttributeError("missing required field 'is_delete_on_unlink_supported'")
+
+    @is_delete_on_unlink_supported.setter
+    def is_delete_on_unlink_supported(self, val):
+        val = self._is_delete_on_unlink_supported_validator.validate(val)
+        self._is_delete_on_unlink_supported_value = val
+        self._is_delete_on_unlink_supported_present = True
+
+    @is_delete_on_unlink_supported.deleter
+    def is_delete_on_unlink_supported(self):
+        self._is_delete_on_unlink_supported_value = None
+        self._is_delete_on_unlink_supported_present = False
+
+    def __repr__(self):
+        return 'DesktopDeviceSessionLogInfo(host_name={!r}, client_type={!r}, platform={!r}, is_delete_on_unlink_supported={!r}, session_id={!r}, ip_address={!r}, created={!r}, updated={!r}, client_version={!r})'.format(
+            self._host_name_value,
+            self._client_type_value,
+            self._platform_value,
+            self._is_delete_on_unlink_supported_value,
+            self._session_id_value,
+            self._ip_address_value,
+            self._created_value,
+            self._updated_value,
+            self._client_version_value,
+        )
+
+DesktopDeviceSessionLogInfo_validator = bv.Struct(DesktopDeviceSessionLogInfo)
 
 class SessionLogInfo(object):
     """
@@ -3327,49 +3836,49 @@ class DeviceChangeIpDesktopDetails(object):
     """
     IP address associated with active desktop session changed.
 
-    :ivar device_info: Device information.
+    :ivar device_session_info: Device's session logged information.
     """
 
     __slots__ = [
-        '_device_info_value',
-        '_device_info_present',
+        '_device_session_info_value',
+        '_device_session_info_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 device_info=None):
-        self._device_info_value = None
-        self._device_info_present = False
-        if device_info is not None:
-            self.device_info = device_info
+                 device_session_info=None):
+        self._device_session_info_value = None
+        self._device_session_info_present = False
+        if device_session_info is not None:
+            self.device_session_info = device_session_info
 
     @property
-    def device_info(self):
+    def device_session_info(self):
         """
-        Device information.
+        Device's session logged information.
 
-        :rtype: DeviceLogInfo
+        :rtype: DeviceSessionLogInfo
         """
-        if self._device_info_present:
-            return self._device_info_value
+        if self._device_session_info_present:
+            return self._device_session_info_value
         else:
-            raise AttributeError("missing required field 'device_info'")
+            raise AttributeError("missing required field 'device_session_info'")
 
-    @device_info.setter
-    def device_info(self, val):
-        self._device_info_validator.validate_type_only(val)
-        self._device_info_value = val
-        self._device_info_present = True
+    @device_session_info.setter
+    def device_session_info(self, val):
+        self._device_session_info_validator.validate_type_only(val)
+        self._device_session_info_value = val
+        self._device_session_info_present = True
 
-    @device_info.deleter
-    def device_info(self):
-        self._device_info_value = None
-        self._device_info_present = False
+    @device_session_info.deleter
+    def device_session_info(self):
+        self._device_session_info_value = None
+        self._device_session_info_present = False
 
     def __repr__(self):
-        return 'DeviceChangeIpDesktopDetails(device_info={!r})'.format(
-            self._device_info_value,
+        return 'DeviceChangeIpDesktopDetails(device_session_info={!r})'.format(
+            self._device_session_info_value,
         )
 
 DeviceChangeIpDesktopDetails_validator = bv.Struct(DeviceChangeIpDesktopDetails)
@@ -3422,49 +3931,49 @@ class DeviceChangeIpMobileDetails(object):
     """
     IP address associated with active mobile session changed.
 
-    :ivar device_info: Device information.
+    :ivar device_session_info: Device's session logged information.
     """
 
     __slots__ = [
-        '_device_info_value',
-        '_device_info_present',
+        '_device_session_info_value',
+        '_device_session_info_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 device_info=None):
-        self._device_info_value = None
-        self._device_info_present = False
-        if device_info is not None:
-            self.device_info = device_info
+                 device_session_info=None):
+        self._device_session_info_value = None
+        self._device_session_info_present = False
+        if device_session_info is not None:
+            self.device_session_info = device_session_info
 
     @property
-    def device_info(self):
+    def device_session_info(self):
         """
-        Device information.
+        Device's session logged information.
 
-        :rtype: DeviceLogInfo
+        :rtype: DeviceSessionLogInfo
         """
-        if self._device_info_present:
-            return self._device_info_value
+        if self._device_session_info_present:
+            return self._device_session_info_value
         else:
-            raise AttributeError("missing required field 'device_info'")
+            raise AttributeError("missing required field 'device_session_info'")
 
-    @device_info.setter
-    def device_info(self, val):
-        self._device_info_validator.validate_type_only(val)
-        self._device_info_value = val
-        self._device_info_present = True
+    @device_session_info.setter
+    def device_session_info(self, val):
+        self._device_session_info_validator.validate_type_only(val)
+        self._device_session_info_value = val
+        self._device_session_info_present = True
 
-    @device_info.deleter
-    def device_info(self):
-        self._device_info_value = None
-        self._device_info_present = False
+    @device_session_info.deleter
+    def device_session_info(self):
+        self._device_session_info_value = None
+        self._device_session_info_present = False
 
     def __repr__(self):
-        return 'DeviceChangeIpMobileDetails(device_info={!r})'.format(
-            self._device_info_value,
+        return 'DeviceChangeIpMobileDetails(device_session_info={!r})'.format(
+            self._device_session_info_value,
         )
 
 DeviceChangeIpMobileDetails_validator = bv.Struct(DeviceChangeIpMobileDetails)
@@ -3517,14 +4026,14 @@ class DeviceChangeIpWebDetails(object):
     """
     IP address associated with active Web session changed.
 
-    :ivar device_info: Device information. Might be missing due to historical
-        data gap.
+    :ivar device_session_info: Device's session logged information. Might be
+        missing due to historical data gap.
     :ivar user_agent: Web browser name.
     """
 
     __slots__ = [
-        '_device_info_value',
-        '_device_info_present',
+        '_device_session_info_value',
+        '_device_session_info_present',
         '_user_agent_value',
         '_user_agent_present',
     ]
@@ -3533,41 +4042,42 @@ class DeviceChangeIpWebDetails(object):
 
     def __init__(self,
                  user_agent=None,
-                 device_info=None):
-        self._device_info_value = None
-        self._device_info_present = False
+                 device_session_info=None):
+        self._device_session_info_value = None
+        self._device_session_info_present = False
         self._user_agent_value = None
         self._user_agent_present = False
-        if device_info is not None:
-            self.device_info = device_info
+        if device_session_info is not None:
+            self.device_session_info = device_session_info
         if user_agent is not None:
             self.user_agent = user_agent
 
     @property
-    def device_info(self):
+    def device_session_info(self):
         """
-        Device information. Might be missing due to historical data gap.
+        Device's session logged information. Might be missing due to historical
+        data gap.
 
-        :rtype: DeviceLogInfo
+        :rtype: DeviceSessionLogInfo
         """
-        if self._device_info_present:
-            return self._device_info_value
+        if self._device_session_info_present:
+            return self._device_session_info_value
         else:
             return None
 
-    @device_info.setter
-    def device_info(self, val):
+    @device_session_info.setter
+    def device_session_info(self, val):
         if val is None:
-            del self.device_info
+            del self.device_session_info
             return
-        self._device_info_validator.validate_type_only(val)
-        self._device_info_value = val
-        self._device_info_present = True
+        self._device_session_info_validator.validate_type_only(val)
+        self._device_session_info_value = val
+        self._device_session_info_present = True
 
-    @device_info.deleter
-    def device_info(self):
-        self._device_info_value = None
-        self._device_info_present = False
+    @device_session_info.deleter
+    def device_session_info(self):
+        self._device_session_info_value = None
+        self._device_session_info_present = False
 
     @property
     def user_agent(self):
@@ -3593,9 +4103,9 @@ class DeviceChangeIpWebDetails(object):
         self._user_agent_present = False
 
     def __repr__(self):
-        return 'DeviceChangeIpWebDetails(user_agent={!r}, device_info={!r})'.format(
+        return 'DeviceChangeIpWebDetails(user_agent={!r}, device_session_info={!r})'.format(
             self._user_agent_value,
-            self._device_info_value,
+            self._device_session_info_value,
         )
 
 DeviceChangeIpWebDetails_validator = bv.Struct(DeviceChangeIpWebDetails)
@@ -3648,13 +4158,18 @@ class DeviceDeleteOnUnlinkFailDetails(object):
     """
     Failed to delete all files from an unlinked device.
 
-    :ivar device_info: Device information.
+    :ivar session_id: Session unique id. Might be missing due to historical data
+        gap.
+    :ivar display_name: The device name. Might be missing due to historical data
+        gap.
     :ivar num_failures: The number of times that remote file deletion failed.
     """
 
     __slots__ = [
-        '_device_info_value',
-        '_device_info_present',
+        '_session_id_value',
+        '_session_id_present',
+        '_display_name_value',
+        '_display_name_present',
         '_num_failures_value',
         '_num_failures_present',
     ]
@@ -3662,39 +4177,73 @@ class DeviceDeleteOnUnlinkFailDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 device_info=None,
-                 num_failures=None):
-        self._device_info_value = None
-        self._device_info_present = False
+                 num_failures=None,
+                 session_id=None,
+                 display_name=None):
+        self._session_id_value = None
+        self._session_id_present = False
+        self._display_name_value = None
+        self._display_name_present = False
         self._num_failures_value = None
         self._num_failures_present = False
-        if device_info is not None:
-            self.device_info = device_info
+        if session_id is not None:
+            self.session_id = session_id
+        if display_name is not None:
+            self.display_name = display_name
         if num_failures is not None:
             self.num_failures = num_failures
 
     @property
-    def device_info(self):
+    def session_id(self):
         """
-        Device information.
+        Session unique id. Might be missing due to historical data gap.
 
-        :rtype: DeviceLogInfo
+        :rtype: str
         """
-        if self._device_info_present:
-            return self._device_info_value
+        if self._session_id_present:
+            return self._session_id_value
         else:
-            raise AttributeError("missing required field 'device_info'")
+            return None
 
-    @device_info.setter
-    def device_info(self, val):
-        self._device_info_validator.validate_type_only(val)
-        self._device_info_value = val
-        self._device_info_present = True
+    @session_id.setter
+    def session_id(self, val):
+        if val is None:
+            del self.session_id
+            return
+        val = self._session_id_validator.validate(val)
+        self._session_id_value = val
+        self._session_id_present = True
 
-    @device_info.deleter
-    def device_info(self):
-        self._device_info_value = None
-        self._device_info_present = False
+    @session_id.deleter
+    def session_id(self):
+        self._session_id_value = None
+        self._session_id_present = False
+
+    @property
+    def display_name(self):
+        """
+        The device name. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._display_name_present:
+            return self._display_name_value
+        else:
+            return None
+
+    @display_name.setter
+    def display_name(self, val):
+        if val is None:
+            del self.display_name
+            return
+        val = self._display_name_validator.validate(val)
+        self._display_name_value = val
+        self._display_name_present = True
+
+    @display_name.deleter
+    def display_name(self):
+        self._display_name_value = None
+        self._display_name_present = False
 
     @property
     def num_failures(self):
@@ -3720,9 +4269,10 @@ class DeviceDeleteOnUnlinkFailDetails(object):
         self._num_failures_present = False
 
     def __repr__(self):
-        return 'DeviceDeleteOnUnlinkFailDetails(device_info={!r}, num_failures={!r})'.format(
-            self._device_info_value,
+        return 'DeviceDeleteOnUnlinkFailDetails(num_failures={!r}, session_id={!r}, display_name={!r})'.format(
             self._num_failures_value,
+            self._session_id_value,
+            self._display_name_value,
         )
 
 DeviceDeleteOnUnlinkFailDetails_validator = bv.Struct(DeviceDeleteOnUnlinkFailDetails)
@@ -3775,49 +4325,89 @@ class DeviceDeleteOnUnlinkSuccessDetails(object):
     """
     Deleted all files from an unlinked device.
 
-    :ivar device_info: Device information.
+    :ivar session_id: Session unique id. Might be missing due to historical data
+        gap.
+    :ivar display_name: The device name. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
-        '_device_info_value',
-        '_device_info_present',
+        '_session_id_value',
+        '_session_id_present',
+        '_display_name_value',
+        '_display_name_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 device_info=None):
-        self._device_info_value = None
-        self._device_info_present = False
-        if device_info is not None:
-            self.device_info = device_info
+                 session_id=None,
+                 display_name=None):
+        self._session_id_value = None
+        self._session_id_present = False
+        self._display_name_value = None
+        self._display_name_present = False
+        if session_id is not None:
+            self.session_id = session_id
+        if display_name is not None:
+            self.display_name = display_name
 
     @property
-    def device_info(self):
+    def session_id(self):
         """
-        Device information.
+        Session unique id. Might be missing due to historical data gap.
 
-        :rtype: DeviceLogInfo
+        :rtype: str
         """
-        if self._device_info_present:
-            return self._device_info_value
+        if self._session_id_present:
+            return self._session_id_value
         else:
-            raise AttributeError("missing required field 'device_info'")
+            return None
 
-    @device_info.setter
-    def device_info(self, val):
-        self._device_info_validator.validate_type_only(val)
-        self._device_info_value = val
-        self._device_info_present = True
+    @session_id.setter
+    def session_id(self, val):
+        if val is None:
+            del self.session_id
+            return
+        val = self._session_id_validator.validate(val)
+        self._session_id_value = val
+        self._session_id_present = True
 
-    @device_info.deleter
-    def device_info(self):
-        self._device_info_value = None
-        self._device_info_present = False
+    @session_id.deleter
+    def session_id(self):
+        self._session_id_value = None
+        self._session_id_present = False
+
+    @property
+    def display_name(self):
+        """
+        The device name. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._display_name_present:
+            return self._display_name_value
+        else:
+            return None
+
+    @display_name.setter
+    def display_name(self, val):
+        if val is None:
+            del self.display_name
+            return
+        val = self._display_name_validator.validate(val)
+        self._display_name_value = val
+        self._display_name_present = True
+
+    @display_name.deleter
+    def display_name(self):
+        self._display_name_value = None
+        self._display_name_present = False
 
     def __repr__(self):
-        return 'DeviceDeleteOnUnlinkSuccessDetails(device_info={!r})'.format(
-            self._device_info_value,
+        return 'DeviceDeleteOnUnlinkSuccessDetails(session_id={!r}, display_name={!r})'.format(
+            self._session_id_value,
+            self._display_name_value,
         )
 
 DeviceDeleteOnUnlinkSuccessDetails_validator = bv.Struct(DeviceDeleteOnUnlinkSuccessDetails)
@@ -3870,15 +4460,14 @@ class DeviceLinkFailDetails(object):
     """
     Failed to link a device.
 
-    :ivar device_info: Device information. Might be missing due to historical
-        data gap.
+    :ivar ip_address: IP address. Might be missing due to historical data gap.
     :ivar device_type: A description of the device used while user approval
         blocked.
     """
 
     __slots__ = [
-        '_device_info_value',
-        '_device_info_present',
+        '_ip_address_value',
+        '_ip_address_present',
         '_device_type_value',
         '_device_type_present',
     ]
@@ -3887,41 +4476,41 @@ class DeviceLinkFailDetails(object):
 
     def __init__(self,
                  device_type=None,
-                 device_info=None):
-        self._device_info_value = None
-        self._device_info_present = False
+                 ip_address=None):
+        self._ip_address_value = None
+        self._ip_address_present = False
         self._device_type_value = None
         self._device_type_present = False
-        if device_info is not None:
-            self.device_info = device_info
+        if ip_address is not None:
+            self.ip_address = ip_address
         if device_type is not None:
             self.device_type = device_type
 
     @property
-    def device_info(self):
+    def ip_address(self):
         """
-        Device information. Might be missing due to historical data gap.
+        IP address. Might be missing due to historical data gap.
 
-        :rtype: DeviceLogInfo
+        :rtype: str
         """
-        if self._device_info_present:
-            return self._device_info_value
+        if self._ip_address_present:
+            return self._ip_address_value
         else:
             return None
 
-    @device_info.setter
-    def device_info(self, val):
+    @ip_address.setter
+    def ip_address(self, val):
         if val is None:
-            del self.device_info
+            del self.ip_address
             return
-        self._device_info_validator.validate_type_only(val)
-        self._device_info_value = val
-        self._device_info_present = True
+        val = self._ip_address_validator.validate(val)
+        self._ip_address_value = val
+        self._ip_address_present = True
 
-    @device_info.deleter
-    def device_info(self):
-        self._device_info_value = None
-        self._device_info_present = False
+    @ip_address.deleter
+    def ip_address(self):
+        self._ip_address_value = None
+        self._ip_address_present = False
 
     @property
     def device_type(self):
@@ -3947,9 +4536,9 @@ class DeviceLinkFailDetails(object):
         self._device_type_present = False
 
     def __repr__(self):
-        return 'DeviceLinkFailDetails(device_type={!r}, device_info={!r})'.format(
+        return 'DeviceLinkFailDetails(device_type={!r}, ip_address={!r})'.format(
             self._device_type_value,
-            self._device_info_value,
+            self._ip_address_value,
         )
 
 DeviceLinkFailDetails_validator = bv.Struct(DeviceLinkFailDetails)
@@ -4002,49 +4591,49 @@ class DeviceLinkSuccessDetails(object):
     """
     Linked a device.
 
-    :ivar device_info: Device information.
+    :ivar device_session_info: Device's session logged information.
     """
 
     __slots__ = [
-        '_device_info_value',
-        '_device_info_present',
+        '_device_session_info_value',
+        '_device_session_info_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 device_info=None):
-        self._device_info_value = None
-        self._device_info_present = False
-        if device_info is not None:
-            self.device_info = device_info
+                 device_session_info=None):
+        self._device_session_info_value = None
+        self._device_session_info_present = False
+        if device_session_info is not None:
+            self.device_session_info = device_session_info
 
     @property
-    def device_info(self):
+    def device_session_info(self):
         """
-        Device information.
+        Device's session logged information.
 
-        :rtype: DeviceLogInfo
+        :rtype: DeviceSessionLogInfo
         """
-        if self._device_info_present:
-            return self._device_info_value
+        if self._device_session_info_present:
+            return self._device_session_info_value
         else:
-            raise AttributeError("missing required field 'device_info'")
+            raise AttributeError("missing required field 'device_session_info'")
 
-    @device_info.setter
-    def device_info(self, val):
-        self._device_info_validator.validate_type_only(val)
-        self._device_info_value = val
-        self._device_info_present = True
+    @device_session_info.setter
+    def device_session_info(self, val):
+        self._device_session_info_validator.validate_type_only(val)
+        self._device_session_info_value = val
+        self._device_session_info_present = True
 
-    @device_info.deleter
-    def device_info(self):
-        self._device_info_value = None
-        self._device_info_present = False
+    @device_session_info.deleter
+    def device_session_info(self):
+        self._device_session_info_value = None
+        self._device_session_info_present = False
 
     def __repr__(self):
-        return 'DeviceLinkSuccessDetails(device_info={!r})'.format(
-            self._device_info_value,
+        return 'DeviceLinkSuccessDetails(device_session_info={!r})'.format(
+            self._device_session_info_value,
         )
 
 DeviceLinkSuccessDetails_validator = bv.Struct(DeviceLinkSuccessDetails)
@@ -4092,384 +4681,6 @@ class DeviceLinkSuccessType(object):
         )
 
 DeviceLinkSuccessType_validator = bv.Struct(DeviceLinkSuccessType)
-
-class DeviceLogInfo(object):
-    """
-    Device's logged information.
-
-    :ivar device_id: Device unique id. Might be missing due to historical data
-        gap.
-    :ivar display_name: Device display name. Might be missing due to historical
-        data gap.
-    :ivar is_emm_managed: True if this device is emm managed, false otherwise.
-        Might be missing due to historical data gap.
-    :ivar platform: Device platform name. Might be missing due to historical
-        data gap.
-    :ivar mac_address: Device mac address. Might be missing due to historical
-        data gap.
-    :ivar os_version: Device OS version. Might be missing due to historical data
-        gap.
-    :ivar device_type: Device type. Might be missing due to historical data gap.
-    :ivar ip_address: IP address. Might be missing due to historical data gap.
-    :ivar last_activity: Last activity. Might be missing due to historical data
-        gap.
-    :ivar app_version: Linking app version. Might be missing due to historical
-        data gap.
-    """
-
-    __slots__ = [
-        '_device_id_value',
-        '_device_id_present',
-        '_display_name_value',
-        '_display_name_present',
-        '_is_emm_managed_value',
-        '_is_emm_managed_present',
-        '_platform_value',
-        '_platform_present',
-        '_mac_address_value',
-        '_mac_address_present',
-        '_os_version_value',
-        '_os_version_present',
-        '_device_type_value',
-        '_device_type_present',
-        '_ip_address_value',
-        '_ip_address_present',
-        '_last_activity_value',
-        '_last_activity_present',
-        '_app_version_value',
-        '_app_version_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 device_id=None,
-                 display_name=None,
-                 is_emm_managed=None,
-                 platform=None,
-                 mac_address=None,
-                 os_version=None,
-                 device_type=None,
-                 ip_address=None,
-                 last_activity=None,
-                 app_version=None):
-        self._device_id_value = None
-        self._device_id_present = False
-        self._display_name_value = None
-        self._display_name_present = False
-        self._is_emm_managed_value = None
-        self._is_emm_managed_present = False
-        self._platform_value = None
-        self._platform_present = False
-        self._mac_address_value = None
-        self._mac_address_present = False
-        self._os_version_value = None
-        self._os_version_present = False
-        self._device_type_value = None
-        self._device_type_present = False
-        self._ip_address_value = None
-        self._ip_address_present = False
-        self._last_activity_value = None
-        self._last_activity_present = False
-        self._app_version_value = None
-        self._app_version_present = False
-        if device_id is not None:
-            self.device_id = device_id
-        if display_name is not None:
-            self.display_name = display_name
-        if is_emm_managed is not None:
-            self.is_emm_managed = is_emm_managed
-        if platform is not None:
-            self.platform = platform
-        if mac_address is not None:
-            self.mac_address = mac_address
-        if os_version is not None:
-            self.os_version = os_version
-        if device_type is not None:
-            self.device_type = device_type
-        if ip_address is not None:
-            self.ip_address = ip_address
-        if last_activity is not None:
-            self.last_activity = last_activity
-        if app_version is not None:
-            self.app_version = app_version
-
-    @property
-    def device_id(self):
-        """
-        Device unique id. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._device_id_present:
-            return self._device_id_value
-        else:
-            return None
-
-    @device_id.setter
-    def device_id(self, val):
-        if val is None:
-            del self.device_id
-            return
-        val = self._device_id_validator.validate(val)
-        self._device_id_value = val
-        self._device_id_present = True
-
-    @device_id.deleter
-    def device_id(self):
-        self._device_id_value = None
-        self._device_id_present = False
-
-    @property
-    def display_name(self):
-        """
-        Device display name. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._display_name_present:
-            return self._display_name_value
-        else:
-            return None
-
-    @display_name.setter
-    def display_name(self, val):
-        if val is None:
-            del self.display_name
-            return
-        val = self._display_name_validator.validate(val)
-        self._display_name_value = val
-        self._display_name_present = True
-
-    @display_name.deleter
-    def display_name(self):
-        self._display_name_value = None
-        self._display_name_present = False
-
-    @property
-    def is_emm_managed(self):
-        """
-        True if this device is emm managed, false otherwise. Might be missing
-        due to historical data gap.
-
-        :rtype: bool
-        """
-        if self._is_emm_managed_present:
-            return self._is_emm_managed_value
-        else:
-            return None
-
-    @is_emm_managed.setter
-    def is_emm_managed(self, val):
-        if val is None:
-            del self.is_emm_managed
-            return
-        val = self._is_emm_managed_validator.validate(val)
-        self._is_emm_managed_value = val
-        self._is_emm_managed_present = True
-
-    @is_emm_managed.deleter
-    def is_emm_managed(self):
-        self._is_emm_managed_value = None
-        self._is_emm_managed_present = False
-
-    @property
-    def platform(self):
-        """
-        Device platform name. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._platform_present:
-            return self._platform_value
-        else:
-            return None
-
-    @platform.setter
-    def platform(self, val):
-        if val is None:
-            del self.platform
-            return
-        val = self._platform_validator.validate(val)
-        self._platform_value = val
-        self._platform_present = True
-
-    @platform.deleter
-    def platform(self):
-        self._platform_value = None
-        self._platform_present = False
-
-    @property
-    def mac_address(self):
-        """
-        Device mac address. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._mac_address_present:
-            return self._mac_address_value
-        else:
-            return None
-
-    @mac_address.setter
-    def mac_address(self, val):
-        if val is None:
-            del self.mac_address
-            return
-        val = self._mac_address_validator.validate(val)
-        self._mac_address_value = val
-        self._mac_address_present = True
-
-    @mac_address.deleter
-    def mac_address(self):
-        self._mac_address_value = None
-        self._mac_address_present = False
-
-    @property
-    def os_version(self):
-        """
-        Device OS version. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._os_version_present:
-            return self._os_version_value
-        else:
-            return None
-
-    @os_version.setter
-    def os_version(self, val):
-        if val is None:
-            del self.os_version
-            return
-        val = self._os_version_validator.validate(val)
-        self._os_version_value = val
-        self._os_version_present = True
-
-    @os_version.deleter
-    def os_version(self):
-        self._os_version_value = None
-        self._os_version_present = False
-
-    @property
-    def device_type(self):
-        """
-        Device type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._device_type_present:
-            return self._device_type_value
-        else:
-            return None
-
-    @device_type.setter
-    def device_type(self, val):
-        if val is None:
-            del self.device_type
-            return
-        val = self._device_type_validator.validate(val)
-        self._device_type_value = val
-        self._device_type_present = True
-
-    @device_type.deleter
-    def device_type(self):
-        self._device_type_value = None
-        self._device_type_present = False
-
-    @property
-    def ip_address(self):
-        """
-        IP address. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._ip_address_present:
-            return self._ip_address_value
-        else:
-            return None
-
-    @ip_address.setter
-    def ip_address(self, val):
-        if val is None:
-            del self.ip_address
-            return
-        val = self._ip_address_validator.validate(val)
-        self._ip_address_value = val
-        self._ip_address_present = True
-
-    @ip_address.deleter
-    def ip_address(self):
-        self._ip_address_value = None
-        self._ip_address_present = False
-
-    @property
-    def last_activity(self):
-        """
-        Last activity. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._last_activity_present:
-            return self._last_activity_value
-        else:
-            return None
-
-    @last_activity.setter
-    def last_activity(self, val):
-        if val is None:
-            del self.last_activity
-            return
-        val = self._last_activity_validator.validate(val)
-        self._last_activity_value = val
-        self._last_activity_present = True
-
-    @last_activity.deleter
-    def last_activity(self):
-        self._last_activity_value = None
-        self._last_activity_present = False
-
-    @property
-    def app_version(self):
-        """
-        Linking app version. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._app_version_present:
-            return self._app_version_value
-        else:
-            return None
-
-    @app_version.setter
-    def app_version(self, val):
-        if val is None:
-            del self.app_version
-            return
-        val = self._app_version_validator.validate(val)
-        self._app_version_value = val
-        self._app_version_present = True
-
-    @app_version.deleter
-    def app_version(self):
-        self._app_version_value = None
-        self._app_version_present = False
-
-    def __repr__(self):
-        return 'DeviceLogInfo(device_id={!r}, display_name={!r}, is_emm_managed={!r}, platform={!r}, mac_address={!r}, os_version={!r}, device_type={!r}, ip_address={!r}, last_activity={!r}, app_version={!r})'.format(
-            self._device_id_value,
-            self._display_name_value,
-            self._is_emm_managed_value,
-            self._platform_value,
-            self._mac_address_value,
-            self._os_version_value,
-            self._device_type_value,
-            self._ip_address_value,
-            self._last_activity_value,
-            self._app_version_value,
-        )
-
-DeviceLogInfo_validator = bv.Struct(DeviceLogInfo)
 
 class DeviceManagementDisabledDetails(object):
     """
@@ -4643,14 +4854,19 @@ class DeviceUnlinkDetails(object):
     """
     Disconnected a device.
 
-    :ivar device_info: Device information.
+    :ivar session_id: Session unique id. Might be missing due to historical data
+        gap.
+    :ivar display_name: The device name. Might be missing due to historical data
+        gap.
     :ivar delete_data: True if the user requested to delete data after device
         unlink, false otherwise.
     """
 
     __slots__ = [
-        '_device_info_value',
-        '_device_info_present',
+        '_session_id_value',
+        '_session_id_present',
+        '_display_name_value',
+        '_display_name_present',
         '_delete_data_value',
         '_delete_data_present',
     ]
@@ -4658,39 +4874,73 @@ class DeviceUnlinkDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 device_info=None,
-                 delete_data=None):
-        self._device_info_value = None
-        self._device_info_present = False
+                 delete_data=None,
+                 session_id=None,
+                 display_name=None):
+        self._session_id_value = None
+        self._session_id_present = False
+        self._display_name_value = None
+        self._display_name_present = False
         self._delete_data_value = None
         self._delete_data_present = False
-        if device_info is not None:
-            self.device_info = device_info
+        if session_id is not None:
+            self.session_id = session_id
+        if display_name is not None:
+            self.display_name = display_name
         if delete_data is not None:
             self.delete_data = delete_data
 
     @property
-    def device_info(self):
+    def session_id(self):
         """
-        Device information.
+        Session unique id. Might be missing due to historical data gap.
 
-        :rtype: DeviceLogInfo
+        :rtype: str
         """
-        if self._device_info_present:
-            return self._device_info_value
+        if self._session_id_present:
+            return self._session_id_value
         else:
-            raise AttributeError("missing required field 'device_info'")
+            return None
 
-    @device_info.setter
-    def device_info(self, val):
-        self._device_info_validator.validate_type_only(val)
-        self._device_info_value = val
-        self._device_info_present = True
+    @session_id.setter
+    def session_id(self, val):
+        if val is None:
+            del self.session_id
+            return
+        val = self._session_id_validator.validate(val)
+        self._session_id_value = val
+        self._session_id_present = True
 
-    @device_info.deleter
-    def device_info(self):
-        self._device_info_value = None
-        self._device_info_present = False
+    @session_id.deleter
+    def session_id(self):
+        self._session_id_value = None
+        self._session_id_present = False
+
+    @property
+    def display_name(self):
+        """
+        The device name. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._display_name_present:
+            return self._display_name_value
+        else:
+            return None
+
+    @display_name.setter
+    def display_name(self, val):
+        if val is None:
+            del self.display_name
+            return
+        val = self._display_name_validator.validate(val)
+        self._display_name_value = val
+        self._display_name_present = True
+
+    @display_name.deleter
+    def display_name(self):
+        self._display_name_value = None
+        self._display_name_present = False
 
     @property
     def delete_data(self):
@@ -4717,9 +4967,10 @@ class DeviceUnlinkDetails(object):
         self._delete_data_present = False
 
     def __repr__(self):
-        return 'DeviceUnlinkDetails(device_info={!r}, delete_data={!r})'.format(
-            self._device_info_value,
+        return 'DeviceUnlinkDetails(delete_data={!r}, session_id={!r}, display_name={!r})'.format(
             self._delete_data_value,
+            self._session_id_value,
+            self._display_name_value,
         )
 
 DeviceUnlinkDetails_validator = bv.Struct(DeviceUnlinkDetails)
@@ -5669,6 +5920,52 @@ class DomainVerificationRemoveDomainType(object):
         )
 
 DomainVerificationRemoveDomainType_validator = bv.Struct(DomainVerificationRemoveDomainType)
+
+class DownloadPolicyType(bb.Union):
+    """
+    Shared content downloads policy
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    allow = None
+    # Attribute is overwritten below the class definition
+    disallow = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_allow(self):
+        """
+        Check if the union tag is ``allow``.
+
+        :rtype: bool
+        """
+        return self._tag == 'allow'
+
+    def is_disallow(self):
+        """
+        Check if the union tag is ``disallow``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disallow'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'DownloadPolicyType(%r, %r)' % (self._tag, self._value)
+
+DownloadPolicyType_validator = bv.Union(DownloadPolicyType)
 
 class DurationLogInfo(object):
     """
@@ -6868,6 +7165,18 @@ class EventDetails(bb.Union):
         return cls('account_capture_migrate_account_details', val)
 
     @classmethod
+    def account_capture_notification_emails_sent_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``account_capture_notification_emails_sent_details`` tag with value
+        ``val``.
+
+        :param AccountCaptureNotificationEmailsSentDetails val:
+        :rtype: EventDetails
+        """
+        return cls('account_capture_notification_emails_sent_details', val)
+
+    @classmethod
     def account_capture_relinquish_account_details(cls, val):
         """
         Create an instance of this class set to the
@@ -7170,17 +7479,6 @@ class EventDetails(bb.Union):
         return cls('file_save_copy_reference_details', val)
 
     @classmethod
-    def file_request_add_deadline_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``file_request_add_deadline_details`` tag with value ``val``.
-
-        :param FileRequestAddDeadlineDetails val:
-        :rtype: EventDetails
-        """
-        return cls('file_request_add_deadline_details', val)
-
-    @classmethod
     def file_request_change_details(cls, val):
         """
         Create an instance of this class set to the
@@ -7190,17 +7488,6 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('file_request_change_details', val)
-
-    @classmethod
-    def file_request_change_folder_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``file_request_change_folder_details`` tag with value ``val``.
-
-        :param FileRequestChangeFolderDetails val:
-        :rtype: EventDetails
-        """
-        return cls('file_request_change_folder_details', val)
 
     @classmethod
     def file_request_close_details(cls, val):
@@ -7234,28 +7521,6 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('file_request_receive_file_details', val)
-
-    @classmethod
-    def file_request_remove_deadline_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``file_request_remove_deadline_details`` tag with value ``val``.
-
-        :param FileRequestRemoveDeadlineDetails val:
-        :rtype: EventDetails
-        """
-        return cls('file_request_remove_deadline_details', val)
-
-    @classmethod
-    def file_request_send_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``file_request_send_details`` tag with value ``val``.
-
-        :param FileRequestSendDetails val:
-        :rtype: EventDetails
-        """
-        return cls('file_request_send_details', val)
 
     @classmethod
     def group_add_external_id_details(cls, val):
@@ -7478,6 +7743,17 @@ class EventDetails(bb.Union):
         return cls('sso_error_details', val)
 
     @classmethod
+    def member_add_name_details(cls, val):
+        """
+        Create an instance of this class set to the ``member_add_name_details``
+        tag with value ``val``.
+
+        :param MemberAddNameDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_add_name_details', val)
+
+    @classmethod
     def member_change_admin_role_details(cls, val):
         """
         Create an instance of this class set to the
@@ -7545,6 +7821,29 @@ class EventDetails(bb.Union):
         return cls('member_permanently_delete_account_contents_details', val)
 
     @classmethod
+    def member_space_limits_add_custom_quota_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_space_limits_add_custom_quota_details`` tag with value ``val``.
+
+        :param MemberSpaceLimitsAddCustomQuotaDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_space_limits_add_custom_quota_details', val)
+
+    @classmethod
+    def member_space_limits_change_custom_quota_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_space_limits_change_custom_quota_details`` tag with value
+        ``val``.
+
+        :param MemberSpaceLimitsChangeCustomQuotaDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_space_limits_change_custom_quota_details', val)
+
+    @classmethod
     def member_space_limits_change_status_details(cls, val):
         """
         Create an instance of this class set to the
@@ -7554,6 +7853,18 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('member_space_limits_change_status_details', val)
+
+    @classmethod
+    def member_space_limits_remove_custom_quota_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_space_limits_remove_custom_quota_details`` tag with value
+        ``val``.
+
+        :param MemberSpaceLimitsRemoveCustomQuotaDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_space_limits_remove_custom_quota_details', val)
 
     @classmethod
     def member_suggest_details(cls, val):
@@ -8029,6 +8340,17 @@ class EventDetails(bb.Union):
         return cls('emm_create_usage_report_details', val)
 
     @classmethod
+    def export_members_report_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``export_members_report_details`` tag with value ``val``.
+
+        :param ExportMembersReportDetails val:
+        :rtype: EventDetails
+        """
+        return cls('export_members_report_details', val)
+
+    @classmethod
     def paper_admin_export_start_details(cls, val):
         """
         Create an instance of this class set to the
@@ -8172,6 +8494,39 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('sf_external_invite_warn_details', val)
+
+    @classmethod
+    def sf_fb_invite_details(cls, val):
+        """
+        Create an instance of this class set to the ``sf_fb_invite_details`` tag
+        with value ``val``.
+
+        :param SfFbInviteDetails val:
+        :rtype: EventDetails
+        """
+        return cls('sf_fb_invite_details', val)
+
+    @classmethod
+    def sf_fb_invite_change_role_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``sf_fb_invite_change_role_details`` tag with value ``val``.
+
+        :param SfFbInviteChangeRoleDetails val:
+        :rtype: EventDetails
+        """
+        return cls('sf_fb_invite_change_role_details', val)
+
+    @classmethod
+    def sf_fb_uninvite_details(cls, val):
+        """
+        Create an instance of this class set to the ``sf_fb_uninvite_details``
+        tag with value ``val``.
+
+        :param SfFbUninviteDetails val:
+        :rtype: EventDetails
+        """
+        return cls('sf_fb_uninvite_details', val)
 
     @classmethod
     def sf_invite_group_details(cls, val):
@@ -8418,15 +8773,15 @@ class EventDetails(bb.Union):
         return cls('shared_content_relinquish_membership_details', val)
 
     @classmethod
-    def shared_content_remove_invitee_details(cls, val):
+    def shared_content_remove_invitees_details(cls, val):
         """
         Create an instance of this class set to the
-        ``shared_content_remove_invitee_details`` tag with value ``val``.
+        ``shared_content_remove_invitees_details`` tag with value ``val``.
 
-        :param SharedContentRemoveInviteeDetails val:
+        :param SharedContentRemoveInviteesDetails val:
         :rtype: EventDetails
         """
-        return cls('shared_content_remove_invitee_details', val)
+        return cls('shared_content_remove_invitees_details', val)
 
     @classmethod
     def shared_content_remove_link_expiry_details(cls, val):
@@ -8495,17 +8850,6 @@ class EventDetails(bb.Union):
         return cls('shared_content_view_details', val)
 
     @classmethod
-    def shared_folder_change_confidentiality_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``shared_folder_change_confidentiality_details`` tag with value ``val``.
-
-        :param SharedFolderChangeConfidentialityDetails val:
-        :rtype: EventDetails
-        """
-        return cls('shared_folder_change_confidentiality_details', val)
-
-    @classmethod
     def shared_folder_change_link_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -8517,27 +8861,39 @@ class EventDetails(bb.Union):
         return cls('shared_folder_change_link_policy_details', val)
 
     @classmethod
-    def shared_folder_change_member_management_policy_details(cls, val):
+    def shared_folder_change_members_inheritance_policy_details(cls, val):
         """
         Create an instance of this class set to the
-        ``shared_folder_change_member_management_policy_details`` tag with value
-        ``val``.
+        ``shared_folder_change_members_inheritance_policy_details`` tag with
+        value ``val``.
 
-        :param SharedFolderChangeMemberManagementPolicyDetails val:
+        :param SharedFolderChangeMembersInheritancePolicyDetails val:
         :rtype: EventDetails
         """
-        return cls('shared_folder_change_member_management_policy_details', val)
+        return cls('shared_folder_change_members_inheritance_policy_details', val)
 
     @classmethod
-    def shared_folder_change_member_policy_details(cls, val):
+    def shared_folder_change_members_management_policy_details(cls, val):
         """
         Create an instance of this class set to the
-        ``shared_folder_change_member_policy_details`` tag with value ``val``.
+        ``shared_folder_change_members_management_policy_details`` tag with
+        value ``val``.
 
-        :param SharedFolderChangeMemberPolicyDetails val:
+        :param SharedFolderChangeMembersManagementPolicyDetails val:
         :rtype: EventDetails
         """
-        return cls('shared_folder_change_member_policy_details', val)
+        return cls('shared_folder_change_members_management_policy_details', val)
+
+    @classmethod
+    def shared_folder_change_members_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_folder_change_members_policy_details`` tag with value ``val``.
+
+        :param SharedFolderChangeMembersPolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_folder_change_members_policy_details', val)
 
     @classmethod
     def shared_folder_create_details(cls, val):
@@ -9140,6 +9496,18 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('member_space_limits_add_exception_details', val)
+
+    @classmethod
+    def member_space_limits_change_caps_type_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_space_limits_change_caps_type_policy_details`` tag with value
+        ``val``.
+
+        :param MemberSpaceLimitsChangeCapsTypePolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_space_limits_change_caps_type_policy_details', val)
 
     @classmethod
     def member_space_limits_change_policy_details(cls, val):
@@ -9753,6 +10121,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'account_capture_migrate_account_details'
 
+    def is_account_capture_notification_emails_sent_details(self):
+        """
+        Check if the union tag is ``account_capture_notification_emails_sent_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_capture_notification_emails_sent_details'
+
     def is_account_capture_relinquish_account_details(self):
         """
         Check if the union tag is ``account_capture_relinquish_account_details``.
@@ -9969,14 +10345,6 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'file_save_copy_reference_details'
 
-    def is_file_request_add_deadline_details(self):
-        """
-        Check if the union tag is ``file_request_add_deadline_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_request_add_deadline_details'
-
     def is_file_request_change_details(self):
         """
         Check if the union tag is ``file_request_change_details``.
@@ -9984,14 +10352,6 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_request_change_details'
-
-    def is_file_request_change_folder_details(self):
-        """
-        Check if the union tag is ``file_request_change_folder_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_request_change_folder_details'
 
     def is_file_request_close_details(self):
         """
@@ -10016,22 +10376,6 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_request_receive_file_details'
-
-    def is_file_request_remove_deadline_details(self):
-        """
-        Check if the union tag is ``file_request_remove_deadline_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_request_remove_deadline_details'
-
-    def is_file_request_send_details(self):
-        """
-        Check if the union tag is ``file_request_send_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_request_send_details'
 
     def is_group_add_external_id_details(self):
         """
@@ -10193,6 +10537,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'sso_error_details'
 
+    def is_member_add_name_details(self):
+        """
+        Check if the union tag is ``member_add_name_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_add_name_details'
+
     def is_member_change_admin_role_details(self):
         """
         Check if the union tag is ``member_change_admin_role_details``.
@@ -10241,6 +10593,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'member_permanently_delete_account_contents_details'
 
+    def is_member_space_limits_add_custom_quota_details(self):
+        """
+        Check if the union tag is ``member_space_limits_add_custom_quota_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_add_custom_quota_details'
+
+    def is_member_space_limits_change_custom_quota_details(self):
+        """
+        Check if the union tag is ``member_space_limits_change_custom_quota_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_change_custom_quota_details'
+
     def is_member_space_limits_change_status_details(self):
         """
         Check if the union tag is ``member_space_limits_change_status_details``.
@@ -10248,6 +10616,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_space_limits_change_status_details'
+
+    def is_member_space_limits_remove_custom_quota_details(self):
+        """
+        Check if the union tag is ``member_space_limits_remove_custom_quota_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_remove_custom_quota_details'
 
     def is_member_suggest_details(self):
         """
@@ -10593,6 +10969,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'emm_create_usage_report_details'
 
+    def is_export_members_report_details(self):
+        """
+        Check if the union tag is ``export_members_report_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'export_members_report_details'
+
     def is_paper_admin_export_start_details(self):
         """
         Check if the union tag is ``paper_admin_export_start_details``.
@@ -10696,6 +11080,30 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sf_external_invite_warn_details'
+
+    def is_sf_fb_invite_details(self):
+        """
+        Check if the union tag is ``sf_fb_invite_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_invite_details'
+
+    def is_sf_fb_invite_change_role_details(self):
+        """
+        Check if the union tag is ``sf_fb_invite_change_role_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_invite_change_role_details'
+
+    def is_sf_fb_uninvite_details(self):
+        """
+        Check if the union tag is ``sf_fb_uninvite_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_uninvite_details'
 
     def is_sf_invite_group_details(self):
         """
@@ -10873,13 +11281,13 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'shared_content_relinquish_membership_details'
 
-    def is_shared_content_remove_invitee_details(self):
+    def is_shared_content_remove_invitees_details(self):
         """
-        Check if the union tag is ``shared_content_remove_invitee_details``.
+        Check if the union tag is ``shared_content_remove_invitees_details``.
 
         :rtype: bool
         """
-        return self._tag == 'shared_content_remove_invitee_details'
+        return self._tag == 'shared_content_remove_invitees_details'
 
     def is_shared_content_remove_link_expiry_details(self):
         """
@@ -10929,14 +11337,6 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'shared_content_view_details'
 
-    def is_shared_folder_change_confidentiality_details(self):
-        """
-        Check if the union tag is ``shared_folder_change_confidentiality_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'shared_folder_change_confidentiality_details'
-
     def is_shared_folder_change_link_policy_details(self):
         """
         Check if the union tag is ``shared_folder_change_link_policy_details``.
@@ -10945,21 +11345,29 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'shared_folder_change_link_policy_details'
 
-    def is_shared_folder_change_member_management_policy_details(self):
+    def is_shared_folder_change_members_inheritance_policy_details(self):
         """
-        Check if the union tag is ``shared_folder_change_member_management_policy_details``.
+        Check if the union tag is ``shared_folder_change_members_inheritance_policy_details``.
 
         :rtype: bool
         """
-        return self._tag == 'shared_folder_change_member_management_policy_details'
+        return self._tag == 'shared_folder_change_members_inheritance_policy_details'
 
-    def is_shared_folder_change_member_policy_details(self):
+    def is_shared_folder_change_members_management_policy_details(self):
         """
-        Check if the union tag is ``shared_folder_change_member_policy_details``.
+        Check if the union tag is ``shared_folder_change_members_management_policy_details``.
 
         :rtype: bool
         """
-        return self._tag == 'shared_folder_change_member_policy_details'
+        return self._tag == 'shared_folder_change_members_management_policy_details'
+
+    def is_shared_folder_change_members_policy_details(self):
+        """
+        Check if the union tag is ``shared_folder_change_members_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_change_members_policy_details'
 
     def is_shared_folder_create_details(self):
         """
@@ -11392,6 +11800,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_space_limits_add_exception_details'
+
+    def is_member_space_limits_change_caps_type_policy_details(self):
+        """
+        Check if the union tag is ``member_space_limits_change_caps_type_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_change_caps_type_policy_details'
 
     def is_member_space_limits_change_policy_details(self):
         """
@@ -11945,6 +12361,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'account_capture_migrate_account_details' not set")
         return self._value
 
+    def get_account_capture_notification_emails_sent_details(self):
+        """
+        Only call this if :meth:`is_account_capture_notification_emails_sent_details` is true.
+
+        :rtype: AccountCaptureNotificationEmailsSentDetails
+        """
+        if not self.is_account_capture_notification_emails_sent_details():
+            raise AttributeError("tag 'account_capture_notification_emails_sent_details' not set")
+        return self._value
+
     def get_account_capture_relinquish_account_details(self):
         """
         Only call this if :meth:`is_account_capture_relinquish_account_details` is true.
@@ -12215,16 +12641,6 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'file_save_copy_reference_details' not set")
         return self._value
 
-    def get_file_request_add_deadline_details(self):
-        """
-        Only call this if :meth:`is_file_request_add_deadline_details` is true.
-
-        :rtype: FileRequestAddDeadlineDetails
-        """
-        if not self.is_file_request_add_deadline_details():
-            raise AttributeError("tag 'file_request_add_deadline_details' not set")
-        return self._value
-
     def get_file_request_change_details(self):
         """
         Only call this if :meth:`is_file_request_change_details` is true.
@@ -12233,16 +12649,6 @@ class EventDetails(bb.Union):
         """
         if not self.is_file_request_change_details():
             raise AttributeError("tag 'file_request_change_details' not set")
-        return self._value
-
-    def get_file_request_change_folder_details(self):
-        """
-        Only call this if :meth:`is_file_request_change_folder_details` is true.
-
-        :rtype: FileRequestChangeFolderDetails
-        """
-        if not self.is_file_request_change_folder_details():
-            raise AttributeError("tag 'file_request_change_folder_details' not set")
         return self._value
 
     def get_file_request_close_details(self):
@@ -12273,26 +12679,6 @@ class EventDetails(bb.Union):
         """
         if not self.is_file_request_receive_file_details():
             raise AttributeError("tag 'file_request_receive_file_details' not set")
-        return self._value
-
-    def get_file_request_remove_deadline_details(self):
-        """
-        Only call this if :meth:`is_file_request_remove_deadline_details` is true.
-
-        :rtype: FileRequestRemoveDeadlineDetails
-        """
-        if not self.is_file_request_remove_deadline_details():
-            raise AttributeError("tag 'file_request_remove_deadline_details' not set")
-        return self._value
-
-    def get_file_request_send_details(self):
-        """
-        Only call this if :meth:`is_file_request_send_details` is true.
-
-        :rtype: FileRequestSendDetails
-        """
-        if not self.is_file_request_send_details():
-            raise AttributeError("tag 'file_request_send_details' not set")
         return self._value
 
     def get_group_add_external_id_details(self):
@@ -12495,6 +12881,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'sso_error_details' not set")
         return self._value
 
+    def get_member_add_name_details(self):
+        """
+        Only call this if :meth:`is_member_add_name_details` is true.
+
+        :rtype: MemberAddNameDetails
+        """
+        if not self.is_member_add_name_details():
+            raise AttributeError("tag 'member_add_name_details' not set")
+        return self._value
+
     def get_member_change_admin_role_details(self):
         """
         Only call this if :meth:`is_member_change_admin_role_details` is true.
@@ -12555,6 +12951,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'member_permanently_delete_account_contents_details' not set")
         return self._value
 
+    def get_member_space_limits_add_custom_quota_details(self):
+        """
+        Only call this if :meth:`is_member_space_limits_add_custom_quota_details` is true.
+
+        :rtype: MemberSpaceLimitsAddCustomQuotaDetails
+        """
+        if not self.is_member_space_limits_add_custom_quota_details():
+            raise AttributeError("tag 'member_space_limits_add_custom_quota_details' not set")
+        return self._value
+
+    def get_member_space_limits_change_custom_quota_details(self):
+        """
+        Only call this if :meth:`is_member_space_limits_change_custom_quota_details` is true.
+
+        :rtype: MemberSpaceLimitsChangeCustomQuotaDetails
+        """
+        if not self.is_member_space_limits_change_custom_quota_details():
+            raise AttributeError("tag 'member_space_limits_change_custom_quota_details' not set")
+        return self._value
+
     def get_member_space_limits_change_status_details(self):
         """
         Only call this if :meth:`is_member_space_limits_change_status_details` is true.
@@ -12563,6 +12979,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_member_space_limits_change_status_details():
             raise AttributeError("tag 'member_space_limits_change_status_details' not set")
+        return self._value
+
+    def get_member_space_limits_remove_custom_quota_details(self):
+        """
+        Only call this if :meth:`is_member_space_limits_remove_custom_quota_details` is true.
+
+        :rtype: MemberSpaceLimitsRemoveCustomQuotaDetails
+        """
+        if not self.is_member_space_limits_remove_custom_quota_details():
+            raise AttributeError("tag 'member_space_limits_remove_custom_quota_details' not set")
         return self._value
 
     def get_member_suggest_details(self):
@@ -12995,6 +13421,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'emm_create_usage_report_details' not set")
         return self._value
 
+    def get_export_members_report_details(self):
+        """
+        Only call this if :meth:`is_export_members_report_details` is true.
+
+        :rtype: ExportMembersReportDetails
+        """
+        if not self.is_export_members_report_details():
+            raise AttributeError("tag 'export_members_report_details' not set")
+        return self._value
+
     def get_paper_admin_export_start_details(self):
         """
         Only call this if :meth:`is_paper_admin_export_start_details` is true.
@@ -13123,6 +13559,36 @@ class EventDetails(bb.Union):
         """
         if not self.is_sf_external_invite_warn_details():
             raise AttributeError("tag 'sf_external_invite_warn_details' not set")
+        return self._value
+
+    def get_sf_fb_invite_details(self):
+        """
+        Only call this if :meth:`is_sf_fb_invite_details` is true.
+
+        :rtype: SfFbInviteDetails
+        """
+        if not self.is_sf_fb_invite_details():
+            raise AttributeError("tag 'sf_fb_invite_details' not set")
+        return self._value
+
+    def get_sf_fb_invite_change_role_details(self):
+        """
+        Only call this if :meth:`is_sf_fb_invite_change_role_details` is true.
+
+        :rtype: SfFbInviteChangeRoleDetails
+        """
+        if not self.is_sf_fb_invite_change_role_details():
+            raise AttributeError("tag 'sf_fb_invite_change_role_details' not set")
+        return self._value
+
+    def get_sf_fb_uninvite_details(self):
+        """
+        Only call this if :meth:`is_sf_fb_uninvite_details` is true.
+
+        :rtype: SfFbUninviteDetails
+        """
+        if not self.is_sf_fb_uninvite_details():
+            raise AttributeError("tag 'sf_fb_uninvite_details' not set")
         return self._value
 
     def get_sf_invite_group_details(self):
@@ -13345,14 +13811,14 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shared_content_relinquish_membership_details' not set")
         return self._value
 
-    def get_shared_content_remove_invitee_details(self):
+    def get_shared_content_remove_invitees_details(self):
         """
-        Only call this if :meth:`is_shared_content_remove_invitee_details` is true.
+        Only call this if :meth:`is_shared_content_remove_invitees_details` is true.
 
-        :rtype: SharedContentRemoveInviteeDetails
+        :rtype: SharedContentRemoveInviteesDetails
         """
-        if not self.is_shared_content_remove_invitee_details():
-            raise AttributeError("tag 'shared_content_remove_invitee_details' not set")
+        if not self.is_shared_content_remove_invitees_details():
+            raise AttributeError("tag 'shared_content_remove_invitees_details' not set")
         return self._value
 
     def get_shared_content_remove_link_expiry_details(self):
@@ -13415,16 +13881,6 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shared_content_view_details' not set")
         return self._value
 
-    def get_shared_folder_change_confidentiality_details(self):
-        """
-        Only call this if :meth:`is_shared_folder_change_confidentiality_details` is true.
-
-        :rtype: SharedFolderChangeConfidentialityDetails
-        """
-        if not self.is_shared_folder_change_confidentiality_details():
-            raise AttributeError("tag 'shared_folder_change_confidentiality_details' not set")
-        return self._value
-
     def get_shared_folder_change_link_policy_details(self):
         """
         Only call this if :meth:`is_shared_folder_change_link_policy_details` is true.
@@ -13435,24 +13891,34 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shared_folder_change_link_policy_details' not set")
         return self._value
 
-    def get_shared_folder_change_member_management_policy_details(self):
+    def get_shared_folder_change_members_inheritance_policy_details(self):
         """
-        Only call this if :meth:`is_shared_folder_change_member_management_policy_details` is true.
+        Only call this if :meth:`is_shared_folder_change_members_inheritance_policy_details` is true.
 
-        :rtype: SharedFolderChangeMemberManagementPolicyDetails
+        :rtype: SharedFolderChangeMembersInheritancePolicyDetails
         """
-        if not self.is_shared_folder_change_member_management_policy_details():
-            raise AttributeError("tag 'shared_folder_change_member_management_policy_details' not set")
+        if not self.is_shared_folder_change_members_inheritance_policy_details():
+            raise AttributeError("tag 'shared_folder_change_members_inheritance_policy_details' not set")
         return self._value
 
-    def get_shared_folder_change_member_policy_details(self):
+    def get_shared_folder_change_members_management_policy_details(self):
         """
-        Only call this if :meth:`is_shared_folder_change_member_policy_details` is true.
+        Only call this if :meth:`is_shared_folder_change_members_management_policy_details` is true.
 
-        :rtype: SharedFolderChangeMemberPolicyDetails
+        :rtype: SharedFolderChangeMembersManagementPolicyDetails
         """
-        if not self.is_shared_folder_change_member_policy_details():
-            raise AttributeError("tag 'shared_folder_change_member_policy_details' not set")
+        if not self.is_shared_folder_change_members_management_policy_details():
+            raise AttributeError("tag 'shared_folder_change_members_management_policy_details' not set")
+        return self._value
+
+    def get_shared_folder_change_members_policy_details(self):
+        """
+        Only call this if :meth:`is_shared_folder_change_members_policy_details` is true.
+
+        :rtype: SharedFolderChangeMembersPolicyDetails
+        """
+        if not self.is_shared_folder_change_members_policy_details():
+            raise AttributeError("tag 'shared_folder_change_members_policy_details' not set")
         return self._value
 
     def get_shared_folder_create_details(self):
@@ -13995,6 +14461,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'member_space_limits_add_exception_details' not set")
         return self._value
 
+    def get_member_space_limits_change_caps_type_policy_details(self):
+        """
+        Only call this if :meth:`is_member_space_limits_change_caps_type_policy_details` is true.
+
+        :rtype: MemberSpaceLimitsChangeCapsTypePolicyDetails
+        """
+        if not self.is_member_space_limits_change_caps_type_policy_details():
+            raise AttributeError("tag 'member_space_limits_change_caps_type_policy_details' not set")
+        return self._value
+
     def get_member_space_limits_change_policy_details(self):
         """
         Only call this if :meth:`is_member_space_limits_change_policy_details` is true.
@@ -14441,6 +14917,9 @@ class EventType(bb.Union):
         option to enable account capture on domains belonging to the team.
     :ivar AccountCaptureMigrateAccountType account_capture_migrate_account:
         (domains) Account captured user migrated their account to the team.
+    :ivar AccountCaptureNotificationEmailsSentType
+        account_capture_notification_emails_sent: (domains) Proactive account
+        capture email sent to all unmanaged members.
     :ivar AccountCaptureRelinquishAccountType
         account_capture_relinquish_account: (domains) Account captured user
         relinquished their account by changing the email address associated with
@@ -14508,26 +14987,14 @@ class EventType(bb.Union):
         Rolled back file change location changes.
     :ivar FileSaveCopyReferenceType file_save_copy_reference: (file_operations)
         Save a file or folder using a copy reference.
-    :ivar FileRequestAddDeadlineType file_request_add_deadline: (file_requests)
-        Added a deadline to a file request. This event is replaced by
-        file_request_change and will not be logged going forward.
     :ivar FileRequestChangeType file_request_change: (file_requests) Change a
         file request.
-    :ivar FileRequestChangeFolderType file_request_change_folder:
-        (file_requests) Changed the file request folder. This event is replaced
-        by file_request_change and will not be logged going forward.
     :ivar FileRequestCloseType file_request_close: (file_requests) Closed a file
         request.
     :ivar FileRequestCreateType file_request_create: (file_requests) Created a
         file request.
     :ivar FileRequestReceiveFileType file_request_receive_file: (file_requests)
         Received files for a file request.
-    :ivar FileRequestRemoveDeadlineType file_request_remove_deadline:
-        (file_requests) Removed the file request deadline. This event is
-        replaced by file_request_change and will not be logged going forward.
-    :ivar FileRequestSendType file_request_send: (file_requests) Sent file
-        request to users via email. This event is replaced by
-        file_request_change and will not be logged going forward.
     :ivar GroupAddExternalIdType group_add_external_id: (groups) Added an
         external ID for group.
     :ivar GroupAddMemberType group_add_member: (groups) Added team members to a
@@ -14563,6 +15030,7 @@ class EventType(bb.Union):
         admin sign-in-as session.
     :ivar SsoErrorType sso_error: (logins) Failed to sign in via SSO. This event
         is replaced by login_fail and will not be logged going forward.
+    :ivar MemberAddNameType member_add_name: (members) Specify team member name.
     :ivar MemberChangeAdminRoleType member_change_admin_role: (members) Change
         the admin role belonging to team member.
     :ivar MemberChangeEmailType member_change_email: (members) Changed team
@@ -14578,9 +15046,18 @@ class EventType(bb.Union):
     :ivar MemberPermanentlyDeleteAccountContentsType
         member_permanently_delete_account_contents: (members) Permanently
         deleted contents of a removed team member account.
+    :ivar MemberSpaceLimitsAddCustomQuotaType
+        member_space_limits_add_custom_quota: (members) Set custom member space
+        limit.
+    :ivar MemberSpaceLimitsChangeCustomQuotaType
+        member_space_limits_change_custom_quota: (members) Changed custom member
+        space limit.
     :ivar MemberSpaceLimitsChangeStatusType member_space_limits_change_status:
         (members) Changed the status with respect to whether the team member is
         under or over storage quota specified by policy.
+    :ivar MemberSpaceLimitsRemoveCustomQuotaType
+        member_space_limits_remove_custom_quota: (members) Removed custom member
+        space limit.
     :ivar MemberSuggestType member_suggest: (members) Suggested a new team
         member to be added to the team.
     :ivar MemberTransferAccountContentsType member_transfer_account_contents:
@@ -14676,6 +15153,8 @@ class EventType(bb.Union):
         EMM excluded users report created.
     :ivar EmmCreateUsageReportType emm_create_usage_report: (reports) EMM mobile
         app usage report created.
+    :ivar ExportMembersReportType export_members_report: (reports) Member data
+        report created.
     :ivar PaperAdminExportStartType paper_admin_export_start: (reports) Exported
         all Paper documents in the team.
     :ivar SmartSyncCreateAdminPrivilegeReportType
@@ -14717,6 +15196,16 @@ class EventType(bb.Union):
         team (DEPRECATED FEATURE). This event is deprecated and will not be
         logged going forward as the associated product functionality no longer
         exists.
+    :ivar SfFbInviteType sf_fb_invite: (sharing) Invited Facebook users to a
+        shared folder. This event is deprecated and will not be logged going
+        forward as the associated product functionality no longer exists.
+    :ivar SfFbInviteChangeRoleType sf_fb_invite_change_role: (sharing) Changed a
+        Facebook user's role in a shared folder. This event is deprecated and
+        will not be logged going forward as the associated product functionality
+        no longer exists.
+    :ivar SfFbUninviteType sf_fb_uninvite: (sharing) Uninvited a Facebook user
+        from a shared folder. This event is deprecated and will not be logged
+        going forward as the associated product functionality no longer exists.
     :ivar SfInviteGroupType sf_invite_group: (sharing) Invited a group to a
         shared folder. This event is deprecated and will not be logged going
         forward as the associated product functionality no longer exists.
@@ -14724,8 +15213,8 @@ class EventType(bb.Union):
         to a shared folder. This event is deprecated and will not be logged
         going forward as the associated product functionality no longer exists.
     :ivar SfTeamInviteType sf_team_invite: (sharing) Invited team members to a
-        shared folder. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
+        shared folder. This event is replaced by shared_content_add_invitees and
+        will not be logged going forward.
     :ivar SfTeamInviteChangeRoleType sf_team_invite_change_role: (sharing)
         Changed a team member's role in a shared folder. This event is
         deprecated and will not be logged going forward as the associated
@@ -14738,8 +15227,8 @@ class EventType(bb.Union):
         will not be logged going forward as the associated product functionality
         no longer exists.
     :ivar SfTeamUninviteType sf_team_uninvite: (sharing) Unshared a folder with
-        a team member. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
+        a team member. This event is replaced by shared_content_remove_invitees
+        and will not be logged going forward.
     :ivar SharedContentAddInviteesType shared_content_add_invitees: (sharing)
         Sent an email invitation to the membership of a shared file or folder.
     :ivar SharedContentAddLinkExpiryType shared_content_add_link_expiry:
@@ -14768,7 +15257,8 @@ class EventType(bb.Union):
         shared_content_change_viewer_info_policy: (sharing) Changed whether
         members can see who viewed the shared file or folder.
     :ivar SharedContentClaimInvitationType shared_content_claim_invitation:
-        (sharing) Claimed membership to a team member's shared folder.
+        (sharing) Acquired membership on a shared file or folder by claiming an
+        invitation.
     :ivar SharedContentCopyType shared_content_copy: (sharing) Copied the shared
         file or folder to own Dropbox.
     :ivar SharedContentDownloadType shared_content_download: (sharing)
@@ -14776,7 +15266,7 @@ class EventType(bb.Union):
     :ivar SharedContentRelinquishMembershipType
         shared_content_relinquish_membership: (sharing) Left the membership of a
         shared file or folder.
-    :ivar SharedContentRemoveInviteeType shared_content_remove_invitee:
+    :ivar SharedContentRemoveInviteesType shared_content_remove_invitees:
         (sharing) Removed an invitee from the membership of a shared file or
         folder before it was claimed.
     :ivar SharedContentRemoveLinkExpiryType shared_content_remove_link_expiry:
@@ -14794,16 +15284,17 @@ class EventType(bb.Union):
         link.
     :ivar SharedContentViewType shared_content_view: (sharing) Previewed the
         shared file or folder.
-    :ivar SharedFolderChangeConfidentialityType
-        shared_folder_change_confidentiality: (sharing) Set or unset the
-        confidential flag on a shared folder.
     :ivar SharedFolderChangeLinkPolicyType shared_folder_change_link_policy:
         (sharing) Changed who can access the shared folder via a link.
-    :ivar SharedFolderChangeMemberManagementPolicyType
-        shared_folder_change_member_management_policy: (sharing) Changed who can
-        manage the membership of a shared folder.
-    :ivar SharedFolderChangeMemberPolicyType shared_folder_change_member_policy:
-        (sharing) Changed who can become a member of the shared folder.
+    :ivar SharedFolderChangeMembersInheritancePolicyType
+        shared_folder_change_members_inheritance_policy: (sharing) Specify if
+        the shared folder inherits its members from the parent folder.
+    :ivar SharedFolderChangeMembersManagementPolicyType
+        shared_folder_change_members_management_policy: (sharing) Changed who
+        can add or remove members of a shared folder.
+    :ivar SharedFolderChangeMembersPolicyType
+        shared_folder_change_members_policy: (sharing) Changed who can become a
+        member of the shared folder.
     :ivar SharedFolderCreateType shared_folder_create: (sharing) Created a
         shared folder.
     :ivar SharedFolderDeclineInvitationType shared_folder_decline_invitation:
@@ -14941,6 +15432,9 @@ class EventType(bb.Union):
     :ivar MemberSpaceLimitsAddExceptionType member_space_limits_add_exception:
         (team_policies) Added an exception for one or more team members to
         bypass space limits imposed by policy.
+    :ivar MemberSpaceLimitsChangeCapsTypePolicyType
+        member_space_limits_change_caps_type_policy: (team_policies) Change the
+        member space limit type for the team.
     :ivar MemberSpaceLimitsChangePolicyType member_space_limits_change_policy:
         (team_policies) Changed the team default limit level.
     :ivar MemberSpaceLimitsRemoveExceptionType
@@ -15305,6 +15799,17 @@ class EventType(bb.Union):
         return cls('account_capture_migrate_account', val)
 
     @classmethod
+    def account_capture_notification_emails_sent(cls, val):
+        """
+        Create an instance of this class set to the
+        ``account_capture_notification_emails_sent`` tag with value ``val``.
+
+        :param AccountCaptureNotificationEmailsSentType val:
+        :rtype: EventType
+        """
+        return cls('account_capture_notification_emails_sent', val)
+
+    @classmethod
     def account_capture_relinquish_account(cls, val):
         """
         Create an instance of this class set to the
@@ -15604,17 +16109,6 @@ class EventType(bb.Union):
         return cls('file_save_copy_reference', val)
 
     @classmethod
-    def file_request_add_deadline(cls, val):
-        """
-        Create an instance of this class set to the
-        ``file_request_add_deadline`` tag with value ``val``.
-
-        :param FileRequestAddDeadlineType val:
-        :rtype: EventType
-        """
-        return cls('file_request_add_deadline', val)
-
-    @classmethod
     def file_request_change(cls, val):
         """
         Create an instance of this class set to the ``file_request_change`` tag
@@ -15624,17 +16118,6 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('file_request_change', val)
-
-    @classmethod
-    def file_request_change_folder(cls, val):
-        """
-        Create an instance of this class set to the
-        ``file_request_change_folder`` tag with value ``val``.
-
-        :param FileRequestChangeFolderType val:
-        :rtype: EventType
-        """
-        return cls('file_request_change_folder', val)
 
     @classmethod
     def file_request_close(cls, val):
@@ -15668,28 +16151,6 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('file_request_receive_file', val)
-
-    @classmethod
-    def file_request_remove_deadline(cls, val):
-        """
-        Create an instance of this class set to the
-        ``file_request_remove_deadline`` tag with value ``val``.
-
-        :param FileRequestRemoveDeadlineType val:
-        :rtype: EventType
-        """
-        return cls('file_request_remove_deadline', val)
-
-    @classmethod
-    def file_request_send(cls, val):
-        """
-        Create an instance of this class set to the ``file_request_send`` tag
-        with value ``val``.
-
-        :param FileRequestSendType val:
-        :rtype: EventType
-        """
-        return cls('file_request_send', val)
 
     @classmethod
     def group_add_external_id(cls, val):
@@ -15912,6 +16373,17 @@ class EventType(bb.Union):
         return cls('sso_error', val)
 
     @classmethod
+    def member_add_name(cls, val):
+        """
+        Create an instance of this class set to the ``member_add_name`` tag with
+        value ``val``.
+
+        :param MemberAddNameType val:
+        :rtype: EventType
+        """
+        return cls('member_add_name', val)
+
+    @classmethod
     def member_change_admin_role(cls, val):
         """
         Create an instance of this class set to the ``member_change_admin_role``
@@ -15978,6 +16450,28 @@ class EventType(bb.Union):
         return cls('member_permanently_delete_account_contents', val)
 
     @classmethod
+    def member_space_limits_add_custom_quota(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_space_limits_add_custom_quota`` tag with value ``val``.
+
+        :param MemberSpaceLimitsAddCustomQuotaType val:
+        :rtype: EventType
+        """
+        return cls('member_space_limits_add_custom_quota', val)
+
+    @classmethod
+    def member_space_limits_change_custom_quota(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_space_limits_change_custom_quota`` tag with value ``val``.
+
+        :param MemberSpaceLimitsChangeCustomQuotaType val:
+        :rtype: EventType
+        """
+        return cls('member_space_limits_change_custom_quota', val)
+
+    @classmethod
     def member_space_limits_change_status(cls, val):
         """
         Create an instance of this class set to the
@@ -15987,6 +16481,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('member_space_limits_change_status', val)
+
+    @classmethod
+    def member_space_limits_remove_custom_quota(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_space_limits_remove_custom_quota`` tag with value ``val``.
+
+        :param MemberSpaceLimitsRemoveCustomQuotaType val:
+        :rtype: EventType
+        """
+        return cls('member_space_limits_remove_custom_quota', val)
 
     @classmethod
     def member_suggest(cls, val):
@@ -16462,6 +16967,17 @@ class EventType(bb.Union):
         return cls('emm_create_usage_report', val)
 
     @classmethod
+    def export_members_report(cls, val):
+        """
+        Create an instance of this class set to the ``export_members_report``
+        tag with value ``val``.
+
+        :param ExportMembersReportType val:
+        :rtype: EventType
+        """
+        return cls('export_members_report', val)
+
+    @classmethod
     def paper_admin_export_start(cls, val):
         """
         Create an instance of this class set to the ``paper_admin_export_start``
@@ -16603,6 +17119,39 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('sf_external_invite_warn', val)
+
+    @classmethod
+    def sf_fb_invite(cls, val):
+        """
+        Create an instance of this class set to the ``sf_fb_invite`` tag with
+        value ``val``.
+
+        :param SfFbInviteType val:
+        :rtype: EventType
+        """
+        return cls('sf_fb_invite', val)
+
+    @classmethod
+    def sf_fb_invite_change_role(cls, val):
+        """
+        Create an instance of this class set to the ``sf_fb_invite_change_role``
+        tag with value ``val``.
+
+        :param SfFbInviteChangeRoleType val:
+        :rtype: EventType
+        """
+        return cls('sf_fb_invite_change_role', val)
+
+    @classmethod
+    def sf_fb_uninvite(cls, val):
+        """
+        Create an instance of this class set to the ``sf_fb_uninvite`` tag with
+        value ``val``.
+
+        :param SfFbUninviteType val:
+        :rtype: EventType
+        """
+        return cls('sf_fb_uninvite', val)
 
     @classmethod
     def sf_invite_group(cls, val):
@@ -16847,15 +17396,15 @@ class EventType(bb.Union):
         return cls('shared_content_relinquish_membership', val)
 
     @classmethod
-    def shared_content_remove_invitee(cls, val):
+    def shared_content_remove_invitees(cls, val):
         """
         Create an instance of this class set to the
-        ``shared_content_remove_invitee`` tag with value ``val``.
+        ``shared_content_remove_invitees`` tag with value ``val``.
 
-        :param SharedContentRemoveInviteeType val:
+        :param SharedContentRemoveInviteesType val:
         :rtype: EventType
         """
-        return cls('shared_content_remove_invitee', val)
+        return cls('shared_content_remove_invitees', val)
 
     @classmethod
     def shared_content_remove_link_expiry(cls, val):
@@ -16924,17 +17473,6 @@ class EventType(bb.Union):
         return cls('shared_content_view', val)
 
     @classmethod
-    def shared_folder_change_confidentiality(cls, val):
-        """
-        Create an instance of this class set to the
-        ``shared_folder_change_confidentiality`` tag with value ``val``.
-
-        :param SharedFolderChangeConfidentialityType val:
-        :rtype: EventType
-        """
-        return cls('shared_folder_change_confidentiality', val)
-
-    @classmethod
     def shared_folder_change_link_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -16946,27 +17484,39 @@ class EventType(bb.Union):
         return cls('shared_folder_change_link_policy', val)
 
     @classmethod
-    def shared_folder_change_member_management_policy(cls, val):
+    def shared_folder_change_members_inheritance_policy(cls, val):
         """
         Create an instance of this class set to the
-        ``shared_folder_change_member_management_policy`` tag with value
+        ``shared_folder_change_members_inheritance_policy`` tag with value
         ``val``.
 
-        :param SharedFolderChangeMemberManagementPolicyType val:
+        :param SharedFolderChangeMembersInheritancePolicyType val:
         :rtype: EventType
         """
-        return cls('shared_folder_change_member_management_policy', val)
+        return cls('shared_folder_change_members_inheritance_policy', val)
 
     @classmethod
-    def shared_folder_change_member_policy(cls, val):
+    def shared_folder_change_members_management_policy(cls, val):
         """
         Create an instance of this class set to the
-        ``shared_folder_change_member_policy`` tag with value ``val``.
+        ``shared_folder_change_members_management_policy`` tag with value
+        ``val``.
 
-        :param SharedFolderChangeMemberPolicyType val:
+        :param SharedFolderChangeMembersManagementPolicyType val:
         :rtype: EventType
         """
-        return cls('shared_folder_change_member_policy', val)
+        return cls('shared_folder_change_members_management_policy', val)
+
+    @classmethod
+    def shared_folder_change_members_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_folder_change_members_policy`` tag with value ``val``.
+
+        :param SharedFolderChangeMembersPolicyType val:
+        :rtype: EventType
+        """
+        return cls('shared_folder_change_members_policy', val)
 
     @classmethod
     def shared_folder_create(cls, val):
@@ -17561,6 +18111,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('member_space_limits_add_exception', val)
+
+    @classmethod
+    def member_space_limits_change_caps_type_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_space_limits_change_caps_type_policy`` tag with value ``val``.
+
+        :param MemberSpaceLimitsChangeCapsTypePolicyType val:
+        :rtype: EventType
+        """
+        return cls('member_space_limits_change_caps_type_policy', val)
 
     @classmethod
     def member_space_limits_change_policy(cls, val):
@@ -18161,6 +18722,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'account_capture_migrate_account'
 
+    def is_account_capture_notification_emails_sent(self):
+        """
+        Check if the union tag is ``account_capture_notification_emails_sent``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_capture_notification_emails_sent'
+
     def is_account_capture_relinquish_account(self):
         """
         Check if the union tag is ``account_capture_relinquish_account``.
@@ -18377,14 +18946,6 @@ class EventType(bb.Union):
         """
         return self._tag == 'file_save_copy_reference'
 
-    def is_file_request_add_deadline(self):
-        """
-        Check if the union tag is ``file_request_add_deadline``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_request_add_deadline'
-
     def is_file_request_change(self):
         """
         Check if the union tag is ``file_request_change``.
@@ -18392,14 +18953,6 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_request_change'
-
-    def is_file_request_change_folder(self):
-        """
-        Check if the union tag is ``file_request_change_folder``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_request_change_folder'
 
     def is_file_request_close(self):
         """
@@ -18424,22 +18977,6 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_request_receive_file'
-
-    def is_file_request_remove_deadline(self):
-        """
-        Check if the union tag is ``file_request_remove_deadline``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_request_remove_deadline'
-
-    def is_file_request_send(self):
-        """
-        Check if the union tag is ``file_request_send``.
-
-        :rtype: bool
-        """
-        return self._tag == 'file_request_send'
 
     def is_group_add_external_id(self):
         """
@@ -18601,6 +19138,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'sso_error'
 
+    def is_member_add_name(self):
+        """
+        Check if the union tag is ``member_add_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_add_name'
+
     def is_member_change_admin_role(self):
         """
         Check if the union tag is ``member_change_admin_role``.
@@ -18649,6 +19194,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'member_permanently_delete_account_contents'
 
+    def is_member_space_limits_add_custom_quota(self):
+        """
+        Check if the union tag is ``member_space_limits_add_custom_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_add_custom_quota'
+
+    def is_member_space_limits_change_custom_quota(self):
+        """
+        Check if the union tag is ``member_space_limits_change_custom_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_change_custom_quota'
+
     def is_member_space_limits_change_status(self):
         """
         Check if the union tag is ``member_space_limits_change_status``.
@@ -18656,6 +19217,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_space_limits_change_status'
+
+    def is_member_space_limits_remove_custom_quota(self):
+        """
+        Check if the union tag is ``member_space_limits_remove_custom_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_remove_custom_quota'
 
     def is_member_suggest(self):
         """
@@ -19001,6 +19570,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'emm_create_usage_report'
 
+    def is_export_members_report(self):
+        """
+        Check if the union tag is ``export_members_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'export_members_report'
+
     def is_paper_admin_export_start(self):
         """
         Check if the union tag is ``paper_admin_export_start``.
@@ -19104,6 +19681,30 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sf_external_invite_warn'
+
+    def is_sf_fb_invite(self):
+        """
+        Check if the union tag is ``sf_fb_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_invite'
+
+    def is_sf_fb_invite_change_role(self):
+        """
+        Check if the union tag is ``sf_fb_invite_change_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_invite_change_role'
+
+    def is_sf_fb_uninvite(self):
+        """
+        Check if the union tag is ``sf_fb_uninvite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_uninvite'
 
     def is_sf_invite_group(self):
         """
@@ -19281,13 +19882,13 @@ class EventType(bb.Union):
         """
         return self._tag == 'shared_content_relinquish_membership'
 
-    def is_shared_content_remove_invitee(self):
+    def is_shared_content_remove_invitees(self):
         """
-        Check if the union tag is ``shared_content_remove_invitee``.
+        Check if the union tag is ``shared_content_remove_invitees``.
 
         :rtype: bool
         """
-        return self._tag == 'shared_content_remove_invitee'
+        return self._tag == 'shared_content_remove_invitees'
 
     def is_shared_content_remove_link_expiry(self):
         """
@@ -19337,14 +19938,6 @@ class EventType(bb.Union):
         """
         return self._tag == 'shared_content_view'
 
-    def is_shared_folder_change_confidentiality(self):
-        """
-        Check if the union tag is ``shared_folder_change_confidentiality``.
-
-        :rtype: bool
-        """
-        return self._tag == 'shared_folder_change_confidentiality'
-
     def is_shared_folder_change_link_policy(self):
         """
         Check if the union tag is ``shared_folder_change_link_policy``.
@@ -19353,21 +19946,29 @@ class EventType(bb.Union):
         """
         return self._tag == 'shared_folder_change_link_policy'
 
-    def is_shared_folder_change_member_management_policy(self):
+    def is_shared_folder_change_members_inheritance_policy(self):
         """
-        Check if the union tag is ``shared_folder_change_member_management_policy``.
+        Check if the union tag is ``shared_folder_change_members_inheritance_policy``.
 
         :rtype: bool
         """
-        return self._tag == 'shared_folder_change_member_management_policy'
+        return self._tag == 'shared_folder_change_members_inheritance_policy'
 
-    def is_shared_folder_change_member_policy(self):
+    def is_shared_folder_change_members_management_policy(self):
         """
-        Check if the union tag is ``shared_folder_change_member_policy``.
+        Check if the union tag is ``shared_folder_change_members_management_policy``.
 
         :rtype: bool
         """
-        return self._tag == 'shared_folder_change_member_policy'
+        return self._tag == 'shared_folder_change_members_management_policy'
+
+    def is_shared_folder_change_members_policy(self):
+        """
+        Check if the union tag is ``shared_folder_change_members_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_change_members_policy'
 
     def is_shared_folder_create(self):
         """
@@ -19800,6 +20401,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_space_limits_add_exception'
+
+    def is_member_space_limits_change_caps_type_policy(self):
+        """
+        Check if the union tag is ``member_space_limits_change_caps_type_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_change_caps_type_policy'
 
     def is_member_space_limits_change_policy(self):
         """
@@ -20404,6 +21013,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'account_capture_migrate_account' not set")
         return self._value
 
+    def get_account_capture_notification_emails_sent(self):
+        """
+        (domains) Proactive account capture email sent to all unmanaged members.
+
+        Only call this if :meth:`is_account_capture_notification_emails_sent` is true.
+
+        :rtype: AccountCaptureNotificationEmailsSentType
+        """
+        if not self.is_account_capture_notification_emails_sent():
+            raise AttributeError("tag 'account_capture_notification_emails_sent' not set")
+        return self._value
+
     def get_account_capture_relinquish_account(self):
         """
         (domains) Account captured user relinquished their account by changing
@@ -20740,19 +21361,6 @@ class EventType(bb.Union):
             raise AttributeError("tag 'file_save_copy_reference' not set")
         return self._value
 
-    def get_file_request_add_deadline(self):
-        """
-        (file_requests) Added a deadline to a file request. This event is
-        replaced by file_request_change and will not be logged going forward.
-
-        Only call this if :meth:`is_file_request_add_deadline` is true.
-
-        :rtype: FileRequestAddDeadlineType
-        """
-        if not self.is_file_request_add_deadline():
-            raise AttributeError("tag 'file_request_add_deadline' not set")
-        return self._value
-
     def get_file_request_change(self):
         """
         (file_requests) Change a file request.
@@ -20763,19 +21371,6 @@ class EventType(bb.Union):
         """
         if not self.is_file_request_change():
             raise AttributeError("tag 'file_request_change' not set")
-        return self._value
-
-    def get_file_request_change_folder(self):
-        """
-        (file_requests) Changed the file request folder. This event is replaced
-        by file_request_change and will not be logged going forward.
-
-        Only call this if :meth:`is_file_request_change_folder` is true.
-
-        :rtype: FileRequestChangeFolderType
-        """
-        if not self.is_file_request_change_folder():
-            raise AttributeError("tag 'file_request_change_folder' not set")
         return self._value
 
     def get_file_request_close(self):
@@ -20812,32 +21407,6 @@ class EventType(bb.Union):
         """
         if not self.is_file_request_receive_file():
             raise AttributeError("tag 'file_request_receive_file' not set")
-        return self._value
-
-    def get_file_request_remove_deadline(self):
-        """
-        (file_requests) Removed the file request deadline. This event is
-        replaced by file_request_change and will not be logged going forward.
-
-        Only call this if :meth:`is_file_request_remove_deadline` is true.
-
-        :rtype: FileRequestRemoveDeadlineType
-        """
-        if not self.is_file_request_remove_deadline():
-            raise AttributeError("tag 'file_request_remove_deadline' not set")
-        return self._value
-
-    def get_file_request_send(self):
-        """
-        (file_requests) Sent file request to users via email. This event is
-        replaced by file_request_change and will not be logged going forward.
-
-        Only call this if :meth:`is_file_request_send` is true.
-
-        :rtype: FileRequestSendType
-        """
-        if not self.is_file_request_send():
-            raise AttributeError("tag 'file_request_send' not set")
         return self._value
 
     def get_group_add_external_id(self):
@@ -21083,6 +21652,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'sso_error' not set")
         return self._value
 
+    def get_member_add_name(self):
+        """
+        (members) Specify team member name.
+
+        Only call this if :meth:`is_member_add_name` is true.
+
+        :rtype: MemberAddNameType
+        """
+        if not self.is_member_add_name():
+            raise AttributeError("tag 'member_add_name' not set")
+        return self._value
+
     def get_member_change_admin_role(self):
         """
         (members) Change the admin role belonging to team member.
@@ -21157,6 +21738,30 @@ class EventType(bb.Union):
             raise AttributeError("tag 'member_permanently_delete_account_contents' not set")
         return self._value
 
+    def get_member_space_limits_add_custom_quota(self):
+        """
+        (members) Set custom member space limit.
+
+        Only call this if :meth:`is_member_space_limits_add_custom_quota` is true.
+
+        :rtype: MemberSpaceLimitsAddCustomQuotaType
+        """
+        if not self.is_member_space_limits_add_custom_quota():
+            raise AttributeError("tag 'member_space_limits_add_custom_quota' not set")
+        return self._value
+
+    def get_member_space_limits_change_custom_quota(self):
+        """
+        (members) Changed custom member space limit.
+
+        Only call this if :meth:`is_member_space_limits_change_custom_quota` is true.
+
+        :rtype: MemberSpaceLimitsChangeCustomQuotaType
+        """
+        if not self.is_member_space_limits_change_custom_quota():
+            raise AttributeError("tag 'member_space_limits_change_custom_quota' not set")
+        return self._value
+
     def get_member_space_limits_change_status(self):
         """
         (members) Changed the status with respect to whether the team member is
@@ -21168,6 +21773,18 @@ class EventType(bb.Union):
         """
         if not self.is_member_space_limits_change_status():
             raise AttributeError("tag 'member_space_limits_change_status' not set")
+        return self._value
+
+    def get_member_space_limits_remove_custom_quota(self):
+        """
+        (members) Removed custom member space limit.
+
+        Only call this if :meth:`is_member_space_limits_remove_custom_quota` is true.
+
+        :rtype: MemberSpaceLimitsRemoveCustomQuotaType
+        """
+        if not self.is_member_space_limits_remove_custom_quota():
+            raise AttributeError("tag 'member_space_limits_remove_custom_quota' not set")
         return self._value
 
     def get_member_suggest(self):
@@ -21703,6 +22320,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'emm_create_usage_report' not set")
         return self._value
 
+    def get_export_members_report(self):
+        """
+        (reports) Member data report created.
+
+        Only call this if :meth:`is_export_members_report` is true.
+
+        :rtype: ExportMembersReportType
+        """
+        if not self.is_export_members_report():
+            raise AttributeError("tag 'export_members_report' not set")
+        return self._value
+
     def get_paper_admin_export_start(self):
         """
         (reports) Exported all Paper documents in the team.
@@ -21878,6 +22507,48 @@ class EventType(bb.Union):
             raise AttributeError("tag 'sf_external_invite_warn' not set")
         return self._value
 
+    def get_sf_fb_invite(self):
+        """
+        (sharing) Invited Facebook users to a shared folder. This event is
+        deprecated and will not be logged going forward as the associated
+        product functionality no longer exists.
+
+        Only call this if :meth:`is_sf_fb_invite` is true.
+
+        :rtype: SfFbInviteType
+        """
+        if not self.is_sf_fb_invite():
+            raise AttributeError("tag 'sf_fb_invite' not set")
+        return self._value
+
+    def get_sf_fb_invite_change_role(self):
+        """
+        (sharing) Changed a Facebook user's role in a shared folder. This event
+        is deprecated and will not be logged going forward as the associated
+        product functionality no longer exists.
+
+        Only call this if :meth:`is_sf_fb_invite_change_role` is true.
+
+        :rtype: SfFbInviteChangeRoleType
+        """
+        if not self.is_sf_fb_invite_change_role():
+            raise AttributeError("tag 'sf_fb_invite_change_role' not set")
+        return self._value
+
+    def get_sf_fb_uninvite(self):
+        """
+        (sharing) Uninvited a Facebook user from a shared folder. This event is
+        deprecated and will not be logged going forward as the associated
+        product functionality no longer exists.
+
+        Only call this if :meth:`is_sf_fb_uninvite` is true.
+
+        :rtype: SfFbUninviteType
+        """
+        if not self.is_sf_fb_uninvite():
+            raise AttributeError("tag 'sf_fb_uninvite' not set")
+        return self._value
+
     def get_sf_invite_group(self):
         """
         (sharing) Invited a group to a shared folder. This event is deprecated
@@ -21909,8 +22580,8 @@ class EventType(bb.Union):
     def get_sf_team_invite(self):
         """
         (sharing) Invited team members to a shared folder. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        replaced by shared_content_add_invitees and will not be logged going
+        forward.
 
         Only call this if :meth:`is_sf_team_invite` is true.
 
@@ -21964,9 +22635,8 @@ class EventType(bb.Union):
 
     def get_sf_team_uninvite(self):
         """
-        (sharing) Unshared a folder with a team member. This event is deprecated
-        and will not be logged going forward as the associated product
-        functionality no longer exists.
+        (sharing) Unshared a folder with a team member. This event is replaced
+        by shared_content_remove_invitees and will not be logged going forward.
 
         Only call this if :meth:`is_sf_team_uninvite` is true.
 
@@ -22116,7 +22786,8 @@ class EventType(bb.Union):
 
     def get_shared_content_claim_invitation(self):
         """
-        (sharing) Claimed membership to a team member's shared folder.
+        (sharing) Acquired membership on a shared file or folder by claiming an
+        invitation.
 
         Only call this if :meth:`is_shared_content_claim_invitation` is true.
 
@@ -22162,17 +22833,17 @@ class EventType(bb.Union):
             raise AttributeError("tag 'shared_content_relinquish_membership' not set")
         return self._value
 
-    def get_shared_content_remove_invitee(self):
+    def get_shared_content_remove_invitees(self):
         """
         (sharing) Removed an invitee from the membership of a shared file or
         folder before it was claimed.
 
-        Only call this if :meth:`is_shared_content_remove_invitee` is true.
+        Only call this if :meth:`is_shared_content_remove_invitees` is true.
 
-        :rtype: SharedContentRemoveInviteeType
+        :rtype: SharedContentRemoveInviteesType
         """
-        if not self.is_shared_content_remove_invitee():
-            raise AttributeError("tag 'shared_content_remove_invitee' not set")
+        if not self.is_shared_content_remove_invitees():
+            raise AttributeError("tag 'shared_content_remove_invitees' not set")
         return self._value
 
     def get_shared_content_remove_link_expiry(self):
@@ -22250,18 +22921,6 @@ class EventType(bb.Union):
             raise AttributeError("tag 'shared_content_view' not set")
         return self._value
 
-    def get_shared_folder_change_confidentiality(self):
-        """
-        (sharing) Set or unset the confidential flag on a shared folder.
-
-        Only call this if :meth:`is_shared_folder_change_confidentiality` is true.
-
-        :rtype: SharedFolderChangeConfidentialityType
-        """
-        if not self.is_shared_folder_change_confidentiality():
-            raise AttributeError("tag 'shared_folder_change_confidentiality' not set")
-        return self._value
-
     def get_shared_folder_change_link_policy(self):
         """
         (sharing) Changed who can access the shared folder via a link.
@@ -22274,28 +22933,41 @@ class EventType(bb.Union):
             raise AttributeError("tag 'shared_folder_change_link_policy' not set")
         return self._value
 
-    def get_shared_folder_change_member_management_policy(self):
+    def get_shared_folder_change_members_inheritance_policy(self):
         """
-        (sharing) Changed who can manage the membership of a shared folder.
+        (sharing) Specify if the shared folder inherits its members from the
+        parent folder.
 
-        Only call this if :meth:`is_shared_folder_change_member_management_policy` is true.
+        Only call this if :meth:`is_shared_folder_change_members_inheritance_policy` is true.
 
-        :rtype: SharedFolderChangeMemberManagementPolicyType
+        :rtype: SharedFolderChangeMembersInheritancePolicyType
         """
-        if not self.is_shared_folder_change_member_management_policy():
-            raise AttributeError("tag 'shared_folder_change_member_management_policy' not set")
+        if not self.is_shared_folder_change_members_inheritance_policy():
+            raise AttributeError("tag 'shared_folder_change_members_inheritance_policy' not set")
         return self._value
 
-    def get_shared_folder_change_member_policy(self):
+    def get_shared_folder_change_members_management_policy(self):
+        """
+        (sharing) Changed who can add or remove members of a shared folder.
+
+        Only call this if :meth:`is_shared_folder_change_members_management_policy` is true.
+
+        :rtype: SharedFolderChangeMembersManagementPolicyType
+        """
+        if not self.is_shared_folder_change_members_management_policy():
+            raise AttributeError("tag 'shared_folder_change_members_management_policy' not set")
+        return self._value
+
+    def get_shared_folder_change_members_policy(self):
         """
         (sharing) Changed who can become a member of the shared folder.
 
-        Only call this if :meth:`is_shared_folder_change_member_policy` is true.
+        Only call this if :meth:`is_shared_folder_change_members_policy` is true.
 
-        :rtype: SharedFolderChangeMemberPolicyType
+        :rtype: SharedFolderChangeMembersPolicyType
         """
-        if not self.is_shared_folder_change_member_policy():
-            raise AttributeError("tag 'shared_folder_change_member_policy' not set")
+        if not self.is_shared_folder_change_members_policy():
+            raise AttributeError("tag 'shared_folder_change_members_policy' not set")
         return self._value
 
     def get_shared_folder_create(self):
@@ -22973,6 +23645,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'member_space_limits_add_exception' not set")
         return self._value
 
+    def get_member_space_limits_change_caps_type_policy(self):
+        """
+        (team_policies) Change the member space limit type for the team.
+
+        Only call this if :meth:`is_member_space_limits_change_caps_type_policy` is true.
+
+        :rtype: MemberSpaceLimitsChangeCapsTypePolicyType
+        """
+        if not self.is_member_space_limits_change_caps_type_policy():
+            raise AttributeError("tag 'member_space_limits_change_caps_type_policy' not set")
+        return self._value
+
     def get_member_space_limits_change_policy(self):
         """
         (team_policies) Changed the team default limit level.
@@ -23441,6 +24125,68 @@ class EventType(bb.Union):
         return 'EventType(%r, %r)' % (self._tag, self._value)
 
 EventType_validator = bv.Union(EventType)
+
+class ExportMembersReportDetails(object):
+    """
+    Member data report created.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return 'ExportMembersReportDetails()'
+
+ExportMembersReportDetails_validator = bv.Struct(ExportMembersReportDetails)
+
+class ExportMembersReportType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ExportMembersReportType(description={!r})'.format(
+            self._description_value,
+        )
+
+ExportMembersReportType_validator = bv.Struct(ExportMembersReportType)
 
 class ExtendedVersionHistoryChangePolicyDetails(object):
     """
@@ -25324,140 +26070,6 @@ class FileRenameType(object):
 
 FileRenameType_validator = bv.Struct(FileRenameType)
 
-class FileRequestAddDeadlineDetails(object):
-    """
-    Added a deadline to a file request.
-
-    :ivar file_request_id: File request id. Might be missing due to historical
-        data gap.
-    :ivar request_title: File request title.
-    """
-
-    __slots__ = [
-        '_file_request_id_value',
-        '_file_request_id_present',
-        '_request_title_value',
-        '_request_title_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 file_request_id=None,
-                 request_title=None):
-        self._file_request_id_value = None
-        self._file_request_id_present = False
-        self._request_title_value = None
-        self._request_title_present = False
-        if file_request_id is not None:
-            self.file_request_id = file_request_id
-        if request_title is not None:
-            self.request_title = request_title
-
-    @property
-    def file_request_id(self):
-        """
-        File request id. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._file_request_id_present:
-            return self._file_request_id_value
-        else:
-            return None
-
-    @file_request_id.setter
-    def file_request_id(self, val):
-        if val is None:
-            del self.file_request_id
-            return
-        val = self._file_request_id_validator.validate(val)
-        self._file_request_id_value = val
-        self._file_request_id_present = True
-
-    @file_request_id.deleter
-    def file_request_id(self):
-        self._file_request_id_value = None
-        self._file_request_id_present = False
-
-    @property
-    def request_title(self):
-        """
-        File request title.
-
-        :rtype: str
-        """
-        if self._request_title_present:
-            return self._request_title_value
-        else:
-            return None
-
-    @request_title.setter
-    def request_title(self, val):
-        if val is None:
-            del self.request_title
-            return
-        val = self._request_title_validator.validate(val)
-        self._request_title_value = val
-        self._request_title_present = True
-
-    @request_title.deleter
-    def request_title(self):
-        self._request_title_value = None
-        self._request_title_present = False
-
-    def __repr__(self):
-        return 'FileRequestAddDeadlineDetails(file_request_id={!r}, request_title={!r})'.format(
-            self._file_request_id_value,
-            self._request_title_value,
-        )
-
-FileRequestAddDeadlineDetails_validator = bv.Struct(FileRequestAddDeadlineDetails)
-
-class FileRequestAddDeadlineType(object):
-
-    __slots__ = [
-        '_description_value',
-        '_description_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 description=None):
-        self._description_value = None
-        self._description_present = False
-        if description is not None:
-            self.description = description
-
-    @property
-    def description(self):
-        """
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            raise AttributeError("missing required field 'description'")
-
-    @description.setter
-    def description(self, val):
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    def __repr__(self):
-        return 'FileRequestAddDeadlineType(description={!r})'.format(
-            self._description_value,
-        )
-
-FileRequestAddDeadlineType_validator = bv.Struct(FileRequestAddDeadlineType)
-
 class FileRequestChangeDetails(object):
     """
     Change a file request.
@@ -25581,140 +26193,6 @@ class FileRequestChangeDetails(object):
         )
 
 FileRequestChangeDetails_validator = bv.Struct(FileRequestChangeDetails)
-
-class FileRequestChangeFolderDetails(object):
-    """
-    Changed the file request folder.
-
-    :ivar file_request_id: File request id. Might be missing due to historical
-        data gap.
-    :ivar request_title: File request title.
-    """
-
-    __slots__ = [
-        '_file_request_id_value',
-        '_file_request_id_present',
-        '_request_title_value',
-        '_request_title_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 file_request_id=None,
-                 request_title=None):
-        self._file_request_id_value = None
-        self._file_request_id_present = False
-        self._request_title_value = None
-        self._request_title_present = False
-        if file_request_id is not None:
-            self.file_request_id = file_request_id
-        if request_title is not None:
-            self.request_title = request_title
-
-    @property
-    def file_request_id(self):
-        """
-        File request id. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._file_request_id_present:
-            return self._file_request_id_value
-        else:
-            return None
-
-    @file_request_id.setter
-    def file_request_id(self, val):
-        if val is None:
-            del self.file_request_id
-            return
-        val = self._file_request_id_validator.validate(val)
-        self._file_request_id_value = val
-        self._file_request_id_present = True
-
-    @file_request_id.deleter
-    def file_request_id(self):
-        self._file_request_id_value = None
-        self._file_request_id_present = False
-
-    @property
-    def request_title(self):
-        """
-        File request title.
-
-        :rtype: str
-        """
-        if self._request_title_present:
-            return self._request_title_value
-        else:
-            return None
-
-    @request_title.setter
-    def request_title(self, val):
-        if val is None:
-            del self.request_title
-            return
-        val = self._request_title_validator.validate(val)
-        self._request_title_value = val
-        self._request_title_present = True
-
-    @request_title.deleter
-    def request_title(self):
-        self._request_title_value = None
-        self._request_title_present = False
-
-    def __repr__(self):
-        return 'FileRequestChangeFolderDetails(file_request_id={!r}, request_title={!r})'.format(
-            self._file_request_id_value,
-            self._request_title_value,
-        )
-
-FileRequestChangeFolderDetails_validator = bv.Struct(FileRequestChangeFolderDetails)
-
-class FileRequestChangeFolderType(object):
-
-    __slots__ = [
-        '_description_value',
-        '_description_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 description=None):
-        self._description_value = None
-        self._description_present = False
-        if description is not None:
-            self.description = description
-
-    @property
-    def description(self):
-        """
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            raise AttributeError("missing required field 'description'")
-
-    @description.setter
-    def description(self, val):
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    def __repr__(self):
-        return 'FileRequestChangeFolderType(description={!r})'.format(
-            self._description_value,
-        )
-
-FileRequestChangeFolderType_validator = bv.Struct(FileRequestChangeFolderType)
 
 class FileRequestChangeType(object):
 
@@ -26217,17 +26695,26 @@ class FileRequestReceiveFileDetails(object):
 
     :ivar file_request_id: File request id. Might be missing due to historical
         data gap.
-    :ivar request_title: File request title.
+    :ivar file_request_details: File request details. Might be missing due to
+        historical data gap.
     :ivar submitted_file_names: Submitted file names.
+    :ivar submitter_name: The name as provided by the submitter. Might be
+        missing due to historical data gap.
+    :ivar submitter_email: The email as provided by the submitter. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
         '_file_request_id_value',
         '_file_request_id_present',
-        '_request_title_value',
-        '_request_title_present',
+        '_file_request_details_value',
+        '_file_request_details_present',
         '_submitted_file_names_value',
         '_submitted_file_names_present',
+        '_submitter_name_value',
+        '_submitter_name_present',
+        '_submitter_email_value',
+        '_submitter_email_present',
     ]
 
     _has_required_fields = True
@@ -26235,19 +26722,29 @@ class FileRequestReceiveFileDetails(object):
     def __init__(self,
                  submitted_file_names=None,
                  file_request_id=None,
-                 request_title=None):
+                 file_request_details=None,
+                 submitter_name=None,
+                 submitter_email=None):
         self._file_request_id_value = None
         self._file_request_id_present = False
-        self._request_title_value = None
-        self._request_title_present = False
+        self._file_request_details_value = None
+        self._file_request_details_present = False
         self._submitted_file_names_value = None
         self._submitted_file_names_present = False
+        self._submitter_name_value = None
+        self._submitter_name_present = False
+        self._submitter_email_value = None
+        self._submitter_email_present = False
         if file_request_id is not None:
             self.file_request_id = file_request_id
-        if request_title is not None:
-            self.request_title = request_title
+        if file_request_details is not None:
+            self.file_request_details = file_request_details
         if submitted_file_names is not None:
             self.submitted_file_names = submitted_file_names
+        if submitter_name is not None:
+            self.submitter_name = submitter_name
+        if submitter_email is not None:
+            self.submitter_email = submitter_email
 
     @property
     def file_request_id(self):
@@ -26276,30 +26773,30 @@ class FileRequestReceiveFileDetails(object):
         self._file_request_id_present = False
 
     @property
-    def request_title(self):
+    def file_request_details(self):
         """
-        File request title.
+        File request details. Might be missing due to historical data gap.
 
-        :rtype: str
+        :rtype: FileRequestDetails
         """
-        if self._request_title_present:
-            return self._request_title_value
+        if self._file_request_details_present:
+            return self._file_request_details_value
         else:
             return None
 
-    @request_title.setter
-    def request_title(self, val):
+    @file_request_details.setter
+    def file_request_details(self, val):
         if val is None:
-            del self.request_title
+            del self.file_request_details
             return
-        val = self._request_title_validator.validate(val)
-        self._request_title_value = val
-        self._request_title_present = True
+        self._file_request_details_validator.validate_type_only(val)
+        self._file_request_details_value = val
+        self._file_request_details_present = True
 
-    @request_title.deleter
-    def request_title(self):
-        self._request_title_value = None
-        self._request_title_present = False
+    @file_request_details.deleter
+    def file_request_details(self):
+        self._file_request_details_value = None
+        self._file_request_details_present = False
 
     @property
     def submitted_file_names(self):
@@ -26324,11 +26821,67 @@ class FileRequestReceiveFileDetails(object):
         self._submitted_file_names_value = None
         self._submitted_file_names_present = False
 
+    @property
+    def submitter_name(self):
+        """
+        The name as provided by the submitter. Might be missing due to
+        historical data gap.
+
+        :rtype: str
+        """
+        if self._submitter_name_present:
+            return self._submitter_name_value
+        else:
+            return None
+
+    @submitter_name.setter
+    def submitter_name(self, val):
+        if val is None:
+            del self.submitter_name
+            return
+        val = self._submitter_name_validator.validate(val)
+        self._submitter_name_value = val
+        self._submitter_name_present = True
+
+    @submitter_name.deleter
+    def submitter_name(self):
+        self._submitter_name_value = None
+        self._submitter_name_present = False
+
+    @property
+    def submitter_email(self):
+        """
+        The email as provided by the submitter. Might be missing due to
+        historical data gap.
+
+        :rtype: str
+        """
+        if self._submitter_email_present:
+            return self._submitter_email_value
+        else:
+            return None
+
+    @submitter_email.setter
+    def submitter_email(self, val):
+        if val is None:
+            del self.submitter_email
+            return
+        val = self._submitter_email_validator.validate(val)
+        self._submitter_email_value = val
+        self._submitter_email_present = True
+
+    @submitter_email.deleter
+    def submitter_email(self):
+        self._submitter_email_value = None
+        self._submitter_email_present = False
+
     def __repr__(self):
-        return 'FileRequestReceiveFileDetails(submitted_file_names={!r}, file_request_id={!r}, request_title={!r})'.format(
+        return 'FileRequestReceiveFileDetails(submitted_file_names={!r}, file_request_id={!r}, file_request_details={!r}, submitter_name={!r}, submitter_email={!r})'.format(
             self._submitted_file_names_value,
             self._file_request_id_value,
-            self._request_title_value,
+            self._file_request_details_value,
+            self._submitter_name_value,
+            self._submitter_email_value,
         )
 
 FileRequestReceiveFileDetails_validator = bv.Struct(FileRequestReceiveFileDetails)
@@ -26376,274 +26929,6 @@ class FileRequestReceiveFileType(object):
         )
 
 FileRequestReceiveFileType_validator = bv.Struct(FileRequestReceiveFileType)
-
-class FileRequestRemoveDeadlineDetails(object):
-    """
-    Removed the file request deadline.
-
-    :ivar file_request_id: File request id. Might be missing due to historical
-        data gap.
-    :ivar request_title: File request title.
-    """
-
-    __slots__ = [
-        '_file_request_id_value',
-        '_file_request_id_present',
-        '_request_title_value',
-        '_request_title_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 file_request_id=None,
-                 request_title=None):
-        self._file_request_id_value = None
-        self._file_request_id_present = False
-        self._request_title_value = None
-        self._request_title_present = False
-        if file_request_id is not None:
-            self.file_request_id = file_request_id
-        if request_title is not None:
-            self.request_title = request_title
-
-    @property
-    def file_request_id(self):
-        """
-        File request id. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._file_request_id_present:
-            return self._file_request_id_value
-        else:
-            return None
-
-    @file_request_id.setter
-    def file_request_id(self, val):
-        if val is None:
-            del self.file_request_id
-            return
-        val = self._file_request_id_validator.validate(val)
-        self._file_request_id_value = val
-        self._file_request_id_present = True
-
-    @file_request_id.deleter
-    def file_request_id(self):
-        self._file_request_id_value = None
-        self._file_request_id_present = False
-
-    @property
-    def request_title(self):
-        """
-        File request title.
-
-        :rtype: str
-        """
-        if self._request_title_present:
-            return self._request_title_value
-        else:
-            return None
-
-    @request_title.setter
-    def request_title(self, val):
-        if val is None:
-            del self.request_title
-            return
-        val = self._request_title_validator.validate(val)
-        self._request_title_value = val
-        self._request_title_present = True
-
-    @request_title.deleter
-    def request_title(self):
-        self._request_title_value = None
-        self._request_title_present = False
-
-    def __repr__(self):
-        return 'FileRequestRemoveDeadlineDetails(file_request_id={!r}, request_title={!r})'.format(
-            self._file_request_id_value,
-            self._request_title_value,
-        )
-
-FileRequestRemoveDeadlineDetails_validator = bv.Struct(FileRequestRemoveDeadlineDetails)
-
-class FileRequestRemoveDeadlineType(object):
-
-    __slots__ = [
-        '_description_value',
-        '_description_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 description=None):
-        self._description_value = None
-        self._description_present = False
-        if description is not None:
-            self.description = description
-
-    @property
-    def description(self):
-        """
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            raise AttributeError("missing required field 'description'")
-
-    @description.setter
-    def description(self, val):
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    def __repr__(self):
-        return 'FileRequestRemoveDeadlineType(description={!r})'.format(
-            self._description_value,
-        )
-
-FileRequestRemoveDeadlineType_validator = bv.Struct(FileRequestRemoveDeadlineType)
-
-class FileRequestSendDetails(object):
-    """
-    Sent file request to users via email.
-
-    :ivar file_request_id: File request id. Might be missing due to historical
-        data gap.
-    :ivar request_title: File request title.
-    """
-
-    __slots__ = [
-        '_file_request_id_value',
-        '_file_request_id_present',
-        '_request_title_value',
-        '_request_title_present',
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self,
-                 file_request_id=None,
-                 request_title=None):
-        self._file_request_id_value = None
-        self._file_request_id_present = False
-        self._request_title_value = None
-        self._request_title_present = False
-        if file_request_id is not None:
-            self.file_request_id = file_request_id
-        if request_title is not None:
-            self.request_title = request_title
-
-    @property
-    def file_request_id(self):
-        """
-        File request id. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._file_request_id_present:
-            return self._file_request_id_value
-        else:
-            return None
-
-    @file_request_id.setter
-    def file_request_id(self, val):
-        if val is None:
-            del self.file_request_id
-            return
-        val = self._file_request_id_validator.validate(val)
-        self._file_request_id_value = val
-        self._file_request_id_present = True
-
-    @file_request_id.deleter
-    def file_request_id(self):
-        self._file_request_id_value = None
-        self._file_request_id_present = False
-
-    @property
-    def request_title(self):
-        """
-        File request title.
-
-        :rtype: str
-        """
-        if self._request_title_present:
-            return self._request_title_value
-        else:
-            return None
-
-    @request_title.setter
-    def request_title(self, val):
-        if val is None:
-            del self.request_title
-            return
-        val = self._request_title_validator.validate(val)
-        self._request_title_value = val
-        self._request_title_present = True
-
-    @request_title.deleter
-    def request_title(self):
-        self._request_title_value = None
-        self._request_title_present = False
-
-    def __repr__(self):
-        return 'FileRequestSendDetails(file_request_id={!r}, request_title={!r})'.format(
-            self._file_request_id_value,
-            self._request_title_value,
-        )
-
-FileRequestSendDetails_validator = bv.Struct(FileRequestSendDetails)
-
-class FileRequestSendType(object):
-
-    __slots__ = [
-        '_description_value',
-        '_description_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 description=None):
-        self._description_value = None
-        self._description_present = False
-        if description is not None:
-            self.description = description
-
-    @property
-    def description(self):
-        """
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            raise AttributeError("missing required field 'description'")
-
-    @description.setter
-    def description(self, val):
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    def __repr__(self):
-        return 'FileRequestSendType(description={!r})'.format(
-            self._description_value,
-        )
-
-FileRequestSendType_validator = bv.Struct(FileRequestSendType)
 
 class FileRequestsChangePolicyDetails(object):
     """
@@ -29832,7 +30117,7 @@ class JoinTeamDetails(object):
         """
         Linked devices.
 
-        :rtype: list of [DeviceLogInfo]
+        :rtype: list of [LinkedDeviceLogInfo]
         """
         if self._linked_devices_present:
             return self._linked_devices_value
@@ -29882,59 +30167,519 @@ class JoinTeamDetails(object):
 
 JoinTeamDetails_validator = bv.Struct(JoinTeamDetails)
 
-class LinkAudience(bb.Union):
+class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
+    Information on sessions, in legacy format
+
+    :ivar display_name: The device name. Might be missing due to historical data
+        gap.
+    :ivar is_emm_managed: Is device managed by emm. Might be missing due to
+        historical data gap.
+    :ivar platform: Information on the hosting platform. Might be missing due to
+        historical data gap.
+    :ivar mac_address: The mac address of the last activity from this session.
+        Might be missing due to historical data gap.
+    :ivar os_version: The hosting OS version. Might be missing due to historical
+        data gap.
+    :ivar device_type: Information on the hosting device type. Might be missing
+        due to historical data gap.
+    :ivar client_version: The Dropbox client version. Might be missing due to
+        historical data gap.
+    :ivar legacy_uniq_id: Alternative unique device session id, instead of
+        session id field. Might be missing due to historical data gap.
     """
 
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    public = None
-    # Attribute is overwritten below the class definition
-    team = None
-    # Attribute is overwritten below the class definition
-    members = None
-    # Attribute is overwritten below the class definition
-    other = None
+    __slots__ = [
+        '_display_name_value',
+        '_display_name_present',
+        '_is_emm_managed_value',
+        '_is_emm_managed_present',
+        '_platform_value',
+        '_platform_present',
+        '_mac_address_value',
+        '_mac_address_present',
+        '_os_version_value',
+        '_os_version_present',
+        '_device_type_value',
+        '_device_type_present',
+        '_client_version_value',
+        '_client_version_present',
+        '_legacy_uniq_id_value',
+        '_legacy_uniq_id_present',
+    ]
 
-    def is_public(self):
+    _has_required_fields = False
+
+    def __init__(self,
+                 session_id=None,
+                 ip_address=None,
+                 created=None,
+                 updated=None,
+                 display_name=None,
+                 is_emm_managed=None,
+                 platform=None,
+                 mac_address=None,
+                 os_version=None,
+                 device_type=None,
+                 client_version=None,
+                 legacy_uniq_id=None):
+        super(LegacyDeviceSessionLogInfo, self).__init__(session_id,
+                                                         ip_address,
+                                                         created,
+                                                         updated)
+        self._display_name_value = None
+        self._display_name_present = False
+        self._is_emm_managed_value = None
+        self._is_emm_managed_present = False
+        self._platform_value = None
+        self._platform_present = False
+        self._mac_address_value = None
+        self._mac_address_present = False
+        self._os_version_value = None
+        self._os_version_present = False
+        self._device_type_value = None
+        self._device_type_present = False
+        self._client_version_value = None
+        self._client_version_present = False
+        self._legacy_uniq_id_value = None
+        self._legacy_uniq_id_present = False
+        if display_name is not None:
+            self.display_name = display_name
+        if is_emm_managed is not None:
+            self.is_emm_managed = is_emm_managed
+        if platform is not None:
+            self.platform = platform
+        if mac_address is not None:
+            self.mac_address = mac_address
+        if os_version is not None:
+            self.os_version = os_version
+        if device_type is not None:
+            self.device_type = device_type
+        if client_version is not None:
+            self.client_version = client_version
+        if legacy_uniq_id is not None:
+            self.legacy_uniq_id = legacy_uniq_id
+
+    @property
+    def display_name(self):
         """
-        Check if the union tag is ``public``.
+        The device name. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._display_name_present:
+            return self._display_name_value
+        else:
+            return None
+
+    @display_name.setter
+    def display_name(self, val):
+        if val is None:
+            del self.display_name
+            return
+        val = self._display_name_validator.validate(val)
+        self._display_name_value = val
+        self._display_name_present = True
+
+    @display_name.deleter
+    def display_name(self):
+        self._display_name_value = None
+        self._display_name_present = False
+
+    @property
+    def is_emm_managed(self):
+        """
+        Is device managed by emm. Might be missing due to historical data gap.
 
         :rtype: bool
         """
-        return self._tag == 'public'
+        if self._is_emm_managed_present:
+            return self._is_emm_managed_value
+        else:
+            return None
 
-    def is_team(self):
-        """
-        Check if the union tag is ``team``.
+    @is_emm_managed.setter
+    def is_emm_managed(self, val):
+        if val is None:
+            del self.is_emm_managed
+            return
+        val = self._is_emm_managed_validator.validate(val)
+        self._is_emm_managed_value = val
+        self._is_emm_managed_present = True
 
-        :rtype: bool
-        """
-        return self._tag == 'team'
+    @is_emm_managed.deleter
+    def is_emm_managed(self):
+        self._is_emm_managed_value = None
+        self._is_emm_managed_present = False
 
-    def is_members(self):
+    @property
+    def platform(self):
         """
-        Check if the union tag is ``members``.
+        Information on the hosting platform. Might be missing due to historical
+        data gap.
 
-        :rtype: bool
+        :rtype: str
         """
-        return self._tag == 'members'
+        if self._platform_present:
+            return self._platform_value
+        else:
+            return None
 
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
+    @platform.setter
+    def platform(self, val):
+        if val is None:
+            del self.platform
+            return
+        val = self._platform_validator.validate(val)
+        self._platform_value = val
+        self._platform_present = True
 
-        :rtype: bool
+    @platform.deleter
+    def platform(self):
+        self._platform_value = None
+        self._platform_present = False
+
+    @property
+    def mac_address(self):
         """
-        return self._tag == 'other'
+        The mac address of the last activity from this session. Might be missing
+        due to historical data gap.
+
+        :rtype: str
+        """
+        if self._mac_address_present:
+            return self._mac_address_value
+        else:
+            return None
+
+    @mac_address.setter
+    def mac_address(self, val):
+        if val is None:
+            del self.mac_address
+            return
+        val = self._mac_address_validator.validate(val)
+        self._mac_address_value = val
+        self._mac_address_present = True
+
+    @mac_address.deleter
+    def mac_address(self):
+        self._mac_address_value = None
+        self._mac_address_present = False
+
+    @property
+    def os_version(self):
+        """
+        The hosting OS version. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._os_version_present:
+            return self._os_version_value
+        else:
+            return None
+
+    @os_version.setter
+    def os_version(self, val):
+        if val is None:
+            del self.os_version
+            return
+        val = self._os_version_validator.validate(val)
+        self._os_version_value = val
+        self._os_version_present = True
+
+    @os_version.deleter
+    def os_version(self):
+        self._os_version_value = None
+        self._os_version_present = False
+
+    @property
+    def device_type(self):
+        """
+        Information on the hosting device type. Might be missing due to
+        historical data gap.
+
+        :rtype: str
+        """
+        if self._device_type_present:
+            return self._device_type_value
+        else:
+            return None
+
+    @device_type.setter
+    def device_type(self, val):
+        if val is None:
+            del self.device_type
+            return
+        val = self._device_type_validator.validate(val)
+        self._device_type_value = val
+        self._device_type_present = True
+
+    @device_type.deleter
+    def device_type(self):
+        self._device_type_value = None
+        self._device_type_present = False
+
+    @property
+    def client_version(self):
+        """
+        The Dropbox client version. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._client_version_present:
+            return self._client_version_value
+        else:
+            return None
+
+    @client_version.setter
+    def client_version(self, val):
+        if val is None:
+            del self.client_version
+            return
+        val = self._client_version_validator.validate(val)
+        self._client_version_value = val
+        self._client_version_present = True
+
+    @client_version.deleter
+    def client_version(self):
+        self._client_version_value = None
+        self._client_version_present = False
+
+    @property
+    def legacy_uniq_id(self):
+        """
+        Alternative unique device session id, instead of session id field. Might
+        be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._legacy_uniq_id_present:
+            return self._legacy_uniq_id_value
+        else:
+            return None
+
+    @legacy_uniq_id.setter
+    def legacy_uniq_id(self, val):
+        if val is None:
+            del self.legacy_uniq_id
+            return
+        val = self._legacy_uniq_id_validator.validate(val)
+        self._legacy_uniq_id_value = val
+        self._legacy_uniq_id_present = True
+
+    @legacy_uniq_id.deleter
+    def legacy_uniq_id(self):
+        self._legacy_uniq_id_value = None
+        self._legacy_uniq_id_present = False
 
     def __repr__(self):
-        return 'LinkAudience(%r, %r)' % (self._tag, self._value)
+        return 'LegacyDeviceSessionLogInfo(session_id={!r}, ip_address={!r}, created={!r}, updated={!r}, display_name={!r}, is_emm_managed={!r}, platform={!r}, mac_address={!r}, os_version={!r}, device_type={!r}, client_version={!r}, legacy_uniq_id={!r})'.format(
+            self._session_id_value,
+            self._ip_address_value,
+            self._created_value,
+            self._updated_value,
+            self._display_name_value,
+            self._is_emm_managed_value,
+            self._platform_value,
+            self._mac_address_value,
+            self._os_version_value,
+            self._device_type_value,
+            self._client_version_value,
+            self._legacy_uniq_id_value,
+        )
 
-LinkAudience_validator = bv.Union(LinkAudience)
+LegacyDeviceSessionLogInfo_validator = bv.Struct(LegacyDeviceSessionLogInfo)
+
+class LinkedDeviceLogInfo(object):
+    """
+    Linked Device's logged information.
+
+    :ivar device_type: Device type.
+    :ivar display_name: Device display name.
+    :ivar ip_address: The IP address of the last activity from this device.
+    :ivar last_activity: Last activity.
+    :ivar platform: Device platform name.
+    """
+
+    __slots__ = [
+        '_device_type_value',
+        '_device_type_present',
+        '_display_name_value',
+        '_display_name_present',
+        '_ip_address_value',
+        '_ip_address_present',
+        '_last_activity_value',
+        '_last_activity_present',
+        '_platform_value',
+        '_platform_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 device_type=None,
+                 display_name=None,
+                 ip_address=None,
+                 last_activity=None,
+                 platform=None):
+        self._device_type_value = None
+        self._device_type_present = False
+        self._display_name_value = None
+        self._display_name_present = False
+        self._ip_address_value = None
+        self._ip_address_present = False
+        self._last_activity_value = None
+        self._last_activity_present = False
+        self._platform_value = None
+        self._platform_present = False
+        if device_type is not None:
+            self.device_type = device_type
+        if display_name is not None:
+            self.display_name = display_name
+        if ip_address is not None:
+            self.ip_address = ip_address
+        if last_activity is not None:
+            self.last_activity = last_activity
+        if platform is not None:
+            self.platform = platform
+
+    @property
+    def device_type(self):
+        """
+        Device type.
+
+        :rtype: str
+        """
+        if self._device_type_present:
+            return self._device_type_value
+        else:
+            raise AttributeError("missing required field 'device_type'")
+
+    @device_type.setter
+    def device_type(self, val):
+        val = self._device_type_validator.validate(val)
+        self._device_type_value = val
+        self._device_type_present = True
+
+    @device_type.deleter
+    def device_type(self):
+        self._device_type_value = None
+        self._device_type_present = False
+
+    @property
+    def display_name(self):
+        """
+        Device display name.
+
+        :rtype: str
+        """
+        if self._display_name_present:
+            return self._display_name_value
+        else:
+            return None
+
+    @display_name.setter
+    def display_name(self, val):
+        if val is None:
+            del self.display_name
+            return
+        val = self._display_name_validator.validate(val)
+        self._display_name_value = val
+        self._display_name_present = True
+
+    @display_name.deleter
+    def display_name(self):
+        self._display_name_value = None
+        self._display_name_present = False
+
+    @property
+    def ip_address(self):
+        """
+        The IP address of the last activity from this device.
+
+        :rtype: str
+        """
+        if self._ip_address_present:
+            return self._ip_address_value
+        else:
+            return None
+
+    @ip_address.setter
+    def ip_address(self, val):
+        if val is None:
+            del self.ip_address
+            return
+        val = self._ip_address_validator.validate(val)
+        self._ip_address_value = val
+        self._ip_address_present = True
+
+    @ip_address.deleter
+    def ip_address(self):
+        self._ip_address_value = None
+        self._ip_address_present = False
+
+    @property
+    def last_activity(self):
+        """
+        Last activity.
+
+        :rtype: str
+        """
+        if self._last_activity_present:
+            return self._last_activity_value
+        else:
+            return None
+
+    @last_activity.setter
+    def last_activity(self, val):
+        if val is None:
+            del self.last_activity
+            return
+        val = self._last_activity_validator.validate(val)
+        self._last_activity_value = val
+        self._last_activity_present = True
+
+    @last_activity.deleter
+    def last_activity(self):
+        self._last_activity_value = None
+        self._last_activity_present = False
+
+    @property
+    def platform(self):
+        """
+        Device platform name.
+
+        :rtype: str
+        """
+        if self._platform_present:
+            return self._platform_value
+        else:
+            return None
+
+    @platform.setter
+    def platform(self, val):
+        if val is None:
+            del self.platform
+            return
+        val = self._platform_validator.validate(val)
+        self._platform_value = val
+        self._platform_present = True
+
+    @platform.deleter
+    def platform(self):
+        self._platform_value = None
+        self._platform_present = False
+
+    def __repr__(self):
+        return 'LinkedDeviceLogInfo(device_type={!r}, display_name={!r}, ip_address={!r}, last_activity={!r}, platform={!r})'.format(
+            self._device_type_value,
+            self._display_name_value,
+            self._ip_address_value,
+            self._last_activity_value,
+            self._platform_value,
+        )
+
+LinkedDeviceLogInfo_validator = bv.Struct(LinkedDeviceLogInfo)
 
 class LoginFailDetails(object):
     """
@@ -30348,6 +31093,101 @@ class LogoutType(object):
 
 LogoutType_validator = bv.Struct(LogoutType)
 
+class MemberAddNameDetails(object):
+    """
+    Specify team member name.
+
+    :ivar new_value: New user's name.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def new_value(self):
+        """
+        New user's name.
+
+        :rtype: UserNameLogInfo
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def __repr__(self):
+        return 'MemberAddNameDetails(new_value={!r})'.format(
+            self._new_value_value,
+        )
+
+MemberAddNameDetails_validator = bv.Struct(MemberAddNameDetails)
+
+class MemberAddNameType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'MemberAddNameType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberAddNameType_validator = bv.Struct(MemberAddNameType)
+
 class MemberChangeAdminRoleDetails(object):
     """
     Change the admin role belonging to team member.
@@ -30749,7 +31589,8 @@ class MemberChangeNameDetails(object):
     Changed team member name.
 
     :ivar new_value: New user's name.
-    :ivar previous_value: Previous user's name.
+    :ivar previous_value: Previous user's name. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -30799,7 +31640,7 @@ class MemberChangeNameDetails(object):
     @property
     def previous_value(self):
         """
-        Previous user's name.
+        Previous user's name. Might be missing due to historical data gap.
 
         :rtype: UserNameLogInfo
         """
@@ -30881,8 +31722,8 @@ class MemberChangeStatusDetails(object):
     :ivar previous_value: Previous member status. Might be missing due to
         historical data gap.
     :ivar new_value: New member status.
-    :ivar team_join_details: Additional information relevant when a new member
-        joins the team.
+    :ivar action: Additional information indicating the action taken that caused
+        status change.
     """
 
     __slots__ = [
@@ -30890,8 +31731,8 @@ class MemberChangeStatusDetails(object):
         '_previous_value_present',
         '_new_value_value',
         '_new_value_present',
-        '_team_join_details_value',
-        '_team_join_details_present',
+        '_action_value',
+        '_action_present',
     ]
 
     _has_required_fields = True
@@ -30899,19 +31740,19 @@ class MemberChangeStatusDetails(object):
     def __init__(self,
                  new_value=None,
                  previous_value=None,
-                 team_join_details=None):
+                 action=None):
         self._previous_value_value = None
         self._previous_value_present = False
         self._new_value_value = None
         self._new_value_present = False
-        self._team_join_details_value = None
-        self._team_join_details_present = False
+        self._action_value = None
+        self._action_present = False
         if previous_value is not None:
             self.previous_value = previous_value
         if new_value is not None:
             self.new_value = new_value
-        if team_join_details is not None:
-            self.team_join_details = team_join_details
+        if action is not None:
+            self.action = action
 
     @property
     def previous_value(self):
@@ -30963,36 +31804,37 @@ class MemberChangeStatusDetails(object):
         self._new_value_present = False
 
     @property
-    def team_join_details(self):
+    def action(self):
         """
-        Additional information relevant when a new member joins the team.
+        Additional information indicating the action taken that caused status
+        change.
 
-        :rtype: JoinTeamDetails
+        :rtype: ActionDetails
         """
-        if self._team_join_details_present:
-            return self._team_join_details_value
+        if self._action_present:
+            return self._action_value
         else:
             return None
 
-    @team_join_details.setter
-    def team_join_details(self, val):
+    @action.setter
+    def action(self, val):
         if val is None:
-            del self.team_join_details
+            del self.action
             return
-        self._team_join_details_validator.validate_type_only(val)
-        self._team_join_details_value = val
-        self._team_join_details_present = True
+        self._action_validator.validate_type_only(val)
+        self._action_value = val
+        self._action_present = True
 
-    @team_join_details.deleter
-    def team_join_details(self):
-        self._team_join_details_value = None
-        self._team_join_details_present = False
+    @action.deleter
+    def action(self):
+        self._action_value = None
+        self._action_present = False
 
     def __repr__(self):
-        return 'MemberChangeStatusDetails(new_value={!r}, previous_value={!r}, team_join_details={!r})'.format(
+        return 'MemberChangeStatusDetails(new_value={!r}, previous_value={!r}, action={!r})'.format(
             self._new_value_value,
             self._previous_value_value,
-            self._team_join_details_value,
+            self._action_value,
         )
 
 MemberChangeStatusDetails_validator = bv.Struct(MemberChangeStatusDetails)
@@ -31102,6 +31944,60 @@ class MemberPermanentlyDeleteAccountContentsType(object):
         )
 
 MemberPermanentlyDeleteAccountContentsType_validator = bv.Struct(MemberPermanentlyDeleteAccountContentsType)
+
+class MemberRemoveActionType(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    delete = None
+    # Attribute is overwritten below the class definition
+    offboard = None
+    # Attribute is overwritten below the class definition
+    leave = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_delete(self):
+        """
+        Check if the union tag is ``delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'delete'
+
+    def is_offboard(self):
+        """
+        Check if the union tag is ``offboard``.
+
+        :rtype: bool
+        """
+        return self._tag == 'offboard'
+
+    def is_leave(self):
+        """
+        Check if the union tag is ``leave``.
+
+        :rtype: bool
+        """
+        return self._tag == 'leave'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'MemberRemoveActionType(%r, %r)' % (self._tag, self._value)
+
+MemberRemoveActionType_validator = bv.Union(MemberRemoveActionType)
 
 class MemberRequestsChangePolicyDetails(object):
     """
@@ -31289,6 +32185,101 @@ class MemberRequestsPolicy(bb.Union):
 
 MemberRequestsPolicy_validator = bv.Union(MemberRequestsPolicy)
 
+class MemberSpaceLimitsAddCustomQuotaDetails(object):
+    """
+    Set custom member space limit.
+
+    :ivar new_value: New custom quota value in bytes.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def new_value(self):
+        """
+        New custom quota value in bytes.
+
+        :rtype: long
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def __repr__(self):
+        return 'MemberSpaceLimitsAddCustomQuotaDetails(new_value={!r})'.format(
+            self._new_value_value,
+        )
+
+MemberSpaceLimitsAddCustomQuotaDetails_validator = bv.Struct(MemberSpaceLimitsAddCustomQuotaDetails)
+
+class MemberSpaceLimitsAddCustomQuotaType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'MemberSpaceLimitsAddCustomQuotaType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberSpaceLimitsAddCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsAddCustomQuotaType)
+
 class MemberSpaceLimitsAddExceptionDetails(object):
     """
     Added an exception for one or more team members to bypass space limits
@@ -31351,6 +32342,260 @@ class MemberSpaceLimitsAddExceptionType(object):
         )
 
 MemberSpaceLimitsAddExceptionType_validator = bv.Struct(MemberSpaceLimitsAddExceptionType)
+
+class MemberSpaceLimitsChangeCapsTypePolicyDetails(object):
+    """
+    Change the member space limit type for the team.
+
+    :ivar previous_value: Previous space limit type.
+    :ivar new_value: New space limit type.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Previous space limit type.
+
+        :rtype: SpaceCapsType
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New space limit type.
+
+        :rtype: SpaceCapsType
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def __repr__(self):
+        return 'MemberSpaceLimitsChangeCapsTypePolicyDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+MemberSpaceLimitsChangeCapsTypePolicyDetails_validator = bv.Struct(MemberSpaceLimitsChangeCapsTypePolicyDetails)
+
+class MemberSpaceLimitsChangeCapsTypePolicyType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'MemberSpaceLimitsChangeCapsTypePolicyType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberSpaceLimitsChangeCapsTypePolicyType_validator = bv.Struct(MemberSpaceLimitsChangeCapsTypePolicyType)
+
+class MemberSpaceLimitsChangeCustomQuotaDetails(object):
+    """
+    Changed custom member space limit.
+
+    :ivar previous_value: Previous custom quota value in bytes.
+    :ivar new_value: New custom quota value in bytes.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Previous custom quota value in bytes.
+
+        :rtype: long
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New custom quota value in bytes.
+
+        :rtype: long
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def __repr__(self):
+        return 'MemberSpaceLimitsChangeCustomQuotaDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+MemberSpaceLimitsChangeCustomQuotaDetails_validator = bv.Struct(MemberSpaceLimitsChangeCustomQuotaDetails)
+
+class MemberSpaceLimitsChangeCustomQuotaType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'MemberSpaceLimitsChangeCustomQuotaType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberSpaceLimitsChangeCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsChangeCustomQuotaType)
 
 class MemberSpaceLimitsChangePolicyDetails(object):
     """
@@ -31616,6 +32861,68 @@ class MemberSpaceLimitsChangeStatusType(object):
         )
 
 MemberSpaceLimitsChangeStatusType_validator = bv.Struct(MemberSpaceLimitsChangeStatusType)
+
+class MemberSpaceLimitsRemoveCustomQuotaDetails(object):
+    """
+    Removed custom member space limit.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return 'MemberSpaceLimitsRemoveCustomQuotaDetails()'
+
+MemberSpaceLimitsRemoveCustomQuotaDetails_validator = bv.Struct(MemberSpaceLimitsRemoveCustomQuotaDetails)
+
+class MemberSpaceLimitsRemoveCustomQuotaType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'MemberSpaceLimitsRemoveCustomQuotaType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberSpaceLimitsRemoveCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsRemoveCustomQuotaType)
 
 class MemberSpaceLimitsRemoveExceptionDetails(object):
     """
@@ -32031,85 +33338,18 @@ MemberSuggestionsPolicy_validator = bv.Union(MemberSuggestionsPolicy)
 class MemberTransferAccountContentsDetails(object):
     """
     Transferred contents of a removed team member account to another member.
-
-    :ivar src_participant_index: Source participant position in the Participants
-        list.
-    :ivar dest_participant_index: Destination participant position in the
-        Participants list.
     """
 
     __slots__ = [
-        '_src_participant_index_value',
-        '_src_participant_index_present',
-        '_dest_participant_index_value',
-        '_dest_participant_index_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
-    def __init__(self,
-                 src_participant_index=None,
-                 dest_participant_index=None):
-        self._src_participant_index_value = None
-        self._src_participant_index_present = False
-        self._dest_participant_index_value = None
-        self._dest_participant_index_present = False
-        if src_participant_index is not None:
-            self.src_participant_index = src_participant_index
-        if dest_participant_index is not None:
-            self.dest_participant_index = dest_participant_index
-
-    @property
-    def src_participant_index(self):
-        """
-        Source participant position in the Participants list.
-
-        :rtype: long
-        """
-        if self._src_participant_index_present:
-            return self._src_participant_index_value
-        else:
-            raise AttributeError("missing required field 'src_participant_index'")
-
-    @src_participant_index.setter
-    def src_participant_index(self, val):
-        val = self._src_participant_index_validator.validate(val)
-        self._src_participant_index_value = val
-        self._src_participant_index_present = True
-
-    @src_participant_index.deleter
-    def src_participant_index(self):
-        self._src_participant_index_value = None
-        self._src_participant_index_present = False
-
-    @property
-    def dest_participant_index(self):
-        """
-        Destination participant position in the Participants list.
-
-        :rtype: long
-        """
-        if self._dest_participant_index_present:
-            return self._dest_participant_index_value
-        else:
-            raise AttributeError("missing required field 'dest_participant_index'")
-
-    @dest_participant_index.setter
-    def dest_participant_index(self, val):
-        val = self._dest_participant_index_validator.validate(val)
-        self._dest_participant_index_value = val
-        self._dest_participant_index_present = True
-
-    @dest_participant_index.deleter
-    def dest_participant_index(self):
-        self._dest_participant_index_value = None
-        self._dest_participant_index_present = False
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return 'MemberTransferAccountContentsDetails(src_participant_index={!r}, dest_participant_index={!r})'.format(
-            self._src_participant_index_value,
-            self._dest_participant_index_value,
-        )
+        return 'MemberTransferAccountContentsDetails()'
 
 MemberTransferAccountContentsDetails_validator = bv.Struct(MemberTransferAccountContentsDetails)
 
@@ -32338,21 +33578,254 @@ MicrosoftOfficeAddinPolicy_validator = bv.Union(MicrosoftOfficeAddinPolicy)
 
 class MissingDetails(object):
     """
-    An indication that an event was returned with missing details
+    An indication that an error occurred while retrieving the event. Some
+    attributes of the event may be omitted as a result.
+
+    :ivar source_event_fields: All the data that could be retrieved and
+        converted from the source event.
     """
 
     __slots__ = [
+        '_source_event_fields_value',
+        '_source_event_fields_present',
     ]
 
     _has_required_fields = False
 
-    def __init__(self):
-        pass
+    def __init__(self,
+                 source_event_fields=None):
+        self._source_event_fields_value = None
+        self._source_event_fields_present = False
+        if source_event_fields is not None:
+            self.source_event_fields = source_event_fields
+
+    @property
+    def source_event_fields(self):
+        """
+        All the data that could be retrieved and converted from the source
+        event.
+
+        :rtype: str
+        """
+        if self._source_event_fields_present:
+            return self._source_event_fields_value
+        else:
+            return None
+
+    @source_event_fields.setter
+    def source_event_fields(self, val):
+        if val is None:
+            del self.source_event_fields
+            return
+        val = self._source_event_fields_validator.validate(val)
+        self._source_event_fields_value = val
+        self._source_event_fields_present = True
+
+    @source_event_fields.deleter
+    def source_event_fields(self):
+        self._source_event_fields_value = None
+        self._source_event_fields_present = False
 
     def __repr__(self):
-        return 'MissingDetails()'
+        return 'MissingDetails(source_event_fields={!r})'.format(
+            self._source_event_fields_value,
+        )
 
 MissingDetails_validator = bv.Struct(MissingDetails)
+
+class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
+    """
+    Information about linked Dropbox mobile client sessions
+
+    :ivar device_name: The device name.
+    :ivar client_type: The mobile application type.
+    :ivar client_version: The Dropbox client version.
+    :ivar os_version: The hosting OS version.
+    :ivar last_carrier: last carrier used by the device.
+    """
+
+    __slots__ = [
+        '_device_name_value',
+        '_device_name_present',
+        '_client_type_value',
+        '_client_type_present',
+        '_client_version_value',
+        '_client_version_present',
+        '_os_version_value',
+        '_os_version_present',
+        '_last_carrier_value',
+        '_last_carrier_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 device_name=None,
+                 client_type=None,
+                 client_version=None,
+                 last_carrier=None,
+                 session_id=None,
+                 ip_address=None,
+                 created=None,
+                 updated=None,
+                 os_version=None):
+        super(MobileDeviceSessionLogInfo, self).__init__(session_id,
+                                                         ip_address,
+                                                         created,
+                                                         updated)
+        self._device_name_value = None
+        self._device_name_present = False
+        self._client_type_value = None
+        self._client_type_present = False
+        self._client_version_value = None
+        self._client_version_present = False
+        self._os_version_value = None
+        self._os_version_present = False
+        self._last_carrier_value = None
+        self._last_carrier_present = False
+        if device_name is not None:
+            self.device_name = device_name
+        if client_type is not None:
+            self.client_type = client_type
+        if client_version is not None:
+            self.client_version = client_version
+        if os_version is not None:
+            self.os_version = os_version
+        if last_carrier is not None:
+            self.last_carrier = last_carrier
+
+    @property
+    def device_name(self):
+        """
+        The device name.
+
+        :rtype: str
+        """
+        if self._device_name_present:
+            return self._device_name_value
+        else:
+            raise AttributeError("missing required field 'device_name'")
+
+    @device_name.setter
+    def device_name(self, val):
+        val = self._device_name_validator.validate(val)
+        self._device_name_value = val
+        self._device_name_present = True
+
+    @device_name.deleter
+    def device_name(self):
+        self._device_name_value = None
+        self._device_name_present = False
+
+    @property
+    def client_type(self):
+        """
+        The mobile application type.
+
+        :rtype: team.MobileClientPlatform_validator
+        """
+        if self._client_type_present:
+            return self._client_type_value
+        else:
+            raise AttributeError("missing required field 'client_type'")
+
+    @client_type.setter
+    def client_type(self, val):
+        self._client_type_validator.validate_type_only(val)
+        self._client_type_value = val
+        self._client_type_present = True
+
+    @client_type.deleter
+    def client_type(self):
+        self._client_type_value = None
+        self._client_type_present = False
+
+    @property
+    def client_version(self):
+        """
+        The Dropbox client version.
+
+        :rtype: str
+        """
+        if self._client_version_present:
+            return self._client_version_value
+        else:
+            raise AttributeError("missing required field 'client_version'")
+
+    @client_version.setter
+    def client_version(self, val):
+        val = self._client_version_validator.validate(val)
+        self._client_version_value = val
+        self._client_version_present = True
+
+    @client_version.deleter
+    def client_version(self):
+        self._client_version_value = None
+        self._client_version_present = False
+
+    @property
+    def os_version(self):
+        """
+        The hosting OS version.
+
+        :rtype: str
+        """
+        if self._os_version_present:
+            return self._os_version_value
+        else:
+            return None
+
+    @os_version.setter
+    def os_version(self, val):
+        if val is None:
+            del self.os_version
+            return
+        val = self._os_version_validator.validate(val)
+        self._os_version_value = val
+        self._os_version_present = True
+
+    @os_version.deleter
+    def os_version(self):
+        self._os_version_value = None
+        self._os_version_present = False
+
+    @property
+    def last_carrier(self):
+        """
+        last carrier used by the device.
+
+        :rtype: str
+        """
+        if self._last_carrier_present:
+            return self._last_carrier_value
+        else:
+            raise AttributeError("missing required field 'last_carrier'")
+
+    @last_carrier.setter
+    def last_carrier(self, val):
+        val = self._last_carrier_validator.validate(val)
+        self._last_carrier_value = val
+        self._last_carrier_present = True
+
+    @last_carrier.deleter
+    def last_carrier(self):
+        self._last_carrier_value = None
+        self._last_carrier_present = False
+
+    def __repr__(self):
+        return 'MobileDeviceSessionLogInfo(device_name={!r}, client_type={!r}, client_version={!r}, last_carrier={!r}, session_id={!r}, ip_address={!r}, created={!r}, updated={!r}, os_version={!r})'.format(
+            self._device_name_value,
+            self._client_type_value,
+            self._client_version_value,
+            self._last_carrier_value,
+            self._session_id_value,
+            self._ip_address_value,
+            self._created_value,
+            self._updated_value,
+            self._os_version_value,
+        )
+
+MobileDeviceSessionLogInfo_validator = bv.Struct(MobileDeviceSessionLogInfo)
 
 class MobileSessionLogInfo(SessionLogInfo):
     """
@@ -39598,6 +41071,496 @@ class SfExternalInviteWarnType(object):
 
 SfExternalInviteWarnType_validator = bv.Struct(SfExternalInviteWarnType)
 
+class SfFbInviteChangeRoleDetails(object):
+    """
+    Changed a Facebook user's role in a shared folder.
+
+    :ivar target_asset_index: Target asset position in the Assets list.
+    :ivar original_folder_name: Original shared folder name.
+    :ivar previous_sharing_permission: Previous sharing permission. Might be
+        missing due to historical data gap.
+    :ivar new_sharing_permission: New sharing permission. Might be missing due
+        to historical data gap.
+    """
+
+    __slots__ = [
+        '_target_asset_index_value',
+        '_target_asset_index_present',
+        '_original_folder_name_value',
+        '_original_folder_name_present',
+        '_previous_sharing_permission_value',
+        '_previous_sharing_permission_present',
+        '_new_sharing_permission_value',
+        '_new_sharing_permission_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 target_asset_index=None,
+                 original_folder_name=None,
+                 previous_sharing_permission=None,
+                 new_sharing_permission=None):
+        self._target_asset_index_value = None
+        self._target_asset_index_present = False
+        self._original_folder_name_value = None
+        self._original_folder_name_present = False
+        self._previous_sharing_permission_value = None
+        self._previous_sharing_permission_present = False
+        self._new_sharing_permission_value = None
+        self._new_sharing_permission_present = False
+        if target_asset_index is not None:
+            self.target_asset_index = target_asset_index
+        if original_folder_name is not None:
+            self.original_folder_name = original_folder_name
+        if previous_sharing_permission is not None:
+            self.previous_sharing_permission = previous_sharing_permission
+        if new_sharing_permission is not None:
+            self.new_sharing_permission = new_sharing_permission
+
+    @property
+    def target_asset_index(self):
+        """
+        Target asset position in the Assets list.
+
+        :rtype: long
+        """
+        if self._target_asset_index_present:
+            return self._target_asset_index_value
+        else:
+            raise AttributeError("missing required field 'target_asset_index'")
+
+    @target_asset_index.setter
+    def target_asset_index(self, val):
+        val = self._target_asset_index_validator.validate(val)
+        self._target_asset_index_value = val
+        self._target_asset_index_present = True
+
+    @target_asset_index.deleter
+    def target_asset_index(self):
+        self._target_asset_index_value = None
+        self._target_asset_index_present = False
+
+    @property
+    def original_folder_name(self):
+        """
+        Original shared folder name.
+
+        :rtype: str
+        """
+        if self._original_folder_name_present:
+            return self._original_folder_name_value
+        else:
+            raise AttributeError("missing required field 'original_folder_name'")
+
+    @original_folder_name.setter
+    def original_folder_name(self, val):
+        val = self._original_folder_name_validator.validate(val)
+        self._original_folder_name_value = val
+        self._original_folder_name_present = True
+
+    @original_folder_name.deleter
+    def original_folder_name(self):
+        self._original_folder_name_value = None
+        self._original_folder_name_present = False
+
+    @property
+    def previous_sharing_permission(self):
+        """
+        Previous sharing permission. Might be missing due to historical data
+        gap.
+
+        :rtype: str
+        """
+        if self._previous_sharing_permission_present:
+            return self._previous_sharing_permission_value
+        else:
+            return None
+
+    @previous_sharing_permission.setter
+    def previous_sharing_permission(self, val):
+        if val is None:
+            del self.previous_sharing_permission
+            return
+        val = self._previous_sharing_permission_validator.validate(val)
+        self._previous_sharing_permission_value = val
+        self._previous_sharing_permission_present = True
+
+    @previous_sharing_permission.deleter
+    def previous_sharing_permission(self):
+        self._previous_sharing_permission_value = None
+        self._previous_sharing_permission_present = False
+
+    @property
+    def new_sharing_permission(self):
+        """
+        New sharing permission. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._new_sharing_permission_present:
+            return self._new_sharing_permission_value
+        else:
+            return None
+
+    @new_sharing_permission.setter
+    def new_sharing_permission(self, val):
+        if val is None:
+            del self.new_sharing_permission
+            return
+        val = self._new_sharing_permission_validator.validate(val)
+        self._new_sharing_permission_value = val
+        self._new_sharing_permission_present = True
+
+    @new_sharing_permission.deleter
+    def new_sharing_permission(self):
+        self._new_sharing_permission_value = None
+        self._new_sharing_permission_present = False
+
+    def __repr__(self):
+        return 'SfFbInviteChangeRoleDetails(target_asset_index={!r}, original_folder_name={!r}, previous_sharing_permission={!r}, new_sharing_permission={!r})'.format(
+            self._target_asset_index_value,
+            self._original_folder_name_value,
+            self._previous_sharing_permission_value,
+            self._new_sharing_permission_value,
+        )
+
+SfFbInviteChangeRoleDetails_validator = bv.Struct(SfFbInviteChangeRoleDetails)
+
+class SfFbInviteChangeRoleType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'SfFbInviteChangeRoleType(description={!r})'.format(
+            self._description_value,
+        )
+
+SfFbInviteChangeRoleType_validator = bv.Struct(SfFbInviteChangeRoleType)
+
+class SfFbInviteDetails(object):
+    """
+    Invited Facebook users to a shared folder.
+
+    :ivar target_asset_index: Target asset position in the Assets list.
+    :ivar original_folder_name: Original shared folder name.
+    :ivar sharing_permission: Sharing permission. Might be missing due to
+        historical data gap.
+    """
+
+    __slots__ = [
+        '_target_asset_index_value',
+        '_target_asset_index_present',
+        '_original_folder_name_value',
+        '_original_folder_name_present',
+        '_sharing_permission_value',
+        '_sharing_permission_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 target_asset_index=None,
+                 original_folder_name=None,
+                 sharing_permission=None):
+        self._target_asset_index_value = None
+        self._target_asset_index_present = False
+        self._original_folder_name_value = None
+        self._original_folder_name_present = False
+        self._sharing_permission_value = None
+        self._sharing_permission_present = False
+        if target_asset_index is not None:
+            self.target_asset_index = target_asset_index
+        if original_folder_name is not None:
+            self.original_folder_name = original_folder_name
+        if sharing_permission is not None:
+            self.sharing_permission = sharing_permission
+
+    @property
+    def target_asset_index(self):
+        """
+        Target asset position in the Assets list.
+
+        :rtype: long
+        """
+        if self._target_asset_index_present:
+            return self._target_asset_index_value
+        else:
+            raise AttributeError("missing required field 'target_asset_index'")
+
+    @target_asset_index.setter
+    def target_asset_index(self, val):
+        val = self._target_asset_index_validator.validate(val)
+        self._target_asset_index_value = val
+        self._target_asset_index_present = True
+
+    @target_asset_index.deleter
+    def target_asset_index(self):
+        self._target_asset_index_value = None
+        self._target_asset_index_present = False
+
+    @property
+    def original_folder_name(self):
+        """
+        Original shared folder name.
+
+        :rtype: str
+        """
+        if self._original_folder_name_present:
+            return self._original_folder_name_value
+        else:
+            raise AttributeError("missing required field 'original_folder_name'")
+
+    @original_folder_name.setter
+    def original_folder_name(self, val):
+        val = self._original_folder_name_validator.validate(val)
+        self._original_folder_name_value = val
+        self._original_folder_name_present = True
+
+    @original_folder_name.deleter
+    def original_folder_name(self):
+        self._original_folder_name_value = None
+        self._original_folder_name_present = False
+
+    @property
+    def sharing_permission(self):
+        """
+        Sharing permission. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._sharing_permission_present:
+            return self._sharing_permission_value
+        else:
+            return None
+
+    @sharing_permission.setter
+    def sharing_permission(self, val):
+        if val is None:
+            del self.sharing_permission
+            return
+        val = self._sharing_permission_validator.validate(val)
+        self._sharing_permission_value = val
+        self._sharing_permission_present = True
+
+    @sharing_permission.deleter
+    def sharing_permission(self):
+        self._sharing_permission_value = None
+        self._sharing_permission_present = False
+
+    def __repr__(self):
+        return 'SfFbInviteDetails(target_asset_index={!r}, original_folder_name={!r}, sharing_permission={!r})'.format(
+            self._target_asset_index_value,
+            self._original_folder_name_value,
+            self._sharing_permission_value,
+        )
+
+SfFbInviteDetails_validator = bv.Struct(SfFbInviteDetails)
+
+class SfFbInviteType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'SfFbInviteType(description={!r})'.format(
+            self._description_value,
+        )
+
+SfFbInviteType_validator = bv.Struct(SfFbInviteType)
+
+class SfFbUninviteDetails(object):
+    """
+    Uninvited a Facebook user from a shared folder.
+
+    :ivar target_asset_index: Target asset position in the Assets list.
+    :ivar original_folder_name: Original shared folder name.
+    """
+
+    __slots__ = [
+        '_target_asset_index_value',
+        '_target_asset_index_present',
+        '_original_folder_name_value',
+        '_original_folder_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 target_asset_index=None,
+                 original_folder_name=None):
+        self._target_asset_index_value = None
+        self._target_asset_index_present = False
+        self._original_folder_name_value = None
+        self._original_folder_name_present = False
+        if target_asset_index is not None:
+            self.target_asset_index = target_asset_index
+        if original_folder_name is not None:
+            self.original_folder_name = original_folder_name
+
+    @property
+    def target_asset_index(self):
+        """
+        Target asset position in the Assets list.
+
+        :rtype: long
+        """
+        if self._target_asset_index_present:
+            return self._target_asset_index_value
+        else:
+            raise AttributeError("missing required field 'target_asset_index'")
+
+    @target_asset_index.setter
+    def target_asset_index(self, val):
+        val = self._target_asset_index_validator.validate(val)
+        self._target_asset_index_value = val
+        self._target_asset_index_present = True
+
+    @target_asset_index.deleter
+    def target_asset_index(self):
+        self._target_asset_index_value = None
+        self._target_asset_index_present = False
+
+    @property
+    def original_folder_name(self):
+        """
+        Original shared folder name.
+
+        :rtype: str
+        """
+        if self._original_folder_name_present:
+            return self._original_folder_name_value
+        else:
+            raise AttributeError("missing required field 'original_folder_name'")
+
+    @original_folder_name.setter
+    def original_folder_name(self, val):
+        val = self._original_folder_name_validator.validate(val)
+        self._original_folder_name_value = val
+        self._original_folder_name_present = True
+
+    @original_folder_name.deleter
+    def original_folder_name(self):
+        self._original_folder_name_value = None
+        self._original_folder_name_present = False
+
+    def __repr__(self):
+        return 'SfFbUninviteDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
+            self._target_asset_index_value,
+            self._original_folder_name_value,
+        )
+
+SfFbUninviteDetails_validator = bv.Struct(SfFbUninviteDetails)
+
+class SfFbUninviteType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'SfFbUninviteType(description={!r})'.format(
+            self._description_value,
+        )
+
+SfFbUninviteType_validator = bv.Struct(SfFbUninviteType)
+
 class SfInviteGroupDetails(object):
     """
     Invited a group to a shared folder.
@@ -40639,120 +42602,81 @@ class SharedContentAddInviteesDetails(object):
     """
     Sent an email invitation to the membership of a shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
+    :ivar shared_content_access_level: Shared content access level.
+    :ivar invitees: A list of invitees.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_sharing_permission_value',
-        '_sharing_permission_present',
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_invitees_value',
+        '_invitees_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 sharing_permission=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if sharing_permission is not None:
-            self.sharing_permission = sharing_permission
+                 shared_content_access_level=None,
+                 invitees=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._invitees_value = None
+        self._invitees_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if invitees is not None:
+            self.invitees = invitees
 
     @property
-    def target_asset_index(self):
+    def shared_content_access_level(self):
         """
-        Target asset position in the Assets list.
+        Shared content access level.
 
-        :rtype: long
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
         else:
-            raise AttributeError("missing required field 'target_asset_index'")
+            raise AttributeError("missing required field 'shared_content_access_level'")
 
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
 
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
 
     @property
-    def original_folder_name(self):
+    def invitees(self):
         """
-        Original shared folder name.
+        A list of invitees.
 
-        :rtype: str
+        :rtype: list of [str]
         """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
+        if self._invitees_present:
+            return self._invitees_value
         else:
-            return None
+            raise AttributeError("missing required field 'invitees'")
 
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
+    @invitees.setter
+    def invitees(self, val):
+        val = self._invitees_validator.validate(val)
+        self._invitees_value = val
+        self._invitees_present = True
 
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def sharing_permission(self):
-        """
-        Sharing permission. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._sharing_permission_present:
-            return self._sharing_permission_value
-        else:
-            return None
-
-    @sharing_permission.setter
-    def sharing_permission(self, val):
-        if val is None:
-            del self.sharing_permission
-            return
-        val = self._sharing_permission_validator.validate(val)
-        self._sharing_permission_value = val
-        self._sharing_permission_present = True
-
-    @sharing_permission.deleter
-    def sharing_permission(self):
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
+    @invitees.deleter
+    def invitees(self):
+        self._invitees_value = None
+        self._invitees_present = False
 
     def __repr__(self):
-        return 'SharedContentAddInviteesDetails(target_asset_index={!r}, original_folder_name={!r}, sharing_permission={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._sharing_permission_value,
+        return 'SharedContentAddInviteesDetails(shared_content_access_level={!r}, invitees={!r})'.format(
+            self._shared_content_access_level_value,
+            self._invitees_value,
         )
 
 SharedContentAddInviteesDetails_validator = bv.Struct(SharedContentAddInviteesDetails)
@@ -40805,186 +42729,54 @@ class SharedContentAddLinkExpiryDetails(object):
     """
     Added an expiry to the link for the shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
-    :ivar expiration_start_date: Expiration starting date.
-    :ivar expiration_days: The number of days from the starting expiration date
-        after which the link will expire.
+    :ivar new_value: New shared content link expiration date. Might be missing
+        due to historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
-        '_expiration_start_date_value',
-        '_expiration_start_date_present',
-        '_expiration_days_value',
-        '_expiration_days_present',
+        '_new_value_value',
+        '_new_value_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 target_asset_index=None,
-                 expiration_start_date=None,
-                 expiration_days=None,
-                 original_folder_name=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        self._expiration_start_date_value = None
-        self._expiration_start_date_present = False
-        self._expiration_days_value = None
-        self._expiration_days_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
-        if expiration_start_date is not None:
-            self.expiration_start_date = expiration_start_date
-        if expiration_days is not None:
-            self.expiration_days = expiration_days
+                 new_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
 
     @property
-    def target_asset_index(self):
+    def new_value(self):
         """
-        Target asset position in the Assets list.
+        New shared content link expiration date. Might be missing due to
+        historical data gap.
 
-        :rtype: long
+        :rtype: datetime.datetime
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
+        if self._new_value_present:
+            return self._new_value_value
         else:
             return None
 
-    @original_folder_name.setter
-    def original_folder_name(self, val):
+    @new_value.setter
+    def new_value(self, val):
         if val is None:
-            del self.original_folder_name
+            del self.new_value
             return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
 
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-
-    @property
-    def expiration_start_date(self):
-        """
-        Expiration starting date.
-
-        :rtype: str
-        """
-        if self._expiration_start_date_present:
-            return self._expiration_start_date_value
-        else:
-            raise AttributeError("missing required field 'expiration_start_date'")
-
-    @expiration_start_date.setter
-    def expiration_start_date(self, val):
-        val = self._expiration_start_date_validator.validate(val)
-        self._expiration_start_date_value = val
-        self._expiration_start_date_present = True
-
-    @expiration_start_date.deleter
-    def expiration_start_date(self):
-        self._expiration_start_date_value = None
-        self._expiration_start_date_present = False
-
-    @property
-    def expiration_days(self):
-        """
-        The number of days from the starting expiration date after which the
-        link will expire.
-
-        :rtype: long
-        """
-        if self._expiration_days_present:
-            return self._expiration_days_value
-        else:
-            raise AttributeError("missing required field 'expiration_days'")
-
-    @expiration_days.setter
-    def expiration_days(self, val):
-        val = self._expiration_days_validator.validate(val)
-        self._expiration_days_value = val
-        self._expiration_days_present = True
-
-    @expiration_days.deleter
-    def expiration_days(self):
-        self._expiration_days_value = None
-        self._expiration_days_present = False
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
 
     def __repr__(self):
-        return 'SharedContentAddLinkExpiryDetails(target_asset_index={!r}, expiration_start_date={!r}, expiration_days={!r}, original_folder_name={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._expiration_start_date_value,
-            self._expiration_days_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
+        return 'SharedContentAddLinkExpiryDetails(new_value={!r})'.format(
+            self._new_value_value,
         )
 
 SharedContentAddLinkExpiryDetails_validator = bv.Struct(SharedContentAddLinkExpiryDetails)
@@ -41036,122 +42828,18 @@ SharedContentAddLinkExpiryType_validator = bv.Struct(SharedContentAddLinkExpiryT
 class SharedContentAddLinkPasswordDetails(object):
     """
     Added a password to the link for the shared file or folder.
-
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
-    def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return 'SharedContentAddLinkPasswordDetails(target_asset_index={!r}, original_folder_name={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
-        )
+        return 'SharedContentAddLinkPasswordDetails()'
 
 SharedContentAddLinkPasswordDetails_validator = bv.Struct(SharedContentAddLinkPasswordDetails)
 
@@ -41203,156 +42891,49 @@ class SharedContentAddMemberDetails(object):
     """
     Added users and/or groups to the membership of a shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
+    :ivar shared_content_access_level: Shared content access level.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_sharing_permission_value',
-        '_sharing_permission_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 sharing_permission=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if sharing_permission is not None:
-            self.sharing_permission = sharing_permission
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
+                 shared_content_access_level=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
 
     @property
-    def target_asset_index(self):
+    def shared_content_access_level(self):
         """
-        Target asset position in the Assets list.
+        Shared content access level.
 
-        :rtype: long
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
         else:
-            raise AttributeError("missing required field 'target_asset_index'")
+            raise AttributeError("missing required field 'shared_content_access_level'")
 
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
 
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def sharing_permission(self):
-        """
-        Sharing permission. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._sharing_permission_present:
-            return self._sharing_permission_value
-        else:
-            return None
-
-    @sharing_permission.setter
-    def sharing_permission(self, val):
-        if val is None:
-            del self.sharing_permission
-            return
-        val = self._sharing_permission_validator.validate(val)
-        self._sharing_permission_value = val
-        self._sharing_permission_present = True
-
-    @sharing_permission.deleter
-    def sharing_permission(self):
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
 
     def __repr__(self):
-        return 'SharedContentAddMemberDetails(target_asset_index={!r}, original_folder_name={!r}, sharing_permission={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._sharing_permission_value,
-            self._shared_folder_type_value,
+        return 'SharedContentAddMemberDetails(shared_content_access_level={!r})'.format(
+            self._shared_content_access_level_value,
         )
 
 SharedContentAddMemberDetails_validator = bv.Struct(SharedContentAddMemberDetails)
@@ -41405,22 +42986,12 @@ class SharedContentChangeDownloadsPolicyDetails(object):
     """
     Changed whether members can download the shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
-    :ivar new_value: New downlaod policy.
-    :ivar previous_value: Previous downlaod policy. Might be missing due to
+    :ivar new_value: New downloads policy.
+    :ivar previous_value: Previous downloads policy. Might be missing due to
         historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
         '_new_value_value',
         '_new_value_present',
         '_previous_value_value',
@@ -41430,113 +43001,23 @@ class SharedContentChangeDownloadsPolicyDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
                  new_value=None,
-                 original_folder_name=None,
-                 shared_folder_type=None,
                  previous_value=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
         self._new_value_value = None
         self._new_value_present = False
         self._previous_value_value = None
         self._previous_value_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
         if new_value is not None:
             self.new_value = new_value
         if previous_value is not None:
             self.previous_value = previous_value
 
     @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-
-    @property
     def new_value(self):
         """
-        New downlaod policy.
+        New downloads policy.
 
-        :rtype: SharedContentDownloadsPolicy
+        :rtype: DownloadPolicyType
         """
         if self._new_value_present:
             return self._new_value_value
@@ -41557,9 +43038,9 @@ class SharedContentChangeDownloadsPolicyDetails(object):
     @property
     def previous_value(self):
         """
-        Previous downlaod policy. Might be missing due to historical data gap.
+        Previous downloads policy. Might be missing due to historical data gap.
 
-        :rtype: SharedContentDownloadsPolicy
+        :rtype: DownloadPolicyType
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -41581,11 +43062,8 @@ class SharedContentChangeDownloadsPolicyDetails(object):
         self._previous_value_present = False
 
     def __repr__(self):
-        return 'SharedContentChangeDownloadsPolicyDetails(target_asset_index={!r}, new_value={!r}, original_folder_name={!r}, shared_folder_type={!r}, previous_value={!r})'.format(
-            self._target_asset_index_value,
+        return 'SharedContentChangeDownloadsPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
             self._previous_value_value,
         )
 
@@ -41640,154 +43118,117 @@ class SharedContentChangeInviteeRoleDetails(object):
     Changed the access type of an invitee to a shared file or folder before the
     invitation was claimed.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar new_sharing_permission: New sharing permission. Might be missing due
-        to historical data gap.
-    :ivar previous_sharing_permission: Previous sharing permission. Might be
-        missing due to historical data gap.
+    :ivar previous_access_level: Previous access level. Might be missing due to
+        historical data gap.
+    :ivar new_access_level: New access level.
+    :ivar invitee: The invitee whose role was changed.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_new_sharing_permission_value',
-        '_new_sharing_permission_present',
-        '_previous_sharing_permission_value',
-        '_previous_sharing_permission_present',
+        '_previous_access_level_value',
+        '_previous_access_level_present',
+        '_new_access_level_value',
+        '_new_access_level_present',
+        '_invitee_value',
+        '_invitee_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 new_sharing_permission=None,
-                 previous_sharing_permission=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._new_sharing_permission_value = None
-        self._new_sharing_permission_present = False
-        self._previous_sharing_permission_value = None
-        self._previous_sharing_permission_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if new_sharing_permission is not None:
-            self.new_sharing_permission = new_sharing_permission
-        if previous_sharing_permission is not None:
-            self.previous_sharing_permission = previous_sharing_permission
+                 new_access_level=None,
+                 invitee=None,
+                 previous_access_level=None):
+        self._previous_access_level_value = None
+        self._previous_access_level_present = False
+        self._new_access_level_value = None
+        self._new_access_level_present = False
+        self._invitee_value = None
+        self._invitee_present = False
+        if previous_access_level is not None:
+            self.previous_access_level = previous_access_level
+        if new_access_level is not None:
+            self.new_access_level = new_access_level
+        if invitee is not None:
+            self.invitee = invitee
 
     @property
-    def target_asset_index(self):
+    def previous_access_level(self):
         """
-        Target asset position in the Assets list.
+        Previous access level. Might be missing due to historical data gap.
 
-        :rtype: long
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            raise AttributeError("missing required field 'original_folder_name'")
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def new_sharing_permission(self):
-        """
-        New sharing permission. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._new_sharing_permission_present:
-            return self._new_sharing_permission_value
+        if self._previous_access_level_present:
+            return self._previous_access_level_value
         else:
             return None
 
-    @new_sharing_permission.setter
-    def new_sharing_permission(self, val):
+    @previous_access_level.setter
+    def previous_access_level(self, val):
         if val is None:
-            del self.new_sharing_permission
+            del self.previous_access_level
             return
-        val = self._new_sharing_permission_validator.validate(val)
-        self._new_sharing_permission_value = val
-        self._new_sharing_permission_present = True
+        self._previous_access_level_validator.validate_type_only(val)
+        self._previous_access_level_value = val
+        self._previous_access_level_present = True
 
-    @new_sharing_permission.deleter
-    def new_sharing_permission(self):
-        self._new_sharing_permission_value = None
-        self._new_sharing_permission_present = False
+    @previous_access_level.deleter
+    def previous_access_level(self):
+        self._previous_access_level_value = None
+        self._previous_access_level_present = False
 
     @property
-    def previous_sharing_permission(self):
+    def new_access_level(self):
         """
-        Previous sharing permission. Might be missing due to historical data
-        gap.
+        New access level.
+
+        :rtype: sharing.AccessLevel_validator
+        """
+        if self._new_access_level_present:
+            return self._new_access_level_value
+        else:
+            raise AttributeError("missing required field 'new_access_level'")
+
+    @new_access_level.setter
+    def new_access_level(self, val):
+        self._new_access_level_validator.validate_type_only(val)
+        self._new_access_level_value = val
+        self._new_access_level_present = True
+
+    @new_access_level.deleter
+    def new_access_level(self):
+        self._new_access_level_value = None
+        self._new_access_level_present = False
+
+    @property
+    def invitee(self):
+        """
+        The invitee whose role was changed.
 
         :rtype: str
         """
-        if self._previous_sharing_permission_present:
-            return self._previous_sharing_permission_value
+        if self._invitee_present:
+            return self._invitee_value
         else:
-            return None
+            raise AttributeError("missing required field 'invitee'")
 
-    @previous_sharing_permission.setter
-    def previous_sharing_permission(self, val):
-        if val is None:
-            del self.previous_sharing_permission
-            return
-        val = self._previous_sharing_permission_validator.validate(val)
-        self._previous_sharing_permission_value = val
-        self._previous_sharing_permission_present = True
+    @invitee.setter
+    def invitee(self, val):
+        val = self._invitee_validator.validate(val)
+        self._invitee_value = val
+        self._invitee_present = True
 
-    @previous_sharing_permission.deleter
-    def previous_sharing_permission(self):
-        self._previous_sharing_permission_value = None
-        self._previous_sharing_permission_present = False
+    @invitee.deleter
+    def invitee(self):
+        self._invitee_value = None
+        self._invitee_present = False
 
     def __repr__(self):
-        return 'SharedContentChangeInviteeRoleDetails(target_asset_index={!r}, original_folder_name={!r}, new_sharing_permission={!r}, previous_sharing_permission={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._new_sharing_permission_value,
-            self._previous_sharing_permission_value,
+        return 'SharedContentChangeInviteeRoleDetails(new_access_level={!r}, invitee={!r}, previous_access_level={!r})'.format(
+            self._new_access_level_value,
+            self._invitee_value,
+            self._previous_access_level_value,
         )
 
 SharedContentChangeInviteeRoleDetails_validator = bv.Struct(SharedContentChangeInviteeRoleDetails)
@@ -41840,22 +43281,11 @@ class SharedContentChangeLinkAudienceDetails(object):
     """
     Changed the audience of the link for a shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
     :ivar new_value: New link audience value.
-    :ivar previous_value: Previous link audience value. Might be missing due to
-        historical data gap.
+    :ivar previous_value: Previous link audience value.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
         '_new_value_value',
         '_new_value_present',
         '_previous_value_value',
@@ -41865,113 +43295,23 @@ class SharedContentChangeLinkAudienceDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
                  new_value=None,
-                 original_folder_name=None,
-                 shared_folder_type=None,
                  previous_value=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
         self._new_value_value = None
         self._new_value_present = False
         self._previous_value_value = None
         self._previous_value_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
         if new_value is not None:
             self.new_value = new_value
         if previous_value is not None:
             self.previous_value = previous_value
 
     @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-
-    @property
     def new_value(self):
         """
         New link audience value.
 
-        :rtype: LinkAudience
+        :rtype: sharing.LinkAudience_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -41992,10 +43332,9 @@ class SharedContentChangeLinkAudienceDetails(object):
     @property
     def previous_value(self):
         """
-        Previous link audience value. Might be missing due to historical data
-        gap.
+        Previous link audience value.
 
-        :rtype: LinkAudience
+        :rtype: sharing.LinkAudience_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -42017,11 +43356,8 @@ class SharedContentChangeLinkAudienceDetails(object):
         self._previous_value_present = False
 
     def __repr__(self):
-        return 'SharedContentChangeLinkAudienceDetails(target_asset_index={!r}, new_value={!r}, original_folder_name={!r}, shared_folder_type={!r}, previous_value={!r})'.format(
-            self._target_asset_index_value,
+        return 'SharedContentChangeLinkAudienceDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
             self._previous_value_value,
         )
 
@@ -42075,186 +43411,91 @@ class SharedContentChangeLinkExpiryDetails(object):
     """
     Changed the expiry of the link for the shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
-    :ivar expiration_start_date: Expiration starting date.
-    :ivar expiration_days: The number of days from the starting expiration date
-        after which the link will expire.
+    :ivar new_value: New shared content link expiration date. Might be missing
+        due to historical data gap.
+    :ivar previous_value: Previous shared content link expiration date. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
-        '_expiration_start_date_value',
-        '_expiration_start_date_present',
-        '_expiration_days_value',
-        '_expiration_days_present',
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 target_asset_index=None,
-                 expiration_start_date=None,
-                 expiration_days=None,
-                 original_folder_name=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        self._expiration_start_date_value = None
-        self._expiration_start_date_present = False
-        self._expiration_days_value = None
-        self._expiration_days_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
-        if expiration_start_date is not None:
-            self.expiration_start_date = expiration_start_date
-        if expiration_days is not None:
-            self.expiration_days = expiration_days
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
 
     @property
-    def target_asset_index(self):
+    def new_value(self):
         """
-        Target asset position in the Assets list.
+        New shared content link expiration date. Might be missing due to
+        historical data gap.
 
-        :rtype: long
+        :rtype: datetime.datetime
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
+        if self._new_value_present:
+            return self._new_value_value
         else:
             return None
 
-    @original_folder_name.setter
-    def original_folder_name(self, val):
+    @new_value.setter
+    def new_value(self, val):
         if val is None:
-            del self.original_folder_name
+            del self.new_value
             return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
 
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
 
     @property
-    def shared_folder_type(self):
+    def previous_value(self):
         """
-        Shared folder type. Might be missing due to historical data gap.
+        Previous shared content link expiration date. Might be missing due to
+        historical data gap.
 
-        :rtype: str
+        :rtype: datetime.datetime
         """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
+        if self._previous_value_present:
+            return self._previous_value_value
         else:
             return None
 
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
+    @previous_value.setter
+    def previous_value(self, val):
         if val is None:
-            del self.shared_folder_type
+            del self.previous_value
             return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
 
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-
-    @property
-    def expiration_start_date(self):
-        """
-        Expiration starting date.
-
-        :rtype: str
-        """
-        if self._expiration_start_date_present:
-            return self._expiration_start_date_value
-        else:
-            raise AttributeError("missing required field 'expiration_start_date'")
-
-    @expiration_start_date.setter
-    def expiration_start_date(self, val):
-        val = self._expiration_start_date_validator.validate(val)
-        self._expiration_start_date_value = val
-        self._expiration_start_date_present = True
-
-    @expiration_start_date.deleter
-    def expiration_start_date(self):
-        self._expiration_start_date_value = None
-        self._expiration_start_date_present = False
-
-    @property
-    def expiration_days(self):
-        """
-        The number of days from the starting expiration date after which the
-        link will expire.
-
-        :rtype: long
-        """
-        if self._expiration_days_present:
-            return self._expiration_days_value
-        else:
-            raise AttributeError("missing required field 'expiration_days'")
-
-    @expiration_days.setter
-    def expiration_days(self, val):
-        val = self._expiration_days_validator.validate(val)
-        self._expiration_days_value = val
-        self._expiration_days_present = True
-
-    @expiration_days.deleter
-    def expiration_days(self):
-        self._expiration_days_value = None
-        self._expiration_days_present = False
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
 
     def __repr__(self):
-        return 'SharedContentChangeLinkExpiryDetails(target_asset_index={!r}, expiration_start_date={!r}, expiration_days={!r}, original_folder_name={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._expiration_start_date_value,
-            self._expiration_days_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
+        return 'SharedContentChangeLinkExpiryDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
         )
 
 SharedContentChangeLinkExpiryDetails_validator = bv.Struct(SharedContentChangeLinkExpiryDetails)
@@ -42306,122 +43547,18 @@ SharedContentChangeLinkExpiryType_validator = bv.Struct(SharedContentChangeLinkE
 class SharedContentChangeLinkPasswordDetails(object):
     """
     Changed the password on the link for the shared file or folder.
-
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
-    def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return 'SharedContentChangeLinkPasswordDetails(target_asset_index={!r}, original_folder_name={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
-        )
+        return 'SharedContentChangeLinkPasswordDetails()'
 
 SharedContentChangeLinkPasswordDetails_validator = bv.Struct(SharedContentChangeLinkPasswordDetails)
 
@@ -42473,193 +43610,85 @@ class SharedContentChangeMemberRoleDetails(object):
     """
     Changed the access type of a shared file or folder member.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar new_sharing_permission: New sharing permission. Might be missing due
-        to historical data gap.
-    :ivar previous_sharing_permission: Previous sharing permission. Might be
-        missing due to historical data gap.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
+    :ivar previous_access_level: Previous access level. Might be missing due to
         historical data gap.
+    :ivar new_access_level: New access level.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_new_sharing_permission_value',
-        '_new_sharing_permission_present',
-        '_previous_sharing_permission_value',
-        '_previous_sharing_permission_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
+        '_previous_access_level_value',
+        '_previous_access_level_present',
+        '_new_access_level_value',
+        '_new_access_level_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 new_sharing_permission=None,
-                 previous_sharing_permission=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._new_sharing_permission_value = None
-        self._new_sharing_permission_present = False
-        self._previous_sharing_permission_value = None
-        self._previous_sharing_permission_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if new_sharing_permission is not None:
-            self.new_sharing_permission = new_sharing_permission
-        if previous_sharing_permission is not None:
-            self.previous_sharing_permission = previous_sharing_permission
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
+                 new_access_level=None,
+                 previous_access_level=None):
+        self._previous_access_level_value = None
+        self._previous_access_level_present = False
+        self._new_access_level_value = None
+        self._new_access_level_present = False
+        if previous_access_level is not None:
+            self.previous_access_level = previous_access_level
+        if new_access_level is not None:
+            self.new_access_level = new_access_level
 
     @property
-    def target_asset_index(self):
+    def previous_access_level(self):
         """
-        Target asset position in the Assets list.
+        Previous access level. Might be missing due to historical data gap.
 
-        :rtype: long
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
+        if self._previous_access_level_present:
+            return self._previous_access_level_value
         else:
             return None
 
-    @original_folder_name.setter
-    def original_folder_name(self, val):
+    @previous_access_level.setter
+    def previous_access_level(self, val):
         if val is None:
-            del self.original_folder_name
+            del self.previous_access_level
             return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
+        self._previous_access_level_validator.validate_type_only(val)
+        self._previous_access_level_value = val
+        self._previous_access_level_present = True
 
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
+    @previous_access_level.deleter
+    def previous_access_level(self):
+        self._previous_access_level_value = None
+        self._previous_access_level_present = False
 
     @property
-    def new_sharing_permission(self):
+    def new_access_level(self):
         """
-        New sharing permission. Might be missing due to historical data gap.
+        New access level.
 
-        :rtype: str
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._new_sharing_permission_present:
-            return self._new_sharing_permission_value
+        if self._new_access_level_present:
+            return self._new_access_level_value
         else:
-            return None
+            raise AttributeError("missing required field 'new_access_level'")
 
-    @new_sharing_permission.setter
-    def new_sharing_permission(self, val):
-        if val is None:
-            del self.new_sharing_permission
-            return
-        val = self._new_sharing_permission_validator.validate(val)
-        self._new_sharing_permission_value = val
-        self._new_sharing_permission_present = True
+    @new_access_level.setter
+    def new_access_level(self, val):
+        self._new_access_level_validator.validate_type_only(val)
+        self._new_access_level_value = val
+        self._new_access_level_present = True
 
-    @new_sharing_permission.deleter
-    def new_sharing_permission(self):
-        self._new_sharing_permission_value = None
-        self._new_sharing_permission_present = False
-
-    @property
-    def previous_sharing_permission(self):
-        """
-        Previous sharing permission. Might be missing due to historical data
-        gap.
-
-        :rtype: str
-        """
-        if self._previous_sharing_permission_present:
-            return self._previous_sharing_permission_value
-        else:
-            return None
-
-    @previous_sharing_permission.setter
-    def previous_sharing_permission(self, val):
-        if val is None:
-            del self.previous_sharing_permission
-            return
-        val = self._previous_sharing_permission_validator.validate(val)
-        self._previous_sharing_permission_value = val
-        self._previous_sharing_permission_present = True
-
-    @previous_sharing_permission.deleter
-    def previous_sharing_permission(self):
-        self._previous_sharing_permission_value = None
-        self._previous_sharing_permission_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
+    @new_access_level.deleter
+    def new_access_level(self):
+        self._new_access_level_value = None
+        self._new_access_level_present = False
 
     def __repr__(self):
-        return 'SharedContentChangeMemberRoleDetails(target_asset_index={!r}, original_folder_name={!r}, new_sharing_permission={!r}, previous_sharing_permission={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._new_sharing_permission_value,
-            self._previous_sharing_permission_value,
-            self._shared_folder_type_value,
+        return 'SharedContentChangeMemberRoleDetails(new_access_level={!r}, previous_access_level={!r})'.format(
+            self._new_access_level_value,
+            self._previous_access_level_value,
         )
 
 SharedContentChangeMemberRoleDetails_validator = bv.Struct(SharedContentChangeMemberRoleDetails)
@@ -42712,22 +43741,12 @@ class SharedContentChangeViewerInfoPolicyDetails(object):
     """
     Changed whether members can see who viewed the shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
     :ivar new_value: New viewer info policy.
     :ivar previous_value: Previous view info policy. Might be missing due to
         historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
         '_new_value_value',
         '_new_value_present',
         '_previous_value_value',
@@ -42737,113 +43756,23 @@ class SharedContentChangeViewerInfoPolicyDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
                  new_value=None,
-                 original_folder_name=None,
-                 shared_folder_type=None,
                  previous_value=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
         self._new_value_value = None
         self._new_value_present = False
         self._previous_value_value = None
         self._previous_value_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
         if new_value is not None:
             self.new_value = new_value
         if previous_value is not None:
             self.previous_value = previous_value
 
     @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-
-    @property
     def new_value(self):
         """
         New viewer info policy.
 
-        :rtype: SharedContentViewerInfoPolicy
+        :rtype: sharing.ViewerInfoPolicy_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -42866,7 +43795,7 @@ class SharedContentChangeViewerInfoPolicyDetails(object):
         """
         Previous view info policy. Might be missing due to historical data gap.
 
-        :rtype: SharedContentViewerInfoPolicy
+        :rtype: sharing.ViewerInfoPolicy_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -42888,11 +43817,8 @@ class SharedContentChangeViewerInfoPolicyDetails(object):
         self._previous_value_present = False
 
     def __repr__(self):
-        return 'SharedContentChangeViewerInfoPolicyDetails(target_asset_index={!r}, new_value={!r}, original_folder_name={!r}, shared_folder_type={!r}, previous_value={!r})'.format(
-            self._target_asset_index_value,
+        return 'SharedContentChangeViewerInfoPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
             self._previous_value_value,
         )
 
@@ -42944,89 +43870,24 @@ SharedContentChangeViewerInfoPolicyType_validator = bv.Struct(SharedContentChang
 
 class SharedContentClaimInvitationDetails(object):
     """
-    Claimed membership to a team member's shared folder.
+    Acquired membership on a shared file or folder by claiming an invitation.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
     :ivar shared_content_link: Shared content link.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
         '_shared_content_link_value',
         '_shared_content_link_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
                  shared_content_link=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
         self._shared_content_link_value = None
         self._shared_content_link_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
         if shared_content_link is not None:
             self.shared_content_link = shared_content_link
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
 
     @property
     def shared_content_link(self):
@@ -43055,9 +43916,7 @@ class SharedContentClaimInvitationDetails(object):
         self._shared_content_link_present = False
 
     def __repr__(self):
-        return 'SharedContentClaimInvitationDetails(target_asset_index={!r}, original_folder_name={!r}, shared_content_link={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
+        return 'SharedContentClaimInvitationDetails(shared_content_link={!r})'.format(
             self._shared_content_link_value,
         )
 
@@ -43112,47 +43971,45 @@ class SharedContentCopyDetails(object):
     Copied the shared file or folder to own Dropbox.
 
     :ivar shared_content_link: Shared content link.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar relocate_action_details: Specifies the source and destination indices
-        in the assets list.
+    :ivar shared_content_owner: The shared content owner.
+    :ivar shared_content_access_level: Shared content access level.
+    :ivar destination_path: The path where the member saved the content.
     """
 
     __slots__ = [
         '_shared_content_link_value',
         '_shared_content_link_present',
-        '_sharing_permission_value',
-        '_sharing_permission_present',
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_relocate_action_details_value',
-        '_relocate_action_details_present',
+        '_shared_content_owner_value',
+        '_shared_content_owner_present',
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_destination_path_value',
+        '_destination_path_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  shared_content_link=None,
-                 target_asset_index=None,
-                 relocate_action_details=None,
-                 sharing_permission=None):
+                 shared_content_access_level=None,
+                 destination_path=None,
+                 shared_content_owner=None):
         self._shared_content_link_value = None
         self._shared_content_link_present = False
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._relocate_action_details_value = None
-        self._relocate_action_details_present = False
+        self._shared_content_owner_value = None
+        self._shared_content_owner_present = False
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._destination_path_value = None
+        self._destination_path_present = False
         if shared_content_link is not None:
             self.shared_content_link = shared_content_link
-        if sharing_permission is not None:
-            self.sharing_permission = sharing_permission
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if relocate_action_details is not None:
-            self.relocate_action_details = relocate_action_details
+        if shared_content_owner is not None:
+            self.shared_content_owner = shared_content_owner
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if destination_path is not None:
+            self.destination_path = destination_path
 
     @property
     def shared_content_link(self):
@@ -43178,83 +44035,83 @@ class SharedContentCopyDetails(object):
         self._shared_content_link_present = False
 
     @property
-    def sharing_permission(self):
+    def shared_content_owner(self):
         """
-        Sharing permission. Might be missing due to historical data gap.
+        The shared content owner.
 
-        :rtype: str
+        :rtype: UserLogInfo
         """
-        if self._sharing_permission_present:
-            return self._sharing_permission_value
+        if self._shared_content_owner_present:
+            return self._shared_content_owner_value
         else:
             return None
 
-    @sharing_permission.setter
-    def sharing_permission(self, val):
+    @shared_content_owner.setter
+    def shared_content_owner(self, val):
         if val is None:
-            del self.sharing_permission
+            del self.shared_content_owner
             return
-        val = self._sharing_permission_validator.validate(val)
-        self._sharing_permission_value = val
-        self._sharing_permission_present = True
+        self._shared_content_owner_validator.validate_type_only(val)
+        self._shared_content_owner_value = val
+        self._shared_content_owner_present = True
 
-    @sharing_permission.deleter
-    def sharing_permission(self):
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
+    @shared_content_owner.deleter
+    def shared_content_owner(self):
+        self._shared_content_owner_value = None
+        self._shared_content_owner_present = False
 
     @property
-    def relocate_action_details(self):
+    def shared_content_access_level(self):
         """
-        Specifies the source and destination indices in the assets list.
+        Shared content access level.
 
-        :rtype: RelocateAssetReferencesLogInfo
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._relocate_action_details_present:
-            return self._relocate_action_details_value
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
         else:
-            raise AttributeError("missing required field 'relocate_action_details'")
+            raise AttributeError("missing required field 'shared_content_access_level'")
 
-    @relocate_action_details.setter
-    def relocate_action_details(self, val):
-        self._relocate_action_details_validator.validate_type_only(val)
-        self._relocate_action_details_value = val
-        self._relocate_action_details_present = True
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
 
-    @relocate_action_details.deleter
-    def relocate_action_details(self):
-        self._relocate_action_details_value = None
-        self._relocate_action_details_present = False
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def destination_path(self):
+        """
+        The path where the member saved the content.
+
+        :rtype: str
+        """
+        if self._destination_path_present:
+            return self._destination_path_value
+        else:
+            raise AttributeError("missing required field 'destination_path'")
+
+    @destination_path.setter
+    def destination_path(self, val):
+        val = self._destination_path_validator.validate(val)
+        self._destination_path_value = val
+        self._destination_path_present = True
+
+    @destination_path.deleter
+    def destination_path(self):
+        self._destination_path_value = None
+        self._destination_path_present = False
 
     def __repr__(self):
-        return 'SharedContentCopyDetails(shared_content_link={!r}, target_asset_index={!r}, relocate_action_details={!r}, sharing_permission={!r})'.format(
+        return 'SharedContentCopyDetails(shared_content_link={!r}, shared_content_access_level={!r}, destination_path={!r}, shared_content_owner={!r})'.format(
             self._shared_content_link_value,
-            self._target_asset_index_value,
-            self._relocate_action_details_value,
-            self._sharing_permission_value,
+            self._shared_content_access_level_value,
+            self._destination_path_value,
+            self._shared_content_owner_value,
         )
 
 SharedContentCopyDetails_validator = bv.Struct(SharedContentCopyDetails)
@@ -43308,38 +44165,37 @@ class SharedContentDownloadDetails(object):
     Downloaded the shared file or folder.
 
     :ivar shared_content_link: Shared content link.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
-    :ivar target_asset_index: Target asset position in the Assets list.
+    :ivar shared_content_owner: The shared content owner.
+    :ivar shared_content_access_level: Shared content access level.
     """
 
     __slots__ = [
         '_shared_content_link_value',
         '_shared_content_link_present',
-        '_sharing_permission_value',
-        '_sharing_permission_present',
-        '_target_asset_index_value',
-        '_target_asset_index_present',
+        '_shared_content_owner_value',
+        '_shared_content_owner_present',
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  shared_content_link=None,
-                 target_asset_index=None,
-                 sharing_permission=None):
+                 shared_content_access_level=None,
+                 shared_content_owner=None):
         self._shared_content_link_value = None
         self._shared_content_link_present = False
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
+        self._shared_content_owner_value = None
+        self._shared_content_owner_present = False
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
         if shared_content_link is not None:
             self.shared_content_link = shared_content_link
-        if sharing_permission is not None:
-            self.sharing_permission = sharing_permission
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
+        if shared_content_owner is not None:
+            self.shared_content_owner = shared_content_owner
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
 
     @property
     def shared_content_link(self):
@@ -43365,59 +44221,59 @@ class SharedContentDownloadDetails(object):
         self._shared_content_link_present = False
 
     @property
-    def sharing_permission(self):
+    def shared_content_owner(self):
         """
-        Sharing permission. Might be missing due to historical data gap.
+        The shared content owner.
 
-        :rtype: str
+        :rtype: UserLogInfo
         """
-        if self._sharing_permission_present:
-            return self._sharing_permission_value
+        if self._shared_content_owner_present:
+            return self._shared_content_owner_value
         else:
             return None
 
-    @sharing_permission.setter
-    def sharing_permission(self, val):
+    @shared_content_owner.setter
+    def shared_content_owner(self, val):
         if val is None:
-            del self.sharing_permission
+            del self.shared_content_owner
             return
-        val = self._sharing_permission_validator.validate(val)
-        self._sharing_permission_value = val
-        self._sharing_permission_present = True
+        self._shared_content_owner_validator.validate_type_only(val)
+        self._shared_content_owner_value = val
+        self._shared_content_owner_present = True
 
-    @sharing_permission.deleter
-    def sharing_permission(self):
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
+    @shared_content_owner.deleter
+    def shared_content_owner(self):
+        self._shared_content_owner_value = None
+        self._shared_content_owner_present = False
 
     @property
-    def target_asset_index(self):
+    def shared_content_access_level(self):
         """
-        Target asset position in the Assets list.
+        Shared content access level.
 
-        :rtype: long
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
         else:
-            raise AttributeError("missing required field 'target_asset_index'")
+            raise AttributeError("missing required field 'shared_content_access_level'")
 
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
 
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
 
     def __repr__(self):
-        return 'SharedContentDownloadDetails(shared_content_link={!r}, target_asset_index={!r}, sharing_permission={!r})'.format(
+        return 'SharedContentDownloadDetails(shared_content_link={!r}, shared_content_access_level={!r}, shared_content_owner={!r})'.format(
             self._shared_content_link_value,
-            self._target_asset_index_value,
-            self._sharing_permission_value,
+            self._shared_content_access_level_value,
+            self._shared_content_owner_value,
         )
 
 SharedContentDownloadDetails_validator = bv.Struct(SharedContentDownloadDetails)
@@ -43466,132 +44322,21 @@ class SharedContentDownloadType(object):
 
 SharedContentDownloadType_validator = bv.Struct(SharedContentDownloadType)
 
-class SharedContentDownloadsPolicy(bb.Union):
-    """
-    Shared content downloads policy
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    disabled = None
-    # Attribute is overwritten below the class definition
-    enabled = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_disabled(self):
-        """
-        Check if the union tag is ``disabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'disabled'
-
-    def is_enabled(self):
-        """
-        Check if the union tag is ``enabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'enabled'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SharedContentDownloadsPolicy(%r, %r)' % (self._tag, self._value)
-
-SharedContentDownloadsPolicy_validator = bv.Union(SharedContentDownloadsPolicy)
-
 class SharedContentRelinquishMembershipDetails(object):
     """
     Left the membership of a shared file or folder.
-
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
-    def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            raise AttributeError("missing required field 'original_folder_name'")
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return 'SharedContentRelinquishMembershipDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-        )
+        return 'SharedContentRelinquishMembershipDetails()'
 
 SharedContentRelinquishMembershipDetails_validator = bv.Struct(SharedContentRelinquishMembershipDetails)
 
@@ -43639,91 +44384,59 @@ class SharedContentRelinquishMembershipType(object):
 
 SharedContentRelinquishMembershipType_validator = bv.Struct(SharedContentRelinquishMembershipType)
 
-class SharedContentRemoveInviteeDetails(object):
+class SharedContentRemoveInviteesDetails(object):
     """
     Removed an invitee from the membership of a shared file or folder before it
     was claimed.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
+    :ivar invitees: A list of invitees.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
+        '_invitees_value',
+        '_invitees_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
+                 invitees=None):
+        self._invitees_value = None
+        self._invitees_present = False
+        if invitees is not None:
+            self.invitees = invitees
 
     @property
-    def target_asset_index(self):
+    def invitees(self):
         """
-        Target asset position in the Assets list.
+        A list of invitees.
 
-        :rtype: long
+        :rtype: list of [str]
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
+        if self._invitees_present:
+            return self._invitees_value
         else:
-            raise AttributeError("missing required field 'target_asset_index'")
+            raise AttributeError("missing required field 'invitees'")
 
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
+    @invitees.setter
+    def invitees(self, val):
+        val = self._invitees_validator.validate(val)
+        self._invitees_value = val
+        self._invitees_present = True
 
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            raise AttributeError("missing required field 'original_folder_name'")
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
+    @invitees.deleter
+    def invitees(self):
+        self._invitees_value = None
+        self._invitees_present = False
 
     def __repr__(self):
-        return 'SharedContentRemoveInviteeDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
+        return 'SharedContentRemoveInviteesDetails(invitees={!r})'.format(
+            self._invitees_value,
         )
 
-SharedContentRemoveInviteeDetails_validator = bv.Struct(SharedContentRemoveInviteeDetails)
+SharedContentRemoveInviteesDetails_validator = bv.Struct(SharedContentRemoveInviteesDetails)
 
-class SharedContentRemoveInviteeType(object):
+class SharedContentRemoveInviteesType(object):
 
     __slots__ = [
         '_description_value',
@@ -43761,130 +44474,64 @@ class SharedContentRemoveInviteeType(object):
         self._description_present = False
 
     def __repr__(self):
-        return 'SharedContentRemoveInviteeType(description={!r})'.format(
+        return 'SharedContentRemoveInviteesType(description={!r})'.format(
             self._description_value,
         )
 
-SharedContentRemoveInviteeType_validator = bv.Struct(SharedContentRemoveInviteeType)
+SharedContentRemoveInviteesType_validator = bv.Struct(SharedContentRemoveInviteesType)
 
 class SharedContentRemoveLinkExpiryDetails(object):
     """
     Removed the expiry of the link for the shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
+    :ivar previous_value: Previous shared content link expiration date. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
+        '_previous_value_value',
+        '_previous_value_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
+                 previous_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
 
     @property
-    def target_asset_index(self):
+    def previous_value(self):
         """
-        Target asset position in the Assets list.
+        Previous shared content link expiration date. Might be missing due to
+        historical data gap.
 
-        :rtype: long
+        :rtype: datetime.datetime
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
+        if self._previous_value_present:
+            return self._previous_value_value
         else:
             return None
 
-    @original_folder_name.setter
-    def original_folder_name(self, val):
+    @previous_value.setter
+    def previous_value(self, val):
         if val is None:
-            del self.original_folder_name
+            del self.previous_value
             return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
 
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
 
     def __repr__(self):
-        return 'SharedContentRemoveLinkExpiryDetails(target_asset_index={!r}, original_folder_name={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
+        return 'SharedContentRemoveLinkExpiryDetails(previous_value={!r})'.format(
+            self._previous_value_value,
         )
 
 SharedContentRemoveLinkExpiryDetails_validator = bv.Struct(SharedContentRemoveLinkExpiryDetails)
@@ -43936,122 +44583,18 @@ SharedContentRemoveLinkExpiryType_validator = bv.Struct(SharedContentRemoveLinkE
 class SharedContentRemoveLinkPasswordDetails(object):
     """
     Removed the password on the link for the shared file or folder.
-
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
-    def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return 'SharedContentRemoveLinkPasswordDetails(target_asset_index={!r}, original_folder_name={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._shared_folder_type_value,
-        )
+        return 'SharedContentRemoveLinkPasswordDetails()'
 
 SharedContentRemoveLinkPasswordDetails_validator = bv.Struct(SharedContentRemoveLinkPasswordDetails)
 
@@ -44103,156 +44646,52 @@ class SharedContentRemoveMemberDetails(object):
     """
     Removed a user or a group from the membership of a shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
+    :ivar shared_content_access_level: Shared content access level.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_sharing_permission_value',
-        '_sharing_permission_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
-                 sharing_permission=None,
-                 shared_folder_type=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if sharing_permission is not None:
-            self.sharing_permission = sharing_permission
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
+                 shared_content_access_level=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
 
     @property
-    def target_asset_index(self):
+    def shared_content_access_level(self):
         """
-        Target asset position in the Assets list.
+        Shared content access level.
 
-        :rtype: long
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
         else:
             return None
 
-    @original_folder_name.setter
-    def original_folder_name(self, val):
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
         if val is None:
-            del self.original_folder_name
+            del self.shared_content_access_level
             return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
 
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def sharing_permission(self):
-        """
-        Sharing permission. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._sharing_permission_present:
-            return self._sharing_permission_value
-        else:
-            return None
-
-    @sharing_permission.setter
-    def sharing_permission(self, val):
-        if val is None:
-            del self.sharing_permission
-            return
-        val = self._sharing_permission_validator.validate(val)
-        self._sharing_permission_value = val
-        self._sharing_permission_present = True
-
-    @sharing_permission.deleter
-    def sharing_permission(self):
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
 
     def __repr__(self):
-        return 'SharedContentRemoveMemberDetails(target_asset_index={!r}, original_folder_name={!r}, sharing_permission={!r}, shared_folder_type={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-            self._sharing_permission_value,
-            self._shared_folder_type_value,
+        return 'SharedContentRemoveMemberDetails(shared_content_access_level={!r})'.format(
+            self._shared_content_access_level_value,
         )
 
 SharedContentRemoveMemberDetails_validator = bv.Struct(SharedContentRemoveMemberDetails)
@@ -44305,87 +44744,22 @@ class SharedContentRequestAccessDetails(object):
     """
     Requested to be on the membership of a shared file or folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
     :ivar shared_content_link: Shared content link.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
         '_shared_content_link_value',
         '_shared_content_link_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
                  shared_content_link=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
         self._shared_content_link_value = None
         self._shared_content_link_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
         if shared_content_link is not None:
             self.shared_content_link = shared_content_link
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
 
     @property
     def shared_content_link(self):
@@ -44414,9 +44788,7 @@ class SharedContentRequestAccessDetails(object):
         self._shared_content_link_present = False
 
     def __repr__(self):
-        return 'SharedContentRequestAccessDetails(target_asset_index={!r}, original_folder_name={!r}, shared_content_link={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
+        return 'SharedContentRequestAccessDetails(shared_content_link={!r})'.format(
             self._shared_content_link_value,
         )
 
@@ -44470,86 +44842,18 @@ class SharedContentUnshareDetails(object):
     """
     Unshared a shared file or folder by clearing its membership and turning off
     its link.
-
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
-    def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            return None
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        if val is None:
-            del self.original_folder_name
-            return
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return 'SharedContentUnshareDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-        )
+        return 'SharedContentUnshareDetails()'
 
 SharedContentUnshareDetails_validator = bv.Struct(SharedContentUnshareDetails)
 
@@ -44602,38 +44906,37 @@ class SharedContentViewDetails(object):
     Previewed the shared file or folder.
 
     :ivar shared_content_link: Shared content link.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
-    :ivar target_asset_index: Target asset position in the Assets list.
+    :ivar shared_content_owner: The shared content owner.
+    :ivar shared_content_access_level: Shared content access level.
     """
 
     __slots__ = [
         '_shared_content_link_value',
         '_shared_content_link_present',
-        '_sharing_permission_value',
-        '_sharing_permission_present',
-        '_target_asset_index_value',
-        '_target_asset_index_present',
+        '_shared_content_owner_value',
+        '_shared_content_owner_present',
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  shared_content_link=None,
-                 target_asset_index=None,
-                 sharing_permission=None):
+                 shared_content_access_level=None,
+                 shared_content_owner=None):
         self._shared_content_link_value = None
         self._shared_content_link_present = False
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
+        self._shared_content_owner_value = None
+        self._shared_content_owner_present = False
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
         if shared_content_link is not None:
             self.shared_content_link = shared_content_link
-        if sharing_permission is not None:
-            self.sharing_permission = sharing_permission
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
+        if shared_content_owner is not None:
+            self.shared_content_owner = shared_content_owner
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
 
     @property
     def shared_content_link(self):
@@ -44659,59 +44962,59 @@ class SharedContentViewDetails(object):
         self._shared_content_link_present = False
 
     @property
-    def sharing_permission(self):
+    def shared_content_owner(self):
         """
-        Sharing permission. Might be missing due to historical data gap.
+        The shared content owner.
 
-        :rtype: str
+        :rtype: UserLogInfo
         """
-        if self._sharing_permission_present:
-            return self._sharing_permission_value
+        if self._shared_content_owner_present:
+            return self._shared_content_owner_value
         else:
             return None
 
-    @sharing_permission.setter
-    def sharing_permission(self, val):
+    @shared_content_owner.setter
+    def shared_content_owner(self, val):
         if val is None:
-            del self.sharing_permission
+            del self.shared_content_owner
             return
-        val = self._sharing_permission_validator.validate(val)
-        self._sharing_permission_value = val
-        self._sharing_permission_present = True
+        self._shared_content_owner_validator.validate_type_only(val)
+        self._shared_content_owner_value = val
+        self._shared_content_owner_present = True
 
-    @sharing_permission.deleter
-    def sharing_permission(self):
-        self._sharing_permission_value = None
-        self._sharing_permission_present = False
+    @shared_content_owner.deleter
+    def shared_content_owner(self):
+        self._shared_content_owner_value = None
+        self._shared_content_owner_present = False
 
     @property
-    def target_asset_index(self):
+    def shared_content_access_level(self):
         """
-        Target asset position in the Assets list.
+        Shared content access level.
 
-        :rtype: long
+        :rtype: sharing.AccessLevel_validator
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
         else:
-            raise AttributeError("missing required field 'target_asset_index'")
+            raise AttributeError("missing required field 'shared_content_access_level'")
 
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
 
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
 
     def __repr__(self):
-        return 'SharedContentViewDetails(shared_content_link={!r}, target_asset_index={!r}, sharing_permission={!r})'.format(
+        return 'SharedContentViewDetails(shared_content_link={!r}, shared_content_access_level={!r}, shared_content_owner={!r})'.format(
             self._shared_content_link_value,
-            self._target_asset_index_value,
-            self._sharing_permission_value,
+            self._shared_content_access_level_value,
+            self._shared_content_owner_value,
         )
 
 SharedContentViewDetails_validator = bv.Struct(SharedContentViewDetails)
@@ -44760,204 +45063,16 @@ class SharedContentViewType(object):
 
 SharedContentViewType_validator = bv.Struct(SharedContentViewType)
 
-class SharedContentViewerInfoPolicy(bb.Union):
-    """
-    Shared content viewer info policy
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    disabled = None
-    # Attribute is overwritten below the class definition
-    enabled = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_disabled(self):
-        """
-        Check if the union tag is ``disabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'disabled'
-
-    def is_enabled(self):
-        """
-        Check if the union tag is ``enabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'enabled'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SharedContentViewerInfoPolicy(%r, %r)' % (self._tag, self._value)
-
-SharedContentViewerInfoPolicy_validator = bv.Union(SharedContentViewerInfoPolicy)
-
-class SharedFolderChangeConfidentialityDetails(object):
-    """
-    Set or unset the confidential flag on a shared folder.
-
-    :ivar new_value: New confidentiality value.
-    :ivar previous_value: Previous confidentiality value. Might be missing due
-        to historical data gap.
-    """
-
-    __slots__ = [
-        '_new_value_value',
-        '_new_value_present',
-        '_previous_value_value',
-        '_previous_value_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 new_value=None,
-                 previous_value=None):
-        self._new_value_value = None
-        self._new_value_present = False
-        self._previous_value_value = None
-        self._previous_value_present = False
-        if new_value is not None:
-            self.new_value = new_value
-        if previous_value is not None:
-            self.previous_value = previous_value
-
-    @property
-    def new_value(self):
-        """
-        New confidentiality value.
-
-        :rtype: Confidentiality
-        """
-        if self._new_value_present:
-            return self._new_value_value
-        else:
-            raise AttributeError("missing required field 'new_value'")
-
-    @new_value.setter
-    def new_value(self, val):
-        self._new_value_validator.validate_type_only(val)
-        self._new_value_value = val
-        self._new_value_present = True
-
-    @new_value.deleter
-    def new_value(self):
-        self._new_value_value = None
-        self._new_value_present = False
-
-    @property
-    def previous_value(self):
-        """
-        Previous confidentiality value. Might be missing due to historical data
-        gap.
-
-        :rtype: Confidentiality
-        """
-        if self._previous_value_present:
-            return self._previous_value_value
-        else:
-            return None
-
-    @previous_value.setter
-    def previous_value(self, val):
-        if val is None:
-            del self.previous_value
-            return
-        self._previous_value_validator.validate_type_only(val)
-        self._previous_value_value = val
-        self._previous_value_present = True
-
-    @previous_value.deleter
-    def previous_value(self):
-        self._previous_value_value = None
-        self._previous_value_present = False
-
-    def __repr__(self):
-        return 'SharedFolderChangeConfidentialityDetails(new_value={!r}, previous_value={!r})'.format(
-            self._new_value_value,
-            self._previous_value_value,
-        )
-
-SharedFolderChangeConfidentialityDetails_validator = bv.Struct(SharedFolderChangeConfidentialityDetails)
-
-class SharedFolderChangeConfidentialityType(object):
-
-    __slots__ = [
-        '_description_value',
-        '_description_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 description=None):
-        self._description_value = None
-        self._description_present = False
-        if description is not None:
-            self.description = description
-
-    @property
-    def description(self):
-        """
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            raise AttributeError("missing required field 'description'")
-
-    @description.setter
-    def description(self, val):
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    def __repr__(self):
-        return 'SharedFolderChangeConfidentialityType(description={!r})'.format(
-            self._description_value,
-        )
-
-SharedFolderChangeConfidentialityType_validator = bv.Struct(SharedFolderChangeConfidentialityType)
-
 class SharedFolderChangeLinkPolicyDetails(object):
     """
     Changed who can access the shared folder via a link.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
     :ivar new_value: New shared folder link policy.
     :ivar previous_value: Previous shared folder link policy. Might be missing
         due to historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
         '_new_value_value',
         '_new_value_present',
         '_previous_value_value',
@@ -44967,110 +45082,23 @@ class SharedFolderChangeLinkPolicyDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
                  new_value=None,
-                 shared_folder_type=None,
                  previous_value=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
         self._new_value_value = None
         self._new_value_present = False
         self._previous_value_value = None
         self._previous_value_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
         if new_value is not None:
             self.new_value = new_value
         if previous_value is not None:
             self.previous_value = previous_value
 
     @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            raise AttributeError("missing required field 'original_folder_name'")
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-
-    @property
     def new_value(self):
         """
         New shared folder link policy.
 
-        :rtype: SharedFolderLinkPolicy
+        :rtype: sharing.SharedLinkPolicy_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -45094,7 +45122,7 @@ class SharedFolderChangeLinkPolicyDetails(object):
         Previous shared folder link policy. Might be missing due to historical
         data gap.
 
-        :rtype: SharedFolderLinkPolicy
+        :rtype: sharing.SharedLinkPolicy_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -45116,11 +45144,8 @@ class SharedFolderChangeLinkPolicyDetails(object):
         self._previous_value_present = False
 
     def __repr__(self):
-        return 'SharedFolderChangeLinkPolicyDetails(target_asset_index={!r}, original_folder_name={!r}, new_value={!r}, shared_folder_type={!r}, previous_value={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
+        return 'SharedFolderChangeLinkPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
-            self._shared_folder_type_value,
             self._previous_value_value,
         )
 
@@ -45170,26 +45195,16 @@ class SharedFolderChangeLinkPolicyType(object):
 
 SharedFolderChangeLinkPolicyType_validator = bv.Struct(SharedFolderChangeLinkPolicyType)
 
-class SharedFolderChangeMemberManagementPolicyDetails(object):
+class SharedFolderChangeMembersInheritancePolicyDetails(object):
     """
-    Changed who can manage the membership of a shared folder.
+    Specify if the shared folder inherits its members from the parent folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
-    :ivar new_value: New membership management policy.
-    :ivar previous_value: Previous membership management policy. Might be
-        missing due to historical data gap.
+    :ivar new_value: New member inheritance policy.
+    :ivar previous_value: Previous member inheritance policy. Might be missing
+        due to historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
         '_new_value_value',
         '_new_value_present',
         '_previous_value_value',
@@ -45199,110 +45214,23 @@ class SharedFolderChangeMemberManagementPolicyDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
                  new_value=None,
-                 shared_folder_type=None,
                  previous_value=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
         self._new_value_value = None
         self._new_value_present = False
         self._previous_value_value = None
         self._previous_value_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
         if new_value is not None:
             self.new_value = new_value
         if previous_value is not None:
             self.previous_value = previous_value
 
     @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            raise AttributeError("missing required field 'original_folder_name'")
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
-        else:
-            return None
-
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
-        if val is None:
-            del self.shared_folder_type
-            return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
-
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
-
-    @property
     def new_value(self):
         """
-        New membership management policy.
+        New member inheritance policy.
 
-        :rtype: SharedFolderMembershipManagementPolicy
+        :rtype: SharedFolderMembersInheritancePolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -45323,10 +45251,10 @@ class SharedFolderChangeMemberManagementPolicyDetails(object):
     @property
     def previous_value(self):
         """
-        Previous membership management policy. Might be missing due to
-        historical data gap.
+        Previous member inheritance policy. Might be missing due to historical
+        data gap.
 
-        :rtype: SharedFolderMembershipManagementPolicy
+        :rtype: SharedFolderMembersInheritancePolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -45348,17 +45276,14 @@ class SharedFolderChangeMemberManagementPolicyDetails(object):
         self._previous_value_present = False
 
     def __repr__(self):
-        return 'SharedFolderChangeMemberManagementPolicyDetails(target_asset_index={!r}, original_folder_name={!r}, new_value={!r}, shared_folder_type={!r}, previous_value={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
+        return 'SharedFolderChangeMembersInheritancePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
-            self._shared_folder_type_value,
             self._previous_value_value,
         )
 
-SharedFolderChangeMemberManagementPolicyDetails_validator = bv.Struct(SharedFolderChangeMemberManagementPolicyDetails)
+SharedFolderChangeMembersInheritancePolicyDetails_validator = bv.Struct(SharedFolderChangeMembersInheritancePolicyDetails)
 
-class SharedFolderChangeMemberManagementPolicyType(object):
+class SharedFolderChangeMembersInheritancePolicyType(object):
 
     __slots__ = [
         '_description_value',
@@ -45396,32 +45321,22 @@ class SharedFolderChangeMemberManagementPolicyType(object):
         self._description_present = False
 
     def __repr__(self):
-        return 'SharedFolderChangeMemberManagementPolicyType(description={!r})'.format(
+        return 'SharedFolderChangeMembersInheritancePolicyType(description={!r})'.format(
             self._description_value,
         )
 
-SharedFolderChangeMemberManagementPolicyType_validator = bv.Struct(SharedFolderChangeMemberManagementPolicyType)
+SharedFolderChangeMembersInheritancePolicyType_validator = bv.Struct(SharedFolderChangeMembersInheritancePolicyType)
 
-class SharedFolderChangeMemberPolicyDetails(object):
+class SharedFolderChangeMembersManagementPolicyDetails(object):
     """
-    Changed who can become a member of the shared folder.
+    Changed who can add or remove members of a shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
-    :ivar new_value: New external invite policy.
-    :ivar previous_value: Previous external invite policy. Might be missing due
-        to historical data gap.
+    :ivar new_value: New members management policy.
+    :ivar previous_value: Previous members management policy. Might be missing
+        due to historical data gap.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
-        '_shared_folder_type_value',
-        '_shared_folder_type_present',
         '_new_value_value',
         '_new_value_present',
         '_previous_value_value',
@@ -45431,110 +45346,155 @@ class SharedFolderChangeMemberPolicyDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None,
                  new_value=None,
-                 shared_folder_type=None,
                  previous_value=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
         self._new_value_value = None
         self._new_value_present = False
         self._previous_value_value = None
         self._previous_value_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-        if shared_folder_type is not None:
-            self.shared_folder_type = shared_folder_type
         if new_value is not None:
             self.new_value = new_value
         if previous_value is not None:
             self.previous_value = previous_value
 
     @property
-    def target_asset_index(self):
+    def new_value(self):
         """
-        Target asset position in the Assets list.
+        New members management policy.
 
-        :rtype: long
+        :rtype: sharing.AclUpdatePolicy_validator
         """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
+        if self._new_value_present:
+            return self._new_value_value
         else:
-            raise AttributeError("missing required field 'target_asset_index'")
+            raise AttributeError("missing required field 'new_value'")
 
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
 
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
 
     @property
-    def original_folder_name(self):
+    def previous_value(self):
         """
-        Original shared folder name.
+        Previous members management policy. Might be missing due to historical
+        data gap.
 
-        :rtype: str
+        :rtype: sharing.AclUpdatePolicy_validator
         """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            raise AttributeError("missing required field 'original_folder_name'")
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-
-    @property
-    def shared_folder_type(self):
-        """
-        Shared folder type. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._shared_folder_type_present:
-            return self._shared_folder_type_value
+        if self._previous_value_present:
+            return self._previous_value_value
         else:
             return None
 
-    @shared_folder_type.setter
-    def shared_folder_type(self, val):
+    @previous_value.setter
+    def previous_value(self, val):
         if val is None:
-            del self.shared_folder_type
+            del self.previous_value
             return
-        val = self._shared_folder_type_validator.validate(val)
-        self._shared_folder_type_value = val
-        self._shared_folder_type_present = True
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
 
-    @shared_folder_type.deleter
-    def shared_folder_type(self):
-        self._shared_folder_type_value = None
-        self._shared_folder_type_present = False
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def __repr__(self):
+        return 'SharedFolderChangeMembersManagementPolicyDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+SharedFolderChangeMembersManagementPolicyDetails_validator = bv.Struct(SharedFolderChangeMembersManagementPolicyDetails)
+
+class SharedFolderChangeMembersManagementPolicyType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'SharedFolderChangeMembersManagementPolicyType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedFolderChangeMembersManagementPolicyType_validator = bv.Struct(SharedFolderChangeMembersManagementPolicyType)
+
+class SharedFolderChangeMembersPolicyDetails(object):
+    """
+    Changed who can become a member of the shared folder.
+
+    :ivar new_value: New external invite policy.
+    :ivar previous_value: Previous external invite policy. Might be missing due
+        to historical data gap.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
 
     @property
     def new_value(self):
         """
         New external invite policy.
 
-        :rtype: SharedFolderMemberPolicy
+        :rtype: sharing.MemberPolicy_validator
         """
         if self._new_value_present:
             return self._new_value_value
@@ -45558,7 +45518,7 @@ class SharedFolderChangeMemberPolicyDetails(object):
         Previous external invite policy. Might be missing due to historical data
         gap.
 
-        :rtype: SharedFolderMemberPolicy
+        :rtype: sharing.MemberPolicy_validator
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -45580,17 +45540,14 @@ class SharedFolderChangeMemberPolicyDetails(object):
         self._previous_value_present = False
 
     def __repr__(self):
-        return 'SharedFolderChangeMemberPolicyDetails(target_asset_index={!r}, original_folder_name={!r}, new_value={!r}, shared_folder_type={!r}, previous_value={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
+        return 'SharedFolderChangeMembersPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
-            self._shared_folder_type_value,
             self._previous_value_value,
         )
 
-SharedFolderChangeMemberPolicyDetails_validator = bv.Struct(SharedFolderChangeMemberPolicyDetails)
+SharedFolderChangeMembersPolicyDetails_validator = bv.Struct(SharedFolderChangeMembersPolicyDetails)
 
-class SharedFolderChangeMemberPolicyType(object):
+class SharedFolderChangeMembersPolicyType(object):
 
     __slots__ = [
         '_description_value',
@@ -45628,11 +45585,11 @@ class SharedFolderChangeMemberPolicyType(object):
         self._description_present = False
 
     def __repr__(self):
-        return 'SharedFolderChangeMemberPolicyType(description={!r})'.format(
+        return 'SharedFolderChangeMembersPolicyType(description={!r})'.format(
             self._description_value,
         )
 
-SharedFolderChangeMemberPolicyType_validator = bv.Struct(SharedFolderChangeMemberPolicyType)
+SharedFolderChangeMembersPolicyType_validator = bv.Struct(SharedFolderChangeMembersPolicyType)
 
 class SharedFolderCreateDetails(object):
     """
@@ -45795,8 +45752,10 @@ class SharedFolderDeclineInvitationType(object):
 
 SharedFolderDeclineInvitationType_validator = bv.Struct(SharedFolderDeclineInvitationType)
 
-class SharedFolderLinkPolicy(bb.Union):
+class SharedFolderMembersInheritancePolicy(bb.Union):
     """
+    Specifies if a shared folder inherits its members from the parent folder.
+
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
@@ -45804,37 +45763,27 @@ class SharedFolderLinkPolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    members_only = None
+    inherit_members = None
     # Attribute is overwritten below the class definition
-    members_and_team = None
-    # Attribute is overwritten below the class definition
-    anyone = None
+    dont_inherit_members = None
     # Attribute is overwritten below the class definition
     other = None
 
-    def is_members_only(self):
+    def is_inherit_members(self):
         """
-        Check if the union tag is ``members_only``.
+        Check if the union tag is ``inherit_members``.
 
         :rtype: bool
         """
-        return self._tag == 'members_only'
+        return self._tag == 'inherit_members'
 
-    def is_members_and_team(self):
+    def is_dont_inherit_members(self):
         """
-        Check if the union tag is ``members_and_team``.
-
-        :rtype: bool
-        """
-        return self._tag == 'members_and_team'
-
-    def is_anyone(self):
-        """
-        Check if the union tag is ``anyone``.
+        Check if the union tag is ``dont_inherit_members``.
 
         :rtype: bool
         """
-        return self._tag == 'anyone'
+        return self._tag == 'dont_inherit_members'
 
     def is_other(self):
         """
@@ -45845,180 +45794,25 @@ class SharedFolderLinkPolicy(bb.Union):
         return self._tag == 'other'
 
     def __repr__(self):
-        return 'SharedFolderLinkPolicy(%r, %r)' % (self._tag, self._value)
+        return 'SharedFolderMembersInheritancePolicy(%r, %r)' % (self._tag, self._value)
 
-SharedFolderLinkPolicy_validator = bv.Union(SharedFolderLinkPolicy)
-
-class SharedFolderMemberPolicy(bb.Union):
-    """
-    Policy for controlling who can become a member of a shared folder
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    team_only = None
-    # Attribute is overwritten below the class definition
-    anyone = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_team_only(self):
-        """
-        Check if the union tag is ``team_only``.
-
-        :rtype: bool
-        """
-        return self._tag == 'team_only'
-
-    def is_anyone(self):
-        """
-        Check if the union tag is ``anyone``.
-
-        :rtype: bool
-        """
-        return self._tag == 'anyone'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SharedFolderMemberPolicy(%r, %r)' % (self._tag, self._value)
-
-SharedFolderMemberPolicy_validator = bv.Union(SharedFolderMemberPolicy)
-
-class SharedFolderMembershipManagementPolicy(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    owner = None
-    # Attribute is overwritten below the class definition
-    editors = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_owner(self):
-        """
-        Check if the union tag is ``owner``.
-
-        :rtype: bool
-        """
-        return self._tag == 'owner'
-
-    def is_editors(self):
-        """
-        Check if the union tag is ``editors``.
-
-        :rtype: bool
-        """
-        return self._tag == 'editors'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def __repr__(self):
-        return 'SharedFolderMembershipManagementPolicy(%r, %r)' % (self._tag, self._value)
-
-SharedFolderMembershipManagementPolicy_validator = bv.Union(SharedFolderMembershipManagementPolicy)
+SharedFolderMembersInheritancePolicy_validator = bv.Union(SharedFolderMembersInheritancePolicy)
 
 class SharedFolderMountDetails(object):
     """
     Added a shared folder to own Dropbox.
-
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
-    def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            raise AttributeError("missing required field 'original_folder_name'")
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return 'SharedFolderMountDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-        )
+        return 'SharedFolderMountDetails()'
 
 SharedFolderMountDetails_validator = bv.Struct(SharedFolderMountDetails)
 
@@ -46336,83 +46130,18 @@ SharedFolderTransferOwnershipType_validator = bv.Struct(SharedFolderTransferOwne
 class SharedFolderUnmountDetails(object):
     """
     Deleted a shared folder from Dropbox.
-
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
     """
 
     __slots__ = [
-        '_target_asset_index_value',
-        '_target_asset_index_present',
-        '_original_folder_name_value',
-        '_original_folder_name_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
-    def __init__(self,
-                 target_asset_index=None,
-                 original_folder_name=None):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
-        if target_asset_index is not None:
-            self.target_asset_index = target_asset_index
-        if original_folder_name is not None:
-            self.original_folder_name = original_folder_name
-
-    @property
-    def target_asset_index(self):
-        """
-        Target asset position in the Assets list.
-
-        :rtype: long
-        """
-        if self._target_asset_index_present:
-            return self._target_asset_index_value
-        else:
-            raise AttributeError("missing required field 'target_asset_index'")
-
-    @target_asset_index.setter
-    def target_asset_index(self, val):
-        val = self._target_asset_index_validator.validate(val)
-        self._target_asset_index_value = val
-        self._target_asset_index_present = True
-
-    @target_asset_index.deleter
-    def target_asset_index(self):
-        self._target_asset_index_value = None
-        self._target_asset_index_present = False
-
-    @property
-    def original_folder_name(self):
-        """
-        Original shared folder name.
-
-        :rtype: str
-        """
-        if self._original_folder_name_present:
-            return self._original_folder_name_value
-        else:
-            raise AttributeError("missing required field 'original_folder_name'")
-
-    @original_folder_name.setter
-    def original_folder_name(self, val):
-        val = self._original_folder_name_validator.validate(val)
-        self._original_folder_name_value = val
-        self._original_folder_name_present = True
-
-    @original_folder_name.deleter
-    def original_folder_name(self):
-        self._original_folder_name_value = None
-        self._original_folder_name_present = False
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return 'SharedFolderUnmountDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
-            self._target_asset_index_value,
-            self._original_folder_name_value,
-        )
+        return 'SharedFolderUnmountDetails()'
 
 SharedFolderUnmountDetails_validator = bv.Struct(SharedFolderUnmountDetails)
 
@@ -48957,6 +48686,62 @@ class SmartSyncOptOutType(object):
 
 SmartSyncOptOutType_validator = bv.Struct(SmartSyncOptOutType)
 
+class SpaceCapsType(bb.Union):
+    """
+    Space limit alert policy
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    hard = None
+    # Attribute is overwritten below the class definition
+    off = None
+    # Attribute is overwritten below the class definition
+    soft = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_hard(self):
+        """
+        Check if the union tag is ``hard``.
+
+        :rtype: bool
+        """
+        return self._tag == 'hard'
+
+    def is_off(self):
+        """
+        Check if the union tag is ``off``.
+
+        :rtype: bool
+        """
+        return self._tag == 'off'
+
+    def is_soft(self):
+        """
+        Check if the union tag is ``soft``.
+
+        :rtype: bool
+        """
+        return self._tag == 'soft'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'SpaceCapsType(%r, %r)' % (self._tag, self._value)
+
+SpaceCapsType_validator = bv.Union(SpaceCapsType)
+
 class SpaceLimitsStatus(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -50437,15 +50222,17 @@ class TeamEvent(object):
     :ivar timestamp: The Dropbox timestamp representing when the action was
         taken.
     :ivar event_category: The category that this type of action belongs to.
-    :ivar actor: The entity who actually performed the action.
+    :ivar actor: The entity who actually performed the action. Might be missing
+        due to historical data gap.
     :ivar origin: The origin from which the actor performed the action including
         information about host, ip address, location, session, etc. If the
         action was performed programmatically via the API the origin represents
         the API client.
     :ivar involve_non_team_member: True if the action involved a non team member
-        either as the actor or as one of the affected users.
+        either as the actor or as one of the affected users. Might be missing
+        due to historical data gap.
     :ivar context: The user or team on whose behalf the actor performed the
-        action.
+        action. Might be missing due to historical data gap.
     :ivar participants: Zero or more users and/or groups that are affected by
         the action. Note that this list doesn't include any actors or users in
         context.
@@ -50485,12 +50272,12 @@ class TeamEvent(object):
     def __init__(self,
                  timestamp=None,
                  event_category=None,
-                 actor=None,
-                 involve_non_team_member=None,
-                 context=None,
                  event_type=None,
                  details=None,
+                 actor=None,
                  origin=None,
+                 involve_non_team_member=None,
+                 context=None,
                  participants=None,
                  assets=None):
         self._timestamp_value = None
@@ -50583,17 +50370,21 @@ class TeamEvent(object):
     @property
     def actor(self):
         """
-        The entity who actually performed the action.
+        The entity who actually performed the action. Might be missing due to
+        historical data gap.
 
         :rtype: ActorLogInfo
         """
         if self._actor_present:
             return self._actor_value
         else:
-            raise AttributeError("missing required field 'actor'")
+            return None
 
     @actor.setter
     def actor(self, val):
+        if val is None:
+            del self.actor
+            return
         self._actor_validator.validate_type_only(val)
         self._actor_value = val
         self._actor_present = True
@@ -50636,17 +50427,20 @@ class TeamEvent(object):
     def involve_non_team_member(self):
         """
         True if the action involved a non team member either as the actor or as
-        one of the affected users.
+        one of the affected users. Might be missing due to historical data gap.
 
         :rtype: bool
         """
         if self._involve_non_team_member_present:
             return self._involve_non_team_member_value
         else:
-            raise AttributeError("missing required field 'involve_non_team_member'")
+            return None
 
     @involve_non_team_member.setter
     def involve_non_team_member(self, val):
+        if val is None:
+            del self.involve_non_team_member
+            return
         val = self._involve_non_team_member_validator.validate(val)
         self._involve_non_team_member_value = val
         self._involve_non_team_member_present = True
@@ -50659,17 +50453,21 @@ class TeamEvent(object):
     @property
     def context(self):
         """
-        The user or team on whose behalf the actor performed the action.
+        The user or team on whose behalf the actor performed the action. Might
+        be missing due to historical data gap.
 
         :rtype: ContextLogInfo
         """
         if self._context_present:
             return self._context_value
         else:
-            raise AttributeError("missing required field 'context'")
+            return None
 
     @context.setter
     def context(self, val):
+        if val is None:
+            del self.context
+            return
         self._context_validator.validate_type_only(val)
         self._context_value = val
         self._context_present = True
@@ -50782,15 +50580,15 @@ class TeamEvent(object):
         self._details_present = False
 
     def __repr__(self):
-        return 'TeamEvent(timestamp={!r}, event_category={!r}, actor={!r}, involve_non_team_member={!r}, context={!r}, event_type={!r}, details={!r}, origin={!r}, participants={!r}, assets={!r})'.format(
+        return 'TeamEvent(timestamp={!r}, event_category={!r}, event_type={!r}, details={!r}, actor={!r}, origin={!r}, involve_non_team_member={!r}, context={!r}, participants={!r}, assets={!r})'.format(
             self._timestamp_value,
             self._event_category_value,
-            self._actor_value,
-            self._involve_non_team_member_value,
-            self._context_value,
             self._event_type_value,
             self._details_value,
+            self._actor_value,
             self._origin_value,
+            self._involve_non_team_member_value,
+            self._context_value,
             self._participants_value,
             self._assets_value,
         )
@@ -51152,50 +50950,81 @@ class TeamFolderRenameDetails(object):
     """
     Renamed an active or archived team folder.
 
-    :ivar relocate_action_details: Specifies the source and destination indices
-        in the assets list.
+    :ivar previous_folder_name: Previous folder name.
+    :ivar new_folder_name: New folder name.
     """
 
     __slots__ = [
-        '_relocate_action_details_value',
-        '_relocate_action_details_present',
+        '_previous_folder_name_value',
+        '_previous_folder_name_present',
+        '_new_folder_name_value',
+        '_new_folder_name_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 relocate_action_details=None):
-        self._relocate_action_details_value = None
-        self._relocate_action_details_present = False
-        if relocate_action_details is not None:
-            self.relocate_action_details = relocate_action_details
+                 previous_folder_name=None,
+                 new_folder_name=None):
+        self._previous_folder_name_value = None
+        self._previous_folder_name_present = False
+        self._new_folder_name_value = None
+        self._new_folder_name_present = False
+        if previous_folder_name is not None:
+            self.previous_folder_name = previous_folder_name
+        if new_folder_name is not None:
+            self.new_folder_name = new_folder_name
 
     @property
-    def relocate_action_details(self):
+    def previous_folder_name(self):
         """
-        Specifies the source and destination indices in the assets list.
+        Previous folder name.
 
-        :rtype: RelocateAssetReferencesLogInfo
+        :rtype: str
         """
-        if self._relocate_action_details_present:
-            return self._relocate_action_details_value
+        if self._previous_folder_name_present:
+            return self._previous_folder_name_value
         else:
-            raise AttributeError("missing required field 'relocate_action_details'")
+            raise AttributeError("missing required field 'previous_folder_name'")
 
-    @relocate_action_details.setter
-    def relocate_action_details(self, val):
-        self._relocate_action_details_validator.validate_type_only(val)
-        self._relocate_action_details_value = val
-        self._relocate_action_details_present = True
+    @previous_folder_name.setter
+    def previous_folder_name(self, val):
+        val = self._previous_folder_name_validator.validate(val)
+        self._previous_folder_name_value = val
+        self._previous_folder_name_present = True
 
-    @relocate_action_details.deleter
-    def relocate_action_details(self):
-        self._relocate_action_details_value = None
-        self._relocate_action_details_present = False
+    @previous_folder_name.deleter
+    def previous_folder_name(self):
+        self._previous_folder_name_value = None
+        self._previous_folder_name_present = False
+
+    @property
+    def new_folder_name(self):
+        """
+        New folder name.
+
+        :rtype: str
+        """
+        if self._new_folder_name_present:
+            return self._new_folder_name_value
+        else:
+            raise AttributeError("missing required field 'new_folder_name'")
+
+    @new_folder_name.setter
+    def new_folder_name(self, val):
+        val = self._new_folder_name_validator.validate(val)
+        self._new_folder_name_value = val
+        self._new_folder_name_present = True
+
+    @new_folder_name.deleter
+    def new_folder_name(self):
+        self._new_folder_name_value = None
+        self._new_folder_name_present = False
 
     def __repr__(self):
-        return 'TeamFolderRenameDetails(relocate_action_details={!r})'.format(
-            self._relocate_action_details_value,
+        return 'TeamFolderRenameDetails(previous_folder_name={!r}, new_folder_name={!r})'.format(
+            self._previous_folder_name_value,
+            self._new_folder_name_value,
         )
 
 TeamFolderRenameDetails_validator = bv.Struct(TeamFolderRenameDetails)
@@ -53318,6 +53147,133 @@ class UserOrTeamLinkedAppLogInfo(AppLogInfo):
 
 UserOrTeamLinkedAppLogInfo_validator = bv.Struct(UserOrTeamLinkedAppLogInfo)
 
+class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
+    """
+    Information on active web sessions
+
+    :ivar user_agent: Information on the hosting device.
+    :ivar os: Information on the hosting operating system.
+    :ivar browser: Information on the browser used for this web session.
+    """
+
+    __slots__ = [
+        '_user_agent_value',
+        '_user_agent_present',
+        '_os_value',
+        '_os_present',
+        '_browser_value',
+        '_browser_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user_agent=None,
+                 os=None,
+                 browser=None,
+                 session_id=None,
+                 ip_address=None,
+                 created=None,
+                 updated=None):
+        super(WebDeviceSessionLogInfo, self).__init__(session_id,
+                                                      ip_address,
+                                                      created,
+                                                      updated)
+        self._user_agent_value = None
+        self._user_agent_present = False
+        self._os_value = None
+        self._os_present = False
+        self._browser_value = None
+        self._browser_present = False
+        if user_agent is not None:
+            self.user_agent = user_agent
+        if os is not None:
+            self.os = os
+        if browser is not None:
+            self.browser = browser
+
+    @property
+    def user_agent(self):
+        """
+        Information on the hosting device.
+
+        :rtype: str
+        """
+        if self._user_agent_present:
+            return self._user_agent_value
+        else:
+            raise AttributeError("missing required field 'user_agent'")
+
+    @user_agent.setter
+    def user_agent(self, val):
+        val = self._user_agent_validator.validate(val)
+        self._user_agent_value = val
+        self._user_agent_present = True
+
+    @user_agent.deleter
+    def user_agent(self):
+        self._user_agent_value = None
+        self._user_agent_present = False
+
+    @property
+    def os(self):
+        """
+        Information on the hosting operating system.
+
+        :rtype: str
+        """
+        if self._os_present:
+            return self._os_value
+        else:
+            raise AttributeError("missing required field 'os'")
+
+    @os.setter
+    def os(self, val):
+        val = self._os_validator.validate(val)
+        self._os_value = val
+        self._os_present = True
+
+    @os.deleter
+    def os(self):
+        self._os_value = None
+        self._os_present = False
+
+    @property
+    def browser(self):
+        """
+        Information on the browser used for this web session.
+
+        :rtype: str
+        """
+        if self._browser_present:
+            return self._browser_value
+        else:
+            raise AttributeError("missing required field 'browser'")
+
+    @browser.setter
+    def browser(self, val):
+        val = self._browser_validator.validate(val)
+        self._browser_value = val
+        self._browser_present = True
+
+    @browser.deleter
+    def browser(self):
+        self._browser_value = None
+        self._browser_present = False
+
+    def __repr__(self):
+        return 'WebDeviceSessionLogInfo(user_agent={!r}, os={!r}, browser={!r}, session_id={!r}, ip_address={!r}, created={!r}, updated={!r})'.format(
+            self._user_agent_value,
+            self._os_value,
+            self._browser_value,
+            self._session_id_value,
+            self._ip_address_value,
+            self._created_value,
+            self._updated_value,
+        )
+
+WebDeviceSessionLogInfo_validator = bv.Struct(WebDeviceSessionLogInfo)
+
 class WebSessionLogInfo(SessionLogInfo):
     """
     Web session.
@@ -53753,6 +53709,7 @@ class WebSessionsIdleLengthPolicy(bb.Union):
 WebSessionsIdleLengthPolicy_validator = bv.Union(WebSessionsIdleLengthPolicy)
 
 AppId_validator = bv.String()
+DeviceSessionId_validator = bv.String()
 EmailAddress_validator = bv.String(max_length=255)
 FilePath_validator = bv.String()
 IpAddress_validator = bv.String()
@@ -53827,6 +53784,14 @@ AccountCaptureMigrateAccountType._description_validator = bv.String()
 AccountCaptureMigrateAccountType._all_field_names_ = set(['description'])
 AccountCaptureMigrateAccountType._all_fields_ = [('description', AccountCaptureMigrateAccountType._description_validator)]
 
+AccountCaptureNotificationEmailsSentDetails._domain_name_validator = bv.String()
+AccountCaptureNotificationEmailsSentDetails._all_field_names_ = set(['domain_name'])
+AccountCaptureNotificationEmailsSentDetails._all_fields_ = [('domain_name', AccountCaptureNotificationEmailsSentDetails._domain_name_validator)]
+
+AccountCaptureNotificationEmailsSentType._description_validator = bv.String()
+AccountCaptureNotificationEmailsSentType._all_field_names_ = set(['description'])
+AccountCaptureNotificationEmailsSentType._all_fields_ = [('description', AccountCaptureNotificationEmailsSentType._description_validator)]
+
 AccountCapturePolicy._disabled_validator = bv.Void()
 AccountCapturePolicy._invited_users_validator = bv.Void()
 AccountCapturePolicy._all_users_validator = bv.Void()
@@ -53850,6 +53815,17 @@ AccountCaptureRelinquishAccountDetails._all_fields_ = [('domain_name', AccountCa
 AccountCaptureRelinquishAccountType._description_validator = bv.String()
 AccountCaptureRelinquishAccountType._all_field_names_ = set(['description'])
 AccountCaptureRelinquishAccountType._all_fields_ = [('description', AccountCaptureRelinquishAccountType._description_validator)]
+
+ActionDetails._team_join_details_validator = JoinTeamDetails_validator
+ActionDetails._remove_action_validator = MemberRemoveActionType_validator
+ActionDetails._other_validator = bv.Void()
+ActionDetails._tagmap = {
+    'team_join_details': ActionDetails._team_join_details_validator,
+    'remove_action': ActionDetails._remove_action_validator,
+    'other': ActionDetails._other_validator,
+}
+
+ActionDetails.other = ActionDetails('other')
 
 ActorLogInfo._user_validator = UserLogInfo_validator
 ActorLogInfo._admin_validator = UserLogInfo_validator
@@ -54018,19 +53994,6 @@ CollectionShareType._description_validator = bv.String()
 CollectionShareType._all_field_names_ = set(['description'])
 CollectionShareType._all_fields_ = [('description', CollectionShareType._description_validator)]
 
-Confidentiality._confidential_validator = bv.Void()
-Confidentiality._non_confidential_validator = bv.Void()
-Confidentiality._other_validator = bv.Void()
-Confidentiality._tagmap = {
-    'confidential': Confidentiality._confidential_validator,
-    'non_confidential': Confidentiality._non_confidential_validator,
-    'other': Confidentiality._other_validator,
-}
-
-Confidentiality.confidential = Confidentiality('confidential')
-Confidentiality.non_confidential = Confidentiality('non_confidential')
-Confidentiality.other = Confidentiality('other')
-
 ContentPermanentDeletePolicy._disabled_validator = bv.Void()
 ContentPermanentDeletePolicy._enabled_validator = bv.Void()
 ContentPermanentDeletePolicy._other_validator = bv.Void()
@@ -54090,6 +54053,61 @@ DataPlacementRestrictionSatisfyPolicyDetails._all_fields_ = [('placement_restric
 DataPlacementRestrictionSatisfyPolicyType._description_validator = bv.String()
 DataPlacementRestrictionSatisfyPolicyType._all_field_names_ = set(['description'])
 DataPlacementRestrictionSatisfyPolicyType._all_fields_ = [('description', DataPlacementRestrictionSatisfyPolicyType._description_validator)]
+
+DeviceSessionLogInfo._session_id_validator = bv.Nullable(DeviceSessionId_validator)
+DeviceSessionLogInfo._ip_address_validator = bv.Nullable(IpAddress_validator)
+DeviceSessionLogInfo._created_validator = bv.Nullable(common.DropboxTimestamp_validator)
+DeviceSessionLogInfo._updated_validator = bv.Nullable(common.DropboxTimestamp_validator)
+DeviceSessionLogInfo._field_names_ = set([
+    'session_id',
+    'ip_address',
+    'created',
+    'updated',
+])
+DeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._field_names_
+DeviceSessionLogInfo._fields_ = [
+    ('session_id', DeviceSessionLogInfo._session_id_validator),
+    ('ip_address', DeviceSessionLogInfo._ip_address_validator),
+    ('created', DeviceSessionLogInfo._created_validator),
+    ('updated', DeviceSessionLogInfo._updated_validator),
+]
+DeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._fields_
+
+DeviceSessionLogInfo._tag_to_subtype_ = {
+    (u'desktop_device_session',): DesktopDeviceSessionLogInfo_validator,
+    (u'mobile_device_session',): MobileDeviceSessionLogInfo_validator,
+    (u'web_device_session',): WebDeviceSessionLogInfo_validator,
+    (u'legacy_device_session',): LegacyDeviceSessionLogInfo_validator,
+}
+DeviceSessionLogInfo._pytype_to_tag_and_subtype_ = {
+    DesktopDeviceSessionLogInfo: ((u'desktop_device_session',), DesktopDeviceSessionLogInfo_validator),
+    MobileDeviceSessionLogInfo: ((u'mobile_device_session',), MobileDeviceSessionLogInfo_validator),
+    WebDeviceSessionLogInfo: ((u'web_device_session',), WebDeviceSessionLogInfo_validator),
+    LegacyDeviceSessionLogInfo: ((u'legacy_device_session',), LegacyDeviceSessionLogInfo_validator),
+}
+DeviceSessionLogInfo._is_catch_all_ = True
+
+DesktopDeviceSessionLogInfo._host_name_validator = bv.String()
+DesktopDeviceSessionLogInfo._client_type_validator = team.DesktopPlatform_validator
+DesktopDeviceSessionLogInfo._client_version_validator = bv.Nullable(bv.String())
+DesktopDeviceSessionLogInfo._platform_validator = bv.String()
+DesktopDeviceSessionLogInfo._is_delete_on_unlink_supported_validator = bv.Boolean()
+DesktopDeviceSessionLogInfo._field_names_ = set([
+    'host_name',
+    'client_type',
+    'client_version',
+    'platform',
+    'is_delete_on_unlink_supported',
+])
+DesktopDeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._all_field_names_.union(DesktopDeviceSessionLogInfo._field_names_)
+DesktopDeviceSessionLogInfo._fields_ = [
+    ('host_name', DesktopDeviceSessionLogInfo._host_name_validator),
+    ('client_type', DesktopDeviceSessionLogInfo._client_type_validator),
+    ('client_version', DesktopDeviceSessionLogInfo._client_version_validator),
+    ('platform', DesktopDeviceSessionLogInfo._platform_validator),
+    ('is_delete_on_unlink_supported', DesktopDeviceSessionLogInfo._is_delete_on_unlink_supported_validator),
+]
+DesktopDeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._all_fields_ + DesktopDeviceSessionLogInfo._fields_
 
 SessionLogInfo._session_id_validator = bv.Nullable(common.SessionId_validator)
 SessionLogInfo._field_names_ = set(['session_id'])
@@ -54187,30 +54205,30 @@ DeviceApprovalsPolicy.unlimited = DeviceApprovalsPolicy('unlimited')
 DeviceApprovalsPolicy.limited = DeviceApprovalsPolicy('limited')
 DeviceApprovalsPolicy.other = DeviceApprovalsPolicy('other')
 
-DeviceChangeIpDesktopDetails._device_info_validator = DeviceLogInfo_validator
-DeviceChangeIpDesktopDetails._all_field_names_ = set(['device_info'])
-DeviceChangeIpDesktopDetails._all_fields_ = [('device_info', DeviceChangeIpDesktopDetails._device_info_validator)]
+DeviceChangeIpDesktopDetails._device_session_info_validator = DeviceSessionLogInfo_validator
+DeviceChangeIpDesktopDetails._all_field_names_ = set(['device_session_info'])
+DeviceChangeIpDesktopDetails._all_fields_ = [('device_session_info', DeviceChangeIpDesktopDetails._device_session_info_validator)]
 
 DeviceChangeIpDesktopType._description_validator = bv.String()
 DeviceChangeIpDesktopType._all_field_names_ = set(['description'])
 DeviceChangeIpDesktopType._all_fields_ = [('description', DeviceChangeIpDesktopType._description_validator)]
 
-DeviceChangeIpMobileDetails._device_info_validator = DeviceLogInfo_validator
-DeviceChangeIpMobileDetails._all_field_names_ = set(['device_info'])
-DeviceChangeIpMobileDetails._all_fields_ = [('device_info', DeviceChangeIpMobileDetails._device_info_validator)]
+DeviceChangeIpMobileDetails._device_session_info_validator = DeviceSessionLogInfo_validator
+DeviceChangeIpMobileDetails._all_field_names_ = set(['device_session_info'])
+DeviceChangeIpMobileDetails._all_fields_ = [('device_session_info', DeviceChangeIpMobileDetails._device_session_info_validator)]
 
 DeviceChangeIpMobileType._description_validator = bv.String()
 DeviceChangeIpMobileType._all_field_names_ = set(['description'])
 DeviceChangeIpMobileType._all_fields_ = [('description', DeviceChangeIpMobileType._description_validator)]
 
-DeviceChangeIpWebDetails._device_info_validator = bv.Nullable(DeviceLogInfo_validator)
+DeviceChangeIpWebDetails._device_session_info_validator = bv.Nullable(DeviceSessionLogInfo_validator)
 DeviceChangeIpWebDetails._user_agent_validator = bv.String()
 DeviceChangeIpWebDetails._all_field_names_ = set([
-    'device_info',
+    'device_session_info',
     'user_agent',
 ])
 DeviceChangeIpWebDetails._all_fields_ = [
-    ('device_info', DeviceChangeIpWebDetails._device_info_validator),
+    ('device_session_info', DeviceChangeIpWebDetails._device_session_info_validator),
     ('user_agent', DeviceChangeIpWebDetails._user_agent_validator),
 ]
 
@@ -54218,14 +54236,17 @@ DeviceChangeIpWebType._description_validator = bv.String()
 DeviceChangeIpWebType._all_field_names_ = set(['description'])
 DeviceChangeIpWebType._all_fields_ = [('description', DeviceChangeIpWebType._description_validator)]
 
-DeviceDeleteOnUnlinkFailDetails._device_info_validator = DeviceLogInfo_validator
+DeviceDeleteOnUnlinkFailDetails._session_id_validator = bv.Nullable(DeviceSessionId_validator)
+DeviceDeleteOnUnlinkFailDetails._display_name_validator = bv.Nullable(bv.String())
 DeviceDeleteOnUnlinkFailDetails._num_failures_validator = bv.Int64()
 DeviceDeleteOnUnlinkFailDetails._all_field_names_ = set([
-    'device_info',
+    'session_id',
+    'display_name',
     'num_failures',
 ])
 DeviceDeleteOnUnlinkFailDetails._all_fields_ = [
-    ('device_info', DeviceDeleteOnUnlinkFailDetails._device_info_validator),
+    ('session_id', DeviceDeleteOnUnlinkFailDetails._session_id_validator),
+    ('display_name', DeviceDeleteOnUnlinkFailDetails._display_name_validator),
     ('num_failures', DeviceDeleteOnUnlinkFailDetails._num_failures_validator),
 ]
 
@@ -54233,22 +54254,29 @@ DeviceDeleteOnUnlinkFailType._description_validator = bv.String()
 DeviceDeleteOnUnlinkFailType._all_field_names_ = set(['description'])
 DeviceDeleteOnUnlinkFailType._all_fields_ = [('description', DeviceDeleteOnUnlinkFailType._description_validator)]
 
-DeviceDeleteOnUnlinkSuccessDetails._device_info_validator = DeviceLogInfo_validator
-DeviceDeleteOnUnlinkSuccessDetails._all_field_names_ = set(['device_info'])
-DeviceDeleteOnUnlinkSuccessDetails._all_fields_ = [('device_info', DeviceDeleteOnUnlinkSuccessDetails._device_info_validator)]
+DeviceDeleteOnUnlinkSuccessDetails._session_id_validator = bv.Nullable(DeviceSessionId_validator)
+DeviceDeleteOnUnlinkSuccessDetails._display_name_validator = bv.Nullable(bv.String())
+DeviceDeleteOnUnlinkSuccessDetails._all_field_names_ = set([
+    'session_id',
+    'display_name',
+])
+DeviceDeleteOnUnlinkSuccessDetails._all_fields_ = [
+    ('session_id', DeviceDeleteOnUnlinkSuccessDetails._session_id_validator),
+    ('display_name', DeviceDeleteOnUnlinkSuccessDetails._display_name_validator),
+]
 
 DeviceDeleteOnUnlinkSuccessType._description_validator = bv.String()
 DeviceDeleteOnUnlinkSuccessType._all_field_names_ = set(['description'])
 DeviceDeleteOnUnlinkSuccessType._all_fields_ = [('description', DeviceDeleteOnUnlinkSuccessType._description_validator)]
 
-DeviceLinkFailDetails._device_info_validator = bv.Nullable(DeviceLogInfo_validator)
+DeviceLinkFailDetails._ip_address_validator = bv.Nullable(IpAddress_validator)
 DeviceLinkFailDetails._device_type_validator = DeviceType_validator
 DeviceLinkFailDetails._all_field_names_ = set([
-    'device_info',
+    'ip_address',
     'device_type',
 ])
 DeviceLinkFailDetails._all_fields_ = [
-    ('device_info', DeviceLinkFailDetails._device_info_validator),
+    ('ip_address', DeviceLinkFailDetails._ip_address_validator),
     ('device_type', DeviceLinkFailDetails._device_type_validator),
 ]
 
@@ -54256,48 +54284,13 @@ DeviceLinkFailType._description_validator = bv.String()
 DeviceLinkFailType._all_field_names_ = set(['description'])
 DeviceLinkFailType._all_fields_ = [('description', DeviceLinkFailType._description_validator)]
 
-DeviceLinkSuccessDetails._device_info_validator = DeviceLogInfo_validator
-DeviceLinkSuccessDetails._all_field_names_ = set(['device_info'])
-DeviceLinkSuccessDetails._all_fields_ = [('device_info', DeviceLinkSuccessDetails._device_info_validator)]
+DeviceLinkSuccessDetails._device_session_info_validator = DeviceSessionLogInfo_validator
+DeviceLinkSuccessDetails._all_field_names_ = set(['device_session_info'])
+DeviceLinkSuccessDetails._all_fields_ = [('device_session_info', DeviceLinkSuccessDetails._device_session_info_validator)]
 
 DeviceLinkSuccessType._description_validator = bv.String()
 DeviceLinkSuccessType._all_field_names_ = set(['description'])
 DeviceLinkSuccessType._all_fields_ = [('description', DeviceLinkSuccessType._description_validator)]
-
-DeviceLogInfo._device_id_validator = bv.Nullable(bv.String())
-DeviceLogInfo._display_name_validator = bv.Nullable(bv.String())
-DeviceLogInfo._is_emm_managed_validator = bv.Nullable(bv.Boolean())
-DeviceLogInfo._platform_validator = bv.Nullable(bv.String())
-DeviceLogInfo._mac_address_validator = bv.Nullable(bv.String())
-DeviceLogInfo._os_version_validator = bv.Nullable(bv.String())
-DeviceLogInfo._device_type_validator = bv.Nullable(bv.String())
-DeviceLogInfo._ip_address_validator = bv.Nullable(IpAddress_validator)
-DeviceLogInfo._last_activity_validator = bv.Nullable(bv.String())
-DeviceLogInfo._app_version_validator = bv.Nullable(bv.String())
-DeviceLogInfo._all_field_names_ = set([
-    'device_id',
-    'display_name',
-    'is_emm_managed',
-    'platform',
-    'mac_address',
-    'os_version',
-    'device_type',
-    'ip_address',
-    'last_activity',
-    'app_version',
-])
-DeviceLogInfo._all_fields_ = [
-    ('device_id', DeviceLogInfo._device_id_validator),
-    ('display_name', DeviceLogInfo._display_name_validator),
-    ('is_emm_managed', DeviceLogInfo._is_emm_managed_validator),
-    ('platform', DeviceLogInfo._platform_validator),
-    ('mac_address', DeviceLogInfo._mac_address_validator),
-    ('os_version', DeviceLogInfo._os_version_validator),
-    ('device_type', DeviceLogInfo._device_type_validator),
-    ('ip_address', DeviceLogInfo._ip_address_validator),
-    ('last_activity', DeviceLogInfo._last_activity_validator),
-    ('app_version', DeviceLogInfo._app_version_validator),
-]
 
 DeviceManagementDisabledDetails._all_field_names_ = set([])
 DeviceManagementDisabledDetails._all_fields_ = []
@@ -54326,14 +54319,17 @@ DeviceType.desktop = DeviceType('desktop')
 DeviceType.mobile = DeviceType('mobile')
 DeviceType.other = DeviceType('other')
 
-DeviceUnlinkDetails._device_info_validator = DeviceLogInfo_validator
+DeviceUnlinkDetails._session_id_validator = bv.Nullable(DeviceSessionId_validator)
+DeviceUnlinkDetails._display_name_validator = bv.Nullable(bv.String())
 DeviceUnlinkDetails._delete_data_validator = bv.Boolean()
 DeviceUnlinkDetails._all_field_names_ = set([
-    'device_info',
+    'session_id',
+    'display_name',
     'delete_data',
 ])
 DeviceUnlinkDetails._all_fields_ = [
-    ('device_info', DeviceUnlinkDetails._device_info_validator),
+    ('session_id', DeviceUnlinkDetails._session_id_validator),
+    ('display_name', DeviceUnlinkDetails._display_name_validator),
     ('delete_data', DeviceUnlinkDetails._delete_data_validator),
 ]
 
@@ -54448,6 +54444,19 @@ DomainVerificationRemoveDomainDetails._all_fields_ = [('domain_names', DomainVer
 DomainVerificationRemoveDomainType._description_validator = bv.String()
 DomainVerificationRemoveDomainType._all_field_names_ = set(['description'])
 DomainVerificationRemoveDomainType._all_fields_ = [('description', DomainVerificationRemoveDomainType._description_validator)]
+
+DownloadPolicyType._allow_validator = bv.Void()
+DownloadPolicyType._disallow_validator = bv.Void()
+DownloadPolicyType._other_validator = bv.Void()
+DownloadPolicyType._tagmap = {
+    'allow': DownloadPolicyType._allow_validator,
+    'disallow': DownloadPolicyType._disallow_validator,
+    'other': DownloadPolicyType._other_validator,
+}
+
+DownloadPolicyType.allow = DownloadPolicyType('allow')
+DownloadPolicyType.disallow = DownloadPolicyType('disallow')
+DownloadPolicyType.other = DownloadPolicyType('other')
 
 DurationLogInfo._unit_validator = TimeUnit_validator
 DurationLogInfo._amount_validator = bv.UInt64()
@@ -54610,6 +54619,7 @@ EventDetails._device_unlink_details_validator = DeviceUnlinkDetails_validator
 EventDetails._emm_refresh_auth_token_details_validator = EmmRefreshAuthTokenDetails_validator
 EventDetails._account_capture_change_availability_details_validator = AccountCaptureChangeAvailabilityDetails_validator
 EventDetails._account_capture_migrate_account_details_validator = AccountCaptureMigrateAccountDetails_validator
+EventDetails._account_capture_notification_emails_sent_details_validator = AccountCaptureNotificationEmailsSentDetails_validator
 EventDetails._account_capture_relinquish_account_details_validator = AccountCaptureRelinquishAccountDetails_validator
 EventDetails._disabled_domain_invites_details_validator = DisabledDomainInvitesDetails_validator
 EventDetails._domain_invites_approve_request_to_join_team_details_validator = DomainInvitesApproveRequestToJoinTeamDetails_validator
@@ -54637,14 +54647,10 @@ EventDetails._file_restore_details_validator = FileRestoreDetails_validator
 EventDetails._file_revert_details_validator = FileRevertDetails_validator
 EventDetails._file_rollback_changes_details_validator = FileRollbackChangesDetails_validator
 EventDetails._file_save_copy_reference_details_validator = FileSaveCopyReferenceDetails_validator
-EventDetails._file_request_add_deadline_details_validator = FileRequestAddDeadlineDetails_validator
 EventDetails._file_request_change_details_validator = FileRequestChangeDetails_validator
-EventDetails._file_request_change_folder_details_validator = FileRequestChangeFolderDetails_validator
 EventDetails._file_request_close_details_validator = FileRequestCloseDetails_validator
 EventDetails._file_request_create_details_validator = FileRequestCreateDetails_validator
 EventDetails._file_request_receive_file_details_validator = FileRequestReceiveFileDetails_validator
-EventDetails._file_request_remove_deadline_details_validator = FileRequestRemoveDeadlineDetails_validator
-EventDetails._file_request_send_details_validator = FileRequestSendDetails_validator
 EventDetails._group_add_external_id_details_validator = GroupAddExternalIdDetails_validator
 EventDetails._group_add_member_details_validator = GroupAddMemberDetails_validator
 EventDetails._group_change_external_id_details_validator = GroupChangeExternalIdDetails_validator
@@ -54665,13 +54671,17 @@ EventDetails._reseller_support_session_start_details_validator = ResellerSupport
 EventDetails._sign_in_as_session_end_details_validator = SignInAsSessionEndDetails_validator
 EventDetails._sign_in_as_session_start_details_validator = SignInAsSessionStartDetails_validator
 EventDetails._sso_error_details_validator = SsoErrorDetails_validator
+EventDetails._member_add_name_details_validator = MemberAddNameDetails_validator
 EventDetails._member_change_admin_role_details_validator = MemberChangeAdminRoleDetails_validator
 EventDetails._member_change_email_details_validator = MemberChangeEmailDetails_validator
 EventDetails._member_change_membership_type_details_validator = MemberChangeMembershipTypeDetails_validator
 EventDetails._member_change_name_details_validator = MemberChangeNameDetails_validator
 EventDetails._member_change_status_details_validator = MemberChangeStatusDetails_validator
 EventDetails._member_permanently_delete_account_contents_details_validator = MemberPermanentlyDeleteAccountContentsDetails_validator
+EventDetails._member_space_limits_add_custom_quota_details_validator = MemberSpaceLimitsAddCustomQuotaDetails_validator
+EventDetails._member_space_limits_change_custom_quota_details_validator = MemberSpaceLimitsChangeCustomQuotaDetails_validator
 EventDetails._member_space_limits_change_status_details_validator = MemberSpaceLimitsChangeStatusDetails_validator
+EventDetails._member_space_limits_remove_custom_quota_details_validator = MemberSpaceLimitsRemoveCustomQuotaDetails_validator
 EventDetails._member_suggest_details_validator = MemberSuggestDetails_validator
 EventDetails._member_transfer_account_contents_details_validator = MemberTransferAccountContentsDetails_validator
 EventDetails._paper_content_add_member_details_validator = PaperContentAddMemberDetails_validator
@@ -54715,6 +54725,7 @@ EventDetails._password_reset_details_validator = PasswordResetDetails_validator
 EventDetails._password_reset_all_details_validator = PasswordResetAllDetails_validator
 EventDetails._emm_create_exceptions_report_details_validator = EmmCreateExceptionsReportDetails_validator
 EventDetails._emm_create_usage_report_details_validator = EmmCreateUsageReportDetails_validator
+EventDetails._export_members_report_details_validator = ExportMembersReportDetails_validator
 EventDetails._paper_admin_export_start_details_validator = PaperAdminExportStartDetails_validator
 EventDetails._smart_sync_create_admin_privilege_report_details_validator = SmartSyncCreateAdminPrivilegeReportDetails_validator
 EventDetails._team_activity_create_report_details_validator = TeamActivityCreateReportDetails_validator
@@ -54728,6 +54739,9 @@ EventDetails._open_note_shared_details_validator = OpenNoteSharedDetails_validat
 EventDetails._sf_add_group_details_validator = SfAddGroupDetails_validator
 EventDetails._sf_allow_non_members_to_view_shared_links_details_validator = SfAllowNonMembersToViewSharedLinksDetails_validator
 EventDetails._sf_external_invite_warn_details_validator = SfExternalInviteWarnDetails_validator
+EventDetails._sf_fb_invite_details_validator = SfFbInviteDetails_validator
+EventDetails._sf_fb_invite_change_role_details_validator = SfFbInviteChangeRoleDetails_validator
+EventDetails._sf_fb_uninvite_details_validator = SfFbUninviteDetails_validator
 EventDetails._sf_invite_group_details_validator = SfInviteGroupDetails_validator
 EventDetails._sf_team_grant_access_details_validator = SfTeamGrantAccessDetails_validator
 EventDetails._sf_team_invite_details_validator = SfTeamInviteDetails_validator
@@ -54750,17 +54764,17 @@ EventDetails._shared_content_claim_invitation_details_validator = SharedContentC
 EventDetails._shared_content_copy_details_validator = SharedContentCopyDetails_validator
 EventDetails._shared_content_download_details_validator = SharedContentDownloadDetails_validator
 EventDetails._shared_content_relinquish_membership_details_validator = SharedContentRelinquishMembershipDetails_validator
-EventDetails._shared_content_remove_invitee_details_validator = SharedContentRemoveInviteeDetails_validator
+EventDetails._shared_content_remove_invitees_details_validator = SharedContentRemoveInviteesDetails_validator
 EventDetails._shared_content_remove_link_expiry_details_validator = SharedContentRemoveLinkExpiryDetails_validator
 EventDetails._shared_content_remove_link_password_details_validator = SharedContentRemoveLinkPasswordDetails_validator
 EventDetails._shared_content_remove_member_details_validator = SharedContentRemoveMemberDetails_validator
 EventDetails._shared_content_request_access_details_validator = SharedContentRequestAccessDetails_validator
 EventDetails._shared_content_unshare_details_validator = SharedContentUnshareDetails_validator
 EventDetails._shared_content_view_details_validator = SharedContentViewDetails_validator
-EventDetails._shared_folder_change_confidentiality_details_validator = SharedFolderChangeConfidentialityDetails_validator
 EventDetails._shared_folder_change_link_policy_details_validator = SharedFolderChangeLinkPolicyDetails_validator
-EventDetails._shared_folder_change_member_management_policy_details_validator = SharedFolderChangeMemberManagementPolicyDetails_validator
-EventDetails._shared_folder_change_member_policy_details_validator = SharedFolderChangeMemberPolicyDetails_validator
+EventDetails._shared_folder_change_members_inheritance_policy_details_validator = SharedFolderChangeMembersInheritancePolicyDetails_validator
+EventDetails._shared_folder_change_members_management_policy_details_validator = SharedFolderChangeMembersManagementPolicyDetails_validator
+EventDetails._shared_folder_change_members_policy_details_validator = SharedFolderChangeMembersPolicyDetails_validator
 EventDetails._shared_folder_create_details_validator = SharedFolderCreateDetails_validator
 EventDetails._shared_folder_decline_invitation_details_validator = SharedFolderDeclineInvitationDetails_validator
 EventDetails._shared_folder_mount_details_validator = SharedFolderMountDetails_validator
@@ -54815,6 +54829,7 @@ EventDetails._google_sso_change_policy_details_validator = GoogleSsoChangePolicy
 EventDetails._group_user_management_change_policy_details_validator = GroupUserManagementChangePolicyDetails_validator
 EventDetails._member_requests_change_policy_details_validator = MemberRequestsChangePolicyDetails_validator
 EventDetails._member_space_limits_add_exception_details_validator = MemberSpaceLimitsAddExceptionDetails_validator
+EventDetails._member_space_limits_change_caps_type_policy_details_validator = MemberSpaceLimitsChangeCapsTypePolicyDetails_validator
 EventDetails._member_space_limits_change_policy_details_validator = MemberSpaceLimitsChangePolicyDetails_validator
 EventDetails._member_space_limits_remove_exception_details_validator = MemberSpaceLimitsRemoveExceptionDetails_validator
 EventDetails._member_suggestions_change_policy_details_validator = MemberSuggestionsChangePolicyDetails_validator
@@ -54879,6 +54894,7 @@ EventDetails._tagmap = {
     'emm_refresh_auth_token_details': EventDetails._emm_refresh_auth_token_details_validator,
     'account_capture_change_availability_details': EventDetails._account_capture_change_availability_details_validator,
     'account_capture_migrate_account_details': EventDetails._account_capture_migrate_account_details_validator,
+    'account_capture_notification_emails_sent_details': EventDetails._account_capture_notification_emails_sent_details_validator,
     'account_capture_relinquish_account_details': EventDetails._account_capture_relinquish_account_details_validator,
     'disabled_domain_invites_details': EventDetails._disabled_domain_invites_details_validator,
     'domain_invites_approve_request_to_join_team_details': EventDetails._domain_invites_approve_request_to_join_team_details_validator,
@@ -54906,14 +54922,10 @@ EventDetails._tagmap = {
     'file_revert_details': EventDetails._file_revert_details_validator,
     'file_rollback_changes_details': EventDetails._file_rollback_changes_details_validator,
     'file_save_copy_reference_details': EventDetails._file_save_copy_reference_details_validator,
-    'file_request_add_deadline_details': EventDetails._file_request_add_deadline_details_validator,
     'file_request_change_details': EventDetails._file_request_change_details_validator,
-    'file_request_change_folder_details': EventDetails._file_request_change_folder_details_validator,
     'file_request_close_details': EventDetails._file_request_close_details_validator,
     'file_request_create_details': EventDetails._file_request_create_details_validator,
     'file_request_receive_file_details': EventDetails._file_request_receive_file_details_validator,
-    'file_request_remove_deadline_details': EventDetails._file_request_remove_deadline_details_validator,
-    'file_request_send_details': EventDetails._file_request_send_details_validator,
     'group_add_external_id_details': EventDetails._group_add_external_id_details_validator,
     'group_add_member_details': EventDetails._group_add_member_details_validator,
     'group_change_external_id_details': EventDetails._group_change_external_id_details_validator,
@@ -54934,13 +54946,17 @@ EventDetails._tagmap = {
     'sign_in_as_session_end_details': EventDetails._sign_in_as_session_end_details_validator,
     'sign_in_as_session_start_details': EventDetails._sign_in_as_session_start_details_validator,
     'sso_error_details': EventDetails._sso_error_details_validator,
+    'member_add_name_details': EventDetails._member_add_name_details_validator,
     'member_change_admin_role_details': EventDetails._member_change_admin_role_details_validator,
     'member_change_email_details': EventDetails._member_change_email_details_validator,
     'member_change_membership_type_details': EventDetails._member_change_membership_type_details_validator,
     'member_change_name_details': EventDetails._member_change_name_details_validator,
     'member_change_status_details': EventDetails._member_change_status_details_validator,
     'member_permanently_delete_account_contents_details': EventDetails._member_permanently_delete_account_contents_details_validator,
+    'member_space_limits_add_custom_quota_details': EventDetails._member_space_limits_add_custom_quota_details_validator,
+    'member_space_limits_change_custom_quota_details': EventDetails._member_space_limits_change_custom_quota_details_validator,
     'member_space_limits_change_status_details': EventDetails._member_space_limits_change_status_details_validator,
+    'member_space_limits_remove_custom_quota_details': EventDetails._member_space_limits_remove_custom_quota_details_validator,
     'member_suggest_details': EventDetails._member_suggest_details_validator,
     'member_transfer_account_contents_details': EventDetails._member_transfer_account_contents_details_validator,
     'paper_content_add_member_details': EventDetails._paper_content_add_member_details_validator,
@@ -54984,6 +55000,7 @@ EventDetails._tagmap = {
     'password_reset_all_details': EventDetails._password_reset_all_details_validator,
     'emm_create_exceptions_report_details': EventDetails._emm_create_exceptions_report_details_validator,
     'emm_create_usage_report_details': EventDetails._emm_create_usage_report_details_validator,
+    'export_members_report_details': EventDetails._export_members_report_details_validator,
     'paper_admin_export_start_details': EventDetails._paper_admin_export_start_details_validator,
     'smart_sync_create_admin_privilege_report_details': EventDetails._smart_sync_create_admin_privilege_report_details_validator,
     'team_activity_create_report_details': EventDetails._team_activity_create_report_details_validator,
@@ -54997,6 +55014,9 @@ EventDetails._tagmap = {
     'sf_add_group_details': EventDetails._sf_add_group_details_validator,
     'sf_allow_non_members_to_view_shared_links_details': EventDetails._sf_allow_non_members_to_view_shared_links_details_validator,
     'sf_external_invite_warn_details': EventDetails._sf_external_invite_warn_details_validator,
+    'sf_fb_invite_details': EventDetails._sf_fb_invite_details_validator,
+    'sf_fb_invite_change_role_details': EventDetails._sf_fb_invite_change_role_details_validator,
+    'sf_fb_uninvite_details': EventDetails._sf_fb_uninvite_details_validator,
     'sf_invite_group_details': EventDetails._sf_invite_group_details_validator,
     'sf_team_grant_access_details': EventDetails._sf_team_grant_access_details_validator,
     'sf_team_invite_details': EventDetails._sf_team_invite_details_validator,
@@ -55019,17 +55039,17 @@ EventDetails._tagmap = {
     'shared_content_copy_details': EventDetails._shared_content_copy_details_validator,
     'shared_content_download_details': EventDetails._shared_content_download_details_validator,
     'shared_content_relinquish_membership_details': EventDetails._shared_content_relinquish_membership_details_validator,
-    'shared_content_remove_invitee_details': EventDetails._shared_content_remove_invitee_details_validator,
+    'shared_content_remove_invitees_details': EventDetails._shared_content_remove_invitees_details_validator,
     'shared_content_remove_link_expiry_details': EventDetails._shared_content_remove_link_expiry_details_validator,
     'shared_content_remove_link_password_details': EventDetails._shared_content_remove_link_password_details_validator,
     'shared_content_remove_member_details': EventDetails._shared_content_remove_member_details_validator,
     'shared_content_request_access_details': EventDetails._shared_content_request_access_details_validator,
     'shared_content_unshare_details': EventDetails._shared_content_unshare_details_validator,
     'shared_content_view_details': EventDetails._shared_content_view_details_validator,
-    'shared_folder_change_confidentiality_details': EventDetails._shared_folder_change_confidentiality_details_validator,
     'shared_folder_change_link_policy_details': EventDetails._shared_folder_change_link_policy_details_validator,
-    'shared_folder_change_member_management_policy_details': EventDetails._shared_folder_change_member_management_policy_details_validator,
-    'shared_folder_change_member_policy_details': EventDetails._shared_folder_change_member_policy_details_validator,
+    'shared_folder_change_members_inheritance_policy_details': EventDetails._shared_folder_change_members_inheritance_policy_details_validator,
+    'shared_folder_change_members_management_policy_details': EventDetails._shared_folder_change_members_management_policy_details_validator,
+    'shared_folder_change_members_policy_details': EventDetails._shared_folder_change_members_policy_details_validator,
     'shared_folder_create_details': EventDetails._shared_folder_create_details_validator,
     'shared_folder_decline_invitation_details': EventDetails._shared_folder_decline_invitation_details_validator,
     'shared_folder_mount_details': EventDetails._shared_folder_mount_details_validator,
@@ -55084,6 +55104,7 @@ EventDetails._tagmap = {
     'group_user_management_change_policy_details': EventDetails._group_user_management_change_policy_details_validator,
     'member_requests_change_policy_details': EventDetails._member_requests_change_policy_details_validator,
     'member_space_limits_add_exception_details': EventDetails._member_space_limits_add_exception_details_validator,
+    'member_space_limits_change_caps_type_policy_details': EventDetails._member_space_limits_change_caps_type_policy_details_validator,
     'member_space_limits_change_policy_details': EventDetails._member_space_limits_change_policy_details_validator,
     'member_space_limits_remove_exception_details': EventDetails._member_space_limits_remove_exception_details_validator,
     'member_suggestions_change_policy_details': EventDetails._member_suggestions_change_policy_details_validator,
@@ -55151,6 +55172,7 @@ EventType._device_unlink_validator = DeviceUnlinkType_validator
 EventType._emm_refresh_auth_token_validator = EmmRefreshAuthTokenType_validator
 EventType._account_capture_change_availability_validator = AccountCaptureChangeAvailabilityType_validator
 EventType._account_capture_migrate_account_validator = AccountCaptureMigrateAccountType_validator
+EventType._account_capture_notification_emails_sent_validator = AccountCaptureNotificationEmailsSentType_validator
 EventType._account_capture_relinquish_account_validator = AccountCaptureRelinquishAccountType_validator
 EventType._disabled_domain_invites_validator = DisabledDomainInvitesType_validator
 EventType._domain_invites_approve_request_to_join_team_validator = DomainInvitesApproveRequestToJoinTeamType_validator
@@ -55178,14 +55200,10 @@ EventType._file_restore_validator = FileRestoreType_validator
 EventType._file_revert_validator = FileRevertType_validator
 EventType._file_rollback_changes_validator = FileRollbackChangesType_validator
 EventType._file_save_copy_reference_validator = FileSaveCopyReferenceType_validator
-EventType._file_request_add_deadline_validator = FileRequestAddDeadlineType_validator
 EventType._file_request_change_validator = FileRequestChangeType_validator
-EventType._file_request_change_folder_validator = FileRequestChangeFolderType_validator
 EventType._file_request_close_validator = FileRequestCloseType_validator
 EventType._file_request_create_validator = FileRequestCreateType_validator
 EventType._file_request_receive_file_validator = FileRequestReceiveFileType_validator
-EventType._file_request_remove_deadline_validator = FileRequestRemoveDeadlineType_validator
-EventType._file_request_send_validator = FileRequestSendType_validator
 EventType._group_add_external_id_validator = GroupAddExternalIdType_validator
 EventType._group_add_member_validator = GroupAddMemberType_validator
 EventType._group_change_external_id_validator = GroupChangeExternalIdType_validator
@@ -55206,13 +55224,17 @@ EventType._reseller_support_session_start_validator = ResellerSupportSessionStar
 EventType._sign_in_as_session_end_validator = SignInAsSessionEndType_validator
 EventType._sign_in_as_session_start_validator = SignInAsSessionStartType_validator
 EventType._sso_error_validator = SsoErrorType_validator
+EventType._member_add_name_validator = MemberAddNameType_validator
 EventType._member_change_admin_role_validator = MemberChangeAdminRoleType_validator
 EventType._member_change_email_validator = MemberChangeEmailType_validator
 EventType._member_change_membership_type_validator = MemberChangeMembershipTypeType_validator
 EventType._member_change_name_validator = MemberChangeNameType_validator
 EventType._member_change_status_validator = MemberChangeStatusType_validator
 EventType._member_permanently_delete_account_contents_validator = MemberPermanentlyDeleteAccountContentsType_validator
+EventType._member_space_limits_add_custom_quota_validator = MemberSpaceLimitsAddCustomQuotaType_validator
+EventType._member_space_limits_change_custom_quota_validator = MemberSpaceLimitsChangeCustomQuotaType_validator
 EventType._member_space_limits_change_status_validator = MemberSpaceLimitsChangeStatusType_validator
+EventType._member_space_limits_remove_custom_quota_validator = MemberSpaceLimitsRemoveCustomQuotaType_validator
 EventType._member_suggest_validator = MemberSuggestType_validator
 EventType._member_transfer_account_contents_validator = MemberTransferAccountContentsType_validator
 EventType._paper_content_add_member_validator = PaperContentAddMemberType_validator
@@ -55256,6 +55278,7 @@ EventType._password_reset_validator = PasswordResetType_validator
 EventType._password_reset_all_validator = PasswordResetAllType_validator
 EventType._emm_create_exceptions_report_validator = EmmCreateExceptionsReportType_validator
 EventType._emm_create_usage_report_validator = EmmCreateUsageReportType_validator
+EventType._export_members_report_validator = ExportMembersReportType_validator
 EventType._paper_admin_export_start_validator = PaperAdminExportStartType_validator
 EventType._smart_sync_create_admin_privilege_report_validator = SmartSyncCreateAdminPrivilegeReportType_validator
 EventType._team_activity_create_report_validator = TeamActivityCreateReportType_validator
@@ -55269,6 +55292,9 @@ EventType._open_note_shared_validator = OpenNoteSharedType_validator
 EventType._sf_add_group_validator = SfAddGroupType_validator
 EventType._sf_allow_non_members_to_view_shared_links_validator = SfAllowNonMembersToViewSharedLinksType_validator
 EventType._sf_external_invite_warn_validator = SfExternalInviteWarnType_validator
+EventType._sf_fb_invite_validator = SfFbInviteType_validator
+EventType._sf_fb_invite_change_role_validator = SfFbInviteChangeRoleType_validator
+EventType._sf_fb_uninvite_validator = SfFbUninviteType_validator
 EventType._sf_invite_group_validator = SfInviteGroupType_validator
 EventType._sf_team_grant_access_validator = SfTeamGrantAccessType_validator
 EventType._sf_team_invite_validator = SfTeamInviteType_validator
@@ -55291,17 +55317,17 @@ EventType._shared_content_claim_invitation_validator = SharedContentClaimInvitat
 EventType._shared_content_copy_validator = SharedContentCopyType_validator
 EventType._shared_content_download_validator = SharedContentDownloadType_validator
 EventType._shared_content_relinquish_membership_validator = SharedContentRelinquishMembershipType_validator
-EventType._shared_content_remove_invitee_validator = SharedContentRemoveInviteeType_validator
+EventType._shared_content_remove_invitees_validator = SharedContentRemoveInviteesType_validator
 EventType._shared_content_remove_link_expiry_validator = SharedContentRemoveLinkExpiryType_validator
 EventType._shared_content_remove_link_password_validator = SharedContentRemoveLinkPasswordType_validator
 EventType._shared_content_remove_member_validator = SharedContentRemoveMemberType_validator
 EventType._shared_content_request_access_validator = SharedContentRequestAccessType_validator
 EventType._shared_content_unshare_validator = SharedContentUnshareType_validator
 EventType._shared_content_view_validator = SharedContentViewType_validator
-EventType._shared_folder_change_confidentiality_validator = SharedFolderChangeConfidentialityType_validator
 EventType._shared_folder_change_link_policy_validator = SharedFolderChangeLinkPolicyType_validator
-EventType._shared_folder_change_member_management_policy_validator = SharedFolderChangeMemberManagementPolicyType_validator
-EventType._shared_folder_change_member_policy_validator = SharedFolderChangeMemberPolicyType_validator
+EventType._shared_folder_change_members_inheritance_policy_validator = SharedFolderChangeMembersInheritancePolicyType_validator
+EventType._shared_folder_change_members_management_policy_validator = SharedFolderChangeMembersManagementPolicyType_validator
+EventType._shared_folder_change_members_policy_validator = SharedFolderChangeMembersPolicyType_validator
 EventType._shared_folder_create_validator = SharedFolderCreateType_validator
 EventType._shared_folder_decline_invitation_validator = SharedFolderDeclineInvitationType_validator
 EventType._shared_folder_mount_validator = SharedFolderMountType_validator
@@ -55356,6 +55382,7 @@ EventType._google_sso_change_policy_validator = GoogleSsoChangePolicyType_valida
 EventType._group_user_management_change_policy_validator = GroupUserManagementChangePolicyType_validator
 EventType._member_requests_change_policy_validator = MemberRequestsChangePolicyType_validator
 EventType._member_space_limits_add_exception_validator = MemberSpaceLimitsAddExceptionType_validator
+EventType._member_space_limits_change_caps_type_policy_validator = MemberSpaceLimitsChangeCapsTypePolicyType_validator
 EventType._member_space_limits_change_policy_validator = MemberSpaceLimitsChangePolicyType_validator
 EventType._member_space_limits_remove_exception_validator = MemberSpaceLimitsRemoveExceptionType_validator
 EventType._member_suggestions_change_policy_validator = MemberSuggestionsChangePolicyType_validator
@@ -55419,6 +55446,7 @@ EventType._tagmap = {
     'emm_refresh_auth_token': EventType._emm_refresh_auth_token_validator,
     'account_capture_change_availability': EventType._account_capture_change_availability_validator,
     'account_capture_migrate_account': EventType._account_capture_migrate_account_validator,
+    'account_capture_notification_emails_sent': EventType._account_capture_notification_emails_sent_validator,
     'account_capture_relinquish_account': EventType._account_capture_relinquish_account_validator,
     'disabled_domain_invites': EventType._disabled_domain_invites_validator,
     'domain_invites_approve_request_to_join_team': EventType._domain_invites_approve_request_to_join_team_validator,
@@ -55446,14 +55474,10 @@ EventType._tagmap = {
     'file_revert': EventType._file_revert_validator,
     'file_rollback_changes': EventType._file_rollback_changes_validator,
     'file_save_copy_reference': EventType._file_save_copy_reference_validator,
-    'file_request_add_deadline': EventType._file_request_add_deadline_validator,
     'file_request_change': EventType._file_request_change_validator,
-    'file_request_change_folder': EventType._file_request_change_folder_validator,
     'file_request_close': EventType._file_request_close_validator,
     'file_request_create': EventType._file_request_create_validator,
     'file_request_receive_file': EventType._file_request_receive_file_validator,
-    'file_request_remove_deadline': EventType._file_request_remove_deadline_validator,
-    'file_request_send': EventType._file_request_send_validator,
     'group_add_external_id': EventType._group_add_external_id_validator,
     'group_add_member': EventType._group_add_member_validator,
     'group_change_external_id': EventType._group_change_external_id_validator,
@@ -55474,13 +55498,17 @@ EventType._tagmap = {
     'sign_in_as_session_end': EventType._sign_in_as_session_end_validator,
     'sign_in_as_session_start': EventType._sign_in_as_session_start_validator,
     'sso_error': EventType._sso_error_validator,
+    'member_add_name': EventType._member_add_name_validator,
     'member_change_admin_role': EventType._member_change_admin_role_validator,
     'member_change_email': EventType._member_change_email_validator,
     'member_change_membership_type': EventType._member_change_membership_type_validator,
     'member_change_name': EventType._member_change_name_validator,
     'member_change_status': EventType._member_change_status_validator,
     'member_permanently_delete_account_contents': EventType._member_permanently_delete_account_contents_validator,
+    'member_space_limits_add_custom_quota': EventType._member_space_limits_add_custom_quota_validator,
+    'member_space_limits_change_custom_quota': EventType._member_space_limits_change_custom_quota_validator,
     'member_space_limits_change_status': EventType._member_space_limits_change_status_validator,
+    'member_space_limits_remove_custom_quota': EventType._member_space_limits_remove_custom_quota_validator,
     'member_suggest': EventType._member_suggest_validator,
     'member_transfer_account_contents': EventType._member_transfer_account_contents_validator,
     'paper_content_add_member': EventType._paper_content_add_member_validator,
@@ -55524,6 +55552,7 @@ EventType._tagmap = {
     'password_reset_all': EventType._password_reset_all_validator,
     'emm_create_exceptions_report': EventType._emm_create_exceptions_report_validator,
     'emm_create_usage_report': EventType._emm_create_usage_report_validator,
+    'export_members_report': EventType._export_members_report_validator,
     'paper_admin_export_start': EventType._paper_admin_export_start_validator,
     'smart_sync_create_admin_privilege_report': EventType._smart_sync_create_admin_privilege_report_validator,
     'team_activity_create_report': EventType._team_activity_create_report_validator,
@@ -55537,6 +55566,9 @@ EventType._tagmap = {
     'sf_add_group': EventType._sf_add_group_validator,
     'sf_allow_non_members_to_view_shared_links': EventType._sf_allow_non_members_to_view_shared_links_validator,
     'sf_external_invite_warn': EventType._sf_external_invite_warn_validator,
+    'sf_fb_invite': EventType._sf_fb_invite_validator,
+    'sf_fb_invite_change_role': EventType._sf_fb_invite_change_role_validator,
+    'sf_fb_uninvite': EventType._sf_fb_uninvite_validator,
     'sf_invite_group': EventType._sf_invite_group_validator,
     'sf_team_grant_access': EventType._sf_team_grant_access_validator,
     'sf_team_invite': EventType._sf_team_invite_validator,
@@ -55559,17 +55591,17 @@ EventType._tagmap = {
     'shared_content_copy': EventType._shared_content_copy_validator,
     'shared_content_download': EventType._shared_content_download_validator,
     'shared_content_relinquish_membership': EventType._shared_content_relinquish_membership_validator,
-    'shared_content_remove_invitee': EventType._shared_content_remove_invitee_validator,
+    'shared_content_remove_invitees': EventType._shared_content_remove_invitees_validator,
     'shared_content_remove_link_expiry': EventType._shared_content_remove_link_expiry_validator,
     'shared_content_remove_link_password': EventType._shared_content_remove_link_password_validator,
     'shared_content_remove_member': EventType._shared_content_remove_member_validator,
     'shared_content_request_access': EventType._shared_content_request_access_validator,
     'shared_content_unshare': EventType._shared_content_unshare_validator,
     'shared_content_view': EventType._shared_content_view_validator,
-    'shared_folder_change_confidentiality': EventType._shared_folder_change_confidentiality_validator,
     'shared_folder_change_link_policy': EventType._shared_folder_change_link_policy_validator,
-    'shared_folder_change_member_management_policy': EventType._shared_folder_change_member_management_policy_validator,
-    'shared_folder_change_member_policy': EventType._shared_folder_change_member_policy_validator,
+    'shared_folder_change_members_inheritance_policy': EventType._shared_folder_change_members_inheritance_policy_validator,
+    'shared_folder_change_members_management_policy': EventType._shared_folder_change_members_management_policy_validator,
+    'shared_folder_change_members_policy': EventType._shared_folder_change_members_policy_validator,
     'shared_folder_create': EventType._shared_folder_create_validator,
     'shared_folder_decline_invitation': EventType._shared_folder_decline_invitation_validator,
     'shared_folder_mount': EventType._shared_folder_mount_validator,
@@ -55624,6 +55656,7 @@ EventType._tagmap = {
     'group_user_management_change_policy': EventType._group_user_management_change_policy_validator,
     'member_requests_change_policy': EventType._member_requests_change_policy_validator,
     'member_space_limits_add_exception': EventType._member_space_limits_add_exception_validator,
+    'member_space_limits_change_caps_type_policy': EventType._member_space_limits_change_caps_type_policy_validator,
     'member_space_limits_change_policy': EventType._member_space_limits_change_policy_validator,
     'member_space_limits_remove_exception': EventType._member_space_limits_remove_exception_validator,
     'member_suggestions_change_policy': EventType._member_suggestions_change_policy_validator,
@@ -55665,6 +55698,13 @@ EventType._tagmap = {
 }
 
 EventType.other = EventType('other')
+
+ExportMembersReportDetails._all_field_names_ = set([])
+ExportMembersReportDetails._all_fields_ = []
+
+ExportMembersReportType._description_validator = bv.String()
+ExportMembersReportType._all_field_names_ = set(['description'])
+ExportMembersReportType._all_fields_ = [('description', ExportMembersReportType._description_validator)]
 
 ExtendedVersionHistoryChangePolicyDetails._new_value_validator = ExtendedVersionHistoryPolicy_validator
 ExtendedVersionHistoryChangePolicyDetails._previous_value_validator = bv.Nullable(ExtendedVersionHistoryPolicy_validator)
@@ -55889,21 +55929,6 @@ FileRenameType._description_validator = bv.String()
 FileRenameType._all_field_names_ = set(['description'])
 FileRenameType._all_fields_ = [('description', FileRenameType._description_validator)]
 
-FileRequestAddDeadlineDetails._file_request_id_validator = bv.Nullable(file_requests.FileRequestId_validator)
-FileRequestAddDeadlineDetails._request_title_validator = bv.Nullable(bv.String())
-FileRequestAddDeadlineDetails._all_field_names_ = set([
-    'file_request_id',
-    'request_title',
-])
-FileRequestAddDeadlineDetails._all_fields_ = [
-    ('file_request_id', FileRequestAddDeadlineDetails._file_request_id_validator),
-    ('request_title', FileRequestAddDeadlineDetails._request_title_validator),
-]
-
-FileRequestAddDeadlineType._description_validator = bv.String()
-FileRequestAddDeadlineType._all_field_names_ = set(['description'])
-FileRequestAddDeadlineType._all_fields_ = [('description', FileRequestAddDeadlineType._description_validator)]
-
 FileRequestChangeDetails._file_request_id_validator = bv.Nullable(file_requests.FileRequestId_validator)
 FileRequestChangeDetails._previous_details_validator = bv.Nullable(FileRequestDetails_validator)
 FileRequestChangeDetails._new_details_validator = FileRequestDetails_validator
@@ -55917,21 +55942,6 @@ FileRequestChangeDetails._all_fields_ = [
     ('previous_details', FileRequestChangeDetails._previous_details_validator),
     ('new_details', FileRequestChangeDetails._new_details_validator),
 ]
-
-FileRequestChangeFolderDetails._file_request_id_validator = bv.Nullable(file_requests.FileRequestId_validator)
-FileRequestChangeFolderDetails._request_title_validator = bv.Nullable(bv.String())
-FileRequestChangeFolderDetails._all_field_names_ = set([
-    'file_request_id',
-    'request_title',
-])
-FileRequestChangeFolderDetails._all_fields_ = [
-    ('file_request_id', FileRequestChangeFolderDetails._file_request_id_validator),
-    ('request_title', FileRequestChangeFolderDetails._request_title_validator),
-]
-
-FileRequestChangeFolderType._description_validator = bv.String()
-FileRequestChangeFolderType._all_field_names_ = set(['description'])
-FileRequestChangeFolderType._all_fields_ = [('description', FileRequestChangeFolderType._description_validator)]
 
 FileRequestChangeType._description_validator = bv.String()
 FileRequestChangeType._all_field_names_ = set(['description'])
@@ -55990,52 +56000,28 @@ FileRequestDetails._all_fields_ = [
 ]
 
 FileRequestReceiveFileDetails._file_request_id_validator = bv.Nullable(file_requests.FileRequestId_validator)
-FileRequestReceiveFileDetails._request_title_validator = bv.Nullable(bv.String())
+FileRequestReceiveFileDetails._file_request_details_validator = bv.Nullable(FileRequestDetails_validator)
 FileRequestReceiveFileDetails._submitted_file_names_validator = bv.List(bv.String())
+FileRequestReceiveFileDetails._submitter_name_validator = bv.Nullable(common.DisplayNameLegacy_validator)
+FileRequestReceiveFileDetails._submitter_email_validator = bv.Nullable(EmailAddress_validator)
 FileRequestReceiveFileDetails._all_field_names_ = set([
     'file_request_id',
-    'request_title',
+    'file_request_details',
     'submitted_file_names',
+    'submitter_name',
+    'submitter_email',
 ])
 FileRequestReceiveFileDetails._all_fields_ = [
     ('file_request_id', FileRequestReceiveFileDetails._file_request_id_validator),
-    ('request_title', FileRequestReceiveFileDetails._request_title_validator),
+    ('file_request_details', FileRequestReceiveFileDetails._file_request_details_validator),
     ('submitted_file_names', FileRequestReceiveFileDetails._submitted_file_names_validator),
+    ('submitter_name', FileRequestReceiveFileDetails._submitter_name_validator),
+    ('submitter_email', FileRequestReceiveFileDetails._submitter_email_validator),
 ]
 
 FileRequestReceiveFileType._description_validator = bv.String()
 FileRequestReceiveFileType._all_field_names_ = set(['description'])
 FileRequestReceiveFileType._all_fields_ = [('description', FileRequestReceiveFileType._description_validator)]
-
-FileRequestRemoveDeadlineDetails._file_request_id_validator = bv.Nullable(file_requests.FileRequestId_validator)
-FileRequestRemoveDeadlineDetails._request_title_validator = bv.Nullable(bv.String())
-FileRequestRemoveDeadlineDetails._all_field_names_ = set([
-    'file_request_id',
-    'request_title',
-])
-FileRequestRemoveDeadlineDetails._all_fields_ = [
-    ('file_request_id', FileRequestRemoveDeadlineDetails._file_request_id_validator),
-    ('request_title', FileRequestRemoveDeadlineDetails._request_title_validator),
-]
-
-FileRequestRemoveDeadlineType._description_validator = bv.String()
-FileRequestRemoveDeadlineType._all_field_names_ = set(['description'])
-FileRequestRemoveDeadlineType._all_fields_ = [('description', FileRequestRemoveDeadlineType._description_validator)]
-
-FileRequestSendDetails._file_request_id_validator = bv.Nullable(file_requests.FileRequestId_validator)
-FileRequestSendDetails._request_title_validator = bv.Nullable(bv.String())
-FileRequestSendDetails._all_field_names_ = set([
-    'file_request_id',
-    'request_title',
-])
-FileRequestSendDetails._all_fields_ = [
-    ('file_request_id', FileRequestSendDetails._file_request_id_validator),
-    ('request_title', FileRequestSendDetails._request_title_validator),
-]
-
-FileRequestSendType._description_validator = bv.String()
-FileRequestSendType._all_field_names_ = set(['description'])
-FileRequestSendType._all_fields_ = [('description', FileRequestSendType._description_validator)]
 
 FileRequestsChangePolicyDetails._new_value_validator = FileRequestsPolicy_validator
 FileRequestsChangePolicyDetails._previous_value_validator = bv.Nullable(FileRequestsPolicy_validator)
@@ -56408,7 +56394,7 @@ IdentifierType.facebook_profile_name = IdentifierType('facebook_profile_name')
 IdentifierType.other = IdentifierType('other')
 
 JoinTeamDetails._linked_apps_validator = bv.List(AppLogInfo_validator)
-JoinTeamDetails._linked_devices_validator = bv.List(DeviceLogInfo_validator)
+JoinTeamDetails._linked_devices_validator = bv.List(LinkedDeviceLogInfo_validator)
 JoinTeamDetails._linked_shared_folders_validator = bv.List(FolderLogInfo_validator)
 JoinTeamDetails._all_field_names_ = set([
     'linked_apps',
@@ -56421,21 +56407,56 @@ JoinTeamDetails._all_fields_ = [
     ('linked_shared_folders', JoinTeamDetails._linked_shared_folders_validator),
 ]
 
-LinkAudience._public_validator = bv.Void()
-LinkAudience._team_validator = bv.Void()
-LinkAudience._members_validator = bv.Void()
-LinkAudience._other_validator = bv.Void()
-LinkAudience._tagmap = {
-    'public': LinkAudience._public_validator,
-    'team': LinkAudience._team_validator,
-    'members': LinkAudience._members_validator,
-    'other': LinkAudience._other_validator,
-}
+LegacyDeviceSessionLogInfo._display_name_validator = bv.Nullable(bv.String())
+LegacyDeviceSessionLogInfo._is_emm_managed_validator = bv.Nullable(bv.Boolean())
+LegacyDeviceSessionLogInfo._platform_validator = bv.Nullable(bv.String())
+LegacyDeviceSessionLogInfo._mac_address_validator = bv.Nullable(IpAddress_validator)
+LegacyDeviceSessionLogInfo._os_version_validator = bv.Nullable(bv.String())
+LegacyDeviceSessionLogInfo._device_type_validator = bv.Nullable(bv.String())
+LegacyDeviceSessionLogInfo._client_version_validator = bv.Nullable(bv.String())
+LegacyDeviceSessionLogInfo._legacy_uniq_id_validator = bv.Nullable(bv.String())
+LegacyDeviceSessionLogInfo._field_names_ = set([
+    'display_name',
+    'is_emm_managed',
+    'platform',
+    'mac_address',
+    'os_version',
+    'device_type',
+    'client_version',
+    'legacy_uniq_id',
+])
+LegacyDeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._all_field_names_.union(LegacyDeviceSessionLogInfo._field_names_)
+LegacyDeviceSessionLogInfo._fields_ = [
+    ('display_name', LegacyDeviceSessionLogInfo._display_name_validator),
+    ('is_emm_managed', LegacyDeviceSessionLogInfo._is_emm_managed_validator),
+    ('platform', LegacyDeviceSessionLogInfo._platform_validator),
+    ('mac_address', LegacyDeviceSessionLogInfo._mac_address_validator),
+    ('os_version', LegacyDeviceSessionLogInfo._os_version_validator),
+    ('device_type', LegacyDeviceSessionLogInfo._device_type_validator),
+    ('client_version', LegacyDeviceSessionLogInfo._client_version_validator),
+    ('legacy_uniq_id', LegacyDeviceSessionLogInfo._legacy_uniq_id_validator),
+]
+LegacyDeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._all_fields_ + LegacyDeviceSessionLogInfo._fields_
 
-LinkAudience.public = LinkAudience('public')
-LinkAudience.team = LinkAudience('team')
-LinkAudience.members = LinkAudience('members')
-LinkAudience.other = LinkAudience('other')
+LinkedDeviceLogInfo._device_type_validator = bv.String()
+LinkedDeviceLogInfo._display_name_validator = bv.Nullable(bv.String())
+LinkedDeviceLogInfo._ip_address_validator = bv.Nullable(IpAddress_validator)
+LinkedDeviceLogInfo._last_activity_validator = bv.Nullable(bv.String())
+LinkedDeviceLogInfo._platform_validator = bv.Nullable(bv.String())
+LinkedDeviceLogInfo._all_field_names_ = set([
+    'device_type',
+    'display_name',
+    'ip_address',
+    'last_activity',
+    'platform',
+])
+LinkedDeviceLogInfo._all_fields_ = [
+    ('device_type', LinkedDeviceLogInfo._device_type_validator),
+    ('display_name', LinkedDeviceLogInfo._display_name_validator),
+    ('ip_address', LinkedDeviceLogInfo._ip_address_validator),
+    ('last_activity', LinkedDeviceLogInfo._last_activity_validator),
+    ('platform', LinkedDeviceLogInfo._platform_validator),
+]
 
 LoginFailDetails._is_emm_managed_validator = bv.Nullable(bv.Boolean())
 LoginFailDetails._login_method_validator = LoginMethod_validator
@@ -56492,6 +56513,14 @@ LogoutDetails._all_fields_ = []
 LogoutType._description_validator = bv.String()
 LogoutType._all_field_names_ = set(['description'])
 LogoutType._all_fields_ = [('description', LogoutType._description_validator)]
+
+MemberAddNameDetails._new_value_validator = UserNameLogInfo_validator
+MemberAddNameDetails._all_field_names_ = set(['new_value'])
+MemberAddNameDetails._all_fields_ = [('new_value', MemberAddNameDetails._new_value_validator)]
+
+MemberAddNameType._description_validator = bv.String()
+MemberAddNameType._all_field_names_ = set(['description'])
+MemberAddNameType._all_fields_ = [('description', MemberAddNameType._description_validator)]
 
 MemberChangeAdminRoleDetails._new_value_validator = bv.Nullable(AdminRole_validator)
 MemberChangeAdminRoleDetails._previous_value_validator = bv.Nullable(AdminRole_validator)
@@ -56555,16 +56584,16 @@ MemberChangeNameType._all_fields_ = [('description', MemberChangeNameType._descr
 
 MemberChangeStatusDetails._previous_value_validator = bv.Nullable(MemberStatus_validator)
 MemberChangeStatusDetails._new_value_validator = MemberStatus_validator
-MemberChangeStatusDetails._team_join_details_validator = bv.Nullable(JoinTeamDetails_validator)
+MemberChangeStatusDetails._action_validator = bv.Nullable(ActionDetails_validator)
 MemberChangeStatusDetails._all_field_names_ = set([
     'previous_value',
     'new_value',
-    'team_join_details',
+    'action',
 ])
 MemberChangeStatusDetails._all_fields_ = [
     ('previous_value', MemberChangeStatusDetails._previous_value_validator),
     ('new_value', MemberChangeStatusDetails._new_value_validator),
-    ('team_join_details', MemberChangeStatusDetails._team_join_details_validator),
+    ('action', MemberChangeStatusDetails._action_validator),
 ]
 
 MemberChangeStatusType._description_validator = bv.String()
@@ -56577,6 +56606,22 @@ MemberPermanentlyDeleteAccountContentsDetails._all_fields_ = []
 MemberPermanentlyDeleteAccountContentsType._description_validator = bv.String()
 MemberPermanentlyDeleteAccountContentsType._all_field_names_ = set(['description'])
 MemberPermanentlyDeleteAccountContentsType._all_fields_ = [('description', MemberPermanentlyDeleteAccountContentsType._description_validator)]
+
+MemberRemoveActionType._delete_validator = bv.Void()
+MemberRemoveActionType._offboard_validator = bv.Void()
+MemberRemoveActionType._leave_validator = bv.Void()
+MemberRemoveActionType._other_validator = bv.Void()
+MemberRemoveActionType._tagmap = {
+    'delete': MemberRemoveActionType._delete_validator,
+    'offboard': MemberRemoveActionType._offboard_validator,
+    'leave': MemberRemoveActionType._leave_validator,
+    'other': MemberRemoveActionType._other_validator,
+}
+
+MemberRemoveActionType.delete = MemberRemoveActionType('delete')
+MemberRemoveActionType.offboard = MemberRemoveActionType('offboard')
+MemberRemoveActionType.leave = MemberRemoveActionType('leave')
+MemberRemoveActionType.other = MemberRemoveActionType('other')
 
 MemberRequestsChangePolicyDetails._new_value_validator = MemberRequestsPolicy_validator
 MemberRequestsChangePolicyDetails._previous_value_validator = bv.Nullable(MemberRequestsPolicy_validator)
@@ -56609,12 +56654,50 @@ MemberRequestsPolicy.disabled = MemberRequestsPolicy('disabled')
 MemberRequestsPolicy.require_approval = MemberRequestsPolicy('require_approval')
 MemberRequestsPolicy.other = MemberRequestsPolicy('other')
 
+MemberSpaceLimitsAddCustomQuotaDetails._new_value_validator = bv.UInt64()
+MemberSpaceLimitsAddCustomQuotaDetails._all_field_names_ = set(['new_value'])
+MemberSpaceLimitsAddCustomQuotaDetails._all_fields_ = [('new_value', MemberSpaceLimitsAddCustomQuotaDetails._new_value_validator)]
+
+MemberSpaceLimitsAddCustomQuotaType._description_validator = bv.String()
+MemberSpaceLimitsAddCustomQuotaType._all_field_names_ = set(['description'])
+MemberSpaceLimitsAddCustomQuotaType._all_fields_ = [('description', MemberSpaceLimitsAddCustomQuotaType._description_validator)]
+
 MemberSpaceLimitsAddExceptionDetails._all_field_names_ = set([])
 MemberSpaceLimitsAddExceptionDetails._all_fields_ = []
 
 MemberSpaceLimitsAddExceptionType._description_validator = bv.String()
 MemberSpaceLimitsAddExceptionType._all_field_names_ = set(['description'])
 MemberSpaceLimitsAddExceptionType._all_fields_ = [('description', MemberSpaceLimitsAddExceptionType._description_validator)]
+
+MemberSpaceLimitsChangeCapsTypePolicyDetails._previous_value_validator = SpaceCapsType_validator
+MemberSpaceLimitsChangeCapsTypePolicyDetails._new_value_validator = SpaceCapsType_validator
+MemberSpaceLimitsChangeCapsTypePolicyDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+MemberSpaceLimitsChangeCapsTypePolicyDetails._all_fields_ = [
+    ('previous_value', MemberSpaceLimitsChangeCapsTypePolicyDetails._previous_value_validator),
+    ('new_value', MemberSpaceLimitsChangeCapsTypePolicyDetails._new_value_validator),
+]
+
+MemberSpaceLimitsChangeCapsTypePolicyType._description_validator = bv.String()
+MemberSpaceLimitsChangeCapsTypePolicyType._all_field_names_ = set(['description'])
+MemberSpaceLimitsChangeCapsTypePolicyType._all_fields_ = [('description', MemberSpaceLimitsChangeCapsTypePolicyType._description_validator)]
+
+MemberSpaceLimitsChangeCustomQuotaDetails._previous_value_validator = bv.UInt64()
+MemberSpaceLimitsChangeCustomQuotaDetails._new_value_validator = bv.UInt64()
+MemberSpaceLimitsChangeCustomQuotaDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+MemberSpaceLimitsChangeCustomQuotaDetails._all_fields_ = [
+    ('previous_value', MemberSpaceLimitsChangeCustomQuotaDetails._previous_value_validator),
+    ('new_value', MemberSpaceLimitsChangeCustomQuotaDetails._new_value_validator),
+]
+
+MemberSpaceLimitsChangeCustomQuotaType._description_validator = bv.String()
+MemberSpaceLimitsChangeCustomQuotaType._all_field_names_ = set(['description'])
+MemberSpaceLimitsChangeCustomQuotaType._all_fields_ = [('description', MemberSpaceLimitsChangeCustomQuotaType._description_validator)]
 
 MemberSpaceLimitsChangePolicyDetails._previous_value_validator = bv.Nullable(bv.UInt64())
 MemberSpaceLimitsChangePolicyDetails._new_value_validator = bv.Nullable(bv.UInt64())
@@ -56645,6 +56728,13 @@ MemberSpaceLimitsChangeStatusDetails._all_fields_ = [
 MemberSpaceLimitsChangeStatusType._description_validator = bv.String()
 MemberSpaceLimitsChangeStatusType._all_field_names_ = set(['description'])
 MemberSpaceLimitsChangeStatusType._all_fields_ = [('description', MemberSpaceLimitsChangeStatusType._description_validator)]
+
+MemberSpaceLimitsRemoveCustomQuotaDetails._all_field_names_ = set([])
+MemberSpaceLimitsRemoveCustomQuotaDetails._all_fields_ = []
+
+MemberSpaceLimitsRemoveCustomQuotaType._description_validator = bv.String()
+MemberSpaceLimitsRemoveCustomQuotaType._all_field_names_ = set(['description'])
+MemberSpaceLimitsRemoveCustomQuotaType._all_fields_ = [('description', MemberSpaceLimitsRemoveCustomQuotaType._description_validator)]
 
 MemberSpaceLimitsRemoveExceptionDetails._all_field_names_ = set([])
 MemberSpaceLimitsRemoveExceptionDetails._all_fields_ = []
@@ -56711,16 +56801,8 @@ MemberSuggestionsPolicy.disabled = MemberSuggestionsPolicy('disabled')
 MemberSuggestionsPolicy.enabled = MemberSuggestionsPolicy('enabled')
 MemberSuggestionsPolicy.other = MemberSuggestionsPolicy('other')
 
-MemberTransferAccountContentsDetails._src_participant_index_validator = bv.UInt64()
-MemberTransferAccountContentsDetails._dest_participant_index_validator = bv.UInt64()
-MemberTransferAccountContentsDetails._all_field_names_ = set([
-    'src_participant_index',
-    'dest_participant_index',
-])
-MemberTransferAccountContentsDetails._all_fields_ = [
-    ('src_participant_index', MemberTransferAccountContentsDetails._src_participant_index_validator),
-    ('dest_participant_index', MemberTransferAccountContentsDetails._dest_participant_index_validator),
-]
+MemberTransferAccountContentsDetails._all_field_names_ = set([])
+MemberTransferAccountContentsDetails._all_fields_ = []
 
 MemberTransferAccountContentsType._description_validator = bv.String()
 MemberTransferAccountContentsType._all_field_names_ = set(['description'])
@@ -56754,8 +56836,31 @@ MicrosoftOfficeAddinPolicy.disabled = MicrosoftOfficeAddinPolicy('disabled')
 MicrosoftOfficeAddinPolicy.enabled = MicrosoftOfficeAddinPolicy('enabled')
 MicrosoftOfficeAddinPolicy.other = MicrosoftOfficeAddinPolicy('other')
 
-MissingDetails._all_field_names_ = set([])
-MissingDetails._all_fields_ = []
+MissingDetails._source_event_fields_validator = bv.Nullable(bv.String())
+MissingDetails._all_field_names_ = set(['source_event_fields'])
+MissingDetails._all_fields_ = [('source_event_fields', MissingDetails._source_event_fields_validator)]
+
+MobileDeviceSessionLogInfo._device_name_validator = bv.String()
+MobileDeviceSessionLogInfo._client_type_validator = team.MobileClientPlatform_validator
+MobileDeviceSessionLogInfo._client_version_validator = bv.String()
+MobileDeviceSessionLogInfo._os_version_validator = bv.Nullable(bv.String())
+MobileDeviceSessionLogInfo._last_carrier_validator = bv.String()
+MobileDeviceSessionLogInfo._field_names_ = set([
+    'device_name',
+    'client_type',
+    'client_version',
+    'os_version',
+    'last_carrier',
+])
+MobileDeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._all_field_names_.union(MobileDeviceSessionLogInfo._field_names_)
+MobileDeviceSessionLogInfo._fields_ = [
+    ('device_name', MobileDeviceSessionLogInfo._device_name_validator),
+    ('client_type', MobileDeviceSessionLogInfo._client_type_validator),
+    ('client_version', MobileDeviceSessionLogInfo._client_version_validator),
+    ('os_version', MobileDeviceSessionLogInfo._os_version_validator),
+    ('last_carrier', MobileDeviceSessionLogInfo._last_carrier_validator),
+]
+MobileDeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._all_fields_ + MobileDeviceSessionLogInfo._fields_
 
 MobileSessionLogInfo._field_names_ = set([])
 MobileSessionLogInfo._all_field_names_ = SessionLogInfo._all_field_names_.union(MobileSessionLogInfo._field_names_)
@@ -57573,6 +57678,60 @@ SfExternalInviteWarnType._description_validator = bv.String()
 SfExternalInviteWarnType._all_field_names_ = set(['description'])
 SfExternalInviteWarnType._all_fields_ = [('description', SfExternalInviteWarnType._description_validator)]
 
+SfFbInviteChangeRoleDetails._target_asset_index_validator = bv.UInt64()
+SfFbInviteChangeRoleDetails._original_folder_name_validator = bv.String()
+SfFbInviteChangeRoleDetails._previous_sharing_permission_validator = bv.Nullable(bv.String())
+SfFbInviteChangeRoleDetails._new_sharing_permission_validator = bv.Nullable(bv.String())
+SfFbInviteChangeRoleDetails._all_field_names_ = set([
+    'target_asset_index',
+    'original_folder_name',
+    'previous_sharing_permission',
+    'new_sharing_permission',
+])
+SfFbInviteChangeRoleDetails._all_fields_ = [
+    ('target_asset_index', SfFbInviteChangeRoleDetails._target_asset_index_validator),
+    ('original_folder_name', SfFbInviteChangeRoleDetails._original_folder_name_validator),
+    ('previous_sharing_permission', SfFbInviteChangeRoleDetails._previous_sharing_permission_validator),
+    ('new_sharing_permission', SfFbInviteChangeRoleDetails._new_sharing_permission_validator),
+]
+
+SfFbInviteChangeRoleType._description_validator = bv.String()
+SfFbInviteChangeRoleType._all_field_names_ = set(['description'])
+SfFbInviteChangeRoleType._all_fields_ = [('description', SfFbInviteChangeRoleType._description_validator)]
+
+SfFbInviteDetails._target_asset_index_validator = bv.UInt64()
+SfFbInviteDetails._original_folder_name_validator = bv.String()
+SfFbInviteDetails._sharing_permission_validator = bv.Nullable(bv.String())
+SfFbInviteDetails._all_field_names_ = set([
+    'target_asset_index',
+    'original_folder_name',
+    'sharing_permission',
+])
+SfFbInviteDetails._all_fields_ = [
+    ('target_asset_index', SfFbInviteDetails._target_asset_index_validator),
+    ('original_folder_name', SfFbInviteDetails._original_folder_name_validator),
+    ('sharing_permission', SfFbInviteDetails._sharing_permission_validator),
+]
+
+SfFbInviteType._description_validator = bv.String()
+SfFbInviteType._all_field_names_ = set(['description'])
+SfFbInviteType._all_fields_ = [('description', SfFbInviteType._description_validator)]
+
+SfFbUninviteDetails._target_asset_index_validator = bv.UInt64()
+SfFbUninviteDetails._original_folder_name_validator = bv.String()
+SfFbUninviteDetails._all_field_names_ = set([
+    'target_asset_index',
+    'original_folder_name',
+])
+SfFbUninviteDetails._all_fields_ = [
+    ('target_asset_index', SfFbUninviteDetails._target_asset_index_validator),
+    ('original_folder_name', SfFbUninviteDetails._original_folder_name_validator),
+]
+
+SfFbUninviteType._description_validator = bv.String()
+SfFbUninviteType._all_field_names_ = set(['description'])
+SfFbUninviteType._all_fields_ = [('description', SfFbUninviteType._description_validator)]
+
 SfInviteGroupDetails._target_asset_index_validator = bv.UInt64()
 SfInviteGroupDetails._all_field_names_ = set(['target_asset_index'])
 SfInviteGroupDetails._all_fields_ = [('target_asset_index', SfInviteGroupDetails._target_asset_index_validator)]
@@ -57686,103 +57845,51 @@ SfTeamUninviteType._description_validator = bv.String()
 SfTeamUninviteType._all_field_names_ = set(['description'])
 SfTeamUninviteType._all_fields_ = [('description', SfTeamUninviteType._description_validator)]
 
-SharedContentAddInviteesDetails._target_asset_index_validator = bv.UInt64()
-SharedContentAddInviteesDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentAddInviteesDetails._sharing_permission_validator = bv.Nullable(bv.String())
+SharedContentAddInviteesDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedContentAddInviteesDetails._invitees_validator = bv.List(EmailAddress_validator)
 SharedContentAddInviteesDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'sharing_permission',
+    'shared_content_access_level',
+    'invitees',
 ])
 SharedContentAddInviteesDetails._all_fields_ = [
-    ('target_asset_index', SharedContentAddInviteesDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentAddInviteesDetails._original_folder_name_validator),
-    ('sharing_permission', SharedContentAddInviteesDetails._sharing_permission_validator),
+    ('shared_content_access_level', SharedContentAddInviteesDetails._shared_content_access_level_validator),
+    ('invitees', SharedContentAddInviteesDetails._invitees_validator),
 ]
 
 SharedContentAddInviteesType._description_validator = bv.String()
 SharedContentAddInviteesType._all_field_names_ = set(['description'])
 SharedContentAddInviteesType._all_fields_ = [('description', SharedContentAddInviteesType._description_validator)]
 
-SharedContentAddLinkExpiryDetails._target_asset_index_validator = bv.UInt64()
-SharedContentAddLinkExpiryDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentAddLinkExpiryDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentAddLinkExpiryDetails._expiration_start_date_validator = bv.String()
-SharedContentAddLinkExpiryDetails._expiration_days_validator = bv.UInt64()
-SharedContentAddLinkExpiryDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
-    'expiration_start_date',
-    'expiration_days',
-])
-SharedContentAddLinkExpiryDetails._all_fields_ = [
-    ('target_asset_index', SharedContentAddLinkExpiryDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentAddLinkExpiryDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentAddLinkExpiryDetails._shared_folder_type_validator),
-    ('expiration_start_date', SharedContentAddLinkExpiryDetails._expiration_start_date_validator),
-    ('expiration_days', SharedContentAddLinkExpiryDetails._expiration_days_validator),
-]
+SharedContentAddLinkExpiryDetails._new_value_validator = bv.Nullable(common.DropboxTimestamp_validator)
+SharedContentAddLinkExpiryDetails._all_field_names_ = set(['new_value'])
+SharedContentAddLinkExpiryDetails._all_fields_ = [('new_value', SharedContentAddLinkExpiryDetails._new_value_validator)]
 
 SharedContentAddLinkExpiryType._description_validator = bv.String()
 SharedContentAddLinkExpiryType._all_field_names_ = set(['description'])
 SharedContentAddLinkExpiryType._all_fields_ = [('description', SharedContentAddLinkExpiryType._description_validator)]
 
-SharedContentAddLinkPasswordDetails._target_asset_index_validator = bv.UInt64()
-SharedContentAddLinkPasswordDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentAddLinkPasswordDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentAddLinkPasswordDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
-])
-SharedContentAddLinkPasswordDetails._all_fields_ = [
-    ('target_asset_index', SharedContentAddLinkPasswordDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentAddLinkPasswordDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentAddLinkPasswordDetails._shared_folder_type_validator),
-]
+SharedContentAddLinkPasswordDetails._all_field_names_ = set([])
+SharedContentAddLinkPasswordDetails._all_fields_ = []
 
 SharedContentAddLinkPasswordType._description_validator = bv.String()
 SharedContentAddLinkPasswordType._all_field_names_ = set(['description'])
 SharedContentAddLinkPasswordType._all_fields_ = [('description', SharedContentAddLinkPasswordType._description_validator)]
 
-SharedContentAddMemberDetails._target_asset_index_validator = bv.UInt64()
-SharedContentAddMemberDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentAddMemberDetails._sharing_permission_validator = bv.Nullable(bv.String())
-SharedContentAddMemberDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentAddMemberDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'sharing_permission',
-    'shared_folder_type',
-])
-SharedContentAddMemberDetails._all_fields_ = [
-    ('target_asset_index', SharedContentAddMemberDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentAddMemberDetails._original_folder_name_validator),
-    ('sharing_permission', SharedContentAddMemberDetails._sharing_permission_validator),
-    ('shared_folder_type', SharedContentAddMemberDetails._shared_folder_type_validator),
-]
+SharedContentAddMemberDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedContentAddMemberDetails._all_field_names_ = set(['shared_content_access_level'])
+SharedContentAddMemberDetails._all_fields_ = [('shared_content_access_level', SharedContentAddMemberDetails._shared_content_access_level_validator)]
 
 SharedContentAddMemberType._description_validator = bv.String()
 SharedContentAddMemberType._all_field_names_ = set(['description'])
 SharedContentAddMemberType._all_fields_ = [('description', SharedContentAddMemberType._description_validator)]
 
-SharedContentChangeDownloadsPolicyDetails._target_asset_index_validator = bv.UInt64()
-SharedContentChangeDownloadsPolicyDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentChangeDownloadsPolicyDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentChangeDownloadsPolicyDetails._new_value_validator = SharedContentDownloadsPolicy_validator
-SharedContentChangeDownloadsPolicyDetails._previous_value_validator = bv.Nullable(SharedContentDownloadsPolicy_validator)
+SharedContentChangeDownloadsPolicyDetails._new_value_validator = DownloadPolicyType_validator
+SharedContentChangeDownloadsPolicyDetails._previous_value_validator = bv.Nullable(DownloadPolicyType_validator)
 SharedContentChangeDownloadsPolicyDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
     'new_value',
     'previous_value',
 ])
 SharedContentChangeDownloadsPolicyDetails._all_fields_ = [
-    ('target_asset_index', SharedContentChangeDownloadsPolicyDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentChangeDownloadsPolicyDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentChangeDownloadsPolicyDetails._shared_folder_type_validator),
     ('new_value', SharedContentChangeDownloadsPolicyDetails._new_value_validator),
     ('previous_value', SharedContentChangeDownloadsPolicyDetails._previous_value_validator),
 ]
@@ -57791,43 +57898,31 @@ SharedContentChangeDownloadsPolicyType._description_validator = bv.String()
 SharedContentChangeDownloadsPolicyType._all_field_names_ = set(['description'])
 SharedContentChangeDownloadsPolicyType._all_fields_ = [('description', SharedContentChangeDownloadsPolicyType._description_validator)]
 
-SharedContentChangeInviteeRoleDetails._target_asset_index_validator = bv.UInt64()
-SharedContentChangeInviteeRoleDetails._original_folder_name_validator = bv.String()
-SharedContentChangeInviteeRoleDetails._new_sharing_permission_validator = bv.Nullable(bv.String())
-SharedContentChangeInviteeRoleDetails._previous_sharing_permission_validator = bv.Nullable(bv.String())
+SharedContentChangeInviteeRoleDetails._previous_access_level_validator = bv.Nullable(sharing.AccessLevel_validator)
+SharedContentChangeInviteeRoleDetails._new_access_level_validator = sharing.AccessLevel_validator
+SharedContentChangeInviteeRoleDetails._invitee_validator = EmailAddress_validator
 SharedContentChangeInviteeRoleDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'new_sharing_permission',
-    'previous_sharing_permission',
+    'previous_access_level',
+    'new_access_level',
+    'invitee',
 ])
 SharedContentChangeInviteeRoleDetails._all_fields_ = [
-    ('target_asset_index', SharedContentChangeInviteeRoleDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentChangeInviteeRoleDetails._original_folder_name_validator),
-    ('new_sharing_permission', SharedContentChangeInviteeRoleDetails._new_sharing_permission_validator),
-    ('previous_sharing_permission', SharedContentChangeInviteeRoleDetails._previous_sharing_permission_validator),
+    ('previous_access_level', SharedContentChangeInviteeRoleDetails._previous_access_level_validator),
+    ('new_access_level', SharedContentChangeInviteeRoleDetails._new_access_level_validator),
+    ('invitee', SharedContentChangeInviteeRoleDetails._invitee_validator),
 ]
 
 SharedContentChangeInviteeRoleType._description_validator = bv.String()
 SharedContentChangeInviteeRoleType._all_field_names_ = set(['description'])
 SharedContentChangeInviteeRoleType._all_fields_ = [('description', SharedContentChangeInviteeRoleType._description_validator)]
 
-SharedContentChangeLinkAudienceDetails._target_asset_index_validator = bv.UInt64()
-SharedContentChangeLinkAudienceDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentChangeLinkAudienceDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentChangeLinkAudienceDetails._new_value_validator = LinkAudience_validator
-SharedContentChangeLinkAudienceDetails._previous_value_validator = bv.Nullable(LinkAudience_validator)
+SharedContentChangeLinkAudienceDetails._new_value_validator = sharing.LinkAudience_validator
+SharedContentChangeLinkAudienceDetails._previous_value_validator = bv.Nullable(sharing.LinkAudience_validator)
 SharedContentChangeLinkAudienceDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
     'new_value',
     'previous_value',
 ])
 SharedContentChangeLinkAudienceDetails._all_fields_ = [
-    ('target_asset_index', SharedContentChangeLinkAudienceDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentChangeLinkAudienceDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentChangeLinkAudienceDetails._shared_folder_type_validator),
     ('new_value', SharedContentChangeLinkAudienceDetails._new_value_validator),
     ('previous_value', SharedContentChangeLinkAudienceDetails._previous_value_validator),
 ]
@@ -57836,88 +57931,50 @@ SharedContentChangeLinkAudienceType._description_validator = bv.String()
 SharedContentChangeLinkAudienceType._all_field_names_ = set(['description'])
 SharedContentChangeLinkAudienceType._all_fields_ = [('description', SharedContentChangeLinkAudienceType._description_validator)]
 
-SharedContentChangeLinkExpiryDetails._target_asset_index_validator = bv.UInt64()
-SharedContentChangeLinkExpiryDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentChangeLinkExpiryDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentChangeLinkExpiryDetails._expiration_start_date_validator = bv.String()
-SharedContentChangeLinkExpiryDetails._expiration_days_validator = bv.UInt64()
+SharedContentChangeLinkExpiryDetails._new_value_validator = bv.Nullable(common.DropboxTimestamp_validator)
+SharedContentChangeLinkExpiryDetails._previous_value_validator = bv.Nullable(common.DropboxTimestamp_validator)
 SharedContentChangeLinkExpiryDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
-    'expiration_start_date',
-    'expiration_days',
+    'new_value',
+    'previous_value',
 ])
 SharedContentChangeLinkExpiryDetails._all_fields_ = [
-    ('target_asset_index', SharedContentChangeLinkExpiryDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentChangeLinkExpiryDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentChangeLinkExpiryDetails._shared_folder_type_validator),
-    ('expiration_start_date', SharedContentChangeLinkExpiryDetails._expiration_start_date_validator),
-    ('expiration_days', SharedContentChangeLinkExpiryDetails._expiration_days_validator),
+    ('new_value', SharedContentChangeLinkExpiryDetails._new_value_validator),
+    ('previous_value', SharedContentChangeLinkExpiryDetails._previous_value_validator),
 ]
 
 SharedContentChangeLinkExpiryType._description_validator = bv.String()
 SharedContentChangeLinkExpiryType._all_field_names_ = set(['description'])
 SharedContentChangeLinkExpiryType._all_fields_ = [('description', SharedContentChangeLinkExpiryType._description_validator)]
 
-SharedContentChangeLinkPasswordDetails._target_asset_index_validator = bv.UInt64()
-SharedContentChangeLinkPasswordDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentChangeLinkPasswordDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentChangeLinkPasswordDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
-])
-SharedContentChangeLinkPasswordDetails._all_fields_ = [
-    ('target_asset_index', SharedContentChangeLinkPasswordDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentChangeLinkPasswordDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentChangeLinkPasswordDetails._shared_folder_type_validator),
-]
+SharedContentChangeLinkPasswordDetails._all_field_names_ = set([])
+SharedContentChangeLinkPasswordDetails._all_fields_ = []
 
 SharedContentChangeLinkPasswordType._description_validator = bv.String()
 SharedContentChangeLinkPasswordType._all_field_names_ = set(['description'])
 SharedContentChangeLinkPasswordType._all_fields_ = [('description', SharedContentChangeLinkPasswordType._description_validator)]
 
-SharedContentChangeMemberRoleDetails._target_asset_index_validator = bv.UInt64()
-SharedContentChangeMemberRoleDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentChangeMemberRoleDetails._new_sharing_permission_validator = bv.Nullable(bv.String())
-SharedContentChangeMemberRoleDetails._previous_sharing_permission_validator = bv.Nullable(bv.String())
-SharedContentChangeMemberRoleDetails._shared_folder_type_validator = bv.Nullable(bv.String())
+SharedContentChangeMemberRoleDetails._previous_access_level_validator = bv.Nullable(sharing.AccessLevel_validator)
+SharedContentChangeMemberRoleDetails._new_access_level_validator = sharing.AccessLevel_validator
 SharedContentChangeMemberRoleDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'new_sharing_permission',
-    'previous_sharing_permission',
-    'shared_folder_type',
+    'previous_access_level',
+    'new_access_level',
 ])
 SharedContentChangeMemberRoleDetails._all_fields_ = [
-    ('target_asset_index', SharedContentChangeMemberRoleDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentChangeMemberRoleDetails._original_folder_name_validator),
-    ('new_sharing_permission', SharedContentChangeMemberRoleDetails._new_sharing_permission_validator),
-    ('previous_sharing_permission', SharedContentChangeMemberRoleDetails._previous_sharing_permission_validator),
-    ('shared_folder_type', SharedContentChangeMemberRoleDetails._shared_folder_type_validator),
+    ('previous_access_level', SharedContentChangeMemberRoleDetails._previous_access_level_validator),
+    ('new_access_level', SharedContentChangeMemberRoleDetails._new_access_level_validator),
 ]
 
 SharedContentChangeMemberRoleType._description_validator = bv.String()
 SharedContentChangeMemberRoleType._all_field_names_ = set(['description'])
 SharedContentChangeMemberRoleType._all_fields_ = [('description', SharedContentChangeMemberRoleType._description_validator)]
 
-SharedContentChangeViewerInfoPolicyDetails._target_asset_index_validator = bv.UInt64()
-SharedContentChangeViewerInfoPolicyDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentChangeViewerInfoPolicyDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentChangeViewerInfoPolicyDetails._new_value_validator = SharedContentViewerInfoPolicy_validator
-SharedContentChangeViewerInfoPolicyDetails._previous_value_validator = bv.Nullable(SharedContentViewerInfoPolicy_validator)
+SharedContentChangeViewerInfoPolicyDetails._new_value_validator = sharing.ViewerInfoPolicy_validator
+SharedContentChangeViewerInfoPolicyDetails._previous_value_validator = bv.Nullable(sharing.ViewerInfoPolicy_validator)
 SharedContentChangeViewerInfoPolicyDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
     'new_value',
     'previous_value',
 ])
 SharedContentChangeViewerInfoPolicyDetails._all_fields_ = [
-    ('target_asset_index', SharedContentChangeViewerInfoPolicyDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentChangeViewerInfoPolicyDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentChangeViewerInfoPolicyDetails._shared_folder_type_validator),
     ('new_value', SharedContentChangeViewerInfoPolicyDetails._new_value_validator),
     ('previous_value', SharedContentChangeViewerInfoPolicyDetails._previous_value_validator),
 ]
@@ -57926,39 +57983,29 @@ SharedContentChangeViewerInfoPolicyType._description_validator = bv.String()
 SharedContentChangeViewerInfoPolicyType._all_field_names_ = set(['description'])
 SharedContentChangeViewerInfoPolicyType._all_fields_ = [('description', SharedContentChangeViewerInfoPolicyType._description_validator)]
 
-SharedContentClaimInvitationDetails._target_asset_index_validator = bv.UInt64()
-SharedContentClaimInvitationDetails._original_folder_name_validator = bv.Nullable(bv.String())
 SharedContentClaimInvitationDetails._shared_content_link_validator = bv.Nullable(bv.String())
-SharedContentClaimInvitationDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_content_link',
-])
-SharedContentClaimInvitationDetails._all_fields_ = [
-    ('target_asset_index', SharedContentClaimInvitationDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentClaimInvitationDetails._original_folder_name_validator),
-    ('shared_content_link', SharedContentClaimInvitationDetails._shared_content_link_validator),
-]
+SharedContentClaimInvitationDetails._all_field_names_ = set(['shared_content_link'])
+SharedContentClaimInvitationDetails._all_fields_ = [('shared_content_link', SharedContentClaimInvitationDetails._shared_content_link_validator)]
 
 SharedContentClaimInvitationType._description_validator = bv.String()
 SharedContentClaimInvitationType._all_field_names_ = set(['description'])
 SharedContentClaimInvitationType._all_fields_ = [('description', SharedContentClaimInvitationType._description_validator)]
 
 SharedContentCopyDetails._shared_content_link_validator = bv.String()
-SharedContentCopyDetails._sharing_permission_validator = bv.Nullable(bv.String())
-SharedContentCopyDetails._target_asset_index_validator = bv.UInt64()
-SharedContentCopyDetails._relocate_action_details_validator = RelocateAssetReferencesLogInfo_validator
+SharedContentCopyDetails._shared_content_owner_validator = bv.Nullable(UserLogInfo_validator)
+SharedContentCopyDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedContentCopyDetails._destination_path_validator = FilePath_validator
 SharedContentCopyDetails._all_field_names_ = set([
     'shared_content_link',
-    'sharing_permission',
-    'target_asset_index',
-    'relocate_action_details',
+    'shared_content_owner',
+    'shared_content_access_level',
+    'destination_path',
 ])
 SharedContentCopyDetails._all_fields_ = [
     ('shared_content_link', SharedContentCopyDetails._shared_content_link_validator),
-    ('sharing_permission', SharedContentCopyDetails._sharing_permission_validator),
-    ('target_asset_index', SharedContentCopyDetails._target_asset_index_validator),
-    ('relocate_action_details', SharedContentCopyDetails._relocate_action_details_validator),
+    ('shared_content_owner', SharedContentCopyDetails._shared_content_owner_validator),
+    ('shared_content_access_level', SharedContentCopyDetails._shared_content_access_level_validator),
+    ('destination_path', SharedContentCopyDetails._destination_path_validator),
 ]
 
 SharedContentCopyType._description_validator = bv.String()
@@ -57966,218 +58013,101 @@ SharedContentCopyType._all_field_names_ = set(['description'])
 SharedContentCopyType._all_fields_ = [('description', SharedContentCopyType._description_validator)]
 
 SharedContentDownloadDetails._shared_content_link_validator = bv.String()
-SharedContentDownloadDetails._sharing_permission_validator = bv.Nullable(bv.String())
-SharedContentDownloadDetails._target_asset_index_validator = bv.UInt64()
+SharedContentDownloadDetails._shared_content_owner_validator = bv.Nullable(UserLogInfo_validator)
+SharedContentDownloadDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
 SharedContentDownloadDetails._all_field_names_ = set([
     'shared_content_link',
-    'sharing_permission',
-    'target_asset_index',
+    'shared_content_owner',
+    'shared_content_access_level',
 ])
 SharedContentDownloadDetails._all_fields_ = [
     ('shared_content_link', SharedContentDownloadDetails._shared_content_link_validator),
-    ('sharing_permission', SharedContentDownloadDetails._sharing_permission_validator),
-    ('target_asset_index', SharedContentDownloadDetails._target_asset_index_validator),
+    ('shared_content_owner', SharedContentDownloadDetails._shared_content_owner_validator),
+    ('shared_content_access_level', SharedContentDownloadDetails._shared_content_access_level_validator),
 ]
 
 SharedContentDownloadType._description_validator = bv.String()
 SharedContentDownloadType._all_field_names_ = set(['description'])
 SharedContentDownloadType._all_fields_ = [('description', SharedContentDownloadType._description_validator)]
 
-SharedContentDownloadsPolicy._disabled_validator = bv.Void()
-SharedContentDownloadsPolicy._enabled_validator = bv.Void()
-SharedContentDownloadsPolicy._other_validator = bv.Void()
-SharedContentDownloadsPolicy._tagmap = {
-    'disabled': SharedContentDownloadsPolicy._disabled_validator,
-    'enabled': SharedContentDownloadsPolicy._enabled_validator,
-    'other': SharedContentDownloadsPolicy._other_validator,
-}
-
-SharedContentDownloadsPolicy.disabled = SharedContentDownloadsPolicy('disabled')
-SharedContentDownloadsPolicy.enabled = SharedContentDownloadsPolicy('enabled')
-SharedContentDownloadsPolicy.other = SharedContentDownloadsPolicy('other')
-
-SharedContentRelinquishMembershipDetails._target_asset_index_validator = bv.UInt64()
-SharedContentRelinquishMembershipDetails._original_folder_name_validator = bv.String()
-SharedContentRelinquishMembershipDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-])
-SharedContentRelinquishMembershipDetails._all_fields_ = [
-    ('target_asset_index', SharedContentRelinquishMembershipDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentRelinquishMembershipDetails._original_folder_name_validator),
-]
+SharedContentRelinquishMembershipDetails._all_field_names_ = set([])
+SharedContentRelinquishMembershipDetails._all_fields_ = []
 
 SharedContentRelinquishMembershipType._description_validator = bv.String()
 SharedContentRelinquishMembershipType._all_field_names_ = set(['description'])
 SharedContentRelinquishMembershipType._all_fields_ = [('description', SharedContentRelinquishMembershipType._description_validator)]
 
-SharedContentRemoveInviteeDetails._target_asset_index_validator = bv.UInt64()
-SharedContentRemoveInviteeDetails._original_folder_name_validator = bv.String()
-SharedContentRemoveInviteeDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-])
-SharedContentRemoveInviteeDetails._all_fields_ = [
-    ('target_asset_index', SharedContentRemoveInviteeDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentRemoveInviteeDetails._original_folder_name_validator),
-]
+SharedContentRemoveInviteesDetails._invitees_validator = bv.List(EmailAddress_validator)
+SharedContentRemoveInviteesDetails._all_field_names_ = set(['invitees'])
+SharedContentRemoveInviteesDetails._all_fields_ = [('invitees', SharedContentRemoveInviteesDetails._invitees_validator)]
 
-SharedContentRemoveInviteeType._description_validator = bv.String()
-SharedContentRemoveInviteeType._all_field_names_ = set(['description'])
-SharedContentRemoveInviteeType._all_fields_ = [('description', SharedContentRemoveInviteeType._description_validator)]
+SharedContentRemoveInviteesType._description_validator = bv.String()
+SharedContentRemoveInviteesType._all_field_names_ = set(['description'])
+SharedContentRemoveInviteesType._all_fields_ = [('description', SharedContentRemoveInviteesType._description_validator)]
 
-SharedContentRemoveLinkExpiryDetails._target_asset_index_validator = bv.UInt64()
-SharedContentRemoveLinkExpiryDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentRemoveLinkExpiryDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentRemoveLinkExpiryDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
-])
-SharedContentRemoveLinkExpiryDetails._all_fields_ = [
-    ('target_asset_index', SharedContentRemoveLinkExpiryDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentRemoveLinkExpiryDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentRemoveLinkExpiryDetails._shared_folder_type_validator),
-]
+SharedContentRemoveLinkExpiryDetails._previous_value_validator = bv.Nullable(common.DropboxTimestamp_validator)
+SharedContentRemoveLinkExpiryDetails._all_field_names_ = set(['previous_value'])
+SharedContentRemoveLinkExpiryDetails._all_fields_ = [('previous_value', SharedContentRemoveLinkExpiryDetails._previous_value_validator)]
 
 SharedContentRemoveLinkExpiryType._description_validator = bv.String()
 SharedContentRemoveLinkExpiryType._all_field_names_ = set(['description'])
 SharedContentRemoveLinkExpiryType._all_fields_ = [('description', SharedContentRemoveLinkExpiryType._description_validator)]
 
-SharedContentRemoveLinkPasswordDetails._target_asset_index_validator = bv.UInt64()
-SharedContentRemoveLinkPasswordDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentRemoveLinkPasswordDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentRemoveLinkPasswordDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
-])
-SharedContentRemoveLinkPasswordDetails._all_fields_ = [
-    ('target_asset_index', SharedContentRemoveLinkPasswordDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentRemoveLinkPasswordDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedContentRemoveLinkPasswordDetails._shared_folder_type_validator),
-]
+SharedContentRemoveLinkPasswordDetails._all_field_names_ = set([])
+SharedContentRemoveLinkPasswordDetails._all_fields_ = []
 
 SharedContentRemoveLinkPasswordType._description_validator = bv.String()
 SharedContentRemoveLinkPasswordType._all_field_names_ = set(['description'])
 SharedContentRemoveLinkPasswordType._all_fields_ = [('description', SharedContentRemoveLinkPasswordType._description_validator)]
 
-SharedContentRemoveMemberDetails._target_asset_index_validator = bv.UInt64()
-SharedContentRemoveMemberDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentRemoveMemberDetails._sharing_permission_validator = bv.Nullable(bv.String())
-SharedContentRemoveMemberDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedContentRemoveMemberDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'sharing_permission',
-    'shared_folder_type',
-])
-SharedContentRemoveMemberDetails._all_fields_ = [
-    ('target_asset_index', SharedContentRemoveMemberDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentRemoveMemberDetails._original_folder_name_validator),
-    ('sharing_permission', SharedContentRemoveMemberDetails._sharing_permission_validator),
-    ('shared_folder_type', SharedContentRemoveMemberDetails._shared_folder_type_validator),
-]
+SharedContentRemoveMemberDetails._shared_content_access_level_validator = bv.Nullable(sharing.AccessLevel_validator)
+SharedContentRemoveMemberDetails._all_field_names_ = set(['shared_content_access_level'])
+SharedContentRemoveMemberDetails._all_fields_ = [('shared_content_access_level', SharedContentRemoveMemberDetails._shared_content_access_level_validator)]
 
 SharedContentRemoveMemberType._description_validator = bv.String()
 SharedContentRemoveMemberType._all_field_names_ = set(['description'])
 SharedContentRemoveMemberType._all_fields_ = [('description', SharedContentRemoveMemberType._description_validator)]
 
-SharedContentRequestAccessDetails._target_asset_index_validator = bv.UInt64()
-SharedContentRequestAccessDetails._original_folder_name_validator = bv.Nullable(bv.String())
 SharedContentRequestAccessDetails._shared_content_link_validator = bv.Nullable(bv.String())
-SharedContentRequestAccessDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_content_link',
-])
-SharedContentRequestAccessDetails._all_fields_ = [
-    ('target_asset_index', SharedContentRequestAccessDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentRequestAccessDetails._original_folder_name_validator),
-    ('shared_content_link', SharedContentRequestAccessDetails._shared_content_link_validator),
-]
+SharedContentRequestAccessDetails._all_field_names_ = set(['shared_content_link'])
+SharedContentRequestAccessDetails._all_fields_ = [('shared_content_link', SharedContentRequestAccessDetails._shared_content_link_validator)]
 
 SharedContentRequestAccessType._description_validator = bv.String()
 SharedContentRequestAccessType._all_field_names_ = set(['description'])
 SharedContentRequestAccessType._all_fields_ = [('description', SharedContentRequestAccessType._description_validator)]
 
-SharedContentUnshareDetails._target_asset_index_validator = bv.UInt64()
-SharedContentUnshareDetails._original_folder_name_validator = bv.Nullable(bv.String())
-SharedContentUnshareDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-])
-SharedContentUnshareDetails._all_fields_ = [
-    ('target_asset_index', SharedContentUnshareDetails._target_asset_index_validator),
-    ('original_folder_name', SharedContentUnshareDetails._original_folder_name_validator),
-]
+SharedContentUnshareDetails._all_field_names_ = set([])
+SharedContentUnshareDetails._all_fields_ = []
 
 SharedContentUnshareType._description_validator = bv.String()
 SharedContentUnshareType._all_field_names_ = set(['description'])
 SharedContentUnshareType._all_fields_ = [('description', SharedContentUnshareType._description_validator)]
 
 SharedContentViewDetails._shared_content_link_validator = bv.String()
-SharedContentViewDetails._sharing_permission_validator = bv.Nullable(bv.String())
-SharedContentViewDetails._target_asset_index_validator = bv.UInt64()
+SharedContentViewDetails._shared_content_owner_validator = bv.Nullable(UserLogInfo_validator)
+SharedContentViewDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
 SharedContentViewDetails._all_field_names_ = set([
     'shared_content_link',
-    'sharing_permission',
-    'target_asset_index',
+    'shared_content_owner',
+    'shared_content_access_level',
 ])
 SharedContentViewDetails._all_fields_ = [
     ('shared_content_link', SharedContentViewDetails._shared_content_link_validator),
-    ('sharing_permission', SharedContentViewDetails._sharing_permission_validator),
-    ('target_asset_index', SharedContentViewDetails._target_asset_index_validator),
+    ('shared_content_owner', SharedContentViewDetails._shared_content_owner_validator),
+    ('shared_content_access_level', SharedContentViewDetails._shared_content_access_level_validator),
 ]
 
 SharedContentViewType._description_validator = bv.String()
 SharedContentViewType._all_field_names_ = set(['description'])
 SharedContentViewType._all_fields_ = [('description', SharedContentViewType._description_validator)]
 
-SharedContentViewerInfoPolicy._disabled_validator = bv.Void()
-SharedContentViewerInfoPolicy._enabled_validator = bv.Void()
-SharedContentViewerInfoPolicy._other_validator = bv.Void()
-SharedContentViewerInfoPolicy._tagmap = {
-    'disabled': SharedContentViewerInfoPolicy._disabled_validator,
-    'enabled': SharedContentViewerInfoPolicy._enabled_validator,
-    'other': SharedContentViewerInfoPolicy._other_validator,
-}
-
-SharedContentViewerInfoPolicy.disabled = SharedContentViewerInfoPolicy('disabled')
-SharedContentViewerInfoPolicy.enabled = SharedContentViewerInfoPolicy('enabled')
-SharedContentViewerInfoPolicy.other = SharedContentViewerInfoPolicy('other')
-
-SharedFolderChangeConfidentialityDetails._new_value_validator = Confidentiality_validator
-SharedFolderChangeConfidentialityDetails._previous_value_validator = bv.Nullable(Confidentiality_validator)
-SharedFolderChangeConfidentialityDetails._all_field_names_ = set([
-    'new_value',
-    'previous_value',
-])
-SharedFolderChangeConfidentialityDetails._all_fields_ = [
-    ('new_value', SharedFolderChangeConfidentialityDetails._new_value_validator),
-    ('previous_value', SharedFolderChangeConfidentialityDetails._previous_value_validator),
-]
-
-SharedFolderChangeConfidentialityType._description_validator = bv.String()
-SharedFolderChangeConfidentialityType._all_field_names_ = set(['description'])
-SharedFolderChangeConfidentialityType._all_fields_ = [('description', SharedFolderChangeConfidentialityType._description_validator)]
-
-SharedFolderChangeLinkPolicyDetails._target_asset_index_validator = bv.UInt64()
-SharedFolderChangeLinkPolicyDetails._original_folder_name_validator = bv.String()
-SharedFolderChangeLinkPolicyDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedFolderChangeLinkPolicyDetails._new_value_validator = SharedFolderLinkPolicy_validator
-SharedFolderChangeLinkPolicyDetails._previous_value_validator = bv.Nullable(SharedFolderLinkPolicy_validator)
+SharedFolderChangeLinkPolicyDetails._new_value_validator = sharing.SharedLinkPolicy_validator
+SharedFolderChangeLinkPolicyDetails._previous_value_validator = bv.Nullable(sharing.SharedLinkPolicy_validator)
 SharedFolderChangeLinkPolicyDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
     'new_value',
     'previous_value',
 ])
 SharedFolderChangeLinkPolicyDetails._all_fields_ = [
-    ('target_asset_index', SharedFolderChangeLinkPolicyDetails._target_asset_index_validator),
-    ('original_folder_name', SharedFolderChangeLinkPolicyDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedFolderChangeLinkPolicyDetails._shared_folder_type_validator),
     ('new_value', SharedFolderChangeLinkPolicyDetails._new_value_validator),
     ('previous_value', SharedFolderChangeLinkPolicyDetails._previous_value_validator),
 ]
@@ -58186,53 +58116,50 @@ SharedFolderChangeLinkPolicyType._description_validator = bv.String()
 SharedFolderChangeLinkPolicyType._all_field_names_ = set(['description'])
 SharedFolderChangeLinkPolicyType._all_fields_ = [('description', SharedFolderChangeLinkPolicyType._description_validator)]
 
-SharedFolderChangeMemberManagementPolicyDetails._target_asset_index_validator = bv.UInt64()
-SharedFolderChangeMemberManagementPolicyDetails._original_folder_name_validator = bv.String()
-SharedFolderChangeMemberManagementPolicyDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedFolderChangeMemberManagementPolicyDetails._new_value_validator = SharedFolderMembershipManagementPolicy_validator
-SharedFolderChangeMemberManagementPolicyDetails._previous_value_validator = bv.Nullable(SharedFolderMembershipManagementPolicy_validator)
-SharedFolderChangeMemberManagementPolicyDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
+SharedFolderChangeMembersInheritancePolicyDetails._new_value_validator = SharedFolderMembersInheritancePolicy_validator
+SharedFolderChangeMembersInheritancePolicyDetails._previous_value_validator = bv.Nullable(SharedFolderMembersInheritancePolicy_validator)
+SharedFolderChangeMembersInheritancePolicyDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
 ])
-SharedFolderChangeMemberManagementPolicyDetails._all_fields_ = [
-    ('target_asset_index', SharedFolderChangeMemberManagementPolicyDetails._target_asset_index_validator),
-    ('original_folder_name', SharedFolderChangeMemberManagementPolicyDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedFolderChangeMemberManagementPolicyDetails._shared_folder_type_validator),
-    ('new_value', SharedFolderChangeMemberManagementPolicyDetails._new_value_validator),
-    ('previous_value', SharedFolderChangeMemberManagementPolicyDetails._previous_value_validator),
+SharedFolderChangeMembersInheritancePolicyDetails._all_fields_ = [
+    ('new_value', SharedFolderChangeMembersInheritancePolicyDetails._new_value_validator),
+    ('previous_value', SharedFolderChangeMembersInheritancePolicyDetails._previous_value_validator),
 ]
 
-SharedFolderChangeMemberManagementPolicyType._description_validator = bv.String()
-SharedFolderChangeMemberManagementPolicyType._all_field_names_ = set(['description'])
-SharedFolderChangeMemberManagementPolicyType._all_fields_ = [('description', SharedFolderChangeMemberManagementPolicyType._description_validator)]
+SharedFolderChangeMembersInheritancePolicyType._description_validator = bv.String()
+SharedFolderChangeMembersInheritancePolicyType._all_field_names_ = set(['description'])
+SharedFolderChangeMembersInheritancePolicyType._all_fields_ = [('description', SharedFolderChangeMembersInheritancePolicyType._description_validator)]
 
-SharedFolderChangeMemberPolicyDetails._target_asset_index_validator = bv.UInt64()
-SharedFolderChangeMemberPolicyDetails._original_folder_name_validator = bv.String()
-SharedFolderChangeMemberPolicyDetails._shared_folder_type_validator = bv.Nullable(bv.String())
-SharedFolderChangeMemberPolicyDetails._new_value_validator = SharedFolderMemberPolicy_validator
-SharedFolderChangeMemberPolicyDetails._previous_value_validator = bv.Nullable(SharedFolderMemberPolicy_validator)
-SharedFolderChangeMemberPolicyDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-    'shared_folder_type',
+SharedFolderChangeMembersManagementPolicyDetails._new_value_validator = sharing.AclUpdatePolicy_validator
+SharedFolderChangeMembersManagementPolicyDetails._previous_value_validator = bv.Nullable(sharing.AclUpdatePolicy_validator)
+SharedFolderChangeMembersManagementPolicyDetails._all_field_names_ = set([
     'new_value',
     'previous_value',
 ])
-SharedFolderChangeMemberPolicyDetails._all_fields_ = [
-    ('target_asset_index', SharedFolderChangeMemberPolicyDetails._target_asset_index_validator),
-    ('original_folder_name', SharedFolderChangeMemberPolicyDetails._original_folder_name_validator),
-    ('shared_folder_type', SharedFolderChangeMemberPolicyDetails._shared_folder_type_validator),
-    ('new_value', SharedFolderChangeMemberPolicyDetails._new_value_validator),
-    ('previous_value', SharedFolderChangeMemberPolicyDetails._previous_value_validator),
+SharedFolderChangeMembersManagementPolicyDetails._all_fields_ = [
+    ('new_value', SharedFolderChangeMembersManagementPolicyDetails._new_value_validator),
+    ('previous_value', SharedFolderChangeMembersManagementPolicyDetails._previous_value_validator),
 ]
 
-SharedFolderChangeMemberPolicyType._description_validator = bv.String()
-SharedFolderChangeMemberPolicyType._all_field_names_ = set(['description'])
-SharedFolderChangeMemberPolicyType._all_fields_ = [('description', SharedFolderChangeMemberPolicyType._description_validator)]
+SharedFolderChangeMembersManagementPolicyType._description_validator = bv.String()
+SharedFolderChangeMembersManagementPolicyType._all_field_names_ = set(['description'])
+SharedFolderChangeMembersManagementPolicyType._all_fields_ = [('description', SharedFolderChangeMembersManagementPolicyType._description_validator)]
+
+SharedFolderChangeMembersPolicyDetails._new_value_validator = sharing.MemberPolicy_validator
+SharedFolderChangeMembersPolicyDetails._previous_value_validator = bv.Nullable(sharing.MemberPolicy_validator)
+SharedFolderChangeMembersPolicyDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+SharedFolderChangeMembersPolicyDetails._all_fields_ = [
+    ('new_value', SharedFolderChangeMembersPolicyDetails._new_value_validator),
+    ('previous_value', SharedFolderChangeMembersPolicyDetails._previous_value_validator),
+]
+
+SharedFolderChangeMembersPolicyType._description_validator = bv.String()
+SharedFolderChangeMembersPolicyType._all_field_names_ = set(['description'])
+SharedFolderChangeMembersPolicyType._all_fields_ = [('description', SharedFolderChangeMembersPolicyType._description_validator)]
 
 SharedFolderCreateDetails._target_ns_id_validator = bv.Nullable(NamespaceId_validator)
 SharedFolderCreateDetails._all_field_names_ = set(['target_ns_id'])
@@ -58249,58 +58176,21 @@ SharedFolderDeclineInvitationType._description_validator = bv.String()
 SharedFolderDeclineInvitationType._all_field_names_ = set(['description'])
 SharedFolderDeclineInvitationType._all_fields_ = [('description', SharedFolderDeclineInvitationType._description_validator)]
 
-SharedFolderLinkPolicy._members_only_validator = bv.Void()
-SharedFolderLinkPolicy._members_and_team_validator = bv.Void()
-SharedFolderLinkPolicy._anyone_validator = bv.Void()
-SharedFolderLinkPolicy._other_validator = bv.Void()
-SharedFolderLinkPolicy._tagmap = {
-    'members_only': SharedFolderLinkPolicy._members_only_validator,
-    'members_and_team': SharedFolderLinkPolicy._members_and_team_validator,
-    'anyone': SharedFolderLinkPolicy._anyone_validator,
-    'other': SharedFolderLinkPolicy._other_validator,
+SharedFolderMembersInheritancePolicy._inherit_members_validator = bv.Void()
+SharedFolderMembersInheritancePolicy._dont_inherit_members_validator = bv.Void()
+SharedFolderMembersInheritancePolicy._other_validator = bv.Void()
+SharedFolderMembersInheritancePolicy._tagmap = {
+    'inherit_members': SharedFolderMembersInheritancePolicy._inherit_members_validator,
+    'dont_inherit_members': SharedFolderMembersInheritancePolicy._dont_inherit_members_validator,
+    'other': SharedFolderMembersInheritancePolicy._other_validator,
 }
 
-SharedFolderLinkPolicy.members_only = SharedFolderLinkPolicy('members_only')
-SharedFolderLinkPolicy.members_and_team = SharedFolderLinkPolicy('members_and_team')
-SharedFolderLinkPolicy.anyone = SharedFolderLinkPolicy('anyone')
-SharedFolderLinkPolicy.other = SharedFolderLinkPolicy('other')
+SharedFolderMembersInheritancePolicy.inherit_members = SharedFolderMembersInheritancePolicy('inherit_members')
+SharedFolderMembersInheritancePolicy.dont_inherit_members = SharedFolderMembersInheritancePolicy('dont_inherit_members')
+SharedFolderMembersInheritancePolicy.other = SharedFolderMembersInheritancePolicy('other')
 
-SharedFolderMemberPolicy._team_only_validator = bv.Void()
-SharedFolderMemberPolicy._anyone_validator = bv.Void()
-SharedFolderMemberPolicy._other_validator = bv.Void()
-SharedFolderMemberPolicy._tagmap = {
-    'team_only': SharedFolderMemberPolicy._team_only_validator,
-    'anyone': SharedFolderMemberPolicy._anyone_validator,
-    'other': SharedFolderMemberPolicy._other_validator,
-}
-
-SharedFolderMemberPolicy.team_only = SharedFolderMemberPolicy('team_only')
-SharedFolderMemberPolicy.anyone = SharedFolderMemberPolicy('anyone')
-SharedFolderMemberPolicy.other = SharedFolderMemberPolicy('other')
-
-SharedFolderMembershipManagementPolicy._owner_validator = bv.Void()
-SharedFolderMembershipManagementPolicy._editors_validator = bv.Void()
-SharedFolderMembershipManagementPolicy._other_validator = bv.Void()
-SharedFolderMembershipManagementPolicy._tagmap = {
-    'owner': SharedFolderMembershipManagementPolicy._owner_validator,
-    'editors': SharedFolderMembershipManagementPolicy._editors_validator,
-    'other': SharedFolderMembershipManagementPolicy._other_validator,
-}
-
-SharedFolderMembershipManagementPolicy.owner = SharedFolderMembershipManagementPolicy('owner')
-SharedFolderMembershipManagementPolicy.editors = SharedFolderMembershipManagementPolicy('editors')
-SharedFolderMembershipManagementPolicy.other = SharedFolderMembershipManagementPolicy('other')
-
-SharedFolderMountDetails._target_asset_index_validator = bv.UInt64()
-SharedFolderMountDetails._original_folder_name_validator = bv.String()
-SharedFolderMountDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-])
-SharedFolderMountDetails._all_fields_ = [
-    ('target_asset_index', SharedFolderMountDetails._target_asset_index_validator),
-    ('original_folder_name', SharedFolderMountDetails._original_folder_name_validator),
-]
+SharedFolderMountDetails._all_field_names_ = set([])
+SharedFolderMountDetails._all_fields_ = []
 
 SharedFolderMountType._description_validator = bv.String()
 SharedFolderMountType._all_field_names_ = set(['description'])
@@ -58336,16 +58226,8 @@ SharedFolderTransferOwnershipType._description_validator = bv.String()
 SharedFolderTransferOwnershipType._all_field_names_ = set(['description'])
 SharedFolderTransferOwnershipType._all_fields_ = [('description', SharedFolderTransferOwnershipType._description_validator)]
 
-SharedFolderUnmountDetails._target_asset_index_validator = bv.UInt64()
-SharedFolderUnmountDetails._original_folder_name_validator = bv.String()
-SharedFolderUnmountDetails._all_field_names_ = set([
-    'target_asset_index',
-    'original_folder_name',
-])
-SharedFolderUnmountDetails._all_fields_ = [
-    ('target_asset_index', SharedFolderUnmountDetails._target_asset_index_validator),
-    ('original_folder_name', SharedFolderUnmountDetails._original_folder_name_validator),
-]
+SharedFolderUnmountDetails._all_field_names_ = set([])
+SharedFolderUnmountDetails._all_fields_ = []
 
 SharedFolderUnmountType._description_validator = bv.String()
 SharedFolderUnmountType._all_field_names_ = set(['description'])
@@ -58664,6 +58546,22 @@ SmartSyncOptOutType._description_validator = bv.String()
 SmartSyncOptOutType._all_field_names_ = set(['description'])
 SmartSyncOptOutType._all_fields_ = [('description', SmartSyncOptOutType._description_validator)]
 
+SpaceCapsType._hard_validator = bv.Void()
+SpaceCapsType._off_validator = bv.Void()
+SpaceCapsType._soft_validator = bv.Void()
+SpaceCapsType._other_validator = bv.Void()
+SpaceCapsType._tagmap = {
+    'hard': SpaceCapsType._hard_validator,
+    'off': SpaceCapsType._off_validator,
+    'soft': SpaceCapsType._soft_validator,
+    'other': SpaceCapsType._other_validator,
+}
+
+SpaceCapsType.hard = SpaceCapsType('hard')
+SpaceCapsType.off = SpaceCapsType('off')
+SpaceCapsType.soft = SpaceCapsType('soft')
+SpaceCapsType.other = SpaceCapsType('other')
+
 SpaceLimitsStatus._within_quota_validator = bv.Void()
 SpaceLimitsStatus._near_quota_validator = bv.Void()
 SpaceLimitsStatus._over_quota_validator = bv.Void()
@@ -58827,10 +58725,10 @@ TeamActivityCreateReportType._all_fields_ = [('description', TeamActivityCreateR
 
 TeamEvent._timestamp_validator = common.DropboxTimestamp_validator
 TeamEvent._event_category_validator = EventCategory_validator
-TeamEvent._actor_validator = ActorLogInfo_validator
+TeamEvent._actor_validator = bv.Nullable(ActorLogInfo_validator)
 TeamEvent._origin_validator = bv.Nullable(OriginLogInfo_validator)
-TeamEvent._involve_non_team_member_validator = bv.Boolean()
-TeamEvent._context_validator = ContextLogInfo_validator
+TeamEvent._involve_non_team_member_validator = bv.Nullable(bv.Boolean())
+TeamEvent._context_validator = bv.Nullable(ContextLogInfo_validator)
 TeamEvent._participants_validator = bv.Nullable(bv.List(ParticipantLogInfo_validator))
 TeamEvent._assets_validator = bv.Nullable(bv.List(AssetLogInfo_validator))
 TeamEvent._event_type_validator = EventType_validator
@@ -58897,9 +58795,16 @@ TeamFolderPermanentlyDeleteType._description_validator = bv.String()
 TeamFolderPermanentlyDeleteType._all_field_names_ = set(['description'])
 TeamFolderPermanentlyDeleteType._all_fields_ = [('description', TeamFolderPermanentlyDeleteType._description_validator)]
 
-TeamFolderRenameDetails._relocate_action_details_validator = RelocateAssetReferencesLogInfo_validator
-TeamFolderRenameDetails._all_field_names_ = set(['relocate_action_details'])
-TeamFolderRenameDetails._all_fields_ = [('relocate_action_details', TeamFolderRenameDetails._relocate_action_details_validator)]
+TeamFolderRenameDetails._previous_folder_name_validator = bv.String()
+TeamFolderRenameDetails._new_folder_name_validator = bv.String()
+TeamFolderRenameDetails._all_field_names_ = set([
+    'previous_folder_name',
+    'new_folder_name',
+])
+TeamFolderRenameDetails._all_fields_ = [
+    ('previous_folder_name', TeamFolderRenameDetails._previous_folder_name_validator),
+    ('new_folder_name', TeamFolderRenameDetails._new_folder_name_validator),
+]
 
 TeamFolderRenameType._description_validator = bv.String()
 TeamFolderRenameType._all_field_names_ = set(['description'])
@@ -59190,6 +59095,22 @@ UserOrTeamLinkedAppLogInfo._field_names_ = set([])
 UserOrTeamLinkedAppLogInfo._all_field_names_ = AppLogInfo._all_field_names_.union(UserOrTeamLinkedAppLogInfo._field_names_)
 UserOrTeamLinkedAppLogInfo._fields_ = []
 UserOrTeamLinkedAppLogInfo._all_fields_ = AppLogInfo._all_fields_ + UserOrTeamLinkedAppLogInfo._fields_
+
+WebDeviceSessionLogInfo._user_agent_validator = bv.String()
+WebDeviceSessionLogInfo._os_validator = bv.String()
+WebDeviceSessionLogInfo._browser_validator = bv.String()
+WebDeviceSessionLogInfo._field_names_ = set([
+    'user_agent',
+    'os',
+    'browser',
+])
+WebDeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._all_field_names_.union(WebDeviceSessionLogInfo._field_names_)
+WebDeviceSessionLogInfo._fields_ = [
+    ('user_agent', WebDeviceSessionLogInfo._user_agent_validator),
+    ('os', WebDeviceSessionLogInfo._os_validator),
+    ('browser', WebDeviceSessionLogInfo._browser_validator),
+]
+WebDeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._all_fields_ + WebDeviceSessionLogInfo._fields_
 
 WebSessionLogInfo._field_names_ = set([])
 WebSessionLogInfo._all_field_names_ = SessionLogInfo._all_field_names_.union(WebSessionLogInfo._field_names_)

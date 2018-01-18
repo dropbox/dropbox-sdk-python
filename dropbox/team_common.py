@@ -310,6 +310,68 @@ class GroupType(bb.Union):
 
 GroupType_validator = bv.Union(GroupType)
 
+class MemberSpaceLimitType(bb.Union):
+    """
+    The type of the space limit imposed on a team member.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar off: The team member does not have imposed space limit.
+    :ivar alert_only: The team member has soft imposed space limit - the limit
+        is used for display and for notifications.
+    :ivar stop_sync: The team member has hard imposed space limit - Dropbox file
+        sync will stop after the limit is reached.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    off = None
+    # Attribute is overwritten below the class definition
+    alert_only = None
+    # Attribute is overwritten below the class definition
+    stop_sync = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_off(self):
+        """
+        Check if the union tag is ``off``.
+
+        :rtype: bool
+        """
+        return self._tag == 'off'
+
+    def is_alert_only(self):
+        """
+        Check if the union tag is ``alert_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'alert_only'
+
+    def is_stop_sync(self):
+        """
+        Check if the union tag is ``stop_sync``.
+
+        :rtype: bool
+        """
+        return self._tag == 'stop_sync'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'MemberSpaceLimitType(%r, %r)' % (self._tag, self._value)
+
+MemberSpaceLimitType_validator = bv.Union(MemberSpaceLimitType)
+
 class TimeRange(object):
     """
     Time range.
@@ -452,6 +514,22 @@ GroupType._tagmap = {
 GroupType.team = GroupType('team')
 GroupType.user_managed = GroupType('user_managed')
 GroupType.other = GroupType('other')
+
+MemberSpaceLimitType._off_validator = bv.Void()
+MemberSpaceLimitType._alert_only_validator = bv.Void()
+MemberSpaceLimitType._stop_sync_validator = bv.Void()
+MemberSpaceLimitType._other_validator = bv.Void()
+MemberSpaceLimitType._tagmap = {
+    'off': MemberSpaceLimitType._off_validator,
+    'alert_only': MemberSpaceLimitType._alert_only_validator,
+    'stop_sync': MemberSpaceLimitType._stop_sync_validator,
+    'other': MemberSpaceLimitType._other_validator,
+}
+
+MemberSpaceLimitType.off = MemberSpaceLimitType('off')
+MemberSpaceLimitType.alert_only = MemberSpaceLimitType('alert_only')
+MemberSpaceLimitType.stop_sync = MemberSpaceLimitType('stop_sync')
+MemberSpaceLimitType.other = MemberSpaceLimitType('other')
 
 TimeRange._start_time_validator = bv.Nullable(common.DropboxTimestamp_validator)
 TimeRange._end_time_validator = bv.Nullable(common.DropboxTimestamp_validator)

@@ -19,11 +19,13 @@ except (ImportError, SystemError, ValueError):
 try:
     from . import (
         common,
+        team_common,
         team_policies,
         users_common,
     )
 except (ImportError, SystemError, ValueError):
     import common
+    import team_common
     import team_policies
     import users_common
 
@@ -1455,6 +1457,11 @@ class TeamSpaceAllocation(object):
     """
     :ivar used: The total space currently used by the user's team (bytes).
     :ivar allocated: The total space allocated to the user's team (bytes).
+    :ivar user_within_team_space_allocated: The total space allocated to the
+        user within its team allocated space (0 means that no restriction is
+        imposed on the user's quota within its team).
+    :ivar user_within_team_space_limit_type: The type of the space limit imposed
+        on the team member (off, alert_only, stop_sync).
     """
 
     __slots__ = [
@@ -1462,21 +1469,35 @@ class TeamSpaceAllocation(object):
         '_used_present',
         '_allocated_value',
         '_allocated_present',
+        '_user_within_team_space_allocated_value',
+        '_user_within_team_space_allocated_present',
+        '_user_within_team_space_limit_type_value',
+        '_user_within_team_space_limit_type_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  used=None,
-                 allocated=None):
+                 allocated=None,
+                 user_within_team_space_allocated=None,
+                 user_within_team_space_limit_type=None):
         self._used_value = None
         self._used_present = False
         self._allocated_value = None
         self._allocated_present = False
+        self._user_within_team_space_allocated_value = None
+        self._user_within_team_space_allocated_present = False
+        self._user_within_team_space_limit_type_value = None
+        self._user_within_team_space_limit_type_present = False
         if used is not None:
             self.used = used
         if allocated is not None:
             self.allocated = allocated
+        if user_within_team_space_allocated is not None:
+            self.user_within_team_space_allocated = user_within_team_space_allocated
+        if user_within_team_space_limit_type is not None:
+            self.user_within_team_space_limit_type = user_within_team_space_limit_type
 
     @property
     def used(self):
@@ -1524,10 +1545,61 @@ class TeamSpaceAllocation(object):
         self._allocated_value = None
         self._allocated_present = False
 
+    @property
+    def user_within_team_space_allocated(self):
+        """
+        The total space allocated to the user within its team allocated space (0
+        means that no restriction is imposed on the user's quota within its
+        team).
+
+        :rtype: long
+        """
+        if self._user_within_team_space_allocated_present:
+            return self._user_within_team_space_allocated_value
+        else:
+            raise AttributeError("missing required field 'user_within_team_space_allocated'")
+
+    @user_within_team_space_allocated.setter
+    def user_within_team_space_allocated(self, val):
+        val = self._user_within_team_space_allocated_validator.validate(val)
+        self._user_within_team_space_allocated_value = val
+        self._user_within_team_space_allocated_present = True
+
+    @user_within_team_space_allocated.deleter
+    def user_within_team_space_allocated(self):
+        self._user_within_team_space_allocated_value = None
+        self._user_within_team_space_allocated_present = False
+
+    @property
+    def user_within_team_space_limit_type(self):
+        """
+        The type of the space limit imposed on the team member (off, alert_only,
+        stop_sync).
+
+        :rtype: team_common.MemberSpaceLimitType_validator
+        """
+        if self._user_within_team_space_limit_type_present:
+            return self._user_within_team_space_limit_type_value
+        else:
+            raise AttributeError("missing required field 'user_within_team_space_limit_type'")
+
+    @user_within_team_space_limit_type.setter
+    def user_within_team_space_limit_type(self, val):
+        self._user_within_team_space_limit_type_validator.validate_type_only(val)
+        self._user_within_team_space_limit_type_value = val
+        self._user_within_team_space_limit_type_present = True
+
+    @user_within_team_space_limit_type.deleter
+    def user_within_team_space_limit_type(self):
+        self._user_within_team_space_limit_type_value = None
+        self._user_within_team_space_limit_type_present = False
+
     def __repr__(self):
-        return 'TeamSpaceAllocation(used={!r}, allocated={!r})'.format(
+        return 'TeamSpaceAllocation(used={!r}, allocated={!r}, user_within_team_space_allocated={!r}, user_within_team_space_limit_type={!r})'.format(
             self._used_value,
             self._allocated_value,
+            self._user_within_team_space_allocated_value,
+            self._user_within_team_space_limit_type_value,
         )
 
 TeamSpaceAllocation_validator = bv.Struct(TeamSpaceAllocation)
@@ -1693,13 +1765,19 @@ SpaceUsage._all_fields_ = [
 
 TeamSpaceAllocation._used_validator = bv.UInt64()
 TeamSpaceAllocation._allocated_validator = bv.UInt64()
+TeamSpaceAllocation._user_within_team_space_allocated_validator = bv.UInt64()
+TeamSpaceAllocation._user_within_team_space_limit_type_validator = team_common.MemberSpaceLimitType_validator
 TeamSpaceAllocation._all_field_names_ = set([
     'used',
     'allocated',
+    'user_within_team_space_allocated',
+    'user_within_team_space_limit_type',
 ])
 TeamSpaceAllocation._all_fields_ = [
     ('used', TeamSpaceAllocation._used_validator),
     ('allocated', TeamSpaceAllocation._allocated_validator),
+    ('user_within_team_space_allocated', TeamSpaceAllocation._user_within_team_space_allocated_validator),
+    ('user_within_team_space_limit_type', TeamSpaceAllocation._user_within_team_space_limit_type_validator),
 ]
 
 get_account = bb.Route(
