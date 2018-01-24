@@ -68,6 +68,17 @@ class AuthError(HttpError):
         return 'AuthError({!r}, {!r})'.format(self.request_id, self.error)
 
 
+class PathRootError(HttpError):
+    """Error caused by an invalid path root."""
+
+    def __init__(self, request_id, error=None):
+        super(PathRootError, self).__init__(request_id, 422, None)
+        self.error = error
+
+    def __repr__(self):
+        return 'PathRootError({!r}, {!r})'.format(self.request_id, self.error)
+
+
 class RateLimitError(HttpError):
     """Error caused by rate limiting."""
 

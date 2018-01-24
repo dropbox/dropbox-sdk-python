@@ -1,6 +1,7 @@
 /.cache/
 /.eggs/
 /.idea/
+/.mypy_cache/
 /.tox/
 /build/
 /dist/

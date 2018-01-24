@@ -24,12 +24,17 @@ from .auth import (
 )
 from .base import DropboxBase
 from .base_team import DropboxTeamBase
+from .common import (
+    PathRoot_validator,
+    PathRootError_validator,
+)
 from .exceptions import (
     ApiError,
     AuthError,
     BadInputError,
     HttpError,
     InternalServerError,
+    PathRootError,
     RateLimitError,
 )
 from .session import (
@@ -41,6 +46,14 @@ from .session import (
     HOST_NOTIFY,
     pinned_session,
 )
+
+_MYPY = False
+if _MYPY:
+    import typing  # noqa: F401 # pylint: disable=import-error,unused-import,useless-suppression
+    from .common import PathRoot  # noqa: F401 # pylint: disable=unused-import
+
+PATH_ROOT_HEADER = 'Dropbox-API-Path-Root'
+HTTP_STATUS_INVALID_PATH_ROOT = 422
 
 class RouteResult(object):
     """The successful result of a call to a route."""
@@ -119,6 +132,37 @@ class _DropboxTransport(object):
     # This is the default longest time we'll block on receiving data from the server
     _DEFAULT_TIMEOUT = 30
 
+    @classmethod
+    def clear_path_root_header(
+        cls,
+        headers,  # type: typing.Dict[typing.Text, typing.Text]
+    ):  # type (...) -> typing.Dict[typing.Text, typing.Text]
+        """
+        :param Dict[Text, Text] headers: An existing headers dictionary.
+        """
+        return cls.set_path_root_header(headers, None)
+
+    @classmethod
+    def set_path_root_header(
+        cls,
+        headers,  # type: typing.Dict[typing.Text, typing.Text]
+        path_root,  # type: Optional[PathRoot]
+    ):  # type (...) -> typing.Dict[typing.Text, typing.Text]
+        """
+        :param Dict[Text, Text] headers: An existing headers dictionary that is
+            modified in place. If ``None``, a new dictionary is created with the
+            appropriate header.
+        :param Optional[PathRoot] path_root: The path root used to populate the
+            ``Dropbox-API-Path-Root`` header. If ``None``, this clears the
+            header.
+        """
+        if path_root:
+            headers[PATH_ROOT_HEADER] = stone_serializers.json_encode(PathRoot_validator, path_root)
+        else:
+            headers.pop(PATH_ROOT_HEADER, None)
+
+        return headers
+
     def __init__(self,
                  oauth2_access_token,
                  max_retries_on_error=4,
@@ -149,6 +193,9 @@ class _DropboxTransport(object):
             server. After the timeout the client will give up on
             connection. If `None`, client will wait forever. Defaults
             to 30 seconds.
+        :param PathRoot path_root: the path root object to serialize and use for
+            the ``Dropbox-API-Path-Root`` header. (If ``None``, the header is
+            cleared, which restores the default behavior.)
         """
         assert len(oauth2_access_token) > 0, \
             'OAuth2 access token cannot be empty.'
@@ -421,6 +468,12 @@ class _DropboxTransport(object):
             err = stone_serializers.json_compat_obj_decode(
                 AuthError_validator, r.json()['error'])
             raise AuthError(request_id, err)
+        elif r.status_code == HTTP_STATUS_INVALID_PATH_ROOT:
+            err = stone_serializers.json_compat_obj_decode(
+                PathRootError_validator,
+                r.json()['error'],
+            )
+            raise PathRootError(request_id, err)
         elif r.status_code == 429:
             err = None
             if r.headers.get('content-type') == 'application/json':
@@ -451,6 +504,34 @@ class _DropboxTransport(object):
             return RouteErrorResult(request_id, raw_resp)
         else:
             raise HttpError(request_id, r.status_code, r.text)
+
+    def with_path_root(
+            self,
+            path_root=None,  # type: PathRoot
+    ):  # type: (...) -> _DropboxTransport
+        """
+        Creates a new object with the same parameters as this object, but also
+        sets the ``Dropbox-API-Path-Root`` header to :param:`path_root`.
+
+        :param PathRoot path_root: The path root object to serialize and use for
+            the ``Dropbox-API-Path-Root`` header. (If ``None``, the header is
+            cleared, which restores the default behavior.)
+        :return: A new instance of this class with the ``Dropbox-API-Path-Root``
+            header set.
+        """
+        headers = {} if self._headers is None else dict(self._headers)
+        self.set_path_root_header(headers, path_root)
+
+        # FRAGILE: This depends on subclasses not adding arguments to their own __init__ methods
+        return type(self)(
+            oauth2_access_token=self._oauth2_access_token,
+            max_retries_on_error=self._max_retries_on_error,
+            max_retries_on_rate_limit=self._max_retries_on_rate_limit,
+            user_agent=self._user_agent,
+            session=self._session,
+            headers=headers if headers else None,
+            timeout=self._timeout,
+        )
 
     def _get_route_url(self, hostname, route_name):
         """Returns the URL of the route.
