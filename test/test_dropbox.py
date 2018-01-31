@@ -22,14 +22,21 @@ from dropbox import (
     DropboxOAuth2Flow,
     DropboxTeam,
     session,
+    stone_serializers,
 )
+from dropbox.dropbox import PATH_ROOT_HEADER
 from dropbox.exceptions import (
     ApiError,
     AuthError,
     BadInputError,
+    PathRootError,
 )
 from dropbox.files import (
     ListFolderError,
+)
+from dropbox.common import (
+    PathRoot,
+    PathRoot_validator,
 )
 
 def _token_from_env_or_die(env_name='DROPBOX_TOKEN'):
@@ -136,6 +143,55 @@ class TestDropbox(unittest.TestCase):
             # Only test assuming a member if there is a member
             team_member_id = r.members[0].profile.team_member_id
             dbxt.as_user(team_member_id).files_list_folder('')
+
+    @dbx_from_env
+    def test_with_path_root_constructor(self, dbx):
+        # Verify valid mode types
+        for path_root in (
+            PathRoot.home,
+            PathRoot.root("123"),
+            PathRoot.namespace_id("123"),
+        ):
+            dbx_new = dbx.with_path_root(path_root)
+            self.assertIsNot(dbx_new, dbx)
+
+            expected = stone_serializers.json_encode(PathRoot_validator, path_root)
+            self.assertEqual(dbx_new._headers.get(PATH_ROOT_HEADER), expected)
+
+        # verify invalid mode raises ValueError
+        with self.assertRaises(ValueError):
+            dbx.with_path_root(None)
+
+    @dbx_from_env
+    def test_path_root(self, dbx):
+        root_info = dbx.users_get_current_account().root_info
+        root_ns = root_info.root_namespace_id
+        home_ns = root_info.home_namespace_id
+
+        # verify home mode
+        dbxpr = dbx.with_path_root(PathRoot.home)
+        dbxpr.files_list_folder('')
+
+        # verify root mode
+        dbxpr = dbx.with_path_root(PathRoot.root(root_ns))
+        dbxpr.files_list_folder('')
+
+        # verify namespace_id mode
+        dbxpr = dbx.with_path_root(PathRoot.namespace_id(home_ns))
+        dbxpr.files_list_folder('')
+
+    @dbx_from_env
+    def test_path_root_err(self, dbx):
+        # verify invalid namespace return is_no_permission error
+        dbxpr = dbx.with_path_root(PathRoot.namespace_id("1234567890"))
+        with self.assertRaises(PathRootError) as cm:
+            dbxpr.files_list_folder('')
+        self.assertTrue(cm.exception.error.is_no_permission())
+
+        dbxpr = dbx.with_path_root(PathRoot.root("1234567890"))
+        with self.assertRaises(PathRootError) as cm:
+            dbxpr.files_list_folder('')
+        self.assertTrue(cm.exception.error.is_invalid_root())
 
 if __name__ == '__main__':
     unittest.main()

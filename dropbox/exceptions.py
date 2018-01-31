@@ -46,6 +46,17 @@ class HttpError(DropboxException):
             self.status_code, self.body)
 
 
+class PathRootError(HttpError):
+    """Error caused by an invalid path root."""
+
+    def __init__(self, request_id, error=None):
+        super(PathRootError, self).__init__(request_id, 422, None)
+        self.error = error
+
+    def __repr__(self):
+        return 'PathRootError({!r}, {!r})'.format(self.request_id, self.error)
+
+
 class BadInputError(HttpError):
     """Errors due to bad input parameters to an API Operation."""
 
