@@ -144,6 +144,28 @@ class TestDropbox(unittest.TestCase):
             team_member_id = r.members[0].profile.team_member_id
             dbxt.as_user(team_member_id).files_list_folder('')
 
+    @dbx_team_from_env
+    def test_as_user(self, dbxt):
+        dbx_as_user = dbxt.as_user('1')
+        self.assertIsInstance(dbx_as_user, Dropbox)
+
+    @dbx_team_from_env
+    def test_as_admin(self, dbxt):
+        dbx_as_admin = dbxt.as_admin('1')
+        self.assertIsInstance(dbx_as_admin, Dropbox)
+
+    @dbx_from_env
+    def test_clone_when_user_linked(self, dbx):
+        new_dbx = dbx.clone()
+        self.assertIsNot(dbx, new_dbx)
+        self.assertIsInstance(new_dbx, dbx.__class__)
+
+    @dbx_team_from_env
+    def test_clone_when_team_linked(self, dbxt):
+        new_dbxt = dbxt.clone()
+        self.assertIsNot(dbxt, new_dbxt)
+        self.assertIsInstance(new_dbxt, dbxt.__class__)
+
     @dbx_from_env
     def test_with_path_root_constructor(self, dbx):
         # Verify valid mode types
