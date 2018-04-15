@@ -14,6 +14,7 @@ from . import (
     file_requests,
     files,
     paper,
+    seen_state,
     sharing,
     team,
     team_common,
@@ -143,8 +144,9 @@ class DropboxBase(object):
         remove specific property field key value pairs, see
         :meth:`file_properties_properties_update`. To update a template, see
         :meth:`file_properties_templates_update_for_user` or
-        :meth:`file_properties_templates_update_for_team`. Templates can't be
-        removed once created.
+        :meth:`file_properties_templates_update_for_team`. To remove a template,
+        see :meth:`file_properties_templates_remove_for_user` or
+        :meth:`file_properties_templates_remove_for_team`.
 
         :param str path: A unique identifier for the file or folder.
         :param list property_template_ids: A list of identifiers for a template
@@ -926,6 +928,61 @@ class DropboxBase(object):
         )
         return r
 
+    def files_create_folder_batch(self,
+                                  paths,
+                                  autorename=False,
+                                  force_async=False):
+        """
+        Create multiple folders at once. This route is asynchronous for large
+        batches, which returns a job ID immediately and runs the create folder
+        batch asynchronously. Otherwise, creates the folders and returns the
+        result synchronously for smaller inputs. You can force asynchronous
+        behaviour by using the ``CreateFolderBatchArg.force_async`` flag.  Use
+        :meth:`files_create_folder_batch_check` to check the job status.
+
+        :param list paths: List of paths to be created in the user's Dropbox.
+            Duplicate path arguments in the batch are considered only once.
+        :param bool autorename: If there's a conflict, have the Dropbox server
+            try to autorename the folder to avoid the conflict.
+        :param bool force_async: Whether to force the create to happen
+            asynchronously.
+        :rtype: :class:`dropbox.files.CreateFolderBatchLaunch`
+        """
+        arg = files.CreateFolderBatchArg(paths,
+                                         autorename,
+                                         force_async)
+        r = self.request(
+            files.create_folder_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_create_folder_batch_check(self,
+                                        async_job_id):
+        """
+        Returns the status of an asynchronous job for
+        :meth:`files_create_folder_batch`. If success, it returns list of result
+        for each entry.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.files.CreateFolderBatchJobStatus`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.PollError`
+        """
+        arg = async.PollArg(async_job_id)
+        r = self.request(
+            files.create_folder_batch_check,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_create_folder_v2(self,
                                path,
                                autorename=False):
@@ -952,7 +1009,8 @@ class DropboxBase(object):
         return r
 
     def files_delete(self,
-                     path):
+                     path,
+                     parent_rev=None):
         """
         Delete the file or folder at a given path. If the path is a folder, all
         its contents will be deleted too. A successful response indicates that
@@ -962,6 +1020,9 @@ class DropboxBase(object):
         and not a :class:`dropbox.files.DeletedMetadata` object.
 
         :param str path: Path in the user's Dropbox to delete.
+        :param Nullable parent_rev: Perform delete if given "rev" matches the
+            existing file's latest "rev". This field does not support deleting a
+            folder.
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -972,7 +1033,8 @@ class DropboxBase(object):
             'delete is deprecated. Use delete_v2.',
             DeprecationWarning,
         )
-        arg = files.DeleteArg(path)
+        arg = files.DeleteArg(path,
+                              parent_rev)
         r = self.request(
             files.delete,
             'files',
@@ -1025,7 +1087,8 @@ class DropboxBase(object):
         return r
 
     def files_delete_v2(self,
-                        path):
+                        path,
+                        parent_rev=None):
         """
         Delete the file or folder at a given path. If the path is a folder, all
         its contents will be deleted too. A successful response indicates that
@@ -1035,13 +1098,17 @@ class DropboxBase(object):
         and not a :class:`dropbox.files.DeletedMetadata` object.
 
         :param str path: Path in the user's Dropbox to delete.
+        :param Nullable parent_rev: Perform delete if given "rev" matches the
+            existing file's latest "rev". This field does not support deleting a
+            folder.
         :rtype: :class:`dropbox.files.DeleteResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.files.DeleteError`
         """
-        arg = files.DeleteArg(path)
+        arg = files.DeleteArg(path,
+                              parent_rev)
         r = self.request(
             files.delete_v2,
             'files',
@@ -1299,7 +1366,8 @@ class DropboxBase(object):
     def files_get_thumbnail(self,
                             path,
                             format=files.ThumbnailFormat.jpeg,
-                            size=files.ThumbnailSize.w64h64):
+                            size=files.ThumbnailSize.w64h64,
+                            mode=files.ThumbnailMode.strict):
         """
         Get a thumbnail for an image. This method currently supports files with
         the following file extensions: jpg, jpeg, png, tiff, tif, gif and bmp.
@@ -1313,6 +1381,9 @@ class DropboxBase(object):
         :type format: :class:`dropbox.files.ThumbnailFormat`
         :param size: The size for the thumbnail image.
         :type size: :class:`dropbox.files.ThumbnailSize`
+        :param mode: How to resize and crop the image to achieve the desired
+            size.
+        :type mode: :class:`dropbox.files.ThumbnailMode`
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -1328,7 +1399,8 @@ class DropboxBase(object):
         """
         arg = files.ThumbnailArg(path,
                                  format,
-                                 size)
+                                 size,
+                                 mode)
         r = self.request(
             files.get_thumbnail,
             'files',
@@ -1341,7 +1413,8 @@ class DropboxBase(object):
                                     download_path,
                                     path,
                                     format=files.ThumbnailFormat.jpeg,
-                                    size=files.ThumbnailSize.w64h64):
+                                    size=files.ThumbnailSize.w64h64,
+                                    mode=files.ThumbnailMode.strict):
         """
         Get a thumbnail for an image. This method currently supports files with
         the following file extensions: jpg, jpeg, png, tiff, tif, gif and bmp.
@@ -1356,6 +1429,9 @@ class DropboxBase(object):
         :type format: :class:`dropbox.files.ThumbnailFormat`
         :param size: The size for the thumbnail image.
         :type size: :class:`dropbox.files.ThumbnailSize`
+        :param mode: How to resize and crop the image to achieve the desired
+            size.
+        :type mode: :class:`dropbox.files.ThumbnailMode`
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1364,7 +1440,8 @@ class DropboxBase(object):
         """
         arg = files.ThumbnailArg(path,
                                  format,
-                                 size)
+                                 size,
+                                 mode)
         r = self.request(
             files.get_thumbnail,
             'files',
@@ -1790,20 +1867,25 @@ class DropboxBase(object):
         return r
 
     def files_permanently_delete(self,
-                                 path):
+                                 path,
+                                 parent_rev=None):
         """
         Permanently delete the file or folder at a given path (see
         https://www.dropbox.com/en/help/40). Note: This endpoint is only
         available for Dropbox Business apps.
 
         :param str path: Path in the user's Dropbox to delete.
+        :param Nullable parent_rev: Perform delete if given "rev" matches the
+            existing file's latest "rev". This field does not support deleting a
+            folder.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.files.DeleteError`
         """
-        arg = files.DeleteArg(path)
+        arg = files.DeleteArg(path,
+                              parent_rev)
         r = self.request(
             files.permanently_delete,
             'files',
@@ -2481,7 +2563,7 @@ class DropboxBase(object):
         Retrieves folder information for the given Paper doc. This includes:   -
         folder sharing policy; permissions for subfolders are set by the
         top-level folder.   - full 'filepath', i.e. the list of folders (both
-        folderId and folderName) from the root folder to the folder directly
+        folderId and folderName) from     the root folder to the folder directly
         containing the Paper doc.  Note: If the Paper doc is not in any folder
         (aka unfiled) the response will be empty.
 
@@ -3815,6 +3897,36 @@ class DropboxBase(object):
         )
         return None
 
+    def sharing_set_access_inheritance(self,
+                                       shared_folder_id,
+                                       access_inheritance=sharing.AccessInheritance.inherit):
+        """
+        Change the inheritance policy of an existing Shared Folder. Only
+        permitted for shared folders in a shared team root. If a
+        ``ShareFolderLaunch.async_job_id`` is returned, you'll need to call
+        :meth:`sharing_check_share_job_status` until the action completes to get
+        the metadata for the folder.
+
+        :param access_inheritance: The access inheritance settings for the
+            folder.
+        :type access_inheritance: :class:`dropbox.sharing.AccessInheritance`
+        :param str shared_folder_id: The ID for the shared folder.
+        :rtype: :class:`dropbox.sharing.ShareFolderLaunch`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.sharing.SetAccessInheritanceError`
+        """
+        arg = sharing.SetAccessInheritanceArg(shared_folder_id,
+                                              access_inheritance)
+        r = self.request(
+            sharing.set_access_inheritance,
+            'sharing',
+            arg,
+            None,
+        )
+        return r
+
     def sharing_share_folder(self,
                              path,
                              acl_update_policy=None,
@@ -4076,7 +4188,9 @@ class DropboxBase(object):
                             time=None,
                             category=None):
         """
-        Retrieves team events. Permission : Team Auditing.
+        Retrieves team events. Events have a lifespan of two years. Events older
+        than two years will not be returned. Many attributes note 'may be
+        missing due to historical data gap'. Permission : Team Auditing.
 
         :param long limit: Number of results to return per call.
         :param Nullable account_id: Filter the events by account ID. Return ony

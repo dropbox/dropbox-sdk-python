@@ -14,6 +14,7 @@ from . import (
     file_requests,
     files,
     paper,
+    seen_state,
     sharing,
     team,
     team_common,
@@ -1501,19 +1502,23 @@ class DropboxTeamBase(object):
         return r
 
     def team_team_folder_create(self,
-                                name):
+                                name,
+                                sync_setting=None):
         """
         Creates a new, active, team folder with no members. Permission : Team
         member file access.
 
         :param str name: Name for the new team folder.
+        :param Nullable sync_setting: The sync setting to apply to this team
+            folder. Only permitted if the team has team selective sync enabled.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.team.TeamFolderCreateError`
         """
-        arg = team.TeamFolderCreateArg(name)
+        arg = team.TeamFolderCreateArg(name,
+                                       sync_setting)
         r = self.request(
             team.team_folder_create,
             'team',
@@ -1621,6 +1626,36 @@ class DropboxTeamBase(object):
                                        name)
         r = self.request(
             team.team_folder_rename,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_update_sync_settings(self,
+                                              team_folder_id,
+                                              sync_setting=None,
+                                              content_sync_settings=None):
+        """
+        Updates the sync settings on a team folder or its contents.  Use of this
+        endpoint requires that the team has team selective sync enabled.
+
+        :param Nullable sync_setting: Sync setting to apply to the team folder
+            itself. Only meaningful if the team folder is not a shared team
+            root.
+        :param Nullable content_sync_settings: Sync settings to apply to
+            contents of this team folder.
+        :rtype: :class:`dropbox.team.TeamFolderMetadata`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.TeamFolderUpdateSyncSettingsError`
+        """
+        arg = team.TeamFolderUpdateSyncSettingsArg(team_folder_id,
+                                                   sync_setting,
+                                                   content_sync_settings)
+        r = self.request(
+            team.team_folder_update_sync_settings,
             'team',
             arg,
             None,

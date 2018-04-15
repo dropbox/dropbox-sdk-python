@@ -18,7 +18,7 @@ You can think of a property group template as a class definition for a particula
 
 Templates are owned either by a user/app pair or team/app pair. Templates and their associated properties can't be accessed by any app other than the app that created them, and even then, only when the app is linked with the owner of the template (either a user or team).
 
-User-owned templates are accessed via the user-auth template/*_for_user endpoints, while team-owned templates are accessed via the team-auth template/*_for_team endpoints. Properties associated with either type of template can be accessed via the user-auth properties/* endpoints.
+User-owned templates are accessed via the user-auth file_properties/templates/*_for_user endpoints, while team-owned templates are accessed via the team-auth file_properties/templates/*_for_team endpoints. Properties associated with either type of template can be accessed via the user-auth properties/* endpoints.
 
 Finally, properties can be accessed from a number of endpoints that return metadata, including `files/get_metadata`, and `files/list_folder`. Properties can also be added during upload, using `files/upload`.
 """

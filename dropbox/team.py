@@ -17,6 +17,7 @@ try:
         async,
         common,
         file_properties,
+        files,
         team_common,
         team_policies,
         users,
@@ -26,6 +27,7 @@ except (ImportError, SystemError, ValueError):
     import async
     import common
     import file_properties
+    import files
     import team_common
     import team_policies
     import users
@@ -2210,7 +2212,7 @@ ExcludedUsersUpdateStatus_validator = bv.Union(ExcludedUsersUpdateStatus)
 
 class Feature(bb.Union):
     """
-    A set of features that Dropbox for Business account support.
+    A set of features that a Dropbox Business account may support.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -2218,9 +2220,10 @@ class Feature(bb.Union):
 
     :ivar upload_api_rate_limit: The number of upload API calls allowed per
         month.
-    :ivar has_team_shared_dropbox: Does this team have a have a company shared
-        dropbox.
+    :ivar has_team_shared_dropbox: Does this team have a shared team root.
     :ivar has_team_file_events: Does this team have file events.
+    :ivar has_team_selective_sync: Does this team have team selective sync
+        enabled.
     """
 
     _catch_all = 'other'
@@ -2230,6 +2233,8 @@ class Feature(bb.Union):
     has_team_shared_dropbox = None
     # Attribute is overwritten below the class definition
     has_team_file_events = None
+    # Attribute is overwritten below the class definition
+    has_team_selective_sync = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -2257,6 +2262,14 @@ class Feature(bb.Union):
         """
         return self._tag == 'has_team_file_events'
 
+    def is_has_team_selective_sync(self):
+        """
+        Check if the union tag is ``has_team_selective_sync``.
+
+        :rtype: bool
+        """
+        return self._tag == 'has_team_selective_sync'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -2273,7 +2286,7 @@ Feature_validator = bv.Union(Feature)
 class FeatureValue(bb.Union):
     """
     The values correspond to entries in :class:`Feature`. You may get different
-    value according to your Dropbox for Business plan.
+    value according to your Dropbox Business plan.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -2317,6 +2330,17 @@ class FeatureValue(bb.Union):
         """
         return cls('has_team_file_events', val)
 
+    @classmethod
+    def has_team_selective_sync(cls, val):
+        """
+        Create an instance of this class set to the ``has_team_selective_sync``
+        tag with value ``val``.
+
+        :param HasTeamSelectiveSyncValue val:
+        :rtype: FeatureValue
+        """
+        return cls('has_team_selective_sync', val)
+
     def is_upload_api_rate_limit(self):
         """
         Check if the union tag is ``upload_api_rate_limit``.
@@ -2340,6 +2364,14 @@ class FeatureValue(bb.Union):
         :rtype: bool
         """
         return self._tag == 'has_team_file_events'
+
+    def is_has_team_selective_sync(self):
+        """
+        Check if the union tag is ``has_team_selective_sync``.
+
+        :rtype: bool
+        """
+        return self._tag == 'has_team_selective_sync'
 
     def is_other(self):
         """
@@ -2377,6 +2409,16 @@ class FeatureValue(bb.Union):
         """
         if not self.is_has_team_file_events():
             raise AttributeError("tag 'has_team_file_events' not set")
+        return self._value
+
+    def get_has_team_selective_sync(self):
+        """
+        Only call this if :meth:`is_has_team_selective_sync` is true.
+
+        :rtype: HasTeamSelectiveSyncValue
+        """
+        if not self.is_has_team_selective_sync():
+            raise AttributeError("tag 'has_team_selective_sync' not set")
         return self._value
 
     def __repr__(self):
@@ -6043,6 +6085,66 @@ class HasTeamFileEventsValue(bb.Union):
 
 HasTeamFileEventsValue_validator = bv.Union(HasTeamFileEventsValue)
 
+class HasTeamSelectiveSyncValue(bb.Union):
+    """
+    The value for ``Feature.has_team_selective_sync``.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar bool has_team_selective_sync: Does this team have team selective sync
+        enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def has_team_selective_sync(cls, val):
+        """
+        Create an instance of this class set to the ``has_team_selective_sync``
+        tag with value ``val``.
+
+        :param bool val:
+        :rtype: HasTeamSelectiveSyncValue
+        """
+        return cls('has_team_selective_sync', val)
+
+    def is_has_team_selective_sync(self):
+        """
+        Check if the union tag is ``has_team_selective_sync``.
+
+        :rtype: bool
+        """
+        return self._tag == 'has_team_selective_sync'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_has_team_selective_sync(self):
+        """
+        Does this team have team selective sync enabled.
+
+        Only call this if :meth:`is_has_team_selective_sync` is true.
+
+        :rtype: bool
+        """
+        if not self.is_has_team_selective_sync():
+            raise AttributeError("tag 'has_team_selective_sync' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'HasTeamSelectiveSyncValue(%r, %r)' % (self._tag, self._value)
+
+HasTeamSelectiveSyncValue_validator = bv.Union(HasTeamSelectiveSyncValue)
+
 class HasTeamSharedDropboxValue(bb.Union):
     """
     The value for ``Feature.has_team_shared_dropbox``.
@@ -6051,8 +6153,7 @@ class HasTeamSharedDropboxValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bool has_team_shared_dropbox: Does this team have a team shared
-        dropbox.
+    :ivar bool has_team_shared_dropbox: Does this team have a shared team root.
     """
 
     _catch_all = 'other'
@@ -6088,7 +6189,7 @@ class HasTeamSharedDropboxValue(bb.Union):
 
     def get_has_team_shared_dropbox(self):
         """
-        Does this team have a team shared dropbox.
+        Does this team have a shared team root.
 
         Only call this if :meth:`is_has_team_shared_dropbox` is true.
 
@@ -12897,21 +12998,30 @@ TeamFolderArchiveLaunch_validator = bv.Union(TeamFolderArchiveLaunch)
 class TeamFolderCreateArg(object):
     """
     :ivar name: Name for the new team folder.
+    :ivar sync_setting: The sync setting to apply to this team folder. Only
+        permitted if the team has team selective sync enabled.
     """
 
     __slots__ = [
         '_name_value',
         '_name_present',
+        '_sync_setting_value',
+        '_sync_setting_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 name=None):
+                 name=None,
+                 sync_setting=None):
         self._name_value = None
         self._name_present = False
+        self._sync_setting_value = None
+        self._sync_setting_present = False
         if name is not None:
             self.name = name
+        if sync_setting is not None:
+            self.sync_setting = sync_setting
 
     @property
     def name(self):
@@ -12936,9 +13046,37 @@ class TeamFolderCreateArg(object):
         self._name_value = None
         self._name_present = False
 
+    @property
+    def sync_setting(self):
+        """
+        The sync setting to apply to this team folder. Only permitted if the
+        team has team selective sync enabled.
+
+        :rtype: files.SyncSettingArg_validator
+        """
+        if self._sync_setting_present:
+            return self._sync_setting_value
+        else:
+            return None
+
+    @sync_setting.setter
+    def sync_setting(self, val):
+        if val is None:
+            del self.sync_setting
+            return
+        self._sync_setting_validator.validate_type_only(val)
+        self._sync_setting_value = val
+        self._sync_setting_present = True
+
+    @sync_setting.deleter
+    def sync_setting(self):
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+
     def __repr__(self):
-        return 'TeamFolderCreateArg(name={!r})'.format(
+        return 'TeamFolderCreateArg(name={!r}, sync_setting={!r})'.format(
             self._name_value,
+            self._sync_setting_value,
         )
 
 TeamFolderCreateArg_validator = bv.Struct(TeamFolderCreateArg)
@@ -12954,6 +13092,8 @@ class TeamFolderCreateError(bb.Union):
         provided name.
     :ivar folder_name_reserved: The provided name cannot be used because it is
         reserved.
+    :ivar SyncSettingsError sync_settings_error: An error occurred setting the
+        sync settings.
     """
 
     _catch_all = 'other'
@@ -12965,6 +13105,17 @@ class TeamFolderCreateError(bb.Union):
     folder_name_reserved = None
     # Attribute is overwritten below the class definition
     other = None
+
+    @classmethod
+    def sync_settings_error(cls, val):
+        """
+        Create an instance of this class set to the ``sync_settings_error`` tag
+        with value ``val``.
+
+        :param files.SyncSettingsError_validator val:
+        :rtype: TeamFolderCreateError
+        """
+        return cls('sync_settings_error', val)
 
     def is_invalid_folder_name(self):
         """
@@ -12990,6 +13141,14 @@ class TeamFolderCreateError(bb.Union):
         """
         return self._tag == 'folder_name_reserved'
 
+    def is_sync_settings_error(self):
+        """
+        Check if the union tag is ``sync_settings_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sync_settings_error'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -12997,6 +13156,18 @@ class TeamFolderCreateError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def get_sync_settings_error(self):
+        """
+        An error occurred setting the sync settings.
+
+        Only call this if :meth:`is_sync_settings_error` is true.
+
+        :rtype: files.SyncSettingsError_validator
+        """
+        if not self.is_sync_settings_error():
+            raise AttributeError("tag 'sync_settings_error' not set")
+        return self._value
 
     def __repr__(self):
         return 'TeamFolderCreateError(%r, %r)' % (self._tag, self._value)
@@ -13505,8 +13676,11 @@ class TeamFolderMetadata(object):
     :ivar team_folder_id: The ID of the team folder.
     :ivar name: The name of the team folder.
     :ivar status: The status of the team folder.
-    :ivar is_team_shared_dropbox: True if this team folder is the team shared
-        dropbox.
+    :ivar is_team_shared_dropbox: True if this team folder is a shared team
+        root.
+    :ivar sync_setting: The sync setting applied to this team folder.
+    :ivar content_sync_settings: Sync settings applied to contents of this team
+        folder.
     """
 
     __slots__ = [
@@ -13518,6 +13692,10 @@ class TeamFolderMetadata(object):
         '_status_present',
         '_is_team_shared_dropbox_value',
         '_is_team_shared_dropbox_present',
+        '_sync_setting_value',
+        '_sync_setting_present',
+        '_content_sync_settings_value',
+        '_content_sync_settings_present',
     ]
 
     _has_required_fields = True
@@ -13526,7 +13704,9 @@ class TeamFolderMetadata(object):
                  team_folder_id=None,
                  name=None,
                  status=None,
-                 is_team_shared_dropbox=None):
+                 is_team_shared_dropbox=None,
+                 sync_setting=None,
+                 content_sync_settings=None):
         self._team_folder_id_value = None
         self._team_folder_id_present = False
         self._name_value = None
@@ -13535,6 +13715,10 @@ class TeamFolderMetadata(object):
         self._status_present = False
         self._is_team_shared_dropbox_value = None
         self._is_team_shared_dropbox_present = False
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+        self._content_sync_settings_value = None
+        self._content_sync_settings_present = False
         if team_folder_id is not None:
             self.team_folder_id = team_folder_id
         if name is not None:
@@ -13543,6 +13727,10 @@ class TeamFolderMetadata(object):
             self.status = status
         if is_team_shared_dropbox is not None:
             self.is_team_shared_dropbox = is_team_shared_dropbox
+        if sync_setting is not None:
+            self.sync_setting = sync_setting
+        if content_sync_settings is not None:
+            self.content_sync_settings = content_sync_settings
 
     @property
     def team_folder_id(self):
@@ -13616,7 +13804,7 @@ class TeamFolderMetadata(object):
     @property
     def is_team_shared_dropbox(self):
         """
-        True if this team folder is the team shared dropbox.
+        True if this team folder is a shared team root.
 
         :rtype: bool
         """
@@ -13636,12 +13824,60 @@ class TeamFolderMetadata(object):
         self._is_team_shared_dropbox_value = None
         self._is_team_shared_dropbox_present = False
 
+    @property
+    def sync_setting(self):
+        """
+        The sync setting applied to this team folder.
+
+        :rtype: files.SyncSetting_validator
+        """
+        if self._sync_setting_present:
+            return self._sync_setting_value
+        else:
+            raise AttributeError("missing required field 'sync_setting'")
+
+    @sync_setting.setter
+    def sync_setting(self, val):
+        self._sync_setting_validator.validate_type_only(val)
+        self._sync_setting_value = val
+        self._sync_setting_present = True
+
+    @sync_setting.deleter
+    def sync_setting(self):
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+
+    @property
+    def content_sync_settings(self):
+        """
+        Sync settings applied to contents of this team folder.
+
+        :rtype: list of [files.ContentSyncSetting_validator]
+        """
+        if self._content_sync_settings_present:
+            return self._content_sync_settings_value
+        else:
+            raise AttributeError("missing required field 'content_sync_settings'")
+
+    @content_sync_settings.setter
+    def content_sync_settings(self, val):
+        val = self._content_sync_settings_validator.validate(val)
+        self._content_sync_settings_value = val
+        self._content_sync_settings_present = True
+
+    @content_sync_settings.deleter
+    def content_sync_settings(self):
+        self._content_sync_settings_value = None
+        self._content_sync_settings_present = False
+
     def __repr__(self):
-        return 'TeamFolderMetadata(team_folder_id={!r}, name={!r}, status={!r}, is_team_shared_dropbox={!r})'.format(
+        return 'TeamFolderMetadata(team_folder_id={!r}, name={!r}, status={!r}, is_team_shared_dropbox={!r}, sync_setting={!r}, content_sync_settings={!r})'.format(
             self._team_folder_id_value,
             self._name_value,
             self._status_value,
             self._is_team_shared_dropbox_value,
+            self._sync_setting_value,
+            self._content_sync_settings_value,
         )
 
 TeamFolderMetadata_validator = bv.Struct(TeamFolderMetadata)
@@ -13825,7 +14061,7 @@ class TeamFolderTeamSharedDropboxError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disallowed: This action is not allowed for a team shared dropbox.
+    :ivar disallowed: This action is not allowed for a shared team root.
     """
 
     _catch_all = 'other'
@@ -13854,6 +14090,145 @@ class TeamFolderTeamSharedDropboxError(bb.Union):
         return 'TeamFolderTeamSharedDropboxError(%r, %r)' % (self._tag, self._value)
 
 TeamFolderTeamSharedDropboxError_validator = bv.Union(TeamFolderTeamSharedDropboxError)
+
+class TeamFolderUpdateSyncSettingsArg(TeamFolderIdArg):
+    """
+    :ivar sync_setting: Sync setting to apply to the team folder itself. Only
+        meaningful if the team folder is not a shared team root.
+    :ivar content_sync_settings: Sync settings to apply to contents of this team
+        folder.
+    """
+
+    __slots__ = [
+        '_sync_setting_value',
+        '_sync_setting_present',
+        '_content_sync_settings_value',
+        '_content_sync_settings_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_folder_id=None,
+                 sync_setting=None,
+                 content_sync_settings=None):
+        super(TeamFolderUpdateSyncSettingsArg, self).__init__(team_folder_id)
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+        self._content_sync_settings_value = None
+        self._content_sync_settings_present = False
+        if sync_setting is not None:
+            self.sync_setting = sync_setting
+        if content_sync_settings is not None:
+            self.content_sync_settings = content_sync_settings
+
+    @property
+    def sync_setting(self):
+        """
+        Sync setting to apply to the team folder itself. Only meaningful if the
+        team folder is not a shared team root.
+
+        :rtype: files.SyncSettingArg_validator
+        """
+        if self._sync_setting_present:
+            return self._sync_setting_value
+        else:
+            return None
+
+    @sync_setting.setter
+    def sync_setting(self, val):
+        if val is None:
+            del self.sync_setting
+            return
+        self._sync_setting_validator.validate_type_only(val)
+        self._sync_setting_value = val
+        self._sync_setting_present = True
+
+    @sync_setting.deleter
+    def sync_setting(self):
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+
+    @property
+    def content_sync_settings(self):
+        """
+        Sync settings to apply to contents of this team folder.
+
+        :rtype: list of [files.ContentSyncSettingArg_validator]
+        """
+        if self._content_sync_settings_present:
+            return self._content_sync_settings_value
+        else:
+            return None
+
+    @content_sync_settings.setter
+    def content_sync_settings(self, val):
+        if val is None:
+            del self.content_sync_settings
+            return
+        val = self._content_sync_settings_validator.validate(val)
+        self._content_sync_settings_value = val
+        self._content_sync_settings_present = True
+
+    @content_sync_settings.deleter
+    def content_sync_settings(self):
+        self._content_sync_settings_value = None
+        self._content_sync_settings_present = False
+
+    def __repr__(self):
+        return 'TeamFolderUpdateSyncSettingsArg(team_folder_id={!r}, sync_setting={!r}, content_sync_settings={!r})'.format(
+            self._team_folder_id_value,
+            self._sync_setting_value,
+            self._content_sync_settings_value,
+        )
+
+TeamFolderUpdateSyncSettingsArg_validator = bv.Struct(TeamFolderUpdateSyncSettingsArg)
+
+class TeamFolderUpdateSyncSettingsError(BaseTeamFolderError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar SyncSettingsError sync_settings_error: An error occurred setting the
+        sync settings.
+    """
+
+    @classmethod
+    def sync_settings_error(cls, val):
+        """
+        Create an instance of this class set to the ``sync_settings_error`` tag
+        with value ``val``.
+
+        :param files.SyncSettingsError_validator val:
+        :rtype: TeamFolderUpdateSyncSettingsError
+        """
+        return cls('sync_settings_error', val)
+
+    def is_sync_settings_error(self):
+        """
+        Check if the union tag is ``sync_settings_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sync_settings_error'
+
+    def get_sync_settings_error(self):
+        """
+        An error occurred setting the sync settings.
+
+        Only call this if :meth:`is_sync_settings_error` is true.
+
+        :rtype: files.SyncSettingsError_validator
+        """
+        if not self.is_sync_settings_error():
+            raise AttributeError("tag 'sync_settings_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'TeamFolderUpdateSyncSettingsError(%r, %r)' % (self._tag, self._value)
+
+TeamFolderUpdateSyncSettingsError_validator = bv.Union(TeamFolderUpdateSyncSettingsError)
 
 class TeamGetInfoResult(object):
     """
@@ -15450,27 +15825,32 @@ ExcludedUsersUpdateStatus.other = ExcludedUsersUpdateStatus('other')
 Feature._upload_api_rate_limit_validator = bv.Void()
 Feature._has_team_shared_dropbox_validator = bv.Void()
 Feature._has_team_file_events_validator = bv.Void()
+Feature._has_team_selective_sync_validator = bv.Void()
 Feature._other_validator = bv.Void()
 Feature._tagmap = {
     'upload_api_rate_limit': Feature._upload_api_rate_limit_validator,
     'has_team_shared_dropbox': Feature._has_team_shared_dropbox_validator,
     'has_team_file_events': Feature._has_team_file_events_validator,
+    'has_team_selective_sync': Feature._has_team_selective_sync_validator,
     'other': Feature._other_validator,
 }
 
 Feature.upload_api_rate_limit = Feature('upload_api_rate_limit')
 Feature.has_team_shared_dropbox = Feature('has_team_shared_dropbox')
 Feature.has_team_file_events = Feature('has_team_file_events')
+Feature.has_team_selective_sync = Feature('has_team_selective_sync')
 Feature.other = Feature('other')
 
 FeatureValue._upload_api_rate_limit_validator = UploadApiRateLimitValue_validator
 FeatureValue._has_team_shared_dropbox_validator = HasTeamSharedDropboxValue_validator
 FeatureValue._has_team_file_events_validator = HasTeamFileEventsValue_validator
+FeatureValue._has_team_selective_sync_validator = HasTeamSelectiveSyncValue_validator
 FeatureValue._other_validator = bv.Void()
 FeatureValue._tagmap = {
     'upload_api_rate_limit': FeatureValue._upload_api_rate_limit_validator,
     'has_team_shared_dropbox': FeatureValue._has_team_shared_dropbox_validator,
     'has_team_file_events': FeatureValue._has_team_file_events_validator,
+    'has_team_selective_sync': FeatureValue._has_team_selective_sync_validator,
     'other': FeatureValue._other_validator,
 }
 
@@ -15961,6 +16341,15 @@ HasTeamFileEventsValue._tagmap = {
 }
 
 HasTeamFileEventsValue.other = HasTeamFileEventsValue('other')
+
+HasTeamSelectiveSyncValue._has_team_selective_sync_validator = bv.Boolean()
+HasTeamSelectiveSyncValue._other_validator = bv.Void()
+HasTeamSelectiveSyncValue._tagmap = {
+    'has_team_selective_sync': HasTeamSelectiveSyncValue._has_team_selective_sync_validator,
+    'other': HasTeamSelectiveSyncValue._other_validator,
+}
+
+HasTeamSelectiveSyncValue.other = HasTeamSelectiveSyncValue('other')
 
 HasTeamSharedDropboxValue._has_team_shared_dropbox_validator = bv.Boolean()
 HasTeamSharedDropboxValue._other_validator = bv.Void()
@@ -16897,17 +17286,26 @@ TeamFolderArchiveLaunch._tagmap = {
 TeamFolderArchiveLaunch._tagmap.update(async.LaunchResultBase._tagmap)
 
 TeamFolderCreateArg._name_validator = bv.String()
-TeamFolderCreateArg._all_field_names_ = set(['name'])
-TeamFolderCreateArg._all_fields_ = [('name', TeamFolderCreateArg._name_validator)]
+TeamFolderCreateArg._sync_setting_validator = bv.Nullable(files.SyncSettingArg_validator)
+TeamFolderCreateArg._all_field_names_ = set([
+    'name',
+    'sync_setting',
+])
+TeamFolderCreateArg._all_fields_ = [
+    ('name', TeamFolderCreateArg._name_validator),
+    ('sync_setting', TeamFolderCreateArg._sync_setting_validator),
+]
 
 TeamFolderCreateError._invalid_folder_name_validator = bv.Void()
 TeamFolderCreateError._folder_name_already_used_validator = bv.Void()
 TeamFolderCreateError._folder_name_reserved_validator = bv.Void()
+TeamFolderCreateError._sync_settings_error_validator = files.SyncSettingsError_validator
 TeamFolderCreateError._other_validator = bv.Void()
 TeamFolderCreateError._tagmap = {
     'invalid_folder_name': TeamFolderCreateError._invalid_folder_name_validator,
     'folder_name_already_used': TeamFolderCreateError._folder_name_already_used_validator,
     'folder_name_reserved': TeamFolderCreateError._folder_name_reserved_validator,
+    'sync_settings_error': TeamFolderCreateError._sync_settings_error_validator,
     'other': TeamFolderCreateError._other_validator,
 }
 
@@ -16983,17 +17381,23 @@ TeamFolderMetadata._team_folder_id_validator = common.SharedFolderId_validator
 TeamFolderMetadata._name_validator = bv.String()
 TeamFolderMetadata._status_validator = TeamFolderStatus_validator
 TeamFolderMetadata._is_team_shared_dropbox_validator = bv.Boolean()
+TeamFolderMetadata._sync_setting_validator = files.SyncSetting_validator
+TeamFolderMetadata._content_sync_settings_validator = bv.List(files.ContentSyncSetting_validator)
 TeamFolderMetadata._all_field_names_ = set([
     'team_folder_id',
     'name',
     'status',
     'is_team_shared_dropbox',
+    'sync_setting',
+    'content_sync_settings',
 ])
 TeamFolderMetadata._all_fields_ = [
     ('team_folder_id', TeamFolderMetadata._team_folder_id_validator),
     ('name', TeamFolderMetadata._name_validator),
     ('status', TeamFolderMetadata._status_validator),
     ('is_team_shared_dropbox', TeamFolderMetadata._is_team_shared_dropbox_validator),
+    ('sync_setting', TeamFolderMetadata._sync_setting_validator),
+    ('content_sync_settings', TeamFolderMetadata._content_sync_settings_validator),
 ]
 
 TeamFolderPermanentlyDeleteError._tagmap = {
@@ -17043,6 +17447,23 @@ TeamFolderTeamSharedDropboxError._tagmap = {
 
 TeamFolderTeamSharedDropboxError.disallowed = TeamFolderTeamSharedDropboxError('disallowed')
 TeamFolderTeamSharedDropboxError.other = TeamFolderTeamSharedDropboxError('other')
+
+TeamFolderUpdateSyncSettingsArg._sync_setting_validator = bv.Nullable(files.SyncSettingArg_validator)
+TeamFolderUpdateSyncSettingsArg._content_sync_settings_validator = bv.Nullable(bv.List(files.ContentSyncSettingArg_validator))
+TeamFolderUpdateSyncSettingsArg._all_field_names_ = TeamFolderIdArg._all_field_names_.union(set([
+    'sync_setting',
+    'content_sync_settings',
+]))
+TeamFolderUpdateSyncSettingsArg._all_fields_ = TeamFolderIdArg._all_fields_ + [
+    ('sync_setting', TeamFolderUpdateSyncSettingsArg._sync_setting_validator),
+    ('content_sync_settings', TeamFolderUpdateSyncSettingsArg._content_sync_settings_validator),
+]
+
+TeamFolderUpdateSyncSettingsError._sync_settings_error_validator = files.SyncSettingsError_validator
+TeamFolderUpdateSyncSettingsError._tagmap = {
+    'sync_settings_error': TeamFolderUpdateSyncSettingsError._sync_settings_error_validator,
+}
+TeamFolderUpdateSyncSettingsError._tagmap.update(BaseTeamFolderError._tagmap)
 
 TeamGetInfoResult._name_validator = bv.String()
 TeamGetInfoResult._team_id_validator = bv.String()
@@ -17779,6 +18200,15 @@ team_folder_rename = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+team_folder_update_sync_settings = bb.Route(
+    'team_folder/update_sync_settings',
+    False,
+    TeamFolderUpdateSyncSettingsArg_validator,
+    TeamFolderMetadata_validator,
+    TeamFolderUpdateSyncSettingsError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 token_get_authenticated_admin = bb.Route(
     'token/get_authenticated_admin',
     False,
@@ -17853,6 +18283,7 @@ ROUTES = {
     'team_folder/list/continue': team_folder_list_continue,
     'team_folder/permanently_delete': team_folder_permanently_delete,
     'team_folder/rename': team_folder_rename,
+    'team_folder/update_sync_settings': team_folder_update_sync_settings,
     'token/get_authenticated_admin': token_get_authenticated_admin,
 }
 

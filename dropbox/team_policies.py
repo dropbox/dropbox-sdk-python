@@ -536,6 +536,148 @@ class SharedLinkCreatePolicy(bb.Union):
 
 SharedLinkCreatePolicy_validator = bv.Union(SharedLinkCreatePolicy)
 
+class ShowcaseDownloadPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar disabled: Do not allow files to be downloaded from Showcases.
+    :ivar enabled: Allow files to be downloaded from Showcases.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ShowcaseDownloadPolicy(%r, %r)' % (self._tag, self._value)
+
+ShowcaseDownloadPolicy_validator = bv.Union(ShowcaseDownloadPolicy)
+
+class ShowcaseEnabledPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar disabled: Showcase is disabled.
+    :ivar enabled: Showcase is enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ShowcaseEnabledPolicy(%r, %r)' % (self._tag, self._value)
+
+ShowcaseEnabledPolicy_validator = bv.Union(ShowcaseEnabledPolicy)
+
+class ShowcaseExternalSharingPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar disabled: Do not allow showcases to be shared with people not on the
+        team.
+    :ivar enabled: Allow showcases to be shared with people not on the team.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ShowcaseExternalSharingPolicy(%r, %r)' % (self._tag, self._value)
+
+ShowcaseExternalSharingPolicy_validator = bv.Union(ShowcaseExternalSharingPolicy)
+
 class SmartSyncPolicy(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -1073,6 +1215,45 @@ SharedLinkCreatePolicy.default_public = SharedLinkCreatePolicy('default_public')
 SharedLinkCreatePolicy.default_team_only = SharedLinkCreatePolicy('default_team_only')
 SharedLinkCreatePolicy.team_only = SharedLinkCreatePolicy('team_only')
 SharedLinkCreatePolicy.other = SharedLinkCreatePolicy('other')
+
+ShowcaseDownloadPolicy._disabled_validator = bv.Void()
+ShowcaseDownloadPolicy._enabled_validator = bv.Void()
+ShowcaseDownloadPolicy._other_validator = bv.Void()
+ShowcaseDownloadPolicy._tagmap = {
+    'disabled': ShowcaseDownloadPolicy._disabled_validator,
+    'enabled': ShowcaseDownloadPolicy._enabled_validator,
+    'other': ShowcaseDownloadPolicy._other_validator,
+}
+
+ShowcaseDownloadPolicy.disabled = ShowcaseDownloadPolicy('disabled')
+ShowcaseDownloadPolicy.enabled = ShowcaseDownloadPolicy('enabled')
+ShowcaseDownloadPolicy.other = ShowcaseDownloadPolicy('other')
+
+ShowcaseEnabledPolicy._disabled_validator = bv.Void()
+ShowcaseEnabledPolicy._enabled_validator = bv.Void()
+ShowcaseEnabledPolicy._other_validator = bv.Void()
+ShowcaseEnabledPolicy._tagmap = {
+    'disabled': ShowcaseEnabledPolicy._disabled_validator,
+    'enabled': ShowcaseEnabledPolicy._enabled_validator,
+    'other': ShowcaseEnabledPolicy._other_validator,
+}
+
+ShowcaseEnabledPolicy.disabled = ShowcaseEnabledPolicy('disabled')
+ShowcaseEnabledPolicy.enabled = ShowcaseEnabledPolicy('enabled')
+ShowcaseEnabledPolicy.other = ShowcaseEnabledPolicy('other')
+
+ShowcaseExternalSharingPolicy._disabled_validator = bv.Void()
+ShowcaseExternalSharingPolicy._enabled_validator = bv.Void()
+ShowcaseExternalSharingPolicy._other_validator = bv.Void()
+ShowcaseExternalSharingPolicy._tagmap = {
+    'disabled': ShowcaseExternalSharingPolicy._disabled_validator,
+    'enabled': ShowcaseExternalSharingPolicy._enabled_validator,
+    'other': ShowcaseExternalSharingPolicy._other_validator,
+}
+
+ShowcaseExternalSharingPolicy.disabled = ShowcaseExternalSharingPolicy('disabled')
+ShowcaseExternalSharingPolicy.enabled = ShowcaseExternalSharingPolicy('enabled')
+ShowcaseExternalSharingPolicy.other = ShowcaseExternalSharingPolicy('other')
 
 SmartSyncPolicy._local_validator = bv.Void()
 SmartSyncPolicy._on_demand_validator = bv.Void()

@@ -638,6 +638,168 @@ class CommitInfoWithProperties(CommitInfo):
 
 CommitInfoWithProperties_validator = bv.Struct(CommitInfoWithProperties)
 
+class ContentSyncSetting(object):
+    """
+    :ivar id: Id of the item this setting is applied to.
+    :ivar sync_setting: Setting for this item.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_sync_setting_value',
+        '_sync_setting_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 sync_setting=None):
+        self._id_value = None
+        self._id_present = False
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+        if id is not None:
+            self.id = id
+        if sync_setting is not None:
+            self.sync_setting = sync_setting
+
+    @property
+    def id(self):
+        """
+        Id of the item this setting is applied to.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def sync_setting(self):
+        """
+        Setting for this item.
+
+        :rtype: SyncSetting
+        """
+        if self._sync_setting_present:
+            return self._sync_setting_value
+        else:
+            raise AttributeError("missing required field 'sync_setting'")
+
+    @sync_setting.setter
+    def sync_setting(self, val):
+        self._sync_setting_validator.validate_type_only(val)
+        self._sync_setting_value = val
+        self._sync_setting_present = True
+
+    @sync_setting.deleter
+    def sync_setting(self):
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+
+    def __repr__(self):
+        return 'ContentSyncSetting(id={!r}, sync_setting={!r})'.format(
+            self._id_value,
+            self._sync_setting_value,
+        )
+
+ContentSyncSetting_validator = bv.Struct(ContentSyncSetting)
+
+class ContentSyncSettingArg(object):
+    """
+    :ivar id: Id of the item this setting is applied to.
+    :ivar sync_setting: Setting for this item.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_sync_setting_value',
+        '_sync_setting_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 sync_setting=None):
+        self._id_value = None
+        self._id_present = False
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+        if id is not None:
+            self.id = id
+        if sync_setting is not None:
+            self.sync_setting = sync_setting
+
+    @property
+    def id(self):
+        """
+        Id of the item this setting is applied to.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def sync_setting(self):
+        """
+        Setting for this item.
+
+        :rtype: SyncSettingArg
+        """
+        if self._sync_setting_present:
+            return self._sync_setting_value
+        else:
+            raise AttributeError("missing required field 'sync_setting'")
+
+    @sync_setting.setter
+    def sync_setting(self, val):
+        self._sync_setting_validator.validate_type_only(val)
+        self._sync_setting_value = val
+        self._sync_setting_present = True
+
+    @sync_setting.deleter
+    def sync_setting(self):
+        self._sync_setting_value = None
+        self._sync_setting_present = False
+
+    def __repr__(self):
+        return 'ContentSyncSettingArg(id={!r}, sync_setting={!r})'.format(
+            self._id_value,
+            self._sync_setting_value,
+        )
+
+ContentSyncSettingArg_validator = bv.Struct(ContentSyncSettingArg)
+
 class CreateFolderArg(object):
     """
     :ivar path: Path in the user's Dropbox to create.
@@ -721,6 +883,539 @@ class CreateFolderArg(object):
 
 CreateFolderArg_validator = bv.Struct(CreateFolderArg)
 
+class CreateFolderBatchArg(object):
+    """
+    :ivar paths: List of paths to be created in the user's Dropbox. Duplicate
+        path arguments in the batch are considered only once.
+    :ivar autorename: If there's a conflict, have the Dropbox server try to
+        autorename the folder to avoid the conflict.
+    :ivar force_async: Whether to force the create to happen asynchronously.
+    """
+
+    __slots__ = [
+        '_paths_value',
+        '_paths_present',
+        '_autorename_value',
+        '_autorename_present',
+        '_force_async_value',
+        '_force_async_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 paths=None,
+                 autorename=None,
+                 force_async=None):
+        self._paths_value = None
+        self._paths_present = False
+        self._autorename_value = None
+        self._autorename_present = False
+        self._force_async_value = None
+        self._force_async_present = False
+        if paths is not None:
+            self.paths = paths
+        if autorename is not None:
+            self.autorename = autorename
+        if force_async is not None:
+            self.force_async = force_async
+
+    @property
+    def paths(self):
+        """
+        List of paths to be created in the user's Dropbox. Duplicate path
+        arguments in the batch are considered only once.
+
+        :rtype: list of [str]
+        """
+        if self._paths_present:
+            return self._paths_value
+        else:
+            raise AttributeError("missing required field 'paths'")
+
+    @paths.setter
+    def paths(self, val):
+        val = self._paths_validator.validate(val)
+        self._paths_value = val
+        self._paths_present = True
+
+    @paths.deleter
+    def paths(self):
+        self._paths_value = None
+        self._paths_present = False
+
+    @property
+    def autorename(self):
+        """
+        If there's a conflict, have the Dropbox server try to autorename the
+        folder to avoid the conflict.
+
+        :rtype: bool
+        """
+        if self._autorename_present:
+            return self._autorename_value
+        else:
+            return False
+
+    @autorename.setter
+    def autorename(self, val):
+        val = self._autorename_validator.validate(val)
+        self._autorename_value = val
+        self._autorename_present = True
+
+    @autorename.deleter
+    def autorename(self):
+        self._autorename_value = None
+        self._autorename_present = False
+
+    @property
+    def force_async(self):
+        """
+        Whether to force the create to happen asynchronously.
+
+        :rtype: bool
+        """
+        if self._force_async_present:
+            return self._force_async_value
+        else:
+            return False
+
+    @force_async.setter
+    def force_async(self, val):
+        val = self._force_async_validator.validate(val)
+        self._force_async_value = val
+        self._force_async_present = True
+
+    @force_async.deleter
+    def force_async(self):
+        self._force_async_value = None
+        self._force_async_present = False
+
+    def __repr__(self):
+        return 'CreateFolderBatchArg(paths={!r}, autorename={!r}, force_async={!r})'.format(
+            self._paths_value,
+            self._autorename_value,
+            self._force_async_value,
+        )
+
+CreateFolderBatchArg_validator = bv.Struct(CreateFolderBatchArg)
+
+class CreateFolderBatchError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar too_many_files: The operation would involve too many files or folders.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    too_many_files = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_too_many_files(self):
+        """
+        Check if the union tag is ``too_many_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_files'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'CreateFolderBatchError(%r, %r)' % (self._tag, self._value)
+
+CreateFolderBatchError_validator = bv.Union(CreateFolderBatchError)
+
+class CreateFolderBatchJobStatus(async.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar CreateFolderBatchResult complete: The batch create folder has
+        finished.
+    :ivar CreateFolderBatchError failed: The batch create folder has failed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param CreateFolderBatchResult val:
+        :rtype: CreateFolderBatchJobStatus
+        """
+        return cls('complete', val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param CreateFolderBatchError val:
+        :rtype: CreateFolderBatchJobStatus
+        """
+        return cls('failed', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failed'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_complete(self):
+        """
+        The batch create folder has finished.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: CreateFolderBatchResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        The batch create folder has failed.
+
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: CreateFolderBatchError
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'CreateFolderBatchJobStatus(%r, %r)' % (self._tag, self._value)
+
+CreateFolderBatchJobStatus_validator = bv.Union(CreateFolderBatchJobStatus)
+
+class CreateFolderBatchLaunch(async.LaunchResultBase):
+    """
+    Result returned by :meth:`dropbox.dropbox.Dropbox.files_create_folder_batch`
+    that may either launch an asynchronous job or complete synchronously.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param CreateFolderBatchResult val:
+        :rtype: CreateFolderBatchLaunch
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: CreateFolderBatchResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'CreateFolderBatchLaunch(%r, %r)' % (self._tag, self._value)
+
+CreateFolderBatchLaunch_validator = bv.Union(CreateFolderBatchLaunch)
+
+class FileOpsResult(object):
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return 'FileOpsResult()'
+
+FileOpsResult_validator = bv.Struct(FileOpsResult)
+
+class CreateFolderBatchResult(FileOpsResult):
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        super(CreateFolderBatchResult, self).__init__()
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        :rtype: list of [CreateFolderBatchResultEntry]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def __repr__(self):
+        return 'CreateFolderBatchResult(entries={!r})'.format(
+            self._entries_value,
+        )
+
+CreateFolderBatchResult_validator = bv.Struct(CreateFolderBatchResult)
+
+class CreateFolderBatchResultEntry(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param CreateFolderEntryResult val:
+        :rtype: CreateFolderBatchResultEntry
+        """
+        return cls('success', val)
+
+    @classmethod
+    def failure(cls, val):
+        """
+        Create an instance of this class set to the ``failure`` tag with value
+        ``val``.
+
+        :param CreateFolderEntryError val:
+        :rtype: CreateFolderBatchResultEntry
+        """
+        return cls('failure', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_failure(self):
+        """
+        Check if the union tag is ``failure``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failure'
+
+    def get_success(self):
+        """
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: CreateFolderEntryResult
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_failure(self):
+        """
+        Only call this if :meth:`is_failure` is true.
+
+        :rtype: CreateFolderEntryError
+        """
+        if not self.is_failure():
+            raise AttributeError("tag 'failure' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'CreateFolderBatchResultEntry(%r, %r)' % (self._tag, self._value)
+
+CreateFolderBatchResultEntry_validator = bv.Union(CreateFolderBatchResultEntry)
+
+class CreateFolderEntryError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param WriteError val:
+        :rtype: CreateFolderEntryError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: WriteError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'CreateFolderEntryError(%r, %r)' % (self._tag, self._value)
+
+CreateFolderEntryError_validator = bv.Union(CreateFolderEntryError)
+
+class CreateFolderEntryResult(object):
+    """
+    :ivar metadata: Metadata of the created folder.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        if metadata is not None:
+            self.metadata = metadata
+
+    @property
+    def metadata(self):
+        """
+        Metadata of the created folder.
+
+        :rtype: FolderMetadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    def __repr__(self):
+        return 'CreateFolderEntryResult(metadata={!r})'.format(
+            self._metadata_value,
+        )
+
+CreateFolderEntryResult_validator = bv.Struct(CreateFolderEntryResult)
+
 class CreateFolderError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -763,21 +1458,6 @@ class CreateFolderError(bb.Union):
         return 'CreateFolderError(%r, %r)' % (self._tag, self._value)
 
 CreateFolderError_validator = bv.Union(CreateFolderError)
-
-class FileOpsResult(object):
-
-    __slots__ = [
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self):
-        pass
-
-    def __repr__(self):
-        return 'FileOpsResult()'
-
-FileOpsResult_validator = bv.Struct(FileOpsResult)
 
 class CreateFolderResult(FileOpsResult):
     """
@@ -832,21 +1512,30 @@ CreateFolderResult_validator = bv.Struct(CreateFolderResult)
 class DeleteArg(object):
     """
     :ivar path: Path in the user's Dropbox to delete.
+    :ivar parent_rev: Perform delete if given "rev" matches the existing file's
+        latest "rev". This field does not support deleting a folder.
     """
 
     __slots__ = [
         '_path_value',
         '_path_present',
+        '_parent_rev_value',
+        '_parent_rev_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 path=None):
+                 path=None,
+                 parent_rev=None):
         self._path_value = None
         self._path_present = False
+        self._parent_rev_value = None
+        self._parent_rev_present = False
         if path is not None:
             self.path = path
+        if parent_rev is not None:
+            self.parent_rev = parent_rev
 
     @property
     def path(self):
@@ -871,9 +1560,37 @@ class DeleteArg(object):
         self._path_value = None
         self._path_present = False
 
+    @property
+    def parent_rev(self):
+        """
+        Perform delete if given "rev" matches the existing file's latest "rev".
+        This field does not support deleting a folder.
+
+        :rtype: str
+        """
+        if self._parent_rev_present:
+            return self._parent_rev_value
+        else:
+            return None
+
+    @parent_rev.setter
+    def parent_rev(self, val):
+        if val is None:
+            del self.parent_rev
+            return
+        val = self._parent_rev_validator.validate(val)
+        self._parent_rev_value = val
+        self._parent_rev_present = True
+
+    @parent_rev.deleter
+    def parent_rev(self):
+        self._parent_rev_value = None
+        self._parent_rev_present = False
+
     def __repr__(self):
-        return 'DeleteArg(path={!r})'.format(
+        return 'DeleteArg(path={!r}, parent_rev={!r})'.format(
             self._path_value,
+            self._parent_rev_value,
         )
 
 DeleteArg_validator = bv.Struct(DeleteArg)
@@ -2040,6 +2757,7 @@ class FileMetadata(Metadata):
         changes and avoid conflicts.
     :ivar size: The file size in bytes.
     :ivar media_info: Additional information if the file is a photo or video.
+    :ivar symlink_info: Set if this file is a symlink.
     :ivar sharing_info: Set if this file is contained in a shared folder.
     :ivar property_groups: Additional information if the file has custom
         properties with the property template specified.
@@ -2069,6 +2787,8 @@ class FileMetadata(Metadata):
         '_size_present',
         '_media_info_value',
         '_media_info_present',
+        '_symlink_info_value',
+        '_symlink_info_present',
         '_sharing_info_value',
         '_sharing_info_present',
         '_property_groups_value',
@@ -2092,6 +2812,7 @@ class FileMetadata(Metadata):
                  path_display=None,
                  parent_shared_folder_id=None,
                  media_info=None,
+                 symlink_info=None,
                  sharing_info=None,
                  property_groups=None,
                  has_explicit_shared_members=None,
@@ -2112,6 +2833,8 @@ class FileMetadata(Metadata):
         self._size_present = False
         self._media_info_value = None
         self._media_info_present = False
+        self._symlink_info_value = None
+        self._symlink_info_present = False
         self._sharing_info_value = None
         self._sharing_info_present = False
         self._property_groups_value = None
@@ -2132,6 +2855,8 @@ class FileMetadata(Metadata):
             self.size = size
         if media_info is not None:
             self.media_info = media_info
+        if symlink_info is not None:
+            self.symlink_info = symlink_info
         if sharing_info is not None:
             self.sharing_info = sharing_info
         if property_groups is not None:
@@ -2289,6 +3014,32 @@ class FileMetadata(Metadata):
         self._media_info_present = False
 
     @property
+    def symlink_info(self):
+        """
+        Set if this file is a symlink.
+
+        :rtype: SymlinkInfo
+        """
+        if self._symlink_info_present:
+            return self._symlink_info_value
+        else:
+            return None
+
+    @symlink_info.setter
+    def symlink_info(self, val):
+        if val is None:
+            del self.symlink_info
+            return
+        self._symlink_info_validator.validate_type_only(val)
+        self._symlink_info_value = val
+        self._symlink_info_present = True
+
+    @symlink_info.deleter
+    def symlink_info(self):
+        self._symlink_info_value = None
+        self._symlink_info_present = False
+
+    @property
     def sharing_info(self):
         """
         Set if this file is contained in a shared folder.
@@ -2402,7 +3153,7 @@ class FileMetadata(Metadata):
         self._content_hash_present = False
 
     def __repr__(self):
-        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, sharing_info={!r}, property_groups={!r}, has_explicit_shared_members={!r}, content_hash={!r})'.format(
+        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, symlink_info={!r}, sharing_info={!r}, property_groups={!r}, has_explicit_shared_members={!r}, content_hash={!r})'.format(
             self._name_value,
             self._id_value,
             self._client_modified_value,
@@ -2413,6 +3164,7 @@ class FileMetadata(Metadata):
             self._path_display_value,
             self._parent_shared_folder_id_value,
             self._media_info_value,
+            self._symlink_info_value,
             self._sharing_info_value,
             self._property_groups_value,
             self._has_explicit_shared_members_value,
@@ -7619,6 +8371,246 @@ class SharedLink(object):
 
 SharedLink_validator = bv.Struct(SharedLink)
 
+class SymlinkInfo(object):
+    """
+    :ivar target: The target this symlink points to.
+    """
+
+    __slots__ = [
+        '_target_value',
+        '_target_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 target=None):
+        self._target_value = None
+        self._target_present = False
+        if target is not None:
+            self.target = target
+
+    @property
+    def target(self):
+        """
+        The target this symlink points to.
+
+        :rtype: str
+        """
+        if self._target_present:
+            return self._target_value
+        else:
+            raise AttributeError("missing required field 'target'")
+
+    @target.setter
+    def target(self, val):
+        val = self._target_validator.validate(val)
+        self._target_value = val
+        self._target_present = True
+
+    @target.deleter
+    def target(self):
+        self._target_value = None
+        self._target_present = False
+
+    def __repr__(self):
+        return 'SymlinkInfo(target={!r})'.format(
+            self._target_value,
+        )
+
+SymlinkInfo_validator = bv.Struct(SymlinkInfo)
+
+class SyncSetting(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar default: On first sync to members' computers, the specified folder
+        will follow its parent folder's setting or otherwise follow default sync
+        behavior.
+    :ivar not_synced: On first sync to members' computers, the specified folder
+        will be set to not sync with selective sync.
+    :ivar not_synced_inactive: The specified folder's not_synced setting is
+        inactive due to its location or other configuration changes. It will
+        follow its parent folder's setting.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    not_synced = None
+    # Attribute is overwritten below the class definition
+    not_synced_inactive = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_not_synced(self):
+        """
+        Check if the union tag is ``not_synced``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_synced'
+
+    def is_not_synced_inactive(self):
+        """
+        Check if the union tag is ``not_synced_inactive``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_synced_inactive'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'SyncSetting(%r, %r)' % (self._tag, self._value)
+
+SyncSetting_validator = bv.Union(SyncSetting)
+
+class SyncSettingArg(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar default: On first sync to members' computers, the specified folder
+        will follow its parent folder's setting or otherwise follow default sync
+        behavior.
+    :ivar not_synced: On first sync to members' computers, the specified folder
+        will be set to not sync with selective sync.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    not_synced = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_not_synced(self):
+        """
+        Check if the union tag is ``not_synced``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_synced'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'SyncSettingArg(%r, %r)' % (self._tag, self._value)
+
+SyncSettingArg_validator = bv.Union(SyncSettingArg)
+
+class SyncSettingsError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar unsupported_combination: Setting this combination of sync settings
+        simultaneously is not supported.
+    :ivar unsupported_configuration: The specified configuration is not
+        supported.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unsupported_combination = None
+    # Attribute is overwritten below the class definition
+    unsupported_configuration = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: SyncSettingsError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_unsupported_combination(self):
+        """
+        Check if the union tag is ``unsupported_combination``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_combination'
+
+    def is_unsupported_configuration(self):
+        """
+        Check if the union tag is ``unsupported_configuration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_configuration'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'SyncSettingsError(%r, %r)' % (self._tag, self._value)
+
+SyncSettingsError_validator = bv.Union(SyncSettingsError)
+
 class ThumbnailArg(object):
     """
     :ivar path: The path to the image file you want to thumbnail.
@@ -7626,6 +8618,7 @@ class ThumbnailArg(object):
         images that are photos, jpeg should be preferred, while png is  better
         for screenshots and digital arts.
     :ivar size: The size for the thumbnail image.
+    :ivar mode: How to resize and crop the image to achieve the desired size.
     """
 
     __slots__ = [
@@ -7635,6 +8628,8 @@ class ThumbnailArg(object):
         '_format_present',
         '_size_value',
         '_size_present',
+        '_mode_value',
+        '_mode_present',
     ]
 
     _has_required_fields = True
@@ -7642,19 +8637,24 @@ class ThumbnailArg(object):
     def __init__(self,
                  path=None,
                  format=None,
-                 size=None):
+                 size=None,
+                 mode=None):
         self._path_value = None
         self._path_present = False
         self._format_value = None
         self._format_present = False
         self._size_value = None
         self._size_present = False
+        self._mode_value = None
+        self._mode_present = False
         if path is not None:
             self.path = path
         if format is not None:
             self.format = format
         if size is not None:
             self.size = size
+        if mode is not None:
+            self.mode = mode
 
     @property
     def path(self):
@@ -7727,11 +8727,35 @@ class ThumbnailArg(object):
         self._size_value = None
         self._size_present = False
 
+    @property
+    def mode(self):
+        """
+        How to resize and crop the image to achieve the desired size.
+
+        :rtype: ThumbnailMode
+        """
+        if self._mode_present:
+            return self._mode_value
+        else:
+            return ThumbnailMode.strict
+
+    @mode.setter
+    def mode(self, val):
+        self._mode_validator.validate_type_only(val)
+        self._mode_value = val
+        self._mode_present = True
+
+    @mode.deleter
+    def mode(self):
+        self._mode_value = None
+        self._mode_present = False
+
     def __repr__(self):
-        return 'ThumbnailArg(path={!r}, format={!r}, size={!r})'.format(
+        return 'ThumbnailArg(path={!r}, format={!r}, size={!r}, mode={!r})'.format(
             self._path_value,
             self._format_value,
             self._size_value,
+            self._mode_value,
         )
 
 ThumbnailArg_validator = bv.Struct(ThumbnailArg)
@@ -7852,6 +8876,56 @@ class ThumbnailFormat(bb.Union):
 
 ThumbnailFormat_validator = bv.Union(ThumbnailFormat)
 
+class ThumbnailMode(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar strict: Scale down the image to fit within the given size.
+    :ivar bestfit: Scale down the image to fit within the given size or its
+        transpose.
+    :ivar fitone_bestfit: Scale down the image to completely cover the given
+        size or its transpose.
+    """
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    strict = None
+    # Attribute is overwritten below the class definition
+    bestfit = None
+    # Attribute is overwritten below the class definition
+    fitone_bestfit = None
+
+    def is_strict(self):
+        """
+        Check if the union tag is ``strict``.
+
+        :rtype: bool
+        """
+        return self._tag == 'strict'
+
+    def is_bestfit(self):
+        """
+        Check if the union tag is ``bestfit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'bestfit'
+
+    def is_fitone_bestfit(self):
+        """
+        Check if the union tag is ``fitone_bestfit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'fitone_bestfit'
+
+    def __repr__(self):
+        return 'ThumbnailMode(%r, %r)' % (self._tag, self._value)
+
+ThumbnailMode_validator = bv.Union(ThumbnailMode)
+
 class ThumbnailSize(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -7861,8 +8935,12 @@ class ThumbnailSize(bb.Union):
     :ivar w32h32: 32 by 32 px.
     :ivar w64h64: 64 by 64 px.
     :ivar w128h128: 128 by 128 px.
+    :ivar w256h256: 256 by 256 px.
+    :ivar w480h320: 480 by 320 px.
     :ivar w640h480: 640 by 480 px.
-    :ivar w1024h768: 1024 by 768.
+    :ivar w960h640: 960 by 640 px.
+    :ivar w1024h768: 1024 by 768 px.
+    :ivar w2048h1536: 2048 by 1536 px.
     """
 
     _catch_all = None
@@ -7873,9 +8951,17 @@ class ThumbnailSize(bb.Union):
     # Attribute is overwritten below the class definition
     w128h128 = None
     # Attribute is overwritten below the class definition
+    w256h256 = None
+    # Attribute is overwritten below the class definition
+    w480h320 = None
+    # Attribute is overwritten below the class definition
     w640h480 = None
     # Attribute is overwritten below the class definition
+    w960h640 = None
+    # Attribute is overwritten below the class definition
     w1024h768 = None
+    # Attribute is overwritten below the class definition
+    w2048h1536 = None
 
     def is_w32h32(self):
         """
@@ -7901,6 +8987,22 @@ class ThumbnailSize(bb.Union):
         """
         return self._tag == 'w128h128'
 
+    def is_w256h256(self):
+        """
+        Check if the union tag is ``w256h256``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w256h256'
+
+    def is_w480h320(self):
+        """
+        Check if the union tag is ``w480h320``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w480h320'
+
     def is_w640h480(self):
         """
         Check if the union tag is ``w640h480``.
@@ -7909,6 +9011,14 @@ class ThumbnailSize(bb.Union):
         """
         return self._tag == 'w640h480'
 
+    def is_w960h640(self):
+        """
+        Check if the union tag is ``w960h640``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w960h640'
+
     def is_w1024h768(self):
         """
         Check if the union tag is ``w1024h768``.
@@ -7916,6 +9026,14 @@ class ThumbnailSize(bb.Union):
         :rtype: bool
         """
         return self._tag == 'w1024h768'
+
+    def is_w2048h1536(self):
+        """
+        Check if the union tag is ``w2048h1536``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w2048h1536'
 
     def __repr__(self):
         return 'ThumbnailSize(%r, %r)' % (self._tag, self._value)
@@ -9145,6 +10263,8 @@ class WriteError(bb.Union):
     :ivar disallowed_name: Dropbox will not save the file or folder because of
         its name.
     :ivar team_folder: This endpoint cannot move or delete team folders.
+    :ivar too_many_write_operations: There are too many write operations in
+        user's Dropbox. Please retry this request.
     """
 
     _catch_all = 'other'
@@ -9156,6 +10276,8 @@ class WriteError(bb.Union):
     disallowed_name = None
     # Attribute is overwritten below the class definition
     team_folder = None
+    # Attribute is overwritten below the class definition
+    too_many_write_operations = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -9228,6 +10350,14 @@ class WriteError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_folder'
+
+    def is_too_many_write_operations(self):
+        """
+        Check if the union tag is ``too_many_write_operations``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_write_operations'
 
     def is_other(self):
         """
@@ -9353,6 +10483,7 @@ class WriteMode(bb.Union):
 
 WriteMode_validator = bv.Union(WriteMode)
 
+FileId_validator = bv.String(min_length=4, pattern=u'id:.+')
 Id_validator = bv.String(min_length=1)
 ListFolderCursor_validator = bv.String(min_length=1)
 MalformedPathError_validator = bv.Nullable(bv.String())
@@ -9427,6 +10558,28 @@ CommitInfo._all_fields_ = [
 CommitInfoWithProperties._all_field_names_ = CommitInfo._all_field_names_.union(set([]))
 CommitInfoWithProperties._all_fields_ = CommitInfo._all_fields_ + []
 
+ContentSyncSetting._id_validator = FileId_validator
+ContentSyncSetting._sync_setting_validator = SyncSetting_validator
+ContentSyncSetting._all_field_names_ = set([
+    'id',
+    'sync_setting',
+])
+ContentSyncSetting._all_fields_ = [
+    ('id', ContentSyncSetting._id_validator),
+    ('sync_setting', ContentSyncSetting._sync_setting_validator),
+]
+
+ContentSyncSettingArg._id_validator = FileId_validator
+ContentSyncSettingArg._sync_setting_validator = SyncSettingArg_validator
+ContentSyncSettingArg._all_field_names_ = set([
+    'id',
+    'sync_setting',
+])
+ContentSyncSettingArg._all_fields_ = [
+    ('id', ContentSyncSettingArg._id_validator),
+    ('sync_setting', ContentSyncSettingArg._sync_setting_validator),
+]
+
 CreateFolderArg._path_validator = WritePath_validator
 CreateFolderArg._autorename_validator = bv.Boolean()
 CreateFolderArg._all_field_names_ = set([
@@ -9438,21 +10591,98 @@ CreateFolderArg._all_fields_ = [
     ('autorename', CreateFolderArg._autorename_validator),
 ]
 
+CreateFolderBatchArg._paths_validator = bv.List(WritePath_validator)
+CreateFolderBatchArg._autorename_validator = bv.Boolean()
+CreateFolderBatchArg._force_async_validator = bv.Boolean()
+CreateFolderBatchArg._all_field_names_ = set([
+    'paths',
+    'autorename',
+    'force_async',
+])
+CreateFolderBatchArg._all_fields_ = [
+    ('paths', CreateFolderBatchArg._paths_validator),
+    ('autorename', CreateFolderBatchArg._autorename_validator),
+    ('force_async', CreateFolderBatchArg._force_async_validator),
+]
+
+CreateFolderBatchError._too_many_files_validator = bv.Void()
+CreateFolderBatchError._other_validator = bv.Void()
+CreateFolderBatchError._tagmap = {
+    'too_many_files': CreateFolderBatchError._too_many_files_validator,
+    'other': CreateFolderBatchError._other_validator,
+}
+
+CreateFolderBatchError.too_many_files = CreateFolderBatchError('too_many_files')
+CreateFolderBatchError.other = CreateFolderBatchError('other')
+
+CreateFolderBatchJobStatus._complete_validator = CreateFolderBatchResult_validator
+CreateFolderBatchJobStatus._failed_validator = CreateFolderBatchError_validator
+CreateFolderBatchJobStatus._other_validator = bv.Void()
+CreateFolderBatchJobStatus._tagmap = {
+    'complete': CreateFolderBatchJobStatus._complete_validator,
+    'failed': CreateFolderBatchJobStatus._failed_validator,
+    'other': CreateFolderBatchJobStatus._other_validator,
+}
+CreateFolderBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
+
+CreateFolderBatchJobStatus.other = CreateFolderBatchJobStatus('other')
+
+CreateFolderBatchLaunch._complete_validator = CreateFolderBatchResult_validator
+CreateFolderBatchLaunch._other_validator = bv.Void()
+CreateFolderBatchLaunch._tagmap = {
+    'complete': CreateFolderBatchLaunch._complete_validator,
+    'other': CreateFolderBatchLaunch._other_validator,
+}
+CreateFolderBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+
+CreateFolderBatchLaunch.other = CreateFolderBatchLaunch('other')
+
+FileOpsResult._all_field_names_ = set([])
+FileOpsResult._all_fields_ = []
+
+CreateFolderBatchResult._entries_validator = bv.List(CreateFolderBatchResultEntry_validator)
+CreateFolderBatchResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['entries']))
+CreateFolderBatchResult._all_fields_ = FileOpsResult._all_fields_ + [('entries', CreateFolderBatchResult._entries_validator)]
+
+CreateFolderBatchResultEntry._success_validator = CreateFolderEntryResult_validator
+CreateFolderBatchResultEntry._failure_validator = CreateFolderEntryError_validator
+CreateFolderBatchResultEntry._tagmap = {
+    'success': CreateFolderBatchResultEntry._success_validator,
+    'failure': CreateFolderBatchResultEntry._failure_validator,
+}
+
+CreateFolderEntryError._path_validator = WriteError_validator
+CreateFolderEntryError._other_validator = bv.Void()
+CreateFolderEntryError._tagmap = {
+    'path': CreateFolderEntryError._path_validator,
+    'other': CreateFolderEntryError._other_validator,
+}
+
+CreateFolderEntryError.other = CreateFolderEntryError('other')
+
+CreateFolderEntryResult._metadata_validator = FolderMetadata_validator
+CreateFolderEntryResult._all_field_names_ = set(['metadata'])
+CreateFolderEntryResult._all_fields_ = [('metadata', CreateFolderEntryResult._metadata_validator)]
+
 CreateFolderError._path_validator = WriteError_validator
 CreateFolderError._tagmap = {
     'path': CreateFolderError._path_validator,
 }
-
-FileOpsResult._all_field_names_ = set([])
-FileOpsResult._all_fields_ = []
 
 CreateFolderResult._metadata_validator = FolderMetadata_validator
 CreateFolderResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['metadata']))
 CreateFolderResult._all_fields_ = FileOpsResult._all_fields_ + [('metadata', CreateFolderResult._metadata_validator)]
 
 DeleteArg._path_validator = WritePathOrId_validator
-DeleteArg._all_field_names_ = set(['path'])
-DeleteArg._all_fields_ = [('path', DeleteArg._path_validator)]
+DeleteArg._parent_rev_validator = bv.Nullable(Rev_validator)
+DeleteArg._all_field_names_ = set([
+    'path',
+    'parent_rev',
+])
+DeleteArg._all_fields_ = [
+    ('path', DeleteArg._path_validator),
+    ('parent_rev', DeleteArg._parent_rev_validator),
+]
 
 DeleteBatchArg._entries_validator = bv.List(DeleteArg_validator)
 DeleteBatchArg._all_field_names_ = set(['entries'])
@@ -9622,6 +10852,7 @@ FileMetadata._server_modified_validator = common.DropboxTimestamp_validator
 FileMetadata._rev_validator = Rev_validator
 FileMetadata._size_validator = bv.UInt64()
 FileMetadata._media_info_validator = bv.Nullable(MediaInfo_validator)
+FileMetadata._symlink_info_validator = bv.Nullable(SymlinkInfo_validator)
 FileMetadata._sharing_info_validator = bv.Nullable(FileSharingInfo_validator)
 FileMetadata._property_groups_validator = bv.Nullable(bv.List(file_properties.PropertyGroup_validator))
 FileMetadata._has_explicit_shared_members_validator = bv.Nullable(bv.Boolean())
@@ -9633,6 +10864,7 @@ FileMetadata._field_names_ = set([
     'rev',
     'size',
     'media_info',
+    'symlink_info',
     'sharing_info',
     'property_groups',
     'has_explicit_shared_members',
@@ -9646,6 +10878,7 @@ FileMetadata._fields_ = [
     ('rev', FileMetadata._rev_validator),
     ('size', FileMetadata._size_validator),
     ('media_info', FileMetadata._media_info_validator),
+    ('symlink_info', FileMetadata._symlink_info_validator),
     ('sharing_info', FileMetadata._sharing_info_validator),
     ('property_groups', FileMetadata._property_groups_validator),
     ('has_explicit_shared_members', FileMetadata._has_explicit_shared_members_validator),
@@ -10359,18 +11592,69 @@ SharedLink._all_fields_ = [
     ('password', SharedLink._password_validator),
 ]
 
+SymlinkInfo._target_validator = bv.String()
+SymlinkInfo._all_field_names_ = set(['target'])
+SymlinkInfo._all_fields_ = [('target', SymlinkInfo._target_validator)]
+
+SyncSetting._default_validator = bv.Void()
+SyncSetting._not_synced_validator = bv.Void()
+SyncSetting._not_synced_inactive_validator = bv.Void()
+SyncSetting._other_validator = bv.Void()
+SyncSetting._tagmap = {
+    'default': SyncSetting._default_validator,
+    'not_synced': SyncSetting._not_synced_validator,
+    'not_synced_inactive': SyncSetting._not_synced_inactive_validator,
+    'other': SyncSetting._other_validator,
+}
+
+SyncSetting.default = SyncSetting('default')
+SyncSetting.not_synced = SyncSetting('not_synced')
+SyncSetting.not_synced_inactive = SyncSetting('not_synced_inactive')
+SyncSetting.other = SyncSetting('other')
+
+SyncSettingArg._default_validator = bv.Void()
+SyncSettingArg._not_synced_validator = bv.Void()
+SyncSettingArg._other_validator = bv.Void()
+SyncSettingArg._tagmap = {
+    'default': SyncSettingArg._default_validator,
+    'not_synced': SyncSettingArg._not_synced_validator,
+    'other': SyncSettingArg._other_validator,
+}
+
+SyncSettingArg.default = SyncSettingArg('default')
+SyncSettingArg.not_synced = SyncSettingArg('not_synced')
+SyncSettingArg.other = SyncSettingArg('other')
+
+SyncSettingsError._path_validator = LookupError_validator
+SyncSettingsError._unsupported_combination_validator = bv.Void()
+SyncSettingsError._unsupported_configuration_validator = bv.Void()
+SyncSettingsError._other_validator = bv.Void()
+SyncSettingsError._tagmap = {
+    'path': SyncSettingsError._path_validator,
+    'unsupported_combination': SyncSettingsError._unsupported_combination_validator,
+    'unsupported_configuration': SyncSettingsError._unsupported_configuration_validator,
+    'other': SyncSettingsError._other_validator,
+}
+
+SyncSettingsError.unsupported_combination = SyncSettingsError('unsupported_combination')
+SyncSettingsError.unsupported_configuration = SyncSettingsError('unsupported_configuration')
+SyncSettingsError.other = SyncSettingsError('other')
+
 ThumbnailArg._path_validator = ReadPath_validator
 ThumbnailArg._format_validator = ThumbnailFormat_validator
 ThumbnailArg._size_validator = ThumbnailSize_validator
+ThumbnailArg._mode_validator = ThumbnailMode_validator
 ThumbnailArg._all_field_names_ = set([
     'path',
     'format',
     'size',
+    'mode',
 ])
 ThumbnailArg._all_fields_ = [
     ('path', ThumbnailArg._path_validator),
     ('format', ThumbnailArg._format_validator),
     ('size', ThumbnailArg._size_validator),
+    ('mode', ThumbnailArg._mode_validator),
 ]
 
 ThumbnailError._path_validator = LookupError_validator
@@ -10398,24 +11682,49 @@ ThumbnailFormat._tagmap = {
 ThumbnailFormat.jpeg = ThumbnailFormat('jpeg')
 ThumbnailFormat.png = ThumbnailFormat('png')
 
+ThumbnailMode._strict_validator = bv.Void()
+ThumbnailMode._bestfit_validator = bv.Void()
+ThumbnailMode._fitone_bestfit_validator = bv.Void()
+ThumbnailMode._tagmap = {
+    'strict': ThumbnailMode._strict_validator,
+    'bestfit': ThumbnailMode._bestfit_validator,
+    'fitone_bestfit': ThumbnailMode._fitone_bestfit_validator,
+}
+
+ThumbnailMode.strict = ThumbnailMode('strict')
+ThumbnailMode.bestfit = ThumbnailMode('bestfit')
+ThumbnailMode.fitone_bestfit = ThumbnailMode('fitone_bestfit')
+
 ThumbnailSize._w32h32_validator = bv.Void()
 ThumbnailSize._w64h64_validator = bv.Void()
 ThumbnailSize._w128h128_validator = bv.Void()
+ThumbnailSize._w256h256_validator = bv.Void()
+ThumbnailSize._w480h320_validator = bv.Void()
 ThumbnailSize._w640h480_validator = bv.Void()
+ThumbnailSize._w960h640_validator = bv.Void()
 ThumbnailSize._w1024h768_validator = bv.Void()
+ThumbnailSize._w2048h1536_validator = bv.Void()
 ThumbnailSize._tagmap = {
     'w32h32': ThumbnailSize._w32h32_validator,
     'w64h64': ThumbnailSize._w64h64_validator,
     'w128h128': ThumbnailSize._w128h128_validator,
+    'w256h256': ThumbnailSize._w256h256_validator,
+    'w480h320': ThumbnailSize._w480h320_validator,
     'w640h480': ThumbnailSize._w640h480_validator,
+    'w960h640': ThumbnailSize._w960h640_validator,
     'w1024h768': ThumbnailSize._w1024h768_validator,
+    'w2048h1536': ThumbnailSize._w2048h1536_validator,
 }
 
 ThumbnailSize.w32h32 = ThumbnailSize('w32h32')
 ThumbnailSize.w64h64 = ThumbnailSize('w64h64')
 ThumbnailSize.w128h128 = ThumbnailSize('w128h128')
+ThumbnailSize.w256h256 = ThumbnailSize('w256h256')
+ThumbnailSize.w480h320 = ThumbnailSize('w480h320')
 ThumbnailSize.w640h480 = ThumbnailSize('w640h480')
+ThumbnailSize.w960h640 = ThumbnailSize('w960h640')
 ThumbnailSize.w1024h768 = ThumbnailSize('w1024h768')
+ThumbnailSize.w2048h1536 = ThumbnailSize('w2048h1536')
 
 UploadError._path_validator = UploadWriteFailed_validator
 UploadError._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
@@ -10582,6 +11891,7 @@ WriteError._no_write_permission_validator = bv.Void()
 WriteError._insufficient_space_validator = bv.Void()
 WriteError._disallowed_name_validator = bv.Void()
 WriteError._team_folder_validator = bv.Void()
+WriteError._too_many_write_operations_validator = bv.Void()
 WriteError._other_validator = bv.Void()
 WriteError._tagmap = {
     'malformed_path': WriteError._malformed_path_validator,
@@ -10590,6 +11900,7 @@ WriteError._tagmap = {
     'insufficient_space': WriteError._insufficient_space_validator,
     'disallowed_name': WriteError._disallowed_name_validator,
     'team_folder': WriteError._team_folder_validator,
+    'too_many_write_operations': WriteError._too_many_write_operations_validator,
     'other': WriteError._other_validator,
 }
 
@@ -10597,6 +11908,7 @@ WriteError.no_write_permission = WriteError('no_write_permission')
 WriteError.insufficient_space = WriteError('insufficient_space')
 WriteError.disallowed_name = WriteError('disallowed_name')
 WriteError.team_folder = WriteError('team_folder')
+WriteError.too_many_write_operations = WriteError('too_many_write_operations')
 WriteError.other = WriteError('other')
 
 WriteMode._add_validator = bv.Void()
@@ -10689,6 +12001,24 @@ create_folder = bb.Route(
     CreateFolderArg_validator,
     FolderMetadata_validator,
     CreateFolderError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+create_folder_batch = bb.Route(
+    'create_folder_batch',
+    False,
+    CreateFolderBatchArg_validator,
+    CreateFolderBatchLaunch_validator,
+    bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
+create_folder_batch_check = bb.Route(
+    'create_folder_batch/check',
+    False,
+    async.PollArg_validator,
+    CreateFolderBatchJobStatus_validator,
+    async.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -11054,6 +12384,8 @@ ROUTES = {
     'copy_reference/save': copy_reference_save,
     'copy_v2': copy_v2,
     'create_folder': create_folder,
+    'create_folder_batch': create_folder_batch,
+    'create_folder_batch/check': create_folder_batch_check,
     'create_folder_v2': create_folder_v2,
     'delete': delete,
     'delete_batch': delete_batch,

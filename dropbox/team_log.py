@@ -16,6 +16,7 @@ try:
     from . import (
         common,
         file_requests,
+        files,
         sharing,
         team,
         team_common,
@@ -25,6 +26,7 @@ try:
 except (ImportError, SystemError, ValueError):
     import common
     import file_requests
+    import files
     import sharing
     import team
     import team_common
@@ -264,8 +266,7 @@ AccountCaptureAvailability_validator = bv.Union(AccountCaptureAvailability)
 
 class AccountCaptureChangeAvailabilityDetails(object):
     """
-    Granted or revoked the option to enable account capture on domains belonging
-    to the team.
+    Granted/revoked option to enable account capture on team domains.
 
     :ivar new_value: New account capture availabilty value.
     :ivar previous_value: Previous account capture availabilty value. Might be
@@ -397,7 +398,7 @@ AccountCaptureChangeAvailabilityType_validator = bv.Struct(AccountCaptureChangeA
 
 class AccountCaptureChangePolicyDetails(object):
     """
-    Changed the account capture policy on a domain belonging to the team.
+    Changed account capture setting on team domain.
 
     :ivar new_value: New account capture policy.
     :ivar previous_value: Previous account capture policy. Might be missing due
@@ -529,7 +530,7 @@ AccountCaptureChangePolicyType_validator = bv.Struct(AccountCaptureChangePolicyT
 
 class AccountCaptureMigrateAccountDetails(object):
     """
-    Account captured user migrated their account to the team.
+    Account-captured user migrated account to team.
 
     :ivar domain_name: Domain name.
     """
@@ -624,7 +625,7 @@ AccountCaptureMigrateAccountType_validator = bv.Struct(AccountCaptureMigrateAcco
 
 class AccountCaptureNotificationEmailsSentDetails(object):
     """
-    Proactive account capture email sent to all unmanaged members.
+    Sent proactive account capture email to all unmanaged members.
 
     :ivar domain_name: Domain name.
     """
@@ -773,8 +774,7 @@ AccountCapturePolicy_validator = bv.Union(AccountCapturePolicy)
 
 class AccountCaptureRelinquishAccountDetails(object):
     """
-    Account captured user relinquished their account by changing the email
-    address associated with it.
+    Account-captured user changed account email to personal email.
 
     :ivar domain_name: Domain name.
     """
@@ -1214,7 +1214,7 @@ AdminRole_validator = bv.Union(AdminRole)
 
 class AllowDownloadDisabledDetails(object):
     """
-    Disabled allow downloads.
+    Disabled downloads.
     """
 
     __slots__ = [
@@ -1276,7 +1276,7 @@ AllowDownloadDisabledType_validator = bv.Struct(AllowDownloadDisabledType)
 
 class AllowDownloadEnabledDetails(object):
     """
-    Enabled allow downloads.
+    Enabled downloads.
     """
 
     __slots__ = [
@@ -1389,7 +1389,7 @@ ApiSessionLogInfo_validator = bv.Struct(ApiSessionLogInfo)
 
 class AppLinkTeamDetails(object):
     """
-    Linked an app for team.
+    Linked app for team.
 
     :ivar app_info: Relevant application details.
     """
@@ -1484,7 +1484,7 @@ AppLinkTeamType_validator = bv.Struct(AppLinkTeamType)
 
 class AppLinkUserDetails(object):
     """
-    Linked an app for team member.
+    Linked app for member.
 
     :ivar app_info: Relevant application details.
     """
@@ -1669,7 +1669,7 @@ AppLogInfo_validator = bv.StructTree(AppLogInfo)
 
 class AppUnlinkTeamDetails(object):
     """
-    Unlinked an app for team.
+    Unlinked app for team.
 
     :ivar app_info: Relevant application details.
     """
@@ -1764,7 +1764,7 @@ AppUnlinkTeamType_validator = bv.Struct(AppUnlinkTeamType)
 
 class AppUnlinkUserDetails(object):
     """
-    Unlinked an app for team member.
+    Unlinked app for member.
 
     :ivar app_info: Relevant application details.
     """
@@ -1869,6 +1869,8 @@ class AssetLogInfo(bb.Union):
     :ivar FolderLogInfo folder: Folder's details.
     :ivar PaperDocumentLogInfo paper_document: Paper docuement's details.
     :ivar PaperFolderLogInfo paper_folder: Paper folder's details.
+    :ivar ShowcaseDocumentLogInfo showcase_document: Showcase document's
+        details.
     """
 
     _catch_all = 'other'
@@ -1919,6 +1921,17 @@ class AssetLogInfo(bb.Union):
         """
         return cls('paper_folder', val)
 
+    @classmethod
+    def showcase_document(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_document`` tag
+        with value ``val``.
+
+        :param ShowcaseDocumentLogInfo val:
+        :rtype: AssetLogInfo
+        """
+        return cls('showcase_document', val)
+
     def is_file(self):
         """
         Check if the union tag is ``file``.
@@ -1950,6 +1963,14 @@ class AssetLogInfo(bb.Union):
         :rtype: bool
         """
         return self._tag == 'paper_folder'
+
+    def is_showcase_document(self):
+        """
+        Check if the union tag is ``showcase_document``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_document'
 
     def is_other(self):
         """
@@ -2005,6 +2026,18 @@ class AssetLogInfo(bb.Union):
         """
         if not self.is_paper_folder():
             raise AttributeError("tag 'paper_folder' not set")
+        return self._value
+
+    def get_showcase_document(self):
+        """
+        Showcase document's details.
+
+        Only call this if :meth:`is_showcase_document` is true.
+
+        :rtype: ShowcaseDocumentLogInfo
+        """
+        if not self.is_showcase_document():
+            raise AttributeError("tag 'showcase_document' not set")
         return self._value
 
     def __repr__(self):
@@ -2260,7 +2293,7 @@ Certificate_validator = bv.Struct(Certificate)
 
 class CollectionShareDetails(object):
     """
-    Shared an album.
+    Shared album.
 
     :ivar album_name: Album name.
     """
@@ -2578,8 +2611,7 @@ CreateFolderType_validator = bv.Struct(CreateFolderType)
 
 class DataPlacementRestrictionChangePolicyDetails(object):
     """
-    Set a restriction policy regarding the location of data centers where team
-    data resides.
+    Set restrictions on data center locations where team data resides.
 
     :ivar previous_value: Previous placement restriction.
     :ivar new_value: New placement restriction.
@@ -2706,9 +2738,7 @@ DataPlacementRestrictionChangePolicyType_validator = bv.Struct(DataPlacementRest
 
 class DataPlacementRestrictionSatisfyPolicyDetails(object):
     """
-    Satisfied a previously set restriction policy regarding the location of data
-    centers where team data resides (i.e. all data have been migrated according
-    to the restriction placed).
+    Completed restrictions on data center locations where team data resides.
 
     :ivar placement_restriction: Placement restriction.
     """
@@ -2805,8 +2835,6 @@ class DeviceSessionLogInfo(object):
     """
     Device's session logged information.
 
-    :ivar session_id: Session unique id. Might be missing due to historical data
-        gap.
     :ivar ip_address: The IP address of the last activity from this session.
         Might be missing due to historical data gap.
     :ivar created: The time this session was created. Might be missing due to
@@ -2816,8 +2844,6 @@ class DeviceSessionLogInfo(object):
     """
 
     __slots__ = [
-        '_session_id_value',
-        '_session_id_present',
         '_ip_address_value',
         '_ip_address_present',
         '_created_value',
@@ -2829,52 +2855,21 @@ class DeviceSessionLogInfo(object):
     _has_required_fields = False
 
     def __init__(self,
-                 session_id=None,
                  ip_address=None,
                  created=None,
                  updated=None):
-        self._session_id_value = None
-        self._session_id_present = False
         self._ip_address_value = None
         self._ip_address_present = False
         self._created_value = None
         self._created_present = False
         self._updated_value = None
         self._updated_present = False
-        if session_id is not None:
-            self.session_id = session_id
         if ip_address is not None:
             self.ip_address = ip_address
         if created is not None:
             self.created = created
         if updated is not None:
             self.updated = updated
-
-    @property
-    def session_id(self):
-        """
-        Session unique id. Might be missing due to historical data gap.
-
-        :rtype: str
-        """
-        if self._session_id_present:
-            return self._session_id_value
-        else:
-            return None
-
-    @session_id.setter
-    def session_id(self, val):
-        if val is None:
-            del self.session_id
-            return
-        val = self._session_id_validator.validate(val)
-        self._session_id_value = val
-        self._session_id_present = True
-
-    @session_id.deleter
-    def session_id(self):
-        self._session_id_value = None
-        self._session_id_present = False
 
     @property
     def ip_address(self):
@@ -2958,8 +2953,7 @@ class DeviceSessionLogInfo(object):
         self._updated_present = False
 
     def __repr__(self):
-        return 'DeviceSessionLogInfo(session_id={!r}, ip_address={!r}, created={!r}, updated={!r})'.format(
-            self._session_id_value,
+        return 'DeviceSessionLogInfo(ip_address={!r}, created={!r}, updated={!r})'.format(
             self._ip_address_value,
             self._created_value,
             self._updated_value,
@@ -2971,6 +2965,8 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information about linked Dropbox desktop client sessions
 
+    :ivar session_info: Desktop session unique id. Might be missing due to
+        historical data gap.
     :ivar host_name: Name of the hosting desktop.
     :ivar client_type: The Dropbox desktop client type.
     :ivar client_version: The Dropbox client version.
@@ -2980,6 +2976,8 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
 
     __slots__ = [
+        '_session_info_value',
+        '_session_info_present',
         '_host_name_value',
         '_host_name_present',
         '_client_type_value',
@@ -2999,15 +2997,16 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
                  client_type=None,
                  platform=None,
                  is_delete_on_unlink_supported=None,
-                 session_id=None,
                  ip_address=None,
                  created=None,
                  updated=None,
+                 session_info=None,
                  client_version=None):
-        super(DesktopDeviceSessionLogInfo, self).__init__(session_id,
-                                                          ip_address,
+        super(DesktopDeviceSessionLogInfo, self).__init__(ip_address,
                                                           created,
                                                           updated)
+        self._session_info_value = None
+        self._session_info_present = False
         self._host_name_value = None
         self._host_name_present = False
         self._client_type_value = None
@@ -3018,6 +3017,8 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._platform_present = False
         self._is_delete_on_unlink_supported_value = None
         self._is_delete_on_unlink_supported_present = False
+        if session_info is not None:
+            self.session_info = session_info
         if host_name is not None:
             self.host_name = host_name
         if client_type is not None:
@@ -3028,6 +3029,32 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
             self.platform = platform
         if is_delete_on_unlink_supported is not None:
             self.is_delete_on_unlink_supported = is_delete_on_unlink_supported
+
+    @property
+    def session_info(self):
+        """
+        Desktop session unique id. Might be missing due to historical data gap.
+
+        :rtype: DesktopSessionLogInfo
+        """
+        if self._session_info_present:
+            return self._session_info_value
+        else:
+            return None
+
+    @session_info.setter
+    def session_info(self, val):
+        if val is None:
+            del self.session_info
+            return
+        self._session_info_validator.validate_type_only(val)
+        self._session_info_value = val
+        self._session_info_present = True
+
+    @session_info.deleter
+    def session_info(self):
+        self._session_info_value = None
+        self._session_info_present = False
 
     @property
     def host_name(self):
@@ -3149,15 +3176,15 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._is_delete_on_unlink_supported_present = False
 
     def __repr__(self):
-        return 'DesktopDeviceSessionLogInfo(host_name={!r}, client_type={!r}, platform={!r}, is_delete_on_unlink_supported={!r}, session_id={!r}, ip_address={!r}, created={!r}, updated={!r}, client_version={!r})'.format(
+        return 'DesktopDeviceSessionLogInfo(host_name={!r}, client_type={!r}, platform={!r}, is_delete_on_unlink_supported={!r}, ip_address={!r}, created={!r}, updated={!r}, session_info={!r}, client_version={!r})'.format(
             self._host_name_value,
             self._client_type_value,
             self._platform_value,
             self._is_delete_on_unlink_supported_value,
-            self._session_id_value,
             self._ip_address_value,
             self._created_value,
             self._updated_value,
+            self._session_info_value,
             self._client_version_value,
         )
 
@@ -3240,8 +3267,8 @@ DesktopSessionLogInfo_validator = bv.Struct(DesktopSessionLogInfo)
 
 class DeviceApprovalsChangeDesktopPolicyDetails(object):
     """
-    Set or removed a limit on the number of computers each team member can link
-    to their work Dropbox account.
+    Set/removed limit on number of computers member can link to team Dropbox
+    account.
 
     :ivar new_value: New desktop device approvals policy. Might be missing due
         to historical data gap.
@@ -3378,8 +3405,8 @@ DeviceApprovalsChangeDesktopPolicyType_validator = bv.Struct(DeviceApprovalsChan
 
 class DeviceApprovalsChangeMobilePolicyDetails(object):
     """
-    Set or removed a limit on the number of mobiles devices each team member can
-    link to their work Dropbox account.
+    Set/removed limit on number of mobile devices member can link to team
+    Dropbox account.
 
     :ivar new_value: New mobile device approvals policy. Might be missing due to
         historical data gap.
@@ -3516,8 +3543,7 @@ DeviceApprovalsChangeMobilePolicyType_validator = bv.Struct(DeviceApprovalsChang
 
 class DeviceApprovalsChangeOverageActionDetails(object):
     """
-    Changed the action taken when a team member is already over the limits (e.g
-    when they join the team, an admin lowers limits, etc.).
+    Changed device approvals setting when member is over limit.
 
     :ivar new_value: New over the limits policy. Might be missing due to
         historical data gap.
@@ -3653,8 +3679,7 @@ DeviceApprovalsChangeOverageActionType_validator = bv.Struct(DeviceApprovalsChan
 
 class DeviceApprovalsChangeUnlinkActionDetails(object):
     """
-    Changed the action taken with respect to approval limits when a team member
-    unlinks an approved device.
+    Changed device approvals setting when member unlinks approved device.
 
     :ivar new_value: New device unlink policy. Might be missing due to
         historical data gap.
@@ -3834,7 +3859,7 @@ DeviceApprovalsPolicy_validator = bv.Union(DeviceApprovalsPolicy)
 
 class DeviceChangeIpDesktopDetails(object):
     """
-    IP address associated with active desktop session changed.
+    Changed IP address associated with active desktop session.
 
     :ivar device_session_info: Device's session logged information.
     """
@@ -3929,7 +3954,7 @@ DeviceChangeIpDesktopType_validator = bv.Struct(DeviceChangeIpDesktopType)
 
 class DeviceChangeIpMobileDetails(object):
     """
-    IP address associated with active mobile session changed.
+    Changed IP address associated with active mobile session.
 
     :ivar device_session_info: Device's session logged information.
     """
@@ -3939,7 +3964,7 @@ class DeviceChangeIpMobileDetails(object):
         '_device_session_info_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
                  device_session_info=None):
@@ -3958,10 +3983,13 @@ class DeviceChangeIpMobileDetails(object):
         if self._device_session_info_present:
             return self._device_session_info_value
         else:
-            raise AttributeError("missing required field 'device_session_info'")
+            return None
 
     @device_session_info.setter
     def device_session_info(self, val):
+        if val is None:
+            del self.device_session_info
+            return
         self._device_session_info_validator.validate_type_only(val)
         self._device_session_info_value = val
         self._device_session_info_present = True
@@ -4024,16 +4052,12 @@ DeviceChangeIpMobileType_validator = bv.Struct(DeviceChangeIpMobileType)
 
 class DeviceChangeIpWebDetails(object):
     """
-    IP address associated with active Web session changed.
+    Changed IP address associated with active web session.
 
-    :ivar device_session_info: Device's session logged information. Might be
-        missing due to historical data gap.
     :ivar user_agent: Web browser name.
     """
 
     __slots__ = [
-        '_device_session_info_value',
-        '_device_session_info_present',
         '_user_agent_value',
         '_user_agent_present',
     ]
@@ -4041,43 +4065,11 @@ class DeviceChangeIpWebDetails(object):
     _has_required_fields = True
 
     def __init__(self,
-                 user_agent=None,
-                 device_session_info=None):
-        self._device_session_info_value = None
-        self._device_session_info_present = False
+                 user_agent=None):
         self._user_agent_value = None
         self._user_agent_present = False
-        if device_session_info is not None:
-            self.device_session_info = device_session_info
         if user_agent is not None:
             self.user_agent = user_agent
-
-    @property
-    def device_session_info(self):
-        """
-        Device's session logged information. Might be missing due to historical
-        data gap.
-
-        :rtype: DeviceSessionLogInfo
-        """
-        if self._device_session_info_present:
-            return self._device_session_info_value
-        else:
-            return None
-
-    @device_session_info.setter
-    def device_session_info(self, val):
-        if val is None:
-            del self.device_session_info
-            return
-        self._device_session_info_validator.validate_type_only(val)
-        self._device_session_info_value = val
-        self._device_session_info_present = True
-
-    @device_session_info.deleter
-    def device_session_info(self):
-        self._device_session_info_value = None
-        self._device_session_info_present = False
 
     @property
     def user_agent(self):
@@ -4103,9 +4095,8 @@ class DeviceChangeIpWebDetails(object):
         self._user_agent_present = False
 
     def __repr__(self):
-        return 'DeviceChangeIpWebDetails(user_agent={!r}, device_session_info={!r})'.format(
+        return 'DeviceChangeIpWebDetails(user_agent={!r})'.format(
             self._user_agent_value,
-            self._device_session_info_value,
         )
 
 DeviceChangeIpWebDetails_validator = bv.Struct(DeviceChangeIpWebDetails)
@@ -4156,18 +4147,18 @@ DeviceChangeIpWebType_validator = bv.Struct(DeviceChangeIpWebType)
 
 class DeviceDeleteOnUnlinkFailDetails(object):
     """
-    Failed to delete all files from an unlinked device.
+    Failed to delete all files from unlinked device.
 
-    :ivar session_id: Session unique id. Might be missing due to historical data
-        gap.
+    :ivar session_info: Session unique id. Might be missing due to historical
+        data gap.
     :ivar display_name: The device name. Might be missing due to historical data
         gap.
     :ivar num_failures: The number of times that remote file deletion failed.
     """
 
     __slots__ = [
-        '_session_id_value',
-        '_session_id_present',
+        '_session_info_value',
+        '_session_info_present',
         '_display_name_value',
         '_display_name_present',
         '_num_failures_value',
@@ -4178,46 +4169,46 @@ class DeviceDeleteOnUnlinkFailDetails(object):
 
     def __init__(self,
                  num_failures=None,
-                 session_id=None,
+                 session_info=None,
                  display_name=None):
-        self._session_id_value = None
-        self._session_id_present = False
+        self._session_info_value = None
+        self._session_info_present = False
         self._display_name_value = None
         self._display_name_present = False
         self._num_failures_value = None
         self._num_failures_present = False
-        if session_id is not None:
-            self.session_id = session_id
+        if session_info is not None:
+            self.session_info = session_info
         if display_name is not None:
             self.display_name = display_name
         if num_failures is not None:
             self.num_failures = num_failures
 
     @property
-    def session_id(self):
+    def session_info(self):
         """
         Session unique id. Might be missing due to historical data gap.
 
-        :rtype: str
+        :rtype: SessionLogInfo
         """
-        if self._session_id_present:
-            return self._session_id_value
+        if self._session_info_present:
+            return self._session_info_value
         else:
             return None
 
-    @session_id.setter
-    def session_id(self, val):
+    @session_info.setter
+    def session_info(self, val):
         if val is None:
-            del self.session_id
+            del self.session_info
             return
-        val = self._session_id_validator.validate(val)
-        self._session_id_value = val
-        self._session_id_present = True
+        self._session_info_validator.validate_type_only(val)
+        self._session_info_value = val
+        self._session_info_present = True
 
-    @session_id.deleter
-    def session_id(self):
-        self._session_id_value = None
-        self._session_id_present = False
+    @session_info.deleter
+    def session_info(self):
+        self._session_info_value = None
+        self._session_info_present = False
 
     @property
     def display_name(self):
@@ -4269,9 +4260,9 @@ class DeviceDeleteOnUnlinkFailDetails(object):
         self._num_failures_present = False
 
     def __repr__(self):
-        return 'DeviceDeleteOnUnlinkFailDetails(num_failures={!r}, session_id={!r}, display_name={!r})'.format(
+        return 'DeviceDeleteOnUnlinkFailDetails(num_failures={!r}, session_info={!r}, display_name={!r})'.format(
             self._num_failures_value,
-            self._session_id_value,
+            self._session_info_value,
             self._display_name_value,
         )
 
@@ -4323,17 +4314,17 @@ DeviceDeleteOnUnlinkFailType_validator = bv.Struct(DeviceDeleteOnUnlinkFailType)
 
 class DeviceDeleteOnUnlinkSuccessDetails(object):
     """
-    Deleted all files from an unlinked device.
+    Deleted all files from unlinked device.
 
-    :ivar session_id: Session unique id. Might be missing due to historical data
-        gap.
+    :ivar session_info: Session unique id. Might be missing due to historical
+        data gap.
     :ivar display_name: The device name. Might be missing due to historical data
         gap.
     """
 
     __slots__ = [
-        '_session_id_value',
-        '_session_id_present',
+        '_session_info_value',
+        '_session_info_present',
         '_display_name_value',
         '_display_name_present',
     ]
@@ -4341,42 +4332,42 @@ class DeviceDeleteOnUnlinkSuccessDetails(object):
     _has_required_fields = False
 
     def __init__(self,
-                 session_id=None,
+                 session_info=None,
                  display_name=None):
-        self._session_id_value = None
-        self._session_id_present = False
+        self._session_info_value = None
+        self._session_info_present = False
         self._display_name_value = None
         self._display_name_present = False
-        if session_id is not None:
-            self.session_id = session_id
+        if session_info is not None:
+            self.session_info = session_info
         if display_name is not None:
             self.display_name = display_name
 
     @property
-    def session_id(self):
+    def session_info(self):
         """
         Session unique id. Might be missing due to historical data gap.
 
-        :rtype: str
+        :rtype: SessionLogInfo
         """
-        if self._session_id_present:
-            return self._session_id_value
+        if self._session_info_present:
+            return self._session_info_value
         else:
             return None
 
-    @session_id.setter
-    def session_id(self, val):
+    @session_info.setter
+    def session_info(self, val):
         if val is None:
-            del self.session_id
+            del self.session_info
             return
-        val = self._session_id_validator.validate(val)
-        self._session_id_value = val
-        self._session_id_present = True
+        self._session_info_validator.validate_type_only(val)
+        self._session_info_value = val
+        self._session_info_present = True
 
-    @session_id.deleter
-    def session_id(self):
-        self._session_id_value = None
-        self._session_id_present = False
+    @session_info.deleter
+    def session_info(self):
+        self._session_info_value = None
+        self._session_info_present = False
 
     @property
     def display_name(self):
@@ -4405,8 +4396,8 @@ class DeviceDeleteOnUnlinkSuccessDetails(object):
         self._display_name_present = False
 
     def __repr__(self):
-        return 'DeviceDeleteOnUnlinkSuccessDetails(session_id={!r}, display_name={!r})'.format(
-            self._session_id_value,
+        return 'DeviceDeleteOnUnlinkSuccessDetails(session_info={!r}, display_name={!r})'.format(
+            self._session_info_value,
             self._display_name_value,
         )
 
@@ -4458,7 +4449,7 @@ DeviceDeleteOnUnlinkSuccessType_validator = bv.Struct(DeviceDeleteOnUnlinkSucces
 
 class DeviceLinkFailDetails(object):
     """
-    Failed to link a device.
+    Failed to link device.
 
     :ivar ip_address: IP address. Might be missing due to historical data gap.
     :ivar device_type: A description of the device used while user approval
@@ -4589,7 +4580,7 @@ DeviceLinkFailType_validator = bv.Struct(DeviceLinkFailType)
 
 class DeviceLinkSuccessDetails(object):
     """
-    Linked a device.
+    Linked device.
 
     :ivar device_session_info: Device's session logged information.
     """
@@ -4599,7 +4590,7 @@ class DeviceLinkSuccessDetails(object):
         '_device_session_info_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
                  device_session_info=None):
@@ -4618,10 +4609,13 @@ class DeviceLinkSuccessDetails(object):
         if self._device_session_info_present:
             return self._device_session_info_value
         else:
-            raise AttributeError("missing required field 'device_session_info'")
+            return None
 
     @device_session_info.setter
     def device_session_info(self, val):
+        if val is None:
+            del self.device_session_info
+            return
         self._device_session_info_validator.validate_type_only(val)
         self._device_session_info_value = val
         self._device_session_info_present = True
@@ -4684,7 +4678,7 @@ DeviceLinkSuccessType_validator = bv.Struct(DeviceLinkSuccessType)
 
 class DeviceManagementDisabledDetails(object):
     """
-    Disable Device Management.
+    Disabled device management.
     """
 
     __slots__ = [
@@ -4746,7 +4740,7 @@ DeviceManagementDisabledType_validator = bv.Struct(DeviceManagementDisabledType)
 
 class DeviceManagementEnabledDetails(object):
     """
-    Enable Device Management.
+    Enabled device management.
     """
 
     __slots__ = [
@@ -4852,10 +4846,9 @@ DeviceType_validator = bv.Union(DeviceType)
 
 class DeviceUnlinkDetails(object):
     """
-    Disconnected a device.
+    Disconnected device.
 
-    :ivar session_id: Session unique id. Might be missing due to historical data
-        gap.
+    :ivar session_info: Session unique id.
     :ivar display_name: The device name. Might be missing due to historical data
         gap.
     :ivar delete_data: True if the user requested to delete data after device
@@ -4863,8 +4856,8 @@ class DeviceUnlinkDetails(object):
     """
 
     __slots__ = [
-        '_session_id_value',
-        '_session_id_present',
+        '_session_info_value',
+        '_session_info_present',
         '_display_name_value',
         '_display_name_present',
         '_delete_data_value',
@@ -4875,46 +4868,46 @@ class DeviceUnlinkDetails(object):
 
     def __init__(self,
                  delete_data=None,
-                 session_id=None,
+                 session_info=None,
                  display_name=None):
-        self._session_id_value = None
-        self._session_id_present = False
+        self._session_info_value = None
+        self._session_info_present = False
         self._display_name_value = None
         self._display_name_present = False
         self._delete_data_value = None
         self._delete_data_present = False
-        if session_id is not None:
-            self.session_id = session_id
+        if session_info is not None:
+            self.session_info = session_info
         if display_name is not None:
             self.display_name = display_name
         if delete_data is not None:
             self.delete_data = delete_data
 
     @property
-    def session_id(self):
+    def session_info(self):
         """
-        Session unique id. Might be missing due to historical data gap.
+        Session unique id.
 
-        :rtype: str
+        :rtype: SessionLogInfo
         """
-        if self._session_id_present:
-            return self._session_id_value
+        if self._session_info_present:
+            return self._session_info_value
         else:
             return None
 
-    @session_id.setter
-    def session_id(self, val):
+    @session_info.setter
+    def session_info(self, val):
         if val is None:
-            del self.session_id
+            del self.session_info
             return
-        val = self._session_id_validator.validate(val)
-        self._session_id_value = val
-        self._session_id_present = True
+        self._session_info_validator.validate_type_only(val)
+        self._session_info_value = val
+        self._session_info_present = True
 
-    @session_id.deleter
-    def session_id(self):
-        self._session_id_value = None
-        self._session_id_present = False
+    @session_info.deleter
+    def session_info(self):
+        self._session_info_value = None
+        self._session_info_present = False
 
     @property
     def display_name(self):
@@ -4967,9 +4960,9 @@ class DeviceUnlinkDetails(object):
         self._delete_data_present = False
 
     def __repr__(self):
-        return 'DeviceUnlinkDetails(delete_data={!r}, session_id={!r}, display_name={!r})'.format(
+        return 'DeviceUnlinkDetails(delete_data={!r}, session_info={!r}, display_name={!r})'.format(
             self._delete_data_value,
-            self._session_id_value,
+            self._session_info_value,
             self._display_name_value,
         )
 
@@ -5127,7 +5120,7 @@ DisabledDomainInvitesType_validator = bv.Struct(DisabledDomainInvitesType)
 
 class DomainInvitesApproveRequestToJoinTeamDetails(object):
     """
-    Approved a member's request to join the team.
+    Approved user's request to join team.
     """
 
     __slots__ = [
@@ -5189,7 +5182,7 @@ DomainInvitesApproveRequestToJoinTeamType_validator = bv.Struct(DomainInvitesApp
 
 class DomainInvitesDeclineRequestToJoinTeamDetails(object):
     """
-    Declined a user's request to join the team.
+    Declined user's request to join team.
     """
 
     __slots__ = [
@@ -5283,7 +5276,7 @@ class DomainInvitesEmailExistingUsersDetails(object):
         """
         Domain names.
 
-        :rtype: list of [str]
+        :rtype: str
         """
         if self._domain_name_present:
             return self._domain_name_value
@@ -5378,7 +5371,7 @@ DomainInvitesEmailExistingUsersType_validator = bv.Struct(DomainInvitesEmailExis
 
 class DomainInvitesRequestToJoinTeamDetails(object):
     """
-    Asked to join the team.
+    Requested to join team.
     """
 
     __slots__ = [
@@ -5440,7 +5433,7 @@ DomainInvitesRequestToJoinTeamType_validator = bv.Struct(DomainInvitesRequestToJ
 
 class DomainInvitesSetInviteNewUserPrefToNoDetails(object):
     """
-    Turned off u201cAutomatically invite new usersu201d.
+    Disabled "Automatically invite new users".
     """
 
     __slots__ = [
@@ -5502,7 +5495,7 @@ DomainInvitesSetInviteNewUserPrefToNoType_validator = bv.Struct(DomainInvitesSet
 
 class DomainInvitesSetInviteNewUserPrefToYesDetails(object):
     """
-    Turned on u201cAutomatically invite new usersu201d.
+    Enabled "Automatically invite new users".
     """
 
     __slots__ = [
@@ -5564,7 +5557,7 @@ DomainInvitesSetInviteNewUserPrefToYesType_validator = bv.Struct(DomainInvitesSe
 
 class DomainVerificationAddDomainFailDetails(object):
     """
-    Failed to verify a domain belonging to the team.
+    Failed to verify team domain.
 
     :ivar domain_name: Domain name.
     :ivar verification_method: Domain name verification method. Might be missing
@@ -5696,7 +5689,7 @@ DomainVerificationAddDomainFailType_validator = bv.Struct(DomainVerificationAddD
 
 class DomainVerificationAddDomainSuccessDetails(object):
     """
-    Verified a domain belonging to the team.
+    Verified team domain.
 
     :ivar domain_names: Domain names.
     :ivar verification_method: Domain name verification method. Might be missing
@@ -5828,7 +5821,7 @@ DomainVerificationAddDomainSuccessType_validator = bv.Struct(DomainVerificationA
 
 class DomainVerificationRemoveDomainDetails(object):
     """
-    Removed a domain from the list of verified domains belonging to the team.
+    Removed domain from list of verified team domains.
 
     :ivar domain_names: Domain names.
     """
@@ -6052,8 +6045,7 @@ DurationLogInfo_validator = bv.Struct(DurationLogInfo)
 
 class EmmAddExceptionDetails(object):
     """
-    Added an exception for one or more team members to optionally use the
-    regular Dropbox app when EMM is enabled.
+    Added members to EMM exception list.
     """
 
     __slots__ = [
@@ -6115,7 +6107,7 @@ EmmAddExceptionType_validator = bv.Struct(EmmAddExceptionType)
 
 class EmmChangePolicyDetails(object):
     """
-    Enabled or disabled enterprise mobility management for team members.
+    Enabled/disabled enterprise mobility management for members.
 
     :ivar new_value: New enterprise mobility management policy.
     :ivar previous_value: Previous enterprise mobility management policy. Might
@@ -6247,7 +6239,7 @@ EmmChangePolicyType_validator = bv.Struct(EmmChangePolicyType)
 
 class EmmCreateExceptionsReportDetails(object):
     """
-    EMM excluded users report created.
+    Created EMM-excluded users report.
     """
 
     __slots__ = [
@@ -6309,7 +6301,7 @@ EmmCreateExceptionsReportType_validator = bv.Struct(EmmCreateExceptionsReportTyp
 
 class EmmCreateUsageReportDetails(object):
     """
-    EMM mobile app usage report created.
+    Created EMM mobile app usage report.
     """
 
     __slots__ = [
@@ -6466,7 +6458,7 @@ EmmErrorType_validator = bv.Struct(EmmErrorType)
 
 class EmmRefreshAuthTokenDetails(object):
     """
-    Refreshed the auth token used for setting up enterprise mobility management.
+    Refreshed auth token used for setting up enterprise mobility management.
     """
 
     __slots__ = [
@@ -6528,8 +6520,7 @@ EmmRefreshAuthTokenType_validator = bv.Struct(EmmRefreshAuthTokenType)
 
 class EmmRemoveExceptionDetails(object):
     """
-    Removed an exception for one or more team members to optionally use the
-    regular Dropbox app when EMM is enabled.
+    Removed members from EMM exception list.
     """
 
     __slots__ = [
@@ -6677,6 +6668,7 @@ class EventCategory(bb.Union):
     :ivar reports: Events that concern generation of admin reports, including
         team activity and device usage.
     :ivar sharing: Events that apply to all types of sharing and collaboration.
+    :ivar showcase: Events that apply to Dropbox Showcase.
     :ivar sso: Events that involve using or configuring single sign-on as well
         as administrative policies concerning single sign-on.
     :ivar team_folders: Events that involve team folder management.
@@ -6714,6 +6706,8 @@ class EventCategory(bb.Union):
     reports = None
     # Attribute is overwritten below the class definition
     sharing = None
+    # Attribute is overwritten below the class definition
+    showcase = None
     # Attribute is overwritten below the class definition
     sso = None
     # Attribute is overwritten below the class definition
@@ -6830,6 +6824,14 @@ class EventCategory(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sharing'
+
+    def is_showcase(self):
+        """
+        Check if the union tag is ``showcase``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase'
 
     def is_sso(self):
         """
@@ -7598,6 +7600,28 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('group_delete_details', val)
+
+    @classmethod
+    def group_description_updated_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``group_description_updated_details`` tag with value ``val``.
+
+        :param GroupDescriptionUpdatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('group_description_updated_details', val)
+
+    @classmethod
+    def group_join_policy_updated_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``group_join_policy_updated_details`` tag with value ``val``.
+
+        :param GroupJoinPolicyUpdatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('group_join_policy_updated_details', val)
 
     @classmethod
     def group_moved_details(cls, val):
@@ -9094,6 +9118,248 @@ class EventDetails(bb.Union):
         return cls('shmodel_group_share_details', val)
 
     @classmethod
+    def showcase_access_granted_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_access_granted_details`` tag with value ``val``.
+
+        :param ShowcaseAccessGrantedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_access_granted_details', val)
+
+    @classmethod
+    def showcase_add_member_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_add_member_details`` tag with value ``val``.
+
+        :param ShowcaseAddMemberDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_add_member_details', val)
+
+    @classmethod
+    def showcase_archived_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_archived_details`` tag with value ``val``.
+
+        :param ShowcaseArchivedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_archived_details', val)
+
+    @classmethod
+    def showcase_created_details(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_created_details``
+        tag with value ``val``.
+
+        :param ShowcaseCreatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_created_details', val)
+
+    @classmethod
+    def showcase_delete_comment_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_delete_comment_details`` tag with value ``val``.
+
+        :param ShowcaseDeleteCommentDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_delete_comment_details', val)
+
+    @classmethod
+    def showcase_edited_details(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_edited_details``
+        tag with value ``val``.
+
+        :param ShowcaseEditedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_edited_details', val)
+
+    @classmethod
+    def showcase_edit_comment_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_edit_comment_details`` tag with value ``val``.
+
+        :param ShowcaseEditCommentDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_edit_comment_details', val)
+
+    @classmethod
+    def showcase_file_added_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_file_added_details`` tag with value ``val``.
+
+        :param ShowcaseFileAddedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_file_added_details', val)
+
+    @classmethod
+    def showcase_file_download_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_file_download_details`` tag with value ``val``.
+
+        :param ShowcaseFileDownloadDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_file_download_details', val)
+
+    @classmethod
+    def showcase_file_removed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_file_removed_details`` tag with value ``val``.
+
+        :param ShowcaseFileRemovedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_file_removed_details', val)
+
+    @classmethod
+    def showcase_file_view_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_file_view_details`` tag with value ``val``.
+
+        :param ShowcaseFileViewDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_file_view_details', val)
+
+    @classmethod
+    def showcase_permanently_deleted_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_permanently_deleted_details`` tag with value ``val``.
+
+        :param ShowcasePermanentlyDeletedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_permanently_deleted_details', val)
+
+    @classmethod
+    def showcase_post_comment_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_post_comment_details`` tag with value ``val``.
+
+        :param ShowcasePostCommentDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_post_comment_details', val)
+
+    @classmethod
+    def showcase_remove_member_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_remove_member_details`` tag with value ``val``.
+
+        :param ShowcaseRemoveMemberDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_remove_member_details', val)
+
+    @classmethod
+    def showcase_renamed_details(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_renamed_details``
+        tag with value ``val``.
+
+        :param ShowcaseRenamedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_renamed_details', val)
+
+    @classmethod
+    def showcase_request_access_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_request_access_details`` tag with value ``val``.
+
+        :param ShowcaseRequestAccessDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_request_access_details', val)
+
+    @classmethod
+    def showcase_resolve_comment_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_resolve_comment_details`` tag with value ``val``.
+
+        :param ShowcaseResolveCommentDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_resolve_comment_details', val)
+
+    @classmethod
+    def showcase_restored_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_restored_details`` tag with value ``val``.
+
+        :param ShowcaseRestoredDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_restored_details', val)
+
+    @classmethod
+    def showcase_trashed_details(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_trashed_details``
+        tag with value ``val``.
+
+        :param ShowcaseTrashedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_trashed_details', val)
+
+    @classmethod
+    def showcase_unresolve_comment_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_unresolve_comment_details`` tag with value ``val``.
+
+        :param ShowcaseUnresolveCommentDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_unresolve_comment_details', val)
+
+    @classmethod
+    def showcase_untrashed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_untrashed_details`` tag with value ``val``.
+
+        :param ShowcaseUntrashedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_untrashed_details', val)
+
+    @classmethod
+    def showcase_view_details(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_view_details``
+        tag with value ``val``.
+
+        :param ShowcaseViewDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_view_details', val)
+
+    @classmethod
     def sso_add_cert_details(cls, val):
         """
         Create an instance of this class set to the ``sso_add_cert_details`` tag
@@ -9257,6 +9523,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('team_folder_rename_details', val)
+
+    @classmethod
+    def team_selective_sync_settings_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_selective_sync_settings_changed_details`` tag with value ``val``.
+
+        :param TeamSelectiveSyncSettingsChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_selective_sync_settings_changed_details', val)
 
     @classmethod
     def account_capture_change_policy_details(cls, val):
@@ -10433,6 +10710,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'group_delete_details'
 
+    def is_group_description_updated_details(self):
+        """
+        Check if the union tag is ``group_description_updated_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_description_updated_details'
+
+    def is_group_join_policy_updated_details(self):
+        """
+        Check if the union tag is ``group_join_policy_updated_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_join_policy_updated_details'
+
     def is_group_moved_details(self):
         """
         Check if the union tag is ``group_moved_details``.
@@ -11513,6 +11806,182 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'shmodel_group_share_details'
 
+    def is_showcase_access_granted_details(self):
+        """
+        Check if the union tag is ``showcase_access_granted_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_access_granted_details'
+
+    def is_showcase_add_member_details(self):
+        """
+        Check if the union tag is ``showcase_add_member_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_add_member_details'
+
+    def is_showcase_archived_details(self):
+        """
+        Check if the union tag is ``showcase_archived_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_archived_details'
+
+    def is_showcase_created_details(self):
+        """
+        Check if the union tag is ``showcase_created_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_created_details'
+
+    def is_showcase_delete_comment_details(self):
+        """
+        Check if the union tag is ``showcase_delete_comment_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_delete_comment_details'
+
+    def is_showcase_edited_details(self):
+        """
+        Check if the union tag is ``showcase_edited_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_edited_details'
+
+    def is_showcase_edit_comment_details(self):
+        """
+        Check if the union tag is ``showcase_edit_comment_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_edit_comment_details'
+
+    def is_showcase_file_added_details(self):
+        """
+        Check if the union tag is ``showcase_file_added_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_added_details'
+
+    def is_showcase_file_download_details(self):
+        """
+        Check if the union tag is ``showcase_file_download_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_download_details'
+
+    def is_showcase_file_removed_details(self):
+        """
+        Check if the union tag is ``showcase_file_removed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_removed_details'
+
+    def is_showcase_file_view_details(self):
+        """
+        Check if the union tag is ``showcase_file_view_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_view_details'
+
+    def is_showcase_permanently_deleted_details(self):
+        """
+        Check if the union tag is ``showcase_permanently_deleted_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_permanently_deleted_details'
+
+    def is_showcase_post_comment_details(self):
+        """
+        Check if the union tag is ``showcase_post_comment_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_post_comment_details'
+
+    def is_showcase_remove_member_details(self):
+        """
+        Check if the union tag is ``showcase_remove_member_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_remove_member_details'
+
+    def is_showcase_renamed_details(self):
+        """
+        Check if the union tag is ``showcase_renamed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_renamed_details'
+
+    def is_showcase_request_access_details(self):
+        """
+        Check if the union tag is ``showcase_request_access_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_request_access_details'
+
+    def is_showcase_resolve_comment_details(self):
+        """
+        Check if the union tag is ``showcase_resolve_comment_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_resolve_comment_details'
+
+    def is_showcase_restored_details(self):
+        """
+        Check if the union tag is ``showcase_restored_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_restored_details'
+
+    def is_showcase_trashed_details(self):
+        """
+        Check if the union tag is ``showcase_trashed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_trashed_details'
+
+    def is_showcase_unresolve_comment_details(self):
+        """
+        Check if the union tag is ``showcase_unresolve_comment_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_unresolve_comment_details'
+
+    def is_showcase_untrashed_details(self):
+        """
+        Check if the union tag is ``showcase_untrashed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_untrashed_details'
+
+    def is_showcase_view_details(self):
+        """
+        Check if the union tag is ``showcase_view_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_view_details'
+
     def is_sso_add_cert_details(self):
         """
         Check if the union tag is ``sso_add_cert_details``.
@@ -11632,6 +12101,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_folder_rename_details'
+
+    def is_team_selective_sync_settings_changed_details(self):
+        """
+        Check if the union tag is ``team_selective_sync_settings_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_selective_sync_settings_changed_details'
 
     def is_account_capture_change_policy_details(self):
         """
@@ -12749,6 +13226,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_group_delete_details():
             raise AttributeError("tag 'group_delete_details' not set")
+        return self._value
+
+    def get_group_description_updated_details(self):
+        """
+        Only call this if :meth:`is_group_description_updated_details` is true.
+
+        :rtype: GroupDescriptionUpdatedDetails
+        """
+        if not self.is_group_description_updated_details():
+            raise AttributeError("tag 'group_description_updated_details' not set")
+        return self._value
+
+    def get_group_join_policy_updated_details(self):
+        """
+        Only call this if :meth:`is_group_join_policy_updated_details` is true.
+
+        :rtype: GroupJoinPolicyUpdatedDetails
+        """
+        if not self.is_group_join_policy_updated_details():
+            raise AttributeError("tag 'group_join_policy_updated_details' not set")
         return self._value
 
     def get_group_moved_details(self):
@@ -14101,6 +14598,226 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shmodel_group_share_details' not set")
         return self._value
 
+    def get_showcase_access_granted_details(self):
+        """
+        Only call this if :meth:`is_showcase_access_granted_details` is true.
+
+        :rtype: ShowcaseAccessGrantedDetails
+        """
+        if not self.is_showcase_access_granted_details():
+            raise AttributeError("tag 'showcase_access_granted_details' not set")
+        return self._value
+
+    def get_showcase_add_member_details(self):
+        """
+        Only call this if :meth:`is_showcase_add_member_details` is true.
+
+        :rtype: ShowcaseAddMemberDetails
+        """
+        if not self.is_showcase_add_member_details():
+            raise AttributeError("tag 'showcase_add_member_details' not set")
+        return self._value
+
+    def get_showcase_archived_details(self):
+        """
+        Only call this if :meth:`is_showcase_archived_details` is true.
+
+        :rtype: ShowcaseArchivedDetails
+        """
+        if not self.is_showcase_archived_details():
+            raise AttributeError("tag 'showcase_archived_details' not set")
+        return self._value
+
+    def get_showcase_created_details(self):
+        """
+        Only call this if :meth:`is_showcase_created_details` is true.
+
+        :rtype: ShowcaseCreatedDetails
+        """
+        if not self.is_showcase_created_details():
+            raise AttributeError("tag 'showcase_created_details' not set")
+        return self._value
+
+    def get_showcase_delete_comment_details(self):
+        """
+        Only call this if :meth:`is_showcase_delete_comment_details` is true.
+
+        :rtype: ShowcaseDeleteCommentDetails
+        """
+        if not self.is_showcase_delete_comment_details():
+            raise AttributeError("tag 'showcase_delete_comment_details' not set")
+        return self._value
+
+    def get_showcase_edited_details(self):
+        """
+        Only call this if :meth:`is_showcase_edited_details` is true.
+
+        :rtype: ShowcaseEditedDetails
+        """
+        if not self.is_showcase_edited_details():
+            raise AttributeError("tag 'showcase_edited_details' not set")
+        return self._value
+
+    def get_showcase_edit_comment_details(self):
+        """
+        Only call this if :meth:`is_showcase_edit_comment_details` is true.
+
+        :rtype: ShowcaseEditCommentDetails
+        """
+        if not self.is_showcase_edit_comment_details():
+            raise AttributeError("tag 'showcase_edit_comment_details' not set")
+        return self._value
+
+    def get_showcase_file_added_details(self):
+        """
+        Only call this if :meth:`is_showcase_file_added_details` is true.
+
+        :rtype: ShowcaseFileAddedDetails
+        """
+        if not self.is_showcase_file_added_details():
+            raise AttributeError("tag 'showcase_file_added_details' not set")
+        return self._value
+
+    def get_showcase_file_download_details(self):
+        """
+        Only call this if :meth:`is_showcase_file_download_details` is true.
+
+        :rtype: ShowcaseFileDownloadDetails
+        """
+        if not self.is_showcase_file_download_details():
+            raise AttributeError("tag 'showcase_file_download_details' not set")
+        return self._value
+
+    def get_showcase_file_removed_details(self):
+        """
+        Only call this if :meth:`is_showcase_file_removed_details` is true.
+
+        :rtype: ShowcaseFileRemovedDetails
+        """
+        if not self.is_showcase_file_removed_details():
+            raise AttributeError("tag 'showcase_file_removed_details' not set")
+        return self._value
+
+    def get_showcase_file_view_details(self):
+        """
+        Only call this if :meth:`is_showcase_file_view_details` is true.
+
+        :rtype: ShowcaseFileViewDetails
+        """
+        if not self.is_showcase_file_view_details():
+            raise AttributeError("tag 'showcase_file_view_details' not set")
+        return self._value
+
+    def get_showcase_permanently_deleted_details(self):
+        """
+        Only call this if :meth:`is_showcase_permanently_deleted_details` is true.
+
+        :rtype: ShowcasePermanentlyDeletedDetails
+        """
+        if not self.is_showcase_permanently_deleted_details():
+            raise AttributeError("tag 'showcase_permanently_deleted_details' not set")
+        return self._value
+
+    def get_showcase_post_comment_details(self):
+        """
+        Only call this if :meth:`is_showcase_post_comment_details` is true.
+
+        :rtype: ShowcasePostCommentDetails
+        """
+        if not self.is_showcase_post_comment_details():
+            raise AttributeError("tag 'showcase_post_comment_details' not set")
+        return self._value
+
+    def get_showcase_remove_member_details(self):
+        """
+        Only call this if :meth:`is_showcase_remove_member_details` is true.
+
+        :rtype: ShowcaseRemoveMemberDetails
+        """
+        if not self.is_showcase_remove_member_details():
+            raise AttributeError("tag 'showcase_remove_member_details' not set")
+        return self._value
+
+    def get_showcase_renamed_details(self):
+        """
+        Only call this if :meth:`is_showcase_renamed_details` is true.
+
+        :rtype: ShowcaseRenamedDetails
+        """
+        if not self.is_showcase_renamed_details():
+            raise AttributeError("tag 'showcase_renamed_details' not set")
+        return self._value
+
+    def get_showcase_request_access_details(self):
+        """
+        Only call this if :meth:`is_showcase_request_access_details` is true.
+
+        :rtype: ShowcaseRequestAccessDetails
+        """
+        if not self.is_showcase_request_access_details():
+            raise AttributeError("tag 'showcase_request_access_details' not set")
+        return self._value
+
+    def get_showcase_resolve_comment_details(self):
+        """
+        Only call this if :meth:`is_showcase_resolve_comment_details` is true.
+
+        :rtype: ShowcaseResolveCommentDetails
+        """
+        if not self.is_showcase_resolve_comment_details():
+            raise AttributeError("tag 'showcase_resolve_comment_details' not set")
+        return self._value
+
+    def get_showcase_restored_details(self):
+        """
+        Only call this if :meth:`is_showcase_restored_details` is true.
+
+        :rtype: ShowcaseRestoredDetails
+        """
+        if not self.is_showcase_restored_details():
+            raise AttributeError("tag 'showcase_restored_details' not set")
+        return self._value
+
+    def get_showcase_trashed_details(self):
+        """
+        Only call this if :meth:`is_showcase_trashed_details` is true.
+
+        :rtype: ShowcaseTrashedDetails
+        """
+        if not self.is_showcase_trashed_details():
+            raise AttributeError("tag 'showcase_trashed_details' not set")
+        return self._value
+
+    def get_showcase_unresolve_comment_details(self):
+        """
+        Only call this if :meth:`is_showcase_unresolve_comment_details` is true.
+
+        :rtype: ShowcaseUnresolveCommentDetails
+        """
+        if not self.is_showcase_unresolve_comment_details():
+            raise AttributeError("tag 'showcase_unresolve_comment_details' not set")
+        return self._value
+
+    def get_showcase_untrashed_details(self):
+        """
+        Only call this if :meth:`is_showcase_untrashed_details` is true.
+
+        :rtype: ShowcaseUntrashedDetails
+        """
+        if not self.is_showcase_untrashed_details():
+            raise AttributeError("tag 'showcase_untrashed_details' not set")
+        return self._value
+
+    def get_showcase_view_details(self):
+        """
+        Only call this if :meth:`is_showcase_view_details` is true.
+
+        :rtype: ShowcaseViewDetails
+        """
+        if not self.is_showcase_view_details():
+            raise AttributeError("tag 'showcase_view_details' not set")
+        return self._value
+
     def get_sso_add_cert_details(self):
         """
         Only call this if :meth:`is_sso_add_cert_details` is true.
@@ -14249,6 +14966,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_team_folder_rename_details():
             raise AttributeError("tag 'team_folder_rename_details' not set")
+        return self._value
+
+    def get_team_selective_sync_settings_changed_details(self):
+        """
+        Only call this if :meth:`is_team_selective_sync_settings_changed_details` is true.
+
+        :rtype: TeamSelectiveSyncSettingsChangedDetails
+        """
+        if not self.is_team_selective_sync_settings_changed_details():
+            raise AttributeError("tag 'team_selective_sync_settings_changed_details' not set")
         return self._value
 
     def get_account_capture_change_policy_details(self):
@@ -14867,667 +15594,623 @@ class EventType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar AppLinkTeamType app_link_team: (apps) Linked an app for team.
-    :ivar AppLinkUserType app_link_user: (apps) Linked an app for team member.
-    :ivar AppUnlinkTeamType app_unlink_team: (apps) Unlinked an app for team.
-    :ivar AppUnlinkUserType app_unlink_user: (apps) Unlinked an app for team
-        member.
-    :ivar FileAddCommentType file_add_comment: (comments) Added a file comment.
+    :ivar AppLinkTeamType app_link_team: (apps) Linked app for team
+    :ivar AppLinkUserType app_link_user: (apps) Linked app for member
+    :ivar AppUnlinkTeamType app_unlink_team: (apps) Unlinked app for team
+    :ivar AppUnlinkUserType app_unlink_user: (apps) Unlinked app for member
+    :ivar FileAddCommentType file_add_comment: (comments) Added file comment
     :ivar FileChangeCommentSubscriptionType file_change_comment_subscription:
         (comments) Subscribed to or unsubscribed from comment notifications for
-        file.
-    :ivar FileDeleteCommentType file_delete_comment: (comments) Deleted a file
-        comment.
-    :ivar FileLikeCommentType file_like_comment: (comments) Liked a file
-        comment. This event is deprecated and will not be logged going forward
-        as the associated product functionality no longer exists.
-    :ivar FileResolveCommentType file_resolve_comment: (comments) Resolved a
-        file comment.
-    :ivar FileUnlikeCommentType file_unlike_comment: (comments) Unliked a file
-        comment. This event is deprecated and will not be logged going forward
-        as the associated product functionality no longer exists.
+        file
+    :ivar FileDeleteCommentType file_delete_comment: (comments) Deleted file
+        comment
+    :ivar FileLikeCommentType file_like_comment: (comments) Liked file comment
+        (deprecated, no longer logged)
+    :ivar FileResolveCommentType file_resolve_comment: (comments) Resolved file
+        comment
+    :ivar FileUnlikeCommentType file_unlike_comment: (comments) Unliked file
+        comment (deprecated, no longer logged)
     :ivar FileUnresolveCommentType file_unresolve_comment: (comments) Unresolved
-        a file comment.
-    :ivar DeviceChangeIpDesktopType device_change_ip_desktop: (devices) IP
-        address associated with active desktop session changed.
-    :ivar DeviceChangeIpMobileType device_change_ip_mobile: (devices) IP address
-        associated with active mobile session changed.
-    :ivar DeviceChangeIpWebType device_change_ip_web: (devices) IP address
-        associated with active Web session changed.
+        file comment
+    :ivar DeviceChangeIpDesktopType device_change_ip_desktop: (devices) Changed
+        IP address associated with active desktop session
+    :ivar DeviceChangeIpMobileType device_change_ip_mobile: (devices) Changed IP
+        address associated with active mobile session
+    :ivar DeviceChangeIpWebType device_change_ip_web: (devices) Changed IP
+        address associated with active web session
     :ivar DeviceDeleteOnUnlinkFailType device_delete_on_unlink_fail: (devices)
-        Failed to delete all files from an unlinked device.
+        Failed to delete all files from unlinked device
     :ivar DeviceDeleteOnUnlinkSuccessType device_delete_on_unlink_success:
-        (devices) Deleted all files from an unlinked device.
-    :ivar DeviceLinkFailType device_link_fail: (devices) Failed to link a
-        device.
-    :ivar DeviceLinkSuccessType device_link_success: (devices) Linked a device.
+        (devices) Deleted all files from unlinked device
+    :ivar DeviceLinkFailType device_link_fail: (devices) Failed to link device
+    :ivar DeviceLinkSuccessType device_link_success: (devices) Linked device
     :ivar DeviceManagementDisabledType device_management_disabled: (devices)
-        Disable Device Management. This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
+        Disabled device management (deprecated, no longer logged)
     :ivar DeviceManagementEnabledType device_management_enabled: (devices)
-        Enable Device Management. This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
-    :ivar DeviceUnlinkType device_unlink: (devices) Disconnected a device.
+        Enabled device management (deprecated, no longer logged)
+    :ivar DeviceUnlinkType device_unlink: (devices) Disconnected device
     :ivar EmmRefreshAuthTokenType emm_refresh_auth_token: (devices) Refreshed
-        the auth token used for setting up enterprise mobility management.
+        auth token used for setting up enterprise mobility management
     :ivar AccountCaptureChangeAvailabilityType
-        account_capture_change_availability: (domains) Granted or revoked the
-        option to enable account capture on domains belonging to the team.
+        account_capture_change_availability: (domains) Granted/revoked option to
+        enable account capture on team domains
     :ivar AccountCaptureMigrateAccountType account_capture_migrate_account:
-        (domains) Account captured user migrated their account to the team.
+        (domains) Account-captured user migrated account to team
     :ivar AccountCaptureNotificationEmailsSentType
-        account_capture_notification_emails_sent: (domains) Proactive account
-        capture email sent to all unmanaged members.
+        account_capture_notification_emails_sent: (domains) Sent proactive
+        account capture email to all unmanaged members
     :ivar AccountCaptureRelinquishAccountType
-        account_capture_relinquish_account: (domains) Account captured user
-        relinquished their account by changing the email address associated with
-        it.
+        account_capture_relinquish_account: (domains) Account-captured user
+        changed account email to personal email
     :ivar DisabledDomainInvitesType disabled_domain_invites: (domains) Disabled
-        domain invites. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
+        domain invites (deprecated, no longer logged)
     :ivar DomainInvitesApproveRequestToJoinTeamType
-        domain_invites_approve_request_to_join_team: (domains) Approved a
-        member's request to join the team.
+        domain_invites_approve_request_to_join_team: (domains) Approved user's
+        request to join team
     :ivar DomainInvitesDeclineRequestToJoinTeamType
-        domain_invites_decline_request_to_join_team: (domains) Declined a user's
-        request to join the team.
+        domain_invites_decline_request_to_join_team: (domains) Declined user's
+        request to join team
     :ivar DomainInvitesEmailExistingUsersType
         domain_invites_email_existing_users: (domains) Sent domain invites to
-        existing domain accounts.
+        existing domain accounts
     :ivar DomainInvitesRequestToJoinTeamType
-        domain_invites_request_to_join_team: (domains) Asked to join the team.
+        domain_invites_request_to_join_team: (domains) Requested to join team
     :ivar DomainInvitesSetInviteNewUserPrefToNoType
-        domain_invites_set_invite_new_user_pref_to_no: (domains) Turned off
-        u201cAutomatically invite new usersu201d. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        domain_invites_set_invite_new_user_pref_to_no: (domains) Disabled
+        "Automatically invite new users" (deprecated, no longer logged)
     :ivar DomainInvitesSetInviteNewUserPrefToYesType
-        domain_invites_set_invite_new_user_pref_to_yes: (domains) Turned on
-        u201cAutomatically invite new usersu201d. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        domain_invites_set_invite_new_user_pref_to_yes: (domains) Enabled
+        "Automatically invite new users" (deprecated, no longer logged)
     :ivar DomainVerificationAddDomainFailType
-        domain_verification_add_domain_fail: (domains) Failed to verify a domain
-        belonging to the team.
+        domain_verification_add_domain_fail: (domains) Failed to verify team
+        domain
     :ivar DomainVerificationAddDomainSuccessType
-        domain_verification_add_domain_success: (domains) Verified a domain
-        belonging to the team.
+        domain_verification_add_domain_success: (domains) Verified team domain
     :ivar DomainVerificationRemoveDomainType domain_verification_remove_domain:
-        (domains) Removed a domain from the list of verified domains belonging
-        to the team.
+        (domains) Removed domain from list of verified team domains
     :ivar EnabledDomainInvitesType enabled_domain_invites: (domains) Enabled
-        domain invites. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
-    :ivar CreateFolderType create_folder: (file_operations) Created folders.
-        This event is deprecated and will not be logged going forward as the
-        associated product functionality no longer exists.
-    :ivar FileAddType file_add: (file_operations) Added files and/or folders.
-    :ivar FileCopyType file_copy: (file_operations) Copied files and/or folders.
+        domain invites (deprecated, no longer logged)
+    :ivar CreateFolderType create_folder: (file_operations) Created folders
+        (deprecated, no longer logged)
+    :ivar FileAddType file_add: (file_operations) Added files and/or folders
+    :ivar FileCopyType file_copy: (file_operations) Copied files and/or folders
     :ivar FileDeleteType file_delete: (file_operations) Deleted files and/or
-        folders.
+        folders
     :ivar FileDownloadType file_download: (file_operations) Downloaded files
-        and/or folders.
-    :ivar FileEditType file_edit: (file_operations) Edited files.
+        and/or folders
+    :ivar FileEditType file_edit: (file_operations) Edited files
     :ivar FileGetCopyReferenceType file_get_copy_reference: (file_operations)
-        Create a copy reference to a file or folder.
-    :ivar FileMoveType file_move: (file_operations) Moved files and/or folders.
+        Created copy reference to file/folder
+    :ivar FileMoveType file_move: (file_operations) Moved files and/or folders
     :ivar FilePermanentlyDeleteType file_permanently_delete: (file_operations)
-        Permanently deleted files and/or folders.
+        Permanently deleted files and/or folders
     :ivar FilePreviewType file_preview: (file_operations) Previewed files and/or
-        folders.
+        folders
     :ivar FileRenameType file_rename: (file_operations) Renamed files and/or
-        folders.
+        folders
     :ivar FileRestoreType file_restore: (file_operations) Restored deleted files
-        and/or folders.
-    :ivar FileRevertType file_revert: (file_operations) Reverted files to a
-        previous version.
+        and/or folders
+    :ivar FileRevertType file_revert: (file_operations) Reverted files to
+        previous version
     :ivar FileRollbackChangesType file_rollback_changes: (file_operations)
-        Rolled back file change location changes.
+        Rolled back file actions
     :ivar FileSaveCopyReferenceType file_save_copy_reference: (file_operations)
-        Save a file or folder using a copy reference.
-    :ivar FileRequestChangeType file_request_change: (file_requests) Change a
-        file request.
-    :ivar FileRequestCloseType file_request_close: (file_requests) Closed a file
-        request.
-    :ivar FileRequestCreateType file_request_create: (file_requests) Created a
-        file request.
+        Saved file/folder using copy reference
+    :ivar FileRequestChangeType file_request_change: (file_requests) Changed
+        file request
+    :ivar FileRequestCloseType file_request_close: (file_requests) Closed file
+        request
+    :ivar FileRequestCreateType file_request_create: (file_requests) Created
+        file request
     :ivar FileRequestReceiveFileType file_request_receive_file: (file_requests)
-        Received files for a file request.
-    :ivar GroupAddExternalIdType group_add_external_id: (groups) Added an
-        external ID for group.
-    :ivar GroupAddMemberType group_add_member: (groups) Added team members to a
-        group.
+        Received files for file request
+    :ivar GroupAddExternalIdType group_add_external_id: (groups) Added external
+        ID for group
+    :ivar GroupAddMemberType group_add_member: (groups) Added team members to
+        group
     :ivar GroupChangeExternalIdType group_change_external_id: (groups) Changed
-        the external ID for group.
+        external ID for group
     :ivar GroupChangeManagementTypeType group_change_management_type: (groups)
-        Changed group management type.
+        Changed group management type
     :ivar GroupChangeMemberRoleType group_change_member_role: (groups) Changed
-        the manager permissions belonging to a group member.
-    :ivar GroupCreateType group_create: (groups) Created a group.
-    :ivar GroupDeleteType group_delete: (groups) Deleted a group.
-    :ivar GroupMovedType group_moved: (groups) Moved a group. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        manager permissions of group member
+    :ivar GroupCreateType group_create: (groups) Created group
+    :ivar GroupDeleteType group_delete: (groups) Deleted group
+    :ivar GroupDescriptionUpdatedType group_description_updated: (groups)
+        Updated group (deprecated, no longer logged)
+    :ivar GroupJoinPolicyUpdatedType group_join_policy_updated: (groups) Updated
+        group join policy (deprecated, no longer logged)
+    :ivar GroupMovedType group_moved: (groups) Moved group (deprecated, no
+        longer logged)
     :ivar GroupRemoveExternalIdType group_remove_external_id: (groups) Removed
-        the external ID for group.
+        external ID for group
     :ivar GroupRemoveMemberType group_remove_member: (groups) Removed team
-        members from a group.
-    :ivar GroupRenameType group_rename: (groups) Renamed a group.
-    :ivar EmmErrorType emm_error: (logins) Failed to sign in via EMM. This event
-        is replaced by login_fail and will not be logged going forward.
-    :ivar LoginFailType login_fail: (logins) Failed to sign in.
-    :ivar LoginSuccessType login_success: (logins) Signed in.
-    :ivar LogoutType logout: (logins) Signed out.
+        members from group
+    :ivar GroupRenameType group_rename: (groups) Renamed group
+    :ivar EmmErrorType emm_error: (logins) Failed to sign in via EMM
+        (deprecated, replaced by 'Failed to sign in')
+    :ivar LoginFailType login_fail: (logins) Failed to sign in
+    :ivar LoginSuccessType login_success: (logins) Signed in
+    :ivar LogoutType logout: (logins) Signed out
     :ivar ResellerSupportSessionEndType reseller_support_session_end: (logins)
-        Ended reseller support session.
+        Ended reseller support session
     :ivar ResellerSupportSessionStartType reseller_support_session_start:
-        (logins) Started reseller support session.
+        (logins) Started reseller support session
     :ivar SignInAsSessionEndType sign_in_as_session_end: (logins) Ended admin
-        sign-in-as session.
+        sign-in-as session
     :ivar SignInAsSessionStartType sign_in_as_session_start: (logins) Started
-        admin sign-in-as session.
-    :ivar SsoErrorType sso_error: (logins) Failed to sign in via SSO. This event
-        is replaced by login_fail and will not be logged going forward.
-    :ivar MemberAddNameType member_add_name: (members) Specify team member name.
-    :ivar MemberChangeAdminRoleType member_change_admin_role: (members) Change
-        the admin role belonging to team member.
+        admin sign-in-as session
+    :ivar SsoErrorType sso_error: (logins) Failed to sign in via SSO
+        (deprecated, replaced by 'Failed to sign in')
+    :ivar MemberAddNameType member_add_name: (members) Added team member name
+    :ivar MemberChangeAdminRoleType member_change_admin_role: (members) Changed
+        team member admin role
     :ivar MemberChangeEmailType member_change_email: (members) Changed team
-        member email address.
+        member email
     :ivar MemberChangeMembershipTypeType member_change_membership_type:
-        (members) Changed the membership type (limited vs full) for team member.
-        This event is deprecated and will not be logged going forward as the
-        associated product functionality no longer exists.
+        (members) Changed membership type (limited/full) of member (deprecated,
+        no longer logged)
     :ivar MemberChangeNameType member_change_name: (members) Changed team member
-        name.
-    :ivar MemberChangeStatusType member_change_status: (members) Changed the
-        membership status of a team member.
+        name
+    :ivar MemberChangeStatusType member_change_status: (members) Changed
+        membership status of team member
     :ivar MemberPermanentlyDeleteAccountContentsType
         member_permanently_delete_account_contents: (members) Permanently
-        deleted contents of a removed team member account.
+        deleted contents of deleted team member account
     :ivar MemberSpaceLimitsAddCustomQuotaType
         member_space_limits_add_custom_quota: (members) Set custom member space
-        limit.
+        limit
     :ivar MemberSpaceLimitsChangeCustomQuotaType
         member_space_limits_change_custom_quota: (members) Changed custom member
-        space limit.
+        space limit
     :ivar MemberSpaceLimitsChangeStatusType member_space_limits_change_status:
-        (members) Changed the status with respect to whether the team member is
-        under or over storage quota specified by policy.
+        (members) Changed space limit status
     :ivar MemberSpaceLimitsRemoveCustomQuotaType
         member_space_limits_remove_custom_quota: (members) Removed custom member
-        space limit.
-    :ivar MemberSuggestType member_suggest: (members) Suggested a new team
-        member to be added to the team.
+        space limit
+    :ivar MemberSuggestType member_suggest: (members) Suggested person to add to
+        team
     :ivar MemberTransferAccountContentsType member_transfer_account_contents:
-        (members) Transferred contents of a removed team member account to
-        another member.
-    :ivar PaperContentAddMemberType paper_content_add_member: (paper) Added
-        users to the membership of a Paper doc or folder.
+        (members) Transferred contents of deleted member account to another
+        member
+    :ivar PaperContentAddMemberType paper_content_add_member: (paper) Added team
+        member to Paper doc/folder
     :ivar PaperContentAddToFolderType paper_content_add_to_folder: (paper) Added
-        Paper doc or folder to a folder.
+        Paper doc/folder to folder
     :ivar PaperContentArchiveType paper_content_archive: (paper) Archived Paper
-        doc or folder.
-    :ivar PaperContentCreateType paper_content_create: (paper) Created a Paper
-        doc or folder.
+        doc/folder
+    :ivar PaperContentCreateType paper_content_create: (paper) Created Paper
+        doc/folder
     :ivar PaperContentPermanentlyDeleteType paper_content_permanently_delete:
-        (paper) Permanently deleted a Paper doc or folder.
+        (paper) Permanently deleted Paper doc/folder
     :ivar PaperContentRemoveFromFolderType paper_content_remove_from_folder:
-        (paper) Removed Paper doc or folder from a folder.
+        (paper) Removed Paper doc/folder from folder
     :ivar PaperContentRemoveMemberType paper_content_remove_member: (paper)
-        Removed a user from the membership of a Paper doc or folder.
-    :ivar PaperContentRenameType paper_content_rename: (paper) Renamed Paper doc
-        or folder.
-    :ivar PaperContentRestoreType paper_content_restore: (paper) Restored an
-        archived Paper doc or folder.
-    :ivar PaperDocAddCommentType paper_doc_add_comment: (paper) Added a Paper
-        doc comment.
+        Removed team member from Paper doc/folder
+    :ivar PaperContentRenameType paper_content_rename: (paper) Renamed Paper
+        doc/folder
+    :ivar PaperContentRestoreType paper_content_restore: (paper) Restored
+        archived Paper doc/folder
+    :ivar PaperDocAddCommentType paper_doc_add_comment: (paper) Added Paper doc
+        comment
     :ivar PaperDocChangeMemberRoleType paper_doc_change_member_role: (paper)
-        Changed the access type of a Paper doc member.
+        Changed team member permissions for Paper doc
     :ivar PaperDocChangeSharingPolicyType paper_doc_change_sharing_policy:
-        (paper) Changed the sharing policy for Paper doc.
+        (paper) Changed sharing setting for Paper doc
     :ivar PaperDocChangeSubscriptionType paper_doc_change_subscription: (paper)
-        Followed or unfollowed a Paper doc.
-    :ivar PaperDocDeletedType paper_doc_deleted: (paper) Paper doc archived.
-        This event is deprecated and will not be logged going forward as the
-        associated product functionality no longer exists.
-    :ivar PaperDocDeleteCommentType paper_doc_delete_comment: (paper) Deleted a
-        Paper doc comment.
-    :ivar PaperDocDownloadType paper_doc_download: (paper) Downloaded a Paper
-        doc in a particular output format.
-    :ivar PaperDocEditType paper_doc_edit: (paper) Edited a Paper doc.
-    :ivar PaperDocEditCommentType paper_doc_edit_comment: (paper) Edited a Paper
-        doc comment.
-    :ivar PaperDocFollowedType paper_doc_followed: (paper) Followed a Paper doc.
-        This event is replaced by paper_doc_change_subscription and will not be
-        logged going forward.
-    :ivar PaperDocMentionType paper_doc_mention: (paper) Mentioned a member in a
-        Paper doc.
+        Followed/unfollowed Paper doc
+    :ivar PaperDocDeletedType paper_doc_deleted: (paper) Archived Paper doc
+        (deprecated, no longer logged)
+    :ivar PaperDocDeleteCommentType paper_doc_delete_comment: (paper) Deleted
+        Paper doc comment
+    :ivar PaperDocDownloadType paper_doc_download: (paper) Downloaded Paper doc
+        in specific format
+    :ivar PaperDocEditType paper_doc_edit: (paper) Edited Paper doc
+    :ivar PaperDocEditCommentType paper_doc_edit_comment: (paper) Edited Paper
+        doc comment
+    :ivar PaperDocFollowedType paper_doc_followed: (paper) Followed Paper doc
+        (deprecated, replaced by 'Followed/unfollowed Paper doc')
+    :ivar PaperDocMentionType paper_doc_mention: (paper) Mentioned team member
+        in Paper doc
     :ivar PaperDocRequestAccessType paper_doc_request_access: (paper) Requested
-        to be a member on a Paper doc.
-    :ivar PaperDocResolveCommentType paper_doc_resolve_comment: (paper) Paper
-        doc comment resolved.
-    :ivar PaperDocRevertType paper_doc_revert: (paper) Restored a Paper doc to
-        previous revision.
-    :ivar PaperDocSlackShareType paper_doc_slack_share: (paper) Paper doc link
-        shared via slack.
-    :ivar PaperDocTeamInviteType paper_doc_team_invite: (paper) Paper doc shared
-        with team member. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
-    :ivar PaperDocTrashedType paper_doc_trashed: (paper) Paper doc trashed.
+        access to Paper doc
+    :ivar PaperDocResolveCommentType paper_doc_resolve_comment: (paper) Resolved
+        Paper doc comment
+    :ivar PaperDocRevertType paper_doc_revert: (paper) Restored Paper doc to
+        previous version
+    :ivar PaperDocSlackShareType paper_doc_slack_share: (paper) Shared Paper doc
+        via Slack
+    :ivar PaperDocTeamInviteType paper_doc_team_invite: (paper) Shared Paper doc
+        with team member (deprecated, no longer logged)
+    :ivar PaperDocTrashedType paper_doc_trashed: (paper) Deleted Paper doc
     :ivar PaperDocUnresolveCommentType paper_doc_unresolve_comment: (paper)
-        Unresolved a Paper doc comment.
-    :ivar PaperDocUntrashedType paper_doc_untrashed: (paper) Paper doc
-        untrashed.
-    :ivar PaperDocViewType paper_doc_view: (paper) Viewed Paper doc.
-    :ivar PaperExternalViewAllowType paper_external_view_allow: (paper) Paper
-        external sharing policy changed: anyone. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        Unresolved Paper doc comment
+    :ivar PaperDocUntrashedType paper_doc_untrashed: (paper) Restored Paper doc
+    :ivar PaperDocViewType paper_doc_view: (paper) Viewed Paper doc
+    :ivar PaperExternalViewAllowType paper_external_view_allow: (paper) Changed
+        Paper external sharing setting to anyone (deprecated, no longer logged)
     :ivar PaperExternalViewDefaultTeamType paper_external_view_default_team:
-        (paper) Paper external sharing policy changed: default team. This event
-        is deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
-    :ivar PaperExternalViewForbidType paper_external_view_forbid: (paper) Paper
-        external sharing policy changed: team-only. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        (paper) Changed Paper external sharing setting to default team
+        (deprecated, no longer logged)
+    :ivar PaperExternalViewForbidType paper_external_view_forbid: (paper)
+        Changed Paper external sharing setting to team-only (deprecated, no
+        longer logged)
     :ivar PaperFolderChangeSubscriptionType paper_folder_change_subscription:
-        (paper) Followed or unfollowed a Paper folder.
-    :ivar PaperFolderDeletedType paper_folder_deleted: (paper) Paper folder
-        archived. This event is deprecated and will not be logged going forward
-        as the associated product functionality no longer exists.
-    :ivar PaperFolderFollowedType paper_folder_followed: (paper) Followed a
-        Paper folder. This event is replaced by paper_folder_change_subscription
-        and will not be logged going forward.
-    :ivar PaperFolderTeamInviteType paper_folder_team_invite: (paper) Paper
-        folder shared with team member. This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
-    :ivar PasswordChangeType password_change: (passwords) Changed password.
-    :ivar PasswordResetType password_reset: (passwords) Reset password.
+        (paper) Followed/unfollowed Paper folder
+    :ivar PaperFolderDeletedType paper_folder_deleted: (paper) Archived Paper
+        folder (deprecated, no longer logged)
+    :ivar PaperFolderFollowedType paper_folder_followed: (paper) Followed Paper
+        folder (deprecated, replaced by 'Followed/unfollowed Paper folder')
+    :ivar PaperFolderTeamInviteType paper_folder_team_invite: (paper) Shared
+        Paper folder with member (deprecated, no longer logged)
+    :ivar PasswordChangeType password_change: (passwords) Changed password
+    :ivar PasswordResetType password_reset: (passwords) Reset password
     :ivar PasswordResetAllType password_reset_all: (passwords) Reset all team
-        member passwords.
+        member passwords
     :ivar EmmCreateExceptionsReportType emm_create_exceptions_report: (reports)
-        EMM excluded users report created.
-    :ivar EmmCreateUsageReportType emm_create_usage_report: (reports) EMM mobile
-        app usage report created.
-    :ivar ExportMembersReportType export_members_report: (reports) Member data
-        report created.
+        Created EMM-excluded users report
+    :ivar EmmCreateUsageReportType emm_create_usage_report: (reports) Created
+        EMM mobile app usage report
+    :ivar ExportMembersReportType export_members_report: (reports) Created
+        member data report
     :ivar PaperAdminExportStartType paper_admin_export_start: (reports) Exported
-        all Paper documents in the team.
+        all team Paper docs
     :ivar SmartSyncCreateAdminPrivilegeReportType
-        smart_sync_create_admin_privilege_report: (reports) Smart Sync non-admin
-        devices report created.
+        smart_sync_create_admin_privilege_report: (reports) Created Smart Sync
+        non-admin devices report
     :ivar TeamActivityCreateReportType team_activity_create_report: (reports)
-        Created a team activity report.
-    :ivar CollectionShareType collection_share: (sharing) Shared an album.
-    :ivar NoteAclInviteOnlyType note_acl_invite_only: (sharing) Changed a Paper
-        document to be invite-only. This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
-    :ivar NoteAclLinkType note_acl_link: (sharing) Changed a Paper document to
-        be link accessible. This event is deprecated and will not be logged
-        going forward as the associated product functionality no longer exists.
-    :ivar NoteAclTeamLinkType note_acl_team_link: (sharing) Changed a Paper
-        document to be link accessible for the team. This event is deprecated
-        and will not be logged going forward as the associated product
-        functionality no longer exists.
-    :ivar NoteSharedType note_shared: (sharing) Shared a Paper doc. This event
-        is deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
-    :ivar NoteShareReceiveType note_share_receive: (sharing) Shared Paper
-        document received. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
-    :ivar OpenNoteSharedType open_note_shared: (sharing) Opened a shared Paper
-        doc. This event is deprecated and will not be logged going forward as
-        the associated product functionality no longer exists.
-    :ivar SfAddGroupType sf_add_group: (sharing) Added the team to a shared
-        folder. This event is deprecated and will not be logged going forward as
-        the associated product functionality no longer exists.
+        Created team activity report
+    :ivar CollectionShareType collection_share: (sharing) Shared album
+    :ivar NoteAclInviteOnlyType note_acl_invite_only: (sharing) Changed Paper
+        doc to invite-only (deprecated, no longer logged)
+    :ivar NoteAclLinkType note_acl_link: (sharing) Changed Paper doc to
+        link-accessible (deprecated, no longer logged)
+    :ivar NoteAclTeamLinkType note_acl_team_link: (sharing) Changed Paper doc to
+        link-accessible for team (deprecated, no longer logged)
+    :ivar NoteSharedType note_shared: (sharing) Shared Paper doc (deprecated, no
+        longer logged)
+    :ivar NoteShareReceiveType note_share_receive: (sharing) Shared received
+        Paper doc (deprecated, no longer logged)
+    :ivar OpenNoteSharedType open_note_shared: (sharing) Opened shared Paper doc
+        (deprecated, no longer logged)
+    :ivar SfAddGroupType sf_add_group: (sharing) Added team to shared folder
+        (deprecated, no longer logged)
     :ivar SfAllowNonMembersToViewSharedLinksType
-        sf_allow_non_members_to_view_shared_links: (sharing) Allowed non
-        collaborators to view links to files in a shared folder. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
-    :ivar SfExternalInviteWarnType sf_external_invite_warn: (sharing) Admin
-        settings: team members see a warning before sharing folders outside the
-        team (DEPRECATED FEATURE). This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
-    :ivar SfFbInviteType sf_fb_invite: (sharing) Invited Facebook users to a
-        shared folder. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
-    :ivar SfFbInviteChangeRoleType sf_fb_invite_change_role: (sharing) Changed a
-        Facebook user's role in a shared folder. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
-    :ivar SfFbUninviteType sf_fb_uninvite: (sharing) Uninvited a Facebook user
-        from a shared folder. This event is deprecated and will not be logged
-        going forward as the associated product functionality no longer exists.
-    :ivar SfInviteGroupType sf_invite_group: (sharing) Invited a group to a
-        shared folder. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
+        sf_allow_non_members_to_view_shared_links: (sharing) Allowed
+        non-collaborators to view links to files in shared folder (deprecated,
+        no longer logged)
+    :ivar SfExternalInviteWarnType sf_external_invite_warn: (sharing) Set team
+        members to see warning before sharing folders outside team (deprecated,
+        no longer logged)
+    :ivar SfFbInviteType sf_fb_invite: (sharing) Invited Facebook users to
+        shared folder (deprecated, no longer logged)
+    :ivar SfFbInviteChangeRoleType sf_fb_invite_change_role: (sharing) Changed
+        Facebook user's role in shared folder (deprecated, no longer logged)
+    :ivar SfFbUninviteType sf_fb_uninvite: (sharing) Uninvited Facebook user
+        from shared folder (deprecated, no longer logged)
+    :ivar SfInviteGroupType sf_invite_group: (sharing) Invited group to shared
+        folder (deprecated, no longer logged)
     :ivar SfTeamGrantAccessType sf_team_grant_access: (sharing) Granted access
-        to a shared folder. This event is deprecated and will not be logged
-        going forward as the associated product functionality no longer exists.
-    :ivar SfTeamInviteType sf_team_invite: (sharing) Invited team members to a
-        shared folder. This event is replaced by shared_content_add_invitees and
-        will not be logged going forward.
+        to shared folder (deprecated, no longer logged)
+    :ivar SfTeamInviteType sf_team_invite: (sharing) Invited team members to
+        shared folder (deprecated, replaced by 'Invited user to Dropbox and
+        added them to shared file/folder')
     :ivar SfTeamInviteChangeRoleType sf_team_invite_change_role: (sharing)
-        Changed a team member's role in a shared folder. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
-    :ivar SfTeamJoinType sf_team_join: (sharing) Joined a team member's shared
-        folder. This event is deprecated and will not be logged going forward as
-        the associated product functionality no longer exists.
+        Changed team member's role in shared folder (deprecated, no longer
+        logged)
+    :ivar SfTeamJoinType sf_team_join: (sharing) Joined team member's shared
+        folder (deprecated, no longer logged)
     :ivar SfTeamJoinFromOobLinkType sf_team_join_from_oob_link: (sharing) Joined
-        a team member's shared folder from a link. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
-    :ivar SfTeamUninviteType sf_team_uninvite: (sharing) Unshared a folder with
-        a team member. This event is replaced by shared_content_remove_invitees
-        and will not be logged going forward.
+        team member's shared folder from link (deprecated, no longer logged)
+    :ivar SfTeamUninviteType sf_team_uninvite: (sharing) Unshared folder with
+        team member (deprecated, replaced by 'Removed invitee from shared
+        file/folder before invite accepted')
     :ivar SharedContentAddInviteesType shared_content_add_invitees: (sharing)
-        Sent an email invitation to the membership of a shared file or folder.
+        Invited user to Dropbox and added them to shared file/folder
     :ivar SharedContentAddLinkExpiryType shared_content_add_link_expiry:
-        (sharing) Added an expiry to the link for the shared file or folder.
+        (sharing) Added expiration date to link for shared file/folder
     :ivar SharedContentAddLinkPasswordType shared_content_add_link_password:
-        (sharing) Added a password to the link for the shared file or folder.
+        (sharing) Added password to link for shared file/folder
     :ivar SharedContentAddMemberType shared_content_add_member: (sharing) Added
-        users and/or groups to the membership of a shared file or folder.
+        users and/or groups to shared file/folder
     :ivar SharedContentChangeDownloadsPolicyType
         shared_content_change_downloads_policy: (sharing) Changed whether
-        members can download the shared file or folder.
+        members can download shared file/folder
     :ivar SharedContentChangeInviteeRoleType shared_content_change_invitee_role:
-        (sharing) Changed the access type of an invitee to a shared file or
-        folder before the invitation was claimed.
+        (sharing) Changed access type of invitee to shared file/folder before
+        invite accepted
     :ivar SharedContentChangeLinkAudienceType
-        shared_content_change_link_audience: (sharing) Changed the audience of
-        the link for a shared file or folder.
+        shared_content_change_link_audience: (sharing) Changed link audience of
+        shared file/folder
     :ivar SharedContentChangeLinkExpiryType shared_content_change_link_expiry:
-        (sharing) Changed the expiry of the link for the shared file or folder.
+        (sharing) Changed link expiration of shared file/folder
     :ivar SharedContentChangeLinkPasswordType
-        shared_content_change_link_password: (sharing) Changed the password on
-        the link for the shared file or folder.
+        shared_content_change_link_password: (sharing) Changed link password of
+        shared file/folder
     :ivar SharedContentChangeMemberRoleType shared_content_change_member_role:
-        (sharing) Changed the access type of a shared file or folder member.
+        (sharing) Changed access type of shared file/folder member
     :ivar SharedContentChangeViewerInfoPolicyType
         shared_content_change_viewer_info_policy: (sharing) Changed whether
-        members can see who viewed the shared file or folder.
+        members can see who viewed shared file/folder
     :ivar SharedContentClaimInvitationType shared_content_claim_invitation:
-        (sharing) Acquired membership on a shared file or folder by claiming an
-        invitation.
-    :ivar SharedContentCopyType shared_content_copy: (sharing) Copied the shared
-        file or folder to own Dropbox.
+        (sharing) Acquired membership of shared file/folder by accepting invite
+    :ivar SharedContentCopyType shared_content_copy: (sharing) Copied shared
+        file/folder to own Dropbox
     :ivar SharedContentDownloadType shared_content_download: (sharing)
-        Downloaded the shared file or folder.
+        Downloaded shared file/folder
     :ivar SharedContentRelinquishMembershipType
-        shared_content_relinquish_membership: (sharing) Left the membership of a
-        shared file or folder.
+        shared_content_relinquish_membership: (sharing) Left shared file/folder
     :ivar SharedContentRemoveInviteesType shared_content_remove_invitees:
-        (sharing) Removed an invitee from the membership of a shared file or
-        folder before it was claimed.
+        (sharing) Removed invitee from shared file/folder before invite accepted
     :ivar SharedContentRemoveLinkExpiryType shared_content_remove_link_expiry:
-        (sharing) Removed the expiry of the link for the shared file or folder.
+        (sharing) Removed link expiration date of shared file/folder
     :ivar SharedContentRemoveLinkPasswordType
-        shared_content_remove_link_password: (sharing) Removed the password on
-        the link for the shared file or folder.
+        shared_content_remove_link_password: (sharing) Removed link password of
+        shared file/folder
     :ivar SharedContentRemoveMemberType shared_content_remove_member: (sharing)
-        Removed a user or a group from the membership of a shared file or
-        folder.
+        Removed user/group from shared file/folder
     :ivar SharedContentRequestAccessType shared_content_request_access:
-        (sharing) Requested to be on the membership of a shared file or folder.
-    :ivar SharedContentUnshareType shared_content_unshare: (sharing) Unshared a
-        shared file or folder by clearing its membership and turning off its
-        link.
-    :ivar SharedContentViewType shared_content_view: (sharing) Previewed the
-        shared file or folder.
+        (sharing) Requested access to shared file/folder
+    :ivar SharedContentUnshareType shared_content_unshare: (sharing) Unshared
+        file/folder by clearing membership and turning off link
+    :ivar SharedContentViewType shared_content_view: (sharing) Previewed shared
+        file/folder
     :ivar SharedFolderChangeLinkPolicyType shared_folder_change_link_policy:
-        (sharing) Changed who can access the shared folder via a link.
+        (sharing) Changed who can access shared folder via link
     :ivar SharedFolderChangeMembersInheritancePolicyType
-        shared_folder_change_members_inheritance_policy: (sharing) Specify if
-        the shared folder inherits its members from the parent folder.
+        shared_folder_change_members_inheritance_policy: (sharing) Changed
+        whether shared folder inherits members from parent folder
     :ivar SharedFolderChangeMembersManagementPolicyType
         shared_folder_change_members_management_policy: (sharing) Changed who
-        can add or remove members of a shared folder.
+        can add/remove members of shared folder
     :ivar SharedFolderChangeMembersPolicyType
-        shared_folder_change_members_policy: (sharing) Changed who can become a
-        member of the shared folder.
-    :ivar SharedFolderCreateType shared_folder_create: (sharing) Created a
-        shared folder.
+        shared_folder_change_members_policy: (sharing) Changed who can become
+        member of shared folder
+    :ivar SharedFolderCreateType shared_folder_create: (sharing) Created shared
+        folder
     :ivar SharedFolderDeclineInvitationType shared_folder_decline_invitation:
-        (sharing) Declined a team member's invitation to a shared folder.
-    :ivar SharedFolderMountType shared_folder_mount: (sharing) Added a shared
-        folder to own Dropbox.
-    :ivar SharedFolderNestType shared_folder_nest: (sharing) Changed the parent
-        of a shared folder.
+        (sharing) Declined team member's invite to shared folder
+    :ivar SharedFolderMountType shared_folder_mount: (sharing) Added shared
+        folder to own Dropbox
+    :ivar SharedFolderNestType shared_folder_nest: (sharing) Changed parent of
+        shared folder
     :ivar SharedFolderTransferOwnershipType shared_folder_transfer_ownership:
-        (sharing) Transferred the ownership of a shared folder to another
-        member.
-    :ivar SharedFolderUnmountType shared_folder_unmount: (sharing) Deleted a
-        shared folder from Dropbox.
-    :ivar SharedLinkAddExpiryType shared_link_add_expiry: (sharing) Added a
-        shared link expiration date.
+        (sharing) Transferred ownership of shared folder to another member
+    :ivar SharedFolderUnmountType shared_folder_unmount: (sharing) Deleted
+        shared folder from Dropbox
+    :ivar SharedLinkAddExpiryType shared_link_add_expiry: (sharing) Added shared
+        link expiration date
     :ivar SharedLinkChangeExpiryType shared_link_change_expiry: (sharing)
-        Changed the shared link expiration date.
+        Changed shared link expiration date
     :ivar SharedLinkChangeVisibilityType shared_link_change_visibility:
-        (sharing) Changed the visibility of a shared link.
-    :ivar SharedLinkCopyType shared_link_copy: (sharing) Added a file/folder to
-        their Dropbox from a shared link.
-    :ivar SharedLinkCreateType shared_link_create: (sharing) Created a new
-        shared link.
-    :ivar SharedLinkDisableType shared_link_disable: (sharing) Removed a shared
-        link.
-    :ivar SharedLinkDownloadType shared_link_download: (sharing) Downloaded a
-        file/folder from a shared link.
+        (sharing) Changed visibility of shared link
+    :ivar SharedLinkCopyType shared_link_copy: (sharing) Added file/folder to
+        Dropbox from shared link
+    :ivar SharedLinkCreateType shared_link_create: (sharing) Created shared link
+    :ivar SharedLinkDisableType shared_link_disable: (sharing) Removed shared
+        link
+    :ivar SharedLinkDownloadType shared_link_download: (sharing) Downloaded
+        file/folder from shared link
     :ivar SharedLinkRemoveExpiryType shared_link_remove_expiry: (sharing)
-        Removed a shared link expiration date.
-    :ivar SharedLinkShareType shared_link_share: (sharing) Added new members as
-        the audience of a shared link.
-    :ivar SharedLinkViewType shared_link_view: (sharing) Opened a shared link.
-    :ivar SharedNoteOpenedType shared_note_opened: (sharing) Shared Paper
-        document was opened. This event is deprecated and will not be logged
-        going forward as the associated product functionality no longer exists.
-    :ivar ShmodelGroupShareType shmodel_group_share: (sharing) Shared a link
-        with a group. This event is deprecated and will not be logged going
-        forward as the associated product functionality no longer exists.
-    :ivar SsoAddCertType sso_add_cert: (sso) Added the X.509 certificate for
-        SSO.
-    :ivar SsoAddLoginUrlType sso_add_login_url: (sso) Added sign-in URL for SSO.
+        Removed shared link expiration date
+    :ivar SharedLinkShareType shared_link_share: (sharing) Added members as
+        audience of shared link
+    :ivar SharedLinkViewType shared_link_view: (sharing) Opened shared link
+    :ivar SharedNoteOpenedType shared_note_opened: (sharing) Opened shared Paper
+        doc (deprecated, no longer logged)
+    :ivar ShmodelGroupShareType shmodel_group_share: (sharing) Shared link with
+        group (deprecated, no longer logged)
+    :ivar ShowcaseAccessGrantedType showcase_access_granted: (showcase) Granted
+        access to showcase
+    :ivar ShowcaseAddMemberType showcase_add_member: (showcase) Added member to
+        showcase
+    :ivar ShowcaseArchivedType showcase_archived: (showcase) Archived showcase
+    :ivar ShowcaseCreatedType showcase_created: (showcase) Created showcase
+    :ivar ShowcaseDeleteCommentType showcase_delete_comment: (showcase) Deleted
+        showcase comment
+    :ivar ShowcaseEditedType showcase_edited: (showcase) Edited showcase
+    :ivar ShowcaseEditCommentType showcase_edit_comment: (showcase) Edited
+        showcase comment
+    :ivar ShowcaseFileAddedType showcase_file_added: (showcase) Added file to
+        showcase
+    :ivar ShowcaseFileDownloadType showcase_file_download: (showcase) Downloaded
+        file from showcase
+    :ivar ShowcaseFileRemovedType showcase_file_removed: (showcase) Removed file
+        from showcase
+    :ivar ShowcaseFileViewType showcase_file_view: (showcase) Viewed file in
+        showcase
+    :ivar ShowcasePermanentlyDeletedType showcase_permanently_deleted:
+        (showcase) Permanently deleted showcase
+    :ivar ShowcasePostCommentType showcase_post_comment: (showcase) Added
+        showcase comment
+    :ivar ShowcaseRemoveMemberType showcase_remove_member: (showcase) Removed
+        member from showcase
+    :ivar ShowcaseRenamedType showcase_renamed: (showcase) Renamed showcase
+    :ivar ShowcaseRequestAccessType showcase_request_access: (showcase)
+        Requested access to showcase
+    :ivar ShowcaseResolveCommentType showcase_resolve_comment: (showcase)
+        Resolved showcase comment
+    :ivar ShowcaseRestoredType showcase_restored: (showcase) Unarchived showcase
+    :ivar ShowcaseTrashedType showcase_trashed: (showcase) Deleted showcase
+    :ivar ShowcaseUnresolveCommentType showcase_unresolve_comment: (showcase)
+        Unresolved showcase comment
+    :ivar ShowcaseUntrashedType showcase_untrashed: (showcase) Restored showcase
+    :ivar ShowcaseViewType showcase_view: (showcase) Viewed showcase
+    :ivar SsoAddCertType sso_add_cert: (sso) Added X.509 certificate for SSO
+    :ivar SsoAddLoginUrlType sso_add_login_url: (sso) Added sign-in URL for SSO
     :ivar SsoAddLogoutUrlType sso_add_logout_url: (sso) Added sign-out URL for
-        SSO.
-    :ivar SsoChangeCertType sso_change_cert: (sso) Changed the X.509 certificate
-        for SSO.
-    :ivar SsoChangeLoginUrlType sso_change_login_url: (sso) Changed the sign-in
-        URL for SSO.
-    :ivar SsoChangeLogoutUrlType sso_change_logout_url: (sso) Changed the
-        sign-out URL for SSO.
+        SSO
+    :ivar SsoChangeCertType sso_change_cert: (sso) Changed X.509 certificate for
+        SSO
+    :ivar SsoChangeLoginUrlType sso_change_login_url: (sso) Changed sign-in URL
+        for SSO
+    :ivar SsoChangeLogoutUrlType sso_change_logout_url: (sso) Changed sign-out
+        URL for SSO
     :ivar SsoChangeSamlIdentityModeType sso_change_saml_identity_mode: (sso)
-        Changed the SAML identity mode for SSO.
-    :ivar SsoRemoveCertType sso_remove_cert: (sso) Removed the X.509 certificate
-        for SSO.
-    :ivar SsoRemoveLoginUrlType sso_remove_login_url: (sso) Removed the sign-in
-        URL for SSO.
-    :ivar SsoRemoveLogoutUrlType sso_remove_logout_url: (sso) Removed single
-        sign-on logout URL.
+        Changed SAML identity mode for SSO
+    :ivar SsoRemoveCertType sso_remove_cert: (sso) Removed X.509 certificate for
+        SSO
+    :ivar SsoRemoveLoginUrlType sso_remove_login_url: (sso) Removed sign-in URL
+        for SSO
+    :ivar SsoRemoveLogoutUrlType sso_remove_logout_url: (sso) Removed sign-out
+        URL for SSO
     :ivar TeamFolderChangeStatusType team_folder_change_status: (team_folders)
-        Changed the archival status of a team folder.
-    :ivar TeamFolderCreateType team_folder_create: (team_folders) Created a new
-        team folder in active status.
+        Changed archival status of team folder
+    :ivar TeamFolderCreateType team_folder_create: (team_folders) Created team
+        folder in active status
     :ivar TeamFolderDowngradeType team_folder_downgrade: (team_folders)
-        Downgraded a team folder to a regular shared folder.
+        Downgraded team folder to regular shared folder
     :ivar TeamFolderPermanentlyDeleteType team_folder_permanently_delete:
-        (team_folders) Permanently deleted an archived team folder.
-    :ivar TeamFolderRenameType team_folder_rename: (team_folders) Renamed an
-        active or archived team folder.
+        (team_folders) Permanently deleted archived team folder
+    :ivar TeamFolderRenameType team_folder_rename: (team_folders) Renamed
+        active/archived team folder
+    :ivar TeamSelectiveSyncSettingsChangedType
+        team_selective_sync_settings_changed: (team_folders) Changed sync
+        default
     :ivar AccountCaptureChangePolicyType account_capture_change_policy:
-        (team_policies) Changed the account capture policy on a domain belonging
-        to the team.
+        (team_policies) Changed account capture setting on team domain
     :ivar AllowDownloadDisabledType allow_download_disabled: (team_policies)
-        Disabled allow downloads. This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
+        Disabled downloads (deprecated, no longer logged)
     :ivar AllowDownloadEnabledType allow_download_enabled: (team_policies)
-        Enabled allow downloads. This event is deprecated and will not be logged
-        going forward as the associated product functionality no longer exists.
+        Enabled downloads (deprecated, no longer logged)
     :ivar DataPlacementRestrictionChangePolicyType
-        data_placement_restriction_change_policy: (team_policies) Set a
-        restriction policy regarding the location of data centers where team
-        data resides.
+        data_placement_restriction_change_policy: (team_policies) Set
+        restrictions on data center locations where team data resides
     :ivar DataPlacementRestrictionSatisfyPolicyType
-        data_placement_restriction_satisfy_policy: (team_policies) Satisfied a
-        previously set restriction policy regarding the location of data centers
-        where team data resides (i.e. all data have been migrated according to
-        the restriction placed).
+        data_placement_restriction_satisfy_policy: (team_policies) Completed
+        restrictions on data center locations where team data resides
     :ivar DeviceApprovalsChangeDesktopPolicyType
-        device_approvals_change_desktop_policy: (team_policies) Set or removed a
-        limit on the number of computers each team member can link to their work
-        Dropbox account.
+        device_approvals_change_desktop_policy: (team_policies) Set/removed
+        limit on number of computers member can link to team Dropbox account
     :ivar DeviceApprovalsChangeMobilePolicyType
-        device_approvals_change_mobile_policy: (team_policies) Set or removed a
-        limit on the number of mobiles devices each team member can link to
-        their work Dropbox account.
+        device_approvals_change_mobile_policy: (team_policies) Set/removed limit
+        on number of mobile devices member can link to team Dropbox account
     :ivar DeviceApprovalsChangeOverageActionType
-        device_approvals_change_overage_action: (team_policies) Changed the
-        action taken when a team member is already over the limits (e.g when
-        they join the team, an admin lowers limits, etc.).
+        device_approvals_change_overage_action: (team_policies) Changed device
+        approvals setting when member is over limit
     :ivar DeviceApprovalsChangeUnlinkActionType
-        device_approvals_change_unlink_action: (team_policies) Changed the
-        action taken with respect to approval limits when a team member unlinks
-        an approved device.
-    :ivar EmmAddExceptionType emm_add_exception: (team_policies) Added an
-        exception for one or more team members to optionally use the regular
-        Dropbox app when EMM is enabled.
-    :ivar EmmChangePolicyType emm_change_policy: (team_policies) Enabled or
-        disabled enterprise mobility management for team members.
+        device_approvals_change_unlink_action: (team_policies) Changed device
+        approvals setting when member unlinks approved device
+    :ivar EmmAddExceptionType emm_add_exception: (team_policies) Added members
+        to EMM exception list
+    :ivar EmmChangePolicyType emm_change_policy: (team_policies)
+        Enabled/disabled enterprise mobility management for members
     :ivar EmmRemoveExceptionType emm_remove_exception: (team_policies) Removed
-        an exception for one or more team members to optionally use the regular
-        Dropbox app when EMM is enabled.
+        members from EMM exception list
     :ivar ExtendedVersionHistoryChangePolicyType
-        extended_version_history_change_policy: (team_policies) Accepted or
-        opted out of extended version history.
+        extended_version_history_change_policy: (team_policies) Accepted/opted
+        out of extended version history
     :ivar FileCommentsChangePolicyType file_comments_change_policy:
-        (team_policies) Enabled or disabled commenting on team files.
+        (team_policies) Enabled/disabled commenting on team files
     :ivar FileRequestsChangePolicyType file_requests_change_policy:
-        (team_policies) Enabled or disabled file requests.
+        (team_policies) Enabled/disabled file requests
     :ivar FileRequestsEmailsEnabledType file_requests_emails_enabled:
-        (team_policies) Enabled file request emails for everyone. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (team_policies) Enabled file request emails for everyone (deprecated, no
+        longer logged)
     :ivar FileRequestsEmailsRestrictedToTeamOnlyType
-        file_requests_emails_restricted_to_team_only: (team_policies) Allowed
-        file request emails for the team. This event is deprecated and will not
-        be logged going forward as the associated product functionality no
-        longer exists.
+        file_requests_emails_restricted_to_team_only: (team_policies) Enabled
+        file request emails for team (deprecated, no longer logged)
     :ivar GoogleSsoChangePolicyType google_sso_change_policy: (team_policies)
-        Enabled or disabled Google single sign-on for the team.
+        Enabled/disabled Google single sign-on for team
     :ivar GroupUserManagementChangePolicyType
         group_user_management_change_policy: (team_policies) Changed who can
-        create groups.
+        create groups
     :ivar MemberRequestsChangePolicyType member_requests_change_policy:
-        (team_policies) Changed whether users can find the team when not
-        invited.
+        (team_policies) Changed whether users can find team when not invited
     :ivar MemberSpaceLimitsAddExceptionType member_space_limits_add_exception:
-        (team_policies) Added an exception for one or more team members to
-        bypass space limits imposed by policy.
+        (team_policies) Added members to member space limit exception list
     :ivar MemberSpaceLimitsChangeCapsTypePolicyType
-        member_space_limits_change_caps_type_policy: (team_policies) Change the
-        member space limit type for the team.
+        member_space_limits_change_caps_type_policy: (team_policies) Changed
+        member space limit type for team
     :ivar MemberSpaceLimitsChangePolicyType member_space_limits_change_policy:
-        (team_policies) Changed the team default limit level.
+        (team_policies) Changed team default member space limit
     :ivar MemberSpaceLimitsRemoveExceptionType
-        member_space_limits_remove_exception: (team_policies) Removed an
-        exception for one or more team members to bypass space limits imposed by
-        policy.
+        member_space_limits_remove_exception: (team_policies) Removed members
+        from member space limit exception list
     :ivar MemberSuggestionsChangePolicyType member_suggestions_change_policy:
-        (team_policies) Enabled or disabled the option for team members to
-        suggest new members to add to the team.
+        (team_policies) Enabled/disabled option for team members to suggest
+        people to add to team
     :ivar MicrosoftOfficeAddinChangePolicyType
-        microsoft_office_addin_change_policy: (team_policies) Enabled or
-        disabled the Microsoft Office add-in, which lets team members save files
-        to Dropbox directly from Microsoft Office.
+        microsoft_office_addin_change_policy: (team_policies) Enabled/disabled
+        Microsoft Office add-in
     :ivar NetworkControlChangePolicyType network_control_change_policy:
-        (team_policies) Enabled or disabled network control.
+        (team_policies) Enabled/disabled network control
     :ivar PaperChangeDeploymentPolicyType paper_change_deployment_policy:
         (team_policies) Changed whether Dropbox Paper, when enabled, is deployed
-        to all teams or to specific members of the team.
+        to all members or to specific members
     :ivar PaperChangeMemberLinkPolicyType paper_change_member_link_policy:
-        (team_policies) Changed whether non team members can view Paper
-        documents using a link. This event is deprecated and will not be logged
-        going forward as the associated product functionality no longer exists.
+        (team_policies) Changed whether non-members can view Paper docs with
+        link (deprecated, no longer logged)
     :ivar PaperChangeMemberPolicyType paper_change_member_policy:
-        (team_policies) Changed whether team members can share Paper documents
-        externally (i.e. outside the team), and if so, whether they should be
-        accessible only by team members or anyone by default.
-    :ivar PaperChangePolicyType paper_change_policy: (team_policies) Enabled or
-        disabled Dropbox Paper for the team.
+        (team_policies) Changed whether members can share Paper docs outside
+        team, and if docs are accessible only by team members or anyone by
+        default
+    :ivar PaperChangePolicyType paper_change_policy: (team_policies)
+        Enabled/disabled Dropbox Paper for team
     :ivar PaperEnabledUsersGroupAdditionType paper_enabled_users_group_addition:
-        (team_policies) Users added to Paper enabled users list.
+        (team_policies) Added users to Paper-enabled users list
     :ivar PaperEnabledUsersGroupRemovalType paper_enabled_users_group_removal:
-        (team_policies) Users removed from Paper enabled users list.
+        (team_policies) Removed users from Paper-enabled users list
     :ivar PermanentDeleteChangePolicyType permanent_delete_change_policy:
-        (team_policies) Enabled or disabled the ability of team members to
-        permanently delete content.
+        (team_policies) Enabled/disabled ability of team members to permanently
+        delete content
     :ivar SharingChangeFolderJoinPolicyType sharing_change_folder_join_policy:
         (team_policies) Changed whether team members can join shared folders
-        owned externally (i.e. outside the team).
+        owned outside team
     :ivar SharingChangeLinkPolicyType sharing_change_link_policy:
-        (team_policies) Changed whether team members can share links externally
-        (i.e. outside the team), and if so, whether links should be accessible
-        only by team members or anyone by default.
+        (team_policies) Changed whether members can share links outside team,
+        and if links are accessible only by team members or anyone by default
     :ivar SharingChangeMemberPolicyType sharing_change_member_policy:
-        (team_policies) Changed whether team members can share files and folders
-        externally (i.e. outside the team).
+        (team_policies) Changed whether members can share files/folders outside
+        team
     :ivar SmartSyncChangePolicyType smart_sync_change_policy: (team_policies)
-        Changed the default Smart Sync policy for team members.
+        Changed default Smart Sync setting for team members
     :ivar SmartSyncNotOptOutType smart_sync_not_opt_out: (team_policies) Opted
-        team into Smart Sync.
+        team into Smart Sync
     :ivar SmartSyncOptOutType smart_sync_opt_out: (team_policies) Opted team out
-        of Smart Sync.
-    :ivar SsoChangePolicyType sso_change_policy: (team_policies) Change the
-        single sign-on policy for the team.
-    :ivar TfaChangePolicyType tfa_change_policy: (team_policies) Change two-step
-        verification policy for the team.
+        of Smart Sync
+    :ivar SsoChangePolicyType sso_change_policy: (team_policies) Changed single
+        sign-on setting for team
+    :ivar TfaChangePolicyType tfa_change_policy: (team_policies) Changed
+        two-step verification setting for team
     :ivar TwoAccountChangePolicyType two_account_change_policy: (team_policies)
-        Enabled or disabled the option for team members to link a personal
-        Dropbox account in addition to their work account to the same computer.
+        Enabled/disabled option for members to link personal Dropbox account and
+        team account to same computer
     :ivar WebSessionsChangeFixedLengthPolicyType
         web_sessions_change_fixed_length_policy: (team_policies) Changed how
-        long team members can stay signed in to Dropbox on the web.
+        long members can stay signed in to Dropbox.com
     :ivar WebSessionsChangeIdleLengthPolicyType
         web_sessions_change_idle_length_policy: (team_policies) Changed how long
-        team members can be idle while signed in to Dropbox on the web.
+        team members can be idle while signed in to Dropbox.com
     :ivar TeamMergeFromType team_merge_from: (team_profile) Merged another team
-        into this team.
+        into this team
     :ivar TeamMergeToType team_merge_to: (team_profile) Merged this team into
-        another team.
-    :ivar TeamProfileAddLogoType team_profile_add_logo: (team_profile) Added a
-        team logo to be displayed on shared link headers.
+        another team
+    :ivar TeamProfileAddLogoType team_profile_add_logo: (team_profile) Added
+        team logo to display on shared link headers
     :ivar TeamProfileChangeDefaultLanguageType
-        team_profile_change_default_language: (team_profile) Changed the default
-        language for the team.
+        team_profile_change_default_language: (team_profile) Changed default
+        language for team
     :ivar TeamProfileChangeLogoType team_profile_change_logo: (team_profile)
-        Changed the team logo to be displayed on shared link headers.
+        Changed team logo displayed on shared link headers
     :ivar TeamProfileChangeNameType team_profile_change_name: (team_profile)
-        Changed the team name.
+        Changed team name
     :ivar TeamProfileRemoveLogoType team_profile_remove_logo: (team_profile)
-        Removed the team logo to be displayed on shared link headers.
-    :ivar TfaAddBackupPhoneType tfa_add_backup_phone: (tfa) Added a backup phone
-        for two-step verification.
-    :ivar TfaAddSecurityKeyType tfa_add_security_key: (tfa) Added a security key
-        for two-step verification.
-    :ivar TfaChangeBackupPhoneType tfa_change_backup_phone: (tfa) Changed the
-        backup phone for two-step verification.
-    :ivar TfaChangeStatusType tfa_change_status: (tfa) Enabled, disabled or
-        changed the configuration for two-step verification.
-    :ivar TfaRemoveBackupPhoneType tfa_remove_backup_phone: (tfa) Removed the
-        backup phone for two-step verification.
-    :ivar TfaRemoveSecurityKeyType tfa_remove_security_key: (tfa) Removed a
-        security key for two-step verification.
+        Removed team logo displayed on shared link headers
+    :ivar TfaAddBackupPhoneType tfa_add_backup_phone: (tfa) Added backup phone
+        for two-step verification
+    :ivar TfaAddSecurityKeyType tfa_add_security_key: (tfa) Added security key
+        for two-step verification
+    :ivar TfaChangeBackupPhoneType tfa_change_backup_phone: (tfa) Changed backup
+        phone for two-step verification
+    :ivar TfaChangeStatusType tfa_change_status: (tfa) Enabled/disabled/changed
+        two-step verification setting
+    :ivar TfaRemoveBackupPhoneType tfa_remove_backup_phone: (tfa) Removed backup
+        phone for two-step verification
+    :ivar TfaRemoveSecurityKeyType tfa_remove_security_key: (tfa) Removed
+        security key for two-step verification
     :ivar TfaResetType tfa_reset: (tfa) Reset two-step verification for team
-        member.
+        member
     """
 
     _catch_all = 'other'
@@ -16228,6 +16911,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('group_delete', val)
+
+    @classmethod
+    def group_description_updated(cls, val):
+        """
+        Create an instance of this class set to the
+        ``group_description_updated`` tag with value ``val``.
+
+        :param GroupDescriptionUpdatedType val:
+        :rtype: EventType
+        """
+        return cls('group_description_updated', val)
+
+    @classmethod
+    def group_join_policy_updated(cls, val):
+        """
+        Create an instance of this class set to the
+        ``group_join_policy_updated`` tag with value ``val``.
+
+        :param GroupJoinPolicyUpdatedType val:
+        :rtype: EventType
+        """
+        return cls('group_join_policy_updated', val)
 
     @classmethod
     def group_moved(cls, val):
@@ -17717,6 +18422,248 @@ class EventType(bb.Union):
         return cls('shmodel_group_share', val)
 
     @classmethod
+    def showcase_access_granted(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_access_granted``
+        tag with value ``val``.
+
+        :param ShowcaseAccessGrantedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_access_granted', val)
+
+    @classmethod
+    def showcase_add_member(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_add_member`` tag
+        with value ``val``.
+
+        :param ShowcaseAddMemberType val:
+        :rtype: EventType
+        """
+        return cls('showcase_add_member', val)
+
+    @classmethod
+    def showcase_archived(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_archived`` tag
+        with value ``val``.
+
+        :param ShowcaseArchivedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_archived', val)
+
+    @classmethod
+    def showcase_created(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_created`` tag
+        with value ``val``.
+
+        :param ShowcaseCreatedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_created', val)
+
+    @classmethod
+    def showcase_delete_comment(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_delete_comment``
+        tag with value ``val``.
+
+        :param ShowcaseDeleteCommentType val:
+        :rtype: EventType
+        """
+        return cls('showcase_delete_comment', val)
+
+    @classmethod
+    def showcase_edited(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_edited`` tag with
+        value ``val``.
+
+        :param ShowcaseEditedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_edited', val)
+
+    @classmethod
+    def showcase_edit_comment(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_edit_comment``
+        tag with value ``val``.
+
+        :param ShowcaseEditCommentType val:
+        :rtype: EventType
+        """
+        return cls('showcase_edit_comment', val)
+
+    @classmethod
+    def showcase_file_added(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_file_added`` tag
+        with value ``val``.
+
+        :param ShowcaseFileAddedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_file_added', val)
+
+    @classmethod
+    def showcase_file_download(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_file_download``
+        tag with value ``val``.
+
+        :param ShowcaseFileDownloadType val:
+        :rtype: EventType
+        """
+        return cls('showcase_file_download', val)
+
+    @classmethod
+    def showcase_file_removed(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_file_removed``
+        tag with value ``val``.
+
+        :param ShowcaseFileRemovedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_file_removed', val)
+
+    @classmethod
+    def showcase_file_view(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_file_view`` tag
+        with value ``val``.
+
+        :param ShowcaseFileViewType val:
+        :rtype: EventType
+        """
+        return cls('showcase_file_view', val)
+
+    @classmethod
+    def showcase_permanently_deleted(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_permanently_deleted`` tag with value ``val``.
+
+        :param ShowcasePermanentlyDeletedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_permanently_deleted', val)
+
+    @classmethod
+    def showcase_post_comment(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_post_comment``
+        tag with value ``val``.
+
+        :param ShowcasePostCommentType val:
+        :rtype: EventType
+        """
+        return cls('showcase_post_comment', val)
+
+    @classmethod
+    def showcase_remove_member(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_remove_member``
+        tag with value ``val``.
+
+        :param ShowcaseRemoveMemberType val:
+        :rtype: EventType
+        """
+        return cls('showcase_remove_member', val)
+
+    @classmethod
+    def showcase_renamed(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_renamed`` tag
+        with value ``val``.
+
+        :param ShowcaseRenamedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_renamed', val)
+
+    @classmethod
+    def showcase_request_access(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_request_access``
+        tag with value ``val``.
+
+        :param ShowcaseRequestAccessType val:
+        :rtype: EventType
+        """
+        return cls('showcase_request_access', val)
+
+    @classmethod
+    def showcase_resolve_comment(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_resolve_comment``
+        tag with value ``val``.
+
+        :param ShowcaseResolveCommentType val:
+        :rtype: EventType
+        """
+        return cls('showcase_resolve_comment', val)
+
+    @classmethod
+    def showcase_restored(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_restored`` tag
+        with value ``val``.
+
+        :param ShowcaseRestoredType val:
+        :rtype: EventType
+        """
+        return cls('showcase_restored', val)
+
+    @classmethod
+    def showcase_trashed(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_trashed`` tag
+        with value ``val``.
+
+        :param ShowcaseTrashedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_trashed', val)
+
+    @classmethod
+    def showcase_unresolve_comment(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_unresolve_comment`` tag with value ``val``.
+
+        :param ShowcaseUnresolveCommentType val:
+        :rtype: EventType
+        """
+        return cls('showcase_unresolve_comment', val)
+
+    @classmethod
+    def showcase_untrashed(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_untrashed`` tag
+        with value ``val``.
+
+        :param ShowcaseUntrashedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_untrashed', val)
+
+    @classmethod
+    def showcase_view(cls, val):
+        """
+        Create an instance of this class set to the ``showcase_view`` tag with
+        value ``val``.
+
+        :param ShowcaseViewType val:
+        :rtype: EventType
+        """
+        return cls('showcase_view', val)
+
+    @classmethod
     def sso_add_cert(cls, val):
         """
         Create an instance of this class set to the ``sso_add_cert`` tag with
@@ -17880,6 +18827,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('team_folder_rename', val)
+
+    @classmethod
+    def team_selective_sync_settings_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_selective_sync_settings_changed`` tag with value ``val``.
+
+        :param TeamSelectiveSyncSettingsChangedType val:
+        :rtype: EventType
+        """
+        return cls('team_selective_sync_settings_changed', val)
 
     @classmethod
     def account_capture_change_policy(cls, val):
@@ -19034,6 +19992,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'group_delete'
 
+    def is_group_description_updated(self):
+        """
+        Check if the union tag is ``group_description_updated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_description_updated'
+
+    def is_group_join_policy_updated(self):
+        """
+        Check if the union tag is ``group_join_policy_updated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_join_policy_updated'
+
     def is_group_moved(self):
         """
         Check if the union tag is ``group_moved``.
@@ -20114,6 +21088,182 @@ class EventType(bb.Union):
         """
         return self._tag == 'shmodel_group_share'
 
+    def is_showcase_access_granted(self):
+        """
+        Check if the union tag is ``showcase_access_granted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_access_granted'
+
+    def is_showcase_add_member(self):
+        """
+        Check if the union tag is ``showcase_add_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_add_member'
+
+    def is_showcase_archived(self):
+        """
+        Check if the union tag is ``showcase_archived``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_archived'
+
+    def is_showcase_created(self):
+        """
+        Check if the union tag is ``showcase_created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_created'
+
+    def is_showcase_delete_comment(self):
+        """
+        Check if the union tag is ``showcase_delete_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_delete_comment'
+
+    def is_showcase_edited(self):
+        """
+        Check if the union tag is ``showcase_edited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_edited'
+
+    def is_showcase_edit_comment(self):
+        """
+        Check if the union tag is ``showcase_edit_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_edit_comment'
+
+    def is_showcase_file_added(self):
+        """
+        Check if the union tag is ``showcase_file_added``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_added'
+
+    def is_showcase_file_download(self):
+        """
+        Check if the union tag is ``showcase_file_download``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_download'
+
+    def is_showcase_file_removed(self):
+        """
+        Check if the union tag is ``showcase_file_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_removed'
+
+    def is_showcase_file_view(self):
+        """
+        Check if the union tag is ``showcase_file_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_view'
+
+    def is_showcase_permanently_deleted(self):
+        """
+        Check if the union tag is ``showcase_permanently_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_permanently_deleted'
+
+    def is_showcase_post_comment(self):
+        """
+        Check if the union tag is ``showcase_post_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_post_comment'
+
+    def is_showcase_remove_member(self):
+        """
+        Check if the union tag is ``showcase_remove_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_remove_member'
+
+    def is_showcase_renamed(self):
+        """
+        Check if the union tag is ``showcase_renamed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_renamed'
+
+    def is_showcase_request_access(self):
+        """
+        Check if the union tag is ``showcase_request_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_request_access'
+
+    def is_showcase_resolve_comment(self):
+        """
+        Check if the union tag is ``showcase_resolve_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_resolve_comment'
+
+    def is_showcase_restored(self):
+        """
+        Check if the union tag is ``showcase_restored``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_restored'
+
+    def is_showcase_trashed(self):
+        """
+        Check if the union tag is ``showcase_trashed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_trashed'
+
+    def is_showcase_unresolve_comment(self):
+        """
+        Check if the union tag is ``showcase_unresolve_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_unresolve_comment'
+
+    def is_showcase_untrashed(self):
+        """
+        Check if the union tag is ``showcase_untrashed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_untrashed'
+
+    def is_showcase_view(self):
+        """
+        Check if the union tag is ``showcase_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_view'
+
     def is_sso_add_cert(self):
         """
         Check if the union tag is ``sso_add_cert``.
@@ -20233,6 +21383,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_folder_rename'
+
+    def is_team_selective_sync_settings_changed(self):
+        """
+        Check if the union tag is ``team_selective_sync_settings_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_selective_sync_settings_changed'
 
     def is_account_capture_change_policy(self):
         """
@@ -20716,7 +21874,7 @@ class EventType(bb.Union):
 
     def get_app_link_team(self):
         """
-        (apps) Linked an app for team.
+        (apps) Linked app for team
 
         Only call this if :meth:`is_app_link_team` is true.
 
@@ -20728,7 +21886,7 @@ class EventType(bb.Union):
 
     def get_app_link_user(self):
         """
-        (apps) Linked an app for team member.
+        (apps) Linked app for member
 
         Only call this if :meth:`is_app_link_user` is true.
 
@@ -20740,7 +21898,7 @@ class EventType(bb.Union):
 
     def get_app_unlink_team(self):
         """
-        (apps) Unlinked an app for team.
+        (apps) Unlinked app for team
 
         Only call this if :meth:`is_app_unlink_team` is true.
 
@@ -20752,7 +21910,7 @@ class EventType(bb.Union):
 
     def get_app_unlink_user(self):
         """
-        (apps) Unlinked an app for team member.
+        (apps) Unlinked app for member
 
         Only call this if :meth:`is_app_unlink_user` is true.
 
@@ -20764,7 +21922,7 @@ class EventType(bb.Union):
 
     def get_file_add_comment(self):
         """
-        (comments) Added a file comment.
+        (comments) Added file comment
 
         Only call this if :meth:`is_file_add_comment` is true.
 
@@ -20777,7 +21935,7 @@ class EventType(bb.Union):
     def get_file_change_comment_subscription(self):
         """
         (comments) Subscribed to or unsubscribed from comment notifications for
-        file.
+        file
 
         Only call this if :meth:`is_file_change_comment_subscription` is true.
 
@@ -20789,7 +21947,7 @@ class EventType(bb.Union):
 
     def get_file_delete_comment(self):
         """
-        (comments) Deleted a file comment.
+        (comments) Deleted file comment
 
         Only call this if :meth:`is_file_delete_comment` is true.
 
@@ -20801,9 +21959,7 @@ class EventType(bb.Union):
 
     def get_file_like_comment(self):
         """
-        (comments) Liked a file comment. This event is deprecated and will not
-        be logged going forward as the associated product functionality no
-        longer exists.
+        (comments) Liked file comment (deprecated, no longer logged)
 
         Only call this if :meth:`is_file_like_comment` is true.
 
@@ -20815,7 +21971,7 @@ class EventType(bb.Union):
 
     def get_file_resolve_comment(self):
         """
-        (comments) Resolved a file comment.
+        (comments) Resolved file comment
 
         Only call this if :meth:`is_file_resolve_comment` is true.
 
@@ -20827,9 +21983,7 @@ class EventType(bb.Union):
 
     def get_file_unlike_comment(self):
         """
-        (comments) Unliked a file comment. This event is deprecated and will not
-        be logged going forward as the associated product functionality no
-        longer exists.
+        (comments) Unliked file comment (deprecated, no longer logged)
 
         Only call this if :meth:`is_file_unlike_comment` is true.
 
@@ -20841,7 +21995,7 @@ class EventType(bb.Union):
 
     def get_file_unresolve_comment(self):
         """
-        (comments) Unresolved a file comment.
+        (comments) Unresolved file comment
 
         Only call this if :meth:`is_file_unresolve_comment` is true.
 
@@ -20853,7 +22007,7 @@ class EventType(bb.Union):
 
     def get_device_change_ip_desktop(self):
         """
-        (devices) IP address associated with active desktop session changed.
+        (devices) Changed IP address associated with active desktop session
 
         Only call this if :meth:`is_device_change_ip_desktop` is true.
 
@@ -20865,7 +22019,7 @@ class EventType(bb.Union):
 
     def get_device_change_ip_mobile(self):
         """
-        (devices) IP address associated with active mobile session changed.
+        (devices) Changed IP address associated with active mobile session
 
         Only call this if :meth:`is_device_change_ip_mobile` is true.
 
@@ -20877,7 +22031,7 @@ class EventType(bb.Union):
 
     def get_device_change_ip_web(self):
         """
-        (devices) IP address associated with active Web session changed.
+        (devices) Changed IP address associated with active web session
 
         Only call this if :meth:`is_device_change_ip_web` is true.
 
@@ -20889,7 +22043,7 @@ class EventType(bb.Union):
 
     def get_device_delete_on_unlink_fail(self):
         """
-        (devices) Failed to delete all files from an unlinked device.
+        (devices) Failed to delete all files from unlinked device
 
         Only call this if :meth:`is_device_delete_on_unlink_fail` is true.
 
@@ -20901,7 +22055,7 @@ class EventType(bb.Union):
 
     def get_device_delete_on_unlink_success(self):
         """
-        (devices) Deleted all files from an unlinked device.
+        (devices) Deleted all files from unlinked device
 
         Only call this if :meth:`is_device_delete_on_unlink_success` is true.
 
@@ -20913,7 +22067,7 @@ class EventType(bb.Union):
 
     def get_device_link_fail(self):
         """
-        (devices) Failed to link a device.
+        (devices) Failed to link device
 
         Only call this if :meth:`is_device_link_fail` is true.
 
@@ -20925,7 +22079,7 @@ class EventType(bb.Union):
 
     def get_device_link_success(self):
         """
-        (devices) Linked a device.
+        (devices) Linked device
 
         Only call this if :meth:`is_device_link_success` is true.
 
@@ -20937,9 +22091,7 @@ class EventType(bb.Union):
 
     def get_device_management_disabled(self):
         """
-        (devices) Disable Device Management. This event is deprecated and will
-        not be logged going forward as the associated product functionality no
-        longer exists.
+        (devices) Disabled device management (deprecated, no longer logged)
 
         Only call this if :meth:`is_device_management_disabled` is true.
 
@@ -20951,9 +22103,7 @@ class EventType(bb.Union):
 
     def get_device_management_enabled(self):
         """
-        (devices) Enable Device Management. This event is deprecated and will
-        not be logged going forward as the associated product functionality no
-        longer exists.
+        (devices) Enabled device management (deprecated, no longer logged)
 
         Only call this if :meth:`is_device_management_enabled` is true.
 
@@ -20965,7 +22115,7 @@ class EventType(bb.Union):
 
     def get_device_unlink(self):
         """
-        (devices) Disconnected a device.
+        (devices) Disconnected device
 
         Only call this if :meth:`is_device_unlink` is true.
 
@@ -20977,8 +22127,8 @@ class EventType(bb.Union):
 
     def get_emm_refresh_auth_token(self):
         """
-        (devices) Refreshed the auth token used for setting up enterprise
-        mobility management.
+        (devices) Refreshed auth token used for setting up enterprise mobility
+        management
 
         Only call this if :meth:`is_emm_refresh_auth_token` is true.
 
@@ -20990,8 +22140,8 @@ class EventType(bb.Union):
 
     def get_account_capture_change_availability(self):
         """
-        (domains) Granted or revoked the option to enable account capture on
-        domains belonging to the team.
+        (domains) Granted/revoked option to enable account capture on team
+        domains
 
         Only call this if :meth:`is_account_capture_change_availability` is true.
 
@@ -21003,7 +22153,7 @@ class EventType(bb.Union):
 
     def get_account_capture_migrate_account(self):
         """
-        (domains) Account captured user migrated their account to the team.
+        (domains) Account-captured user migrated account to team
 
         Only call this if :meth:`is_account_capture_migrate_account` is true.
 
@@ -21015,7 +22165,7 @@ class EventType(bb.Union):
 
     def get_account_capture_notification_emails_sent(self):
         """
-        (domains) Proactive account capture email sent to all unmanaged members.
+        (domains) Sent proactive account capture email to all unmanaged members
 
         Only call this if :meth:`is_account_capture_notification_emails_sent` is true.
 
@@ -21027,8 +22177,7 @@ class EventType(bb.Union):
 
     def get_account_capture_relinquish_account(self):
         """
-        (domains) Account captured user relinquished their account by changing
-        the email address associated with it.
+        (domains) Account-captured user changed account email to personal email
 
         Only call this if :meth:`is_account_capture_relinquish_account` is true.
 
@@ -21040,9 +22189,7 @@ class EventType(bb.Union):
 
     def get_disabled_domain_invites(self):
         """
-        (domains) Disabled domain invites. This event is deprecated and will not
-        be logged going forward as the associated product functionality no
-        longer exists.
+        (domains) Disabled domain invites (deprecated, no longer logged)
 
         Only call this if :meth:`is_disabled_domain_invites` is true.
 
@@ -21054,7 +22201,7 @@ class EventType(bb.Union):
 
     def get_domain_invites_approve_request_to_join_team(self):
         """
-        (domains) Approved a member's request to join the team.
+        (domains) Approved user's request to join team
 
         Only call this if :meth:`is_domain_invites_approve_request_to_join_team` is true.
 
@@ -21066,7 +22213,7 @@ class EventType(bb.Union):
 
     def get_domain_invites_decline_request_to_join_team(self):
         """
-        (domains) Declined a user's request to join the team.
+        (domains) Declined user's request to join team
 
         Only call this if :meth:`is_domain_invites_decline_request_to_join_team` is true.
 
@@ -21078,7 +22225,7 @@ class EventType(bb.Union):
 
     def get_domain_invites_email_existing_users(self):
         """
-        (domains) Sent domain invites to existing domain accounts.
+        (domains) Sent domain invites to existing domain accounts
 
         Only call this if :meth:`is_domain_invites_email_existing_users` is true.
 
@@ -21090,7 +22237,7 @@ class EventType(bb.Union):
 
     def get_domain_invites_request_to_join_team(self):
         """
-        (domains) Asked to join the team.
+        (domains) Requested to join team
 
         Only call this if :meth:`is_domain_invites_request_to_join_team` is true.
 
@@ -21102,9 +22249,8 @@ class EventType(bb.Union):
 
     def get_domain_invites_set_invite_new_user_pref_to_no(self):
         """
-        (domains) Turned off u201cAutomatically invite new usersu201d. This
-        event is deprecated and will not be logged going forward as the
-        associated product functionality no longer exists.
+        (domains) Disabled "Automatically invite new users" (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_domain_invites_set_invite_new_user_pref_to_no` is true.
 
@@ -21116,9 +22262,8 @@ class EventType(bb.Union):
 
     def get_domain_invites_set_invite_new_user_pref_to_yes(self):
         """
-        (domains) Turned on u201cAutomatically invite new usersu201d. This event
-        is deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (domains) Enabled "Automatically invite new users" (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_domain_invites_set_invite_new_user_pref_to_yes` is true.
 
@@ -21130,7 +22275,7 @@ class EventType(bb.Union):
 
     def get_domain_verification_add_domain_fail(self):
         """
-        (domains) Failed to verify a domain belonging to the team.
+        (domains) Failed to verify team domain
 
         Only call this if :meth:`is_domain_verification_add_domain_fail` is true.
 
@@ -21142,7 +22287,7 @@ class EventType(bb.Union):
 
     def get_domain_verification_add_domain_success(self):
         """
-        (domains) Verified a domain belonging to the team.
+        (domains) Verified team domain
 
         Only call this if :meth:`is_domain_verification_add_domain_success` is true.
 
@@ -21154,8 +22299,7 @@ class EventType(bb.Union):
 
     def get_domain_verification_remove_domain(self):
         """
-        (domains) Removed a domain from the list of verified domains belonging
-        to the team.
+        (domains) Removed domain from list of verified team domains
 
         Only call this if :meth:`is_domain_verification_remove_domain` is true.
 
@@ -21167,9 +22311,7 @@ class EventType(bb.Union):
 
     def get_enabled_domain_invites(self):
         """
-        (domains) Enabled domain invites. This event is deprecated and will not
-        be logged going forward as the associated product functionality no
-        longer exists.
+        (domains) Enabled domain invites (deprecated, no longer logged)
 
         Only call this if :meth:`is_enabled_domain_invites` is true.
 
@@ -21181,9 +22323,7 @@ class EventType(bb.Union):
 
     def get_create_folder(self):
         """
-        (file_operations) Created folders. This event is deprecated and will not
-        be logged going forward as the associated product functionality no
-        longer exists.
+        (file_operations) Created folders (deprecated, no longer logged)
 
         Only call this if :meth:`is_create_folder` is true.
 
@@ -21195,7 +22335,7 @@ class EventType(bb.Union):
 
     def get_file_add(self):
         """
-        (file_operations) Added files and/or folders.
+        (file_operations) Added files and/or folders
 
         Only call this if :meth:`is_file_add` is true.
 
@@ -21207,7 +22347,7 @@ class EventType(bb.Union):
 
     def get_file_copy(self):
         """
-        (file_operations) Copied files and/or folders.
+        (file_operations) Copied files and/or folders
 
         Only call this if :meth:`is_file_copy` is true.
 
@@ -21219,7 +22359,7 @@ class EventType(bb.Union):
 
     def get_file_delete(self):
         """
-        (file_operations) Deleted files and/or folders.
+        (file_operations) Deleted files and/or folders
 
         Only call this if :meth:`is_file_delete` is true.
 
@@ -21231,7 +22371,7 @@ class EventType(bb.Union):
 
     def get_file_download(self):
         """
-        (file_operations) Downloaded files and/or folders.
+        (file_operations) Downloaded files and/or folders
 
         Only call this if :meth:`is_file_download` is true.
 
@@ -21243,7 +22383,7 @@ class EventType(bb.Union):
 
     def get_file_edit(self):
         """
-        (file_operations) Edited files.
+        (file_operations) Edited files
 
         Only call this if :meth:`is_file_edit` is true.
 
@@ -21255,7 +22395,7 @@ class EventType(bb.Union):
 
     def get_file_get_copy_reference(self):
         """
-        (file_operations) Create a copy reference to a file or folder.
+        (file_operations) Created copy reference to file/folder
 
         Only call this if :meth:`is_file_get_copy_reference` is true.
 
@@ -21267,7 +22407,7 @@ class EventType(bb.Union):
 
     def get_file_move(self):
         """
-        (file_operations) Moved files and/or folders.
+        (file_operations) Moved files and/or folders
 
         Only call this if :meth:`is_file_move` is true.
 
@@ -21279,7 +22419,7 @@ class EventType(bb.Union):
 
     def get_file_permanently_delete(self):
         """
-        (file_operations) Permanently deleted files and/or folders.
+        (file_operations) Permanently deleted files and/or folders
 
         Only call this if :meth:`is_file_permanently_delete` is true.
 
@@ -21291,7 +22431,7 @@ class EventType(bb.Union):
 
     def get_file_preview(self):
         """
-        (file_operations) Previewed files and/or folders.
+        (file_operations) Previewed files and/or folders
 
         Only call this if :meth:`is_file_preview` is true.
 
@@ -21303,7 +22443,7 @@ class EventType(bb.Union):
 
     def get_file_rename(self):
         """
-        (file_operations) Renamed files and/or folders.
+        (file_operations) Renamed files and/or folders
 
         Only call this if :meth:`is_file_rename` is true.
 
@@ -21315,7 +22455,7 @@ class EventType(bb.Union):
 
     def get_file_restore(self):
         """
-        (file_operations) Restored deleted files and/or folders.
+        (file_operations) Restored deleted files and/or folders
 
         Only call this if :meth:`is_file_restore` is true.
 
@@ -21327,7 +22467,7 @@ class EventType(bb.Union):
 
     def get_file_revert(self):
         """
-        (file_operations) Reverted files to a previous version.
+        (file_operations) Reverted files to previous version
 
         Only call this if :meth:`is_file_revert` is true.
 
@@ -21339,7 +22479,7 @@ class EventType(bb.Union):
 
     def get_file_rollback_changes(self):
         """
-        (file_operations) Rolled back file change location changes.
+        (file_operations) Rolled back file actions
 
         Only call this if :meth:`is_file_rollback_changes` is true.
 
@@ -21351,7 +22491,7 @@ class EventType(bb.Union):
 
     def get_file_save_copy_reference(self):
         """
-        (file_operations) Save a file or folder using a copy reference.
+        (file_operations) Saved file/folder using copy reference
 
         Only call this if :meth:`is_file_save_copy_reference` is true.
 
@@ -21363,7 +22503,7 @@ class EventType(bb.Union):
 
     def get_file_request_change(self):
         """
-        (file_requests) Change a file request.
+        (file_requests) Changed file request
 
         Only call this if :meth:`is_file_request_change` is true.
 
@@ -21375,7 +22515,7 @@ class EventType(bb.Union):
 
     def get_file_request_close(self):
         """
-        (file_requests) Closed a file request.
+        (file_requests) Closed file request
 
         Only call this if :meth:`is_file_request_close` is true.
 
@@ -21387,7 +22527,7 @@ class EventType(bb.Union):
 
     def get_file_request_create(self):
         """
-        (file_requests) Created a file request.
+        (file_requests) Created file request
 
         Only call this if :meth:`is_file_request_create` is true.
 
@@ -21399,7 +22539,7 @@ class EventType(bb.Union):
 
     def get_file_request_receive_file(self):
         """
-        (file_requests) Received files for a file request.
+        (file_requests) Received files for file request
 
         Only call this if :meth:`is_file_request_receive_file` is true.
 
@@ -21411,7 +22551,7 @@ class EventType(bb.Union):
 
     def get_group_add_external_id(self):
         """
-        (groups) Added an external ID for group.
+        (groups) Added external ID for group
 
         Only call this if :meth:`is_group_add_external_id` is true.
 
@@ -21423,7 +22563,7 @@ class EventType(bb.Union):
 
     def get_group_add_member(self):
         """
-        (groups) Added team members to a group.
+        (groups) Added team members to group
 
         Only call this if :meth:`is_group_add_member` is true.
 
@@ -21435,7 +22575,7 @@ class EventType(bb.Union):
 
     def get_group_change_external_id(self):
         """
-        (groups) Changed the external ID for group.
+        (groups) Changed external ID for group
 
         Only call this if :meth:`is_group_change_external_id` is true.
 
@@ -21447,7 +22587,7 @@ class EventType(bb.Union):
 
     def get_group_change_management_type(self):
         """
-        (groups) Changed group management type.
+        (groups) Changed group management type
 
         Only call this if :meth:`is_group_change_management_type` is true.
 
@@ -21459,7 +22599,7 @@ class EventType(bb.Union):
 
     def get_group_change_member_role(self):
         """
-        (groups) Changed the manager permissions belonging to a group member.
+        (groups) Changed manager permissions of group member
 
         Only call this if :meth:`is_group_change_member_role` is true.
 
@@ -21471,7 +22611,7 @@ class EventType(bb.Union):
 
     def get_group_create(self):
         """
-        (groups) Created a group.
+        (groups) Created group
 
         Only call this if :meth:`is_group_create` is true.
 
@@ -21483,7 +22623,7 @@ class EventType(bb.Union):
 
     def get_group_delete(self):
         """
-        (groups) Deleted a group.
+        (groups) Deleted group
 
         Only call this if :meth:`is_group_delete` is true.
 
@@ -21493,10 +22633,33 @@ class EventType(bb.Union):
             raise AttributeError("tag 'group_delete' not set")
         return self._value
 
+    def get_group_description_updated(self):
+        """
+        (groups) Updated group (deprecated, no longer logged)
+
+        Only call this if :meth:`is_group_description_updated` is true.
+
+        :rtype: GroupDescriptionUpdatedType
+        """
+        if not self.is_group_description_updated():
+            raise AttributeError("tag 'group_description_updated' not set")
+        return self._value
+
+    def get_group_join_policy_updated(self):
+        """
+        (groups) Updated group join policy (deprecated, no longer logged)
+
+        Only call this if :meth:`is_group_join_policy_updated` is true.
+
+        :rtype: GroupJoinPolicyUpdatedType
+        """
+        if not self.is_group_join_policy_updated():
+            raise AttributeError("tag 'group_join_policy_updated' not set")
+        return self._value
+
     def get_group_moved(self):
         """
-        (groups) Moved a group. This event is deprecated and will not be logged
-        going forward as the associated product functionality no longer exists.
+        (groups) Moved group (deprecated, no longer logged)
 
         Only call this if :meth:`is_group_moved` is true.
 
@@ -21508,7 +22671,7 @@ class EventType(bb.Union):
 
     def get_group_remove_external_id(self):
         """
-        (groups) Removed the external ID for group.
+        (groups) Removed external ID for group
 
         Only call this if :meth:`is_group_remove_external_id` is true.
 
@@ -21520,7 +22683,7 @@ class EventType(bb.Union):
 
     def get_group_remove_member(self):
         """
-        (groups) Removed team members from a group.
+        (groups) Removed team members from group
 
         Only call this if :meth:`is_group_remove_member` is true.
 
@@ -21532,7 +22695,7 @@ class EventType(bb.Union):
 
     def get_group_rename(self):
         """
-        (groups) Renamed a group.
+        (groups) Renamed group
 
         Only call this if :meth:`is_group_rename` is true.
 
@@ -21544,8 +22707,8 @@ class EventType(bb.Union):
 
     def get_emm_error(self):
         """
-        (logins) Failed to sign in via EMM. This event is replaced by login_fail
-        and will not be logged going forward.
+        (logins) Failed to sign in via EMM (deprecated, replaced by 'Failed to
+        sign in')
 
         Only call this if :meth:`is_emm_error` is true.
 
@@ -21557,7 +22720,7 @@ class EventType(bb.Union):
 
     def get_login_fail(self):
         """
-        (logins) Failed to sign in.
+        (logins) Failed to sign in
 
         Only call this if :meth:`is_login_fail` is true.
 
@@ -21569,7 +22732,7 @@ class EventType(bb.Union):
 
     def get_login_success(self):
         """
-        (logins) Signed in.
+        (logins) Signed in
 
         Only call this if :meth:`is_login_success` is true.
 
@@ -21581,7 +22744,7 @@ class EventType(bb.Union):
 
     def get_logout(self):
         """
-        (logins) Signed out.
+        (logins) Signed out
 
         Only call this if :meth:`is_logout` is true.
 
@@ -21593,7 +22756,7 @@ class EventType(bb.Union):
 
     def get_reseller_support_session_end(self):
         """
-        (logins) Ended reseller support session.
+        (logins) Ended reseller support session
 
         Only call this if :meth:`is_reseller_support_session_end` is true.
 
@@ -21605,7 +22768,7 @@ class EventType(bb.Union):
 
     def get_reseller_support_session_start(self):
         """
-        (logins) Started reseller support session.
+        (logins) Started reseller support session
 
         Only call this if :meth:`is_reseller_support_session_start` is true.
 
@@ -21617,7 +22780,7 @@ class EventType(bb.Union):
 
     def get_sign_in_as_session_end(self):
         """
-        (logins) Ended admin sign-in-as session.
+        (logins) Ended admin sign-in-as session
 
         Only call this if :meth:`is_sign_in_as_session_end` is true.
 
@@ -21629,7 +22792,7 @@ class EventType(bb.Union):
 
     def get_sign_in_as_session_start(self):
         """
-        (logins) Started admin sign-in-as session.
+        (logins) Started admin sign-in-as session
 
         Only call this if :meth:`is_sign_in_as_session_start` is true.
 
@@ -21641,8 +22804,8 @@ class EventType(bb.Union):
 
     def get_sso_error(self):
         """
-        (logins) Failed to sign in via SSO. This event is replaced by login_fail
-        and will not be logged going forward.
+        (logins) Failed to sign in via SSO (deprecated, replaced by 'Failed to
+        sign in')
 
         Only call this if :meth:`is_sso_error` is true.
 
@@ -21654,7 +22817,7 @@ class EventType(bb.Union):
 
     def get_member_add_name(self):
         """
-        (members) Specify team member name.
+        (members) Added team member name
 
         Only call this if :meth:`is_member_add_name` is true.
 
@@ -21666,7 +22829,7 @@ class EventType(bb.Union):
 
     def get_member_change_admin_role(self):
         """
-        (members) Change the admin role belonging to team member.
+        (members) Changed team member admin role
 
         Only call this if :meth:`is_member_change_admin_role` is true.
 
@@ -21678,7 +22841,7 @@ class EventType(bb.Union):
 
     def get_member_change_email(self):
         """
-        (members) Changed team member email address.
+        (members) Changed team member email
 
         Only call this if :meth:`is_member_change_email` is true.
 
@@ -21690,9 +22853,8 @@ class EventType(bb.Union):
 
     def get_member_change_membership_type(self):
         """
-        (members) Changed the membership type (limited vs full) for team member.
-        This event is deprecated and will not be logged going forward as the
-        associated product functionality no longer exists.
+        (members) Changed membership type (limited/full) of member (deprecated,
+        no longer logged)
 
         Only call this if :meth:`is_member_change_membership_type` is true.
 
@@ -21704,7 +22866,7 @@ class EventType(bb.Union):
 
     def get_member_change_name(self):
         """
-        (members) Changed team member name.
+        (members) Changed team member name
 
         Only call this if :meth:`is_member_change_name` is true.
 
@@ -21716,7 +22878,7 @@ class EventType(bb.Union):
 
     def get_member_change_status(self):
         """
-        (members) Changed the membership status of a team member.
+        (members) Changed membership status of team member
 
         Only call this if :meth:`is_member_change_status` is true.
 
@@ -21728,7 +22890,7 @@ class EventType(bb.Union):
 
     def get_member_permanently_delete_account_contents(self):
         """
-        (members) Permanently deleted contents of a removed team member account.
+        (members) Permanently deleted contents of deleted team member account
 
         Only call this if :meth:`is_member_permanently_delete_account_contents` is true.
 
@@ -21740,7 +22902,7 @@ class EventType(bb.Union):
 
     def get_member_space_limits_add_custom_quota(self):
         """
-        (members) Set custom member space limit.
+        (members) Set custom member space limit
 
         Only call this if :meth:`is_member_space_limits_add_custom_quota` is true.
 
@@ -21752,7 +22914,7 @@ class EventType(bb.Union):
 
     def get_member_space_limits_change_custom_quota(self):
         """
-        (members) Changed custom member space limit.
+        (members) Changed custom member space limit
 
         Only call this if :meth:`is_member_space_limits_change_custom_quota` is true.
 
@@ -21764,8 +22926,7 @@ class EventType(bb.Union):
 
     def get_member_space_limits_change_status(self):
         """
-        (members) Changed the status with respect to whether the team member is
-        under or over storage quota specified by policy.
+        (members) Changed space limit status
 
         Only call this if :meth:`is_member_space_limits_change_status` is true.
 
@@ -21777,7 +22938,7 @@ class EventType(bb.Union):
 
     def get_member_space_limits_remove_custom_quota(self):
         """
-        (members) Removed custom member space limit.
+        (members) Removed custom member space limit
 
         Only call this if :meth:`is_member_space_limits_remove_custom_quota` is true.
 
@@ -21789,7 +22950,7 @@ class EventType(bb.Union):
 
     def get_member_suggest(self):
         """
-        (members) Suggested a new team member to be added to the team.
+        (members) Suggested person to add to team
 
         Only call this if :meth:`is_member_suggest` is true.
 
@@ -21801,8 +22962,8 @@ class EventType(bb.Union):
 
     def get_member_transfer_account_contents(self):
         """
-        (members) Transferred contents of a removed team member account to
-        another member.
+        (members) Transferred contents of deleted member account to another
+        member
 
         Only call this if :meth:`is_member_transfer_account_contents` is true.
 
@@ -21814,7 +22975,7 @@ class EventType(bb.Union):
 
     def get_paper_content_add_member(self):
         """
-        (paper) Added users to the membership of a Paper doc or folder.
+        (paper) Added team member to Paper doc/folder
 
         Only call this if :meth:`is_paper_content_add_member` is true.
 
@@ -21826,7 +22987,7 @@ class EventType(bb.Union):
 
     def get_paper_content_add_to_folder(self):
         """
-        (paper) Added Paper doc or folder to a folder.
+        (paper) Added Paper doc/folder to folder
 
         Only call this if :meth:`is_paper_content_add_to_folder` is true.
 
@@ -21838,7 +22999,7 @@ class EventType(bb.Union):
 
     def get_paper_content_archive(self):
         """
-        (paper) Archived Paper doc or folder.
+        (paper) Archived Paper doc/folder
 
         Only call this if :meth:`is_paper_content_archive` is true.
 
@@ -21850,7 +23011,7 @@ class EventType(bb.Union):
 
     def get_paper_content_create(self):
         """
-        (paper) Created a Paper doc or folder.
+        (paper) Created Paper doc/folder
 
         Only call this if :meth:`is_paper_content_create` is true.
 
@@ -21862,7 +23023,7 @@ class EventType(bb.Union):
 
     def get_paper_content_permanently_delete(self):
         """
-        (paper) Permanently deleted a Paper doc or folder.
+        (paper) Permanently deleted Paper doc/folder
 
         Only call this if :meth:`is_paper_content_permanently_delete` is true.
 
@@ -21874,7 +23035,7 @@ class EventType(bb.Union):
 
     def get_paper_content_remove_from_folder(self):
         """
-        (paper) Removed Paper doc or folder from a folder.
+        (paper) Removed Paper doc/folder from folder
 
         Only call this if :meth:`is_paper_content_remove_from_folder` is true.
 
@@ -21886,7 +23047,7 @@ class EventType(bb.Union):
 
     def get_paper_content_remove_member(self):
         """
-        (paper) Removed a user from the membership of a Paper doc or folder.
+        (paper) Removed team member from Paper doc/folder
 
         Only call this if :meth:`is_paper_content_remove_member` is true.
 
@@ -21898,7 +23059,7 @@ class EventType(bb.Union):
 
     def get_paper_content_rename(self):
         """
-        (paper) Renamed Paper doc or folder.
+        (paper) Renamed Paper doc/folder
 
         Only call this if :meth:`is_paper_content_rename` is true.
 
@@ -21910,7 +23071,7 @@ class EventType(bb.Union):
 
     def get_paper_content_restore(self):
         """
-        (paper) Restored an archived Paper doc or folder.
+        (paper) Restored archived Paper doc/folder
 
         Only call this if :meth:`is_paper_content_restore` is true.
 
@@ -21922,7 +23083,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_add_comment(self):
         """
-        (paper) Added a Paper doc comment.
+        (paper) Added Paper doc comment
 
         Only call this if :meth:`is_paper_doc_add_comment` is true.
 
@@ -21934,7 +23095,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_change_member_role(self):
         """
-        (paper) Changed the access type of a Paper doc member.
+        (paper) Changed team member permissions for Paper doc
 
         Only call this if :meth:`is_paper_doc_change_member_role` is true.
 
@@ -21946,7 +23107,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_change_sharing_policy(self):
         """
-        (paper) Changed the sharing policy for Paper doc.
+        (paper) Changed sharing setting for Paper doc
 
         Only call this if :meth:`is_paper_doc_change_sharing_policy` is true.
 
@@ -21958,7 +23119,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_change_subscription(self):
         """
-        (paper) Followed or unfollowed a Paper doc.
+        (paper) Followed/unfollowed Paper doc
 
         Only call this if :meth:`is_paper_doc_change_subscription` is true.
 
@@ -21970,9 +23131,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_deleted(self):
         """
-        (paper) Paper doc archived. This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
+        (paper) Archived Paper doc (deprecated, no longer logged)
 
         Only call this if :meth:`is_paper_doc_deleted` is true.
 
@@ -21984,7 +23143,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_delete_comment(self):
         """
-        (paper) Deleted a Paper doc comment.
+        (paper) Deleted Paper doc comment
 
         Only call this if :meth:`is_paper_doc_delete_comment` is true.
 
@@ -21996,7 +23155,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_download(self):
         """
-        (paper) Downloaded a Paper doc in a particular output format.
+        (paper) Downloaded Paper doc in specific format
 
         Only call this if :meth:`is_paper_doc_download` is true.
 
@@ -22008,7 +23167,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_edit(self):
         """
-        (paper) Edited a Paper doc.
+        (paper) Edited Paper doc
 
         Only call this if :meth:`is_paper_doc_edit` is true.
 
@@ -22020,7 +23179,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_edit_comment(self):
         """
-        (paper) Edited a Paper doc comment.
+        (paper) Edited Paper doc comment
 
         Only call this if :meth:`is_paper_doc_edit_comment` is true.
 
@@ -22032,8 +23191,8 @@ class EventType(bb.Union):
 
     def get_paper_doc_followed(self):
         """
-        (paper) Followed a Paper doc. This event is replaced by
-        paper_doc_change_subscription and will not be logged going forward.
+        (paper) Followed Paper doc (deprecated, replaced by 'Followed/unfollowed
+        Paper doc')
 
         Only call this if :meth:`is_paper_doc_followed` is true.
 
@@ -22045,7 +23204,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_mention(self):
         """
-        (paper) Mentioned a member in a Paper doc.
+        (paper) Mentioned team member in Paper doc
 
         Only call this if :meth:`is_paper_doc_mention` is true.
 
@@ -22057,7 +23216,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_request_access(self):
         """
-        (paper) Requested to be a member on a Paper doc.
+        (paper) Requested access to Paper doc
 
         Only call this if :meth:`is_paper_doc_request_access` is true.
 
@@ -22069,7 +23228,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_resolve_comment(self):
         """
-        (paper) Paper doc comment resolved.
+        (paper) Resolved Paper doc comment
 
         Only call this if :meth:`is_paper_doc_resolve_comment` is true.
 
@@ -22081,7 +23240,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_revert(self):
         """
-        (paper) Restored a Paper doc to previous revision.
+        (paper) Restored Paper doc to previous version
 
         Only call this if :meth:`is_paper_doc_revert` is true.
 
@@ -22093,7 +23252,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_slack_share(self):
         """
-        (paper) Paper doc link shared via slack.
+        (paper) Shared Paper doc via Slack
 
         Only call this if :meth:`is_paper_doc_slack_share` is true.
 
@@ -22105,9 +23264,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_team_invite(self):
         """
-        (paper) Paper doc shared with team member. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        (paper) Shared Paper doc with team member (deprecated, no longer logged)
 
         Only call this if :meth:`is_paper_doc_team_invite` is true.
 
@@ -22119,7 +23276,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_trashed(self):
         """
-        (paper) Paper doc trashed.
+        (paper) Deleted Paper doc
 
         Only call this if :meth:`is_paper_doc_trashed` is true.
 
@@ -22131,7 +23288,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_unresolve_comment(self):
         """
-        (paper) Unresolved a Paper doc comment.
+        (paper) Unresolved Paper doc comment
 
         Only call this if :meth:`is_paper_doc_unresolve_comment` is true.
 
@@ -22143,7 +23300,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_untrashed(self):
         """
-        (paper) Paper doc untrashed.
+        (paper) Restored Paper doc
 
         Only call this if :meth:`is_paper_doc_untrashed` is true.
 
@@ -22155,7 +23312,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_view(self):
         """
-        (paper) Viewed Paper doc.
+        (paper) Viewed Paper doc
 
         Only call this if :meth:`is_paper_doc_view` is true.
 
@@ -22167,9 +23324,8 @@ class EventType(bb.Union):
 
     def get_paper_external_view_allow(self):
         """
-        (paper) Paper external sharing policy changed: anyone. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (paper) Changed Paper external sharing setting to anyone (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_paper_external_view_allow` is true.
 
@@ -22181,9 +23337,8 @@ class EventType(bb.Union):
 
     def get_paper_external_view_default_team(self):
         """
-        (paper) Paper external sharing policy changed: default team. This event
-        is deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (paper) Changed Paper external sharing setting to default team
+        (deprecated, no longer logged)
 
         Only call this if :meth:`is_paper_external_view_default_team` is true.
 
@@ -22195,9 +23350,8 @@ class EventType(bb.Union):
 
     def get_paper_external_view_forbid(self):
         """
-        (paper) Paper external sharing policy changed: team-only. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (paper) Changed Paper external sharing setting to team-only (deprecated,
+        no longer logged)
 
         Only call this if :meth:`is_paper_external_view_forbid` is true.
 
@@ -22209,7 +23363,7 @@ class EventType(bb.Union):
 
     def get_paper_folder_change_subscription(self):
         """
-        (paper) Followed or unfollowed a Paper folder.
+        (paper) Followed/unfollowed Paper folder
 
         Only call this if :meth:`is_paper_folder_change_subscription` is true.
 
@@ -22221,9 +23375,7 @@ class EventType(bb.Union):
 
     def get_paper_folder_deleted(self):
         """
-        (paper) Paper folder archived. This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
+        (paper) Archived Paper folder (deprecated, no longer logged)
 
         Only call this if :meth:`is_paper_folder_deleted` is true.
 
@@ -22235,8 +23387,8 @@ class EventType(bb.Union):
 
     def get_paper_folder_followed(self):
         """
-        (paper) Followed a Paper folder. This event is replaced by
-        paper_folder_change_subscription and will not be logged going forward.
+        (paper) Followed Paper folder (deprecated, replaced by
+        'Followed/unfollowed Paper folder')
 
         Only call this if :meth:`is_paper_folder_followed` is true.
 
@@ -22248,9 +23400,7 @@ class EventType(bb.Union):
 
     def get_paper_folder_team_invite(self):
         """
-        (paper) Paper folder shared with team member. This event is deprecated
-        and will not be logged going forward as the associated product
-        functionality no longer exists.
+        (paper) Shared Paper folder with member (deprecated, no longer logged)
 
         Only call this if :meth:`is_paper_folder_team_invite` is true.
 
@@ -22262,7 +23412,7 @@ class EventType(bb.Union):
 
     def get_password_change(self):
         """
-        (passwords) Changed password.
+        (passwords) Changed password
 
         Only call this if :meth:`is_password_change` is true.
 
@@ -22274,7 +23424,7 @@ class EventType(bb.Union):
 
     def get_password_reset(self):
         """
-        (passwords) Reset password.
+        (passwords) Reset password
 
         Only call this if :meth:`is_password_reset` is true.
 
@@ -22286,7 +23436,7 @@ class EventType(bb.Union):
 
     def get_password_reset_all(self):
         """
-        (passwords) Reset all team member passwords.
+        (passwords) Reset all team member passwords
 
         Only call this if :meth:`is_password_reset_all` is true.
 
@@ -22298,7 +23448,7 @@ class EventType(bb.Union):
 
     def get_emm_create_exceptions_report(self):
         """
-        (reports) EMM excluded users report created.
+        (reports) Created EMM-excluded users report
 
         Only call this if :meth:`is_emm_create_exceptions_report` is true.
 
@@ -22310,7 +23460,7 @@ class EventType(bb.Union):
 
     def get_emm_create_usage_report(self):
         """
-        (reports) EMM mobile app usage report created.
+        (reports) Created EMM mobile app usage report
 
         Only call this if :meth:`is_emm_create_usage_report` is true.
 
@@ -22322,7 +23472,7 @@ class EventType(bb.Union):
 
     def get_export_members_report(self):
         """
-        (reports) Member data report created.
+        (reports) Created member data report
 
         Only call this if :meth:`is_export_members_report` is true.
 
@@ -22334,7 +23484,7 @@ class EventType(bb.Union):
 
     def get_paper_admin_export_start(self):
         """
-        (reports) Exported all Paper documents in the team.
+        (reports) Exported all team Paper docs
 
         Only call this if :meth:`is_paper_admin_export_start` is true.
 
@@ -22346,7 +23496,7 @@ class EventType(bb.Union):
 
     def get_smart_sync_create_admin_privilege_report(self):
         """
-        (reports) Smart Sync non-admin devices report created.
+        (reports) Created Smart Sync non-admin devices report
 
         Only call this if :meth:`is_smart_sync_create_admin_privilege_report` is true.
 
@@ -22358,7 +23508,7 @@ class EventType(bb.Union):
 
     def get_team_activity_create_report(self):
         """
-        (reports) Created a team activity report.
+        (reports) Created team activity report
 
         Only call this if :meth:`is_team_activity_create_report` is true.
 
@@ -22370,7 +23520,7 @@ class EventType(bb.Union):
 
     def get_collection_share(self):
         """
-        (sharing) Shared an album.
+        (sharing) Shared album
 
         Only call this if :meth:`is_collection_share` is true.
 
@@ -22382,9 +23532,8 @@ class EventType(bb.Union):
 
     def get_note_acl_invite_only(self):
         """
-        (sharing) Changed a Paper document to be invite-only. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (sharing) Changed Paper doc to invite-only (deprecated, no longer
+        logged)
 
         Only call this if :meth:`is_note_acl_invite_only` is true.
 
@@ -22396,9 +23545,8 @@ class EventType(bb.Union):
 
     def get_note_acl_link(self):
         """
-        (sharing) Changed a Paper document to be link accessible. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (sharing) Changed Paper doc to link-accessible (deprecated, no longer
+        logged)
 
         Only call this if :meth:`is_note_acl_link` is true.
 
@@ -22410,9 +23558,8 @@ class EventType(bb.Union):
 
     def get_note_acl_team_link(self):
         """
-        (sharing) Changed a Paper document to be link accessible for the team.
-        This event is deprecated and will not be logged going forward as the
-        associated product functionality no longer exists.
+        (sharing) Changed Paper doc to link-accessible for team (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_note_acl_team_link` is true.
 
@@ -22424,9 +23571,7 @@ class EventType(bb.Union):
 
     def get_note_shared(self):
         """
-        (sharing) Shared a Paper doc. This event is deprecated and will not be
-        logged going forward as the associated product functionality no longer
-        exists.
+        (sharing) Shared Paper doc (deprecated, no longer logged)
 
         Only call this if :meth:`is_note_shared` is true.
 
@@ -22438,9 +23583,7 @@ class EventType(bb.Union):
 
     def get_note_share_receive(self):
         """
-        (sharing) Shared Paper document received. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        (sharing) Shared received Paper doc (deprecated, no longer logged)
 
         Only call this if :meth:`is_note_share_receive` is true.
 
@@ -22452,9 +23595,7 @@ class EventType(bb.Union):
 
     def get_open_note_shared(self):
         """
-        (sharing) Opened a shared Paper doc. This event is deprecated and will
-        not be logged going forward as the associated product functionality no
-        longer exists.
+        (sharing) Opened shared Paper doc (deprecated, no longer logged)
 
         Only call this if :meth:`is_open_note_shared` is true.
 
@@ -22466,9 +23607,7 @@ class EventType(bb.Union):
 
     def get_sf_add_group(self):
         """
-        (sharing) Added the team to a shared folder. This event is deprecated
-        and will not be logged going forward as the associated product
-        functionality no longer exists.
+        (sharing) Added team to shared folder (deprecated, no longer logged)
 
         Only call this if :meth:`is_sf_add_group` is true.
 
@@ -22480,9 +23619,8 @@ class EventType(bb.Union):
 
     def get_sf_allow_non_members_to_view_shared_links(self):
         """
-        (sharing) Allowed non collaborators to view links to files in a shared
-        folder. This event is deprecated and will not be logged going forward as
-        the associated product functionality no longer exists.
+        (sharing) Allowed non-collaborators to view links to files in shared
+        folder (deprecated, no longer logged)
 
         Only call this if :meth:`is_sf_allow_non_members_to_view_shared_links` is true.
 
@@ -22494,10 +23632,8 @@ class EventType(bb.Union):
 
     def get_sf_external_invite_warn(self):
         """
-        (sharing) Admin settings: team members see a warning before sharing
-        folders outside the team (DEPRECATED FEATURE). This event is deprecated
-        and will not be logged going forward as the associated product
-        functionality no longer exists.
+        (sharing) Set team members to see warning before sharing folders outside
+        team (deprecated, no longer logged)
 
         Only call this if :meth:`is_sf_external_invite_warn` is true.
 
@@ -22509,9 +23645,8 @@ class EventType(bb.Union):
 
     def get_sf_fb_invite(self):
         """
-        (sharing) Invited Facebook users to a shared folder. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (sharing) Invited Facebook users to shared folder (deprecated, no longer
+        logged)
 
         Only call this if :meth:`is_sf_fb_invite` is true.
 
@@ -22523,9 +23658,8 @@ class EventType(bb.Union):
 
     def get_sf_fb_invite_change_role(self):
         """
-        (sharing) Changed a Facebook user's role in a shared folder. This event
-        is deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (sharing) Changed Facebook user's role in shared folder (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_sf_fb_invite_change_role` is true.
 
@@ -22537,9 +23671,8 @@ class EventType(bb.Union):
 
     def get_sf_fb_uninvite(self):
         """
-        (sharing) Uninvited a Facebook user from a shared folder. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (sharing) Uninvited Facebook user from shared folder (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_sf_fb_uninvite` is true.
 
@@ -22551,9 +23684,7 @@ class EventType(bb.Union):
 
     def get_sf_invite_group(self):
         """
-        (sharing) Invited a group to a shared folder. This event is deprecated
-        and will not be logged going forward as the associated product
-        functionality no longer exists.
+        (sharing) Invited group to shared folder (deprecated, no longer logged)
 
         Only call this if :meth:`is_sf_invite_group` is true.
 
@@ -22565,9 +23696,7 @@ class EventType(bb.Union):
 
     def get_sf_team_grant_access(self):
         """
-        (sharing) Granted access to a shared folder. This event is deprecated
-        and will not be logged going forward as the associated product
-        functionality no longer exists.
+        (sharing) Granted access to shared folder (deprecated, no longer logged)
 
         Only call this if :meth:`is_sf_team_grant_access` is true.
 
@@ -22579,9 +23708,8 @@ class EventType(bb.Union):
 
     def get_sf_team_invite(self):
         """
-        (sharing) Invited team members to a shared folder. This event is
-        replaced by shared_content_add_invitees and will not be logged going
-        forward.
+        (sharing) Invited team members to shared folder (deprecated, replaced by
+        'Invited user to Dropbox and added them to shared file/folder')
 
         Only call this if :meth:`is_sf_team_invite` is true.
 
@@ -22593,9 +23721,8 @@ class EventType(bb.Union):
 
     def get_sf_team_invite_change_role(self):
         """
-        (sharing) Changed a team member's role in a shared folder. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (sharing) Changed team member's role in shared folder (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_sf_team_invite_change_role` is true.
 
@@ -22607,9 +23734,8 @@ class EventType(bb.Union):
 
     def get_sf_team_join(self):
         """
-        (sharing) Joined a team member's shared folder. This event is deprecated
-        and will not be logged going forward as the associated product
-        functionality no longer exists.
+        (sharing) Joined team member's shared folder (deprecated, no longer
+        logged)
 
         Only call this if :meth:`is_sf_team_join` is true.
 
@@ -22621,9 +23747,8 @@ class EventType(bb.Union):
 
     def get_sf_team_join_from_oob_link(self):
         """
-        (sharing) Joined a team member's shared folder from a link. This event
-        is deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (sharing) Joined team member's shared folder from link (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_sf_team_join_from_oob_link` is true.
 
@@ -22635,8 +23760,8 @@ class EventType(bb.Union):
 
     def get_sf_team_uninvite(self):
         """
-        (sharing) Unshared a folder with a team member. This event is replaced
-        by shared_content_remove_invitees and will not be logged going forward.
+        (sharing) Unshared folder with team member (deprecated, replaced by
+        'Removed invitee from shared file/folder before invite accepted')
 
         Only call this if :meth:`is_sf_team_uninvite` is true.
 
@@ -22648,8 +23773,7 @@ class EventType(bb.Union):
 
     def get_shared_content_add_invitees(self):
         """
-        (sharing) Sent an email invitation to the membership of a shared file or
-        folder.
+        (sharing) Invited user to Dropbox and added them to shared file/folder
 
         Only call this if :meth:`is_shared_content_add_invitees` is true.
 
@@ -22661,7 +23785,7 @@ class EventType(bb.Union):
 
     def get_shared_content_add_link_expiry(self):
         """
-        (sharing) Added an expiry to the link for the shared file or folder.
+        (sharing) Added expiration date to link for shared file/folder
 
         Only call this if :meth:`is_shared_content_add_link_expiry` is true.
 
@@ -22673,7 +23797,7 @@ class EventType(bb.Union):
 
     def get_shared_content_add_link_password(self):
         """
-        (sharing) Added a password to the link for the shared file or folder.
+        (sharing) Added password to link for shared file/folder
 
         Only call this if :meth:`is_shared_content_add_link_password` is true.
 
@@ -22685,8 +23809,7 @@ class EventType(bb.Union):
 
     def get_shared_content_add_member(self):
         """
-        (sharing) Added users and/or groups to the membership of a shared file
-        or folder.
+        (sharing) Added users and/or groups to shared file/folder
 
         Only call this if :meth:`is_shared_content_add_member` is true.
 
@@ -22698,8 +23821,7 @@ class EventType(bb.Union):
 
     def get_shared_content_change_downloads_policy(self):
         """
-        (sharing) Changed whether members can download the shared file or
-        folder.
+        (sharing) Changed whether members can download shared file/folder
 
         Only call this if :meth:`is_shared_content_change_downloads_policy` is true.
 
@@ -22711,8 +23833,8 @@ class EventType(bb.Union):
 
     def get_shared_content_change_invitee_role(self):
         """
-        (sharing) Changed the access type of an invitee to a shared file or
-        folder before the invitation was claimed.
+        (sharing) Changed access type of invitee to shared file/folder before
+        invite accepted
 
         Only call this if :meth:`is_shared_content_change_invitee_role` is true.
 
@@ -22724,7 +23846,7 @@ class EventType(bb.Union):
 
     def get_shared_content_change_link_audience(self):
         """
-        (sharing) Changed the audience of the link for a shared file or folder.
+        (sharing) Changed link audience of shared file/folder
 
         Only call this if :meth:`is_shared_content_change_link_audience` is true.
 
@@ -22736,7 +23858,7 @@ class EventType(bb.Union):
 
     def get_shared_content_change_link_expiry(self):
         """
-        (sharing) Changed the expiry of the link for the shared file or folder.
+        (sharing) Changed link expiration of shared file/folder
 
         Only call this if :meth:`is_shared_content_change_link_expiry` is true.
 
@@ -22748,8 +23870,7 @@ class EventType(bb.Union):
 
     def get_shared_content_change_link_password(self):
         """
-        (sharing) Changed the password on the link for the shared file or
-        folder.
+        (sharing) Changed link password of shared file/folder
 
         Only call this if :meth:`is_shared_content_change_link_password` is true.
 
@@ -22761,7 +23882,7 @@ class EventType(bb.Union):
 
     def get_shared_content_change_member_role(self):
         """
-        (sharing) Changed the access type of a shared file or folder member.
+        (sharing) Changed access type of shared file/folder member
 
         Only call this if :meth:`is_shared_content_change_member_role` is true.
 
@@ -22773,8 +23894,7 @@ class EventType(bb.Union):
 
     def get_shared_content_change_viewer_info_policy(self):
         """
-        (sharing) Changed whether members can see who viewed the shared file or
-        folder.
+        (sharing) Changed whether members can see who viewed shared file/folder
 
         Only call this if :meth:`is_shared_content_change_viewer_info_policy` is true.
 
@@ -22786,8 +23906,7 @@ class EventType(bb.Union):
 
     def get_shared_content_claim_invitation(self):
         """
-        (sharing) Acquired membership on a shared file or folder by claiming an
-        invitation.
+        (sharing) Acquired membership of shared file/folder by accepting invite
 
         Only call this if :meth:`is_shared_content_claim_invitation` is true.
 
@@ -22799,7 +23918,7 @@ class EventType(bb.Union):
 
     def get_shared_content_copy(self):
         """
-        (sharing) Copied the shared file or folder to own Dropbox.
+        (sharing) Copied shared file/folder to own Dropbox
 
         Only call this if :meth:`is_shared_content_copy` is true.
 
@@ -22811,7 +23930,7 @@ class EventType(bb.Union):
 
     def get_shared_content_download(self):
         """
-        (sharing) Downloaded the shared file or folder.
+        (sharing) Downloaded shared file/folder
 
         Only call this if :meth:`is_shared_content_download` is true.
 
@@ -22823,7 +23942,7 @@ class EventType(bb.Union):
 
     def get_shared_content_relinquish_membership(self):
         """
-        (sharing) Left the membership of a shared file or folder.
+        (sharing) Left shared file/folder
 
         Only call this if :meth:`is_shared_content_relinquish_membership` is true.
 
@@ -22835,8 +23954,7 @@ class EventType(bb.Union):
 
     def get_shared_content_remove_invitees(self):
         """
-        (sharing) Removed an invitee from the membership of a shared file or
-        folder before it was claimed.
+        (sharing) Removed invitee from shared file/folder before invite accepted
 
         Only call this if :meth:`is_shared_content_remove_invitees` is true.
 
@@ -22848,7 +23966,7 @@ class EventType(bb.Union):
 
     def get_shared_content_remove_link_expiry(self):
         """
-        (sharing) Removed the expiry of the link for the shared file or folder.
+        (sharing) Removed link expiration date of shared file/folder
 
         Only call this if :meth:`is_shared_content_remove_link_expiry` is true.
 
@@ -22860,8 +23978,7 @@ class EventType(bb.Union):
 
     def get_shared_content_remove_link_password(self):
         """
-        (sharing) Removed the password on the link for the shared file or
-        folder.
+        (sharing) Removed link password of shared file/folder
 
         Only call this if :meth:`is_shared_content_remove_link_password` is true.
 
@@ -22873,8 +23990,7 @@ class EventType(bb.Union):
 
     def get_shared_content_remove_member(self):
         """
-        (sharing) Removed a user or a group from the membership of a shared file
-        or folder.
+        (sharing) Removed user/group from shared file/folder
 
         Only call this if :meth:`is_shared_content_remove_member` is true.
 
@@ -22886,7 +24002,7 @@ class EventType(bb.Union):
 
     def get_shared_content_request_access(self):
         """
-        (sharing) Requested to be on the membership of a shared file or folder.
+        (sharing) Requested access to shared file/folder
 
         Only call this if :meth:`is_shared_content_request_access` is true.
 
@@ -22898,8 +24014,8 @@ class EventType(bb.Union):
 
     def get_shared_content_unshare(self):
         """
-        (sharing) Unshared a shared file or folder by clearing its membership
-        and turning off its link.
+        (sharing) Unshared file/folder by clearing membership and turning off
+        link
 
         Only call this if :meth:`is_shared_content_unshare` is true.
 
@@ -22911,7 +24027,7 @@ class EventType(bb.Union):
 
     def get_shared_content_view(self):
         """
-        (sharing) Previewed the shared file or folder.
+        (sharing) Previewed shared file/folder
 
         Only call this if :meth:`is_shared_content_view` is true.
 
@@ -22923,7 +24039,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_change_link_policy(self):
         """
-        (sharing) Changed who can access the shared folder via a link.
+        (sharing) Changed who can access shared folder via link
 
         Only call this if :meth:`is_shared_folder_change_link_policy` is true.
 
@@ -22935,8 +24051,8 @@ class EventType(bb.Union):
 
     def get_shared_folder_change_members_inheritance_policy(self):
         """
-        (sharing) Specify if the shared folder inherits its members from the
-        parent folder.
+        (sharing) Changed whether shared folder inherits members from parent
+        folder
 
         Only call this if :meth:`is_shared_folder_change_members_inheritance_policy` is true.
 
@@ -22948,7 +24064,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_change_members_management_policy(self):
         """
-        (sharing) Changed who can add or remove members of a shared folder.
+        (sharing) Changed who can add/remove members of shared folder
 
         Only call this if :meth:`is_shared_folder_change_members_management_policy` is true.
 
@@ -22960,7 +24076,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_change_members_policy(self):
         """
-        (sharing) Changed who can become a member of the shared folder.
+        (sharing) Changed who can become member of shared folder
 
         Only call this if :meth:`is_shared_folder_change_members_policy` is true.
 
@@ -22972,7 +24088,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_create(self):
         """
-        (sharing) Created a shared folder.
+        (sharing) Created shared folder
 
         Only call this if :meth:`is_shared_folder_create` is true.
 
@@ -22984,7 +24100,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_decline_invitation(self):
         """
-        (sharing) Declined a team member's invitation to a shared folder.
+        (sharing) Declined team member's invite to shared folder
 
         Only call this if :meth:`is_shared_folder_decline_invitation` is true.
 
@@ -22996,7 +24112,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_mount(self):
         """
-        (sharing) Added a shared folder to own Dropbox.
+        (sharing) Added shared folder to own Dropbox
 
         Only call this if :meth:`is_shared_folder_mount` is true.
 
@@ -23008,7 +24124,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_nest(self):
         """
-        (sharing) Changed the parent of a shared folder.
+        (sharing) Changed parent of shared folder
 
         Only call this if :meth:`is_shared_folder_nest` is true.
 
@@ -23020,8 +24136,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_transfer_ownership(self):
         """
-        (sharing) Transferred the ownership of a shared folder to another
-        member.
+        (sharing) Transferred ownership of shared folder to another member
 
         Only call this if :meth:`is_shared_folder_transfer_ownership` is true.
 
@@ -23033,7 +24148,7 @@ class EventType(bb.Union):
 
     def get_shared_folder_unmount(self):
         """
-        (sharing) Deleted a shared folder from Dropbox.
+        (sharing) Deleted shared folder from Dropbox
 
         Only call this if :meth:`is_shared_folder_unmount` is true.
 
@@ -23045,7 +24160,7 @@ class EventType(bb.Union):
 
     def get_shared_link_add_expiry(self):
         """
-        (sharing) Added a shared link expiration date.
+        (sharing) Added shared link expiration date
 
         Only call this if :meth:`is_shared_link_add_expiry` is true.
 
@@ -23057,7 +24172,7 @@ class EventType(bb.Union):
 
     def get_shared_link_change_expiry(self):
         """
-        (sharing) Changed the shared link expiration date.
+        (sharing) Changed shared link expiration date
 
         Only call this if :meth:`is_shared_link_change_expiry` is true.
 
@@ -23069,7 +24184,7 @@ class EventType(bb.Union):
 
     def get_shared_link_change_visibility(self):
         """
-        (sharing) Changed the visibility of a shared link.
+        (sharing) Changed visibility of shared link
 
         Only call this if :meth:`is_shared_link_change_visibility` is true.
 
@@ -23081,7 +24196,7 @@ class EventType(bb.Union):
 
     def get_shared_link_copy(self):
         """
-        (sharing) Added a file/folder to their Dropbox from a shared link.
+        (sharing) Added file/folder to Dropbox from shared link
 
         Only call this if :meth:`is_shared_link_copy` is true.
 
@@ -23093,7 +24208,7 @@ class EventType(bb.Union):
 
     def get_shared_link_create(self):
         """
-        (sharing) Created a new shared link.
+        (sharing) Created shared link
 
         Only call this if :meth:`is_shared_link_create` is true.
 
@@ -23105,7 +24220,7 @@ class EventType(bb.Union):
 
     def get_shared_link_disable(self):
         """
-        (sharing) Removed a shared link.
+        (sharing) Removed shared link
 
         Only call this if :meth:`is_shared_link_disable` is true.
 
@@ -23117,7 +24232,7 @@ class EventType(bb.Union):
 
     def get_shared_link_download(self):
         """
-        (sharing) Downloaded a file/folder from a shared link.
+        (sharing) Downloaded file/folder from shared link
 
         Only call this if :meth:`is_shared_link_download` is true.
 
@@ -23129,7 +24244,7 @@ class EventType(bb.Union):
 
     def get_shared_link_remove_expiry(self):
         """
-        (sharing) Removed a shared link expiration date.
+        (sharing) Removed shared link expiration date
 
         Only call this if :meth:`is_shared_link_remove_expiry` is true.
 
@@ -23141,7 +24256,7 @@ class EventType(bb.Union):
 
     def get_shared_link_share(self):
         """
-        (sharing) Added new members as the audience of a shared link.
+        (sharing) Added members as audience of shared link
 
         Only call this if :meth:`is_shared_link_share` is true.
 
@@ -23153,7 +24268,7 @@ class EventType(bb.Union):
 
     def get_shared_link_view(self):
         """
-        (sharing) Opened a shared link.
+        (sharing) Opened shared link
 
         Only call this if :meth:`is_shared_link_view` is true.
 
@@ -23165,9 +24280,7 @@ class EventType(bb.Union):
 
     def get_shared_note_opened(self):
         """
-        (sharing) Shared Paper document was opened. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        (sharing) Opened shared Paper doc (deprecated, no longer logged)
 
         Only call this if :meth:`is_shared_note_opened` is true.
 
@@ -23179,9 +24292,7 @@ class EventType(bb.Union):
 
     def get_shmodel_group_share(self):
         """
-        (sharing) Shared a link with a group. This event is deprecated and will
-        not be logged going forward as the associated product functionality no
-        longer exists.
+        (sharing) Shared link with group (deprecated, no longer logged)
 
         Only call this if :meth:`is_shmodel_group_share` is true.
 
@@ -23191,9 +24302,273 @@ class EventType(bb.Union):
             raise AttributeError("tag 'shmodel_group_share' not set")
         return self._value
 
+    def get_showcase_access_granted(self):
+        """
+        (showcase) Granted access to showcase
+
+        Only call this if :meth:`is_showcase_access_granted` is true.
+
+        :rtype: ShowcaseAccessGrantedType
+        """
+        if not self.is_showcase_access_granted():
+            raise AttributeError("tag 'showcase_access_granted' not set")
+        return self._value
+
+    def get_showcase_add_member(self):
+        """
+        (showcase) Added member to showcase
+
+        Only call this if :meth:`is_showcase_add_member` is true.
+
+        :rtype: ShowcaseAddMemberType
+        """
+        if not self.is_showcase_add_member():
+            raise AttributeError("tag 'showcase_add_member' not set")
+        return self._value
+
+    def get_showcase_archived(self):
+        """
+        (showcase) Archived showcase
+
+        Only call this if :meth:`is_showcase_archived` is true.
+
+        :rtype: ShowcaseArchivedType
+        """
+        if not self.is_showcase_archived():
+            raise AttributeError("tag 'showcase_archived' not set")
+        return self._value
+
+    def get_showcase_created(self):
+        """
+        (showcase) Created showcase
+
+        Only call this if :meth:`is_showcase_created` is true.
+
+        :rtype: ShowcaseCreatedType
+        """
+        if not self.is_showcase_created():
+            raise AttributeError("tag 'showcase_created' not set")
+        return self._value
+
+    def get_showcase_delete_comment(self):
+        """
+        (showcase) Deleted showcase comment
+
+        Only call this if :meth:`is_showcase_delete_comment` is true.
+
+        :rtype: ShowcaseDeleteCommentType
+        """
+        if not self.is_showcase_delete_comment():
+            raise AttributeError("tag 'showcase_delete_comment' not set")
+        return self._value
+
+    def get_showcase_edited(self):
+        """
+        (showcase) Edited showcase
+
+        Only call this if :meth:`is_showcase_edited` is true.
+
+        :rtype: ShowcaseEditedType
+        """
+        if not self.is_showcase_edited():
+            raise AttributeError("tag 'showcase_edited' not set")
+        return self._value
+
+    def get_showcase_edit_comment(self):
+        """
+        (showcase) Edited showcase comment
+
+        Only call this if :meth:`is_showcase_edit_comment` is true.
+
+        :rtype: ShowcaseEditCommentType
+        """
+        if not self.is_showcase_edit_comment():
+            raise AttributeError("tag 'showcase_edit_comment' not set")
+        return self._value
+
+    def get_showcase_file_added(self):
+        """
+        (showcase) Added file to showcase
+
+        Only call this if :meth:`is_showcase_file_added` is true.
+
+        :rtype: ShowcaseFileAddedType
+        """
+        if not self.is_showcase_file_added():
+            raise AttributeError("tag 'showcase_file_added' not set")
+        return self._value
+
+    def get_showcase_file_download(self):
+        """
+        (showcase) Downloaded file from showcase
+
+        Only call this if :meth:`is_showcase_file_download` is true.
+
+        :rtype: ShowcaseFileDownloadType
+        """
+        if not self.is_showcase_file_download():
+            raise AttributeError("tag 'showcase_file_download' not set")
+        return self._value
+
+    def get_showcase_file_removed(self):
+        """
+        (showcase) Removed file from showcase
+
+        Only call this if :meth:`is_showcase_file_removed` is true.
+
+        :rtype: ShowcaseFileRemovedType
+        """
+        if not self.is_showcase_file_removed():
+            raise AttributeError("tag 'showcase_file_removed' not set")
+        return self._value
+
+    def get_showcase_file_view(self):
+        """
+        (showcase) Viewed file in showcase
+
+        Only call this if :meth:`is_showcase_file_view` is true.
+
+        :rtype: ShowcaseFileViewType
+        """
+        if not self.is_showcase_file_view():
+            raise AttributeError("tag 'showcase_file_view' not set")
+        return self._value
+
+    def get_showcase_permanently_deleted(self):
+        """
+        (showcase) Permanently deleted showcase
+
+        Only call this if :meth:`is_showcase_permanently_deleted` is true.
+
+        :rtype: ShowcasePermanentlyDeletedType
+        """
+        if not self.is_showcase_permanently_deleted():
+            raise AttributeError("tag 'showcase_permanently_deleted' not set")
+        return self._value
+
+    def get_showcase_post_comment(self):
+        """
+        (showcase) Added showcase comment
+
+        Only call this if :meth:`is_showcase_post_comment` is true.
+
+        :rtype: ShowcasePostCommentType
+        """
+        if not self.is_showcase_post_comment():
+            raise AttributeError("tag 'showcase_post_comment' not set")
+        return self._value
+
+    def get_showcase_remove_member(self):
+        """
+        (showcase) Removed member from showcase
+
+        Only call this if :meth:`is_showcase_remove_member` is true.
+
+        :rtype: ShowcaseRemoveMemberType
+        """
+        if not self.is_showcase_remove_member():
+            raise AttributeError("tag 'showcase_remove_member' not set")
+        return self._value
+
+    def get_showcase_renamed(self):
+        """
+        (showcase) Renamed showcase
+
+        Only call this if :meth:`is_showcase_renamed` is true.
+
+        :rtype: ShowcaseRenamedType
+        """
+        if not self.is_showcase_renamed():
+            raise AttributeError("tag 'showcase_renamed' not set")
+        return self._value
+
+    def get_showcase_request_access(self):
+        """
+        (showcase) Requested access to showcase
+
+        Only call this if :meth:`is_showcase_request_access` is true.
+
+        :rtype: ShowcaseRequestAccessType
+        """
+        if not self.is_showcase_request_access():
+            raise AttributeError("tag 'showcase_request_access' not set")
+        return self._value
+
+    def get_showcase_resolve_comment(self):
+        """
+        (showcase) Resolved showcase comment
+
+        Only call this if :meth:`is_showcase_resolve_comment` is true.
+
+        :rtype: ShowcaseResolveCommentType
+        """
+        if not self.is_showcase_resolve_comment():
+            raise AttributeError("tag 'showcase_resolve_comment' not set")
+        return self._value
+
+    def get_showcase_restored(self):
+        """
+        (showcase) Unarchived showcase
+
+        Only call this if :meth:`is_showcase_restored` is true.
+
+        :rtype: ShowcaseRestoredType
+        """
+        if not self.is_showcase_restored():
+            raise AttributeError("tag 'showcase_restored' not set")
+        return self._value
+
+    def get_showcase_trashed(self):
+        """
+        (showcase) Deleted showcase
+
+        Only call this if :meth:`is_showcase_trashed` is true.
+
+        :rtype: ShowcaseTrashedType
+        """
+        if not self.is_showcase_trashed():
+            raise AttributeError("tag 'showcase_trashed' not set")
+        return self._value
+
+    def get_showcase_unresolve_comment(self):
+        """
+        (showcase) Unresolved showcase comment
+
+        Only call this if :meth:`is_showcase_unresolve_comment` is true.
+
+        :rtype: ShowcaseUnresolveCommentType
+        """
+        if not self.is_showcase_unresolve_comment():
+            raise AttributeError("tag 'showcase_unresolve_comment' not set")
+        return self._value
+
+    def get_showcase_untrashed(self):
+        """
+        (showcase) Restored showcase
+
+        Only call this if :meth:`is_showcase_untrashed` is true.
+
+        :rtype: ShowcaseUntrashedType
+        """
+        if not self.is_showcase_untrashed():
+            raise AttributeError("tag 'showcase_untrashed' not set")
+        return self._value
+
+    def get_showcase_view(self):
+        """
+        (showcase) Viewed showcase
+
+        Only call this if :meth:`is_showcase_view` is true.
+
+        :rtype: ShowcaseViewType
+        """
+        if not self.is_showcase_view():
+            raise AttributeError("tag 'showcase_view' not set")
+        return self._value
+
     def get_sso_add_cert(self):
         """
-        (sso) Added the X.509 certificate for SSO.
+        (sso) Added X.509 certificate for SSO
 
         Only call this if :meth:`is_sso_add_cert` is true.
 
@@ -23205,7 +24580,7 @@ class EventType(bb.Union):
 
     def get_sso_add_login_url(self):
         """
-        (sso) Added sign-in URL for SSO.
+        (sso) Added sign-in URL for SSO
 
         Only call this if :meth:`is_sso_add_login_url` is true.
 
@@ -23217,7 +24592,7 @@ class EventType(bb.Union):
 
     def get_sso_add_logout_url(self):
         """
-        (sso) Added sign-out URL for SSO.
+        (sso) Added sign-out URL for SSO
 
         Only call this if :meth:`is_sso_add_logout_url` is true.
 
@@ -23229,7 +24604,7 @@ class EventType(bb.Union):
 
     def get_sso_change_cert(self):
         """
-        (sso) Changed the X.509 certificate for SSO.
+        (sso) Changed X.509 certificate for SSO
 
         Only call this if :meth:`is_sso_change_cert` is true.
 
@@ -23241,7 +24616,7 @@ class EventType(bb.Union):
 
     def get_sso_change_login_url(self):
         """
-        (sso) Changed the sign-in URL for SSO.
+        (sso) Changed sign-in URL for SSO
 
         Only call this if :meth:`is_sso_change_login_url` is true.
 
@@ -23253,7 +24628,7 @@ class EventType(bb.Union):
 
     def get_sso_change_logout_url(self):
         """
-        (sso) Changed the sign-out URL for SSO.
+        (sso) Changed sign-out URL for SSO
 
         Only call this if :meth:`is_sso_change_logout_url` is true.
 
@@ -23265,7 +24640,7 @@ class EventType(bb.Union):
 
     def get_sso_change_saml_identity_mode(self):
         """
-        (sso) Changed the SAML identity mode for SSO.
+        (sso) Changed SAML identity mode for SSO
 
         Only call this if :meth:`is_sso_change_saml_identity_mode` is true.
 
@@ -23277,7 +24652,7 @@ class EventType(bb.Union):
 
     def get_sso_remove_cert(self):
         """
-        (sso) Removed the X.509 certificate for SSO.
+        (sso) Removed X.509 certificate for SSO
 
         Only call this if :meth:`is_sso_remove_cert` is true.
 
@@ -23289,7 +24664,7 @@ class EventType(bb.Union):
 
     def get_sso_remove_login_url(self):
         """
-        (sso) Removed the sign-in URL for SSO.
+        (sso) Removed sign-in URL for SSO
 
         Only call this if :meth:`is_sso_remove_login_url` is true.
 
@@ -23301,7 +24676,7 @@ class EventType(bb.Union):
 
     def get_sso_remove_logout_url(self):
         """
-        (sso) Removed single sign-on logout URL.
+        (sso) Removed sign-out URL for SSO
 
         Only call this if :meth:`is_sso_remove_logout_url` is true.
 
@@ -23313,7 +24688,7 @@ class EventType(bb.Union):
 
     def get_team_folder_change_status(self):
         """
-        (team_folders) Changed the archival status of a team folder.
+        (team_folders) Changed archival status of team folder
 
         Only call this if :meth:`is_team_folder_change_status` is true.
 
@@ -23325,7 +24700,7 @@ class EventType(bb.Union):
 
     def get_team_folder_create(self):
         """
-        (team_folders) Created a new team folder in active status.
+        (team_folders) Created team folder in active status
 
         Only call this if :meth:`is_team_folder_create` is true.
 
@@ -23337,7 +24712,7 @@ class EventType(bb.Union):
 
     def get_team_folder_downgrade(self):
         """
-        (team_folders) Downgraded a team folder to a regular shared folder.
+        (team_folders) Downgraded team folder to regular shared folder
 
         Only call this if :meth:`is_team_folder_downgrade` is true.
 
@@ -23349,7 +24724,7 @@ class EventType(bb.Union):
 
     def get_team_folder_permanently_delete(self):
         """
-        (team_folders) Permanently deleted an archived team folder.
+        (team_folders) Permanently deleted archived team folder
 
         Only call this if :meth:`is_team_folder_permanently_delete` is true.
 
@@ -23361,7 +24736,7 @@ class EventType(bb.Union):
 
     def get_team_folder_rename(self):
         """
-        (team_folders) Renamed an active or archived team folder.
+        (team_folders) Renamed active/archived team folder
 
         Only call this if :meth:`is_team_folder_rename` is true.
 
@@ -23371,10 +24746,21 @@ class EventType(bb.Union):
             raise AttributeError("tag 'team_folder_rename' not set")
         return self._value
 
+    def get_team_selective_sync_settings_changed(self):
+        """
+        (team_folders) Changed sync default
+
+        Only call this if :meth:`is_team_selective_sync_settings_changed` is true.
+
+        :rtype: TeamSelectiveSyncSettingsChangedType
+        """
+        if not self.is_team_selective_sync_settings_changed():
+            raise AttributeError("tag 'team_selective_sync_settings_changed' not set")
+        return self._value
+
     def get_account_capture_change_policy(self):
         """
-        (team_policies) Changed the account capture policy on a domain belonging
-        to the team.
+        (team_policies) Changed account capture setting on team domain
 
         Only call this if :meth:`is_account_capture_change_policy` is true.
 
@@ -23386,9 +24772,7 @@ class EventType(bb.Union):
 
     def get_allow_download_disabled(self):
         """
-        (team_policies) Disabled allow downloads. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        (team_policies) Disabled downloads (deprecated, no longer logged)
 
         Only call this if :meth:`is_allow_download_disabled` is true.
 
@@ -23400,9 +24784,7 @@ class EventType(bb.Union):
 
     def get_allow_download_enabled(self):
         """
-        (team_policies) Enabled allow downloads. This event is deprecated and
-        will not be logged going forward as the associated product functionality
-        no longer exists.
+        (team_policies) Enabled downloads (deprecated, no longer logged)
 
         Only call this if :meth:`is_allow_download_enabled` is true.
 
@@ -23414,8 +24796,8 @@ class EventType(bb.Union):
 
     def get_data_placement_restriction_change_policy(self):
         """
-        (team_policies) Set a restriction policy regarding the location of data
-        centers where team data resides.
+        (team_policies) Set restrictions on data center locations where team
+        data resides
 
         Only call this if :meth:`is_data_placement_restriction_change_policy` is true.
 
@@ -23427,9 +24809,8 @@ class EventType(bb.Union):
 
     def get_data_placement_restriction_satisfy_policy(self):
         """
-        (team_policies) Satisfied a previously set restriction policy regarding
-        the location of data centers where team data resides (i.e. all data have
-        been migrated according to the restriction placed).
+        (team_policies) Completed restrictions on data center locations where
+        team data resides
 
         Only call this if :meth:`is_data_placement_restriction_satisfy_policy` is true.
 
@@ -23441,8 +24822,8 @@ class EventType(bb.Union):
 
     def get_device_approvals_change_desktop_policy(self):
         """
-        (team_policies) Set or removed a limit on the number of computers each
-        team member can link to their work Dropbox account.
+        (team_policies) Set/removed limit on number of computers member can link
+        to team Dropbox account
 
         Only call this if :meth:`is_device_approvals_change_desktop_policy` is true.
 
@@ -23454,8 +24835,8 @@ class EventType(bb.Union):
 
     def get_device_approvals_change_mobile_policy(self):
         """
-        (team_policies) Set or removed a limit on the number of mobiles devices
-        each team member can link to their work Dropbox account.
+        (team_policies) Set/removed limit on number of mobile devices member can
+        link to team Dropbox account
 
         Only call this if :meth:`is_device_approvals_change_mobile_policy` is true.
 
@@ -23467,9 +24848,8 @@ class EventType(bb.Union):
 
     def get_device_approvals_change_overage_action(self):
         """
-        (team_policies) Changed the action taken when a team member is already
-        over the limits (e.g when they join the team, an admin lowers limits,
-        etc.).
+        (team_policies) Changed device approvals setting when member is over
+        limit
 
         Only call this if :meth:`is_device_approvals_change_overage_action` is true.
 
@@ -23481,8 +24861,8 @@ class EventType(bb.Union):
 
     def get_device_approvals_change_unlink_action(self):
         """
-        (team_policies) Changed the action taken with respect to approval limits
-        when a team member unlinks an approved device.
+        (team_policies) Changed device approvals setting when member unlinks
+        approved device
 
         Only call this if :meth:`is_device_approvals_change_unlink_action` is true.
 
@@ -23494,8 +24874,7 @@ class EventType(bb.Union):
 
     def get_emm_add_exception(self):
         """
-        (team_policies) Added an exception for one or more team members to
-        optionally use the regular Dropbox app when EMM is enabled.
+        (team_policies) Added members to EMM exception list
 
         Only call this if :meth:`is_emm_add_exception` is true.
 
@@ -23507,8 +24886,8 @@ class EventType(bb.Union):
 
     def get_emm_change_policy(self):
         """
-        (team_policies) Enabled or disabled enterprise mobility management for
-        team members.
+        (team_policies) Enabled/disabled enterprise mobility management for
+        members
 
         Only call this if :meth:`is_emm_change_policy` is true.
 
@@ -23520,8 +24899,7 @@ class EventType(bb.Union):
 
     def get_emm_remove_exception(self):
         """
-        (team_policies) Removed an exception for one or more team members to
-        optionally use the regular Dropbox app when EMM is enabled.
+        (team_policies) Removed members from EMM exception list
 
         Only call this if :meth:`is_emm_remove_exception` is true.
 
@@ -23533,7 +24911,7 @@ class EventType(bb.Union):
 
     def get_extended_version_history_change_policy(self):
         """
-        (team_policies) Accepted or opted out of extended version history.
+        (team_policies) Accepted/opted out of extended version history
 
         Only call this if :meth:`is_extended_version_history_change_policy` is true.
 
@@ -23545,7 +24923,7 @@ class EventType(bb.Union):
 
     def get_file_comments_change_policy(self):
         """
-        (team_policies) Enabled or disabled commenting on team files.
+        (team_policies) Enabled/disabled commenting on team files
 
         Only call this if :meth:`is_file_comments_change_policy` is true.
 
@@ -23557,7 +24935,7 @@ class EventType(bb.Union):
 
     def get_file_requests_change_policy(self):
         """
-        (team_policies) Enabled or disabled file requests.
+        (team_policies) Enabled/disabled file requests
 
         Only call this if :meth:`is_file_requests_change_policy` is true.
 
@@ -23569,9 +24947,8 @@ class EventType(bb.Union):
 
     def get_file_requests_emails_enabled(self):
         """
-        (team_policies) Enabled file request emails for everyone. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (team_policies) Enabled file request emails for everyone (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_file_requests_emails_enabled` is true.
 
@@ -23583,9 +24960,8 @@ class EventType(bb.Union):
 
     def get_file_requests_emails_restricted_to_team_only(self):
         """
-        (team_policies) Allowed file request emails for the team. This event is
-        deprecated and will not be logged going forward as the associated
-        product functionality no longer exists.
+        (team_policies) Enabled file request emails for team (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_file_requests_emails_restricted_to_team_only` is true.
 
@@ -23597,7 +24973,7 @@ class EventType(bb.Union):
 
     def get_google_sso_change_policy(self):
         """
-        (team_policies) Enabled or disabled Google single sign-on for the team.
+        (team_policies) Enabled/disabled Google single sign-on for team
 
         Only call this if :meth:`is_google_sso_change_policy` is true.
 
@@ -23609,7 +24985,7 @@ class EventType(bb.Union):
 
     def get_group_user_management_change_policy(self):
         """
-        (team_policies) Changed who can create groups.
+        (team_policies) Changed who can create groups
 
         Only call this if :meth:`is_group_user_management_change_policy` is true.
 
@@ -23621,8 +24997,7 @@ class EventType(bb.Union):
 
     def get_member_requests_change_policy(self):
         """
-        (team_policies) Changed whether users can find the team when not
-        invited.
+        (team_policies) Changed whether users can find team when not invited
 
         Only call this if :meth:`is_member_requests_change_policy` is true.
 
@@ -23634,8 +25009,7 @@ class EventType(bb.Union):
 
     def get_member_space_limits_add_exception(self):
         """
-        (team_policies) Added an exception for one or more team members to
-        bypass space limits imposed by policy.
+        (team_policies) Added members to member space limit exception list
 
         Only call this if :meth:`is_member_space_limits_add_exception` is true.
 
@@ -23647,7 +25021,7 @@ class EventType(bb.Union):
 
     def get_member_space_limits_change_caps_type_policy(self):
         """
-        (team_policies) Change the member space limit type for the team.
+        (team_policies) Changed member space limit type for team
 
         Only call this if :meth:`is_member_space_limits_change_caps_type_policy` is true.
 
@@ -23659,7 +25033,7 @@ class EventType(bb.Union):
 
     def get_member_space_limits_change_policy(self):
         """
-        (team_policies) Changed the team default limit level.
+        (team_policies) Changed team default member space limit
 
         Only call this if :meth:`is_member_space_limits_change_policy` is true.
 
@@ -23671,8 +25045,7 @@ class EventType(bb.Union):
 
     def get_member_space_limits_remove_exception(self):
         """
-        (team_policies) Removed an exception for one or more team members to
-        bypass space limits imposed by policy.
+        (team_policies) Removed members from member space limit exception list
 
         Only call this if :meth:`is_member_space_limits_remove_exception` is true.
 
@@ -23684,8 +25057,8 @@ class EventType(bb.Union):
 
     def get_member_suggestions_change_policy(self):
         """
-        (team_policies) Enabled or disabled the option for team members to
-        suggest new members to add to the team.
+        (team_policies) Enabled/disabled option for team members to suggest
+        people to add to team
 
         Only call this if :meth:`is_member_suggestions_change_policy` is true.
 
@@ -23697,8 +25070,7 @@ class EventType(bb.Union):
 
     def get_microsoft_office_addin_change_policy(self):
         """
-        (team_policies) Enabled or disabled the Microsoft Office add-in, which
-        lets team members save files to Dropbox directly from Microsoft Office.
+        (team_policies) Enabled/disabled Microsoft Office add-in
 
         Only call this if :meth:`is_microsoft_office_addin_change_policy` is true.
 
@@ -23710,7 +25082,7 @@ class EventType(bb.Union):
 
     def get_network_control_change_policy(self):
         """
-        (team_policies) Enabled or disabled network control.
+        (team_policies) Enabled/disabled network control
 
         Only call this if :meth:`is_network_control_change_policy` is true.
 
@@ -23723,7 +25095,7 @@ class EventType(bb.Union):
     def get_paper_change_deployment_policy(self):
         """
         (team_policies) Changed whether Dropbox Paper, when enabled, is deployed
-        to all teams or to specific members of the team.
+        to all members or to specific members
 
         Only call this if :meth:`is_paper_change_deployment_policy` is true.
 
@@ -23735,9 +25107,8 @@ class EventType(bb.Union):
 
     def get_paper_change_member_link_policy(self):
         """
-        (team_policies) Changed whether non team members can view Paper
-        documents using a link. This event is deprecated and will not be logged
-        going forward as the associated product functionality no longer exists.
+        (team_policies) Changed whether non-members can view Paper docs with
+        link (deprecated, no longer logged)
 
         Only call this if :meth:`is_paper_change_member_link_policy` is true.
 
@@ -23749,9 +25120,9 @@ class EventType(bb.Union):
 
     def get_paper_change_member_policy(self):
         """
-        (team_policies) Changed whether team members can share Paper documents
-        externally (i.e. outside the team), and if so, whether they should be
-        accessible only by team members or anyone by default.
+        (team_policies) Changed whether members can share Paper docs outside
+        team, and if docs are accessible only by team members or anyone by
+        default
 
         Only call this if :meth:`is_paper_change_member_policy` is true.
 
@@ -23763,7 +25134,7 @@ class EventType(bb.Union):
 
     def get_paper_change_policy(self):
         """
-        (team_policies) Enabled or disabled Dropbox Paper for the team.
+        (team_policies) Enabled/disabled Dropbox Paper for team
 
         Only call this if :meth:`is_paper_change_policy` is true.
 
@@ -23775,7 +25146,7 @@ class EventType(bb.Union):
 
     def get_paper_enabled_users_group_addition(self):
         """
-        (team_policies) Users added to Paper enabled users list.
+        (team_policies) Added users to Paper-enabled users list
 
         Only call this if :meth:`is_paper_enabled_users_group_addition` is true.
 
@@ -23787,7 +25158,7 @@ class EventType(bb.Union):
 
     def get_paper_enabled_users_group_removal(self):
         """
-        (team_policies) Users removed from Paper enabled users list.
+        (team_policies) Removed users from Paper-enabled users list
 
         Only call this if :meth:`is_paper_enabled_users_group_removal` is true.
 
@@ -23799,8 +25170,8 @@ class EventType(bb.Union):
 
     def get_permanent_delete_change_policy(self):
         """
-        (team_policies) Enabled or disabled the ability of team members to
-        permanently delete content.
+        (team_policies) Enabled/disabled ability of team members to permanently
+        delete content
 
         Only call this if :meth:`is_permanent_delete_change_policy` is true.
 
@@ -23813,7 +25184,7 @@ class EventType(bb.Union):
     def get_sharing_change_folder_join_policy(self):
         """
         (team_policies) Changed whether team members can join shared folders
-        owned externally (i.e. outside the team).
+        owned outside team
 
         Only call this if :meth:`is_sharing_change_folder_join_policy` is true.
 
@@ -23825,9 +25196,8 @@ class EventType(bb.Union):
 
     def get_sharing_change_link_policy(self):
         """
-        (team_policies) Changed whether team members can share links externally
-        (i.e. outside the team), and if so, whether links should be accessible
-        only by team members or anyone by default.
+        (team_policies) Changed whether members can share links outside team,
+        and if links are accessible only by team members or anyone by default
 
         Only call this if :meth:`is_sharing_change_link_policy` is true.
 
@@ -23839,8 +25209,8 @@ class EventType(bb.Union):
 
     def get_sharing_change_member_policy(self):
         """
-        (team_policies) Changed whether team members can share files and folders
-        externally (i.e. outside the team).
+        (team_policies) Changed whether members can share files/folders outside
+        team
 
         Only call this if :meth:`is_sharing_change_member_policy` is true.
 
@@ -23852,7 +25222,7 @@ class EventType(bb.Union):
 
     def get_smart_sync_change_policy(self):
         """
-        (team_policies) Changed the default Smart Sync policy for team members.
+        (team_policies) Changed default Smart Sync setting for team members
 
         Only call this if :meth:`is_smart_sync_change_policy` is true.
 
@@ -23864,7 +25234,7 @@ class EventType(bb.Union):
 
     def get_smart_sync_not_opt_out(self):
         """
-        (team_policies) Opted team into Smart Sync.
+        (team_policies) Opted team into Smart Sync
 
         Only call this if :meth:`is_smart_sync_not_opt_out` is true.
 
@@ -23876,7 +25246,7 @@ class EventType(bb.Union):
 
     def get_smart_sync_opt_out(self):
         """
-        (team_policies) Opted team out of Smart Sync.
+        (team_policies) Opted team out of Smart Sync
 
         Only call this if :meth:`is_smart_sync_opt_out` is true.
 
@@ -23888,7 +25258,7 @@ class EventType(bb.Union):
 
     def get_sso_change_policy(self):
         """
-        (team_policies) Change the single sign-on policy for the team.
+        (team_policies) Changed single sign-on setting for team
 
         Only call this if :meth:`is_sso_change_policy` is true.
 
@@ -23900,7 +25270,7 @@ class EventType(bb.Union):
 
     def get_tfa_change_policy(self):
         """
-        (team_policies) Change two-step verification policy for the team.
+        (team_policies) Changed two-step verification setting for team
 
         Only call this if :meth:`is_tfa_change_policy` is true.
 
@@ -23912,9 +25282,8 @@ class EventType(bb.Union):
 
     def get_two_account_change_policy(self):
         """
-        (team_policies) Enabled or disabled the option for team members to link
-        a personal Dropbox account in addition to their work account to the same
-        computer.
+        (team_policies) Enabled/disabled option for members to link personal
+        Dropbox account and team account to same computer
 
         Only call this if :meth:`is_two_account_change_policy` is true.
 
@@ -23926,8 +25295,8 @@ class EventType(bb.Union):
 
     def get_web_sessions_change_fixed_length_policy(self):
         """
-        (team_policies) Changed how long team members can stay signed in to
-        Dropbox on the web.
+        (team_policies) Changed how long members can stay signed in to
+        Dropbox.com
 
         Only call this if :meth:`is_web_sessions_change_fixed_length_policy` is true.
 
@@ -23940,7 +25309,7 @@ class EventType(bb.Union):
     def get_web_sessions_change_idle_length_policy(self):
         """
         (team_policies) Changed how long team members can be idle while signed
-        in to Dropbox on the web.
+        in to Dropbox.com
 
         Only call this if :meth:`is_web_sessions_change_idle_length_policy` is true.
 
@@ -23952,7 +25321,7 @@ class EventType(bb.Union):
 
     def get_team_merge_from(self):
         """
-        (team_profile) Merged another team into this team.
+        (team_profile) Merged another team into this team
 
         Only call this if :meth:`is_team_merge_from` is true.
 
@@ -23964,7 +25333,7 @@ class EventType(bb.Union):
 
     def get_team_merge_to(self):
         """
-        (team_profile) Merged this team into another team.
+        (team_profile) Merged this team into another team
 
         Only call this if :meth:`is_team_merge_to` is true.
 
@@ -23976,7 +25345,7 @@ class EventType(bb.Union):
 
     def get_team_profile_add_logo(self):
         """
-        (team_profile) Added a team logo to be displayed on shared link headers.
+        (team_profile) Added team logo to display on shared link headers
 
         Only call this if :meth:`is_team_profile_add_logo` is true.
 
@@ -23988,7 +25357,7 @@ class EventType(bb.Union):
 
     def get_team_profile_change_default_language(self):
         """
-        (team_profile) Changed the default language for the team.
+        (team_profile) Changed default language for team
 
         Only call this if :meth:`is_team_profile_change_default_language` is true.
 
@@ -24000,8 +25369,7 @@ class EventType(bb.Union):
 
     def get_team_profile_change_logo(self):
         """
-        (team_profile) Changed the team logo to be displayed on shared link
-        headers.
+        (team_profile) Changed team logo displayed on shared link headers
 
         Only call this if :meth:`is_team_profile_change_logo` is true.
 
@@ -24013,7 +25381,7 @@ class EventType(bb.Union):
 
     def get_team_profile_change_name(self):
         """
-        (team_profile) Changed the team name.
+        (team_profile) Changed team name
 
         Only call this if :meth:`is_team_profile_change_name` is true.
 
@@ -24025,8 +25393,7 @@ class EventType(bb.Union):
 
     def get_team_profile_remove_logo(self):
         """
-        (team_profile) Removed the team logo to be displayed on shared link
-        headers.
+        (team_profile) Removed team logo displayed on shared link headers
 
         Only call this if :meth:`is_team_profile_remove_logo` is true.
 
@@ -24038,7 +25405,7 @@ class EventType(bb.Union):
 
     def get_tfa_add_backup_phone(self):
         """
-        (tfa) Added a backup phone for two-step verification.
+        (tfa) Added backup phone for two-step verification
 
         Only call this if :meth:`is_tfa_add_backup_phone` is true.
 
@@ -24050,7 +25417,7 @@ class EventType(bb.Union):
 
     def get_tfa_add_security_key(self):
         """
-        (tfa) Added a security key for two-step verification.
+        (tfa) Added security key for two-step verification
 
         Only call this if :meth:`is_tfa_add_security_key` is true.
 
@@ -24062,7 +25429,7 @@ class EventType(bb.Union):
 
     def get_tfa_change_backup_phone(self):
         """
-        (tfa) Changed the backup phone for two-step verification.
+        (tfa) Changed backup phone for two-step verification
 
         Only call this if :meth:`is_tfa_change_backup_phone` is true.
 
@@ -24074,8 +25441,7 @@ class EventType(bb.Union):
 
     def get_tfa_change_status(self):
         """
-        (tfa) Enabled, disabled or changed the configuration for two-step
-        verification.
+        (tfa) Enabled/disabled/changed two-step verification setting
 
         Only call this if :meth:`is_tfa_change_status` is true.
 
@@ -24087,7 +25453,7 @@ class EventType(bb.Union):
 
     def get_tfa_remove_backup_phone(self):
         """
-        (tfa) Removed the backup phone for two-step verification.
+        (tfa) Removed backup phone for two-step verification
 
         Only call this if :meth:`is_tfa_remove_backup_phone` is true.
 
@@ -24099,7 +25465,7 @@ class EventType(bb.Union):
 
     def get_tfa_remove_security_key(self):
         """
-        (tfa) Removed a security key for two-step verification.
+        (tfa) Removed security key for two-step verification
 
         Only call this if :meth:`is_tfa_remove_security_key` is true.
 
@@ -24111,7 +25477,7 @@ class EventType(bb.Union):
 
     def get_tfa_reset(self):
         """
-        (tfa) Reset two-step verification for team member.
+        (tfa) Reset two-step verification for team member
 
         Only call this if :meth:`is_tfa_reset` is true.
 
@@ -24128,7 +25494,7 @@ EventType_validator = bv.Union(EventType)
 
 class ExportMembersReportDetails(object):
     """
-    Member data report created.
+    Created member data report.
     """
 
     __slots__ = [
@@ -24190,7 +25556,7 @@ ExportMembersReportType_validator = bv.Struct(ExportMembersReportType)
 
 class ExtendedVersionHistoryChangePolicyDetails(object):
     """
-    Accepted or opted out of extended version history.
+    Accepted/opted out of extended version history.
 
     :ivar new_value: New extended version history policy.
     :ivar previous_value: Previous extended version history policy. Might be
@@ -24335,6 +25701,8 @@ class ExtendedVersionHistoryPolicy(bb.Union):
     # Attribute is overwritten below the class definition
     implicitly_limited = None
     # Attribute is overwritten below the class definition
+    implicitly_unlimited = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_explicitly_limited(self):
@@ -24360,6 +25728,14 @@ class ExtendedVersionHistoryPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'implicitly_limited'
+
+    def is_implicitly_unlimited(self):
+        """
+        Check if the union tag is ``implicitly_unlimited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'implicitly_unlimited'
 
     def is_other(self):
         """
@@ -24551,7 +25927,7 @@ FailureDetailsLogInfo_validator = bv.Struct(FailureDetailsLogInfo)
 
 class FileAddCommentDetails(object):
     """
-    Added a file comment.
+    Added file comment.
 
     :ivar comment_text: Comment text. Might be missing due to historical data
         gap.
@@ -24890,7 +26266,7 @@ FileCommentNotificationPolicy_validator = bv.Union(FileCommentNotificationPolicy
 
 class FileCommentsChangePolicyDetails(object):
     """
-    Enabled or disabled commenting on team files.
+    Enabled/disabled commenting on team files.
 
     :ivar new_value: New commenting on team files policy.
     :ivar previous_value: Previous commenting on team files policy. Might be
@@ -25163,7 +26539,7 @@ FileCopyType_validator = bv.Struct(FileCopyType)
 
 class FileDeleteCommentDetails(object):
     """
-    Deleted a file comment.
+    Deleted file comment.
 
     :ivar comment_text: Comment text. Might be missing due to historical data
         gap.
@@ -25448,7 +26824,7 @@ FileEditType_validator = bv.Struct(FileEditType)
 
 class FileGetCopyReferenceDetails(object):
     """
-    Create a copy reference to a file or folder.
+    Created copy reference to file/folder.
     """
 
     __slots__ = [
@@ -25510,7 +26886,7 @@ FileGetCopyReferenceType_validator = bv.Struct(FileGetCopyReferenceType)
 
 class FileLikeCommentDetails(object):
     """
-    Liked a file comment.
+    Liked file comment.
 
     :ivar comment_text: Comment text. Might be missing due to historical data
         gap.
@@ -26072,7 +27448,7 @@ FileRenameType_validator = bv.Struct(FileRenameType)
 
 class FileRequestChangeDetails(object):
     """
-    Change a file request.
+    Changed file request.
 
     :ivar file_request_id: File request id. Might be missing due to historical
         data gap.
@@ -26240,7 +27616,7 @@ FileRequestChangeType_validator = bv.Struct(FileRequestChangeType)
 
 class FileRequestCloseDetails(object):
     """
-    Closed a file request.
+    Closed file request.
 
     :ivar file_request_id: File request id. Might be missing due to historical
         data gap.
@@ -26376,7 +27752,7 @@ FileRequestCloseType_validator = bv.Struct(FileRequestCloseType)
 
 class FileRequestCreateDetails(object):
     """
-    Created a file request.
+    Created file request.
 
     :ivar file_request_id: File request id. Might be missing due to historical
         data gap.
@@ -26691,7 +28067,7 @@ FileRequestDetails_validator = bv.Struct(FileRequestDetails)
 
 class FileRequestReceiveFileDetails(object):
     """
-    Received files for a file request.
+    Received files for file request.
 
     :ivar file_request_id: File request id. Might be missing due to historical
         data gap.
@@ -26932,7 +28308,7 @@ FileRequestReceiveFileType_validator = bv.Struct(FileRequestReceiveFileType)
 
 class FileRequestsChangePolicyDetails(object):
     """
-    Enabled or disabled file requests.
+    Enabled/disabled file requests.
 
     :ivar new_value: New file requests policy.
     :ivar previous_value: Previous file requests policy. Might be missing due to
@@ -27126,7 +28502,7 @@ FileRequestsEmailsEnabledType_validator = bv.Struct(FileRequestsEmailsEnabledTyp
 
 class FileRequestsEmailsRestrictedToTeamOnlyDetails(object):
     """
-    Allowed file request emails for the team.
+    Enabled file request emails for team.
     """
 
     __slots__ = [
@@ -27234,7 +28610,7 @@ FileRequestsPolicy_validator = bv.Union(FileRequestsPolicy)
 
 class FileResolveCommentDetails(object):
     """
-    Resolved a file comment.
+    Resolved file comment.
 
     :ivar comment_text: Comment text. Might be missing due to historical data
         gap.
@@ -27395,7 +28771,7 @@ FileRestoreType_validator = bv.Struct(FileRestoreType)
 
 class FileRevertDetails(object):
     """
-    Reverted files to a previous version.
+    Reverted files to previous version.
     """
 
     __slots__ = [
@@ -27457,7 +28833,7 @@ FileRevertType_validator = bv.Struct(FileRevertType)
 
 class FileRollbackChangesDetails(object):
     """
-    Rolled back file change location changes.
+    Rolled back file actions.
     """
 
     __slots__ = [
@@ -27519,7 +28895,7 @@ FileRollbackChangesType_validator = bv.Struct(FileRollbackChangesType)
 
 class FileSaveCopyReferenceDetails(object):
     """
-    Save a file or folder using a copy reference.
+    Saved file/folder using copy reference.
 
     :ivar relocate_action_details: Relocate action details.
     """
@@ -27614,7 +28990,7 @@ FileSaveCopyReferenceType_validator = bv.Struct(FileSaveCopyReferenceType)
 
 class FileUnlikeCommentDetails(object):
     """
-    Unliked a file comment.
+    Unliked file comment.
 
     :ivar comment_text: Comment text. Might be missing due to historical data
         gap.
@@ -27713,7 +29089,7 @@ FileUnlikeCommentType_validator = bv.Struct(FileUnlikeCommentType)
 
 class FileUnresolveCommentDetails(object):
     """
-    Unresolved a file comment.
+    Unresolved file comment.
 
     :ivar comment_text: Comment text. Might be missing due to historical data
         gap.
@@ -28412,7 +29788,7 @@ GetTeamEventsResult_validator = bv.Struct(GetTeamEventsResult)
 
 class GoogleSsoChangePolicyDetails(object):
     """
-    Enabled or disabled Google single sign-on for the team.
+    Enabled/disabled Google single sign-on for team.
 
     :ivar new_value: New Google single sign-on policy.
     :ivar previous_value: Previous Google single sign-on policy. Might be
@@ -28590,7 +29966,7 @@ GoogleSsoPolicy_validator = bv.Union(GoogleSsoPolicy)
 
 class GroupAddExternalIdDetails(object):
     """
-    Added an external ID for group.
+    Added external ID for group.
 
     :ivar new_value: Current external id.
     """
@@ -28685,7 +30061,7 @@ GroupAddExternalIdType_validator = bv.Struct(GroupAddExternalIdType)
 
 class GroupAddMemberDetails(object):
     """
-    Added team members to a group.
+    Added team members to group.
 
     :ivar is_group_owner: Is group owner.
     """
@@ -28780,7 +30156,7 @@ GroupAddMemberType_validator = bv.Struct(GroupAddMemberType)
 
 class GroupChangeExternalIdDetails(object):
     """
-    Changed the external ID for group.
+    Changed external ID for group.
 
     :ivar new_value: Current external id.
     :ivar previous_value: Old external id.
@@ -29039,7 +30415,7 @@ GroupChangeManagementTypeType_validator = bv.Struct(GroupChangeManagementTypeTyp
 
 class GroupChangeMemberRoleDetails(object):
     """
-    Changed the manager permissions belonging to a group member.
+    Changed manager permissions of group member.
 
     :ivar is_group_owner: Is group owner.
     """
@@ -29134,7 +30510,7 @@ GroupChangeMemberRoleType_validator = bv.Struct(GroupChangeMemberRoleType)
 
 class GroupCreateDetails(object):
     """
-    Created a group.
+    Created group.
 
     :ivar is_company_managed: Is company managed group. Might be missing due to
         historical data gap.
@@ -29148,11 +30524,11 @@ class GroupCreateDetails(object):
         '_join_policy_present',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 join_policy=None,
-                 is_company_managed=None):
+                 is_company_managed=None,
+                 join_policy=None):
         self._is_company_managed_value = None
         self._is_company_managed_present = False
         self._join_policy_value = None
@@ -29198,10 +30574,13 @@ class GroupCreateDetails(object):
         if self._join_policy_present:
             return self._join_policy_value
         else:
-            raise AttributeError("missing required field 'join_policy'")
+            return None
 
     @join_policy.setter
     def join_policy(self, val):
+        if val is None:
+            del self.join_policy
+            return
         self._join_policy_validator.validate_type_only(val)
         self._join_policy_value = val
         self._join_policy_present = True
@@ -29212,9 +30591,9 @@ class GroupCreateDetails(object):
         self._join_policy_present = False
 
     def __repr__(self):
-        return 'GroupCreateDetails(join_policy={!r}, is_company_managed={!r})'.format(
-            self._join_policy_value,
+        return 'GroupCreateDetails(is_company_managed={!r}, join_policy={!r})'.format(
             self._is_company_managed_value,
+            self._join_policy_value,
         )
 
 GroupCreateDetails_validator = bv.Struct(GroupCreateDetails)
@@ -29265,7 +30644,7 @@ GroupCreateType_validator = bv.Struct(GroupCreateType)
 
 class GroupDeleteDetails(object):
     """
-    Deleted a group.
+    Deleted group.
 
     :ivar is_company_managed: Is company managed group. Might be missing due to
         historical data gap.
@@ -29362,6 +30741,68 @@ class GroupDeleteType(object):
 
 GroupDeleteType_validator = bv.Struct(GroupDeleteType)
 
+class GroupDescriptionUpdatedDetails(object):
+    """
+    Updated group.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return 'GroupDescriptionUpdatedDetails()'
+
+GroupDescriptionUpdatedDetails_validator = bv.Struct(GroupDescriptionUpdatedDetails)
+
+class GroupDescriptionUpdatedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'GroupDescriptionUpdatedType(description={!r})'.format(
+            self._description_value,
+        )
+
+GroupDescriptionUpdatedType_validator = bv.Struct(GroupDescriptionUpdatedType)
+
 class GroupJoinPolicy(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -29405,6 +30846,140 @@ class GroupJoinPolicy(bb.Union):
         return 'GroupJoinPolicy(%r, %r)' % (self._tag, self._value)
 
 GroupJoinPolicy_validator = bv.Union(GroupJoinPolicy)
+
+class GroupJoinPolicyUpdatedDetails(object):
+    """
+    Updated group join policy.
+
+    :ivar is_company_managed: Is company managed group. Might be missing due to
+        historical data gap.
+    :ivar join_policy: Group join policy.
+    """
+
+    __slots__ = [
+        '_is_company_managed_value',
+        '_is_company_managed_present',
+        '_join_policy_value',
+        '_join_policy_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 is_company_managed=None,
+                 join_policy=None):
+        self._is_company_managed_value = None
+        self._is_company_managed_present = False
+        self._join_policy_value = None
+        self._join_policy_present = False
+        if is_company_managed is not None:
+            self.is_company_managed = is_company_managed
+        if join_policy is not None:
+            self.join_policy = join_policy
+
+    @property
+    def is_company_managed(self):
+        """
+        Is company managed group. Might be missing due to historical data gap.
+
+        :rtype: bool
+        """
+        if self._is_company_managed_present:
+            return self._is_company_managed_value
+        else:
+            return None
+
+    @is_company_managed.setter
+    def is_company_managed(self, val):
+        if val is None:
+            del self.is_company_managed
+            return
+        val = self._is_company_managed_validator.validate(val)
+        self._is_company_managed_value = val
+        self._is_company_managed_present = True
+
+    @is_company_managed.deleter
+    def is_company_managed(self):
+        self._is_company_managed_value = None
+        self._is_company_managed_present = False
+
+    @property
+    def join_policy(self):
+        """
+        Group join policy.
+
+        :rtype: GroupJoinPolicy
+        """
+        if self._join_policy_present:
+            return self._join_policy_value
+        else:
+            return None
+
+    @join_policy.setter
+    def join_policy(self, val):
+        if val is None:
+            del self.join_policy
+            return
+        self._join_policy_validator.validate_type_only(val)
+        self._join_policy_value = val
+        self._join_policy_present = True
+
+    @join_policy.deleter
+    def join_policy(self):
+        self._join_policy_value = None
+        self._join_policy_present = False
+
+    def __repr__(self):
+        return 'GroupJoinPolicyUpdatedDetails(is_company_managed={!r}, join_policy={!r})'.format(
+            self._is_company_managed_value,
+            self._join_policy_value,
+        )
+
+GroupJoinPolicyUpdatedDetails_validator = bv.Struct(GroupJoinPolicyUpdatedDetails)
+
+class GroupJoinPolicyUpdatedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'GroupJoinPolicyUpdatedType(description={!r})'.format(
+            self._description_value,
+        )
+
+GroupJoinPolicyUpdatedType_validator = bv.Struct(GroupJoinPolicyUpdatedType)
 
 class GroupLogInfo(object):
     """
@@ -29532,7 +31107,7 @@ GroupLogInfo_validator = bv.Struct(GroupLogInfo)
 
 class GroupMovedDetails(object):
     """
-    Moved a group.
+    Moved group.
     """
 
     __slots__ = [
@@ -29594,7 +31169,7 @@ GroupMovedType_validator = bv.Struct(GroupMovedType)
 
 class GroupRemoveExternalIdDetails(object):
     """
-    Removed the external ID for group.
+    Removed external ID for group.
 
     :ivar previous_value: Old external id.
     """
@@ -29689,7 +31264,7 @@ GroupRemoveExternalIdType_validator = bv.Struct(GroupRemoveExternalIdType)
 
 class GroupRemoveMemberDetails(object):
     """
-    Removed team members from a group.
+    Removed team members from group.
     """
 
     __slots__ = [
@@ -29751,7 +31326,7 @@ GroupRemoveMemberType_validator = bv.Struct(GroupRemoveMemberType)
 
 class GroupRenameDetails(object):
     """
-    Renamed a group.
+    Renamed group.
 
     :ivar previous_value: Previous display name.
     :ivar new_value: New display name.
@@ -30094,7 +31669,7 @@ class JoinTeamDetails(object):
         """
         Linked applications.
 
-        :rtype: list of [AppLogInfo]
+        :rtype: list of [UserLinkedAppLogInfo]
         """
         if self._linked_apps_present:
             return self._linked_apps_value
@@ -30171,6 +31746,8 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information on sessions, in legacy format
 
+    :ivar session_info: Session unique id. Might be missing due to historical
+        data gap.
     :ivar display_name: The device name. Might be missing due to historical data
         gap.
     :ivar is_emm_managed: Is device managed by emm. Might be missing due to
@@ -30190,6 +31767,8 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
 
     __slots__ = [
+        '_session_info_value',
+        '_session_info_present',
         '_display_name_value',
         '_display_name_present',
         '_is_emm_managed_value',
@@ -30211,10 +31790,10 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
     _has_required_fields = False
 
     def __init__(self,
-                 session_id=None,
                  ip_address=None,
                  created=None,
                  updated=None,
+                 session_info=None,
                  display_name=None,
                  is_emm_managed=None,
                  platform=None,
@@ -30223,10 +31802,11 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
                  device_type=None,
                  client_version=None,
                  legacy_uniq_id=None):
-        super(LegacyDeviceSessionLogInfo, self).__init__(session_id,
-                                                         ip_address,
+        super(LegacyDeviceSessionLogInfo, self).__init__(ip_address,
                                                          created,
                                                          updated)
+        self._session_info_value = None
+        self._session_info_present = False
         self._display_name_value = None
         self._display_name_present = False
         self._is_emm_managed_value = None
@@ -30243,6 +31823,8 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._client_version_present = False
         self._legacy_uniq_id_value = None
         self._legacy_uniq_id_present = False
+        if session_info is not None:
+            self.session_info = session_info
         if display_name is not None:
             self.display_name = display_name
         if is_emm_managed is not None:
@@ -30259,6 +31841,32 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
             self.client_version = client_version
         if legacy_uniq_id is not None:
             self.legacy_uniq_id = legacy_uniq_id
+
+    @property
+    def session_info(self):
+        """
+        Session unique id. Might be missing due to historical data gap.
+
+        :rtype: SessionLogInfo
+        """
+        if self._session_info_present:
+            return self._session_info_value
+        else:
+            return None
+
+    @session_info.setter
+    def session_info(self, val):
+        if val is None:
+            del self.session_info
+            return
+        self._session_info_validator.validate_type_only(val)
+        self._session_info_value = val
+        self._session_info_present = True
+
+    @session_info.deleter
+    def session_info(self):
+        self._session_info_value = None
+        self._session_info_present = False
 
     @property
     def display_name(self):
@@ -30473,11 +32081,11 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._legacy_uniq_id_present = False
 
     def __repr__(self):
-        return 'LegacyDeviceSessionLogInfo(session_id={!r}, ip_address={!r}, created={!r}, updated={!r}, display_name={!r}, is_emm_managed={!r}, platform={!r}, mac_address={!r}, os_version={!r}, device_type={!r}, client_version={!r}, legacy_uniq_id={!r})'.format(
-            self._session_id_value,
+        return 'LegacyDeviceSessionLogInfo(ip_address={!r}, created={!r}, updated={!r}, session_info={!r}, display_name={!r}, is_emm_managed={!r}, platform={!r}, mac_address={!r}, os_version={!r}, device_type={!r}, client_version={!r}, legacy_uniq_id={!r})'.format(
             self._ip_address_value,
             self._created_value,
             self._updated_value,
+            self._session_info_value,
             self._display_name_value,
             self._is_emm_managed_value,
             self._platform_value,
@@ -30490,196 +32098,164 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
 
 LegacyDeviceSessionLogInfo_validator = bv.Struct(LegacyDeviceSessionLogInfo)
 
-class LinkedDeviceLogInfo(object):
+class LinkedDeviceLogInfo(bb.Union):
     """
-    Linked Device's logged information.
+    The device sessions that user is linked to.
 
-    :ivar device_type: Device type.
-    :ivar display_name: Device display name.
-    :ivar ip_address: The IP address of the last activity from this device.
-    :ivar last_activity: Last activity.
-    :ivar platform: Device platform name.
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar MobileDeviceSessionLogInfo mobile_device_session: mobile device
+        session's details.
+    :ivar DesktopDeviceSessionLogInfo desktop_device_session: desktop device
+        session's details.
+    :ivar WebDeviceSessionLogInfo web_device_session: web device session's
+        details.
+    :ivar LegacyDeviceSessionLogInfo legacy_device_session: legacy device
+        session's details.
     """
 
-    __slots__ = [
-        '_device_type_value',
-        '_device_type_present',
-        '_display_name_value',
-        '_display_name_present',
-        '_ip_address_value',
-        '_ip_address_present',
-        '_last_activity_value',
-        '_last_activity_present',
-        '_platform_value',
-        '_platform_present',
-    ]
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
 
-    _has_required_fields = True
-
-    def __init__(self,
-                 device_type=None,
-                 display_name=None,
-                 ip_address=None,
-                 last_activity=None,
-                 platform=None):
-        self._device_type_value = None
-        self._device_type_present = False
-        self._display_name_value = None
-        self._display_name_present = False
-        self._ip_address_value = None
-        self._ip_address_present = False
-        self._last_activity_value = None
-        self._last_activity_present = False
-        self._platform_value = None
-        self._platform_present = False
-        if device_type is not None:
-            self.device_type = device_type
-        if display_name is not None:
-            self.display_name = display_name
-        if ip_address is not None:
-            self.ip_address = ip_address
-        if last_activity is not None:
-            self.last_activity = last_activity
-        if platform is not None:
-            self.platform = platform
-
-    @property
-    def device_type(self):
+    @classmethod
+    def mobile_device_session(cls, val):
         """
-        Device type.
+        Create an instance of this class set to the ``mobile_device_session``
+        tag with value ``val``.
 
-        :rtype: str
+        :param MobileDeviceSessionLogInfo val:
+        :rtype: LinkedDeviceLogInfo
         """
-        if self._device_type_present:
-            return self._device_type_value
-        else:
-            raise AttributeError("missing required field 'device_type'")
+        return cls('mobile_device_session', val)
 
-    @device_type.setter
-    def device_type(self, val):
-        val = self._device_type_validator.validate(val)
-        self._device_type_value = val
-        self._device_type_present = True
-
-    @device_type.deleter
-    def device_type(self):
-        self._device_type_value = None
-        self._device_type_present = False
-
-    @property
-    def display_name(self):
+    @classmethod
+    def desktop_device_session(cls, val):
         """
-        Device display name.
+        Create an instance of this class set to the ``desktop_device_session``
+        tag with value ``val``.
 
-        :rtype: str
+        :param DesktopDeviceSessionLogInfo val:
+        :rtype: LinkedDeviceLogInfo
         """
-        if self._display_name_present:
-            return self._display_name_value
-        else:
-            return None
+        return cls('desktop_device_session', val)
 
-    @display_name.setter
-    def display_name(self, val):
-        if val is None:
-            del self.display_name
-            return
-        val = self._display_name_validator.validate(val)
-        self._display_name_value = val
-        self._display_name_present = True
-
-    @display_name.deleter
-    def display_name(self):
-        self._display_name_value = None
-        self._display_name_present = False
-
-    @property
-    def ip_address(self):
+    @classmethod
+    def web_device_session(cls, val):
         """
-        The IP address of the last activity from this device.
+        Create an instance of this class set to the ``web_device_session`` tag
+        with value ``val``.
 
-        :rtype: str
+        :param WebDeviceSessionLogInfo val:
+        :rtype: LinkedDeviceLogInfo
         """
-        if self._ip_address_present:
-            return self._ip_address_value
-        else:
-            return None
+        return cls('web_device_session', val)
 
-    @ip_address.setter
-    def ip_address(self, val):
-        if val is None:
-            del self.ip_address
-            return
-        val = self._ip_address_validator.validate(val)
-        self._ip_address_value = val
-        self._ip_address_present = True
-
-    @ip_address.deleter
-    def ip_address(self):
-        self._ip_address_value = None
-        self._ip_address_present = False
-
-    @property
-    def last_activity(self):
+    @classmethod
+    def legacy_device_session(cls, val):
         """
-        Last activity.
+        Create an instance of this class set to the ``legacy_device_session``
+        tag with value ``val``.
 
-        :rtype: str
+        :param LegacyDeviceSessionLogInfo val:
+        :rtype: LinkedDeviceLogInfo
         """
-        if self._last_activity_present:
-            return self._last_activity_value
-        else:
-            return None
+        return cls('legacy_device_session', val)
 
-    @last_activity.setter
-    def last_activity(self, val):
-        if val is None:
-            del self.last_activity
-            return
-        val = self._last_activity_validator.validate(val)
-        self._last_activity_value = val
-        self._last_activity_present = True
-
-    @last_activity.deleter
-    def last_activity(self):
-        self._last_activity_value = None
-        self._last_activity_present = False
-
-    @property
-    def platform(self):
+    def is_mobile_device_session(self):
         """
-        Device platform name.
+        Check if the union tag is ``mobile_device_session``.
 
-        :rtype: str
+        :rtype: bool
         """
-        if self._platform_present:
-            return self._platform_value
-        else:
-            return None
+        return self._tag == 'mobile_device_session'
 
-    @platform.setter
-    def platform(self, val):
-        if val is None:
-            del self.platform
-            return
-        val = self._platform_validator.validate(val)
-        self._platform_value = val
-        self._platform_present = True
+    def is_desktop_device_session(self):
+        """
+        Check if the union tag is ``desktop_device_session``.
 
-    @platform.deleter
-    def platform(self):
-        self._platform_value = None
-        self._platform_present = False
+        :rtype: bool
+        """
+        return self._tag == 'desktop_device_session'
+
+    def is_web_device_session(self):
+        """
+        Check if the union tag is ``web_device_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_device_session'
+
+    def is_legacy_device_session(self):
+        """
+        Check if the union tag is ``legacy_device_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legacy_device_session'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_mobile_device_session(self):
+        """
+        mobile device session's details.
+
+        Only call this if :meth:`is_mobile_device_session` is true.
+
+        :rtype: MobileDeviceSessionLogInfo
+        """
+        if not self.is_mobile_device_session():
+            raise AttributeError("tag 'mobile_device_session' not set")
+        return self._value
+
+    def get_desktop_device_session(self):
+        """
+        desktop device session's details.
+
+        Only call this if :meth:`is_desktop_device_session` is true.
+
+        :rtype: DesktopDeviceSessionLogInfo
+        """
+        if not self.is_desktop_device_session():
+            raise AttributeError("tag 'desktop_device_session' not set")
+        return self._value
+
+    def get_web_device_session(self):
+        """
+        web device session's details.
+
+        Only call this if :meth:`is_web_device_session` is true.
+
+        :rtype: WebDeviceSessionLogInfo
+        """
+        if not self.is_web_device_session():
+            raise AttributeError("tag 'web_device_session' not set")
+        return self._value
+
+    def get_legacy_device_session(self):
+        """
+        legacy device session's details.
+
+        Only call this if :meth:`is_legacy_device_session` is true.
+
+        :rtype: LegacyDeviceSessionLogInfo
+        """
+        if not self.is_legacy_device_session():
+            raise AttributeError("tag 'legacy_device_session' not set")
+        return self._value
 
     def __repr__(self):
-        return 'LinkedDeviceLogInfo(device_type={!r}, display_name={!r}, ip_address={!r}, last_activity={!r}, platform={!r})'.format(
-            self._device_type_value,
-            self._display_name_value,
-            self._ip_address_value,
-            self._last_activity_value,
-            self._platform_value,
-        )
+        return 'LinkedDeviceLogInfo(%r, %r)' % (self._tag, self._value)
 
-LinkedDeviceLogInfo_validator = bv.Struct(LinkedDeviceLogInfo)
+LinkedDeviceLogInfo_validator = bv.Union(LinkedDeviceLogInfo)
 
 class LoginFailDetails(object):
     """
@@ -31095,7 +32671,7 @@ LogoutType_validator = bv.Struct(LogoutType)
 
 class MemberAddNameDetails(object):
     """
-    Specify team member name.
+    Added team member name.
 
     :ivar new_value: New user's name.
     """
@@ -31190,7 +32766,7 @@ MemberAddNameType_validator = bv.Struct(MemberAddNameType)
 
 class MemberChangeAdminRoleDetails(object):
     """
-    Change the admin role belonging to team member.
+    Changed team member admin role.
 
     :ivar new_value: New admin role. This field is relevant when the admin role
         is changed or whenthe user role changes from no admin rights to with
@@ -31328,7 +32904,7 @@ MemberChangeAdminRoleType_validator = bv.Struct(MemberChangeAdminRoleType)
 
 class MemberChangeEmailDetails(object):
     """
-    Changed team member email address.
+    Changed team member email.
 
     :ivar new_value: New email.
     :ivar previous_value: Previous email. Might be missing due to historical
@@ -31459,7 +33035,7 @@ MemberChangeEmailType_validator = bv.Struct(MemberChangeEmailType)
 
 class MemberChangeMembershipTypeDetails(object):
     """
-    Changed the membership type (limited vs full) for team member.
+    Changed membership type (limited/full) of member.
 
     :ivar prev_value: Previous membership type.
     :ivar new_value: New membership type.
@@ -31717,7 +33293,7 @@ MemberChangeNameType_validator = bv.Struct(MemberChangeNameType)
 
 class MemberChangeStatusDetails(object):
     """
-    Changed the membership status of a team member.
+    Changed membership status of team member.
 
     :ivar previous_value: Previous member status. Might be missing due to
         historical data gap.
@@ -31885,7 +33461,7 @@ MemberChangeStatusType_validator = bv.Struct(MemberChangeStatusType)
 
 class MemberPermanentlyDeleteAccountContentsDetails(object):
     """
-    Permanently deleted contents of a removed team member account.
+    Permanently deleted contents of deleted team member account.
     """
 
     __slots__ = [
@@ -32001,7 +33577,7 @@ MemberRemoveActionType_validator = bv.Union(MemberRemoveActionType)
 
 class MemberRequestsChangePolicyDetails(object):
     """
-    Changed whether users can find the team when not invited.
+    Changed whether users can find team when not invited.
 
     :ivar new_value: New member change requests policy.
     :ivar previous_value: Previous member change requests policy. Might be
@@ -32282,8 +33858,7 @@ MemberSpaceLimitsAddCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsAddCu
 
 class MemberSpaceLimitsAddExceptionDetails(object):
     """
-    Added an exception for one or more team members to bypass space limits
-    imposed by policy.
+    Added members to member space limit exception list.
     """
 
     __slots__ = [
@@ -32345,7 +33920,7 @@ MemberSpaceLimitsAddExceptionType_validator = bv.Struct(MemberSpaceLimitsAddExce
 
 class MemberSpaceLimitsChangeCapsTypePolicyDetails(object):
     """
-    Change the member space limit type for the team.
+    Changed member space limit type for team.
 
     :ivar previous_value: Previous space limit type.
     :ivar new_value: New space limit type.
@@ -32599,7 +34174,7 @@ MemberSpaceLimitsChangeCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsCh
 
 class MemberSpaceLimitsChangePolicyDetails(object):
     """
-    Changed the team default limit level.
+    Changed team default member space limit.
 
     :ivar previous_value: Previous team default limit value in bytes. Might be
         missing due to historical data gap.
@@ -32736,8 +34311,7 @@ MemberSpaceLimitsChangePolicyType_validator = bv.Struct(MemberSpaceLimitsChangeP
 
 class MemberSpaceLimitsChangeStatusDetails(object):
     """
-    Changed the status with respect to whether the team member is under or over
-    storage quota specified by policy.
+    Changed space limit status.
 
     :ivar previous_value: Previous storage quota status.
     :ivar new_value: New storage quota status.
@@ -32926,8 +34500,7 @@ MemberSpaceLimitsRemoveCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsRe
 
 class MemberSpaceLimitsRemoveExceptionDetails(object):
     """
-    Removed an exception for one or more team members to bypass space limits
-    imposed by policy.
+    Removed members from member space limit exception list.
     """
 
     __slots__ = [
@@ -33063,7 +34636,7 @@ MemberStatus_validator = bv.Union(MemberStatus)
 
 class MemberSuggestDetails(object):
     """
-    Suggested a new team member to be added to the team.
+    Suggested person to add to team.
 
     :ivar suggested_members: suggested users emails.
     """
@@ -33158,8 +34731,7 @@ MemberSuggestType_validator = bv.Struct(MemberSuggestType)
 
 class MemberSuggestionsChangePolicyDetails(object):
     """
-    Enabled or disabled the option for team members to suggest new members to
-    add to the team.
+    Enabled/disabled option for team members to suggest people to add to team.
 
     :ivar new_value: New team member suggestions policy.
     :ivar previous_value: Previous team member suggestions policy. Might be
@@ -33337,7 +34909,7 @@ MemberSuggestionsPolicy_validator = bv.Union(MemberSuggestionsPolicy)
 
 class MemberTransferAccountContentsDetails(object):
     """
-    Transferred contents of a removed team member account to another member.
+    Transferred contents of deleted member account to another member.
     """
 
     __slots__ = [
@@ -33399,8 +34971,7 @@ MemberTransferAccountContentsType_validator = bv.Struct(MemberTransferAccountCon
 
 class MicrosoftOfficeAddinChangePolicyDetails(object):
     """
-    Enabled or disabled the Microsoft Office add-in, which lets team members
-    save files to Dropbox directly from Microsoft Office.
+    Enabled/disabled Microsoft Office add-in.
 
     :ivar new_value: New Microsoft Office addin policy.
     :ivar previous_value: Previous Microsoft Office addin policy. Might be
@@ -33637,6 +35208,8 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information about linked Dropbox mobile client sessions
 
+    :ivar session_info: Mobile session unique id. Might be missing due to
+        historical data gap.
     :ivar device_name: The device name.
     :ivar client_type: The mobile application type.
     :ivar client_version: The Dropbox client version.
@@ -33645,6 +35218,8 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
 
     __slots__ = [
+        '_session_info_value',
+        '_session_info_present',
         '_device_name_value',
         '_device_name_present',
         '_client_type_value',
@@ -33662,17 +35237,18 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
     def __init__(self,
                  device_name=None,
                  client_type=None,
-                 client_version=None,
-                 last_carrier=None,
-                 session_id=None,
                  ip_address=None,
                  created=None,
                  updated=None,
-                 os_version=None):
-        super(MobileDeviceSessionLogInfo, self).__init__(session_id,
-                                                         ip_address,
+                 session_info=None,
+                 client_version=None,
+                 os_version=None,
+                 last_carrier=None):
+        super(MobileDeviceSessionLogInfo, self).__init__(ip_address,
                                                          created,
                                                          updated)
+        self._session_info_value = None
+        self._session_info_present = False
         self._device_name_value = None
         self._device_name_present = False
         self._client_type_value = None
@@ -33683,6 +35259,8 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._os_version_present = False
         self._last_carrier_value = None
         self._last_carrier_present = False
+        if session_info is not None:
+            self.session_info = session_info
         if device_name is not None:
             self.device_name = device_name
         if client_type is not None:
@@ -33693,6 +35271,32 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
             self.os_version = os_version
         if last_carrier is not None:
             self.last_carrier = last_carrier
+
+    @property
+    def session_info(self):
+        """
+        Mobile session unique id. Might be missing due to historical data gap.
+
+        :rtype: MobileSessionLogInfo
+        """
+        if self._session_info_present:
+            return self._session_info_value
+        else:
+            return None
+
+    @session_info.setter
+    def session_info(self, val):
+        if val is None:
+            del self.session_info
+            return
+        self._session_info_validator.validate_type_only(val)
+        self._session_info_value = val
+        self._session_info_present = True
+
+    @session_info.deleter
+    def session_info(self):
+        self._session_info_value = None
+        self._session_info_present = False
 
     @property
     def device_name(self):
@@ -33750,10 +35354,13 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
         if self._client_version_present:
             return self._client_version_value
         else:
-            raise AttributeError("missing required field 'client_version'")
+            return None
 
     @client_version.setter
     def client_version(self, val):
+        if val is None:
+            del self.client_version
+            return
         val = self._client_version_validator.validate(val)
         self._client_version_value = val
         self._client_version_present = True
@@ -33799,10 +35406,13 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
         if self._last_carrier_present:
             return self._last_carrier_value
         else:
-            raise AttributeError("missing required field 'last_carrier'")
+            return None
 
     @last_carrier.setter
     def last_carrier(self, val):
+        if val is None:
+            del self.last_carrier
+            return
         val = self._last_carrier_validator.validate(val)
         self._last_carrier_value = val
         self._last_carrier_present = True
@@ -33813,16 +35423,16 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._last_carrier_present = False
 
     def __repr__(self):
-        return 'MobileDeviceSessionLogInfo(device_name={!r}, client_type={!r}, client_version={!r}, last_carrier={!r}, session_id={!r}, ip_address={!r}, created={!r}, updated={!r}, os_version={!r})'.format(
+        return 'MobileDeviceSessionLogInfo(device_name={!r}, client_type={!r}, ip_address={!r}, created={!r}, updated={!r}, session_info={!r}, client_version={!r}, os_version={!r}, last_carrier={!r})'.format(
             self._device_name_value,
             self._client_type_value,
-            self._client_version_value,
-            self._last_carrier_value,
-            self._session_id_value,
             self._ip_address_value,
             self._created_value,
             self._updated_value,
+            self._session_info_value,
+            self._client_version_value,
             self._os_version_value,
+            self._last_carrier_value,
         )
 
 MobileDeviceSessionLogInfo_validator = bv.Struct(MobileDeviceSessionLogInfo)
@@ -33941,7 +35551,7 @@ NamespaceRelativePathLogInfo_validator = bv.Struct(NamespaceRelativePathLogInfo)
 
 class NetworkControlChangePolicyDetails(object):
     """
-    Enabled or disabled network control.
+    Enabled/disabled network control.
 
     :ivar new_value: New network control policy.
     :ivar previous_value: Previous network control policy. Might be missing due
@@ -34273,7 +35883,7 @@ NonTeamMemberLogInfo_validator = bv.Struct(NonTeamMemberLogInfo)
 
 class NoteAclInviteOnlyDetails(object):
     """
-    Changed a Paper document to be invite-only.
+    Changed Paper doc to invite-only.
     """
 
     __slots__ = [
@@ -34335,7 +35945,7 @@ NoteAclInviteOnlyType_validator = bv.Struct(NoteAclInviteOnlyType)
 
 class NoteAclLinkDetails(object):
     """
-    Changed a Paper document to be link accessible.
+    Changed Paper doc to link-accessible.
     """
 
     __slots__ = [
@@ -34397,7 +36007,7 @@ NoteAclLinkType_validator = bv.Struct(NoteAclLinkType)
 
 class NoteAclTeamLinkDetails(object):
     """
-    Changed a Paper document to be link accessible for the team.
+    Changed Paper doc to link-accessible for team.
     """
 
     __slots__ = [
@@ -34459,7 +36069,7 @@ NoteAclTeamLinkType_validator = bv.Struct(NoteAclTeamLinkType)
 
 class NoteShareReceiveDetails(object):
     """
-    Shared Paper document received.
+    Shared received Paper doc.
     """
 
     __slots__ = [
@@ -34521,7 +36131,7 @@ NoteShareReceiveType_validator = bv.Struct(NoteShareReceiveType)
 
 class NoteSharedDetails(object):
     """
-    Shared a Paper doc.
+    Shared Paper doc.
     """
 
     __slots__ = [
@@ -34583,7 +36193,7 @@ NoteSharedType_validator = bv.Struct(NoteSharedType)
 
 class OpenNoteSharedDetails(object):
     """
-    Opened a shared Paper doc.
+    Opened shared Paper doc.
     """
 
     __slots__ = [
@@ -34785,7 +36395,7 @@ PaperAccessType_validator = bv.Union(PaperAccessType)
 
 class PaperAdminExportStartDetails(object):
     """
-    Exported all Paper documents in the team.
+    Exported all team Paper docs.
     """
 
     __slots__ = [
@@ -34847,8 +36457,8 @@ PaperAdminExportStartType_validator = bv.Struct(PaperAdminExportStartType)
 
 class PaperChangeDeploymentPolicyDetails(object):
     """
-    Changed whether Dropbox Paper, when enabled, is deployed to all teams or to
-    specific members of the team.
+    Changed whether Dropbox Paper, when enabled, is deployed to all members or
+    to specific members.
 
     :ivar new_value: New Dropbox Paper deployment policy.
     :ivar previous_value: Previous Dropbox Paper deployment policy. Might be
@@ -34980,7 +36590,7 @@ PaperChangeDeploymentPolicyType_validator = bv.Struct(PaperChangeDeploymentPolic
 
 class PaperChangeMemberLinkPolicyDetails(object):
     """
-    Changed whether non team members can view Paper documents using a link.
+    Changed whether non-members can view Paper docs with link.
 
     :ivar new_value: New paper external link accessibility policy.
     """
@@ -35075,9 +36685,8 @@ PaperChangeMemberLinkPolicyType_validator = bv.Struct(PaperChangeMemberLinkPolic
 
 class PaperChangeMemberPolicyDetails(object):
     """
-    Changed whether team members can share Paper documents externally (i.e.
-    outside the team), and if so, whether they should be accessible only by team
-    members or anyone by default.
+    Changed whether members can share Paper docs outside team, and if docs are
+    accessible only by team members or anyone by default.
 
     :ivar new_value: New paper external accessibility policy.
     :ivar previous_value: Previous paper external accessibility policy. Might be
@@ -35209,7 +36818,7 @@ PaperChangeMemberPolicyType_validator = bv.Struct(PaperChangeMemberPolicyType)
 
 class PaperChangePolicyDetails(object):
     """
-    Enabled or disabled Dropbox Paper for the team.
+    Enabled/disabled Dropbox Paper for team.
 
     :ivar new_value: New Dropbox Paper policy.
     :ivar previous_value: Previous Dropbox Paper policy. Might be missing due to
@@ -35341,7 +36950,7 @@ PaperChangePolicyType_validator = bv.Struct(PaperChangePolicyType)
 
 class PaperContentAddMemberDetails(object):
     """
-    Added users to the membership of a Paper doc or folder.
+    Added team member to Paper doc/folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -35436,7 +37045,7 @@ PaperContentAddMemberType_validator = bv.Struct(PaperContentAddMemberType)
 
 class PaperContentAddToFolderDetails(object):
     """
-    Added Paper doc or folder to a folder.
+    Added Paper doc/folder to folder.
 
     :ivar event_uuid: Event unique identifier.
     :ivar target_asset_index: Target asset position in the Assets list.
@@ -35595,7 +37204,7 @@ PaperContentAddToFolderType_validator = bv.Struct(PaperContentAddToFolderType)
 
 class PaperContentArchiveDetails(object):
     """
-    Archived Paper doc or folder.
+    Archived Paper doc/folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -35690,7 +37299,7 @@ PaperContentArchiveType_validator = bv.Struct(PaperContentArchiveType)
 
 class PaperContentCreateDetails(object):
     """
-    Created a Paper doc or folder.
+    Created Paper doc/folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -35785,7 +37394,7 @@ PaperContentCreateType_validator = bv.Struct(PaperContentCreateType)
 
 class PaperContentPermanentlyDeleteDetails(object):
     """
-    Permanently deleted a Paper doc or folder.
+    Permanently deleted Paper doc/folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -35880,24 +37489,40 @@ PaperContentPermanentlyDeleteType_validator = bv.Struct(PaperContentPermanentlyD
 
 class PaperContentRemoveFromFolderDetails(object):
     """
-    Removed Paper doc or folder from a folder.
+    Removed Paper doc/folder from folder.
 
     :ivar event_uuid: Event unique identifier.
+    :ivar target_asset_index: Target asset position in the Assets list.
+    :ivar parent_asset_index: Parent asset position in the Assets list.
     """
 
     __slots__ = [
         '_event_uuid_value',
         '_event_uuid_present',
+        '_target_asset_index_value',
+        '_target_asset_index_present',
+        '_parent_asset_index_value',
+        '_parent_asset_index_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 event_uuid=None):
+                 event_uuid=None,
+                 target_asset_index=None,
+                 parent_asset_index=None):
         self._event_uuid_value = None
         self._event_uuid_present = False
+        self._target_asset_index_value = None
+        self._target_asset_index_present = False
+        self._parent_asset_index_value = None
+        self._parent_asset_index_present = False
         if event_uuid is not None:
             self.event_uuid = event_uuid
+        if target_asset_index is not None:
+            self.target_asset_index = target_asset_index
+        if parent_asset_index is not None:
+            self.parent_asset_index = parent_asset_index
 
     @property
     def event_uuid(self):
@@ -35922,9 +37547,57 @@ class PaperContentRemoveFromFolderDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    @property
+    def target_asset_index(self):
+        """
+        Target asset position in the Assets list.
+
+        :rtype: long
+        """
+        if self._target_asset_index_present:
+            return self._target_asset_index_value
+        else:
+            raise AttributeError("missing required field 'target_asset_index'")
+
+    @target_asset_index.setter
+    def target_asset_index(self, val):
+        val = self._target_asset_index_validator.validate(val)
+        self._target_asset_index_value = val
+        self._target_asset_index_present = True
+
+    @target_asset_index.deleter
+    def target_asset_index(self):
+        self._target_asset_index_value = None
+        self._target_asset_index_present = False
+
+    @property
+    def parent_asset_index(self):
+        """
+        Parent asset position in the Assets list.
+
+        :rtype: long
+        """
+        if self._parent_asset_index_present:
+            return self._parent_asset_index_value
+        else:
+            raise AttributeError("missing required field 'parent_asset_index'")
+
+    @parent_asset_index.setter
+    def parent_asset_index(self, val):
+        val = self._parent_asset_index_validator.validate(val)
+        self._parent_asset_index_value = val
+        self._parent_asset_index_present = True
+
+    @parent_asset_index.deleter
+    def parent_asset_index(self):
+        self._parent_asset_index_value = None
+        self._parent_asset_index_present = False
+
     def __repr__(self):
-        return 'PaperContentRemoveFromFolderDetails(event_uuid={!r})'.format(
+        return 'PaperContentRemoveFromFolderDetails(event_uuid={!r}, target_asset_index={!r}, parent_asset_index={!r})'.format(
             self._event_uuid_value,
+            self._target_asset_index_value,
+            self._parent_asset_index_value,
         )
 
 PaperContentRemoveFromFolderDetails_validator = bv.Struct(PaperContentRemoveFromFolderDetails)
@@ -35975,7 +37648,7 @@ PaperContentRemoveFromFolderType_validator = bv.Struct(PaperContentRemoveFromFol
 
 class PaperContentRemoveMemberDetails(object):
     """
-    Removed a user from the membership of a Paper doc or folder.
+    Removed team member from Paper doc/folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -36070,7 +37743,7 @@ PaperContentRemoveMemberType_validator = bv.Struct(PaperContentRemoveMemberType)
 
 class PaperContentRenameDetails(object):
     """
-    Renamed Paper doc or folder.
+    Renamed Paper doc/folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -36165,7 +37838,7 @@ PaperContentRenameType_validator = bv.Struct(PaperContentRenameType)
 
 class PaperContentRestoreDetails(object):
     """
-    Restored an archived Paper doc or folder.
+    Restored archived Paper doc/folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -36260,7 +37933,7 @@ PaperContentRestoreType_validator = bv.Struct(PaperContentRestoreType)
 
 class PaperDocAddCommentDetails(object):
     """
-    Added a Paper doc comment.
+    Added Paper doc comment.
 
     :ivar event_uuid: Event unique identifier.
     :ivar comment_text: Comment text. Might be missing due to historical data
@@ -36391,7 +38064,7 @@ PaperDocAddCommentType_validator = bv.Struct(PaperDocAddCommentType)
 
 class PaperDocChangeMemberRoleDetails(object):
     """
-    Changed the access type of a Paper doc member.
+    Changed team member permissions for Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     :ivar access_type: Paper doc access type.
@@ -36518,7 +38191,7 @@ PaperDocChangeMemberRoleType_validator = bv.Struct(PaperDocChangeMemberRoleType)
 
 class PaperDocChangeSharingPolicyDetails(object):
     """
-    Changed the sharing policy for Paper doc.
+    Changed sharing setting for Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     :ivar public_sharing_policy: Sharing policy with external users. Might be
@@ -36686,7 +38359,7 @@ PaperDocChangeSharingPolicyType_validator = bv.Struct(PaperDocChangeSharingPolic
 
 class PaperDocChangeSubscriptionDetails(object):
     """
-    Followed or unfollowed a Paper doc.
+    Followed/unfollowed Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     :ivar new_subscription_level: New doc subscription level.
@@ -36850,7 +38523,7 @@ PaperDocChangeSubscriptionType_validator = bv.Struct(PaperDocChangeSubscriptionT
 
 class PaperDocDeleteCommentDetails(object):
     """
-    Deleted a Paper doc comment.
+    Deleted Paper doc comment.
 
     :ivar event_uuid: Event unique identifier.
     :ivar comment_text: Comment text. Might be missing due to historical data
@@ -36981,7 +38654,7 @@ PaperDocDeleteCommentType_validator = bv.Struct(PaperDocDeleteCommentType)
 
 class PaperDocDeletedDetails(object):
     """
-    Paper doc archived.
+    Archived Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -37076,7 +38749,7 @@ PaperDocDeletedType_validator = bv.Struct(PaperDocDeletedType)
 
 class PaperDocDownloadDetails(object):
     """
-    Downloaded a Paper doc in a particular output format.
+    Downloaded Paper doc in specific format.
 
     :ivar event_uuid: Event unique identifier.
     :ivar export_file_format: Export file format.
@@ -37203,7 +38876,7 @@ PaperDocDownloadType_validator = bv.Struct(PaperDocDownloadType)
 
 class PaperDocEditCommentDetails(object):
     """
-    Edited a Paper doc comment.
+    Edited Paper doc comment.
 
     :ivar event_uuid: Event unique identifier.
     :ivar comment_text: Comment text. Might be missing due to historical data
@@ -37334,7 +39007,7 @@ PaperDocEditCommentType_validator = bv.Struct(PaperDocEditCommentType)
 
 class PaperDocEditDetails(object):
     """
-    Edited a Paper doc.
+    Edited Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -37429,7 +39102,7 @@ PaperDocEditType_validator = bv.Struct(PaperDocEditType)
 
 class PaperDocFollowedDetails(object):
     """
-    Followed a Paper doc.
+    Followed Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -37524,7 +39197,7 @@ PaperDocFollowedType_validator = bv.Struct(PaperDocFollowedType)
 
 class PaperDocMentionDetails(object):
     """
-    Mentioned a member in a Paper doc.
+    Mentioned team member in Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -37619,7 +39292,7 @@ PaperDocMentionType_validator = bv.Struct(PaperDocMentionType)
 
 class PaperDocRequestAccessDetails(object):
     """
-    Requested to be a member on a Paper doc.
+    Requested access to Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -37714,7 +39387,7 @@ PaperDocRequestAccessType_validator = bv.Struct(PaperDocRequestAccessType)
 
 class PaperDocResolveCommentDetails(object):
     """
-    Paper doc comment resolved.
+    Resolved Paper doc comment.
 
     :ivar event_uuid: Event unique identifier.
     :ivar comment_text: Comment text. Might be missing due to historical data
@@ -37845,7 +39518,7 @@ PaperDocResolveCommentType_validator = bv.Struct(PaperDocResolveCommentType)
 
 class PaperDocRevertDetails(object):
     """
-    Restored a Paper doc to previous revision.
+    Restored Paper doc to previous version.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -37940,7 +39613,7 @@ PaperDocRevertType_validator = bv.Struct(PaperDocRevertType)
 
 class PaperDocSlackShareDetails(object):
     """
-    Paper doc link shared via slack.
+    Shared Paper doc via Slack.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -38035,7 +39708,7 @@ PaperDocSlackShareType_validator = bv.Struct(PaperDocSlackShareType)
 
 class PaperDocTeamInviteDetails(object):
     """
-    Paper doc shared with team member.
+    Shared Paper doc with team member.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -38130,7 +39803,7 @@ PaperDocTeamInviteType_validator = bv.Struct(PaperDocTeamInviteType)
 
 class PaperDocTrashedDetails(object):
     """
-    Paper doc trashed.
+    Deleted Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -38225,7 +39898,7 @@ PaperDocTrashedType_validator = bv.Struct(PaperDocTrashedType)
 
 class PaperDocUnresolveCommentDetails(object):
     """
-    Unresolved a Paper doc comment.
+    Unresolved Paper doc comment.
 
     :ivar event_uuid: Event unique identifier.
     :ivar comment_text: Comment text. Might be missing due to historical data
@@ -38356,7 +40029,7 @@ PaperDocUnresolveCommentType_validator = bv.Struct(PaperDocUnresolveCommentType)
 
 class PaperDocUntrashedDetails(object):
     """
-    Paper doc untrashed.
+    Restored Paper doc.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -38683,7 +40356,7 @@ PaperDownloadFormat_validator = bv.Union(PaperDownloadFormat)
 
 class PaperEnabledUsersGroupAdditionDetails(object):
     """
-    Users added to Paper enabled users list.
+    Added users to Paper-enabled users list.
     """
 
     __slots__ = [
@@ -38745,7 +40418,7 @@ PaperEnabledUsersGroupAdditionType_validator = bv.Struct(PaperEnabledUsersGroupA
 
 class PaperEnabledUsersGroupRemovalDetails(object):
     """
-    Users removed from Paper enabled users list.
+    Removed users from Paper-enabled users list.
     """
 
     __slots__ = [
@@ -38807,7 +40480,7 @@ PaperEnabledUsersGroupRemovalType_validator = bv.Struct(PaperEnabledUsersGroupRe
 
 class PaperExternalViewAllowDetails(object):
     """
-    Paper external sharing policy changed: anyone.
+    Changed Paper external sharing setting to anyone.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -38902,7 +40575,7 @@ PaperExternalViewAllowType_validator = bv.Struct(PaperExternalViewAllowType)
 
 class PaperExternalViewDefaultTeamDetails(object):
     """
-    Paper external sharing policy changed: default team.
+    Changed Paper external sharing setting to default team.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -38997,7 +40670,7 @@ PaperExternalViewDefaultTeamType_validator = bv.Struct(PaperExternalViewDefaultT
 
 class PaperExternalViewForbidDetails(object):
     """
-    Paper external sharing policy changed: team-only.
+    Changed Paper external sharing setting to team-only.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -39092,7 +40765,7 @@ PaperExternalViewForbidType_validator = bv.Struct(PaperExternalViewForbidType)
 
 class PaperFolderChangeSubscriptionDetails(object):
     """
-    Followed or unfollowed a Paper folder.
+    Followed/unfollowed Paper folder.
 
     :ivar event_uuid: Event unique identifier.
     :ivar new_subscription_level: New folder subscription level.
@@ -39256,7 +40929,7 @@ PaperFolderChangeSubscriptionType_validator = bv.Struct(PaperFolderChangeSubscri
 
 class PaperFolderDeletedDetails(object):
     """
-    Paper folder archived.
+    Archived Paper folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -39351,7 +41024,7 @@ PaperFolderDeletedType_validator = bv.Struct(PaperFolderDeletedType)
 
 class PaperFolderFollowedDetails(object):
     """
-    Followed a Paper folder.
+    Followed Paper folder.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -39529,7 +41202,7 @@ PaperFolderLogInfo_validator = bv.Struct(PaperFolderLogInfo)
 
 class PaperFolderTeamInviteDetails(object):
     """
-    Paper folder shared with team member.
+    Shared Paper folder with member.
 
     :ivar event_uuid: Event unique identifier.
     """
@@ -40046,8 +41719,7 @@ PathLogInfo_validator = bv.Struct(PathLogInfo)
 
 class PermanentDeleteChangePolicyDetails(object):
     """
-    Enabled or disabled the ability of team members to permanently delete
-    content.
+    Enabled/disabled ability of team members to permanently delete content.
 
     :ivar new_value: New permanent delete content policy.
     :ivar previous_value: Previous permanent delete content policy. Might be
@@ -40514,7 +42186,7 @@ ResellerSupportSessionStartType_validator = bv.Struct(ResellerSupportSessionStar
 
 class SfAddGroupDetails(object):
     """
-    Added the team to a shared folder.
+    Added team to shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -40709,7 +42381,7 @@ SfAddGroupType_validator = bv.Struct(SfAddGroupType)
 
 class SfAllowNonMembersToViewSharedLinksDetails(object):
     """
-    Allowed non collaborators to view links to files in a shared folder.
+    Allowed non-collaborators to view links to files in shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -40872,8 +42544,7 @@ SfAllowNonMembersToViewSharedLinksType_validator = bv.Struct(SfAllowNonMembersTo
 
 class SfExternalInviteWarnDetails(object):
     """
-    Admin settings: team members see a warning before sharing folders outside
-    the team (DEPRECATED FEATURE).
+    Set team members to see warning before sharing folders outside team.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -41073,7 +42744,7 @@ SfExternalInviteWarnType_validator = bv.Struct(SfExternalInviteWarnType)
 
 class SfFbInviteChangeRoleDetails(object):
     """
-    Changed a Facebook user's role in a shared folder.
+    Changed Facebook user's role in shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -41273,7 +42944,7 @@ SfFbInviteChangeRoleType_validator = bv.Struct(SfFbInviteChangeRoleType)
 
 class SfFbInviteDetails(object):
     """
-    Invited Facebook users to a shared folder.
+    Invited Facebook users to shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -41436,7 +43107,7 @@ SfFbInviteType_validator = bv.Struct(SfFbInviteType)
 
 class SfFbUninviteDetails(object):
     """
-    Uninvited a Facebook user from a shared folder.
+    Uninvited Facebook user from shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -41563,7 +43234,7 @@ SfFbUninviteType_validator = bv.Struct(SfFbUninviteType)
 
 class SfInviteGroupDetails(object):
     """
-    Invited a group to a shared folder.
+    Invited group to shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     """
@@ -41658,7 +43329,7 @@ SfInviteGroupType_validator = bv.Struct(SfInviteGroupType)
 
 class SfTeamGrantAccessDetails(object):
     """
-    Granted access to a shared folder.
+    Granted access to shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -41785,7 +43456,7 @@ SfTeamGrantAccessType_validator = bv.Struct(SfTeamGrantAccessType)
 
 class SfTeamInviteChangeRoleDetails(object):
     """
-    Changed a team member's role in a shared folder.
+    Changed team member's role in shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -41985,7 +43656,7 @@ SfTeamInviteChangeRoleType_validator = bv.Struct(SfTeamInviteChangeRoleType)
 
 class SfTeamInviteDetails(object):
     """
-    Invited team members to a shared folder.
+    Invited team members to shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -42148,7 +43819,7 @@ SfTeamInviteType_validator = bv.Struct(SfTeamInviteType)
 
 class SfTeamJoinDetails(object):
     """
-    Joined a team member's shared folder.
+    Joined team member's shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -42231,7 +43902,7 @@ SfTeamJoinDetails_validator = bv.Struct(SfTeamJoinDetails)
 
 class SfTeamJoinFromOobLinkDetails(object):
     """
-    Joined a team member's shared folder from a link.
+    Joined team member's shared folder from link.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -42473,7 +44144,7 @@ SfTeamJoinType_validator = bv.Struct(SfTeamJoinType)
 
 class SfTeamUninviteDetails(object):
     """
-    Unshared a folder with a team member.
+    Unshared folder with team member.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     :ivar original_folder_name: Original shared folder name.
@@ -42600,7 +44271,7 @@ SfTeamUninviteType_validator = bv.Struct(SfTeamUninviteType)
 
 class SharedContentAddInviteesDetails(object):
     """
-    Sent an email invitation to the membership of a shared file or folder.
+    Invited user to Dropbox and added them to shared file/folder.
 
     :ivar shared_content_access_level: Shared content access level.
     :ivar invitees: A list of invitees.
@@ -42727,7 +44398,7 @@ SharedContentAddInviteesType_validator = bv.Struct(SharedContentAddInviteesType)
 
 class SharedContentAddLinkExpiryDetails(object):
     """
-    Added an expiry to the link for the shared file or folder.
+    Added expiration date to link for shared file/folder.
 
     :ivar new_value: New shared content link expiration date. Might be missing
         due to historical data gap.
@@ -42827,7 +44498,7 @@ SharedContentAddLinkExpiryType_validator = bv.Struct(SharedContentAddLinkExpiryT
 
 class SharedContentAddLinkPasswordDetails(object):
     """
-    Added a password to the link for the shared file or folder.
+    Added password to link for shared file/folder.
     """
 
     __slots__ = [
@@ -42889,7 +44560,7 @@ SharedContentAddLinkPasswordType_validator = bv.Struct(SharedContentAddLinkPassw
 
 class SharedContentAddMemberDetails(object):
     """
-    Added users and/or groups to the membership of a shared file or folder.
+    Added users and/or groups to shared file/folder.
 
     :ivar shared_content_access_level: Shared content access level.
     """
@@ -42984,7 +44655,7 @@ SharedContentAddMemberType_validator = bv.Struct(SharedContentAddMemberType)
 
 class SharedContentChangeDownloadsPolicyDetails(object):
     """
-    Changed whether members can download the shared file or folder.
+    Changed whether members can download shared file/folder.
 
     :ivar new_value: New downloads policy.
     :ivar previous_value: Previous downloads policy. Might be missing due to
@@ -43115,8 +44786,7 @@ SharedContentChangeDownloadsPolicyType_validator = bv.Struct(SharedContentChange
 
 class SharedContentChangeInviteeRoleDetails(object):
     """
-    Changed the access type of an invitee to a shared file or folder before the
-    invitation was claimed.
+    Changed access type of invitee to shared file/folder before invite accepted.
 
     :ivar previous_access_level: Previous access level. Might be missing due to
         historical data gap.
@@ -43279,7 +44949,7 @@ SharedContentChangeInviteeRoleType_validator = bv.Struct(SharedContentChangeInvi
 
 class SharedContentChangeLinkAudienceDetails(object):
     """
-    Changed the audience of the link for a shared file or folder.
+    Changed link audience of shared file/folder.
 
     :ivar new_value: New link audience value.
     :ivar previous_value: Previous link audience value.
@@ -43409,7 +45079,7 @@ SharedContentChangeLinkAudienceType_validator = bv.Struct(SharedContentChangeLin
 
 class SharedContentChangeLinkExpiryDetails(object):
     """
-    Changed the expiry of the link for the shared file or folder.
+    Changed link expiration of shared file/folder.
 
     :ivar new_value: New shared content link expiration date. Might be missing
         due to historical data gap.
@@ -43546,7 +45216,7 @@ SharedContentChangeLinkExpiryType_validator = bv.Struct(SharedContentChangeLinkE
 
 class SharedContentChangeLinkPasswordDetails(object):
     """
-    Changed the password on the link for the shared file or folder.
+    Changed link password of shared file/folder.
     """
 
     __slots__ = [
@@ -43608,7 +45278,7 @@ SharedContentChangeLinkPasswordType_validator = bv.Struct(SharedContentChangeLin
 
 class SharedContentChangeMemberRoleDetails(object):
     """
-    Changed the access type of a shared file or folder member.
+    Changed access type of shared file/folder member.
 
     :ivar previous_access_level: Previous access level. Might be missing due to
         historical data gap.
@@ -43739,7 +45409,7 @@ SharedContentChangeMemberRoleType_validator = bv.Struct(SharedContentChangeMembe
 
 class SharedContentChangeViewerInfoPolicyDetails(object):
     """
-    Changed whether members can see who viewed the shared file or folder.
+    Changed whether members can see who viewed shared file/folder.
 
     :ivar new_value: New viewer info policy.
     :ivar previous_value: Previous view info policy. Might be missing due to
@@ -43870,7 +45540,7 @@ SharedContentChangeViewerInfoPolicyType_validator = bv.Struct(SharedContentChang
 
 class SharedContentClaimInvitationDetails(object):
     """
-    Acquired membership on a shared file or folder by claiming an invitation.
+    Acquired membership of shared file/folder by accepting invite.
 
     :ivar shared_content_link: Shared content link.
     """
@@ -43968,7 +45638,7 @@ SharedContentClaimInvitationType_validator = bv.Struct(SharedContentClaimInvitat
 
 class SharedContentCopyDetails(object):
     """
-    Copied the shared file or folder to own Dropbox.
+    Copied shared file/folder to own Dropbox.
 
     :ivar shared_content_link: Shared content link.
     :ivar shared_content_owner: The shared content owner.
@@ -44162,7 +45832,7 @@ SharedContentCopyType_validator = bv.Struct(SharedContentCopyType)
 
 class SharedContentDownloadDetails(object):
     """
-    Downloaded the shared file or folder.
+    Downloaded shared file/folder.
 
     :ivar shared_content_link: Shared content link.
     :ivar shared_content_owner: The shared content owner.
@@ -44324,7 +45994,7 @@ SharedContentDownloadType_validator = bv.Struct(SharedContentDownloadType)
 
 class SharedContentRelinquishMembershipDetails(object):
     """
-    Left the membership of a shared file or folder.
+    Left shared file/folder.
     """
 
     __slots__ = [
@@ -44386,8 +46056,7 @@ SharedContentRelinquishMembershipType_validator = bv.Struct(SharedContentRelinqu
 
 class SharedContentRemoveInviteesDetails(object):
     """
-    Removed an invitee from the membership of a shared file or folder before it
-    was claimed.
+    Removed invitee from shared file/folder before invite accepted.
 
     :ivar invitees: A list of invitees.
     """
@@ -44482,7 +46151,7 @@ SharedContentRemoveInviteesType_validator = bv.Struct(SharedContentRemoveInvitee
 
 class SharedContentRemoveLinkExpiryDetails(object):
     """
-    Removed the expiry of the link for the shared file or folder.
+    Removed link expiration date of shared file/folder.
 
     :ivar previous_value: Previous shared content link expiration date. Might be
         missing due to historical data gap.
@@ -44582,7 +46251,7 @@ SharedContentRemoveLinkExpiryType_validator = bv.Struct(SharedContentRemoveLinkE
 
 class SharedContentRemoveLinkPasswordDetails(object):
     """
-    Removed the password on the link for the shared file or folder.
+    Removed link password of shared file/folder.
     """
 
     __slots__ = [
@@ -44644,7 +46313,7 @@ SharedContentRemoveLinkPasswordType_validator = bv.Struct(SharedContentRemoveLin
 
 class SharedContentRemoveMemberDetails(object):
     """
-    Removed a user or a group from the membership of a shared file or folder.
+    Removed user/group from shared file/folder.
 
     :ivar shared_content_access_level: Shared content access level.
     """
@@ -44742,7 +46411,7 @@ SharedContentRemoveMemberType_validator = bv.Struct(SharedContentRemoveMemberTyp
 
 class SharedContentRequestAccessDetails(object):
     """
-    Requested to be on the membership of a shared file or folder.
+    Requested access to shared file/folder.
 
     :ivar shared_content_link: Shared content link.
     """
@@ -44840,8 +46509,7 @@ SharedContentRequestAccessType_validator = bv.Struct(SharedContentRequestAccessT
 
 class SharedContentUnshareDetails(object):
     """
-    Unshared a shared file or folder by clearing its membership and turning off
-    its link.
+    Unshared file/folder by clearing membership and turning off link.
     """
 
     __slots__ = [
@@ -44903,7 +46571,7 @@ SharedContentUnshareType_validator = bv.Struct(SharedContentUnshareType)
 
 class SharedContentViewDetails(object):
     """
-    Previewed the shared file or folder.
+    Previewed shared file/folder.
 
     :ivar shared_content_link: Shared content link.
     :ivar shared_content_owner: The shared content owner.
@@ -45065,7 +46733,7 @@ SharedContentViewType_validator = bv.Struct(SharedContentViewType)
 
 class SharedFolderChangeLinkPolicyDetails(object):
     """
-    Changed who can access the shared folder via a link.
+    Changed who can access shared folder via link.
 
     :ivar new_value: New shared folder link policy.
     :ivar previous_value: Previous shared folder link policy. Might be missing
@@ -45197,7 +46865,7 @@ SharedFolderChangeLinkPolicyType_validator = bv.Struct(SharedFolderChangeLinkPol
 
 class SharedFolderChangeMembersInheritancePolicyDetails(object):
     """
-    Specify if the shared folder inherits its members from the parent folder.
+    Changed whether shared folder inherits members from parent folder.
 
     :ivar new_value: New member inheritance policy.
     :ivar previous_value: Previous member inheritance policy. Might be missing
@@ -45329,7 +46997,7 @@ SharedFolderChangeMembersInheritancePolicyType_validator = bv.Struct(SharedFolde
 
 class SharedFolderChangeMembersManagementPolicyDetails(object):
     """
-    Changed who can add or remove members of a shared folder.
+    Changed who can add/remove members of shared folder.
 
     :ivar new_value: New members management policy.
     :ivar previous_value: Previous members management policy. Might be missing
@@ -45461,7 +47129,7 @@ SharedFolderChangeMembersManagementPolicyType_validator = bv.Struct(SharedFolder
 
 class SharedFolderChangeMembersPolicyDetails(object):
     """
-    Changed who can become a member of the shared folder.
+    Changed who can become member of shared folder.
 
     :ivar new_value: New external invite policy.
     :ivar previous_value: Previous external invite policy. Might be missing due
@@ -45593,7 +47261,7 @@ SharedFolderChangeMembersPolicyType_validator = bv.Struct(SharedFolderChangeMemb
 
 class SharedFolderCreateDetails(object):
     """
-    Created a shared folder.
+    Created shared folder.
 
     :ivar target_ns_id: Target namespace ID. Might be missing due to historical
         data gap.
@@ -45692,7 +47360,7 @@ SharedFolderCreateType_validator = bv.Struct(SharedFolderCreateType)
 
 class SharedFolderDeclineInvitationDetails(object):
     """
-    Declined a team member's invitation to a shared folder.
+    Declined team member's invite to shared folder.
     """
 
     __slots__ = [
@@ -45800,7 +47468,7 @@ SharedFolderMembersInheritancePolicy_validator = bv.Union(SharedFolderMembersInh
 
 class SharedFolderMountDetails(object):
     """
-    Added a shared folder to own Dropbox.
+    Added shared folder to own Dropbox.
     """
 
     __slots__ = [
@@ -45862,7 +47530,7 @@ SharedFolderMountType_validator = bv.Struct(SharedFolderMountType)
 
 class SharedFolderNestDetails(object):
     """
-    Changed the parent of a shared folder.
+    Changed parent of shared folder.
 
     :ivar previous_parent_ns_id: Previous parent namespace ID. Might be missing
         due to historical data gap.
@@ -45998,7 +47666,7 @@ SharedFolderNestType_validator = bv.Struct(SharedFolderNestType)
 
 class SharedFolderTransferOwnershipDetails(object):
     """
-    Transferred the ownership of a shared folder to another member.
+    Transferred ownership of shared folder to another member.
 
     :ivar previous_owner_email: The email address of the previous shared folder
         owner.
@@ -46129,7 +47797,7 @@ SharedFolderTransferOwnershipType_validator = bv.Struct(SharedFolderTransferOwne
 
 class SharedFolderUnmountDetails(object):
     """
-    Deleted a shared folder from Dropbox.
+    Deleted shared folder from Dropbox.
     """
 
     __slots__ = [
@@ -46247,7 +47915,7 @@ SharedLinkAccessLevel_validator = bv.Union(SharedLinkAccessLevel)
 
 class SharedLinkAddExpiryDetails(object):
     """
-    Added a shared link expiration date.
+    Added shared link expiration date.
 
     :ivar new_value: New shared link expiration date.
     """
@@ -46342,7 +48010,7 @@ SharedLinkAddExpiryType_validator = bv.Struct(SharedLinkAddExpiryType)
 
 class SharedLinkChangeExpiryDetails(object):
     """
-    Changed the shared link expiration date.
+    Changed shared link expiration date.
 
     :ivar new_value: New shared link expiration date. Might be missing due to
         historical data gap.
@@ -46479,7 +48147,7 @@ SharedLinkChangeExpiryType_validator = bv.Struct(SharedLinkChangeExpiryType)
 
 class SharedLinkChangeVisibilityDetails(object):
     """
-    Changed the visibility of a shared link.
+    Changed visibility of shared link.
 
     :ivar new_value: New shared link visibility.
     :ivar previous_value: Previous shared link visibility. Might be missing due
@@ -46611,7 +48279,7 @@ SharedLinkChangeVisibilityType_validator = bv.Struct(SharedLinkChangeVisibilityT
 
 class SharedLinkCopyDetails(object):
     """
-    Added a file/folder to their Dropbox from a shared link.
+    Added file/folder to Dropbox from shared link.
 
     :ivar shared_link_owner: Shared link owner details. Might be missing due to
         historical data gap.
@@ -46710,7 +48378,7 @@ SharedLinkCopyType_validator = bv.Struct(SharedLinkCopyType)
 
 class SharedLinkCreateDetails(object):
     """
-    Created a new shared link.
+    Created shared link.
 
     :ivar shared_link_access_level: Defines who can access the shared link.
         Might be missing due to historical data gap.
@@ -46810,7 +48478,7 @@ SharedLinkCreateType_validator = bv.Struct(SharedLinkCreateType)
 
 class SharedLinkDisableDetails(object):
     """
-    Removed a shared link.
+    Removed shared link.
 
     :ivar shared_link_owner: Shared link owner details. Might be missing due to
         historical data gap.
@@ -46909,7 +48577,7 @@ SharedLinkDisableType_validator = bv.Struct(SharedLinkDisableType)
 
 class SharedLinkDownloadDetails(object):
     """
-    Downloaded a file/folder from a shared link.
+    Downloaded file/folder from shared link.
 
     :ivar shared_link_owner: Shared link owner details. Might be missing due to
         historical data gap.
@@ -47008,7 +48676,7 @@ SharedLinkDownloadType_validator = bv.Struct(SharedLinkDownloadType)
 
 class SharedLinkRemoveExpiryDetails(object):
     """
-    Removed a shared link expiration date.
+    Removed shared link expiration date.
 
     :ivar previous_value: Previous shared link expiration date. Might be missing
         due to historical data gap.
@@ -47108,7 +48776,7 @@ SharedLinkRemoveExpiryType_validator = bv.Struct(SharedLinkRemoveExpiryType)
 
 class SharedLinkShareDetails(object):
     """
-    Added new members as the audience of a shared link.
+    Added members as audience of shared link.
 
     :ivar shared_link_owner: Shared link owner details. Might be missing due to
         historical data gap.
@@ -47243,7 +48911,7 @@ SharedLinkShareType_validator = bv.Struct(SharedLinkShareType)
 
 class SharedLinkViewDetails(object):
     """
-    Opened a shared link.
+    Opened shared link.
 
     :ivar shared_link_owner: Shared link owner details. Might be missing due to
         historical data gap.
@@ -47398,7 +49066,7 @@ SharedLinkVisibility_validator = bv.Union(SharedLinkVisibility)
 
 class SharedNoteOpenedDetails(object):
     """
-    Shared Paper document was opened.
+    Opened shared Paper doc.
     """
 
     __slots__ = [
@@ -47460,8 +49128,7 @@ SharedNoteOpenedType_validator = bv.Struct(SharedNoteOpenedType)
 
 class SharingChangeFolderJoinPolicyDetails(object):
     """
-    Changed whether team members can join shared folders owned externally (i.e.
-    outside the team).
+    Changed whether team members can join shared folders owned outside team.
 
     :ivar new_value: New external join policy.
     :ivar previous_value: Previous external join policy. Might be missing due to
@@ -47593,9 +49260,8 @@ SharingChangeFolderJoinPolicyType_validator = bv.Struct(SharingChangeFolderJoinP
 
 class SharingChangeLinkPolicyDetails(object):
     """
-    Changed whether team members can share links externally (i.e. outside the
-    team), and if so, whether links should be accessible only by team members or
-    anyone by default.
+    Changed whether members can share links outside team, and if links are
+    accessible only by team members or anyone by default.
 
     :ivar new_value: New external link accessibility policy.
     :ivar previous_value: Previous external link accessibility policy. Might be
@@ -47727,8 +49393,7 @@ SharingChangeLinkPolicyType_validator = bv.Struct(SharingChangeLinkPolicyType)
 
 class SharingChangeMemberPolicyDetails(object):
     """
-    Changed whether team members can share files and folders externally (i.e.
-    outside the team).
+    Changed whether members can share files/folders outside team.
 
     :ivar new_value: New external invite policy.
     :ivar previous_value: Previous external invite policy. Might be missing due
@@ -48009,7 +49674,7 @@ SharingMemberPolicy_validator = bv.Union(SharingMemberPolicy)
 
 class ShmodelGroupShareDetails(object):
     """
-    Shared a link with a group.
+    Shared link with group.
     """
 
     __slots__ = [
@@ -48068,6 +49733,2386 @@ class ShmodelGroupShareType(object):
         )
 
 ShmodelGroupShareType_validator = bv.Struct(ShmodelGroupShareType)
+
+class ShowcaseAccessGrantedDetails(object):
+    """
+    Granted access to showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseAccessGrantedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseAccessGrantedDetails_validator = bv.Struct(ShowcaseAccessGrantedDetails)
+
+class ShowcaseAccessGrantedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseAccessGrantedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseAccessGrantedType_validator = bv.Struct(ShowcaseAccessGrantedType)
+
+class ShowcaseAddMemberDetails(object):
+    """
+    Added member to showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseAddMemberDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseAddMemberDetails_validator = bv.Struct(ShowcaseAddMemberDetails)
+
+class ShowcaseAddMemberType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseAddMemberType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseAddMemberType_validator = bv.Struct(ShowcaseAddMemberType)
+
+class ShowcaseArchivedDetails(object):
+    """
+    Archived showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseArchivedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseArchivedDetails_validator = bv.Struct(ShowcaseArchivedDetails)
+
+class ShowcaseArchivedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseArchivedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseArchivedType_validator = bv.Struct(ShowcaseArchivedType)
+
+class ShowcaseCreatedDetails(object):
+    """
+    Created showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseCreatedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseCreatedDetails_validator = bv.Struct(ShowcaseCreatedDetails)
+
+class ShowcaseCreatedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseCreatedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseCreatedType_validator = bv.Struct(ShowcaseCreatedType)
+
+class ShowcaseDeleteCommentDetails(object):
+    """
+    Deleted showcase comment.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar comment_text: Comment text.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_comment_text_value',
+        '_comment_text_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 comment_text=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._comment_text_value = None
+        self._comment_text_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if comment_text is not None:
+            self.comment_text = comment_text
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def comment_text(self):
+        """
+        Comment text.
+
+        :rtype: str
+        """
+        if self._comment_text_present:
+            return self._comment_text_value
+        else:
+            return None
+
+    @comment_text.setter
+    def comment_text(self, val):
+        if val is None:
+            del self.comment_text
+            return
+        val = self._comment_text_validator.validate(val)
+        self._comment_text_value = val
+        self._comment_text_present = True
+
+    @comment_text.deleter
+    def comment_text(self):
+        self._comment_text_value = None
+        self._comment_text_present = False
+
+    def __repr__(self):
+        return 'ShowcaseDeleteCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
+            self._event_uuid_value,
+            self._comment_text_value,
+        )
+
+ShowcaseDeleteCommentDetails_validator = bv.Struct(ShowcaseDeleteCommentDetails)
+
+class ShowcaseDeleteCommentType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseDeleteCommentType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseDeleteCommentType_validator = bv.Struct(ShowcaseDeleteCommentType)
+
+class ShowcaseDocumentLogInfo(object):
+    """
+    Showcase document's logged information.
+
+    :ivar showcase_id: Showcase document Id.
+    :ivar showcase_title: Showcase document title.
+    """
+
+    __slots__ = [
+        '_showcase_id_value',
+        '_showcase_id_present',
+        '_showcase_title_value',
+        '_showcase_title_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 showcase_id=None,
+                 showcase_title=None):
+        self._showcase_id_value = None
+        self._showcase_id_present = False
+        self._showcase_title_value = None
+        self._showcase_title_present = False
+        if showcase_id is not None:
+            self.showcase_id = showcase_id
+        if showcase_title is not None:
+            self.showcase_title = showcase_title
+
+    @property
+    def showcase_id(self):
+        """
+        Showcase document Id.
+
+        :rtype: str
+        """
+        if self._showcase_id_present:
+            return self._showcase_id_value
+        else:
+            raise AttributeError("missing required field 'showcase_id'")
+
+    @showcase_id.setter
+    def showcase_id(self, val):
+        val = self._showcase_id_validator.validate(val)
+        self._showcase_id_value = val
+        self._showcase_id_present = True
+
+    @showcase_id.deleter
+    def showcase_id(self):
+        self._showcase_id_value = None
+        self._showcase_id_present = False
+
+    @property
+    def showcase_title(self):
+        """
+        Showcase document title.
+
+        :rtype: str
+        """
+        if self._showcase_title_present:
+            return self._showcase_title_value
+        else:
+            raise AttributeError("missing required field 'showcase_title'")
+
+    @showcase_title.setter
+    def showcase_title(self, val):
+        val = self._showcase_title_validator.validate(val)
+        self._showcase_title_value = val
+        self._showcase_title_present = True
+
+    @showcase_title.deleter
+    def showcase_title(self):
+        self._showcase_title_value = None
+        self._showcase_title_present = False
+
+    def __repr__(self):
+        return 'ShowcaseDocumentLogInfo(showcase_id={!r}, showcase_title={!r})'.format(
+            self._showcase_id_value,
+            self._showcase_title_value,
+        )
+
+ShowcaseDocumentLogInfo_validator = bv.Struct(ShowcaseDocumentLogInfo)
+
+class ShowcaseEditCommentDetails(object):
+    """
+    Edited showcase comment.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar comment_text: Comment text.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_comment_text_value',
+        '_comment_text_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 comment_text=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._comment_text_value = None
+        self._comment_text_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if comment_text is not None:
+            self.comment_text = comment_text
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def comment_text(self):
+        """
+        Comment text.
+
+        :rtype: str
+        """
+        if self._comment_text_present:
+            return self._comment_text_value
+        else:
+            return None
+
+    @comment_text.setter
+    def comment_text(self, val):
+        if val is None:
+            del self.comment_text
+            return
+        val = self._comment_text_validator.validate(val)
+        self._comment_text_value = val
+        self._comment_text_present = True
+
+    @comment_text.deleter
+    def comment_text(self):
+        self._comment_text_value = None
+        self._comment_text_present = False
+
+    def __repr__(self):
+        return 'ShowcaseEditCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
+            self._event_uuid_value,
+            self._comment_text_value,
+        )
+
+ShowcaseEditCommentDetails_validator = bv.Struct(ShowcaseEditCommentDetails)
+
+class ShowcaseEditCommentType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseEditCommentType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseEditCommentType_validator = bv.Struct(ShowcaseEditCommentType)
+
+class ShowcaseEditedDetails(object):
+    """
+    Edited showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseEditedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseEditedDetails_validator = bv.Struct(ShowcaseEditedDetails)
+
+class ShowcaseEditedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseEditedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseEditedType_validator = bv.Struct(ShowcaseEditedType)
+
+class ShowcaseFileAddedDetails(object):
+    """
+    Added file to showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseFileAddedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseFileAddedDetails_validator = bv.Struct(ShowcaseFileAddedDetails)
+
+class ShowcaseFileAddedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseFileAddedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseFileAddedType_validator = bv.Struct(ShowcaseFileAddedType)
+
+class ShowcaseFileDownloadDetails(object):
+    """
+    Downloaded file from showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar download_type: Showcase download type.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_download_type_value',
+        '_download_type_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 download_type=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._download_type_value = None
+        self._download_type_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if download_type is not None:
+            self.download_type = download_type
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def download_type(self):
+        """
+        Showcase download type.
+
+        :rtype: str
+        """
+        if self._download_type_present:
+            return self._download_type_value
+        else:
+            raise AttributeError("missing required field 'download_type'")
+
+    @download_type.setter
+    def download_type(self, val):
+        val = self._download_type_validator.validate(val)
+        self._download_type_value = val
+        self._download_type_present = True
+
+    @download_type.deleter
+    def download_type(self):
+        self._download_type_value = None
+        self._download_type_present = False
+
+    def __repr__(self):
+        return 'ShowcaseFileDownloadDetails(event_uuid={!r}, download_type={!r})'.format(
+            self._event_uuid_value,
+            self._download_type_value,
+        )
+
+ShowcaseFileDownloadDetails_validator = bv.Struct(ShowcaseFileDownloadDetails)
+
+class ShowcaseFileDownloadType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseFileDownloadType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseFileDownloadType_validator = bv.Struct(ShowcaseFileDownloadType)
+
+class ShowcaseFileRemovedDetails(object):
+    """
+    Removed file from showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseFileRemovedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseFileRemovedDetails_validator = bv.Struct(ShowcaseFileRemovedDetails)
+
+class ShowcaseFileRemovedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseFileRemovedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseFileRemovedType_validator = bv.Struct(ShowcaseFileRemovedType)
+
+class ShowcaseFileViewDetails(object):
+    """
+    Viewed file in showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseFileViewDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseFileViewDetails_validator = bv.Struct(ShowcaseFileViewDetails)
+
+class ShowcaseFileViewType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseFileViewType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseFileViewType_validator = bv.Struct(ShowcaseFileViewType)
+
+class ShowcasePermanentlyDeletedDetails(object):
+    """
+    Permanently deleted showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcasePermanentlyDeletedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcasePermanentlyDeletedDetails_validator = bv.Struct(ShowcasePermanentlyDeletedDetails)
+
+class ShowcasePermanentlyDeletedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcasePermanentlyDeletedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcasePermanentlyDeletedType_validator = bv.Struct(ShowcasePermanentlyDeletedType)
+
+class ShowcasePostCommentDetails(object):
+    """
+    Added showcase comment.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar comment_text: Comment text.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_comment_text_value',
+        '_comment_text_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 comment_text=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._comment_text_value = None
+        self._comment_text_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if comment_text is not None:
+            self.comment_text = comment_text
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def comment_text(self):
+        """
+        Comment text.
+
+        :rtype: str
+        """
+        if self._comment_text_present:
+            return self._comment_text_value
+        else:
+            return None
+
+    @comment_text.setter
+    def comment_text(self, val):
+        if val is None:
+            del self.comment_text
+            return
+        val = self._comment_text_validator.validate(val)
+        self._comment_text_value = val
+        self._comment_text_present = True
+
+    @comment_text.deleter
+    def comment_text(self):
+        self._comment_text_value = None
+        self._comment_text_present = False
+
+    def __repr__(self):
+        return 'ShowcasePostCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
+            self._event_uuid_value,
+            self._comment_text_value,
+        )
+
+ShowcasePostCommentDetails_validator = bv.Struct(ShowcasePostCommentDetails)
+
+class ShowcasePostCommentType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcasePostCommentType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcasePostCommentType_validator = bv.Struct(ShowcasePostCommentType)
+
+class ShowcaseRemoveMemberDetails(object):
+    """
+    Removed member from showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseRemoveMemberDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseRemoveMemberDetails_validator = bv.Struct(ShowcaseRemoveMemberDetails)
+
+class ShowcaseRemoveMemberType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseRemoveMemberType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseRemoveMemberType_validator = bv.Struct(ShowcaseRemoveMemberType)
+
+class ShowcaseRenamedDetails(object):
+    """
+    Renamed showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseRenamedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseRenamedDetails_validator = bv.Struct(ShowcaseRenamedDetails)
+
+class ShowcaseRenamedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseRenamedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseRenamedType_validator = bv.Struct(ShowcaseRenamedType)
+
+class ShowcaseRequestAccessDetails(object):
+    """
+    Requested access to showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseRequestAccessDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseRequestAccessDetails_validator = bv.Struct(ShowcaseRequestAccessDetails)
+
+class ShowcaseRequestAccessType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseRequestAccessType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseRequestAccessType_validator = bv.Struct(ShowcaseRequestAccessType)
+
+class ShowcaseResolveCommentDetails(object):
+    """
+    Resolved showcase comment.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar comment_text: Comment text.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_comment_text_value',
+        '_comment_text_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 comment_text=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._comment_text_value = None
+        self._comment_text_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if comment_text is not None:
+            self.comment_text = comment_text
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def comment_text(self):
+        """
+        Comment text.
+
+        :rtype: str
+        """
+        if self._comment_text_present:
+            return self._comment_text_value
+        else:
+            return None
+
+    @comment_text.setter
+    def comment_text(self, val):
+        if val is None:
+            del self.comment_text
+            return
+        val = self._comment_text_validator.validate(val)
+        self._comment_text_value = val
+        self._comment_text_present = True
+
+    @comment_text.deleter
+    def comment_text(self):
+        self._comment_text_value = None
+        self._comment_text_present = False
+
+    def __repr__(self):
+        return 'ShowcaseResolveCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
+            self._event_uuid_value,
+            self._comment_text_value,
+        )
+
+ShowcaseResolveCommentDetails_validator = bv.Struct(ShowcaseResolveCommentDetails)
+
+class ShowcaseResolveCommentType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseResolveCommentType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseResolveCommentType_validator = bv.Struct(ShowcaseResolveCommentType)
+
+class ShowcaseRestoredDetails(object):
+    """
+    Unarchived showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseRestoredDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseRestoredDetails_validator = bv.Struct(ShowcaseRestoredDetails)
+
+class ShowcaseRestoredType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseRestoredType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseRestoredType_validator = bv.Struct(ShowcaseRestoredType)
+
+class ShowcaseTrashedDetails(object):
+    """
+    Deleted showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseTrashedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseTrashedDetails_validator = bv.Struct(ShowcaseTrashedDetails)
+
+class ShowcaseTrashedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseTrashedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseTrashedType_validator = bv.Struct(ShowcaseTrashedType)
+
+class ShowcaseUnresolveCommentDetails(object):
+    """
+    Unresolved showcase comment.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar comment_text: Comment text.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_comment_text_value',
+        '_comment_text_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 comment_text=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._comment_text_value = None
+        self._comment_text_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if comment_text is not None:
+            self.comment_text = comment_text
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def comment_text(self):
+        """
+        Comment text.
+
+        :rtype: str
+        """
+        if self._comment_text_present:
+            return self._comment_text_value
+        else:
+            return None
+
+    @comment_text.setter
+    def comment_text(self, val):
+        if val is None:
+            del self.comment_text
+            return
+        val = self._comment_text_validator.validate(val)
+        self._comment_text_value = val
+        self._comment_text_present = True
+
+    @comment_text.deleter
+    def comment_text(self):
+        self._comment_text_value = None
+        self._comment_text_present = False
+
+    def __repr__(self):
+        return 'ShowcaseUnresolveCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
+            self._event_uuid_value,
+            self._comment_text_value,
+        )
+
+ShowcaseUnresolveCommentDetails_validator = bv.Struct(ShowcaseUnresolveCommentDetails)
+
+class ShowcaseUnresolveCommentType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseUnresolveCommentType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseUnresolveCommentType_validator = bv.Struct(ShowcaseUnresolveCommentType)
+
+class ShowcaseUntrashedDetails(object):
+    """
+    Restored showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseUntrashedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseUntrashedDetails_validator = bv.Struct(ShowcaseUntrashedDetails)
+
+class ShowcaseUntrashedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseUntrashedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseUntrashedType_validator = bv.Struct(ShowcaseUntrashedType)
+
+class ShowcaseViewDetails(object):
+    """
+    Viewed showcase.
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseViewDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseViewDetails_validator = bv.Struct(ShowcaseViewDetails)
+
+class ShowcaseViewType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseViewType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseViewType_validator = bv.Struct(ShowcaseViewType)
 
 class SignInAsSessionEndDetails(object):
     """
@@ -48195,7 +52240,7 @@ SignInAsSessionStartType_validator = bv.Struct(SignInAsSessionStartType)
 
 class SmartSyncChangePolicyDetails(object):
     """
-    Changed the default Smart Sync policy for team members.
+    Changed default Smart Sync setting for team members.
 
     :ivar new_value: New smart sync policy.
     :ivar previous_value: Previous smart sync policy.
@@ -48328,7 +52373,7 @@ SmartSyncChangePolicyType_validator = bv.Struct(SmartSyncChangePolicyType)
 
 class SmartSyncCreateAdminPrivilegeReportDetails(object):
     """
-    Smart Sync non-admin devices report created.
+    Created Smart Sync non-admin devices report.
     """
 
     __slots__ = [
@@ -48798,7 +52843,7 @@ SpaceLimitsStatus_validator = bv.Union(SpaceLimitsStatus)
 
 class SsoAddCertDetails(object):
     """
-    Added the X.509 certificate for SSO.
+    Added X.509 certificate for SSO.
 
     :ivar certificate_details: SSO certificate details.
     """
@@ -49088,7 +53133,7 @@ SsoAddLogoutUrlType_validator = bv.Struct(SsoAddLogoutUrlType)
 
 class SsoChangeCertDetails(object):
     """
-    Changed the X.509 certificate for SSO.
+    Changed X.509 certificate for SSO.
 
     :ivar previous_certificate_details: Previous SSO certificate details. Might
         be missing due to historical data gap.
@@ -49220,7 +53265,7 @@ SsoChangeCertType_validator = bv.Struct(SsoChangeCertType)
 
 class SsoChangeLoginUrlDetails(object):
     """
-    Changed the sign-in URL for SSO.
+    Changed sign-in URL for SSO.
 
     :ivar previous_value: Previous single sign-on login URL.
     :ivar new_value: New single sign-on login URL.
@@ -49347,7 +53392,7 @@ SsoChangeLoginUrlType_validator = bv.Struct(SsoChangeLoginUrlType)
 
 class SsoChangeLogoutUrlDetails(object):
     """
-    Changed the sign-out URL for SSO.
+    Changed sign-out URL for SSO.
 
     :ivar previous_value: Previous single sign-on logout URL. Might be missing
         due to historical data gap.
@@ -49484,7 +53529,7 @@ SsoChangeLogoutUrlType_validator = bv.Struct(SsoChangeLogoutUrlType)
 
 class SsoChangePolicyDetails(object):
     """
-    Change the single sign-on policy for the team.
+    Changed single sign-on setting for team.
 
     :ivar new_value: New single sign-on policy.
     :ivar previous_value: Previous single sign-on policy. Might be missing due
@@ -49616,7 +53661,7 @@ SsoChangePolicyType_validator = bv.Struct(SsoChangePolicyType)
 
 class SsoChangeSamlIdentityModeDetails(object):
     """
-    Changed the SAML identity mode for SSO.
+    Changed SAML identity mode for SSO.
 
     :ivar previous_value: Previous single sign-on identity mode.
     :ivar new_value: New single sign-on identity mode.
@@ -49838,7 +53883,7 @@ SsoErrorType_validator = bv.Struct(SsoErrorType)
 
 class SsoRemoveCertDetails(object):
     """
-    Removed the X.509 certificate for SSO.
+    Removed X.509 certificate for SSO.
     """
 
     __slots__ = [
@@ -49900,7 +53945,7 @@ SsoRemoveCertType_validator = bv.Struct(SsoRemoveCertType)
 
 class SsoRemoveLoginUrlDetails(object):
     """
-    Removed the sign-in URL for SSO.
+    Removed sign-in URL for SSO.
 
     :ivar previous_value: Previous single sign-on login URL.
     """
@@ -49995,7 +54040,7 @@ SsoRemoveLoginUrlType_validator = bv.Struct(SsoRemoveLoginUrlType)
 
 class SsoRemoveLogoutUrlDetails(object):
     """
-    Removed single sign-on logout URL.
+    Removed sign-out URL for SSO.
 
     :ivar previous_value: Previous single sign-on logout URL.
     """
@@ -50090,7 +54135,7 @@ SsoRemoveLogoutUrlType_validator = bv.Struct(SsoRemoveLogoutUrlType)
 
 class TeamActivityCreateReportDetails(object):
     """
-    Created a team activity report.
+    Created team activity report.
 
     :ivar start_date: Report start date.
     :ivar end_date: Report end date.
@@ -50597,7 +54642,7 @@ TeamEvent_validator = bv.Struct(TeamEvent)
 
 class TeamFolderChangeStatusDetails(object):
     """
-    Changed the archival status of a team folder.
+    Changed archival status of team folder.
 
     :ivar new_value: New team folder status.
     :ivar previous_value: Previous team folder status. Might be missing due to
@@ -50729,7 +54774,7 @@ TeamFolderChangeStatusType_validator = bv.Struct(TeamFolderChangeStatusType)
 
 class TeamFolderCreateDetails(object):
     """
-    Created a new team folder in active status.
+    Created team folder in active status.
     """
 
     __slots__ = [
@@ -50791,7 +54836,7 @@ TeamFolderCreateType_validator = bv.Struct(TeamFolderCreateType)
 
 class TeamFolderDowngradeDetails(object):
     """
-    Downgraded a team folder to a regular shared folder.
+    Downgraded team folder to regular shared folder.
 
     :ivar target_asset_index: Target asset position in the Assets list.
     """
@@ -50886,7 +54931,7 @@ TeamFolderDowngradeType_validator = bv.Struct(TeamFolderDowngradeType)
 
 class TeamFolderPermanentlyDeleteDetails(object):
     """
-    Permanently deleted an archived team folder.
+    Permanently deleted archived team folder.
     """
 
     __slots__ = [
@@ -50948,7 +54993,7 @@ TeamFolderPermanentlyDeleteType_validator = bv.Struct(TeamFolderPermanentlyDelet
 
 class TeamFolderRenameDetails(object):
     """
-    Renamed an active or archived team folder.
+    Renamed active/archived team folder.
 
     :ivar previous_folder_name: Previous folder name.
     :ivar new_folder_name: New folder name.
@@ -51515,7 +55560,7 @@ TeamName_validator = bv.Struct(TeamName)
 
 class TeamProfileAddLogoDetails(object):
     """
-    Added a team logo to be displayed on shared link headers.
+    Added team logo to display on shared link headers.
     """
 
     __slots__ = [
@@ -51577,7 +55622,7 @@ TeamProfileAddLogoType_validator = bv.Struct(TeamProfileAddLogoType)
 
 class TeamProfileChangeDefaultLanguageDetails(object):
     """
-    Changed the default language for the team.
+    Changed default language for team.
 
     :ivar new_value: New team's default language.
     :ivar previous_value: Previous team's default language.
@@ -51704,7 +55749,7 @@ TeamProfileChangeDefaultLanguageType_validator = bv.Struct(TeamProfileChangeDefa
 
 class TeamProfileChangeLogoDetails(object):
     """
-    Changed the team logo to be displayed on shared link headers.
+    Changed team logo displayed on shared link headers.
     """
 
     __slots__ = [
@@ -51766,7 +55811,7 @@ TeamProfileChangeLogoType_validator = bv.Struct(TeamProfileChangeLogoType)
 
 class TeamProfileChangeNameDetails(object):
     """
-    Changed the team name.
+    Changed team name.
 
     :ivar previous_value: Previous teams name. Might be missing due to
         historical data gap.
@@ -51897,7 +55942,7 @@ TeamProfileChangeNameType_validator = bv.Struct(TeamProfileChangeNameType)
 
 class TeamProfileRemoveLogoDetails(object):
     """
-    Removed the team logo to be displayed on shared link headers.
+    Removed team logo displayed on shared link headers.
     """
 
     __slots__ = [
@@ -51957,9 +56002,136 @@ class TeamProfileRemoveLogoType(object):
 
 TeamProfileRemoveLogoType_validator = bv.Struct(TeamProfileRemoveLogoType)
 
+class TeamSelectiveSyncSettingsChangedDetails(object):
+    """
+    Changed sync default.
+
+    :ivar previous_value: Previous value.
+    :ivar new_value: New value.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Previous value.
+
+        :rtype: files.SyncSetting_validator
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New value.
+
+        :rtype: files.SyncSetting_validator
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def __repr__(self):
+        return 'TeamSelectiveSyncSettingsChangedDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+TeamSelectiveSyncSettingsChangedDetails_validator = bv.Struct(TeamSelectiveSyncSettingsChangedDetails)
+
+class TeamSelectiveSyncSettingsChangedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'TeamSelectiveSyncSettingsChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+TeamSelectiveSyncSettingsChangedType_validator = bv.Struct(TeamSelectiveSyncSettingsChangedType)
+
 class TfaAddBackupPhoneDetails(object):
     """
-    Added a backup phone for two-step verification.
+    Added backup phone for two-step verification.
     """
 
     __slots__ = [
@@ -52021,7 +56193,7 @@ TfaAddBackupPhoneType_validator = bv.Struct(TfaAddBackupPhoneType)
 
 class TfaAddSecurityKeyDetails(object):
     """
-    Added a security key for two-step verification.
+    Added security key for two-step verification.
     """
 
     __slots__ = [
@@ -52083,7 +56255,7 @@ TfaAddSecurityKeyType_validator = bv.Struct(TfaAddSecurityKeyType)
 
 class TfaChangeBackupPhoneDetails(object):
     """
-    Changed the backup phone for two-step verification.
+    Changed backup phone for two-step verification.
     """
 
     __slots__ = [
@@ -52145,7 +56317,7 @@ TfaChangeBackupPhoneType_validator = bv.Struct(TfaChangeBackupPhoneType)
 
 class TfaChangePolicyDetails(object):
     """
-    Change two-step verification policy for the team.
+    Changed two-step verification setting for team.
 
     :ivar new_value: New change policy.
     :ivar previous_value: Previous change policy. Might be missing due to
@@ -52276,7 +56448,7 @@ TfaChangePolicyType_validator = bv.Struct(TfaChangePolicyType)
 
 class TfaChangeStatusDetails(object):
     """
-    Enabled, disabled or changed the configuration for two-step verification.
+    Enabled/disabled/changed two-step verification setting.
 
     :ivar new_value: The new two factor authentication configuration.
     :ivar previous_value: The previous two factor authentication configuration.
@@ -52513,7 +56685,7 @@ TfaConfiguration_validator = bv.Union(TfaConfiguration)
 
 class TfaRemoveBackupPhoneDetails(object):
     """
-    Removed the backup phone for two-step verification.
+    Removed backup phone for two-step verification.
     """
 
     __slots__ = [
@@ -52575,7 +56747,7 @@ TfaRemoveBackupPhoneType_validator = bv.Struct(TfaRemoveBackupPhoneType)
 
 class TfaRemoveSecurityKeyDetails(object):
     """
-    Removed a security key for two-step verification.
+    Removed security key for two-step verification.
     """
 
     __slots__ = [
@@ -52803,8 +56975,8 @@ TimeUnit_validator = bv.Union(TimeUnit)
 
 class TwoAccountChangePolicyDetails(object):
     """
-    Enabled or disabled the option for team members to link a personal Dropbox
-    account in addition to their work account to the same computer.
+    Enabled/disabled option for members to link personal Dropbox account and
+    team account to same computer.
 
     :ivar new_value: New two account policy.
     :ivar previous_value: Previous two account policy. Might be missing due to
@@ -53151,12 +57323,16 @@ class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information on active web sessions
 
+    :ivar session_info: Web session unique id. Might be missing due to
+        historical data gap.
     :ivar user_agent: Information on the hosting device.
     :ivar os: Information on the hosting operating system.
     :ivar browser: Information on the browser used for this web session.
     """
 
     __slots__ = [
+        '_session_info_value',
+        '_session_info_present',
         '_user_agent_value',
         '_user_agent_present',
         '_os_value',
@@ -53171,26 +57347,55 @@ class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
                  user_agent=None,
                  os=None,
                  browser=None,
-                 session_id=None,
                  ip_address=None,
                  created=None,
-                 updated=None):
-        super(WebDeviceSessionLogInfo, self).__init__(session_id,
-                                                      ip_address,
+                 updated=None,
+                 session_info=None):
+        super(WebDeviceSessionLogInfo, self).__init__(ip_address,
                                                       created,
                                                       updated)
+        self._session_info_value = None
+        self._session_info_present = False
         self._user_agent_value = None
         self._user_agent_present = False
         self._os_value = None
         self._os_present = False
         self._browser_value = None
         self._browser_present = False
+        if session_info is not None:
+            self.session_info = session_info
         if user_agent is not None:
             self.user_agent = user_agent
         if os is not None:
             self.os = os
         if browser is not None:
             self.browser = browser
+
+    @property
+    def session_info(self):
+        """
+        Web session unique id. Might be missing due to historical data gap.
+
+        :rtype: WebSessionLogInfo
+        """
+        if self._session_info_present:
+            return self._session_info_value
+        else:
+            return None
+
+    @session_info.setter
+    def session_info(self, val):
+        if val is None:
+            del self.session_info
+            return
+        self._session_info_validator.validate_type_only(val)
+        self._session_info_value = val
+        self._session_info_present = True
+
+    @session_info.deleter
+    def session_info(self):
+        self._session_info_value = None
+        self._session_info_present = False
 
     @property
     def user_agent(self):
@@ -53262,14 +57467,14 @@ class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._browser_present = False
 
     def __repr__(self):
-        return 'WebDeviceSessionLogInfo(user_agent={!r}, os={!r}, browser={!r}, session_id={!r}, ip_address={!r}, created={!r}, updated={!r})'.format(
+        return 'WebDeviceSessionLogInfo(user_agent={!r}, os={!r}, browser={!r}, ip_address={!r}, created={!r}, updated={!r}, session_info={!r})'.format(
             self._user_agent_value,
             self._os_value,
             self._browser_value,
-            self._session_id_value,
             self._ip_address_value,
             self._created_value,
             self._updated_value,
+            self._session_info_value,
         )
 
 WebDeviceSessionLogInfo_validator = bv.Struct(WebDeviceSessionLogInfo)
@@ -53297,7 +57502,7 @@ WebSessionLogInfo_validator = bv.Struct(WebSessionLogInfo)
 
 class WebSessionsChangeFixedLengthPolicyDetails(object):
     """
-    Changed how long team members can stay signed in to Dropbox on the web.
+    Changed how long members can stay signed in to Dropbox.com.
 
     :ivar new_value: New session length policy. Might be missing due to
         historical data gap.
@@ -53433,8 +57638,7 @@ WebSessionsChangeFixedLengthPolicyType_validator = bv.Struct(WebSessionsChangeFi
 
 class WebSessionsChangeIdleLengthPolicyDetails(object):
     """
-    Changed how long team members can be idle while signed in to Dropbox on the
-    web.
+    Changed how long team members can be idle while signed in to Dropbox.com.
 
     :ivar new_value: New idle length policy. Might be missing due to historical
         data gap.
@@ -53709,7 +57913,6 @@ class WebSessionsIdleLengthPolicy(bb.Union):
 WebSessionsIdleLengthPolicy_validator = bv.Union(WebSessionsIdleLengthPolicy)
 
 AppId_validator = bv.String()
-DeviceSessionId_validator = bv.String()
 EmailAddress_validator = bv.String(max_length=255)
 FilePath_validator = bv.String()
 IpAddress_validator = bv.String()
@@ -53949,12 +58152,14 @@ AssetLogInfo._file_validator = FileLogInfo_validator
 AssetLogInfo._folder_validator = FolderLogInfo_validator
 AssetLogInfo._paper_document_validator = PaperDocumentLogInfo_validator
 AssetLogInfo._paper_folder_validator = PaperFolderLogInfo_validator
+AssetLogInfo._showcase_document_validator = ShowcaseDocumentLogInfo_validator
 AssetLogInfo._other_validator = bv.Void()
 AssetLogInfo._tagmap = {
     'file': AssetLogInfo._file_validator,
     'folder': AssetLogInfo._folder_validator,
     'paper_document': AssetLogInfo._paper_document_validator,
     'paper_folder': AssetLogInfo._paper_folder_validator,
+    'showcase_document': AssetLogInfo._showcase_document_validator,
     'other': AssetLogInfo._other_validator,
 }
 
@@ -54054,19 +58259,16 @@ DataPlacementRestrictionSatisfyPolicyType._description_validator = bv.String()
 DataPlacementRestrictionSatisfyPolicyType._all_field_names_ = set(['description'])
 DataPlacementRestrictionSatisfyPolicyType._all_fields_ = [('description', DataPlacementRestrictionSatisfyPolicyType._description_validator)]
 
-DeviceSessionLogInfo._session_id_validator = bv.Nullable(DeviceSessionId_validator)
 DeviceSessionLogInfo._ip_address_validator = bv.Nullable(IpAddress_validator)
 DeviceSessionLogInfo._created_validator = bv.Nullable(common.DropboxTimestamp_validator)
 DeviceSessionLogInfo._updated_validator = bv.Nullable(common.DropboxTimestamp_validator)
 DeviceSessionLogInfo._field_names_ = set([
-    'session_id',
     'ip_address',
     'created',
     'updated',
 ])
 DeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._field_names_
 DeviceSessionLogInfo._fields_ = [
-    ('session_id', DeviceSessionLogInfo._session_id_validator),
     ('ip_address', DeviceSessionLogInfo._ip_address_validator),
     ('created', DeviceSessionLogInfo._created_validator),
     ('updated', DeviceSessionLogInfo._updated_validator),
@@ -54087,12 +58289,14 @@ DeviceSessionLogInfo._pytype_to_tag_and_subtype_ = {
 }
 DeviceSessionLogInfo._is_catch_all_ = True
 
+DesktopDeviceSessionLogInfo._session_info_validator = bv.Nullable(DesktopSessionLogInfo_validator)
 DesktopDeviceSessionLogInfo._host_name_validator = bv.String()
 DesktopDeviceSessionLogInfo._client_type_validator = team.DesktopPlatform_validator
 DesktopDeviceSessionLogInfo._client_version_validator = bv.Nullable(bv.String())
 DesktopDeviceSessionLogInfo._platform_validator = bv.String()
 DesktopDeviceSessionLogInfo._is_delete_on_unlink_supported_validator = bv.Boolean()
 DesktopDeviceSessionLogInfo._field_names_ = set([
+    'session_info',
     'host_name',
     'client_type',
     'client_version',
@@ -54101,6 +58305,7 @@ DesktopDeviceSessionLogInfo._field_names_ = set([
 ])
 DesktopDeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._all_field_names_.union(DesktopDeviceSessionLogInfo._field_names_)
 DesktopDeviceSessionLogInfo._fields_ = [
+    ('session_info', DesktopDeviceSessionLogInfo._session_info_validator),
     ('host_name', DesktopDeviceSessionLogInfo._host_name_validator),
     ('client_type', DesktopDeviceSessionLogInfo._client_type_validator),
     ('client_version', DesktopDeviceSessionLogInfo._client_version_validator),
@@ -54213,7 +58418,7 @@ DeviceChangeIpDesktopType._description_validator = bv.String()
 DeviceChangeIpDesktopType._all_field_names_ = set(['description'])
 DeviceChangeIpDesktopType._all_fields_ = [('description', DeviceChangeIpDesktopType._description_validator)]
 
-DeviceChangeIpMobileDetails._device_session_info_validator = DeviceSessionLogInfo_validator
+DeviceChangeIpMobileDetails._device_session_info_validator = bv.Nullable(DeviceSessionLogInfo_validator)
 DeviceChangeIpMobileDetails._all_field_names_ = set(['device_session_info'])
 DeviceChangeIpMobileDetails._all_fields_ = [('device_session_info', DeviceChangeIpMobileDetails._device_session_info_validator)]
 
@@ -54221,31 +58426,24 @@ DeviceChangeIpMobileType._description_validator = bv.String()
 DeviceChangeIpMobileType._all_field_names_ = set(['description'])
 DeviceChangeIpMobileType._all_fields_ = [('description', DeviceChangeIpMobileType._description_validator)]
 
-DeviceChangeIpWebDetails._device_session_info_validator = bv.Nullable(DeviceSessionLogInfo_validator)
 DeviceChangeIpWebDetails._user_agent_validator = bv.String()
-DeviceChangeIpWebDetails._all_field_names_ = set([
-    'device_session_info',
-    'user_agent',
-])
-DeviceChangeIpWebDetails._all_fields_ = [
-    ('device_session_info', DeviceChangeIpWebDetails._device_session_info_validator),
-    ('user_agent', DeviceChangeIpWebDetails._user_agent_validator),
-]
+DeviceChangeIpWebDetails._all_field_names_ = set(['user_agent'])
+DeviceChangeIpWebDetails._all_fields_ = [('user_agent', DeviceChangeIpWebDetails._user_agent_validator)]
 
 DeviceChangeIpWebType._description_validator = bv.String()
 DeviceChangeIpWebType._all_field_names_ = set(['description'])
 DeviceChangeIpWebType._all_fields_ = [('description', DeviceChangeIpWebType._description_validator)]
 
-DeviceDeleteOnUnlinkFailDetails._session_id_validator = bv.Nullable(DeviceSessionId_validator)
+DeviceDeleteOnUnlinkFailDetails._session_info_validator = bv.Nullable(SessionLogInfo_validator)
 DeviceDeleteOnUnlinkFailDetails._display_name_validator = bv.Nullable(bv.String())
 DeviceDeleteOnUnlinkFailDetails._num_failures_validator = bv.Int64()
 DeviceDeleteOnUnlinkFailDetails._all_field_names_ = set([
-    'session_id',
+    'session_info',
     'display_name',
     'num_failures',
 ])
 DeviceDeleteOnUnlinkFailDetails._all_fields_ = [
-    ('session_id', DeviceDeleteOnUnlinkFailDetails._session_id_validator),
+    ('session_info', DeviceDeleteOnUnlinkFailDetails._session_info_validator),
     ('display_name', DeviceDeleteOnUnlinkFailDetails._display_name_validator),
     ('num_failures', DeviceDeleteOnUnlinkFailDetails._num_failures_validator),
 ]
@@ -54254,14 +58452,14 @@ DeviceDeleteOnUnlinkFailType._description_validator = bv.String()
 DeviceDeleteOnUnlinkFailType._all_field_names_ = set(['description'])
 DeviceDeleteOnUnlinkFailType._all_fields_ = [('description', DeviceDeleteOnUnlinkFailType._description_validator)]
 
-DeviceDeleteOnUnlinkSuccessDetails._session_id_validator = bv.Nullable(DeviceSessionId_validator)
+DeviceDeleteOnUnlinkSuccessDetails._session_info_validator = bv.Nullable(SessionLogInfo_validator)
 DeviceDeleteOnUnlinkSuccessDetails._display_name_validator = bv.Nullable(bv.String())
 DeviceDeleteOnUnlinkSuccessDetails._all_field_names_ = set([
-    'session_id',
+    'session_info',
     'display_name',
 ])
 DeviceDeleteOnUnlinkSuccessDetails._all_fields_ = [
-    ('session_id', DeviceDeleteOnUnlinkSuccessDetails._session_id_validator),
+    ('session_info', DeviceDeleteOnUnlinkSuccessDetails._session_info_validator),
     ('display_name', DeviceDeleteOnUnlinkSuccessDetails._display_name_validator),
 ]
 
@@ -54284,7 +58482,7 @@ DeviceLinkFailType._description_validator = bv.String()
 DeviceLinkFailType._all_field_names_ = set(['description'])
 DeviceLinkFailType._all_fields_ = [('description', DeviceLinkFailType._description_validator)]
 
-DeviceLinkSuccessDetails._device_session_info_validator = DeviceSessionLogInfo_validator
+DeviceLinkSuccessDetails._device_session_info_validator = bv.Nullable(DeviceSessionLogInfo_validator)
 DeviceLinkSuccessDetails._all_field_names_ = set(['device_session_info'])
 DeviceLinkSuccessDetails._all_fields_ = [('device_session_info', DeviceLinkSuccessDetails._device_session_info_validator)]
 
@@ -54319,16 +58517,16 @@ DeviceType.desktop = DeviceType('desktop')
 DeviceType.mobile = DeviceType('mobile')
 DeviceType.other = DeviceType('other')
 
-DeviceUnlinkDetails._session_id_validator = bv.Nullable(DeviceSessionId_validator)
+DeviceUnlinkDetails._session_info_validator = bv.Nullable(SessionLogInfo_validator)
 DeviceUnlinkDetails._display_name_validator = bv.Nullable(bv.String())
 DeviceUnlinkDetails._delete_data_validator = bv.Boolean()
 DeviceUnlinkDetails._all_field_names_ = set([
-    'session_id',
+    'session_info',
     'display_name',
     'delete_data',
 ])
 DeviceUnlinkDetails._all_fields_ = [
-    ('session_id', DeviceUnlinkDetails._session_id_validator),
+    ('session_info', DeviceUnlinkDetails._session_info_validator),
     ('display_name', DeviceUnlinkDetails._display_name_validator),
     ('delete_data', DeviceUnlinkDetails._delete_data_validator),
 ]
@@ -54371,7 +58569,7 @@ DomainInvitesDeclineRequestToJoinTeamType._description_validator = bv.String()
 DomainInvitesDeclineRequestToJoinTeamType._all_field_names_ = set(['description'])
 DomainInvitesDeclineRequestToJoinTeamType._all_fields_ = [('description', DomainInvitesDeclineRequestToJoinTeamType._description_validator)]
 
-DomainInvitesEmailExistingUsersDetails._domain_name_validator = bv.List(bv.String())
+DomainInvitesEmailExistingUsersDetails._domain_name_validator = bv.String()
 DomainInvitesEmailExistingUsersDetails._num_recipients_validator = bv.UInt64()
 DomainInvitesEmailExistingUsersDetails._all_field_names_ = set([
     'domain_name',
@@ -54547,6 +58745,7 @@ EventCategory._paper_validator = bv.Void()
 EventCategory._passwords_validator = bv.Void()
 EventCategory._reports_validator = bv.Void()
 EventCategory._sharing_validator = bv.Void()
+EventCategory._showcase_validator = bv.Void()
 EventCategory._sso_validator = bv.Void()
 EventCategory._team_folders_validator = bv.Void()
 EventCategory._team_policies_validator = bv.Void()
@@ -54567,6 +58766,7 @@ EventCategory._tagmap = {
     'passwords': EventCategory._passwords_validator,
     'reports': EventCategory._reports_validator,
     'sharing': EventCategory._sharing_validator,
+    'showcase': EventCategory._showcase_validator,
     'sso': EventCategory._sso_validator,
     'team_folders': EventCategory._team_folders_validator,
     'team_policies': EventCategory._team_policies_validator,
@@ -54588,6 +58788,7 @@ EventCategory.paper = EventCategory('paper')
 EventCategory.passwords = EventCategory('passwords')
 EventCategory.reports = EventCategory('reports')
 EventCategory.sharing = EventCategory('sharing')
+EventCategory.showcase = EventCategory('showcase')
 EventCategory.sso = EventCategory('sso')
 EventCategory.team_folders = EventCategory('team_folders')
 EventCategory.team_policies = EventCategory('team_policies')
@@ -54658,6 +58859,8 @@ EventDetails._group_change_management_type_details_validator = GroupChangeManage
 EventDetails._group_change_member_role_details_validator = GroupChangeMemberRoleDetails_validator
 EventDetails._group_create_details_validator = GroupCreateDetails_validator
 EventDetails._group_delete_details_validator = GroupDeleteDetails_validator
+EventDetails._group_description_updated_details_validator = GroupDescriptionUpdatedDetails_validator
+EventDetails._group_join_policy_updated_details_validator = GroupJoinPolicyUpdatedDetails_validator
 EventDetails._group_moved_details_validator = GroupMovedDetails_validator
 EventDetails._group_remove_external_id_details_validator = GroupRemoveExternalIdDetails_validator
 EventDetails._group_remove_member_details_validator = GroupRemoveMemberDetails_validator
@@ -54793,6 +58996,28 @@ EventDetails._shared_link_share_details_validator = SharedLinkShareDetails_valid
 EventDetails._shared_link_view_details_validator = SharedLinkViewDetails_validator
 EventDetails._shared_note_opened_details_validator = SharedNoteOpenedDetails_validator
 EventDetails._shmodel_group_share_details_validator = ShmodelGroupShareDetails_validator
+EventDetails._showcase_access_granted_details_validator = ShowcaseAccessGrantedDetails_validator
+EventDetails._showcase_add_member_details_validator = ShowcaseAddMemberDetails_validator
+EventDetails._showcase_archived_details_validator = ShowcaseArchivedDetails_validator
+EventDetails._showcase_created_details_validator = ShowcaseCreatedDetails_validator
+EventDetails._showcase_delete_comment_details_validator = ShowcaseDeleteCommentDetails_validator
+EventDetails._showcase_edited_details_validator = ShowcaseEditedDetails_validator
+EventDetails._showcase_edit_comment_details_validator = ShowcaseEditCommentDetails_validator
+EventDetails._showcase_file_added_details_validator = ShowcaseFileAddedDetails_validator
+EventDetails._showcase_file_download_details_validator = ShowcaseFileDownloadDetails_validator
+EventDetails._showcase_file_removed_details_validator = ShowcaseFileRemovedDetails_validator
+EventDetails._showcase_file_view_details_validator = ShowcaseFileViewDetails_validator
+EventDetails._showcase_permanently_deleted_details_validator = ShowcasePermanentlyDeletedDetails_validator
+EventDetails._showcase_post_comment_details_validator = ShowcasePostCommentDetails_validator
+EventDetails._showcase_remove_member_details_validator = ShowcaseRemoveMemberDetails_validator
+EventDetails._showcase_renamed_details_validator = ShowcaseRenamedDetails_validator
+EventDetails._showcase_request_access_details_validator = ShowcaseRequestAccessDetails_validator
+EventDetails._showcase_resolve_comment_details_validator = ShowcaseResolveCommentDetails_validator
+EventDetails._showcase_restored_details_validator = ShowcaseRestoredDetails_validator
+EventDetails._showcase_trashed_details_validator = ShowcaseTrashedDetails_validator
+EventDetails._showcase_unresolve_comment_details_validator = ShowcaseUnresolveCommentDetails_validator
+EventDetails._showcase_untrashed_details_validator = ShowcaseUntrashedDetails_validator
+EventDetails._showcase_view_details_validator = ShowcaseViewDetails_validator
 EventDetails._sso_add_cert_details_validator = SsoAddCertDetails_validator
 EventDetails._sso_add_login_url_details_validator = SsoAddLoginUrlDetails_validator
 EventDetails._sso_add_logout_url_details_validator = SsoAddLogoutUrlDetails_validator
@@ -54808,6 +59033,7 @@ EventDetails._team_folder_create_details_validator = TeamFolderCreateDetails_val
 EventDetails._team_folder_downgrade_details_validator = TeamFolderDowngradeDetails_validator
 EventDetails._team_folder_permanently_delete_details_validator = TeamFolderPermanentlyDeleteDetails_validator
 EventDetails._team_folder_rename_details_validator = TeamFolderRenameDetails_validator
+EventDetails._team_selective_sync_settings_changed_details_validator = TeamSelectiveSyncSettingsChangedDetails_validator
 EventDetails._account_capture_change_policy_details_validator = AccountCaptureChangePolicyDetails_validator
 EventDetails._allow_download_disabled_details_validator = AllowDownloadDisabledDetails_validator
 EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDetails_validator
@@ -54933,6 +59159,8 @@ EventDetails._tagmap = {
     'group_change_member_role_details': EventDetails._group_change_member_role_details_validator,
     'group_create_details': EventDetails._group_create_details_validator,
     'group_delete_details': EventDetails._group_delete_details_validator,
+    'group_description_updated_details': EventDetails._group_description_updated_details_validator,
+    'group_join_policy_updated_details': EventDetails._group_join_policy_updated_details_validator,
     'group_moved_details': EventDetails._group_moved_details_validator,
     'group_remove_external_id_details': EventDetails._group_remove_external_id_details_validator,
     'group_remove_member_details': EventDetails._group_remove_member_details_validator,
@@ -55068,6 +59296,28 @@ EventDetails._tagmap = {
     'shared_link_view_details': EventDetails._shared_link_view_details_validator,
     'shared_note_opened_details': EventDetails._shared_note_opened_details_validator,
     'shmodel_group_share_details': EventDetails._shmodel_group_share_details_validator,
+    'showcase_access_granted_details': EventDetails._showcase_access_granted_details_validator,
+    'showcase_add_member_details': EventDetails._showcase_add_member_details_validator,
+    'showcase_archived_details': EventDetails._showcase_archived_details_validator,
+    'showcase_created_details': EventDetails._showcase_created_details_validator,
+    'showcase_delete_comment_details': EventDetails._showcase_delete_comment_details_validator,
+    'showcase_edited_details': EventDetails._showcase_edited_details_validator,
+    'showcase_edit_comment_details': EventDetails._showcase_edit_comment_details_validator,
+    'showcase_file_added_details': EventDetails._showcase_file_added_details_validator,
+    'showcase_file_download_details': EventDetails._showcase_file_download_details_validator,
+    'showcase_file_removed_details': EventDetails._showcase_file_removed_details_validator,
+    'showcase_file_view_details': EventDetails._showcase_file_view_details_validator,
+    'showcase_permanently_deleted_details': EventDetails._showcase_permanently_deleted_details_validator,
+    'showcase_post_comment_details': EventDetails._showcase_post_comment_details_validator,
+    'showcase_remove_member_details': EventDetails._showcase_remove_member_details_validator,
+    'showcase_renamed_details': EventDetails._showcase_renamed_details_validator,
+    'showcase_request_access_details': EventDetails._showcase_request_access_details_validator,
+    'showcase_resolve_comment_details': EventDetails._showcase_resolve_comment_details_validator,
+    'showcase_restored_details': EventDetails._showcase_restored_details_validator,
+    'showcase_trashed_details': EventDetails._showcase_trashed_details_validator,
+    'showcase_unresolve_comment_details': EventDetails._showcase_unresolve_comment_details_validator,
+    'showcase_untrashed_details': EventDetails._showcase_untrashed_details_validator,
+    'showcase_view_details': EventDetails._showcase_view_details_validator,
     'sso_add_cert_details': EventDetails._sso_add_cert_details_validator,
     'sso_add_login_url_details': EventDetails._sso_add_login_url_details_validator,
     'sso_add_logout_url_details': EventDetails._sso_add_logout_url_details_validator,
@@ -55083,6 +59333,7 @@ EventDetails._tagmap = {
     'team_folder_downgrade_details': EventDetails._team_folder_downgrade_details_validator,
     'team_folder_permanently_delete_details': EventDetails._team_folder_permanently_delete_details_validator,
     'team_folder_rename_details': EventDetails._team_folder_rename_details_validator,
+    'team_selective_sync_settings_changed_details': EventDetails._team_selective_sync_settings_changed_details_validator,
     'account_capture_change_policy_details': EventDetails._account_capture_change_policy_details_validator,
     'allow_download_disabled_details': EventDetails._allow_download_disabled_details_validator,
     'allow_download_enabled_details': EventDetails._allow_download_enabled_details_validator,
@@ -55211,6 +59462,8 @@ EventType._group_change_management_type_validator = GroupChangeManagementTypeTyp
 EventType._group_change_member_role_validator = GroupChangeMemberRoleType_validator
 EventType._group_create_validator = GroupCreateType_validator
 EventType._group_delete_validator = GroupDeleteType_validator
+EventType._group_description_updated_validator = GroupDescriptionUpdatedType_validator
+EventType._group_join_policy_updated_validator = GroupJoinPolicyUpdatedType_validator
 EventType._group_moved_validator = GroupMovedType_validator
 EventType._group_remove_external_id_validator = GroupRemoveExternalIdType_validator
 EventType._group_remove_member_validator = GroupRemoveMemberType_validator
@@ -55346,6 +59599,28 @@ EventType._shared_link_share_validator = SharedLinkShareType_validator
 EventType._shared_link_view_validator = SharedLinkViewType_validator
 EventType._shared_note_opened_validator = SharedNoteOpenedType_validator
 EventType._shmodel_group_share_validator = ShmodelGroupShareType_validator
+EventType._showcase_access_granted_validator = ShowcaseAccessGrantedType_validator
+EventType._showcase_add_member_validator = ShowcaseAddMemberType_validator
+EventType._showcase_archived_validator = ShowcaseArchivedType_validator
+EventType._showcase_created_validator = ShowcaseCreatedType_validator
+EventType._showcase_delete_comment_validator = ShowcaseDeleteCommentType_validator
+EventType._showcase_edited_validator = ShowcaseEditedType_validator
+EventType._showcase_edit_comment_validator = ShowcaseEditCommentType_validator
+EventType._showcase_file_added_validator = ShowcaseFileAddedType_validator
+EventType._showcase_file_download_validator = ShowcaseFileDownloadType_validator
+EventType._showcase_file_removed_validator = ShowcaseFileRemovedType_validator
+EventType._showcase_file_view_validator = ShowcaseFileViewType_validator
+EventType._showcase_permanently_deleted_validator = ShowcasePermanentlyDeletedType_validator
+EventType._showcase_post_comment_validator = ShowcasePostCommentType_validator
+EventType._showcase_remove_member_validator = ShowcaseRemoveMemberType_validator
+EventType._showcase_renamed_validator = ShowcaseRenamedType_validator
+EventType._showcase_request_access_validator = ShowcaseRequestAccessType_validator
+EventType._showcase_resolve_comment_validator = ShowcaseResolveCommentType_validator
+EventType._showcase_restored_validator = ShowcaseRestoredType_validator
+EventType._showcase_trashed_validator = ShowcaseTrashedType_validator
+EventType._showcase_unresolve_comment_validator = ShowcaseUnresolveCommentType_validator
+EventType._showcase_untrashed_validator = ShowcaseUntrashedType_validator
+EventType._showcase_view_validator = ShowcaseViewType_validator
 EventType._sso_add_cert_validator = SsoAddCertType_validator
 EventType._sso_add_login_url_validator = SsoAddLoginUrlType_validator
 EventType._sso_add_logout_url_validator = SsoAddLogoutUrlType_validator
@@ -55361,6 +59636,7 @@ EventType._team_folder_create_validator = TeamFolderCreateType_validator
 EventType._team_folder_downgrade_validator = TeamFolderDowngradeType_validator
 EventType._team_folder_permanently_delete_validator = TeamFolderPermanentlyDeleteType_validator
 EventType._team_folder_rename_validator = TeamFolderRenameType_validator
+EventType._team_selective_sync_settings_changed_validator = TeamSelectiveSyncSettingsChangedType_validator
 EventType._account_capture_change_policy_validator = AccountCaptureChangePolicyType_validator
 EventType._allow_download_disabled_validator = AllowDownloadDisabledType_validator
 EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
@@ -55485,6 +59761,8 @@ EventType._tagmap = {
     'group_change_member_role': EventType._group_change_member_role_validator,
     'group_create': EventType._group_create_validator,
     'group_delete': EventType._group_delete_validator,
+    'group_description_updated': EventType._group_description_updated_validator,
+    'group_join_policy_updated': EventType._group_join_policy_updated_validator,
     'group_moved': EventType._group_moved_validator,
     'group_remove_external_id': EventType._group_remove_external_id_validator,
     'group_remove_member': EventType._group_remove_member_validator,
@@ -55620,6 +59898,28 @@ EventType._tagmap = {
     'shared_link_view': EventType._shared_link_view_validator,
     'shared_note_opened': EventType._shared_note_opened_validator,
     'shmodel_group_share': EventType._shmodel_group_share_validator,
+    'showcase_access_granted': EventType._showcase_access_granted_validator,
+    'showcase_add_member': EventType._showcase_add_member_validator,
+    'showcase_archived': EventType._showcase_archived_validator,
+    'showcase_created': EventType._showcase_created_validator,
+    'showcase_delete_comment': EventType._showcase_delete_comment_validator,
+    'showcase_edited': EventType._showcase_edited_validator,
+    'showcase_edit_comment': EventType._showcase_edit_comment_validator,
+    'showcase_file_added': EventType._showcase_file_added_validator,
+    'showcase_file_download': EventType._showcase_file_download_validator,
+    'showcase_file_removed': EventType._showcase_file_removed_validator,
+    'showcase_file_view': EventType._showcase_file_view_validator,
+    'showcase_permanently_deleted': EventType._showcase_permanently_deleted_validator,
+    'showcase_post_comment': EventType._showcase_post_comment_validator,
+    'showcase_remove_member': EventType._showcase_remove_member_validator,
+    'showcase_renamed': EventType._showcase_renamed_validator,
+    'showcase_request_access': EventType._showcase_request_access_validator,
+    'showcase_resolve_comment': EventType._showcase_resolve_comment_validator,
+    'showcase_restored': EventType._showcase_restored_validator,
+    'showcase_trashed': EventType._showcase_trashed_validator,
+    'showcase_unresolve_comment': EventType._showcase_unresolve_comment_validator,
+    'showcase_untrashed': EventType._showcase_untrashed_validator,
+    'showcase_view': EventType._showcase_view_validator,
     'sso_add_cert': EventType._sso_add_cert_validator,
     'sso_add_login_url': EventType._sso_add_login_url_validator,
     'sso_add_logout_url': EventType._sso_add_logout_url_validator,
@@ -55635,6 +59935,7 @@ EventType._tagmap = {
     'team_folder_downgrade': EventType._team_folder_downgrade_validator,
     'team_folder_permanently_delete': EventType._team_folder_permanently_delete_validator,
     'team_folder_rename': EventType._team_folder_rename_validator,
+    'team_selective_sync_settings_changed': EventType._team_selective_sync_settings_changed_validator,
     'account_capture_change_policy': EventType._account_capture_change_policy_validator,
     'allow_download_disabled': EventType._allow_download_disabled_validator,
     'allow_download_enabled': EventType._allow_download_enabled_validator,
@@ -55724,17 +60025,20 @@ ExtendedVersionHistoryChangePolicyType._all_fields_ = [('description', ExtendedV
 ExtendedVersionHistoryPolicy._explicitly_limited_validator = bv.Void()
 ExtendedVersionHistoryPolicy._explicitly_unlimited_validator = bv.Void()
 ExtendedVersionHistoryPolicy._implicitly_limited_validator = bv.Void()
+ExtendedVersionHistoryPolicy._implicitly_unlimited_validator = bv.Void()
 ExtendedVersionHistoryPolicy._other_validator = bv.Void()
 ExtendedVersionHistoryPolicy._tagmap = {
     'explicitly_limited': ExtendedVersionHistoryPolicy._explicitly_limited_validator,
     'explicitly_unlimited': ExtendedVersionHistoryPolicy._explicitly_unlimited_validator,
     'implicitly_limited': ExtendedVersionHistoryPolicy._implicitly_limited_validator,
+    'implicitly_unlimited': ExtendedVersionHistoryPolicy._implicitly_unlimited_validator,
     'other': ExtendedVersionHistoryPolicy._other_validator,
 }
 
 ExtendedVersionHistoryPolicy.explicitly_limited = ExtendedVersionHistoryPolicy('explicitly_limited')
 ExtendedVersionHistoryPolicy.explicitly_unlimited = ExtendedVersionHistoryPolicy('explicitly_unlimited')
 ExtendedVersionHistoryPolicy.implicitly_limited = ExtendedVersionHistoryPolicy('implicitly_limited')
+ExtendedVersionHistoryPolicy.implicitly_unlimited = ExtendedVersionHistoryPolicy('implicitly_unlimited')
 ExtendedVersionHistoryPolicy.other = ExtendedVersionHistoryPolicy('other')
 
 ExternalUserLogInfo._user_identifier_validator = bv.String()
@@ -56279,7 +60583,7 @@ GroupChangeMemberRoleType._all_field_names_ = set(['description'])
 GroupChangeMemberRoleType._all_fields_ = [('description', GroupChangeMemberRoleType._description_validator)]
 
 GroupCreateDetails._is_company_managed_validator = bv.Nullable(bv.Boolean())
-GroupCreateDetails._join_policy_validator = GroupJoinPolicy_validator
+GroupCreateDetails._join_policy_validator = bv.Nullable(GroupJoinPolicy_validator)
 GroupCreateDetails._all_field_names_ = set([
     'is_company_managed',
     'join_policy',
@@ -56301,6 +60605,13 @@ GroupDeleteType._description_validator = bv.String()
 GroupDeleteType._all_field_names_ = set(['description'])
 GroupDeleteType._all_fields_ = [('description', GroupDeleteType._description_validator)]
 
+GroupDescriptionUpdatedDetails._all_field_names_ = set([])
+GroupDescriptionUpdatedDetails._all_fields_ = []
+
+GroupDescriptionUpdatedType._description_validator = bv.String()
+GroupDescriptionUpdatedType._all_field_names_ = set(['description'])
+GroupDescriptionUpdatedType._all_fields_ = [('description', GroupDescriptionUpdatedType._description_validator)]
+
 GroupJoinPolicy._open_validator = bv.Void()
 GroupJoinPolicy._request_to_join_validator = bv.Void()
 GroupJoinPolicy._other_validator = bv.Void()
@@ -56313,6 +60624,21 @@ GroupJoinPolicy._tagmap = {
 GroupJoinPolicy.open = GroupJoinPolicy('open')
 GroupJoinPolicy.request_to_join = GroupJoinPolicy('request_to_join')
 GroupJoinPolicy.other = GroupJoinPolicy('other')
+
+GroupJoinPolicyUpdatedDetails._is_company_managed_validator = bv.Nullable(bv.Boolean())
+GroupJoinPolicyUpdatedDetails._join_policy_validator = bv.Nullable(GroupJoinPolicy_validator)
+GroupJoinPolicyUpdatedDetails._all_field_names_ = set([
+    'is_company_managed',
+    'join_policy',
+])
+GroupJoinPolicyUpdatedDetails._all_fields_ = [
+    ('is_company_managed', GroupJoinPolicyUpdatedDetails._is_company_managed_validator),
+    ('join_policy', GroupJoinPolicyUpdatedDetails._join_policy_validator),
+]
+
+GroupJoinPolicyUpdatedType._description_validator = bv.String()
+GroupJoinPolicyUpdatedType._all_field_names_ = set(['description'])
+GroupJoinPolicyUpdatedType._all_fields_ = [('description', GroupJoinPolicyUpdatedType._description_validator)]
 
 GroupLogInfo._group_id_validator = bv.Nullable(team_common.GroupId_validator)
 GroupLogInfo._display_name_validator = bv.String()
@@ -56393,7 +60719,7 @@ IdentifierType.email = IdentifierType('email')
 IdentifierType.facebook_profile_name = IdentifierType('facebook_profile_name')
 IdentifierType.other = IdentifierType('other')
 
-JoinTeamDetails._linked_apps_validator = bv.List(AppLogInfo_validator)
+JoinTeamDetails._linked_apps_validator = bv.List(UserLinkedAppLogInfo_validator)
 JoinTeamDetails._linked_devices_validator = bv.List(LinkedDeviceLogInfo_validator)
 JoinTeamDetails._linked_shared_folders_validator = bv.List(FolderLogInfo_validator)
 JoinTeamDetails._all_field_names_ = set([
@@ -56407,6 +60733,7 @@ JoinTeamDetails._all_fields_ = [
     ('linked_shared_folders', JoinTeamDetails._linked_shared_folders_validator),
 ]
 
+LegacyDeviceSessionLogInfo._session_info_validator = bv.Nullable(SessionLogInfo_validator)
 LegacyDeviceSessionLogInfo._display_name_validator = bv.Nullable(bv.String())
 LegacyDeviceSessionLogInfo._is_emm_managed_validator = bv.Nullable(bv.Boolean())
 LegacyDeviceSessionLogInfo._platform_validator = bv.Nullable(bv.String())
@@ -56416,6 +60743,7 @@ LegacyDeviceSessionLogInfo._device_type_validator = bv.Nullable(bv.String())
 LegacyDeviceSessionLogInfo._client_version_validator = bv.Nullable(bv.String())
 LegacyDeviceSessionLogInfo._legacy_uniq_id_validator = bv.Nullable(bv.String())
 LegacyDeviceSessionLogInfo._field_names_ = set([
+    'session_info',
     'display_name',
     'is_emm_managed',
     'platform',
@@ -56427,6 +60755,7 @@ LegacyDeviceSessionLogInfo._field_names_ = set([
 ])
 LegacyDeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._all_field_names_.union(LegacyDeviceSessionLogInfo._field_names_)
 LegacyDeviceSessionLogInfo._fields_ = [
+    ('session_info', LegacyDeviceSessionLogInfo._session_info_validator),
     ('display_name', LegacyDeviceSessionLogInfo._display_name_validator),
     ('is_emm_managed', LegacyDeviceSessionLogInfo._is_emm_managed_validator),
     ('platform', LegacyDeviceSessionLogInfo._platform_validator),
@@ -56438,25 +60767,20 @@ LegacyDeviceSessionLogInfo._fields_ = [
 ]
 LegacyDeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._all_fields_ + LegacyDeviceSessionLogInfo._fields_
 
-LinkedDeviceLogInfo._device_type_validator = bv.String()
-LinkedDeviceLogInfo._display_name_validator = bv.Nullable(bv.String())
-LinkedDeviceLogInfo._ip_address_validator = bv.Nullable(IpAddress_validator)
-LinkedDeviceLogInfo._last_activity_validator = bv.Nullable(bv.String())
-LinkedDeviceLogInfo._platform_validator = bv.Nullable(bv.String())
-LinkedDeviceLogInfo._all_field_names_ = set([
-    'device_type',
-    'display_name',
-    'ip_address',
-    'last_activity',
-    'platform',
-])
-LinkedDeviceLogInfo._all_fields_ = [
-    ('device_type', LinkedDeviceLogInfo._device_type_validator),
-    ('display_name', LinkedDeviceLogInfo._display_name_validator),
-    ('ip_address', LinkedDeviceLogInfo._ip_address_validator),
-    ('last_activity', LinkedDeviceLogInfo._last_activity_validator),
-    ('platform', LinkedDeviceLogInfo._platform_validator),
-]
+LinkedDeviceLogInfo._mobile_device_session_validator = MobileDeviceSessionLogInfo_validator
+LinkedDeviceLogInfo._desktop_device_session_validator = DesktopDeviceSessionLogInfo_validator
+LinkedDeviceLogInfo._web_device_session_validator = WebDeviceSessionLogInfo_validator
+LinkedDeviceLogInfo._legacy_device_session_validator = LegacyDeviceSessionLogInfo_validator
+LinkedDeviceLogInfo._other_validator = bv.Void()
+LinkedDeviceLogInfo._tagmap = {
+    'mobile_device_session': LinkedDeviceLogInfo._mobile_device_session_validator,
+    'desktop_device_session': LinkedDeviceLogInfo._desktop_device_session_validator,
+    'web_device_session': LinkedDeviceLogInfo._web_device_session_validator,
+    'legacy_device_session': LinkedDeviceLogInfo._legacy_device_session_validator,
+    'other': LinkedDeviceLogInfo._other_validator,
+}
+
+LinkedDeviceLogInfo.other = LinkedDeviceLogInfo('other')
 
 LoginFailDetails._is_emm_managed_validator = bv.Nullable(bv.Boolean())
 LoginFailDetails._login_method_validator = LoginMethod_validator
@@ -56840,12 +61164,14 @@ MissingDetails._source_event_fields_validator = bv.Nullable(bv.String())
 MissingDetails._all_field_names_ = set(['source_event_fields'])
 MissingDetails._all_fields_ = [('source_event_fields', MissingDetails._source_event_fields_validator)]
 
+MobileDeviceSessionLogInfo._session_info_validator = bv.Nullable(MobileSessionLogInfo_validator)
 MobileDeviceSessionLogInfo._device_name_validator = bv.String()
 MobileDeviceSessionLogInfo._client_type_validator = team.MobileClientPlatform_validator
-MobileDeviceSessionLogInfo._client_version_validator = bv.String()
+MobileDeviceSessionLogInfo._client_version_validator = bv.Nullable(bv.String())
 MobileDeviceSessionLogInfo._os_version_validator = bv.Nullable(bv.String())
-MobileDeviceSessionLogInfo._last_carrier_validator = bv.String()
+MobileDeviceSessionLogInfo._last_carrier_validator = bv.Nullable(bv.String())
 MobileDeviceSessionLogInfo._field_names_ = set([
+    'session_info',
     'device_name',
     'client_type',
     'client_version',
@@ -56854,6 +61180,7 @@ MobileDeviceSessionLogInfo._field_names_ = set([
 ])
 MobileDeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._all_field_names_.union(MobileDeviceSessionLogInfo._field_names_)
 MobileDeviceSessionLogInfo._fields_ = [
+    ('session_info', MobileDeviceSessionLogInfo._session_info_validator),
     ('device_name', MobileDeviceSessionLogInfo._device_name_validator),
     ('client_type', MobileDeviceSessionLogInfo._client_type_validator),
     ('client_version', MobileDeviceSessionLogInfo._client_version_validator),
@@ -57117,8 +61444,18 @@ PaperContentPermanentlyDeleteType._all_field_names_ = set(['description'])
 PaperContentPermanentlyDeleteType._all_fields_ = [('description', PaperContentPermanentlyDeleteType._description_validator)]
 
 PaperContentRemoveFromFolderDetails._event_uuid_validator = bv.String()
-PaperContentRemoveFromFolderDetails._all_field_names_ = set(['event_uuid'])
-PaperContentRemoveFromFolderDetails._all_fields_ = [('event_uuid', PaperContentRemoveFromFolderDetails._event_uuid_validator)]
+PaperContentRemoveFromFolderDetails._target_asset_index_validator = bv.UInt64()
+PaperContentRemoveFromFolderDetails._parent_asset_index_validator = bv.UInt64()
+PaperContentRemoveFromFolderDetails._all_field_names_ = set([
+    'event_uuid',
+    'target_asset_index',
+    'parent_asset_index',
+])
+PaperContentRemoveFromFolderDetails._all_fields_ = [
+    ('event_uuid', PaperContentRemoveFromFolderDetails._event_uuid_validator),
+    ('target_asset_index', PaperContentRemoveFromFolderDetails._target_asset_index_validator),
+    ('parent_asset_index', PaperContentRemoveFromFolderDetails._parent_asset_index_validator),
+]
 
 PaperContentRemoveFromFolderType._description_validator = bv.String()
 PaperContentRemoveFromFolderType._all_field_names_ = set(['description'])
@@ -58467,6 +62804,235 @@ ShmodelGroupShareType._description_validator = bv.String()
 ShmodelGroupShareType._all_field_names_ = set(['description'])
 ShmodelGroupShareType._all_fields_ = [('description', ShmodelGroupShareType._description_validator)]
 
+ShowcaseAccessGrantedDetails._event_uuid_validator = bv.String()
+ShowcaseAccessGrantedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseAccessGrantedDetails._all_fields_ = [('event_uuid', ShowcaseAccessGrantedDetails._event_uuid_validator)]
+
+ShowcaseAccessGrantedType._description_validator = bv.String()
+ShowcaseAccessGrantedType._all_field_names_ = set(['description'])
+ShowcaseAccessGrantedType._all_fields_ = [('description', ShowcaseAccessGrantedType._description_validator)]
+
+ShowcaseAddMemberDetails._event_uuid_validator = bv.String()
+ShowcaseAddMemberDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseAddMemberDetails._all_fields_ = [('event_uuid', ShowcaseAddMemberDetails._event_uuid_validator)]
+
+ShowcaseAddMemberType._description_validator = bv.String()
+ShowcaseAddMemberType._all_field_names_ = set(['description'])
+ShowcaseAddMemberType._all_fields_ = [('description', ShowcaseAddMemberType._description_validator)]
+
+ShowcaseArchivedDetails._event_uuid_validator = bv.String()
+ShowcaseArchivedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseArchivedDetails._all_fields_ = [('event_uuid', ShowcaseArchivedDetails._event_uuid_validator)]
+
+ShowcaseArchivedType._description_validator = bv.String()
+ShowcaseArchivedType._all_field_names_ = set(['description'])
+ShowcaseArchivedType._all_fields_ = [('description', ShowcaseArchivedType._description_validator)]
+
+ShowcaseCreatedDetails._event_uuid_validator = bv.String()
+ShowcaseCreatedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseCreatedDetails._all_fields_ = [('event_uuid', ShowcaseCreatedDetails._event_uuid_validator)]
+
+ShowcaseCreatedType._description_validator = bv.String()
+ShowcaseCreatedType._all_field_names_ = set(['description'])
+ShowcaseCreatedType._all_fields_ = [('description', ShowcaseCreatedType._description_validator)]
+
+ShowcaseDeleteCommentDetails._event_uuid_validator = bv.String()
+ShowcaseDeleteCommentDetails._comment_text_validator = bv.Nullable(bv.String())
+ShowcaseDeleteCommentDetails._all_field_names_ = set([
+    'event_uuid',
+    'comment_text',
+])
+ShowcaseDeleteCommentDetails._all_fields_ = [
+    ('event_uuid', ShowcaseDeleteCommentDetails._event_uuid_validator),
+    ('comment_text', ShowcaseDeleteCommentDetails._comment_text_validator),
+]
+
+ShowcaseDeleteCommentType._description_validator = bv.String()
+ShowcaseDeleteCommentType._all_field_names_ = set(['description'])
+ShowcaseDeleteCommentType._all_fields_ = [('description', ShowcaseDeleteCommentType._description_validator)]
+
+ShowcaseDocumentLogInfo._showcase_id_validator = bv.String()
+ShowcaseDocumentLogInfo._showcase_title_validator = bv.String()
+ShowcaseDocumentLogInfo._all_field_names_ = set([
+    'showcase_id',
+    'showcase_title',
+])
+ShowcaseDocumentLogInfo._all_fields_ = [
+    ('showcase_id', ShowcaseDocumentLogInfo._showcase_id_validator),
+    ('showcase_title', ShowcaseDocumentLogInfo._showcase_title_validator),
+]
+
+ShowcaseEditCommentDetails._event_uuid_validator = bv.String()
+ShowcaseEditCommentDetails._comment_text_validator = bv.Nullable(bv.String())
+ShowcaseEditCommentDetails._all_field_names_ = set([
+    'event_uuid',
+    'comment_text',
+])
+ShowcaseEditCommentDetails._all_fields_ = [
+    ('event_uuid', ShowcaseEditCommentDetails._event_uuid_validator),
+    ('comment_text', ShowcaseEditCommentDetails._comment_text_validator),
+]
+
+ShowcaseEditCommentType._description_validator = bv.String()
+ShowcaseEditCommentType._all_field_names_ = set(['description'])
+ShowcaseEditCommentType._all_fields_ = [('description', ShowcaseEditCommentType._description_validator)]
+
+ShowcaseEditedDetails._event_uuid_validator = bv.String()
+ShowcaseEditedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseEditedDetails._all_fields_ = [('event_uuid', ShowcaseEditedDetails._event_uuid_validator)]
+
+ShowcaseEditedType._description_validator = bv.String()
+ShowcaseEditedType._all_field_names_ = set(['description'])
+ShowcaseEditedType._all_fields_ = [('description', ShowcaseEditedType._description_validator)]
+
+ShowcaseFileAddedDetails._event_uuid_validator = bv.String()
+ShowcaseFileAddedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseFileAddedDetails._all_fields_ = [('event_uuid', ShowcaseFileAddedDetails._event_uuid_validator)]
+
+ShowcaseFileAddedType._description_validator = bv.String()
+ShowcaseFileAddedType._all_field_names_ = set(['description'])
+ShowcaseFileAddedType._all_fields_ = [('description', ShowcaseFileAddedType._description_validator)]
+
+ShowcaseFileDownloadDetails._event_uuid_validator = bv.String()
+ShowcaseFileDownloadDetails._download_type_validator = bv.String()
+ShowcaseFileDownloadDetails._all_field_names_ = set([
+    'event_uuid',
+    'download_type',
+])
+ShowcaseFileDownloadDetails._all_fields_ = [
+    ('event_uuid', ShowcaseFileDownloadDetails._event_uuid_validator),
+    ('download_type', ShowcaseFileDownloadDetails._download_type_validator),
+]
+
+ShowcaseFileDownloadType._description_validator = bv.String()
+ShowcaseFileDownloadType._all_field_names_ = set(['description'])
+ShowcaseFileDownloadType._all_fields_ = [('description', ShowcaseFileDownloadType._description_validator)]
+
+ShowcaseFileRemovedDetails._event_uuid_validator = bv.String()
+ShowcaseFileRemovedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseFileRemovedDetails._all_fields_ = [('event_uuid', ShowcaseFileRemovedDetails._event_uuid_validator)]
+
+ShowcaseFileRemovedType._description_validator = bv.String()
+ShowcaseFileRemovedType._all_field_names_ = set(['description'])
+ShowcaseFileRemovedType._all_fields_ = [('description', ShowcaseFileRemovedType._description_validator)]
+
+ShowcaseFileViewDetails._event_uuid_validator = bv.String()
+ShowcaseFileViewDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseFileViewDetails._all_fields_ = [('event_uuid', ShowcaseFileViewDetails._event_uuid_validator)]
+
+ShowcaseFileViewType._description_validator = bv.String()
+ShowcaseFileViewType._all_field_names_ = set(['description'])
+ShowcaseFileViewType._all_fields_ = [('description', ShowcaseFileViewType._description_validator)]
+
+ShowcasePermanentlyDeletedDetails._event_uuid_validator = bv.String()
+ShowcasePermanentlyDeletedDetails._all_field_names_ = set(['event_uuid'])
+ShowcasePermanentlyDeletedDetails._all_fields_ = [('event_uuid', ShowcasePermanentlyDeletedDetails._event_uuid_validator)]
+
+ShowcasePermanentlyDeletedType._description_validator = bv.String()
+ShowcasePermanentlyDeletedType._all_field_names_ = set(['description'])
+ShowcasePermanentlyDeletedType._all_fields_ = [('description', ShowcasePermanentlyDeletedType._description_validator)]
+
+ShowcasePostCommentDetails._event_uuid_validator = bv.String()
+ShowcasePostCommentDetails._comment_text_validator = bv.Nullable(bv.String())
+ShowcasePostCommentDetails._all_field_names_ = set([
+    'event_uuid',
+    'comment_text',
+])
+ShowcasePostCommentDetails._all_fields_ = [
+    ('event_uuid', ShowcasePostCommentDetails._event_uuid_validator),
+    ('comment_text', ShowcasePostCommentDetails._comment_text_validator),
+]
+
+ShowcasePostCommentType._description_validator = bv.String()
+ShowcasePostCommentType._all_field_names_ = set(['description'])
+ShowcasePostCommentType._all_fields_ = [('description', ShowcasePostCommentType._description_validator)]
+
+ShowcaseRemoveMemberDetails._event_uuid_validator = bv.String()
+ShowcaseRemoveMemberDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseRemoveMemberDetails._all_fields_ = [('event_uuid', ShowcaseRemoveMemberDetails._event_uuid_validator)]
+
+ShowcaseRemoveMemberType._description_validator = bv.String()
+ShowcaseRemoveMemberType._all_field_names_ = set(['description'])
+ShowcaseRemoveMemberType._all_fields_ = [('description', ShowcaseRemoveMemberType._description_validator)]
+
+ShowcaseRenamedDetails._event_uuid_validator = bv.String()
+ShowcaseRenamedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseRenamedDetails._all_fields_ = [('event_uuid', ShowcaseRenamedDetails._event_uuid_validator)]
+
+ShowcaseRenamedType._description_validator = bv.String()
+ShowcaseRenamedType._all_field_names_ = set(['description'])
+ShowcaseRenamedType._all_fields_ = [('description', ShowcaseRenamedType._description_validator)]
+
+ShowcaseRequestAccessDetails._event_uuid_validator = bv.String()
+ShowcaseRequestAccessDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseRequestAccessDetails._all_fields_ = [('event_uuid', ShowcaseRequestAccessDetails._event_uuid_validator)]
+
+ShowcaseRequestAccessType._description_validator = bv.String()
+ShowcaseRequestAccessType._all_field_names_ = set(['description'])
+ShowcaseRequestAccessType._all_fields_ = [('description', ShowcaseRequestAccessType._description_validator)]
+
+ShowcaseResolveCommentDetails._event_uuid_validator = bv.String()
+ShowcaseResolveCommentDetails._comment_text_validator = bv.Nullable(bv.String())
+ShowcaseResolveCommentDetails._all_field_names_ = set([
+    'event_uuid',
+    'comment_text',
+])
+ShowcaseResolveCommentDetails._all_fields_ = [
+    ('event_uuid', ShowcaseResolveCommentDetails._event_uuid_validator),
+    ('comment_text', ShowcaseResolveCommentDetails._comment_text_validator),
+]
+
+ShowcaseResolveCommentType._description_validator = bv.String()
+ShowcaseResolveCommentType._all_field_names_ = set(['description'])
+ShowcaseResolveCommentType._all_fields_ = [('description', ShowcaseResolveCommentType._description_validator)]
+
+ShowcaseRestoredDetails._event_uuid_validator = bv.String()
+ShowcaseRestoredDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseRestoredDetails._all_fields_ = [('event_uuid', ShowcaseRestoredDetails._event_uuid_validator)]
+
+ShowcaseRestoredType._description_validator = bv.String()
+ShowcaseRestoredType._all_field_names_ = set(['description'])
+ShowcaseRestoredType._all_fields_ = [('description', ShowcaseRestoredType._description_validator)]
+
+ShowcaseTrashedDetails._event_uuid_validator = bv.String()
+ShowcaseTrashedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseTrashedDetails._all_fields_ = [('event_uuid', ShowcaseTrashedDetails._event_uuid_validator)]
+
+ShowcaseTrashedType._description_validator = bv.String()
+ShowcaseTrashedType._all_field_names_ = set(['description'])
+ShowcaseTrashedType._all_fields_ = [('description', ShowcaseTrashedType._description_validator)]
+
+ShowcaseUnresolveCommentDetails._event_uuid_validator = bv.String()
+ShowcaseUnresolveCommentDetails._comment_text_validator = bv.Nullable(bv.String())
+ShowcaseUnresolveCommentDetails._all_field_names_ = set([
+    'event_uuid',
+    'comment_text',
+])
+ShowcaseUnresolveCommentDetails._all_fields_ = [
+    ('event_uuid', ShowcaseUnresolveCommentDetails._event_uuid_validator),
+    ('comment_text', ShowcaseUnresolveCommentDetails._comment_text_validator),
+]
+
+ShowcaseUnresolveCommentType._description_validator = bv.String()
+ShowcaseUnresolveCommentType._all_field_names_ = set(['description'])
+ShowcaseUnresolveCommentType._all_fields_ = [('description', ShowcaseUnresolveCommentType._description_validator)]
+
+ShowcaseUntrashedDetails._event_uuid_validator = bv.String()
+ShowcaseUntrashedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseUntrashedDetails._all_fields_ = [('event_uuid', ShowcaseUntrashedDetails._event_uuid_validator)]
+
+ShowcaseUntrashedType._description_validator = bv.String()
+ShowcaseUntrashedType._all_field_names_ = set(['description'])
+ShowcaseUntrashedType._all_fields_ = [('description', ShowcaseUntrashedType._description_validator)]
+
+ShowcaseViewDetails._event_uuid_validator = bv.String()
+ShowcaseViewDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseViewDetails._all_fields_ = [('event_uuid', ShowcaseViewDetails._event_uuid_validator)]
+
+ShowcaseViewType._description_validator = bv.String()
+ShowcaseViewType._all_field_names_ = set(['description'])
+ShowcaseViewType._all_fields_ = [('description', ShowcaseViewType._description_validator)]
+
 SignInAsSessionEndDetails._all_field_names_ = set([])
 SignInAsSessionEndDetails._all_fields_ = []
 
@@ -58919,6 +63485,21 @@ TeamProfileRemoveLogoType._description_validator = bv.String()
 TeamProfileRemoveLogoType._all_field_names_ = set(['description'])
 TeamProfileRemoveLogoType._all_fields_ = [('description', TeamProfileRemoveLogoType._description_validator)]
 
+TeamSelectiveSyncSettingsChangedDetails._previous_value_validator = files.SyncSetting_validator
+TeamSelectiveSyncSettingsChangedDetails._new_value_validator = files.SyncSetting_validator
+TeamSelectiveSyncSettingsChangedDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+TeamSelectiveSyncSettingsChangedDetails._all_fields_ = [
+    ('previous_value', TeamSelectiveSyncSettingsChangedDetails._previous_value_validator),
+    ('new_value', TeamSelectiveSyncSettingsChangedDetails._new_value_validator),
+]
+
+TeamSelectiveSyncSettingsChangedType._description_validator = bv.String()
+TeamSelectiveSyncSettingsChangedType._all_field_names_ = set(['description'])
+TeamSelectiveSyncSettingsChangedType._all_fields_ = [('description', TeamSelectiveSyncSettingsChangedType._description_validator)]
+
 TfaAddBackupPhoneDetails._all_field_names_ = set([])
 TfaAddBackupPhoneDetails._all_fields_ = []
 
@@ -59096,16 +63677,19 @@ UserOrTeamLinkedAppLogInfo._all_field_names_ = AppLogInfo._all_field_names_.unio
 UserOrTeamLinkedAppLogInfo._fields_ = []
 UserOrTeamLinkedAppLogInfo._all_fields_ = AppLogInfo._all_fields_ + UserOrTeamLinkedAppLogInfo._fields_
 
+WebDeviceSessionLogInfo._session_info_validator = bv.Nullable(WebSessionLogInfo_validator)
 WebDeviceSessionLogInfo._user_agent_validator = bv.String()
 WebDeviceSessionLogInfo._os_validator = bv.String()
 WebDeviceSessionLogInfo._browser_validator = bv.String()
 WebDeviceSessionLogInfo._field_names_ = set([
+    'session_info',
     'user_agent',
     'os',
     'browser',
 ])
 WebDeviceSessionLogInfo._all_field_names_ = DeviceSessionLogInfo._all_field_names_.union(WebDeviceSessionLogInfo._field_names_)
 WebDeviceSessionLogInfo._fields_ = [
+    ('session_info', WebDeviceSessionLogInfo._session_info_validator),
     ('user_agent', WebDeviceSessionLogInfo._user_agent_validator),
     ('os', WebDeviceSessionLogInfo._os_validator),
     ('browser', WebDeviceSessionLogInfo._browser_validator),

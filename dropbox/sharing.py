@@ -21,6 +21,7 @@ try:
         async,
         common,
         files,
+        seen_state,
         team_common,
         users,
         users_common,
@@ -29,9 +30,61 @@ except (ImportError, SystemError, ValueError):
     import async
     import common
     import files
+    import seen_state
     import team_common
     import users
     import users_common
+
+class AccessInheritance(bb.Union):
+    """
+    Information about the inheritance policy of a shared folder.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar inherit: The shared folder inherits its members from the parent
+        folder.
+    :ivar no_inherit: The shared folder does not inherit its members from the
+        parent folder.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    inherit = None
+    # Attribute is overwritten below the class definition
+    no_inherit = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_inherit(self):
+        """
+        Check if the union tag is ``inherit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'inherit'
+
+    def is_no_inherit(self):
+        """
+        Check if the union tag is ``no_inherit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_inherit'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'AccessInheritance(%r, %r)' % (self._tag, self._value)
+
+AccessInheritance_validator = bv.Union(AccessInheritance)
 
 class AccessLevel(bb.Union):
     """
@@ -3575,6 +3628,8 @@ class FolderAction(bb.Union):
         from the folder.
     :ivar share_link: Use create_link instead.
     :ivar create_link: Create a shared link for folder.
+    :ivar set_access_inheritance: Set whether the folder inherits permissions
+        from its parent.
     """
 
     _catch_all = 'other'
@@ -3604,6 +3659,8 @@ class FolderAction(bb.Union):
     share_link = None
     # Attribute is overwritten below the class definition
     create_link = None
+    # Attribute is overwritten below the class definition
+    set_access_inheritance = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -3710,6 +3767,14 @@ class FolderAction(bb.Union):
         :rtype: bool
         """
         return self._tag == 'create_link'
+
+    def is_set_access_inheritance(self):
+        """
+        Check if the union tag is ``set_access_inheritance``.
+
+        :rtype: bool
+        """
+        return self._tag == 'set_access_inheritance'
 
     def is_other(self):
         """
@@ -5157,7 +5222,7 @@ class MembershipInfo(object):
     :ivar access_type: The access type for this member.
     :ivar permissions: The permissions that requesting user has on this member.
         The set of permissions corresponds to the MemberActions in the request.
-    :ivar initials: Suggested name initials for a member.
+    :ivar initials: Never set.
     :ivar is_inherited: True if the member has access from a parent folder.
     """
 
@@ -5249,7 +5314,7 @@ class MembershipInfo(object):
     @property
     def initials(self):
         """
-        Suggested name initials for a member.
+        Never set.
 
         :rtype: str
         """
@@ -10934,6 +10999,156 @@ class RevokeSharedLinkError(SharedLinkError):
 
 RevokeSharedLinkError_validator = bv.Union(RevokeSharedLinkError)
 
+class SetAccessInheritanceArg(object):
+    """
+    :ivar access_inheritance: The access inheritance settings for the folder.
+    :ivar shared_folder_id: The ID for the shared folder.
+    """
+
+    __slots__ = [
+        '_access_inheritance_value',
+        '_access_inheritance_present',
+        '_shared_folder_id_value',
+        '_shared_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_folder_id=None,
+                 access_inheritance=None):
+        self._access_inheritance_value = None
+        self._access_inheritance_present = False
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+        if access_inheritance is not None:
+            self.access_inheritance = access_inheritance
+        if shared_folder_id is not None:
+            self.shared_folder_id = shared_folder_id
+
+    @property
+    def access_inheritance(self):
+        """
+        The access inheritance settings for the folder.
+
+        :rtype: AccessInheritance
+        """
+        if self._access_inheritance_present:
+            return self._access_inheritance_value
+        else:
+            return AccessInheritance.inherit
+
+    @access_inheritance.setter
+    def access_inheritance(self, val):
+        self._access_inheritance_validator.validate_type_only(val)
+        self._access_inheritance_value = val
+        self._access_inheritance_present = True
+
+    @access_inheritance.deleter
+    def access_inheritance(self):
+        self._access_inheritance_value = None
+        self._access_inheritance_present = False
+
+    @property
+    def shared_folder_id(self):
+        """
+        The ID for the shared folder.
+
+        :rtype: str
+        """
+        if self._shared_folder_id_present:
+            return self._shared_folder_id_value
+        else:
+            raise AttributeError("missing required field 'shared_folder_id'")
+
+    @shared_folder_id.setter
+    def shared_folder_id(self, val):
+        val = self._shared_folder_id_validator.validate(val)
+        self._shared_folder_id_value = val
+        self._shared_folder_id_present = True
+
+    @shared_folder_id.deleter
+    def shared_folder_id(self):
+        self._shared_folder_id_value = None
+        self._shared_folder_id_present = False
+
+    def __repr__(self):
+        return 'SetAccessInheritanceArg(shared_folder_id={!r}, access_inheritance={!r})'.format(
+            self._shared_folder_id_value,
+            self._access_inheritance_value,
+        )
+
+SetAccessInheritanceArg_validator = bv.Struct(SetAccessInheritanceArg)
+
+class SetAccessInheritanceError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar SharedFolderAccessError access_error: Unable to access shared folder.
+    :ivar no_permission: The current user does not have permission to perform
+        this action.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    no_permission = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def access_error(cls, val):
+        """
+        Create an instance of this class set to the ``access_error`` tag with
+        value ``val``.
+
+        :param SharedFolderAccessError val:
+        :rtype: SetAccessInheritanceError
+        """
+        return cls('access_error', val)
+
+    def is_access_error(self):
+        """
+        Check if the union tag is ``access_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_error'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_access_error(self):
+        """
+        Unable to access shared folder.
+
+        Only call this if :meth:`is_access_error` is true.
+
+        :rtype: SharedFolderAccessError
+        """
+        if not self.is_access_error():
+            raise AttributeError("tag 'access_error' not set")
+        return self._value
+
+    def __repr__(self):
+        return 'SetAccessInheritanceError(%r, %r)' % (self._tag, self._value)
+
+SetAccessInheritanceError_validator = bv.Union(SetAccessInheritanceError)
+
 class ShareFolderArgBase(object):
     """
     :ivar acl_update_policy: Who can add and remove members of this shared
@@ -12523,7 +12738,7 @@ class SharedFolderAccessError(bb.Union):
     :ivar invalid_id: This shared folder ID is invalid.
     :ivar not_a_member: The user is not a member of the shared folder thus
         cannot access it.
-    :ivar email_unverified: The current user's e-mail address is unverified.
+    :ivar email_unverified: Never set.
     :ivar unmounted: The shared folder is unmounted.
     """
 
@@ -13106,6 +13321,8 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
     :ivar shared_folder_id: The ID of the shared folder.
     :ivar time_invited: Timestamp indicating when the current user was invited
         to this shared folder.
+    :ivar access_inheritance: Whether the folder inherits its members from its
+        parent.
     """
 
     __slots__ = [
@@ -13123,6 +13340,8 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
         '_shared_folder_id_present',
         '_time_invited_value',
         '_time_invited_present',
+        '_access_inheritance_value',
+        '_access_inheritance_present',
     ]
 
     _has_required_fields = True
@@ -13141,7 +13360,8 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
                  parent_shared_folder_id=None,
                  path_lower=None,
                  link_metadata=None,
-                 permissions=None):
+                 permissions=None,
+                 access_inheritance=None):
         super(SharedFolderMetadata, self).__init__(access_type,
                                                    is_inside_team_folder,
                                                    is_team_folder,
@@ -13163,6 +13383,8 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
         self._shared_folder_id_present = False
         self._time_invited_value = None
         self._time_invited_present = False
+        self._access_inheritance_value = None
+        self._access_inheritance_present = False
         if link_metadata is not None:
             self.link_metadata = link_metadata
         if name is not None:
@@ -13177,6 +13399,8 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
             self.shared_folder_id = shared_folder_id
         if time_invited is not None:
             self.time_invited = time_invited
+        if access_inheritance is not None:
+            self.access_inheritance = access_inheritance
 
     @property
     def link_metadata(self):
@@ -13349,8 +13573,31 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
         self._time_invited_value = None
         self._time_invited_present = False
 
+    @property
+    def access_inheritance(self):
+        """
+        Whether the folder inherits its members from its parent.
+
+        :rtype: AccessInheritance
+        """
+        if self._access_inheritance_present:
+            return self._access_inheritance_value
+        else:
+            return AccessInheritance.inherit
+
+    @access_inheritance.setter
+    def access_inheritance(self, val):
+        self._access_inheritance_validator.validate_type_only(val)
+        self._access_inheritance_value = val
+        self._access_inheritance_present = True
+
+    @access_inheritance.deleter
+    def access_inheritance(self):
+        self._access_inheritance_value = None
+        self._access_inheritance_present = False
+
     def __repr__(self):
-        return 'SharedFolderMetadata(access_type={!r}, is_inside_team_folder={!r}, is_team_folder={!r}, name={!r}, policy={!r}, preview_url={!r}, shared_folder_id={!r}, time_invited={!r}, owner_display_names={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r}, link_metadata={!r}, permissions={!r})'.format(
+        return 'SharedFolderMetadata(access_type={!r}, is_inside_team_folder={!r}, is_team_folder={!r}, name={!r}, policy={!r}, preview_url={!r}, shared_folder_id={!r}, time_invited={!r}, owner_display_names={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r}, link_metadata={!r}, permissions={!r}, access_inheritance={!r})'.format(
             self._access_type_value,
             self._is_inside_team_folder_value,
             self._is_team_folder_value,
@@ -13365,6 +13612,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
             self._path_lower_value,
             self._link_metadata_value,
             self._permissions_value,
+            self._access_inheritance_value,
         )
 
 SharedFolderMetadata_validator = bv.Struct(SharedFolderMetadata)
@@ -15312,11 +15560,15 @@ class UserFileMembershipInfo(UserMembershipInfo):
 
     :ivar time_last_seen: The UTC timestamp of when the user has last seen the
         content, if they have.
+    :ivar platform_type: The platform on which the user has last seen the
+        content, or unknown.
     """
 
     __slots__ = [
         '_time_last_seen_value',
         '_time_last_seen_present',
+        '_platform_type_value',
+        '_platform_type_present',
     ]
 
     _has_required_fields = True
@@ -15327,7 +15579,8 @@ class UserFileMembershipInfo(UserMembershipInfo):
                  permissions=None,
                  initials=None,
                  is_inherited=None,
-                 time_last_seen=None):
+                 time_last_seen=None,
+                 platform_type=None):
         super(UserFileMembershipInfo, self).__init__(access_type,
                                                      user,
                                                      permissions,
@@ -15335,8 +15588,12 @@ class UserFileMembershipInfo(UserMembershipInfo):
                                                      is_inherited)
         self._time_last_seen_value = None
         self._time_last_seen_present = False
+        self._platform_type_value = None
+        self._platform_type_present = False
         if time_last_seen is not None:
             self.time_last_seen = time_last_seen
+        if platform_type is not None:
+            self.platform_type = platform_type
 
     @property
     def time_last_seen(self):
@@ -15365,14 +15622,41 @@ class UserFileMembershipInfo(UserMembershipInfo):
         self._time_last_seen_value = None
         self._time_last_seen_present = False
 
+    @property
+    def platform_type(self):
+        """
+        The platform on which the user has last seen the content, or unknown.
+
+        :rtype: seen_state.PlatformType_validator
+        """
+        if self._platform_type_present:
+            return self._platform_type_value
+        else:
+            return None
+
+    @platform_type.setter
+    def platform_type(self, val):
+        if val is None:
+            del self.platform_type
+            return
+        self._platform_type_validator.validate_type_only(val)
+        self._platform_type_value = val
+        self._platform_type_present = True
+
+    @platform_type.deleter
+    def platform_type(self):
+        self._platform_type_value = None
+        self._platform_type_present = False
+
     def __repr__(self):
-        return 'UserFileMembershipInfo(access_type={!r}, user={!r}, permissions={!r}, initials={!r}, is_inherited={!r}, time_last_seen={!r})'.format(
+        return 'UserFileMembershipInfo(access_type={!r}, user={!r}, permissions={!r}, initials={!r}, is_inherited={!r}, time_last_seen={!r}, platform_type={!r})'.format(
             self._access_type_value,
             self._user_value,
             self._permissions_value,
             self._initials_value,
             self._is_inherited_value,
             self._time_last_seen_value,
+            self._platform_type_value,
         )
 
 UserFileMembershipInfo_validator = bv.Struct(UserFileMembershipInfo)
@@ -15385,6 +15669,8 @@ class UserInfo(object):
     detailed information.
 
     :ivar account_id: The account ID of the user.
+    :ivar email: Email address of user.
+    :ivar display_name: The display name of the user.
     :ivar same_team: If the user is in the same team as current user.
     :ivar team_member_id: The team member ID of the shared folder member. Only
         present if ``same_team`` is true.
@@ -15393,6 +15679,10 @@ class UserInfo(object):
     __slots__ = [
         '_account_id_value',
         '_account_id_present',
+        '_email_value',
+        '_email_present',
+        '_display_name_value',
+        '_display_name_present',
         '_same_team_value',
         '_same_team_present',
         '_team_member_id_value',
@@ -15403,16 +15693,26 @@ class UserInfo(object):
 
     def __init__(self,
                  account_id=None,
+                 email=None,
+                 display_name=None,
                  same_team=None,
                  team_member_id=None):
         self._account_id_value = None
         self._account_id_present = False
+        self._email_value = None
+        self._email_present = False
+        self._display_name_value = None
+        self._display_name_present = False
         self._same_team_value = None
         self._same_team_present = False
         self._team_member_id_value = None
         self._team_member_id_present = False
         if account_id is not None:
             self.account_id = account_id
+        if email is not None:
+            self.email = email
+        if display_name is not None:
+            self.display_name = display_name
         if same_team is not None:
             self.same_team = same_team
         if team_member_id is not None:
@@ -15440,6 +15740,52 @@ class UserInfo(object):
     def account_id(self):
         self._account_id_value = None
         self._account_id_present = False
+
+    @property
+    def email(self):
+        """
+        Email address of user.
+
+        :rtype: str
+        """
+        if self._email_present:
+            return self._email_value
+        else:
+            raise AttributeError("missing required field 'email'")
+
+    @email.setter
+    def email(self, val):
+        val = self._email_validator.validate(val)
+        self._email_value = val
+        self._email_present = True
+
+    @email.deleter
+    def email(self):
+        self._email_value = None
+        self._email_present = False
+
+    @property
+    def display_name(self):
+        """
+        The display name of the user.
+
+        :rtype: str
+        """
+        if self._display_name_present:
+            return self._display_name_value
+        else:
+            raise AttributeError("missing required field 'display_name'")
+
+    @display_name.setter
+    def display_name(self, val):
+        val = self._display_name_validator.validate(val)
+        self._display_name_value = val
+        self._display_name_present = True
+
+    @display_name.deleter
+    def display_name(self):
+        self._display_name_value = None
+        self._display_name_present = False
 
     @property
     def same_team(self):
@@ -15492,8 +15838,10 @@ class UserInfo(object):
         self._team_member_id_present = False
 
     def __repr__(self):
-        return 'UserInfo(account_id={!r}, same_team={!r}, team_member_id={!r})'.format(
+        return 'UserInfo(account_id={!r}, email={!r}, display_name={!r}, same_team={!r}, team_member_id={!r})'.format(
             self._account_id_value,
+            self._email_value,
+            self._display_name_value,
             self._same_team_value,
             self._team_member_id_value,
         )
@@ -15637,7 +15985,6 @@ class Visibility(bb.Union):
 Visibility_validator = bv.Union(Visibility)
 
 DropboxId_validator = bv.String(min_length=1)
-FileId_validator = bv.String(min_length=1, pattern=u'id:.*')
 GetSharedLinkFileArg_validator = GetSharedLinkMetadataArg_validator
 GetSharedLinkFileArg = GetSharedLinkMetadataArg
 Id_validator = files.Id_validator
@@ -15647,6 +15994,19 @@ ReadPath_validator = files.ReadPath_validator
 Rev_validator = files.Rev_validator
 TeamInfo_validator = users.Team_validator
 TeamInfo = users.Team
+AccessInheritance._inherit_validator = bv.Void()
+AccessInheritance._no_inherit_validator = bv.Void()
+AccessInheritance._other_validator = bv.Void()
+AccessInheritance._tagmap = {
+    'inherit': AccessInheritance._inherit_validator,
+    'no_inherit': AccessInheritance._no_inherit_validator,
+    'other': AccessInheritance._other_validator,
+}
+
+AccessInheritance.inherit = AccessInheritance('inherit')
+AccessInheritance.no_inherit = AccessInheritance('no_inherit')
+AccessInheritance.other = AccessInheritance('other')
+
 AccessLevel._owner_validator = bv.Void()
 AccessLevel._editor_validator = bv.Void()
 AccessLevel._viewer_validator = bv.Void()
@@ -16139,6 +16499,7 @@ FolderAction._unshare_validator = bv.Void()
 FolderAction._leave_a_copy_validator = bv.Void()
 FolderAction._share_link_validator = bv.Void()
 FolderAction._create_link_validator = bv.Void()
+FolderAction._set_access_inheritance_validator = bv.Void()
 FolderAction._other_validator = bv.Void()
 FolderAction._tagmap = {
     'change_options': FolderAction._change_options_validator,
@@ -16154,6 +16515,7 @@ FolderAction._tagmap = {
     'leave_a_copy': FolderAction._leave_a_copy_validator,
     'share_link': FolderAction._share_link_validator,
     'create_link': FolderAction._create_link_validator,
+    'set_access_inheritance': FolderAction._set_access_inheritance_validator,
     'other': FolderAction._other_validator,
 }
 
@@ -16170,6 +16532,7 @@ FolderAction.unshare = FolderAction('unshare')
 FolderAction.leave_a_copy = FolderAction('leave_a_copy')
 FolderAction.share_link = FolderAction('share_link')
 FolderAction.create_link = FolderAction('create_link')
+FolderAction.set_access_inheritance = FolderAction('set_access_inheritance')
 FolderAction.other = FolderAction('other')
 
 FolderLinkMetadata._field_names_ = set([])
@@ -17166,6 +17529,29 @@ RevokeSharedLinkError._tagmap.update(SharedLinkError._tagmap)
 
 RevokeSharedLinkError.shared_link_malformed = RevokeSharedLinkError('shared_link_malformed')
 
+SetAccessInheritanceArg._access_inheritance_validator = AccessInheritance_validator
+SetAccessInheritanceArg._shared_folder_id_validator = common.SharedFolderId_validator
+SetAccessInheritanceArg._all_field_names_ = set([
+    'access_inheritance',
+    'shared_folder_id',
+])
+SetAccessInheritanceArg._all_fields_ = [
+    ('access_inheritance', SetAccessInheritanceArg._access_inheritance_validator),
+    ('shared_folder_id', SetAccessInheritanceArg._shared_folder_id_validator),
+]
+
+SetAccessInheritanceError._access_error_validator = SharedFolderAccessError_validator
+SetAccessInheritanceError._no_permission_validator = bv.Void()
+SetAccessInheritanceError._other_validator = bv.Void()
+SetAccessInheritanceError._tagmap = {
+    'access_error': SetAccessInheritanceError._access_error_validator,
+    'no_permission': SetAccessInheritanceError._no_permission_validator,
+    'other': SetAccessInheritanceError._other_validator,
+}
+
+SetAccessInheritanceError.no_permission = SetAccessInheritanceError('no_permission')
+SetAccessInheritanceError.other = SetAccessInheritanceError('other')
+
 ShareFolderArgBase._acl_update_policy_validator = bv.Nullable(AclUpdatePolicy_validator)
 ShareFolderArgBase._force_async_validator = bv.Boolean()
 ShareFolderArgBase._member_policy_validator = bv.Nullable(MemberPolicy_validator)
@@ -17314,7 +17700,7 @@ SharedFileMembers._all_fields_ = [
 ]
 
 SharedFileMetadata._access_type_validator = bv.Nullable(AccessLevel_validator)
-SharedFileMetadata._id_validator = FileId_validator
+SharedFileMetadata._id_validator = files.FileId_validator
 SharedFileMetadata._expected_link_metadata_validator = bv.Nullable(ExpectedSharedContentLinkMetadata_validator)
 SharedFileMetadata._link_metadata_validator = bv.Nullable(SharedContentLinkMetadata_validator)
 SharedFileMetadata._name_validator = bv.String()
@@ -17444,6 +17830,7 @@ SharedFolderMetadata._policy_validator = FolderPolicy_validator
 SharedFolderMetadata._preview_url_validator = bv.String()
 SharedFolderMetadata._shared_folder_id_validator = common.SharedFolderId_validator
 SharedFolderMetadata._time_invited_validator = common.DropboxTimestamp_validator
+SharedFolderMetadata._access_inheritance_validator = AccessInheritance_validator
 SharedFolderMetadata._all_field_names_ = SharedFolderMetadataBase._all_field_names_.union(set([
     'link_metadata',
     'name',
@@ -17452,6 +17839,7 @@ SharedFolderMetadata._all_field_names_ = SharedFolderMetadataBase._all_field_nam
     'preview_url',
     'shared_folder_id',
     'time_invited',
+    'access_inheritance',
 ]))
 SharedFolderMetadata._all_fields_ = SharedFolderMetadataBase._all_fields_ + [
     ('link_metadata', SharedFolderMetadata._link_metadata_validator),
@@ -17461,6 +17849,7 @@ SharedFolderMetadata._all_fields_ = SharedFolderMetadataBase._all_fields_ + [
     ('preview_url', SharedFolderMetadata._preview_url_validator),
     ('shared_folder_id', SharedFolderMetadata._shared_folder_id_validator),
     ('time_invited', SharedFolderMetadata._time_invited_validator),
+    ('access_inheritance', SharedFolderMetadata._access_inheritance_validator),
 ]
 
 SharedLinkAccessFailureReason._login_required_validator = bv.Void()
@@ -17763,19 +18152,32 @@ UserMembershipInfo._all_field_names_ = MembershipInfo._all_field_names_.union(se
 UserMembershipInfo._all_fields_ = MembershipInfo._all_fields_ + [('user', UserMembershipInfo._user_validator)]
 
 UserFileMembershipInfo._time_last_seen_validator = bv.Nullable(common.DropboxTimestamp_validator)
-UserFileMembershipInfo._all_field_names_ = UserMembershipInfo._all_field_names_.union(set(['time_last_seen']))
-UserFileMembershipInfo._all_fields_ = UserMembershipInfo._all_fields_ + [('time_last_seen', UserFileMembershipInfo._time_last_seen_validator)]
+UserFileMembershipInfo._platform_type_validator = bv.Nullable(seen_state.PlatformType_validator)
+UserFileMembershipInfo._all_field_names_ = UserMembershipInfo._all_field_names_.union(set([
+    'time_last_seen',
+    'platform_type',
+]))
+UserFileMembershipInfo._all_fields_ = UserMembershipInfo._all_fields_ + [
+    ('time_last_seen', UserFileMembershipInfo._time_last_seen_validator),
+    ('platform_type', UserFileMembershipInfo._platform_type_validator),
+]
 
 UserInfo._account_id_validator = users_common.AccountId_validator
+UserInfo._email_validator = bv.String()
+UserInfo._display_name_validator = bv.String()
 UserInfo._same_team_validator = bv.Boolean()
 UserInfo._team_member_id_validator = bv.Nullable(bv.String())
 UserInfo._all_field_names_ = set([
     'account_id',
+    'email',
+    'display_name',
     'same_team',
     'team_member_id',
 ])
 UserInfo._all_fields_ = [
     ('account_id', UserInfo._account_id_validator),
+    ('email', UserInfo._email_validator),
+    ('display_name', UserInfo._display_name_validator),
     ('same_team', UserInfo._same_team_validator),
     ('team_member_id', UserInfo._team_member_id_validator),
 ]
@@ -18121,6 +18523,15 @@ revoke_shared_link = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+set_access_inheritance = bb.Route(
+    'set_access_inheritance',
+    False,
+    SetAccessInheritanceArg_validator,
+    ShareFolderLaunch_validator,
+    SetAccessInheritanceError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 share_folder = bb.Route(
     'share_folder',
     False,
@@ -18229,6 +18640,7 @@ ROUTES = {
     'remove_file_member_2': remove_file_member_2,
     'remove_folder_member': remove_folder_member,
     'revoke_shared_link': revoke_shared_link,
+    'set_access_inheritance': set_access_inheritance,
     'share_folder': share_folder,
     'transfer_folder': transfer_folder,
     'unmount_folder': unmount_folder,

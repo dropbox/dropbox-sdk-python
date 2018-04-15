@@ -74,7 +74,10 @@ class ValidationError(Exception):
 def generic_type_name(v):
     """Return a descriptive type name that isn't Python specific. For example,
     an int value will return 'integer' rather than 'int'."""
-    if isinstance(v, numbers.Integral):
+    if isinstance(v, bool):
+        # Must come before any numbers checks since booleans are integers too
+        return 'boolean'
+    elif isinstance(v, numbers.Integral):
         # Must come before real numbers check since integrals are reals too
         return 'integer'
     elif isinstance(v, numbers.Real):
