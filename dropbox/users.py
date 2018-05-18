@@ -1782,6 +1782,7 @@ TeamSpaceAllocation._all_fields_ = [
 
 get_account = bb.Route(
     'get_account',
+    1,
     False,
     GetAccountArg_validator,
     BasicAccount_validator,
@@ -1791,6 +1792,7 @@ get_account = bb.Route(
 )
 get_account_batch = bb.Route(
     'get_account_batch',
+    1,
     False,
     GetAccountBatchArg_validator,
     GetAccountBatchResult_validator,
@@ -1800,6 +1802,7 @@ get_account_batch = bb.Route(
 )
 get_current_account = bb.Route(
     'get_current_account',
+    1,
     False,
     bv.Void(),
     FullAccount_validator,
@@ -1809,6 +1812,7 @@ get_current_account = bb.Route(
 )
 get_space_usage = bb.Route(
     'get_space_usage',
+    1,
     False,
     bv.Void(),
     SpaceUsage_validator,

@@ -9049,7 +9049,7 @@ class UploadError(bb.Union):
     :ivar UploadWriteFailed path: Unable to save the uploaded contents to a
         file.
     :ivar InvalidPropertyGroupError properties_error: The supplied property
-        group is invalid.
+        group is invalid. The file has uploaded without property groups.
     """
 
     _catch_all = 'other'
@@ -9116,7 +9116,8 @@ class UploadError(bb.Union):
 
     def get_properties_error(self):
         """
-        The supplied property group is invalid.
+        The supplied property group is invalid. The file has uploaded without
+        property groups.
 
         Only call this if :meth:`is_properties_error` is true.
 
@@ -9681,7 +9682,11 @@ class UploadSessionFinishError(bb.Union):
 
     :ivar UploadSessionLookupError lookup_failed: The session arguments are
         incorrect; the value explains the reason.
-    :ivar WriteError path: Unable to save the uploaded contents to a file.
+    :ivar WriteError path: Unable to save the uploaded contents to a file. Data
+        has already been appended to the upload session. Please retry with empty
+        data body and updated offset.
+    :ivar InvalidPropertyGroupError properties_error: The supplied property
+        group is invalid. The file has uploaded without property groups.
     :ivar too_many_shared_folder_targets: The batch request commits files into
         too many different shared folders. Please limit your batch request to
         files contained in a single shared folder.
@@ -9719,6 +9724,17 @@ class UploadSessionFinishError(bb.Union):
         """
         return cls('path', val)
 
+    @classmethod
+    def properties_error(cls, val):
+        """
+        Create an instance of this class set to the ``properties_error`` tag
+        with value ``val``.
+
+        :param file_properties.InvalidPropertyGroupError_validator val:
+        :rtype: UploadSessionFinishError
+        """
+        return cls('properties_error', val)
+
     def is_lookup_failed(self):
         """
         Check if the union tag is ``lookup_failed``.
@@ -9734,6 +9750,14 @@ class UploadSessionFinishError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'path'
+
+    def is_properties_error(self):
+        """
+        Check if the union tag is ``properties_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'properties_error'
 
     def is_too_many_shared_folder_targets(self):
         """
@@ -9773,7 +9797,9 @@ class UploadSessionFinishError(bb.Union):
 
     def get_path(self):
         """
-        Unable to save the uploaded contents to a file.
+        Unable to save the uploaded contents to a file. Data has already been
+        appended to the upload session. Please retry with empty data body and
+        updated offset.
 
         Only call this if :meth:`is_path` is true.
 
@@ -9781,6 +9807,19 @@ class UploadSessionFinishError(bb.Union):
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def get_properties_error(self):
+        """
+        The supplied property group is invalid. The file has uploaded without
+        property groups.
+
+        Only call this if :meth:`is_properties_error` is true.
+
+        :rtype: file_properties.InvalidPropertyGroupError_validator
+        """
+        if not self.is_properties_error():
+            raise AttributeError("tag 'properties_error' not set")
         return self._value
 
     def __repr__(self):
@@ -9804,6 +9843,8 @@ class UploadSessionLookupError(bb.Union):
         has alread been closed (i.e. committed).
     :ivar not_closed: The session must be closed before calling
         upload_session/finish_batch.
+    :ivar too_large: You can not append to the upload session because the size
+        of a file should not reach the max file size limit (i.e. 350GB).
     """
 
     _catch_all = 'other'
@@ -9813,6 +9854,8 @@ class UploadSessionLookupError(bb.Union):
     closed = None
     # Attribute is overwritten below the class definition
     not_closed = None
+    # Attribute is overwritten below the class definition
+    too_large = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -9858,6 +9901,14 @@ class UploadSessionLookupError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'not_closed'
+
+    def is_too_large(self):
+        """
+        Check if the union tag is ``too_large``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_large'
 
     def is_other(self):
         """
@@ -10047,8 +10098,10 @@ UploadSessionStartResult_validator = bv.Struct(UploadSessionStartResult)
 class UploadWriteFailed(object):
     """
     :ivar reason: The reason why the file couldn't be saved.
-    :ivar upload_session_id: The upload session ID; this may be used to retry
-        the commit.
+    :ivar upload_session_id: The upload session ID; data has already been
+        uploaded to the corresponding upload session and this ID may be used to
+        retry the commit with
+        :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish`.
     """
 
     __slots__ = [
@@ -10098,7 +10151,9 @@ class UploadWriteFailed(object):
     @property
     def upload_session_id(self):
         """
-        The upload session ID; this may be used to retry the commit.
+        The upload session ID; data has already been uploaded to the
+        corresponding upload session and this ID may be used to retry the commit
+        with :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish`.
 
         :rtype: str
         """
@@ -11308,7 +11363,7 @@ RelocationArg._all_fields_ = RelocationPath._all_fields_ + [
     ('allow_ownership_transfer', RelocationArg._allow_ownership_transfer_validator),
 ]
 
-RelocationBatchArg._entries_validator = bv.List(RelocationPath_validator)
+RelocationBatchArg._entries_validator = bv.List(RelocationPath_validator, min_items=1)
 RelocationBatchArg._allow_shared_folder_validator = bv.Boolean()
 RelocationBatchArg._autorename_validator = bv.Boolean()
 RelocationBatchArg._allow_ownership_transfer_validator = bv.Boolean()
@@ -11807,12 +11862,14 @@ UploadSessionFinishBatchResultEntry._tagmap = {
 
 UploadSessionFinishError._lookup_failed_validator = UploadSessionLookupError_validator
 UploadSessionFinishError._path_validator = WriteError_validator
+UploadSessionFinishError._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
 UploadSessionFinishError._too_many_shared_folder_targets_validator = bv.Void()
 UploadSessionFinishError._too_many_write_operations_validator = bv.Void()
 UploadSessionFinishError._other_validator = bv.Void()
 UploadSessionFinishError._tagmap = {
     'lookup_failed': UploadSessionFinishError._lookup_failed_validator,
     'path': UploadSessionFinishError._path_validator,
+    'properties_error': UploadSessionFinishError._properties_error_validator,
     'too_many_shared_folder_targets': UploadSessionFinishError._too_many_shared_folder_targets_validator,
     'too_many_write_operations': UploadSessionFinishError._too_many_write_operations_validator,
     'other': UploadSessionFinishError._other_validator,
@@ -11826,18 +11883,21 @@ UploadSessionLookupError._not_found_validator = bv.Void()
 UploadSessionLookupError._incorrect_offset_validator = UploadSessionOffsetError_validator
 UploadSessionLookupError._closed_validator = bv.Void()
 UploadSessionLookupError._not_closed_validator = bv.Void()
+UploadSessionLookupError._too_large_validator = bv.Void()
 UploadSessionLookupError._other_validator = bv.Void()
 UploadSessionLookupError._tagmap = {
     'not_found': UploadSessionLookupError._not_found_validator,
     'incorrect_offset': UploadSessionLookupError._incorrect_offset_validator,
     'closed': UploadSessionLookupError._closed_validator,
     'not_closed': UploadSessionLookupError._not_closed_validator,
+    'too_large': UploadSessionLookupError._too_large_validator,
     'other': UploadSessionLookupError._other_validator,
 }
 
 UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
 UploadSessionLookupError.closed = UploadSessionLookupError('closed')
 UploadSessionLookupError.not_closed = UploadSessionLookupError('not_closed')
+UploadSessionLookupError.too_large = UploadSessionLookupError('too_large')
 UploadSessionLookupError.other = UploadSessionLookupError('other')
 
 UploadSessionOffsetError._correct_offset_validator = bv.UInt64()
@@ -11925,6 +11985,7 @@ WriteMode.overwrite = WriteMode('overwrite')
 
 alpha_get_metadata = bb.Route(
     'alpha/get_metadata',
+    1,
     True,
     AlphaGetMetadataArg_validator,
     Metadata_validator,
@@ -11934,6 +11995,7 @@ alpha_get_metadata = bb.Route(
 )
 alpha_upload = bb.Route(
     'alpha/upload',
+    1,
     True,
     CommitInfoWithProperties_validator,
     FileMetadata_validator,
@@ -11943,6 +12005,7 @@ alpha_upload = bb.Route(
 )
 copy = bb.Route(
     'copy',
+    1,
     True,
     RelocationArg_validator,
     Metadata_validator,
@@ -11952,6 +12015,7 @@ copy = bb.Route(
 )
 copy_batch = bb.Route(
     'copy_batch',
+    1,
     False,
     RelocationBatchArg_validator,
     RelocationBatchLaunch_validator,
@@ -11961,6 +12025,7 @@ copy_batch = bb.Route(
 )
 copy_batch_check = bb.Route(
     'copy_batch/check',
+    1,
     False,
     async.PollArg_validator,
     RelocationBatchJobStatus_validator,
@@ -11970,6 +12035,7 @@ copy_batch_check = bb.Route(
 )
 copy_reference_get = bb.Route(
     'copy_reference/get',
+    1,
     False,
     GetCopyReferenceArg_validator,
     GetCopyReferenceResult_validator,
@@ -11979,6 +12045,7 @@ copy_reference_get = bb.Route(
 )
 copy_reference_save = bb.Route(
     'copy_reference/save',
+    1,
     False,
     SaveCopyReferenceArg_validator,
     SaveCopyReferenceResult_validator,
@@ -11988,6 +12055,7 @@ copy_reference_save = bb.Route(
 )
 copy_v2 = bb.Route(
     'copy_v2',
+    1,
     False,
     RelocationArg_validator,
     RelocationResult_validator,
@@ -11997,6 +12065,7 @@ copy_v2 = bb.Route(
 )
 create_folder = bb.Route(
     'create_folder',
+    1,
     True,
     CreateFolderArg_validator,
     FolderMetadata_validator,
@@ -12006,6 +12075,7 @@ create_folder = bb.Route(
 )
 create_folder_batch = bb.Route(
     'create_folder_batch',
+    1,
     False,
     CreateFolderBatchArg_validator,
     CreateFolderBatchLaunch_validator,
@@ -12015,6 +12085,7 @@ create_folder_batch = bb.Route(
 )
 create_folder_batch_check = bb.Route(
     'create_folder_batch/check',
+    1,
     False,
     async.PollArg_validator,
     CreateFolderBatchJobStatus_validator,
@@ -12024,6 +12095,7 @@ create_folder_batch_check = bb.Route(
 )
 create_folder_v2 = bb.Route(
     'create_folder_v2',
+    1,
     False,
     CreateFolderArg_validator,
     CreateFolderResult_validator,
@@ -12033,6 +12105,7 @@ create_folder_v2 = bb.Route(
 )
 delete = bb.Route(
     'delete',
+    1,
     True,
     DeleteArg_validator,
     Metadata_validator,
@@ -12042,6 +12115,7 @@ delete = bb.Route(
 )
 delete_batch = bb.Route(
     'delete_batch',
+    1,
     False,
     DeleteBatchArg_validator,
     DeleteBatchLaunch_validator,
@@ -12051,6 +12125,7 @@ delete_batch = bb.Route(
 )
 delete_batch_check = bb.Route(
     'delete_batch/check',
+    1,
     False,
     async.PollArg_validator,
     DeleteBatchJobStatus_validator,
@@ -12060,6 +12135,7 @@ delete_batch_check = bb.Route(
 )
 delete_v2 = bb.Route(
     'delete_v2',
+    1,
     False,
     DeleteArg_validator,
     DeleteResult_validator,
@@ -12069,6 +12145,7 @@ delete_v2 = bb.Route(
 )
 download = bb.Route(
     'download',
+    1,
     False,
     DownloadArg_validator,
     FileMetadata_validator,
@@ -12078,6 +12155,7 @@ download = bb.Route(
 )
 download_zip = bb.Route(
     'download_zip',
+    1,
     False,
     DownloadZipArg_validator,
     DownloadZipResult_validator,
@@ -12087,6 +12165,7 @@ download_zip = bb.Route(
 )
 get_metadata = bb.Route(
     'get_metadata',
+    1,
     False,
     GetMetadataArg_validator,
     Metadata_validator,
@@ -12096,6 +12175,7 @@ get_metadata = bb.Route(
 )
 get_preview = bb.Route(
     'get_preview',
+    1,
     False,
     PreviewArg_validator,
     FileMetadata_validator,
@@ -12105,6 +12185,7 @@ get_preview = bb.Route(
 )
 get_temporary_link = bb.Route(
     'get_temporary_link',
+    1,
     False,
     GetTemporaryLinkArg_validator,
     GetTemporaryLinkResult_validator,
@@ -12114,6 +12195,7 @@ get_temporary_link = bb.Route(
 )
 get_thumbnail = bb.Route(
     'get_thumbnail',
+    1,
     False,
     ThumbnailArg_validator,
     FileMetadata_validator,
@@ -12123,6 +12205,7 @@ get_thumbnail = bb.Route(
 )
 get_thumbnail_batch = bb.Route(
     'get_thumbnail_batch',
+    1,
     False,
     GetThumbnailBatchArg_validator,
     GetThumbnailBatchResult_validator,
@@ -12132,6 +12215,7 @@ get_thumbnail_batch = bb.Route(
 )
 list_folder = bb.Route(
     'list_folder',
+    1,
     False,
     ListFolderArg_validator,
     ListFolderResult_validator,
@@ -12141,6 +12225,7 @@ list_folder = bb.Route(
 )
 list_folder_continue = bb.Route(
     'list_folder/continue',
+    1,
     False,
     ListFolderContinueArg_validator,
     ListFolderResult_validator,
@@ -12150,6 +12235,7 @@ list_folder_continue = bb.Route(
 )
 list_folder_get_latest_cursor = bb.Route(
     'list_folder/get_latest_cursor',
+    1,
     False,
     ListFolderArg_validator,
     ListFolderGetLatestCursorResult_validator,
@@ -12159,6 +12245,7 @@ list_folder_get_latest_cursor = bb.Route(
 )
 list_folder_longpoll = bb.Route(
     'list_folder/longpoll',
+    1,
     False,
     ListFolderLongpollArg_validator,
     ListFolderLongpollResult_validator,
@@ -12168,6 +12255,7 @@ list_folder_longpoll = bb.Route(
 )
 list_revisions = bb.Route(
     'list_revisions',
+    1,
     False,
     ListRevisionsArg_validator,
     ListRevisionsResult_validator,
@@ -12177,6 +12265,7 @@ list_revisions = bb.Route(
 )
 move = bb.Route(
     'move',
+    1,
     True,
     RelocationArg_validator,
     Metadata_validator,
@@ -12186,6 +12275,7 @@ move = bb.Route(
 )
 move_batch = bb.Route(
     'move_batch',
+    1,
     False,
     RelocationBatchArg_validator,
     RelocationBatchLaunch_validator,
@@ -12195,6 +12285,7 @@ move_batch = bb.Route(
 )
 move_batch_check = bb.Route(
     'move_batch/check',
+    1,
     False,
     async.PollArg_validator,
     RelocationBatchJobStatus_validator,
@@ -12204,6 +12295,7 @@ move_batch_check = bb.Route(
 )
 move_v2 = bb.Route(
     'move_v2',
+    1,
     False,
     RelocationArg_validator,
     RelocationResult_validator,
@@ -12213,6 +12305,7 @@ move_v2 = bb.Route(
 )
 permanently_delete = bb.Route(
     'permanently_delete',
+    1,
     False,
     DeleteArg_validator,
     bv.Void(),
@@ -12222,6 +12315,7 @@ permanently_delete = bb.Route(
 )
 properties_add = bb.Route(
     'properties/add',
+    1,
     True,
     file_properties.AddPropertiesArg_validator,
     bv.Void(),
@@ -12231,6 +12325,7 @@ properties_add = bb.Route(
 )
 properties_overwrite = bb.Route(
     'properties/overwrite',
+    1,
     True,
     file_properties.OverwritePropertyGroupArg_validator,
     bv.Void(),
@@ -12240,6 +12335,7 @@ properties_overwrite = bb.Route(
 )
 properties_remove = bb.Route(
     'properties/remove',
+    1,
     True,
     file_properties.RemovePropertiesArg_validator,
     bv.Void(),
@@ -12249,6 +12345,7 @@ properties_remove = bb.Route(
 )
 properties_template_get = bb.Route(
     'properties/template/get',
+    1,
     True,
     file_properties.GetTemplateArg_validator,
     file_properties.GetTemplateResult_validator,
@@ -12258,6 +12355,7 @@ properties_template_get = bb.Route(
 )
 properties_template_list = bb.Route(
     'properties/template/list',
+    1,
     True,
     bv.Void(),
     file_properties.ListTemplateResult_validator,
@@ -12267,6 +12365,7 @@ properties_template_list = bb.Route(
 )
 properties_update = bb.Route(
     'properties/update',
+    1,
     True,
     file_properties.UpdatePropertiesArg_validator,
     bv.Void(),
@@ -12276,6 +12375,7 @@ properties_update = bb.Route(
 )
 restore = bb.Route(
     'restore',
+    1,
     False,
     RestoreArg_validator,
     FileMetadata_validator,
@@ -12285,6 +12385,7 @@ restore = bb.Route(
 )
 save_url = bb.Route(
     'save_url',
+    1,
     False,
     SaveUrlArg_validator,
     SaveUrlResult_validator,
@@ -12294,6 +12395,7 @@ save_url = bb.Route(
 )
 save_url_check_job_status = bb.Route(
     'save_url/check_job_status',
+    1,
     False,
     async.PollArg_validator,
     SaveUrlJobStatus_validator,
@@ -12303,6 +12405,7 @@ save_url_check_job_status = bb.Route(
 )
 search = bb.Route(
     'search',
+    1,
     False,
     SearchArg_validator,
     SearchResult_validator,
@@ -12312,6 +12415,7 @@ search = bb.Route(
 )
 upload = bb.Route(
     'upload',
+    1,
     False,
     CommitInfo_validator,
     FileMetadata_validator,
@@ -12321,6 +12425,7 @@ upload = bb.Route(
 )
 upload_session_append = bb.Route(
     'upload_session/append',
+    1,
     True,
     UploadSessionCursor_validator,
     bv.Void(),
@@ -12330,6 +12435,7 @@ upload_session_append = bb.Route(
 )
 upload_session_append_v2 = bb.Route(
     'upload_session/append_v2',
+    1,
     False,
     UploadSessionAppendArg_validator,
     bv.Void(),
@@ -12339,6 +12445,7 @@ upload_session_append_v2 = bb.Route(
 )
 upload_session_finish = bb.Route(
     'upload_session/finish',
+    1,
     False,
     UploadSessionFinishArg_validator,
     FileMetadata_validator,
@@ -12348,6 +12455,7 @@ upload_session_finish = bb.Route(
 )
 upload_session_finish_batch = bb.Route(
     'upload_session/finish_batch',
+    1,
     False,
     UploadSessionFinishBatchArg_validator,
     UploadSessionFinishBatchLaunch_validator,
@@ -12357,6 +12465,7 @@ upload_session_finish_batch = bb.Route(
 )
 upload_session_finish_batch_check = bb.Route(
     'upload_session/finish_batch/check',
+    1,
     False,
     async.PollArg_validator,
     UploadSessionFinishBatchJobStatus_validator,
@@ -12366,6 +12475,7 @@ upload_session_finish_batch_check = bb.Route(
 )
 upload_session_start = bb.Route(
     'upload_session/start',
+    1,
     False,
     UploadSessionStartArg_validator,
     UploadSessionStartResult_validator,

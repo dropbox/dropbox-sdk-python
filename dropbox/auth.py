@@ -700,6 +700,7 @@ TokenFromOAuth1Result._all_fields_ = [('oauth2_token', TokenFromOAuth1Result._oa
 
 token_from_oauth1 = bb.Route(
     'token/from_oauth1',
+    1,
     False,
     TokenFromOAuth1Arg_validator,
     TokenFromOAuth1Result_validator,
@@ -709,6 +710,7 @@ token_from_oauth1 = bb.Route(
 )
 token_revoke = bb.Route(
     'token/revoke',
+    1,
     False,
     bv.Void(),
     bv.Void(),

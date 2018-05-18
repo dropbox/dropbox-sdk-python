@@ -3099,6 +3099,7 @@ UpdateTemplateResult._all_fields_ = [('template_id', UpdateTemplateResult._templ
 
 properties_add = bb.Route(
     'properties/add',
+    1,
     False,
     AddPropertiesArg_validator,
     bv.Void(),
@@ -3108,6 +3109,7 @@ properties_add = bb.Route(
 )
 properties_overwrite = bb.Route(
     'properties/overwrite',
+    1,
     False,
     OverwritePropertyGroupArg_validator,
     bv.Void(),
@@ -3117,6 +3119,7 @@ properties_overwrite = bb.Route(
 )
 properties_remove = bb.Route(
     'properties/remove',
+    1,
     False,
     RemovePropertiesArg_validator,
     bv.Void(),
@@ -3126,6 +3129,7 @@ properties_remove = bb.Route(
 )
 properties_search = bb.Route(
     'properties/search',
+    1,
     False,
     PropertiesSearchArg_validator,
     PropertiesSearchResult_validator,
@@ -3135,6 +3139,7 @@ properties_search = bb.Route(
 )
 properties_search_continue = bb.Route(
     'properties/search/continue',
+    1,
     False,
     PropertiesSearchContinueArg_validator,
     PropertiesSearchResult_validator,
@@ -3144,6 +3149,7 @@ properties_search_continue = bb.Route(
 )
 properties_update = bb.Route(
     'properties/update',
+    1,
     False,
     UpdatePropertiesArg_validator,
     bv.Void(),
@@ -3153,6 +3159,7 @@ properties_update = bb.Route(
 )
 templates_add_for_team = bb.Route(
     'templates/add_for_team',
+    1,
     False,
     AddTemplateArg_validator,
     AddTemplateResult_validator,
@@ -3162,6 +3169,7 @@ templates_add_for_team = bb.Route(
 )
 templates_add_for_user = bb.Route(
     'templates/add_for_user',
+    1,
     False,
     AddTemplateArg_validator,
     AddTemplateResult_validator,
@@ -3171,6 +3179,7 @@ templates_add_for_user = bb.Route(
 )
 templates_get_for_team = bb.Route(
     'templates/get_for_team',
+    1,
     False,
     GetTemplateArg_validator,
     GetTemplateResult_validator,
@@ -3180,6 +3189,7 @@ templates_get_for_team = bb.Route(
 )
 templates_get_for_user = bb.Route(
     'templates/get_for_user',
+    1,
     False,
     GetTemplateArg_validator,
     GetTemplateResult_validator,
@@ -3189,6 +3199,7 @@ templates_get_for_user = bb.Route(
 )
 templates_list_for_team = bb.Route(
     'templates/list_for_team',
+    1,
     False,
     bv.Void(),
     ListTemplateResult_validator,
@@ -3198,6 +3209,7 @@ templates_list_for_team = bb.Route(
 )
 templates_list_for_user = bb.Route(
     'templates/list_for_user',
+    1,
     False,
     bv.Void(),
     ListTemplateResult_validator,
@@ -3207,6 +3219,7 @@ templates_list_for_user = bb.Route(
 )
 templates_remove_for_team = bb.Route(
     'templates/remove_for_team',
+    1,
     False,
     RemoveTemplateArg_validator,
     bv.Void(),
@@ -3216,6 +3229,7 @@ templates_remove_for_team = bb.Route(
 )
 templates_remove_for_user = bb.Route(
     'templates/remove_for_user',
+    1,
     False,
     RemoveTemplateArg_validator,
     bv.Void(),
@@ -3225,6 +3239,7 @@ templates_remove_for_user = bb.Route(
 )
 templates_update_for_team = bb.Route(
     'templates/update_for_team',
+    1,
     False,
     UpdateTemplateArg_validator,
     UpdateTemplateResult_validator,
@@ -3234,6 +3249,7 @@ templates_update_for_team = bb.Route(
 )
 templates_update_for_user = bb.Route(
     'templates/update_for_user',
+    1,
     False,
     UpdateTemplateArg_validator,
     UpdateTemplateResult_validator,

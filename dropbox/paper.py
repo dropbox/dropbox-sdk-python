@@ -4207,6 +4207,7 @@ UserOnPaperDocFilter.other = UserOnPaperDocFilter('other')
 
 docs_archive = bb.Route(
     'docs/archive',
+    1,
     False,
     RefPaperDoc_validator,
     bv.Void(),
@@ -4216,6 +4217,7 @@ docs_archive = bb.Route(
 )
 docs_create = bb.Route(
     'docs/create',
+    1,
     False,
     PaperDocCreateArgs_validator,
     PaperDocCreateUpdateResult_validator,
@@ -4225,6 +4227,7 @@ docs_create = bb.Route(
 )
 docs_download = bb.Route(
     'docs/download',
+    1,
     False,
     PaperDocExport_validator,
     PaperDocExportResult_validator,
@@ -4234,6 +4237,7 @@ docs_download = bb.Route(
 )
 docs_folder_users_list = bb.Route(
     'docs/folder_users/list',
+    1,
     False,
     ListUsersOnFolderArgs_validator,
     ListUsersOnFolderResponse_validator,
@@ -4243,6 +4247,7 @@ docs_folder_users_list = bb.Route(
 )
 docs_folder_users_list_continue = bb.Route(
     'docs/folder_users/list/continue',
+    1,
     False,
     ListUsersOnFolderContinueArgs_validator,
     ListUsersOnFolderResponse_validator,
@@ -4252,6 +4257,7 @@ docs_folder_users_list_continue = bb.Route(
 )
 docs_get_folder_info = bb.Route(
     'docs/get_folder_info',
+    1,
     False,
     RefPaperDoc_validator,
     FoldersContainingPaperDoc_validator,
@@ -4261,6 +4267,7 @@ docs_get_folder_info = bb.Route(
 )
 docs_list = bb.Route(
     'docs/list',
+    1,
     False,
     ListPaperDocsArgs_validator,
     ListPaperDocsResponse_validator,
@@ -4270,6 +4277,7 @@ docs_list = bb.Route(
 )
 docs_list_continue = bb.Route(
     'docs/list/continue',
+    1,
     False,
     ListPaperDocsContinueArgs_validator,
     ListPaperDocsResponse_validator,
@@ -4279,6 +4287,7 @@ docs_list_continue = bb.Route(
 )
 docs_permanently_delete = bb.Route(
     'docs/permanently_delete',
+    1,
     False,
     RefPaperDoc_validator,
     bv.Void(),
@@ -4288,6 +4297,7 @@ docs_permanently_delete = bb.Route(
 )
 docs_sharing_policy_get = bb.Route(
     'docs/sharing_policy/get',
+    1,
     False,
     RefPaperDoc_validator,
     SharingPolicy_validator,
@@ -4297,6 +4307,7 @@ docs_sharing_policy_get = bb.Route(
 )
 docs_sharing_policy_set = bb.Route(
     'docs/sharing_policy/set',
+    1,
     False,
     PaperDocSharingPolicy_validator,
     bv.Void(),
@@ -4306,6 +4317,7 @@ docs_sharing_policy_set = bb.Route(
 )
 docs_update = bb.Route(
     'docs/update',
+    1,
     False,
     PaperDocUpdateArgs_validator,
     PaperDocCreateUpdateResult_validator,
@@ -4315,6 +4327,7 @@ docs_update = bb.Route(
 )
 docs_users_add = bb.Route(
     'docs/users/add',
+    1,
     False,
     AddPaperDocUser_validator,
     bv.List(AddPaperDocUserMemberResult_validator),
@@ -4324,6 +4337,7 @@ docs_users_add = bb.Route(
 )
 docs_users_list = bb.Route(
     'docs/users/list',
+    1,
     False,
     ListUsersOnPaperDocArgs_validator,
     ListUsersOnPaperDocResponse_validator,
@@ -4333,6 +4347,7 @@ docs_users_list = bb.Route(
 )
 docs_users_list_continue = bb.Route(
     'docs/users/list/continue',
+    1,
     False,
     ListUsersOnPaperDocContinueArgs_validator,
     ListUsersOnPaperDocResponse_validator,
@@ -4342,6 +4357,7 @@ docs_users_list_continue = bb.Route(
 )
 docs_users_remove = bb.Route(
     'docs/users/remove',
+    1,
     False,
     RemovePaperDocUser_validator,
     bv.Void(),

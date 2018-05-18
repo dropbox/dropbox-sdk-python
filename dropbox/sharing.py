@@ -18219,6 +18219,7 @@ Visibility.other = Visibility('other')
 
 add_file_member = bb.Route(
     'add_file_member',
+    1,
     False,
     AddFileMemberArgs_validator,
     bv.List(FileMemberActionResult_validator),
@@ -18228,6 +18229,7 @@ add_file_member = bb.Route(
 )
 add_folder_member = bb.Route(
     'add_folder_member',
+    1,
     False,
     AddFolderMemberArg_validator,
     bv.Void(),
@@ -18237,6 +18239,7 @@ add_folder_member = bb.Route(
 )
 change_file_member_access = bb.Route(
     'change_file_member_access',
+    1,
     True,
     ChangeFileMemberAccessArgs_validator,
     FileMemberActionResult_validator,
@@ -18246,6 +18249,7 @@ change_file_member_access = bb.Route(
 )
 check_job_status = bb.Route(
     'check_job_status',
+    1,
     False,
     async.PollArg_validator,
     JobStatus_validator,
@@ -18255,6 +18259,7 @@ check_job_status = bb.Route(
 )
 check_remove_member_job_status = bb.Route(
     'check_remove_member_job_status',
+    1,
     False,
     async.PollArg_validator,
     RemoveMemberJobStatus_validator,
@@ -18264,6 +18269,7 @@ check_remove_member_job_status = bb.Route(
 )
 check_share_job_status = bb.Route(
     'check_share_job_status',
+    1,
     False,
     async.PollArg_validator,
     ShareFolderJobStatus_validator,
@@ -18273,6 +18279,7 @@ check_share_job_status = bb.Route(
 )
 create_shared_link = bb.Route(
     'create_shared_link',
+    1,
     True,
     CreateSharedLinkArg_validator,
     PathLinkMetadata_validator,
@@ -18282,6 +18289,7 @@ create_shared_link = bb.Route(
 )
 create_shared_link_with_settings = bb.Route(
     'create_shared_link_with_settings',
+    1,
     False,
     CreateSharedLinkWithSettingsArg_validator,
     SharedLinkMetadata_validator,
@@ -18291,6 +18299,7 @@ create_shared_link_with_settings = bb.Route(
 )
 get_file_metadata = bb.Route(
     'get_file_metadata',
+    1,
     False,
     GetFileMetadataArg_validator,
     SharedFileMetadata_validator,
@@ -18300,6 +18309,7 @@ get_file_metadata = bb.Route(
 )
 get_file_metadata_batch = bb.Route(
     'get_file_metadata/batch',
+    1,
     False,
     GetFileMetadataBatchArg_validator,
     bv.List(GetFileMetadataBatchResult_validator),
@@ -18309,6 +18319,7 @@ get_file_metadata_batch = bb.Route(
 )
 get_folder_metadata = bb.Route(
     'get_folder_metadata',
+    1,
     False,
     GetMetadataArgs_validator,
     SharedFolderMetadata_validator,
@@ -18318,6 +18329,7 @@ get_folder_metadata = bb.Route(
 )
 get_shared_link_file = bb.Route(
     'get_shared_link_file',
+    1,
     False,
     GetSharedLinkFileArg_validator,
     SharedLinkMetadata_validator,
@@ -18327,6 +18339,7 @@ get_shared_link_file = bb.Route(
 )
 get_shared_link_metadata = bb.Route(
     'get_shared_link_metadata',
+    1,
     False,
     GetSharedLinkMetadataArg_validator,
     SharedLinkMetadata_validator,
@@ -18336,6 +18349,7 @@ get_shared_link_metadata = bb.Route(
 )
 get_shared_links = bb.Route(
     'get_shared_links',
+    1,
     True,
     GetSharedLinksArg_validator,
     GetSharedLinksResult_validator,
@@ -18345,6 +18359,7 @@ get_shared_links = bb.Route(
 )
 list_file_members = bb.Route(
     'list_file_members',
+    1,
     False,
     ListFileMembersArg_validator,
     SharedFileMembers_validator,
@@ -18354,6 +18369,7 @@ list_file_members = bb.Route(
 )
 list_file_members_batch = bb.Route(
     'list_file_members/batch',
+    1,
     False,
     ListFileMembersBatchArg_validator,
     bv.List(ListFileMembersBatchResult_validator),
@@ -18363,6 +18379,7 @@ list_file_members_batch = bb.Route(
 )
 list_file_members_continue = bb.Route(
     'list_file_members/continue',
+    1,
     False,
     ListFileMembersContinueArg_validator,
     SharedFileMembers_validator,
@@ -18372,6 +18389,7 @@ list_file_members_continue = bb.Route(
 )
 list_folder_members = bb.Route(
     'list_folder_members',
+    1,
     False,
     ListFolderMembersArgs_validator,
     SharedFolderMembers_validator,
@@ -18381,6 +18399,7 @@ list_folder_members = bb.Route(
 )
 list_folder_members_continue = bb.Route(
     'list_folder_members/continue',
+    1,
     False,
     ListFolderMembersContinueArg_validator,
     SharedFolderMembers_validator,
@@ -18390,6 +18409,7 @@ list_folder_members_continue = bb.Route(
 )
 list_folders = bb.Route(
     'list_folders',
+    1,
     False,
     ListFoldersArgs_validator,
     ListFoldersResult_validator,
@@ -18399,6 +18419,7 @@ list_folders = bb.Route(
 )
 list_folders_continue = bb.Route(
     'list_folders/continue',
+    1,
     False,
     ListFoldersContinueArg_validator,
     ListFoldersResult_validator,
@@ -18408,6 +18429,7 @@ list_folders_continue = bb.Route(
 )
 list_mountable_folders = bb.Route(
     'list_mountable_folders',
+    1,
     False,
     ListFoldersArgs_validator,
     ListFoldersResult_validator,
@@ -18417,6 +18439,7 @@ list_mountable_folders = bb.Route(
 )
 list_mountable_folders_continue = bb.Route(
     'list_mountable_folders/continue',
+    1,
     False,
     ListFoldersContinueArg_validator,
     ListFoldersResult_validator,
@@ -18426,6 +18449,7 @@ list_mountable_folders_continue = bb.Route(
 )
 list_received_files = bb.Route(
     'list_received_files',
+    1,
     False,
     ListFilesArg_validator,
     ListFilesResult_validator,
@@ -18435,6 +18459,7 @@ list_received_files = bb.Route(
 )
 list_received_files_continue = bb.Route(
     'list_received_files/continue',
+    1,
     False,
     ListFilesContinueArg_validator,
     ListFilesResult_validator,
@@ -18444,6 +18469,7 @@ list_received_files_continue = bb.Route(
 )
 list_shared_links = bb.Route(
     'list_shared_links',
+    1,
     False,
     ListSharedLinksArg_validator,
     ListSharedLinksResult_validator,
@@ -18453,6 +18479,7 @@ list_shared_links = bb.Route(
 )
 modify_shared_link_settings = bb.Route(
     'modify_shared_link_settings',
+    1,
     False,
     ModifySharedLinkSettingsArgs_validator,
     SharedLinkMetadata_validator,
@@ -18462,6 +18489,7 @@ modify_shared_link_settings = bb.Route(
 )
 mount_folder = bb.Route(
     'mount_folder',
+    1,
     False,
     MountFolderArg_validator,
     SharedFolderMetadata_validator,
@@ -18471,6 +18499,7 @@ mount_folder = bb.Route(
 )
 relinquish_file_membership = bb.Route(
     'relinquish_file_membership',
+    1,
     False,
     RelinquishFileMembershipArg_validator,
     bv.Void(),
@@ -18480,6 +18509,7 @@ relinquish_file_membership = bb.Route(
 )
 relinquish_folder_membership = bb.Route(
     'relinquish_folder_membership',
+    1,
     False,
     RelinquishFolderMembershipArg_validator,
     async.LaunchEmptyResult_validator,
@@ -18489,6 +18519,7 @@ relinquish_folder_membership = bb.Route(
 )
 remove_file_member = bb.Route(
     'remove_file_member',
+    1,
     True,
     RemoveFileMemberArg_validator,
     FileMemberActionIndividualResult_validator,
@@ -18498,6 +18529,7 @@ remove_file_member = bb.Route(
 )
 remove_file_member_2 = bb.Route(
     'remove_file_member_2',
+    1,
     False,
     RemoveFileMemberArg_validator,
     FileMemberRemoveActionResult_validator,
@@ -18507,6 +18539,7 @@ remove_file_member_2 = bb.Route(
 )
 remove_folder_member = bb.Route(
     'remove_folder_member',
+    1,
     False,
     RemoveFolderMemberArg_validator,
     async.LaunchResultBase_validator,
@@ -18516,6 +18549,7 @@ remove_folder_member = bb.Route(
 )
 revoke_shared_link = bb.Route(
     'revoke_shared_link',
+    1,
     False,
     RevokeSharedLinkArg_validator,
     bv.Void(),
@@ -18525,6 +18559,7 @@ revoke_shared_link = bb.Route(
 )
 set_access_inheritance = bb.Route(
     'set_access_inheritance',
+    1,
     False,
     SetAccessInheritanceArg_validator,
     ShareFolderLaunch_validator,
@@ -18534,6 +18569,7 @@ set_access_inheritance = bb.Route(
 )
 share_folder = bb.Route(
     'share_folder',
+    1,
     False,
     ShareFolderArg_validator,
     ShareFolderLaunch_validator,
@@ -18543,6 +18579,7 @@ share_folder = bb.Route(
 )
 transfer_folder = bb.Route(
     'transfer_folder',
+    1,
     False,
     TransferFolderArg_validator,
     bv.Void(),
@@ -18552,6 +18589,7 @@ transfer_folder = bb.Route(
 )
 unmount_folder = bb.Route(
     'unmount_folder',
+    1,
     False,
     UnmountFolderArg_validator,
     bv.Void(),
@@ -18561,6 +18599,7 @@ unmount_folder = bb.Route(
 )
 unshare_file = bb.Route(
     'unshare_file',
+    1,
     False,
     UnshareFileArg_validator,
     bv.Void(),
@@ -18570,6 +18609,7 @@ unshare_file = bb.Route(
 )
 unshare_folder = bb.Route(
     'unshare_folder',
+    1,
     False,
     UnshareFolderArg_validator,
     async.LaunchEmptyResult_validator,
@@ -18579,6 +18619,7 @@ unshare_folder = bb.Route(
 )
 update_file_member = bb.Route(
     'update_file_member',
+    1,
     False,
     UpdateFileMemberArgs_validator,
     MemberAccessLevelResult_validator,
@@ -18588,6 +18629,7 @@ update_file_member = bb.Route(
 )
 update_folder_member = bb.Route(
     'update_folder_member',
+    1,
     False,
     UpdateFolderMemberArg_validator,
     MemberAccessLevelResult_validator,
@@ -18597,6 +18639,7 @@ update_folder_member = bb.Route(
 )
 update_folder_policy = bb.Route(
     'update_folder_policy',
+    1,
     False,
     UpdateFolderPolicyArg_validator,
     SharedFolderMetadata_validator,

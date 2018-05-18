@@ -7851,6 +7851,7 @@ class MemberAddArg(object):
         send_welcome_email is false, no email invitation will be sent to the
         user. This may be useful for apps using single sign-on (SSO) flows for
         onboarding that want to handle announcements themselves.
+    :ivar is_directory_restricted: Whether a user is directory restricted.
     """
 
     __slots__ = [
@@ -7868,6 +7869,8 @@ class MemberAddArg(object):
         '_send_welcome_email_present',
         '_role_value',
         '_role_present',
+        '_is_directory_restricted_value',
+        '_is_directory_restricted_present',
     ]
 
     _has_required_fields = True
@@ -7879,7 +7882,8 @@ class MemberAddArg(object):
                  member_external_id=None,
                  member_persistent_id=None,
                  send_welcome_email=None,
-                 role=None):
+                 role=None,
+                 is_directory_restricted=None):
         self._member_email_value = None
         self._member_email_present = False
         self._member_given_name_value = None
@@ -7894,6 +7898,8 @@ class MemberAddArg(object):
         self._send_welcome_email_present = False
         self._role_value = None
         self._role_present = False
+        self._is_directory_restricted_value = None
+        self._is_directory_restricted_present = False
         if member_email is not None:
             self.member_email = member_email
         if member_given_name is not None:
@@ -7908,6 +7914,8 @@ class MemberAddArg(object):
             self.send_welcome_email = send_welcome_email
         if role is not None:
             self.role = role
+        if is_directory_restricted is not None:
+            self.is_directory_restricted = is_directory_restricted
 
     @property
     def member_email(self):
@@ -8082,8 +8090,34 @@ class MemberAddArg(object):
         self._role_value = None
         self._role_present = False
 
+    @property
+    def is_directory_restricted(self):
+        """
+        Whether a user is directory restricted.
+
+        :rtype: bool
+        """
+        if self._is_directory_restricted_present:
+            return self._is_directory_restricted_value
+        else:
+            return None
+
+    @is_directory_restricted.setter
+    def is_directory_restricted(self, val):
+        if val is None:
+            del self.is_directory_restricted
+            return
+        val = self._is_directory_restricted_validator.validate(val)
+        self._is_directory_restricted_value = val
+        self._is_directory_restricted_present = True
+
+    @is_directory_restricted.deleter
+    def is_directory_restricted(self):
+        self._is_directory_restricted_value = None
+        self._is_directory_restricted_present = False
+
     def __repr__(self):
-        return 'MemberAddArg(member_email={!r}, member_given_name={!r}, member_surname={!r}, member_external_id={!r}, member_persistent_id={!r}, send_welcome_email={!r}, role={!r})'.format(
+        return 'MemberAddArg(member_email={!r}, member_given_name={!r}, member_surname={!r}, member_external_id={!r}, member_persistent_id={!r}, send_welcome_email={!r}, role={!r}, is_directory_restricted={!r})'.format(
             self._member_email_value,
             self._member_given_name_value,
             self._member_surname_value,
@@ -8091,6 +8125,7 @@ class MemberAddArg(object):
             self._member_persistent_id_value,
             self._send_welcome_email_value,
             self._role_value,
+            self._is_directory_restricted_value,
         )
 
 MemberAddArg_validator = bv.Struct(MemberAddArg)
@@ -8746,6 +8781,8 @@ class MemberProfile(object):
         team.
     :ivar persistent_id: Persistent ID that a team can attach to the user. The
         persistent ID is unique ID to be used for SAML authentication.
+    :ivar is_directory_restricted: Whether the user is a directory restricted
+        user.
     """
 
     __slots__ = [
@@ -8769,6 +8806,8 @@ class MemberProfile(object):
         '_joined_on_present',
         '_persistent_id_value',
         '_persistent_id_present',
+        '_is_directory_restricted_value',
+        '_is_directory_restricted_present',
     ]
 
     _has_required_fields = True
@@ -8783,7 +8822,8 @@ class MemberProfile(object):
                  external_id=None,
                  account_id=None,
                  joined_on=None,
-                 persistent_id=None):
+                 persistent_id=None,
+                 is_directory_restricted=None):
         self._team_member_id_value = None
         self._team_member_id_present = False
         self._external_id_value = None
@@ -8804,6 +8844,8 @@ class MemberProfile(object):
         self._joined_on_present = False
         self._persistent_id_value = None
         self._persistent_id_present = False
+        self._is_directory_restricted_value = None
+        self._is_directory_restricted_present = False
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if external_id is not None:
@@ -8824,6 +8866,8 @@ class MemberProfile(object):
             self.joined_on = joined_on
         if persistent_id is not None:
             self.persistent_id = persistent_id
+        if is_directory_restricted is not None:
+            self.is_directory_restricted = is_directory_restricted
 
     @property
     def team_member_id(self):
@@ -9071,8 +9115,34 @@ class MemberProfile(object):
         self._persistent_id_value = None
         self._persistent_id_present = False
 
+    @property
+    def is_directory_restricted(self):
+        """
+        Whether the user is a directory restricted user.
+
+        :rtype: bool
+        """
+        if self._is_directory_restricted_present:
+            return self._is_directory_restricted_value
+        else:
+            return None
+
+    @is_directory_restricted.setter
+    def is_directory_restricted(self, val):
+        if val is None:
+            del self.is_directory_restricted
+            return
+        val = self._is_directory_restricted_validator.validate(val)
+        self._is_directory_restricted_value = val
+        self._is_directory_restricted_present = True
+
+    @is_directory_restricted.deleter
+    def is_directory_restricted(self):
+        self._is_directory_restricted_value = None
+        self._is_directory_restricted_present = False
+
     def __repr__(self):
-        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, persistent_id={!r})'.format(
+        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, persistent_id={!r}, is_directory_restricted={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -9083,6 +9153,7 @@ class MemberProfile(object):
             self._account_id_value,
             self._joined_on_value,
             self._persistent_id_value,
+            self._is_directory_restricted_value,
         )
 
 MemberProfile_validator = bv.Struct(MemberProfile)
@@ -10637,6 +10708,8 @@ class MembersSetProfileArg(object):
     :ivar new_surname: New surname for member.
     :ivar new_persistent_id: New persistent ID. This field only available to
         teams using persistent ID SAML configuration.
+    :ivar new_is_directory_restricted: New value for whether the user is a
+        directory restricted user.
     """
 
     __slots__ = [
@@ -10652,6 +10725,8 @@ class MembersSetProfileArg(object):
         '_new_surname_present',
         '_new_persistent_id_value',
         '_new_persistent_id_present',
+        '_new_is_directory_restricted_value',
+        '_new_is_directory_restricted_present',
     ]
 
     _has_required_fields = True
@@ -10662,7 +10737,8 @@ class MembersSetProfileArg(object):
                  new_external_id=None,
                  new_given_name=None,
                  new_surname=None,
-                 new_persistent_id=None):
+                 new_persistent_id=None,
+                 new_is_directory_restricted=None):
         self._user_value = None
         self._user_present = False
         self._new_email_value = None
@@ -10675,6 +10751,8 @@ class MembersSetProfileArg(object):
         self._new_surname_present = False
         self._new_persistent_id_value = None
         self._new_persistent_id_present = False
+        self._new_is_directory_restricted_value = None
+        self._new_is_directory_restricted_present = False
         if user is not None:
             self.user = user
         if new_email is not None:
@@ -10687,6 +10765,8 @@ class MembersSetProfileArg(object):
             self.new_surname = new_surname
         if new_persistent_id is not None:
             self.new_persistent_id = new_persistent_id
+        if new_is_directory_restricted is not None:
+            self.new_is_directory_restricted = new_is_directory_restricted
 
     @property
     def user(self):
@@ -10842,14 +10922,41 @@ class MembersSetProfileArg(object):
         self._new_persistent_id_value = None
         self._new_persistent_id_present = False
 
+    @property
+    def new_is_directory_restricted(self):
+        """
+        New value for whether the user is a directory restricted user.
+
+        :rtype: bool
+        """
+        if self._new_is_directory_restricted_present:
+            return self._new_is_directory_restricted_value
+        else:
+            return None
+
+    @new_is_directory_restricted.setter
+    def new_is_directory_restricted(self, val):
+        if val is None:
+            del self.new_is_directory_restricted
+            return
+        val = self._new_is_directory_restricted_validator.validate(val)
+        self._new_is_directory_restricted_value = val
+        self._new_is_directory_restricted_present = True
+
+    @new_is_directory_restricted.deleter
+    def new_is_directory_restricted(self):
+        self._new_is_directory_restricted_value = None
+        self._new_is_directory_restricted_present = False
+
     def __repr__(self):
-        return 'MembersSetProfileArg(user={!r}, new_email={!r}, new_external_id={!r}, new_given_name={!r}, new_surname={!r}, new_persistent_id={!r})'.format(
+        return 'MembersSetProfileArg(user={!r}, new_email={!r}, new_external_id={!r}, new_given_name={!r}, new_surname={!r}, new_persistent_id={!r}, new_is_directory_restricted={!r})'.format(
             self._user_value,
             self._new_email_value,
             self._new_external_id_value,
             self._new_given_name_value,
             self._new_surname_value,
             self._new_persistent_id_value,
+            self._new_is_directory_restricted_value,
         )
 
 MembersSetProfileArg_validator = bv.Struct(MembersSetProfileArg)
@@ -10875,6 +10982,8 @@ class MembersSetProfileError(MemberSelectorError):
         information.
     :ivar persistent_id_used_by_other_user: The persistent ID is already in use
         by another team member.
+    :ivar directory_restricted_off: Directory Restrictions option is not
+        available.
     """
 
     _catch_all = 'other'
@@ -10894,6 +11003,8 @@ class MembersSetProfileError(MemberSelectorError):
     persistent_id_disabled = None
     # Attribute is overwritten below the class definition
     persistent_id_used_by_other_user = None
+    # Attribute is overwritten below the class definition
+    directory_restricted_off = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -10960,6 +11071,14 @@ class MembersSetProfileError(MemberSelectorError):
         :rtype: bool
         """
         return self._tag == 'persistent_id_used_by_other_user'
+
+    def is_directory_restricted_off(self):
+        """
+        Check if the union tag is ``directory_restricted_off``.
+
+        :rtype: bool
+        """
+        return self._tag == 'directory_restricted_off'
 
     def is_other(self):
         """
@@ -14518,7 +14637,8 @@ class TeamMemberProfile(MemberProfile):
                  external_id=None,
                  account_id=None,
                  joined_on=None,
-                 persistent_id=None):
+                 persistent_id=None,
+                 is_directory_restricted=None):
         super(TeamMemberProfile, self).__init__(team_member_id,
                                                 email,
                                                 email_verified,
@@ -14528,7 +14648,8 @@ class TeamMemberProfile(MemberProfile):
                                                 external_id,
                                                 account_id,
                                                 joined_on,
-                                                persistent_id)
+                                                persistent_id,
+                                                is_directory_restricted)
         self._groups_value = None
         self._groups_present = False
         self._member_folder_id_value = None
@@ -14585,7 +14706,7 @@ class TeamMemberProfile(MemberProfile):
         self._member_folder_id_present = False
 
     def __repr__(self):
-        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, member_folder_id={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, persistent_id={!r})'.format(
+        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, member_folder_id={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, persistent_id={!r}, is_directory_restricted={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -14598,6 +14719,7 @@ class TeamMemberProfile(MemberProfile):
             self._account_id_value,
             self._joined_on_value,
             self._persistent_id_value,
+            self._is_directory_restricted_value,
         )
 
 TeamMemberProfile_validator = bv.Struct(TeamMemberProfile)
@@ -16575,6 +16697,7 @@ MemberAddArg._member_external_id_validator = bv.Nullable(team_common.MemberExter
 MemberAddArg._member_persistent_id_validator = bv.Nullable(bv.String())
 MemberAddArg._send_welcome_email_validator = bv.Boolean()
 MemberAddArg._role_validator = AdminTier_validator
+MemberAddArg._is_directory_restricted_validator = bv.Nullable(bv.Boolean())
 MemberAddArg._all_field_names_ = set([
     'member_email',
     'member_given_name',
@@ -16583,6 +16706,7 @@ MemberAddArg._all_field_names_ = set([
     'member_persistent_id',
     'send_welcome_email',
     'role',
+    'is_directory_restricted',
 ])
 MemberAddArg._all_fields_ = [
     ('member_email', MemberAddArg._member_email_validator),
@@ -16592,6 +16716,7 @@ MemberAddArg._all_fields_ = [
     ('member_persistent_id', MemberAddArg._member_persistent_id_validator),
     ('send_welcome_email', MemberAddArg._send_welcome_email_validator),
     ('role', MemberAddArg._role_validator),
+    ('is_directory_restricted', MemberAddArg._is_directory_restricted_validator),
 ]
 
 MemberAddResult._success_validator = TeamMemberInfo_validator
@@ -16657,6 +16782,7 @@ MemberProfile._name_validator = users.Name_validator
 MemberProfile._membership_type_validator = TeamMembershipType_validator
 MemberProfile._joined_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
 MemberProfile._persistent_id_validator = bv.Nullable(bv.String())
+MemberProfile._is_directory_restricted_validator = bv.Nullable(bv.Boolean())
 MemberProfile._all_field_names_ = set([
     'team_member_id',
     'external_id',
@@ -16668,6 +16794,7 @@ MemberProfile._all_field_names_ = set([
     'membership_type',
     'joined_on',
     'persistent_id',
+    'is_directory_restricted',
 ])
 MemberProfile._all_fields_ = [
     ('team_member_id', MemberProfile._team_member_id_validator),
@@ -16680,6 +16807,7 @@ MemberProfile._all_fields_ = [
     ('membership_type', MemberProfile._membership_type_validator),
     ('joined_on', MemberProfile._joined_on_validator),
     ('persistent_id', MemberProfile._persistent_id_validator),
+    ('is_directory_restricted', MemberProfile._is_directory_restricted_validator),
 ]
 
 UserSelectorError._user_not_found_validator = bv.Void()
@@ -16943,6 +17071,7 @@ MembersSetProfileArg._new_external_id_validator = bv.Nullable(team_common.Member
 MembersSetProfileArg._new_given_name_validator = bv.Nullable(common.OptionalNamePart_validator)
 MembersSetProfileArg._new_surname_validator = bv.Nullable(common.OptionalNamePart_validator)
 MembersSetProfileArg._new_persistent_id_validator = bv.Nullable(bv.String())
+MembersSetProfileArg._new_is_directory_restricted_validator = bv.Nullable(bv.Boolean())
 MembersSetProfileArg._all_field_names_ = set([
     'user',
     'new_email',
@@ -16950,6 +17079,7 @@ MembersSetProfileArg._all_field_names_ = set([
     'new_given_name',
     'new_surname',
     'new_persistent_id',
+    'new_is_directory_restricted',
 ])
 MembersSetProfileArg._all_fields_ = [
     ('user', MembersSetProfileArg._user_validator),
@@ -16958,6 +17088,7 @@ MembersSetProfileArg._all_fields_ = [
     ('new_given_name', MembersSetProfileArg._new_given_name_validator),
     ('new_surname', MembersSetProfileArg._new_surname_validator),
     ('new_persistent_id', MembersSetProfileArg._new_persistent_id_validator),
+    ('new_is_directory_restricted', MembersSetProfileArg._new_is_directory_restricted_validator),
 ]
 
 MembersSetProfileError._external_id_and_new_external_id_unsafe_validator = bv.Void()
@@ -16968,6 +17099,7 @@ MembersSetProfileError._set_profile_disallowed_validator = bv.Void()
 MembersSetProfileError._param_cannot_be_empty_validator = bv.Void()
 MembersSetProfileError._persistent_id_disabled_validator = bv.Void()
 MembersSetProfileError._persistent_id_used_by_other_user_validator = bv.Void()
+MembersSetProfileError._directory_restricted_off_validator = bv.Void()
 MembersSetProfileError._other_validator = bv.Void()
 MembersSetProfileError._tagmap = {
     'external_id_and_new_external_id_unsafe': MembersSetProfileError._external_id_and_new_external_id_unsafe_validator,
@@ -16978,6 +17110,7 @@ MembersSetProfileError._tagmap = {
     'param_cannot_be_empty': MembersSetProfileError._param_cannot_be_empty_validator,
     'persistent_id_disabled': MembersSetProfileError._persistent_id_disabled_validator,
     'persistent_id_used_by_other_user': MembersSetProfileError._persistent_id_used_by_other_user_validator,
+    'directory_restricted_off': MembersSetProfileError._directory_restricted_off_validator,
     'other': MembersSetProfileError._other_validator,
 }
 MembersSetProfileError._tagmap.update(MemberSelectorError._tagmap)
@@ -16990,6 +17123,7 @@ MembersSetProfileError.set_profile_disallowed = MembersSetProfileError('set_prof
 MembersSetProfileError.param_cannot_be_empty = MembersSetProfileError('param_cannot_be_empty')
 MembersSetProfileError.persistent_id_disabled = MembersSetProfileError('persistent_id_disabled')
 MembersSetProfileError.persistent_id_used_by_other_user = MembersSetProfileError('persistent_id_used_by_other_user')
+MembersSetProfileError.directory_restricted_off = MembersSetProfileError('directory_restricted_off')
 MembersSetProfileError.other = MembersSetProfileError('other')
 
 MembersSuspendError._suspend_inactive_user_validator = bv.Void()
@@ -17635,6 +17769,7 @@ UsersSelectorArg._tagmap = {
 
 devices_list_member_devices = bb.Route(
     'devices/list_member_devices',
+    1,
     False,
     ListMemberDevicesArg_validator,
     ListMemberDevicesResult_validator,
@@ -17644,6 +17779,7 @@ devices_list_member_devices = bb.Route(
 )
 devices_list_members_devices = bb.Route(
     'devices/list_members_devices',
+    1,
     False,
     ListMembersDevicesArg_validator,
     ListMembersDevicesResult_validator,
@@ -17653,6 +17789,7 @@ devices_list_members_devices = bb.Route(
 )
 devices_list_team_devices = bb.Route(
     'devices/list_team_devices',
+    1,
     True,
     ListTeamDevicesArg_validator,
     ListTeamDevicesResult_validator,
@@ -17662,6 +17799,7 @@ devices_list_team_devices = bb.Route(
 )
 devices_revoke_device_session = bb.Route(
     'devices/revoke_device_session',
+    1,
     False,
     RevokeDeviceSessionArg_validator,
     bv.Void(),
@@ -17671,6 +17809,7 @@ devices_revoke_device_session = bb.Route(
 )
 devices_revoke_device_session_batch = bb.Route(
     'devices/revoke_device_session_batch',
+    1,
     False,
     RevokeDeviceSessionBatchArg_validator,
     RevokeDeviceSessionBatchResult_validator,
@@ -17680,6 +17819,7 @@ devices_revoke_device_session_batch = bb.Route(
 )
 features_get_values = bb.Route(
     'features/get_values',
+    1,
     False,
     FeaturesGetValuesBatchArg_validator,
     FeaturesGetValuesBatchResult_validator,
@@ -17689,6 +17829,7 @@ features_get_values = bb.Route(
 )
 get_info = bb.Route(
     'get_info',
+    1,
     False,
     bv.Void(),
     TeamGetInfoResult_validator,
@@ -17698,6 +17839,7 @@ get_info = bb.Route(
 )
 groups_create = bb.Route(
     'groups/create',
+    1,
     False,
     GroupCreateArg_validator,
     GroupFullInfo_validator,
@@ -17707,6 +17849,7 @@ groups_create = bb.Route(
 )
 groups_delete = bb.Route(
     'groups/delete',
+    1,
     False,
     GroupSelector_validator,
     async.LaunchEmptyResult_validator,
@@ -17716,6 +17859,7 @@ groups_delete = bb.Route(
 )
 groups_get_info = bb.Route(
     'groups/get_info',
+    1,
     False,
     GroupsSelector_validator,
     GroupsGetInfoResult_validator,
@@ -17725,6 +17869,7 @@ groups_get_info = bb.Route(
 )
 groups_job_status_get = bb.Route(
     'groups/job_status/get',
+    1,
     False,
     async.PollArg_validator,
     async.PollEmptyResult_validator,
@@ -17734,6 +17879,7 @@ groups_job_status_get = bb.Route(
 )
 groups_list = bb.Route(
     'groups/list',
+    1,
     False,
     GroupsListArg_validator,
     GroupsListResult_validator,
@@ -17743,6 +17889,7 @@ groups_list = bb.Route(
 )
 groups_list_continue = bb.Route(
     'groups/list/continue',
+    1,
     False,
     GroupsListContinueArg_validator,
     GroupsListResult_validator,
@@ -17752,6 +17899,7 @@ groups_list_continue = bb.Route(
 )
 groups_members_add = bb.Route(
     'groups/members/add',
+    1,
     False,
     GroupMembersAddArg_validator,
     GroupMembersChangeResult_validator,
@@ -17761,6 +17909,7 @@ groups_members_add = bb.Route(
 )
 groups_members_list = bb.Route(
     'groups/members/list',
+    1,
     False,
     GroupsMembersListArg_validator,
     GroupsMembersListResult_validator,
@@ -17770,6 +17919,7 @@ groups_members_list = bb.Route(
 )
 groups_members_list_continue = bb.Route(
     'groups/members/list/continue',
+    1,
     False,
     GroupsMembersListContinueArg_validator,
     GroupsMembersListResult_validator,
@@ -17779,6 +17929,7 @@ groups_members_list_continue = bb.Route(
 )
 groups_members_remove = bb.Route(
     'groups/members/remove',
+    1,
     False,
     GroupMembersRemoveArg_validator,
     GroupMembersChangeResult_validator,
@@ -17788,6 +17939,7 @@ groups_members_remove = bb.Route(
 )
 groups_members_set_access_type = bb.Route(
     'groups/members/set_access_type',
+    1,
     False,
     GroupMembersSetAccessTypeArg_validator,
     GroupsGetInfoResult_validator,
@@ -17797,6 +17949,7 @@ groups_members_set_access_type = bb.Route(
 )
 groups_update = bb.Route(
     'groups/update',
+    1,
     False,
     GroupUpdateArgs_validator,
     GroupFullInfo_validator,
@@ -17806,6 +17959,7 @@ groups_update = bb.Route(
 )
 linked_apps_list_member_linked_apps = bb.Route(
     'linked_apps/list_member_linked_apps',
+    1,
     False,
     ListMemberAppsArg_validator,
     ListMemberAppsResult_validator,
@@ -17815,6 +17969,7 @@ linked_apps_list_member_linked_apps = bb.Route(
 )
 linked_apps_list_members_linked_apps = bb.Route(
     'linked_apps/list_members_linked_apps',
+    1,
     False,
     ListMembersAppsArg_validator,
     ListMembersAppsResult_validator,
@@ -17824,6 +17979,7 @@ linked_apps_list_members_linked_apps = bb.Route(
 )
 linked_apps_list_team_linked_apps = bb.Route(
     'linked_apps/list_team_linked_apps',
+    1,
     True,
     ListTeamAppsArg_validator,
     ListTeamAppsResult_validator,
@@ -17833,6 +17989,7 @@ linked_apps_list_team_linked_apps = bb.Route(
 )
 linked_apps_revoke_linked_app = bb.Route(
     'linked_apps/revoke_linked_app',
+    1,
     False,
     RevokeLinkedApiAppArg_validator,
     bv.Void(),
@@ -17842,6 +17999,7 @@ linked_apps_revoke_linked_app = bb.Route(
 )
 linked_apps_revoke_linked_app_batch = bb.Route(
     'linked_apps/revoke_linked_app_batch',
+    1,
     False,
     RevokeLinkedApiAppBatchArg_validator,
     RevokeLinkedAppBatchResult_validator,
@@ -17851,6 +18009,7 @@ linked_apps_revoke_linked_app_batch = bb.Route(
 )
 member_space_limits_excluded_users_add = bb.Route(
     'member_space_limits/excluded_users/add',
+    1,
     False,
     ExcludedUsersUpdateArg_validator,
     ExcludedUsersUpdateResult_validator,
@@ -17860,6 +18019,7 @@ member_space_limits_excluded_users_add = bb.Route(
 )
 member_space_limits_excluded_users_list = bb.Route(
     'member_space_limits/excluded_users/list',
+    1,
     False,
     ExcludedUsersListArg_validator,
     ExcludedUsersListResult_validator,
@@ -17869,6 +18029,7 @@ member_space_limits_excluded_users_list = bb.Route(
 )
 member_space_limits_excluded_users_list_continue = bb.Route(
     'member_space_limits/excluded_users/list/continue',
+    1,
     False,
     ExcludedUsersListContinueArg_validator,
     ExcludedUsersListResult_validator,
@@ -17878,6 +18039,7 @@ member_space_limits_excluded_users_list_continue = bb.Route(
 )
 member_space_limits_excluded_users_remove = bb.Route(
     'member_space_limits/excluded_users/remove',
+    1,
     False,
     ExcludedUsersUpdateArg_validator,
     ExcludedUsersUpdateResult_validator,
@@ -17887,6 +18049,7 @@ member_space_limits_excluded_users_remove = bb.Route(
 )
 member_space_limits_get_custom_quota = bb.Route(
     'member_space_limits/get_custom_quota',
+    1,
     False,
     CustomQuotaUsersArg_validator,
     bv.List(CustomQuotaResult_validator),
@@ -17896,6 +18059,7 @@ member_space_limits_get_custom_quota = bb.Route(
 )
 member_space_limits_remove_custom_quota = bb.Route(
     'member_space_limits/remove_custom_quota',
+    1,
     False,
     CustomQuotaUsersArg_validator,
     bv.List(RemoveCustomQuotaResult_validator),
@@ -17905,6 +18069,7 @@ member_space_limits_remove_custom_quota = bb.Route(
 )
 member_space_limits_set_custom_quota = bb.Route(
     'member_space_limits/set_custom_quota',
+    1,
     False,
     SetCustomQuotaArg_validator,
     bv.List(CustomQuotaResult_validator),
@@ -17914,6 +18079,7 @@ member_space_limits_set_custom_quota = bb.Route(
 )
 members_add = bb.Route(
     'members/add',
+    1,
     False,
     MembersAddArg_validator,
     MembersAddLaunch_validator,
@@ -17923,6 +18089,7 @@ members_add = bb.Route(
 )
 members_add_job_status_get = bb.Route(
     'members/add/job_status/get',
+    1,
     False,
     async.PollArg_validator,
     MembersAddJobStatus_validator,
@@ -17932,6 +18099,7 @@ members_add_job_status_get = bb.Route(
 )
 members_get_info = bb.Route(
     'members/get_info',
+    1,
     False,
     MembersGetInfoArgs_validator,
     MembersGetInfoResult_validator,
@@ -17941,6 +18109,7 @@ members_get_info = bb.Route(
 )
 members_list = bb.Route(
     'members/list',
+    1,
     False,
     MembersListArg_validator,
     MembersListResult_validator,
@@ -17950,6 +18119,7 @@ members_list = bb.Route(
 )
 members_list_continue = bb.Route(
     'members/list/continue',
+    1,
     False,
     MembersListContinueArg_validator,
     MembersListResult_validator,
@@ -17959,6 +18129,7 @@ members_list_continue = bb.Route(
 )
 members_recover = bb.Route(
     'members/recover',
+    1,
     False,
     MembersRecoverArg_validator,
     bv.Void(),
@@ -17968,6 +18139,7 @@ members_recover = bb.Route(
 )
 members_remove = bb.Route(
     'members/remove',
+    1,
     False,
     MembersRemoveArg_validator,
     async.LaunchEmptyResult_validator,
@@ -17977,6 +18149,7 @@ members_remove = bb.Route(
 )
 members_remove_job_status_get = bb.Route(
     'members/remove/job_status/get',
+    1,
     False,
     async.PollArg_validator,
     async.PollEmptyResult_validator,
@@ -17986,6 +18159,7 @@ members_remove_job_status_get = bb.Route(
 )
 members_send_welcome_email = bb.Route(
     'members/send_welcome_email',
+    1,
     False,
     UserSelectorArg_validator,
     bv.Void(),
@@ -17995,6 +18169,7 @@ members_send_welcome_email = bb.Route(
 )
 members_set_admin_permissions = bb.Route(
     'members/set_admin_permissions',
+    1,
     False,
     MembersSetPermissionsArg_validator,
     MembersSetPermissionsResult_validator,
@@ -18004,6 +18179,7 @@ members_set_admin_permissions = bb.Route(
 )
 members_set_profile = bb.Route(
     'members/set_profile',
+    1,
     False,
     MembersSetProfileArg_validator,
     TeamMemberInfo_validator,
@@ -18013,6 +18189,7 @@ members_set_profile = bb.Route(
 )
 members_suspend = bb.Route(
     'members/suspend',
+    1,
     False,
     MembersDeactivateArg_validator,
     bv.Void(),
@@ -18022,6 +18199,7 @@ members_suspend = bb.Route(
 )
 members_unsuspend = bb.Route(
     'members/unsuspend',
+    1,
     False,
     MembersUnsuspendArg_validator,
     bv.Void(),
@@ -18031,6 +18209,7 @@ members_unsuspend = bb.Route(
 )
 namespaces_list = bb.Route(
     'namespaces/list',
+    1,
     False,
     TeamNamespacesListArg_validator,
     TeamNamespacesListResult_validator,
@@ -18040,6 +18219,7 @@ namespaces_list = bb.Route(
 )
 namespaces_list_continue = bb.Route(
     'namespaces/list/continue',
+    1,
     False,
     TeamNamespacesListContinueArg_validator,
     TeamNamespacesListResult_validator,
@@ -18049,6 +18229,7 @@ namespaces_list_continue = bb.Route(
 )
 properties_template_add = bb.Route(
     'properties/template/add',
+    1,
     True,
     file_properties.AddTemplateArg_validator,
     file_properties.AddTemplateResult_validator,
@@ -18058,6 +18239,7 @@ properties_template_add = bb.Route(
 )
 properties_template_get = bb.Route(
     'properties/template/get',
+    1,
     True,
     file_properties.GetTemplateArg_validator,
     file_properties.GetTemplateResult_validator,
@@ -18067,6 +18249,7 @@ properties_template_get = bb.Route(
 )
 properties_template_list = bb.Route(
     'properties/template/list',
+    1,
     True,
     bv.Void(),
     file_properties.ListTemplateResult_validator,
@@ -18076,6 +18259,7 @@ properties_template_list = bb.Route(
 )
 properties_template_update = bb.Route(
     'properties/template/update',
+    1,
     True,
     file_properties.UpdateTemplateArg_validator,
     file_properties.UpdateTemplateResult_validator,
@@ -18085,6 +18269,7 @@ properties_template_update = bb.Route(
 )
 reports_get_activity = bb.Route(
     'reports/get_activity',
+    1,
     False,
     DateRange_validator,
     GetActivityReport_validator,
@@ -18094,6 +18279,7 @@ reports_get_activity = bb.Route(
 )
 reports_get_devices = bb.Route(
     'reports/get_devices',
+    1,
     False,
     DateRange_validator,
     GetDevicesReport_validator,
@@ -18103,6 +18289,7 @@ reports_get_devices = bb.Route(
 )
 reports_get_membership = bb.Route(
     'reports/get_membership',
+    1,
     False,
     DateRange_validator,
     GetMembershipReport_validator,
@@ -18112,6 +18299,7 @@ reports_get_membership = bb.Route(
 )
 reports_get_storage = bb.Route(
     'reports/get_storage',
+    1,
     False,
     DateRange_validator,
     GetStorageReport_validator,
@@ -18121,6 +18309,7 @@ reports_get_storage = bb.Route(
 )
 team_folder_activate = bb.Route(
     'team_folder/activate',
+    1,
     False,
     TeamFolderIdArg_validator,
     TeamFolderMetadata_validator,
@@ -18130,6 +18319,7 @@ team_folder_activate = bb.Route(
 )
 team_folder_archive = bb.Route(
     'team_folder/archive',
+    1,
     False,
     TeamFolderArchiveArg_validator,
     TeamFolderArchiveLaunch_validator,
@@ -18139,6 +18329,7 @@ team_folder_archive = bb.Route(
 )
 team_folder_archive_check = bb.Route(
     'team_folder/archive/check',
+    1,
     False,
     async.PollArg_validator,
     TeamFolderArchiveJobStatus_validator,
@@ -18148,6 +18339,7 @@ team_folder_archive_check = bb.Route(
 )
 team_folder_create = bb.Route(
     'team_folder/create',
+    1,
     False,
     TeamFolderCreateArg_validator,
     TeamFolderMetadata_validator,
@@ -18157,6 +18349,7 @@ team_folder_create = bb.Route(
 )
 team_folder_get_info = bb.Route(
     'team_folder/get_info',
+    1,
     False,
     TeamFolderIdListArg_validator,
     bv.List(TeamFolderGetInfoItem_validator),
@@ -18166,6 +18359,7 @@ team_folder_get_info = bb.Route(
 )
 team_folder_list = bb.Route(
     'team_folder/list',
+    1,
     False,
     TeamFolderListArg_validator,
     TeamFolderListResult_validator,
@@ -18175,6 +18369,7 @@ team_folder_list = bb.Route(
 )
 team_folder_list_continue = bb.Route(
     'team_folder/list/continue',
+    1,
     False,
     TeamFolderListContinueArg_validator,
     TeamFolderListResult_validator,
@@ -18184,6 +18379,7 @@ team_folder_list_continue = bb.Route(
 )
 team_folder_permanently_delete = bb.Route(
     'team_folder/permanently_delete',
+    1,
     False,
     TeamFolderIdArg_validator,
     bv.Void(),
@@ -18193,6 +18389,7 @@ team_folder_permanently_delete = bb.Route(
 )
 team_folder_rename = bb.Route(
     'team_folder/rename',
+    1,
     False,
     TeamFolderRenameArg_validator,
     TeamFolderMetadata_validator,
@@ -18202,6 +18399,7 @@ team_folder_rename = bb.Route(
 )
 team_folder_update_sync_settings = bb.Route(
     'team_folder/update_sync_settings',
+    1,
     False,
     TeamFolderUpdateSyncSettingsArg_validator,
     TeamFolderMetadata_validator,
@@ -18211,6 +18409,7 @@ team_folder_update_sync_settings = bb.Route(
 )
 token_get_authenticated_admin = bb.Route(
     'token/get_authenticated_admin',
+    1,
     False,
     bv.Void(),
     TokenGetAuthenticatedAdminResult_validator,

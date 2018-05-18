@@ -5056,6 +5056,130 @@ class DeviceUnlinkType(object):
 
 DeviceUnlinkType_validator = bv.Struct(DeviceUnlinkType)
 
+class DirectoryRestrictionsAddMembersDetails(object):
+    """
+    Added members to directory restrictions list.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return 'DirectoryRestrictionsAddMembersDetails()'
+
+DirectoryRestrictionsAddMembersDetails_validator = bv.Struct(DirectoryRestrictionsAddMembersDetails)
+
+class DirectoryRestrictionsAddMembersType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'DirectoryRestrictionsAddMembersType(description={!r})'.format(
+            self._description_value,
+        )
+
+DirectoryRestrictionsAddMembersType_validator = bv.Struct(DirectoryRestrictionsAddMembersType)
+
+class DirectoryRestrictionsRemoveMembersDetails(object):
+    """
+    Removed members from directory restrictions list.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return 'DirectoryRestrictionsRemoveMembersDetails()'
+
+DirectoryRestrictionsRemoveMembersDetails_validator = bv.Struct(DirectoryRestrictionsRemoveMembersDetails)
+
+class DirectoryRestrictionsRemoveMembersType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'DirectoryRestrictionsRemoveMembersType(description={!r})'.format(
+            self._description_value,
+        )
+
+DirectoryRestrictionsRemoveMembersType_validator = bv.Struct(DirectoryRestrictionsRemoveMembersType)
+
 class DisabledDomainInvitesDetails(object):
     """
     Disabled domain invites.
@@ -7913,6 +8037,17 @@ class EventDetails(bb.Union):
         return cls('member_transfer_account_contents_details', val)
 
     @classmethod
+    def secondary_mails_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``secondary_mails_policy_changed_details`` tag with value ``val``.
+
+        :param SecondaryMailsPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('secondary_mails_policy_changed_details', val)
+
+    @classmethod
     def paper_content_add_member_details(cls, val):
         """
         Create an instance of this class set to the
@@ -9327,6 +9462,17 @@ class EventDetails(bb.Union):
         return cls('showcase_trashed_details', val)
 
     @classmethod
+    def showcase_trashed_deprecated_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_trashed_deprecated_details`` tag with value ``val``.
+
+        :param ShowcaseTrashedDeprecatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_trashed_deprecated_details', val)
+
+    @classmethod
     def showcase_unresolve_comment_details(cls, val):
         """
         Create an instance of this class set to the
@@ -9347,6 +9493,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('showcase_untrashed_details', val)
+
+    @classmethod
+    def showcase_untrashed_deprecated_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_untrashed_deprecated_details`` tag with value ``val``.
+
+        :param ShowcaseUntrashedDeprecatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_untrashed_deprecated_details', val)
 
     @classmethod
     def showcase_view_details(cls, val):
@@ -9639,6 +9796,29 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('device_approvals_change_unlink_action_details', val)
+
+    @classmethod
+    def directory_restrictions_add_members_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``directory_restrictions_add_members_details`` tag with value ``val``.
+
+        :param DirectoryRestrictionsAddMembersDetails val:
+        :rtype: EventDetails
+        """
+        return cls('directory_restrictions_add_members_details', val)
+
+    @classmethod
+    def directory_restrictions_remove_members_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``directory_restrictions_remove_members_details`` tag with value
+        ``val``.
+
+        :param DirectoryRestrictionsRemoveMembersDetails val:
+        :rtype: EventDetails
+        """
+        return cls('directory_restrictions_remove_members_details', val)
 
     @classmethod
     def emm_add_exception_details(cls, val):
@@ -9950,6 +10130,40 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('sharing_change_member_policy_details', val)
+
+    @classmethod
+    def showcase_change_download_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_change_download_policy_details`` tag with value ``val``.
+
+        :param ShowcaseChangeDownloadPolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_change_download_policy_details', val)
+
+    @classmethod
+    def showcase_change_enabled_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_change_enabled_policy_details`` tag with value ``val``.
+
+        :param ShowcaseChangeEnabledPolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_change_enabled_policy_details', val)
+
+    @classmethod
+    def showcase_change_external_sharing_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_change_external_sharing_policy_details`` tag with value
+        ``val``.
+
+        :param ShowcaseChangeExternalSharingPolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('showcase_change_external_sharing_policy_details', val)
 
     @classmethod
     def smart_sync_change_policy_details(cls, val):
@@ -10933,6 +11147,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_transfer_account_contents_details'
+
+    def is_secondary_mails_policy_changed_details(self):
+        """
+        Check if the union tag is ``secondary_mails_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_mails_policy_changed_details'
 
     def is_paper_content_add_member_details(self):
         """
@@ -11958,6 +12180,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'showcase_trashed_details'
 
+    def is_showcase_trashed_deprecated_details(self):
+        """
+        Check if the union tag is ``showcase_trashed_deprecated_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_trashed_deprecated_details'
+
     def is_showcase_unresolve_comment_details(self):
         """
         Check if the union tag is ``showcase_unresolve_comment_details``.
@@ -11973,6 +12203,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'showcase_untrashed_details'
+
+    def is_showcase_untrashed_deprecated_details(self):
+        """
+        Check if the union tag is ``showcase_untrashed_deprecated_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_untrashed_deprecated_details'
 
     def is_showcase_view_details(self):
         """
@@ -12181,6 +12419,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_approvals_change_unlink_action_details'
+
+    def is_directory_restrictions_add_members_details(self):
+        """
+        Check if the union tag is ``directory_restrictions_add_members_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'directory_restrictions_add_members_details'
+
+    def is_directory_restrictions_remove_members_details(self):
+        """
+        Check if the union tag is ``directory_restrictions_remove_members_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'directory_restrictions_remove_members_details'
 
     def is_emm_add_exception_details(self):
         """
@@ -12405,6 +12659,30 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sharing_change_member_policy_details'
+
+    def is_showcase_change_download_policy_details(self):
+        """
+        Check if the union tag is ``showcase_change_download_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_download_policy_details'
+
+    def is_showcase_change_enabled_policy_details(self):
+        """
+        Check if the union tag is ``showcase_change_enabled_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_enabled_policy_details'
+
+    def is_showcase_change_external_sharing_policy_details(self):
+        """
+        Check if the union tag is ``showcase_change_external_sharing_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_external_sharing_policy_details'
 
     def is_smart_sync_change_policy_details(self):
         """
@@ -13506,6 +13784,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_member_transfer_account_contents_details():
             raise AttributeError("tag 'member_transfer_account_contents_details' not set")
+        return self._value
+
+    def get_secondary_mails_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_secondary_mails_policy_changed_details` is true.
+
+        :rtype: SecondaryMailsPolicyChangedDetails
+        """
+        if not self.is_secondary_mails_policy_changed_details():
+            raise AttributeError("tag 'secondary_mails_policy_changed_details' not set")
         return self._value
 
     def get_paper_content_add_member_details(self):
@@ -14788,6 +15076,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'showcase_trashed_details' not set")
         return self._value
 
+    def get_showcase_trashed_deprecated_details(self):
+        """
+        Only call this if :meth:`is_showcase_trashed_deprecated_details` is true.
+
+        :rtype: ShowcaseTrashedDeprecatedDetails
+        """
+        if not self.is_showcase_trashed_deprecated_details():
+            raise AttributeError("tag 'showcase_trashed_deprecated_details' not set")
+        return self._value
+
     def get_showcase_unresolve_comment_details(self):
         """
         Only call this if :meth:`is_showcase_unresolve_comment_details` is true.
@@ -14806,6 +15104,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_showcase_untrashed_details():
             raise AttributeError("tag 'showcase_untrashed_details' not set")
+        return self._value
+
+    def get_showcase_untrashed_deprecated_details(self):
+        """
+        Only call this if :meth:`is_showcase_untrashed_deprecated_details` is true.
+
+        :rtype: ShowcaseUntrashedDeprecatedDetails
+        """
+        if not self.is_showcase_untrashed_deprecated_details():
+            raise AttributeError("tag 'showcase_untrashed_deprecated_details' not set")
         return self._value
 
     def get_showcase_view_details(self):
@@ -15066,6 +15374,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_device_approvals_change_unlink_action_details():
             raise AttributeError("tag 'device_approvals_change_unlink_action_details' not set")
+        return self._value
+
+    def get_directory_restrictions_add_members_details(self):
+        """
+        Only call this if :meth:`is_directory_restrictions_add_members_details` is true.
+
+        :rtype: DirectoryRestrictionsAddMembersDetails
+        """
+        if not self.is_directory_restrictions_add_members_details():
+            raise AttributeError("tag 'directory_restrictions_add_members_details' not set")
+        return self._value
+
+    def get_directory_restrictions_remove_members_details(self):
+        """
+        Only call this if :meth:`is_directory_restrictions_remove_members_details` is true.
+
+        :rtype: DirectoryRestrictionsRemoveMembersDetails
+        """
+        if not self.is_directory_restrictions_remove_members_details():
+            raise AttributeError("tag 'directory_restrictions_remove_members_details' not set")
         return self._value
 
     def get_emm_add_exception_details(self):
@@ -15346,6 +15674,36 @@ class EventDetails(bb.Union):
         """
         if not self.is_sharing_change_member_policy_details():
             raise AttributeError("tag 'sharing_change_member_policy_details' not set")
+        return self._value
+
+    def get_showcase_change_download_policy_details(self):
+        """
+        Only call this if :meth:`is_showcase_change_download_policy_details` is true.
+
+        :rtype: ShowcaseChangeDownloadPolicyDetails
+        """
+        if not self.is_showcase_change_download_policy_details():
+            raise AttributeError("tag 'showcase_change_download_policy_details' not set")
+        return self._value
+
+    def get_showcase_change_enabled_policy_details(self):
+        """
+        Only call this if :meth:`is_showcase_change_enabled_policy_details` is true.
+
+        :rtype: ShowcaseChangeEnabledPolicyDetails
+        """
+        if not self.is_showcase_change_enabled_policy_details():
+            raise AttributeError("tag 'showcase_change_enabled_policy_details' not set")
+        return self._value
+
+    def get_showcase_change_external_sharing_policy_details(self):
+        """
+        Only call this if :meth:`is_showcase_change_external_sharing_policy_details` is true.
+
+        :rtype: ShowcaseChangeExternalSharingPolicyDetails
+        """
+        if not self.is_showcase_change_external_sharing_policy_details():
+            raise AttributeError("tag 'showcase_change_external_sharing_policy_details' not set")
         return self._value
 
     def get_smart_sync_change_policy_details(self):
@@ -15652,7 +16010,7 @@ class EventType(bb.Union):
         request to join team
     :ivar DomainInvitesEmailExistingUsersType
         domain_invites_email_existing_users: (domains) Sent domain invites to
-        existing domain accounts
+        existing domain accounts (deprecated, no longer logged)
     :ivar DomainInvitesRequestToJoinTeamType
         domain_invites_request_to_join_team: (domains) Requested to join team
     :ivar DomainInvitesSetInviteNewUserPrefToNoType
@@ -15752,8 +16110,8 @@ class EventType(bb.Union):
         no longer logged)
     :ivar MemberChangeNameType member_change_name: (members) Changed team member
         name
-    :ivar MemberChangeStatusType member_change_status: (members) Changed
-        membership status of team member
+    :ivar MemberChangeStatusType member_change_status: (members) Changed member
+        status (invited, joined, suspended, etc.)
     :ivar MemberPermanentlyDeleteAccountContentsType
         member_permanently_delete_account_contents: (members) Permanently
         deleted contents of deleted team member account
@@ -15773,6 +16131,8 @@ class EventType(bb.Union):
     :ivar MemberTransferAccountContentsType member_transfer_account_contents:
         (members) Transferred contents of deleted member account to another
         member
+    :ivar SecondaryMailsPolicyChangedType secondary_mails_policy_changed:
+        (members) Secondary mails policy changed
     :ivar PaperContentAddMemberType paper_content_add_member: (paper) Added team
         member to Paper doc/folder
     :ivar PaperContentAddToFolderType paper_content_add_to_folder: (paper) Added
@@ -15904,7 +16264,7 @@ class EventType(bb.Union):
         team member's shared folder from link (deprecated, no longer logged)
     :ivar SfTeamUninviteType sf_team_uninvite: (sharing) Unshared folder with
         team member (deprecated, replaced by 'Removed invitee from shared
-        file/folder before invite accepted')
+        file/folder before invite was accepted')
     :ivar SharedContentAddInviteesType shared_content_add_invitees: (sharing)
         Invited user to Dropbox and added them to shared file/folder
     :ivar SharedContentAddLinkExpiryType shared_content_add_link_expiry:
@@ -15918,7 +16278,7 @@ class EventType(bb.Union):
         members can download shared file/folder
     :ivar SharedContentChangeInviteeRoleType shared_content_change_invitee_role:
         (sharing) Changed access type of invitee to shared file/folder before
-        invite accepted
+        invite was accepted
     :ivar SharedContentChangeLinkAudienceType
         shared_content_change_link_audience: (sharing) Changed link audience of
         shared file/folder
@@ -15941,7 +16301,8 @@ class EventType(bb.Union):
     :ivar SharedContentRelinquishMembershipType
         shared_content_relinquish_membership: (sharing) Left shared file/folder
     :ivar SharedContentRemoveInviteesType shared_content_remove_invitees:
-        (sharing) Removed invitee from shared file/folder before invite accepted
+        (sharing) Removed invitee from shared file/folder before invite was
+        accepted
     :ivar SharedContentRemoveLinkExpiryType shared_content_remove_link_expiry:
         (sharing) Removed link expiration date of shared file/folder
     :ivar SharedContentRemoveLinkPasswordType
@@ -16032,9 +16393,15 @@ class EventType(bb.Union):
         Resolved showcase comment
     :ivar ShowcaseRestoredType showcase_restored: (showcase) Unarchived showcase
     :ivar ShowcaseTrashedType showcase_trashed: (showcase) Deleted showcase
+    :ivar ShowcaseTrashedDeprecatedType showcase_trashed_deprecated: (showcase)
+        Deleted showcase (old version) (deprecated, replaced by 'Deleted
+        showcase')
     :ivar ShowcaseUnresolveCommentType showcase_unresolve_comment: (showcase)
         Unresolved showcase comment
     :ivar ShowcaseUntrashedType showcase_untrashed: (showcase) Restored showcase
+    :ivar ShowcaseUntrashedDeprecatedType showcase_untrashed_deprecated:
+        (showcase) Restored showcase (old version) (deprecated, replaced by
+        'Restored showcase')
     :ivar ShowcaseViewType showcase_view: (showcase) Viewed showcase
     :ivar SsoAddCertType sso_add_cert: (sso) Added X.509 certificate for SSO
     :ivar SsoAddLoginUrlType sso_add_login_url: (sso) Added sign-in URL for SSO
@@ -16091,6 +16458,12 @@ class EventType(bb.Union):
     :ivar DeviceApprovalsChangeUnlinkActionType
         device_approvals_change_unlink_action: (team_policies) Changed device
         approvals setting when member unlinks approved device
+    :ivar DirectoryRestrictionsAddMembersType
+        directory_restrictions_add_members: (team_policies) Added members to
+        directory restrictions list
+    :ivar DirectoryRestrictionsRemoveMembersType
+        directory_restrictions_remove_members: (team_policies) Removed members
+        from directory restrictions list
     :ivar EmmAddExceptionType emm_add_exception: (team_policies) Added members
         to EMM exception list
     :ivar EmmChangePolicyType emm_change_policy: (team_policies)
@@ -16163,6 +16536,14 @@ class EventType(bb.Union):
     :ivar SharingChangeMemberPolicyType sharing_change_member_policy:
         (team_policies) Changed whether members can share files/folders outside
         team
+    :ivar ShowcaseChangeDownloadPolicyType showcase_change_download_policy:
+        (team_policies) Enabled/disabled downloading files from Dropbox Showcase
+        for team
+    :ivar ShowcaseChangeEnabledPolicyType showcase_change_enabled_policy:
+        (team_policies) Enabled/disabled Dropbox Showcase for team
+    :ivar ShowcaseChangeExternalSharingPolicyType
+        showcase_change_external_sharing_policy: (team_policies)
+        Enabled/disabled sharing Dropbox Showcase externally for team
     :ivar SmartSyncChangePolicyType smart_sync_change_policy: (team_policies)
         Changed default Smart Sync setting for team members
     :ivar SmartSyncNotOptOutType smart_sync_not_opt_out: (team_policies) Opted
@@ -17219,6 +17600,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('member_transfer_account_contents', val)
+
+    @classmethod
+    def secondary_mails_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``secondary_mails_policy_changed`` tag with value ``val``.
+
+        :param SecondaryMailsPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('secondary_mails_policy_changed', val)
 
     @classmethod
     def paper_content_add_member(cls, val):
@@ -18631,6 +19023,17 @@ class EventType(bb.Union):
         return cls('showcase_trashed', val)
 
     @classmethod
+    def showcase_trashed_deprecated(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_trashed_deprecated`` tag with value ``val``.
+
+        :param ShowcaseTrashedDeprecatedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_trashed_deprecated', val)
+
+    @classmethod
     def showcase_unresolve_comment(cls, val):
         """
         Create an instance of this class set to the
@@ -18651,6 +19054,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('showcase_untrashed', val)
+
+    @classmethod
+    def showcase_untrashed_deprecated(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_untrashed_deprecated`` tag with value ``val``.
+
+        :param ShowcaseUntrashedDeprecatedType val:
+        :rtype: EventType
+        """
+        return cls('showcase_untrashed_deprecated', val)
 
     @classmethod
     def showcase_view(cls, val):
@@ -18937,6 +19351,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('device_approvals_change_unlink_action', val)
+
+    @classmethod
+    def directory_restrictions_add_members(cls, val):
+        """
+        Create an instance of this class set to the
+        ``directory_restrictions_add_members`` tag with value ``val``.
+
+        :param DirectoryRestrictionsAddMembersType val:
+        :rtype: EventType
+        """
+        return cls('directory_restrictions_add_members', val)
+
+    @classmethod
+    def directory_restrictions_remove_members(cls, val):
+        """
+        Create an instance of this class set to the
+        ``directory_restrictions_remove_members`` tag with value ``val``.
+
+        :param DirectoryRestrictionsRemoveMembersType val:
+        :rtype: EventType
+        """
+        return cls('directory_restrictions_remove_members', val)
 
     @classmethod
     def emm_add_exception(cls, val):
@@ -19245,6 +19681,39 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('sharing_change_member_policy', val)
+
+    @classmethod
+    def showcase_change_download_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_change_download_policy`` tag with value ``val``.
+
+        :param ShowcaseChangeDownloadPolicyType val:
+        :rtype: EventType
+        """
+        return cls('showcase_change_download_policy', val)
+
+    @classmethod
+    def showcase_change_enabled_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_change_enabled_policy`` tag with value ``val``.
+
+        :param ShowcaseChangeEnabledPolicyType val:
+        :rtype: EventType
+        """
+        return cls('showcase_change_enabled_policy', val)
+
+    @classmethod
+    def showcase_change_external_sharing_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``showcase_change_external_sharing_policy`` tag with value ``val``.
+
+        :param ShowcaseChangeExternalSharingPolicyType val:
+        :rtype: EventType
+        """
+        return cls('showcase_change_external_sharing_policy', val)
 
     @classmethod
     def smart_sync_change_policy(cls, val):
@@ -20215,6 +20684,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_transfer_account_contents'
+
+    def is_secondary_mails_policy_changed(self):
+        """
+        Check if the union tag is ``secondary_mails_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_mails_policy_changed'
 
     def is_paper_content_add_member(self):
         """
@@ -21240,6 +21717,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'showcase_trashed'
 
+    def is_showcase_trashed_deprecated(self):
+        """
+        Check if the union tag is ``showcase_trashed_deprecated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_trashed_deprecated'
+
     def is_showcase_unresolve_comment(self):
         """
         Check if the union tag is ``showcase_unresolve_comment``.
@@ -21255,6 +21740,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'showcase_untrashed'
+
+    def is_showcase_untrashed_deprecated(self):
+        """
+        Check if the union tag is ``showcase_untrashed_deprecated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_untrashed_deprecated'
 
     def is_showcase_view(self):
         """
@@ -21463,6 +21956,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_approvals_change_unlink_action'
+
+    def is_directory_restrictions_add_members(self):
+        """
+        Check if the union tag is ``directory_restrictions_add_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'directory_restrictions_add_members'
+
+    def is_directory_restrictions_remove_members(self):
+        """
+        Check if the union tag is ``directory_restrictions_remove_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'directory_restrictions_remove_members'
 
     def is_emm_add_exception(self):
         """
@@ -21687,6 +22196,30 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sharing_change_member_policy'
+
+    def is_showcase_change_download_policy(self):
+        """
+        Check if the union tag is ``showcase_change_download_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_download_policy'
+
+    def is_showcase_change_enabled_policy(self):
+        """
+        Check if the union tag is ``showcase_change_enabled_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_enabled_policy'
+
+    def is_showcase_change_external_sharing_policy(self):
+        """
+        Check if the union tag is ``showcase_change_external_sharing_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_external_sharing_policy'
 
     def is_smart_sync_change_policy(self):
         """
@@ -22225,7 +22758,8 @@ class EventType(bb.Union):
 
     def get_domain_invites_email_existing_users(self):
         """
-        (domains) Sent domain invites to existing domain accounts
+        (domains) Sent domain invites to existing domain accounts (deprecated,
+        no longer logged)
 
         Only call this if :meth:`is_domain_invites_email_existing_users` is true.
 
@@ -22878,7 +23412,7 @@ class EventType(bb.Union):
 
     def get_member_change_status(self):
         """
-        (members) Changed membership status of team member
+        (members) Changed member status (invited, joined, suspended, etc.)
 
         Only call this if :meth:`is_member_change_status` is true.
 
@@ -22971,6 +23505,18 @@ class EventType(bb.Union):
         """
         if not self.is_member_transfer_account_contents():
             raise AttributeError("tag 'member_transfer_account_contents' not set")
+        return self._value
+
+    def get_secondary_mails_policy_changed(self):
+        """
+        (members) Secondary mails policy changed
+
+        Only call this if :meth:`is_secondary_mails_policy_changed` is true.
+
+        :rtype: SecondaryMailsPolicyChangedType
+        """
+        if not self.is_secondary_mails_policy_changed():
+            raise AttributeError("tag 'secondary_mails_policy_changed' not set")
         return self._value
 
     def get_paper_content_add_member(self):
@@ -23761,7 +24307,7 @@ class EventType(bb.Union):
     def get_sf_team_uninvite(self):
         """
         (sharing) Unshared folder with team member (deprecated, replaced by
-        'Removed invitee from shared file/folder before invite accepted')
+        'Removed invitee from shared file/folder before invite was accepted')
 
         Only call this if :meth:`is_sf_team_uninvite` is true.
 
@@ -23834,7 +24380,7 @@ class EventType(bb.Union):
     def get_shared_content_change_invitee_role(self):
         """
         (sharing) Changed access type of invitee to shared file/folder before
-        invite accepted
+        invite was accepted
 
         Only call this if :meth:`is_shared_content_change_invitee_role` is true.
 
@@ -23954,7 +24500,8 @@ class EventType(bb.Union):
 
     def get_shared_content_remove_invitees(self):
         """
-        (sharing) Removed invitee from shared file/folder before invite accepted
+        (sharing) Removed invitee from shared file/folder before invite was
+        accepted
 
         Only call this if :meth:`is_shared_content_remove_invitees` is true.
 
@@ -24530,6 +25077,19 @@ class EventType(bb.Union):
             raise AttributeError("tag 'showcase_trashed' not set")
         return self._value
 
+    def get_showcase_trashed_deprecated(self):
+        """
+        (showcase) Deleted showcase (old version) (deprecated, replaced by
+        'Deleted showcase')
+
+        Only call this if :meth:`is_showcase_trashed_deprecated` is true.
+
+        :rtype: ShowcaseTrashedDeprecatedType
+        """
+        if not self.is_showcase_trashed_deprecated():
+            raise AttributeError("tag 'showcase_trashed_deprecated' not set")
+        return self._value
+
     def get_showcase_unresolve_comment(self):
         """
         (showcase) Unresolved showcase comment
@@ -24552,6 +25112,19 @@ class EventType(bb.Union):
         """
         if not self.is_showcase_untrashed():
             raise AttributeError("tag 'showcase_untrashed' not set")
+        return self._value
+
+    def get_showcase_untrashed_deprecated(self):
+        """
+        (showcase) Restored showcase (old version) (deprecated, replaced by
+        'Restored showcase')
+
+        Only call this if :meth:`is_showcase_untrashed_deprecated` is true.
+
+        :rtype: ShowcaseUntrashedDeprecatedType
+        """
+        if not self.is_showcase_untrashed_deprecated():
+            raise AttributeError("tag 'showcase_untrashed_deprecated' not set")
         return self._value
 
     def get_showcase_view(self):
@@ -24870,6 +25443,30 @@ class EventType(bb.Union):
         """
         if not self.is_device_approvals_change_unlink_action():
             raise AttributeError("tag 'device_approvals_change_unlink_action' not set")
+        return self._value
+
+    def get_directory_restrictions_add_members(self):
+        """
+        (team_policies) Added members to directory restrictions list
+
+        Only call this if :meth:`is_directory_restrictions_add_members` is true.
+
+        :rtype: DirectoryRestrictionsAddMembersType
+        """
+        if not self.is_directory_restrictions_add_members():
+            raise AttributeError("tag 'directory_restrictions_add_members' not set")
+        return self._value
+
+    def get_directory_restrictions_remove_members(self):
+        """
+        (team_policies) Removed members from directory restrictions list
+
+        Only call this if :meth:`is_directory_restrictions_remove_members` is true.
+
+        :rtype: DirectoryRestrictionsRemoveMembersType
+        """
+        if not self.is_directory_restrictions_remove_members():
+            raise AttributeError("tag 'directory_restrictions_remove_members' not set")
         return self._value
 
     def get_emm_add_exception(self):
@@ -25218,6 +25815,44 @@ class EventType(bb.Union):
         """
         if not self.is_sharing_change_member_policy():
             raise AttributeError("tag 'sharing_change_member_policy' not set")
+        return self._value
+
+    def get_showcase_change_download_policy(self):
+        """
+        (team_policies) Enabled/disabled downloading files from Dropbox Showcase
+        for team
+
+        Only call this if :meth:`is_showcase_change_download_policy` is true.
+
+        :rtype: ShowcaseChangeDownloadPolicyType
+        """
+        if not self.is_showcase_change_download_policy():
+            raise AttributeError("tag 'showcase_change_download_policy' not set")
+        return self._value
+
+    def get_showcase_change_enabled_policy(self):
+        """
+        (team_policies) Enabled/disabled Dropbox Showcase for team
+
+        Only call this if :meth:`is_showcase_change_enabled_policy` is true.
+
+        :rtype: ShowcaseChangeEnabledPolicyType
+        """
+        if not self.is_showcase_change_enabled_policy():
+            raise AttributeError("tag 'showcase_change_enabled_policy' not set")
+        return self._value
+
+    def get_showcase_change_external_sharing_policy(self):
+        """
+        (team_policies) Enabled/disabled sharing Dropbox Showcase externally for
+        team
+
+        Only call this if :meth:`is_showcase_change_external_sharing_policy` is true.
+
+        :rtype: ShowcaseChangeExternalSharingPolicyType
+        """
+        if not self.is_showcase_change_external_sharing_policy():
+            raise AttributeError("tag 'showcase_change_external_sharing_policy' not set")
         return self._value
 
     def get_smart_sync_change_policy(self):
@@ -33293,7 +33928,7 @@ MemberChangeNameType_validator = bv.Struct(MemberChangeNameType)
 
 class MemberChangeStatusDetails(object):
     """
-    Changed membership status of team member.
+    Changed member status (invited, joined, suspended, etc.).
 
     :ivar previous_value: Previous member status. Might be missing due to
         historical data gap.
@@ -42184,6 +42819,177 @@ class ResellerSupportSessionStartType(object):
 
 ResellerSupportSessionStartType_validator = bv.Struct(ResellerSupportSessionStartType)
 
+class SecondaryMailsPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'SecondaryMailsPolicy(%r, %r)' % (self._tag, self._value)
+
+SecondaryMailsPolicy_validator = bv.Union(SecondaryMailsPolicy)
+
+class SecondaryMailsPolicyChangedDetails(object):
+    """
+    Secondary mails policy changed.
+
+    :ivar previous_value: Previous secondary mails policy.
+    :ivar new_value: New secondary mails policy.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Previous secondary mails policy.
+
+        :rtype: SecondaryMailsPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New secondary mails policy.
+
+        :rtype: SecondaryMailsPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def __repr__(self):
+        return 'SecondaryMailsPolicyChangedDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+SecondaryMailsPolicyChangedDetails_validator = bv.Struct(SecondaryMailsPolicyChangedDetails)
+
+class SecondaryMailsPolicyChangedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'SecondaryMailsPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+SecondaryMailsPolicyChangedType_validator = bv.Struct(SecondaryMailsPolicyChangedType)
+
 class SfAddGroupDetails(object):
     """
     Added team to shared folder.
@@ -44786,7 +45592,8 @@ SharedContentChangeDownloadsPolicyType_validator = bv.Struct(SharedContentChange
 
 class SharedContentChangeInviteeRoleDetails(object):
     """
-    Changed access type of invitee to shared file/folder before invite accepted.
+    Changed access type of invitee to shared file/folder before invite was
+    accepted.
 
     :ivar previous_access_level: Previous access level. Might be missing due to
         historical data gap.
@@ -46056,7 +46863,7 @@ SharedContentRelinquishMembershipType_validator = bv.Struct(SharedContentRelinqu
 
 class SharedContentRemoveInviteesDetails(object):
     """
-    Removed invitee from shared file/folder before invite accepted.
+    Removed invitee from shared file/folder before invite was accepted.
 
     :ivar invitees: A list of invitees.
     """
@@ -50019,6 +50826,387 @@ class ShowcaseArchivedType(object):
 
 ShowcaseArchivedType_validator = bv.Struct(ShowcaseArchivedType)
 
+class ShowcaseChangeDownloadPolicyDetails(object):
+    """
+    Enabled/disabled downloading files from Dropbox Showcase for team.
+
+    :ivar new_value: New Dropbox Showcase download policy.
+    :ivar previous_value: Previous Dropbox Showcase download policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New Dropbox Showcase download policy.
+
+        :rtype: ShowcaseDownloadPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous Dropbox Showcase download policy.
+
+        :rtype: ShowcaseDownloadPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def __repr__(self):
+        return 'ShowcaseChangeDownloadPolicyDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+ShowcaseChangeDownloadPolicyDetails_validator = bv.Struct(ShowcaseChangeDownloadPolicyDetails)
+
+class ShowcaseChangeDownloadPolicyType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseChangeDownloadPolicyType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseChangeDownloadPolicyType_validator = bv.Struct(ShowcaseChangeDownloadPolicyType)
+
+class ShowcaseChangeEnabledPolicyDetails(object):
+    """
+    Enabled/disabled Dropbox Showcase for team.
+
+    :ivar new_value: New Dropbox Showcase policy.
+    :ivar previous_value: Previous Dropbox Showcase policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New Dropbox Showcase policy.
+
+        :rtype: ShowcaseEnabledPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous Dropbox Showcase policy.
+
+        :rtype: ShowcaseEnabledPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def __repr__(self):
+        return 'ShowcaseChangeEnabledPolicyDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+ShowcaseChangeEnabledPolicyDetails_validator = bv.Struct(ShowcaseChangeEnabledPolicyDetails)
+
+class ShowcaseChangeEnabledPolicyType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseChangeEnabledPolicyType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseChangeEnabledPolicyType_validator = bv.Struct(ShowcaseChangeEnabledPolicyType)
+
+class ShowcaseChangeExternalSharingPolicyDetails(object):
+    """
+    Enabled/disabled sharing Dropbox Showcase externally for team.
+
+    :ivar new_value: New Dropbox Showcase external sharing policy.
+    :ivar previous_value: Previous Dropbox Showcase external sharing policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New Dropbox Showcase external sharing policy.
+
+        :rtype: ShowcaseExternalSharingPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous Dropbox Showcase external sharing policy.
+
+        :rtype: ShowcaseExternalSharingPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def __repr__(self):
+        return 'ShowcaseChangeExternalSharingPolicyDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+ShowcaseChangeExternalSharingPolicyDetails_validator = bv.Struct(ShowcaseChangeExternalSharingPolicyDetails)
+
+class ShowcaseChangeExternalSharingPolicyType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseChangeExternalSharingPolicyType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseChangeExternalSharingPolicyType_validator = bv.Struct(ShowcaseChangeExternalSharingPolicyType)
+
 class ShowcaseCreatedDetails(object):
     """
     Created showcase.
@@ -50327,6 +51515,53 @@ class ShowcaseDocumentLogInfo(object):
 
 ShowcaseDocumentLogInfo_validator = bv.Struct(ShowcaseDocumentLogInfo)
 
+class ShowcaseDownloadPolicy(bb.Union):
+    """
+    Policy for controlling if files can be downloaded from Showcases by team
+    members
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ShowcaseDownloadPolicy(%r, %r)' % (self._tag, self._value)
+
+ShowcaseDownloadPolicy_validator = bv.Union(ShowcaseDownloadPolicy)
+
 class ShowcaseEditCommentDetails(object):
     """
     Edited showcase comment.
@@ -50551,6 +51786,98 @@ class ShowcaseEditedType(object):
         )
 
 ShowcaseEditedType_validator = bv.Struct(ShowcaseEditedType)
+
+class ShowcaseEnabledPolicy(bb.Union):
+    """
+    Policy for controlling whether Showcase is enabled.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ShowcaseEnabledPolicy(%r, %r)' % (self._tag, self._value)
+
+ShowcaseEnabledPolicy_validator = bv.Union(ShowcaseEnabledPolicy)
+
+class ShowcaseExternalSharingPolicy(bb.Union):
+    """
+    Policy for controlling if team members can share Showcases externally.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def __repr__(self):
+        return 'ShowcaseExternalSharingPolicy(%r, %r)' % (self._tag, self._value)
+
+ShowcaseExternalSharingPolicy_validator = bv.Union(ShowcaseExternalSharingPolicy)
 
 class ShowcaseFileAddedDetails(object):
     """
@@ -51699,6 +53026,101 @@ class ShowcaseRestoredType(object):
 
 ShowcaseRestoredType_validator = bv.Struct(ShowcaseRestoredType)
 
+class ShowcaseTrashedDeprecatedDetails(object):
+    """
+    Deleted showcase (old version).
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseTrashedDeprecatedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseTrashedDeprecatedDetails_validator = bv.Struct(ShowcaseTrashedDeprecatedDetails)
+
+class ShowcaseTrashedDeprecatedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseTrashedDeprecatedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseTrashedDeprecatedType_validator = bv.Struct(ShowcaseTrashedDeprecatedType)
+
 class ShowcaseTrashedDetails(object):
     """
     Deleted showcase.
@@ -51923,6 +53345,101 @@ class ShowcaseUnresolveCommentType(object):
         )
 
 ShowcaseUnresolveCommentType_validator = bv.Struct(ShowcaseUnresolveCommentType)
+
+class ShowcaseUntrashedDeprecatedDetails(object):
+    """
+    Restored showcase (old version).
+
+    :ivar event_uuid: Event unique identifier.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    def __repr__(self):
+        return 'ShowcaseUntrashedDeprecatedDetails(event_uuid={!r})'.format(
+            self._event_uuid_value,
+        )
+
+ShowcaseUntrashedDeprecatedDetails_validator = bv.Struct(ShowcaseUntrashedDeprecatedDetails)
+
+class ShowcaseUntrashedDeprecatedType(object):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def __repr__(self):
+        return 'ShowcaseUntrashedDeprecatedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShowcaseUntrashedDeprecatedType_validator = bv.Struct(ShowcaseUntrashedDeprecatedType)
 
 class ShowcaseUntrashedDetails(object):
     """
@@ -58548,6 +60065,20 @@ DeviceUnlinkType._description_validator = bv.String()
 DeviceUnlinkType._all_field_names_ = set(['description'])
 DeviceUnlinkType._all_fields_ = [('description', DeviceUnlinkType._description_validator)]
 
+DirectoryRestrictionsAddMembersDetails._all_field_names_ = set([])
+DirectoryRestrictionsAddMembersDetails._all_fields_ = []
+
+DirectoryRestrictionsAddMembersType._description_validator = bv.String()
+DirectoryRestrictionsAddMembersType._all_field_names_ = set(['description'])
+DirectoryRestrictionsAddMembersType._all_fields_ = [('description', DirectoryRestrictionsAddMembersType._description_validator)]
+
+DirectoryRestrictionsRemoveMembersDetails._all_field_names_ = set([])
+DirectoryRestrictionsRemoveMembersDetails._all_fields_ = []
+
+DirectoryRestrictionsRemoveMembersType._description_validator = bv.String()
+DirectoryRestrictionsRemoveMembersType._all_field_names_ = set(['description'])
+DirectoryRestrictionsRemoveMembersType._all_fields_ = [('description', DirectoryRestrictionsRemoveMembersType._description_validator)]
+
 DisabledDomainInvitesDetails._all_field_names_ = set([])
 DisabledDomainInvitesDetails._all_fields_ = []
 
@@ -58887,6 +60418,7 @@ EventDetails._member_space_limits_change_status_details_validator = MemberSpaceL
 EventDetails._member_space_limits_remove_custom_quota_details_validator = MemberSpaceLimitsRemoveCustomQuotaDetails_validator
 EventDetails._member_suggest_details_validator = MemberSuggestDetails_validator
 EventDetails._member_transfer_account_contents_details_validator = MemberTransferAccountContentsDetails_validator
+EventDetails._secondary_mails_policy_changed_details_validator = SecondaryMailsPolicyChangedDetails_validator
 EventDetails._paper_content_add_member_details_validator = PaperContentAddMemberDetails_validator
 EventDetails._paper_content_add_to_folder_details_validator = PaperContentAddToFolderDetails_validator
 EventDetails._paper_content_archive_details_validator = PaperContentArchiveDetails_validator
@@ -59015,8 +60547,10 @@ EventDetails._showcase_request_access_details_validator = ShowcaseRequestAccessD
 EventDetails._showcase_resolve_comment_details_validator = ShowcaseResolveCommentDetails_validator
 EventDetails._showcase_restored_details_validator = ShowcaseRestoredDetails_validator
 EventDetails._showcase_trashed_details_validator = ShowcaseTrashedDetails_validator
+EventDetails._showcase_trashed_deprecated_details_validator = ShowcaseTrashedDeprecatedDetails_validator
 EventDetails._showcase_unresolve_comment_details_validator = ShowcaseUnresolveCommentDetails_validator
 EventDetails._showcase_untrashed_details_validator = ShowcaseUntrashedDetails_validator
+EventDetails._showcase_untrashed_deprecated_details_validator = ShowcaseUntrashedDeprecatedDetails_validator
 EventDetails._showcase_view_details_validator = ShowcaseViewDetails_validator
 EventDetails._sso_add_cert_details_validator = SsoAddCertDetails_validator
 EventDetails._sso_add_login_url_details_validator = SsoAddLoginUrlDetails_validator
@@ -59043,6 +60577,8 @@ EventDetails._device_approvals_change_desktop_policy_details_validator = DeviceA
 EventDetails._device_approvals_change_mobile_policy_details_validator = DeviceApprovalsChangeMobilePolicyDetails_validator
 EventDetails._device_approvals_change_overage_action_details_validator = DeviceApprovalsChangeOverageActionDetails_validator
 EventDetails._device_approvals_change_unlink_action_details_validator = DeviceApprovalsChangeUnlinkActionDetails_validator
+EventDetails._directory_restrictions_add_members_details_validator = DirectoryRestrictionsAddMembersDetails_validator
+EventDetails._directory_restrictions_remove_members_details_validator = DirectoryRestrictionsRemoveMembersDetails_validator
 EventDetails._emm_add_exception_details_validator = EmmAddExceptionDetails_validator
 EventDetails._emm_change_policy_details_validator = EmmChangePolicyDetails_validator
 EventDetails._emm_remove_exception_details_validator = EmmRemoveExceptionDetails_validator
@@ -59071,6 +60607,9 @@ EventDetails._permanent_delete_change_policy_details_validator = PermanentDelete
 EventDetails._sharing_change_folder_join_policy_details_validator = SharingChangeFolderJoinPolicyDetails_validator
 EventDetails._sharing_change_link_policy_details_validator = SharingChangeLinkPolicyDetails_validator
 EventDetails._sharing_change_member_policy_details_validator = SharingChangeMemberPolicyDetails_validator
+EventDetails._showcase_change_download_policy_details_validator = ShowcaseChangeDownloadPolicyDetails_validator
+EventDetails._showcase_change_enabled_policy_details_validator = ShowcaseChangeEnabledPolicyDetails_validator
+EventDetails._showcase_change_external_sharing_policy_details_validator = ShowcaseChangeExternalSharingPolicyDetails_validator
 EventDetails._smart_sync_change_policy_details_validator = SmartSyncChangePolicyDetails_validator
 EventDetails._smart_sync_not_opt_out_details_validator = SmartSyncNotOptOutDetails_validator
 EventDetails._smart_sync_opt_out_details_validator = SmartSyncOptOutDetails_validator
@@ -59187,6 +60726,7 @@ EventDetails._tagmap = {
     'member_space_limits_remove_custom_quota_details': EventDetails._member_space_limits_remove_custom_quota_details_validator,
     'member_suggest_details': EventDetails._member_suggest_details_validator,
     'member_transfer_account_contents_details': EventDetails._member_transfer_account_contents_details_validator,
+    'secondary_mails_policy_changed_details': EventDetails._secondary_mails_policy_changed_details_validator,
     'paper_content_add_member_details': EventDetails._paper_content_add_member_details_validator,
     'paper_content_add_to_folder_details': EventDetails._paper_content_add_to_folder_details_validator,
     'paper_content_archive_details': EventDetails._paper_content_archive_details_validator,
@@ -59315,8 +60855,10 @@ EventDetails._tagmap = {
     'showcase_resolve_comment_details': EventDetails._showcase_resolve_comment_details_validator,
     'showcase_restored_details': EventDetails._showcase_restored_details_validator,
     'showcase_trashed_details': EventDetails._showcase_trashed_details_validator,
+    'showcase_trashed_deprecated_details': EventDetails._showcase_trashed_deprecated_details_validator,
     'showcase_unresolve_comment_details': EventDetails._showcase_unresolve_comment_details_validator,
     'showcase_untrashed_details': EventDetails._showcase_untrashed_details_validator,
+    'showcase_untrashed_deprecated_details': EventDetails._showcase_untrashed_deprecated_details_validator,
     'showcase_view_details': EventDetails._showcase_view_details_validator,
     'sso_add_cert_details': EventDetails._sso_add_cert_details_validator,
     'sso_add_login_url_details': EventDetails._sso_add_login_url_details_validator,
@@ -59343,6 +60885,8 @@ EventDetails._tagmap = {
     'device_approvals_change_mobile_policy_details': EventDetails._device_approvals_change_mobile_policy_details_validator,
     'device_approvals_change_overage_action_details': EventDetails._device_approvals_change_overage_action_details_validator,
     'device_approvals_change_unlink_action_details': EventDetails._device_approvals_change_unlink_action_details_validator,
+    'directory_restrictions_add_members_details': EventDetails._directory_restrictions_add_members_details_validator,
+    'directory_restrictions_remove_members_details': EventDetails._directory_restrictions_remove_members_details_validator,
     'emm_add_exception_details': EventDetails._emm_add_exception_details_validator,
     'emm_change_policy_details': EventDetails._emm_change_policy_details_validator,
     'emm_remove_exception_details': EventDetails._emm_remove_exception_details_validator,
@@ -59371,6 +60915,9 @@ EventDetails._tagmap = {
     'sharing_change_folder_join_policy_details': EventDetails._sharing_change_folder_join_policy_details_validator,
     'sharing_change_link_policy_details': EventDetails._sharing_change_link_policy_details_validator,
     'sharing_change_member_policy_details': EventDetails._sharing_change_member_policy_details_validator,
+    'showcase_change_download_policy_details': EventDetails._showcase_change_download_policy_details_validator,
+    'showcase_change_enabled_policy_details': EventDetails._showcase_change_enabled_policy_details_validator,
+    'showcase_change_external_sharing_policy_details': EventDetails._showcase_change_external_sharing_policy_details_validator,
     'smart_sync_change_policy_details': EventDetails._smart_sync_change_policy_details_validator,
     'smart_sync_not_opt_out_details': EventDetails._smart_sync_not_opt_out_details_validator,
     'smart_sync_opt_out_details': EventDetails._smart_sync_opt_out_details_validator,
@@ -59490,6 +61037,7 @@ EventType._member_space_limits_change_status_validator = MemberSpaceLimitsChange
 EventType._member_space_limits_remove_custom_quota_validator = MemberSpaceLimitsRemoveCustomQuotaType_validator
 EventType._member_suggest_validator = MemberSuggestType_validator
 EventType._member_transfer_account_contents_validator = MemberTransferAccountContentsType_validator
+EventType._secondary_mails_policy_changed_validator = SecondaryMailsPolicyChangedType_validator
 EventType._paper_content_add_member_validator = PaperContentAddMemberType_validator
 EventType._paper_content_add_to_folder_validator = PaperContentAddToFolderType_validator
 EventType._paper_content_archive_validator = PaperContentArchiveType_validator
@@ -59618,8 +61166,10 @@ EventType._showcase_request_access_validator = ShowcaseRequestAccessType_validat
 EventType._showcase_resolve_comment_validator = ShowcaseResolveCommentType_validator
 EventType._showcase_restored_validator = ShowcaseRestoredType_validator
 EventType._showcase_trashed_validator = ShowcaseTrashedType_validator
+EventType._showcase_trashed_deprecated_validator = ShowcaseTrashedDeprecatedType_validator
 EventType._showcase_unresolve_comment_validator = ShowcaseUnresolveCommentType_validator
 EventType._showcase_untrashed_validator = ShowcaseUntrashedType_validator
+EventType._showcase_untrashed_deprecated_validator = ShowcaseUntrashedDeprecatedType_validator
 EventType._showcase_view_validator = ShowcaseViewType_validator
 EventType._sso_add_cert_validator = SsoAddCertType_validator
 EventType._sso_add_login_url_validator = SsoAddLoginUrlType_validator
@@ -59646,6 +61196,8 @@ EventType._device_approvals_change_desktop_policy_validator = DeviceApprovalsCha
 EventType._device_approvals_change_mobile_policy_validator = DeviceApprovalsChangeMobilePolicyType_validator
 EventType._device_approvals_change_overage_action_validator = DeviceApprovalsChangeOverageActionType_validator
 EventType._device_approvals_change_unlink_action_validator = DeviceApprovalsChangeUnlinkActionType_validator
+EventType._directory_restrictions_add_members_validator = DirectoryRestrictionsAddMembersType_validator
+EventType._directory_restrictions_remove_members_validator = DirectoryRestrictionsRemoveMembersType_validator
 EventType._emm_add_exception_validator = EmmAddExceptionType_validator
 EventType._emm_change_policy_validator = EmmChangePolicyType_validator
 EventType._emm_remove_exception_validator = EmmRemoveExceptionType_validator
@@ -59674,6 +61226,9 @@ EventType._permanent_delete_change_policy_validator = PermanentDeleteChangePolic
 EventType._sharing_change_folder_join_policy_validator = SharingChangeFolderJoinPolicyType_validator
 EventType._sharing_change_link_policy_validator = SharingChangeLinkPolicyType_validator
 EventType._sharing_change_member_policy_validator = SharingChangeMemberPolicyType_validator
+EventType._showcase_change_download_policy_validator = ShowcaseChangeDownloadPolicyType_validator
+EventType._showcase_change_enabled_policy_validator = ShowcaseChangeEnabledPolicyType_validator
+EventType._showcase_change_external_sharing_policy_validator = ShowcaseChangeExternalSharingPolicyType_validator
 EventType._smart_sync_change_policy_validator = SmartSyncChangePolicyType_validator
 EventType._smart_sync_not_opt_out_validator = SmartSyncNotOptOutType_validator
 EventType._smart_sync_opt_out_validator = SmartSyncOptOutType_validator
@@ -59789,6 +61344,7 @@ EventType._tagmap = {
     'member_space_limits_remove_custom_quota': EventType._member_space_limits_remove_custom_quota_validator,
     'member_suggest': EventType._member_suggest_validator,
     'member_transfer_account_contents': EventType._member_transfer_account_contents_validator,
+    'secondary_mails_policy_changed': EventType._secondary_mails_policy_changed_validator,
     'paper_content_add_member': EventType._paper_content_add_member_validator,
     'paper_content_add_to_folder': EventType._paper_content_add_to_folder_validator,
     'paper_content_archive': EventType._paper_content_archive_validator,
@@ -59917,8 +61473,10 @@ EventType._tagmap = {
     'showcase_resolve_comment': EventType._showcase_resolve_comment_validator,
     'showcase_restored': EventType._showcase_restored_validator,
     'showcase_trashed': EventType._showcase_trashed_validator,
+    'showcase_trashed_deprecated': EventType._showcase_trashed_deprecated_validator,
     'showcase_unresolve_comment': EventType._showcase_unresolve_comment_validator,
     'showcase_untrashed': EventType._showcase_untrashed_validator,
+    'showcase_untrashed_deprecated': EventType._showcase_untrashed_deprecated_validator,
     'showcase_view': EventType._showcase_view_validator,
     'sso_add_cert': EventType._sso_add_cert_validator,
     'sso_add_login_url': EventType._sso_add_login_url_validator,
@@ -59945,6 +61503,8 @@ EventType._tagmap = {
     'device_approvals_change_mobile_policy': EventType._device_approvals_change_mobile_policy_validator,
     'device_approvals_change_overage_action': EventType._device_approvals_change_overage_action_validator,
     'device_approvals_change_unlink_action': EventType._device_approvals_change_unlink_action_validator,
+    'directory_restrictions_add_members': EventType._directory_restrictions_add_members_validator,
+    'directory_restrictions_remove_members': EventType._directory_restrictions_remove_members_validator,
     'emm_add_exception': EventType._emm_add_exception_validator,
     'emm_change_policy': EventType._emm_change_policy_validator,
     'emm_remove_exception': EventType._emm_remove_exception_validator,
@@ -59973,6 +61533,9 @@ EventType._tagmap = {
     'sharing_change_folder_join_policy': EventType._sharing_change_folder_join_policy_validator,
     'sharing_change_link_policy': EventType._sharing_change_link_policy_validator,
     'sharing_change_member_policy': EventType._sharing_change_member_policy_validator,
+    'showcase_change_download_policy': EventType._showcase_change_download_policy_validator,
+    'showcase_change_enabled_policy': EventType._showcase_change_enabled_policy_validator,
+    'showcase_change_external_sharing_policy': EventType._showcase_change_external_sharing_policy_validator,
     'smart_sync_change_policy': EventType._smart_sync_change_policy_validator,
     'smart_sync_not_opt_out': EventType._smart_sync_not_opt_out_validator,
     'smart_sync_opt_out': EventType._smart_sync_opt_out_validator,
@@ -61955,6 +63518,34 @@ ResellerSupportSessionStartType._description_validator = bv.String()
 ResellerSupportSessionStartType._all_field_names_ = set(['description'])
 ResellerSupportSessionStartType._all_fields_ = [('description', ResellerSupportSessionStartType._description_validator)]
 
+SecondaryMailsPolicy._disabled_validator = bv.Void()
+SecondaryMailsPolicy._enabled_validator = bv.Void()
+SecondaryMailsPolicy._other_validator = bv.Void()
+SecondaryMailsPolicy._tagmap = {
+    'disabled': SecondaryMailsPolicy._disabled_validator,
+    'enabled': SecondaryMailsPolicy._enabled_validator,
+    'other': SecondaryMailsPolicy._other_validator,
+}
+
+SecondaryMailsPolicy.disabled = SecondaryMailsPolicy('disabled')
+SecondaryMailsPolicy.enabled = SecondaryMailsPolicy('enabled')
+SecondaryMailsPolicy.other = SecondaryMailsPolicy('other')
+
+SecondaryMailsPolicyChangedDetails._previous_value_validator = SecondaryMailsPolicy_validator
+SecondaryMailsPolicyChangedDetails._new_value_validator = SecondaryMailsPolicy_validator
+SecondaryMailsPolicyChangedDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+SecondaryMailsPolicyChangedDetails._all_fields_ = [
+    ('previous_value', SecondaryMailsPolicyChangedDetails._previous_value_validator),
+    ('new_value', SecondaryMailsPolicyChangedDetails._new_value_validator),
+]
+
+SecondaryMailsPolicyChangedType._description_validator = bv.String()
+SecondaryMailsPolicyChangedType._all_field_names_ = set(['description'])
+SecondaryMailsPolicyChangedType._all_fields_ = [('description', SecondaryMailsPolicyChangedType._description_validator)]
+
 SfAddGroupDetails._target_asset_index_validator = bv.UInt64()
 SfAddGroupDetails._original_folder_name_validator = bv.String()
 SfAddGroupDetails._sharing_permission_validator = bv.Nullable(bv.String())
@@ -62828,6 +64419,51 @@ ShowcaseArchivedType._description_validator = bv.String()
 ShowcaseArchivedType._all_field_names_ = set(['description'])
 ShowcaseArchivedType._all_fields_ = [('description', ShowcaseArchivedType._description_validator)]
 
+ShowcaseChangeDownloadPolicyDetails._new_value_validator = ShowcaseDownloadPolicy_validator
+ShowcaseChangeDownloadPolicyDetails._previous_value_validator = ShowcaseDownloadPolicy_validator
+ShowcaseChangeDownloadPolicyDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+ShowcaseChangeDownloadPolicyDetails._all_fields_ = [
+    ('new_value', ShowcaseChangeDownloadPolicyDetails._new_value_validator),
+    ('previous_value', ShowcaseChangeDownloadPolicyDetails._previous_value_validator),
+]
+
+ShowcaseChangeDownloadPolicyType._description_validator = bv.String()
+ShowcaseChangeDownloadPolicyType._all_field_names_ = set(['description'])
+ShowcaseChangeDownloadPolicyType._all_fields_ = [('description', ShowcaseChangeDownloadPolicyType._description_validator)]
+
+ShowcaseChangeEnabledPolicyDetails._new_value_validator = ShowcaseEnabledPolicy_validator
+ShowcaseChangeEnabledPolicyDetails._previous_value_validator = ShowcaseEnabledPolicy_validator
+ShowcaseChangeEnabledPolicyDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+ShowcaseChangeEnabledPolicyDetails._all_fields_ = [
+    ('new_value', ShowcaseChangeEnabledPolicyDetails._new_value_validator),
+    ('previous_value', ShowcaseChangeEnabledPolicyDetails._previous_value_validator),
+]
+
+ShowcaseChangeEnabledPolicyType._description_validator = bv.String()
+ShowcaseChangeEnabledPolicyType._all_field_names_ = set(['description'])
+ShowcaseChangeEnabledPolicyType._all_fields_ = [('description', ShowcaseChangeEnabledPolicyType._description_validator)]
+
+ShowcaseChangeExternalSharingPolicyDetails._new_value_validator = ShowcaseExternalSharingPolicy_validator
+ShowcaseChangeExternalSharingPolicyDetails._previous_value_validator = ShowcaseExternalSharingPolicy_validator
+ShowcaseChangeExternalSharingPolicyDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+ShowcaseChangeExternalSharingPolicyDetails._all_fields_ = [
+    ('new_value', ShowcaseChangeExternalSharingPolicyDetails._new_value_validator),
+    ('previous_value', ShowcaseChangeExternalSharingPolicyDetails._previous_value_validator),
+]
+
+ShowcaseChangeExternalSharingPolicyType._description_validator = bv.String()
+ShowcaseChangeExternalSharingPolicyType._all_field_names_ = set(['description'])
+ShowcaseChangeExternalSharingPolicyType._all_fields_ = [('description', ShowcaseChangeExternalSharingPolicyType._description_validator)]
+
 ShowcaseCreatedDetails._event_uuid_validator = bv.String()
 ShowcaseCreatedDetails._all_field_names_ = set(['event_uuid'])
 ShowcaseCreatedDetails._all_fields_ = [('event_uuid', ShowcaseCreatedDetails._event_uuid_validator)]
@@ -62862,6 +64498,19 @@ ShowcaseDocumentLogInfo._all_fields_ = [
     ('showcase_title', ShowcaseDocumentLogInfo._showcase_title_validator),
 ]
 
+ShowcaseDownloadPolicy._disabled_validator = bv.Void()
+ShowcaseDownloadPolicy._enabled_validator = bv.Void()
+ShowcaseDownloadPolicy._other_validator = bv.Void()
+ShowcaseDownloadPolicy._tagmap = {
+    'disabled': ShowcaseDownloadPolicy._disabled_validator,
+    'enabled': ShowcaseDownloadPolicy._enabled_validator,
+    'other': ShowcaseDownloadPolicy._other_validator,
+}
+
+ShowcaseDownloadPolicy.disabled = ShowcaseDownloadPolicy('disabled')
+ShowcaseDownloadPolicy.enabled = ShowcaseDownloadPolicy('enabled')
+ShowcaseDownloadPolicy.other = ShowcaseDownloadPolicy('other')
+
 ShowcaseEditCommentDetails._event_uuid_validator = bv.String()
 ShowcaseEditCommentDetails._comment_text_validator = bv.Nullable(bv.String())
 ShowcaseEditCommentDetails._all_field_names_ = set([
@@ -62884,6 +64533,32 @@ ShowcaseEditedDetails._all_fields_ = [('event_uuid', ShowcaseEditedDetails._even
 ShowcaseEditedType._description_validator = bv.String()
 ShowcaseEditedType._all_field_names_ = set(['description'])
 ShowcaseEditedType._all_fields_ = [('description', ShowcaseEditedType._description_validator)]
+
+ShowcaseEnabledPolicy._disabled_validator = bv.Void()
+ShowcaseEnabledPolicy._enabled_validator = bv.Void()
+ShowcaseEnabledPolicy._other_validator = bv.Void()
+ShowcaseEnabledPolicy._tagmap = {
+    'disabled': ShowcaseEnabledPolicy._disabled_validator,
+    'enabled': ShowcaseEnabledPolicy._enabled_validator,
+    'other': ShowcaseEnabledPolicy._other_validator,
+}
+
+ShowcaseEnabledPolicy.disabled = ShowcaseEnabledPolicy('disabled')
+ShowcaseEnabledPolicy.enabled = ShowcaseEnabledPolicy('enabled')
+ShowcaseEnabledPolicy.other = ShowcaseEnabledPolicy('other')
+
+ShowcaseExternalSharingPolicy._disabled_validator = bv.Void()
+ShowcaseExternalSharingPolicy._enabled_validator = bv.Void()
+ShowcaseExternalSharingPolicy._other_validator = bv.Void()
+ShowcaseExternalSharingPolicy._tagmap = {
+    'disabled': ShowcaseExternalSharingPolicy._disabled_validator,
+    'enabled': ShowcaseExternalSharingPolicy._enabled_validator,
+    'other': ShowcaseExternalSharingPolicy._other_validator,
+}
+
+ShowcaseExternalSharingPolicy.disabled = ShowcaseExternalSharingPolicy('disabled')
+ShowcaseExternalSharingPolicy.enabled = ShowcaseExternalSharingPolicy('enabled')
+ShowcaseExternalSharingPolicy.other = ShowcaseExternalSharingPolicy('other')
 
 ShowcaseFileAddedDetails._event_uuid_validator = bv.String()
 ShowcaseFileAddedDetails._all_field_names_ = set(['event_uuid'])
@@ -62994,6 +64669,14 @@ ShowcaseRestoredType._description_validator = bv.String()
 ShowcaseRestoredType._all_field_names_ = set(['description'])
 ShowcaseRestoredType._all_fields_ = [('description', ShowcaseRestoredType._description_validator)]
 
+ShowcaseTrashedDeprecatedDetails._event_uuid_validator = bv.String()
+ShowcaseTrashedDeprecatedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseTrashedDeprecatedDetails._all_fields_ = [('event_uuid', ShowcaseTrashedDeprecatedDetails._event_uuid_validator)]
+
+ShowcaseTrashedDeprecatedType._description_validator = bv.String()
+ShowcaseTrashedDeprecatedType._all_field_names_ = set(['description'])
+ShowcaseTrashedDeprecatedType._all_fields_ = [('description', ShowcaseTrashedDeprecatedType._description_validator)]
+
 ShowcaseTrashedDetails._event_uuid_validator = bv.String()
 ShowcaseTrashedDetails._all_field_names_ = set(['event_uuid'])
 ShowcaseTrashedDetails._all_fields_ = [('event_uuid', ShowcaseTrashedDetails._event_uuid_validator)]
@@ -63016,6 +64699,14 @@ ShowcaseUnresolveCommentDetails._all_fields_ = [
 ShowcaseUnresolveCommentType._description_validator = bv.String()
 ShowcaseUnresolveCommentType._all_field_names_ = set(['description'])
 ShowcaseUnresolveCommentType._all_fields_ = [('description', ShowcaseUnresolveCommentType._description_validator)]
+
+ShowcaseUntrashedDeprecatedDetails._event_uuid_validator = bv.String()
+ShowcaseUntrashedDeprecatedDetails._all_field_names_ = set(['event_uuid'])
+ShowcaseUntrashedDeprecatedDetails._all_fields_ = [('event_uuid', ShowcaseUntrashedDeprecatedDetails._event_uuid_validator)]
+
+ShowcaseUntrashedDeprecatedType._description_validator = bv.String()
+ShowcaseUntrashedDeprecatedType._all_field_names_ = set(['description'])
+ShowcaseUntrashedDeprecatedType._all_fields_ = [('description', ShowcaseUntrashedDeprecatedType._description_validator)]
 
 ShowcaseUntrashedDetails._event_uuid_validator = bv.String()
 ShowcaseUntrashedDetails._all_field_names_ = set(['event_uuid'])
@@ -63757,6 +65448,7 @@ WebSessionsIdleLengthPolicy.other = WebSessionsIdleLengthPolicy('other')
 
 get_events = bb.Route(
     'get_events',
+    1,
     False,
     GetTeamEventsArg_validator,
     GetTeamEventsResult_validator,
@@ -63766,6 +65458,7 @@ get_events = bb.Route(
 )
 get_events_continue = bb.Route(
     'get_events/continue',
+    1,
     False,
     GetTeamEventsContinueArg_validator,
     GetTeamEventsResult_validator,

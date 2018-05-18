@@ -2214,7 +2214,8 @@ class DropboxBase(object):
                                     offset):
         """
         Append more data to an upload session. A single request should not
-        upload more than 150 MB.
+        upload more than 150 MB. The maximum size of a file one can upload to an
+        upload session is 350 GB.
 
         :param bytes f: Contents to upload.
         :param str session_id: The upload session ID (returned by
@@ -2249,7 +2250,8 @@ class DropboxBase(object):
         """
         Append more data to an upload session. When the parameter close is set,
         this call will close the session. A single request should not upload
-        more than 150 MB.
+        more than 150 MB. The maximum size of a file one can upload to an upload
+        session is 350 GB.
 
         :param bytes f: Contents to upload.
         :param cursor: Contains the upload session ID and the offset.
@@ -2280,7 +2282,8 @@ class DropboxBase(object):
                                     commit):
         """
         Finish an upload session and save the uploaded data to the given file
-        path. A single request should not upload more than 150 MB.
+        path. A single request should not upload more than 150 MB. The maximum
+        size of a file one can upload to an upload session is 350 GB.
 
         :param bytes f: Contents to upload.
         :param cursor: Contains the upload session ID and the offset.
@@ -2316,7 +2319,8 @@ class DropboxBase(object):
         upload sessions in a single request. ``UploadSessionStartArg.close`` or
         ``UploadSessionAppendArg.close`` needs to be true for the last
         :meth:`files_upload_session_start` or
-        :meth:`files_upload_session_append_v2` call. This route will return a
+        :meth:`files_upload_session_append_v2` call. The maximum size of a file
+        one can upload to an upload session is 350 GB. This route will return a
         job_id immediately and do the async commit job in background. Use
         :meth:`files_upload_session_finish_batch_check` to check the job status.
         For the same account, this route should be executed serially. That means
@@ -2368,9 +2372,10 @@ class DropboxBase(object):
         This call starts a new upload session with the given data. You can then
         use :meth:`files_upload_session_append_v2` to add more data and
         :meth:`files_upload_session_finish` to save all the data to a file in
-        Dropbox. A single request should not upload more than 150 MB. An upload
-        session can be used for a maximum of 48 hours. Attempting to use an
-        ``UploadSessionStartResult.session_id`` with
+        Dropbox. A single request should not upload more than 150 MB. The
+        maximum size of a file one can upload to an upload session is 350 GB. An
+        upload session can be used for a maximum of 48 hours. Attempting to use
+        an ``UploadSessionStartResult.session_id`` with
         :meth:`files_upload_session_append_v2` or
         :meth:`files_upload_session_finish` more than 48 hours after its
         creation will return a ``UploadSessionLookupError.not_found``.
@@ -4190,7 +4195,11 @@ class DropboxBase(object):
         """
         Retrieves team events. Events have a lifespan of two years. Events older
         than two years will not be returned. Many attributes note 'may be
-        missing due to historical data gap'. Permission : Team Auditing.
+        missing due to historical data gap'. Note that the file_operations
+        category and & analogous paper events are not available on all Dropbox
+        Business `plans </business/plans-comparison>`_. Use `features/get_values
+        </developers/documentation/http/teams#team-features-get_values>`_ to
+        check for this feature. Permission : Team Auditing.
 
         :param long limit: Number of results to return per call.
         :param Nullable account_id: Filter the events by account ID. Return ony

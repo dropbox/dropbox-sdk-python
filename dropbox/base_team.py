@@ -1117,7 +1117,8 @@ class DropboxTeamBase(object):
                                  new_external_id=None,
                                  new_given_name=None,
                                  new_surname=None,
-                                 new_persistent_id=None):
+                                 new_persistent_id=None,
+                                 new_is_directory_restricted=None):
         """
         Updates a team member's profile. Permission : Team member management.
 
@@ -1129,6 +1130,8 @@ class DropboxTeamBase(object):
         :param Nullable new_surname: New surname for member.
         :param Nullable new_persistent_id: New persistent ID. This field only
             available to teams using persistent ID SAML configuration.
+        :param Nullable new_is_directory_restricted: New value for whether the
+            user is a directory restricted user.
         :rtype: :class:`dropbox.team.TeamMemberInfo`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1140,7 +1143,8 @@ class DropboxTeamBase(object):
                                         new_external_id,
                                         new_given_name,
                                         new_surname,
-                                        new_persistent_id)
+                                        new_persistent_id,
+                                        new_is_directory_restricted)
         r = self.request(
             team.members_set_profile,
             'team',

@@ -1391,6 +1391,7 @@ UpdateFileRequestError._tagmap.update(FileRequestError._tagmap)
 
 create = bb.Route(
     'create',
+    1,
     False,
     CreateFileRequestArgs_validator,
     FileRequest_validator,
@@ -1400,6 +1401,7 @@ create = bb.Route(
 )
 get = bb.Route(
     'get',
+    1,
     False,
     GetFileRequestArgs_validator,
     FileRequest_validator,
@@ -1409,6 +1411,7 @@ get = bb.Route(
 )
 list = bb.Route(
     'list',
+    1,
     False,
     bv.Void(),
     ListFileRequestsResult_validator,
@@ -1418,6 +1421,7 @@ list = bb.Route(
 )
 update = bb.Route(
     'update',
+    1,
     False,
     UpdateFileRequestArgs_validator,
     FileRequest_validator,
