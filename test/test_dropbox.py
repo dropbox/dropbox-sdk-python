@@ -76,6 +76,7 @@ class TestDropbox(unittest.TestCase):
             'http://localhost/dummy', 'dummy_session', 'dbx-auth-csrf-token')
 
         six.assertRegex(
+            self,
             flow_obj._get_authorize_url('http://localhost/redirect', 'state'),
             r'^https://{}/oauth2/authorize\?'.format(re.escape(session.WEB_HOST)),
         )
