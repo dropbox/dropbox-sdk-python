@@ -32,6 +32,7 @@ from dropbox.exceptions import (
     PathRootError,
 )
 from dropbox.files import (
+    DeleteResult,
     ListFolderError,
 )
 from dropbox.common import (
@@ -190,6 +191,18 @@ class TestDropbox(unittest.TestCase):
         with self.assertRaises(PathRootError) as cm:
             dbxpr.files_list_folder('')
         self.assertTrue(cm.exception.error.is_invalid_root())
+
+    @dbx_from_env
+    def test_versioned_route(self, dbx):
+        # Upload a test file
+        path = '/test.txt'
+        test_contents = DUMMY_PAYLOAD
+        dbx.files_upload(DUMMY_PAYLOAD, path)
+
+        # Delete the file with v2 route
+        resp = dbx.files_delete_v2(path)
+        # Verify response type is of v2 route
+        self.assertIsInstance(resp, DeleteResult)
 
 class TestDropboxTeam(unittest.TestCase):
     @dbx_team_from_env
