@@ -249,6 +249,8 @@ class _DropboxTransport(object):
         """
         host = route.attrs['host'] or 'api'
         route_name = namespace + '/' + route.name
+        if route.version > 1:
+            route_name += '_v{}'.format(route.version)
         route_style = route.attrs['style'] or 'rpc'
         serialized_arg = stone_serializers.json_encode(route.arg_type,
                                                        request_arg)
