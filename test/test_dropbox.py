@@ -196,7 +196,6 @@ class TestDropbox(unittest.TestCase):
     def test_versioned_route(self, dbx):
         # Upload a test file
         path = '/test.txt'
-        test_contents = DUMMY_PAYLOAD
         dbx.files_upload(DUMMY_PAYLOAD, path)
 
         # Delete the file with v2 route
