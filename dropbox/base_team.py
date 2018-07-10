@@ -1686,3 +1686,68 @@ class DropboxTeamBase(object):
         )
         return r
 
+    # ------------------------------------------
+    # Routes in team_log namespace
+
+    def team_log_get_events(self,
+                            limit=1000,
+                            account_id=None,
+                            time=None,
+                            category=None):
+        """
+        Retrieves team events. Events have a lifespan of two years. Events older
+        than two years will not be returned. Many attributes note 'may be
+        missing due to historical data gap'. Note that the file_operations
+        category and & analogous paper events are not available on all Dropbox
+        Business `plans </business/plans-comparison>`_. Use `features/get_values
+        </developers/documentation/http/teams#team-features-get_values>`_ to
+        check for this feature. Permission : Team Auditing.
+
+        :param long limit: Number of results to return per call.
+        :param Nullable account_id: Filter the events by account ID. Return ony
+            events with this account_id as either Actor, Context, or
+            Participants.
+        :param Nullable time: Filter by time range.
+        :param Nullable category: Filter the returned events to a single
+            category.
+        :rtype: :class:`dropbox.team_log.GetTeamEventsResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team_log.GetTeamEventsError`
+        """
+        arg = team_log.GetTeamEventsArg(limit,
+                                        account_id,
+                                        time,
+                                        category)
+        r = self.request(
+            team_log.get_events,
+            'team_log',
+            arg,
+            None,
+        )
+        return r
+
+    def team_log_get_events_continue(self,
+                                     cursor):
+        """
+        Once a cursor has been retrieved from :meth:`team_log_get_events`, use
+        this to paginate through all events. Permission : Team Auditing.
+
+        :param str cursor: Indicates from what point to get the next set of
+            events.
+        :rtype: :class:`dropbox.team_log.GetTeamEventsResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team_log.GetTeamEventsContinueError`
+        """
+        arg = team_log.GetTeamEventsContinueArg(cursor)
+        r = self.request(
+            team_log.get_events_continue,
+            'team_log',
+            arg,
+            None,
+        )
+        return r
+
