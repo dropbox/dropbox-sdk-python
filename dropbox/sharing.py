@@ -18,7 +18,7 @@ except (ImportError, SystemError, ValueError):
 
 try:
     from . import (
-        async,
+        async_,
         common,
         files,
         seen_state,
@@ -27,7 +27,7 @@ try:
         users_common,
     )
 except (ImportError, SystemError, ValueError):
-    import async
+    import async_
     import common
     import files
     import seen_state
@@ -5931,7 +5931,7 @@ class JobError(bb.Union):
 
 JobError_validator = bv.Union(JobError)
 
-class JobStatus(async.PollResultBase):
+class JobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -10737,7 +10737,7 @@ class RemoveFolderMemberError(bb.Union):
 
 RemoveFolderMemberError_validator = bv.Union(RemoveFolderMemberError)
 
-class RemoveMemberJobStatus(async.PollResultBase):
+class RemoveMemberJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -11609,7 +11609,7 @@ class ShareFolderError(ShareFolderErrorBase):
 
 ShareFolderError_validator = bv.Union(ShareFolderError)
 
-class ShareFolderJobStatus(async.PollResultBase):
+class ShareFolderJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -11684,7 +11684,7 @@ class ShareFolderJobStatus(async.PollResultBase):
 
 ShareFolderJobStatus_validator = bv.Union(ShareFolderJobStatus)
 
-class ShareFolderLaunch(async.LaunchResultBase):
+class ShareFolderLaunch(async_.LaunchResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -16797,7 +16797,7 @@ JobStatus._tagmap = {
     'complete': JobStatus._complete_validator,
     'failed': JobStatus._failed_validator,
 }
-JobStatus._tagmap.update(async.PollResultBase._tagmap)
+JobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 JobStatus.complete = JobStatus('complete')
 
@@ -17488,7 +17488,7 @@ RemoveMemberJobStatus._tagmap = {
     'complete': RemoveMemberJobStatus._complete_validator,
     'failed': RemoveMemberJobStatus._failed_validator,
 }
-RemoveMemberJobStatus._tagmap.update(async.PollResultBase._tagmap)
+RemoveMemberJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 RequestedVisibility._public_validator = bv.Void()
 RequestedVisibility._team_only_validator = bv.Void()
@@ -17618,13 +17618,13 @@ ShareFolderJobStatus._tagmap = {
     'complete': ShareFolderJobStatus._complete_validator,
     'failed': ShareFolderJobStatus._failed_validator,
 }
-ShareFolderJobStatus._tagmap.update(async.PollResultBase._tagmap)
+ShareFolderJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 ShareFolderLaunch._complete_validator = SharedFolderMetadata_validator
 ShareFolderLaunch._tagmap = {
     'complete': ShareFolderLaunch._complete_validator,
 }
-ShareFolderLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+ShareFolderLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
 SharePathError._is_file_validator = bv.Void()
 SharePathError._inside_shared_folder_validator = bv.Void()
@@ -18251,9 +18251,9 @@ check_job_status = bb.Route(
     'check_job_status',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     JobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -18261,9 +18261,9 @@ check_remove_member_job_status = bb.Route(
     'check_remove_member_job_status',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     RemoveMemberJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -18271,9 +18271,9 @@ check_share_job_status = bb.Route(
     'check_share_job_status',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     ShareFolderJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -18512,7 +18512,7 @@ relinquish_folder_membership = bb.Route(
     1,
     False,
     RelinquishFolderMembershipArg_validator,
-    async.LaunchEmptyResult_validator,
+    async_.LaunchEmptyResult_validator,
     RelinquishFolderMembershipError_validator,
     {'host': u'api',
      'style': u'rpc'},
@@ -18542,7 +18542,7 @@ remove_folder_member = bb.Route(
     1,
     False,
     RemoveFolderMemberArg_validator,
-    async.LaunchResultBase_validator,
+    async_.LaunchResultBase_validator,
     RemoveFolderMemberError_validator,
     {'host': u'api',
      'style': u'rpc'},
@@ -18612,7 +18612,7 @@ unshare_folder = bb.Route(
     1,
     False,
     UnshareFolderArg_validator,
-    async.LaunchEmptyResult_validator,
+    async_.LaunchEmptyResult_validator,
     UnshareFolderError_validator,
     {'host': u'api',
      'style': u'rpc'},

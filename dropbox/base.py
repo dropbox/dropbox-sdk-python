@@ -7,7 +7,7 @@ from abc import ABCMeta, abstractmethod
 import warnings
 
 from . import (
-    async,
+    async_,
     auth,
     common,
     file_properties,
@@ -801,7 +801,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             files.copy_batch_check,
             'files',
@@ -974,7 +974,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             files.create_folder_batch_check,
             'files',
@@ -1077,7 +1077,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             files.delete_batch_check,
             'files',
@@ -1818,7 +1818,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             files.move_batch_check,
             'files',
@@ -2105,7 +2105,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             files.save_url_check_job_status,
             'files',
@@ -2354,7 +2354,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             files.upload_session_finish_batch_check,
             'files',
@@ -3004,7 +3004,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.sharing.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             sharing.check_job_status,
             'sharing',
@@ -3027,7 +3027,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.sharing.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             sharing.check_remove_member_job_status,
             'sharing',
@@ -3050,7 +3050,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.sharing.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             sharing.check_share_job_status,
             'sharing',

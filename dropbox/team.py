@@ -14,7 +14,7 @@ except (ImportError, SystemError, ValueError):
 
 try:
     from . import (
-        async,
+        async_,
         common,
         file_properties,
         files,
@@ -24,7 +24,7 @@ try:
         users_common,
     )
 except (ImportError, SystemError, ValueError):
-    import async
+    import async_
     import common
     import file_properties
     import files
@@ -5919,7 +5919,7 @@ class GroupsMembersListResult(object):
 
 GroupsMembersListResult_validator = bv.Struct(GroupsMembersListResult)
 
-class GroupsPollError(async.PollError):
+class GroupsPollError(async_.PollError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -9294,7 +9294,7 @@ class MembersAddArg(object):
 
 MembersAddArg_validator = bv.Struct(MembersAddArg)
 
-class MembersAddJobStatus(async.PollResultBase):
+class MembersAddJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -9379,7 +9379,7 @@ class MembersAddJobStatus(async.PollResultBase):
 
 MembersAddJobStatus_validator = bv.Union(MembersAddJobStatus)
 
-class MembersAddLaunch(async.LaunchResultBase):
+class MembersAddLaunch(async_.LaunchResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -12991,7 +12991,7 @@ class TeamFolderArchiveError(BaseTeamFolderError):
 
 TeamFolderArchiveError_validator = bv.Union(TeamFolderArchiveError)
 
-class TeamFolderArchiveJobStatus(async.PollResultBase):
+class TeamFolderArchiveJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -13073,7 +13073,7 @@ class TeamFolderArchiveJobStatus(async.PollResultBase):
 
 TeamFolderArchiveJobStatus_validator = bv.Union(TeamFolderArchiveJobStatus)
 
-class TeamFolderArchiveLaunch(async.LaunchResultBase):
+class TeamFolderArchiveLaunch(async_.LaunchResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -16251,7 +16251,7 @@ GroupMembersAddError.group_not_in_team = GroupMembersAddError('group_not_in_team
 GroupMembersAddError.user_must_be_active_to_be_owner = GroupMembersAddError('user_must_be_active_to_be_owner')
 
 GroupMembersChangeResult._group_info_validator = GroupFullInfo_validator
-GroupMembersChangeResult._async_job_id_validator = async.AsyncJobId_validator
+GroupMembersChangeResult._async_job_id_validator = async_.AsyncJobId_validator
 GroupMembersChangeResult._all_field_names_ = set([
     'group_info',
     'async_job_id',
@@ -16444,7 +16444,7 @@ GroupsPollError._access_denied_validator = bv.Void()
 GroupsPollError._tagmap = {
     'access_denied': GroupsPollError._access_denied_validator,
 }
-GroupsPollError._tagmap.update(async.PollError._tagmap)
+GroupsPollError._tagmap.update(async_.PollError._tagmap)
 
 GroupsPollError.access_denied = GroupsPollError('access_denied')
 
@@ -16842,13 +16842,13 @@ MembersAddJobStatus._tagmap = {
     'complete': MembersAddJobStatus._complete_validator,
     'failed': MembersAddJobStatus._failed_validator,
 }
-MembersAddJobStatus._tagmap.update(async.PollResultBase._tagmap)
+MembersAddJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 MembersAddLaunch._complete_validator = bv.List(MemberAddResult_validator)
 MembersAddLaunch._tagmap = {
     'complete': MembersAddLaunch._complete_validator,
 }
-MembersAddLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+MembersAddLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
 MembersDeactivateArg._user_validator = UserSelectorArg_validator
 MembersDeactivateArg._wipe_data_validator = bv.Boolean()
@@ -17411,13 +17411,13 @@ TeamFolderArchiveJobStatus._tagmap = {
     'complete': TeamFolderArchiveJobStatus._complete_validator,
     'failed': TeamFolderArchiveJobStatus._failed_validator,
 }
-TeamFolderArchiveJobStatus._tagmap.update(async.PollResultBase._tagmap)
+TeamFolderArchiveJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 TeamFolderArchiveLaunch._complete_validator = TeamFolderMetadata_validator
 TeamFolderArchiveLaunch._tagmap = {
     'complete': TeamFolderArchiveLaunch._complete_validator,
 }
-TeamFolderArchiveLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+TeamFolderArchiveLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
 TeamFolderCreateArg._name_validator = bv.String()
 TeamFolderCreateArg._sync_setting_validator = bv.Nullable(files.SyncSettingArg_validator)
@@ -17852,7 +17852,7 @@ groups_delete = bb.Route(
     1,
     False,
     GroupSelector_validator,
-    async.LaunchEmptyResult_validator,
+    async_.LaunchEmptyResult_validator,
     GroupDeleteError_validator,
     {'host': u'api',
      'style': u'rpc'},
@@ -17871,8 +17871,8 @@ groups_job_status_get = bb.Route(
     'groups/job_status/get',
     1,
     False,
-    async.PollArg_validator,
-    async.PollEmptyResult_validator,
+    async_.PollArg_validator,
+    async_.PollEmptyResult_validator,
     GroupsPollError_validator,
     {'host': u'api',
      'style': u'rpc'},
@@ -18091,9 +18091,9 @@ members_add_job_status_get = bb.Route(
     'members/add/job_status/get',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     MembersAddJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -18142,7 +18142,7 @@ members_remove = bb.Route(
     1,
     False,
     MembersRemoveArg_validator,
-    async.LaunchEmptyResult_validator,
+    async_.LaunchEmptyResult_validator,
     MembersRemoveError_validator,
     {'host': u'api',
      'style': u'rpc'},
@@ -18151,9 +18151,9 @@ members_remove_job_status_get = bb.Route(
     'members/remove/job_status/get',
     1,
     False,
-    async.PollArg_validator,
-    async.PollEmptyResult_validator,
-    async.PollError_validator,
+    async_.PollArg_validator,
+    async_.PollEmptyResult_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -18331,9 +18331,9 @@ team_folder_archive_check = bb.Route(
     'team_folder/archive/check',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     TeamFolderArchiveJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )

@@ -18,13 +18,13 @@ except (ImportError, SystemError, ValueError):
 
 try:
     from . import (
-        async,
+        async_,
         common,
         file_properties,
         users_common,
     )
 except (ImportError, SystemError, ValueError):
-    import async
+    import async_
     import common
     import file_properties
     import users_common
@@ -1036,7 +1036,7 @@ class CreateFolderBatchError(bb.Union):
 
 CreateFolderBatchError_validator = bv.Union(CreateFolderBatchError)
 
-class CreateFolderBatchJobStatus(async.PollResultBase):
+class CreateFolderBatchJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -1126,7 +1126,7 @@ class CreateFolderBatchJobStatus(async.PollResultBase):
 
 CreateFolderBatchJobStatus_validator = bv.Union(CreateFolderBatchJobStatus)
 
-class CreateFolderBatchLaunch(async.LaunchResultBase):
+class CreateFolderBatchLaunch(async_.LaunchResultBase):
     """
     Result returned by :meth:`dropbox.dropbox.Dropbox.files_create_folder_batch`
     that may either launch an asynchronous job or complete synchronously.
@@ -1678,7 +1678,7 @@ class DeleteBatchError(bb.Union):
 
 DeleteBatchError_validator = bv.Union(DeleteBatchError)
 
-class DeleteBatchJobStatus(async.PollResultBase):
+class DeleteBatchJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -1767,7 +1767,7 @@ class DeleteBatchJobStatus(async.PollResultBase):
 
 DeleteBatchJobStatus_validator = bv.Union(DeleteBatchJobStatus)
 
-class DeleteBatchLaunch(async.LaunchResultBase):
+class DeleteBatchLaunch(async_.LaunchResultBase):
     """
     Result returned by :meth:`dropbox.dropbox.Dropbox.files_delete_batch` that
     may either launch an asynchronous job or complete synchronously.
@@ -6760,7 +6760,7 @@ class RelocationBatchError(RelocationError):
 
 RelocationBatchError_validator = bv.Union(RelocationBatchError)
 
-class RelocationBatchJobStatus(async.PollResultBase):
+class RelocationBatchJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -6839,7 +6839,7 @@ class RelocationBatchJobStatus(async.PollResultBase):
 
 RelocationBatchJobStatus_validator = bv.Union(RelocationBatchJobStatus)
 
-class RelocationBatchLaunch(async.LaunchResultBase):
+class RelocationBatchLaunch(async_.LaunchResultBase):
     """
     Result returned by :meth:`dropbox.dropbox.Dropbox.files_copy_batch` or
     :meth:`dropbox.dropbox.Dropbox.files_move_batch` that may either launch an
@@ -7626,7 +7626,7 @@ class SaveUrlError(bb.Union):
 
 SaveUrlError_validator = bv.Union(SaveUrlError)
 
-class SaveUrlJobStatus(async.PollResultBase):
+class SaveUrlJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -7700,7 +7700,7 @@ class SaveUrlJobStatus(async.PollResultBase):
 
 SaveUrlJobStatus_validator = bv.Union(SaveUrlJobStatus)
 
-class SaveUrlResult(async.LaunchResultBase):
+class SaveUrlResult(async_.LaunchResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -9448,7 +9448,7 @@ class UploadSessionFinishBatchArg(object):
 
 UploadSessionFinishBatchArg_validator = bv.Struct(UploadSessionFinishBatchArg)
 
-class UploadSessionFinishBatchJobStatus(async.PollResultBase):
+class UploadSessionFinishBatchJobStatus(async_.PollResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -9496,7 +9496,7 @@ class UploadSessionFinishBatchJobStatus(async.PollResultBase):
 
 UploadSessionFinishBatchJobStatus_validator = bv.Union(UploadSessionFinishBatchJobStatus)
 
-class UploadSessionFinishBatchLaunch(async.LaunchResultBase):
+class UploadSessionFinishBatchLaunch(async_.LaunchResultBase):
     """
     Result returned by
     :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish_batch` that may
@@ -10678,7 +10678,7 @@ CreateFolderBatchJobStatus._tagmap = {
     'failed': CreateFolderBatchJobStatus._failed_validator,
     'other': CreateFolderBatchJobStatus._other_validator,
 }
-CreateFolderBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
+CreateFolderBatchJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 CreateFolderBatchJobStatus.other = CreateFolderBatchJobStatus('other')
 
@@ -10688,7 +10688,7 @@ CreateFolderBatchLaunch._tagmap = {
     'complete': CreateFolderBatchLaunch._complete_validator,
     'other': CreateFolderBatchLaunch._other_validator,
 }
-CreateFolderBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+CreateFolderBatchLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
 CreateFolderBatchLaunch.other = CreateFolderBatchLaunch('other')
 
@@ -10761,7 +10761,7 @@ DeleteBatchJobStatus._tagmap = {
     'failed': DeleteBatchJobStatus._failed_validator,
     'other': DeleteBatchJobStatus._other_validator,
 }
-DeleteBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
+DeleteBatchJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 DeleteBatchJobStatus.other = DeleteBatchJobStatus('other')
 
@@ -10771,7 +10771,7 @@ DeleteBatchLaunch._tagmap = {
     'complete': DeleteBatchLaunch._complete_validator,
     'other': DeleteBatchLaunch._other_validator,
 }
-DeleteBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+DeleteBatchLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
 DeleteBatchLaunch.other = DeleteBatchLaunch('other')
 
@@ -11428,7 +11428,7 @@ RelocationBatchJobStatus._tagmap = {
     'complete': RelocationBatchJobStatus._complete_validator,
     'failed': RelocationBatchJobStatus._failed_validator,
 }
-RelocationBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
+RelocationBatchJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 RelocationBatchLaunch._complete_validator = RelocationBatchResult_validator
 RelocationBatchLaunch._other_validator = bv.Void()
@@ -11436,7 +11436,7 @@ RelocationBatchLaunch._tagmap = {
     'complete': RelocationBatchLaunch._complete_validator,
     'other': RelocationBatchLaunch._other_validator,
 }
-RelocationBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+RelocationBatchLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
 RelocationBatchLaunch.other = RelocationBatchLaunch('other')
 
@@ -11548,13 +11548,13 @@ SaveUrlJobStatus._tagmap = {
     'complete': SaveUrlJobStatus._complete_validator,
     'failed': SaveUrlJobStatus._failed_validator,
 }
-SaveUrlJobStatus._tagmap.update(async.PollResultBase._tagmap)
+SaveUrlJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 SaveUrlResult._complete_validator = FileMetadata_validator
 SaveUrlResult._tagmap = {
     'complete': SaveUrlResult._complete_validator,
 }
-SaveUrlResult._tagmap.update(async.LaunchResultBase._tagmap)
+SaveUrlResult._tagmap.update(async_.LaunchResultBase._tagmap)
 
 SearchArg._path_validator = PathROrId_validator
 SearchArg._query_validator = bv.String()
@@ -11837,7 +11837,7 @@ UploadSessionFinishBatchJobStatus._complete_validator = UploadSessionFinishBatch
 UploadSessionFinishBatchJobStatus._tagmap = {
     'complete': UploadSessionFinishBatchJobStatus._complete_validator,
 }
-UploadSessionFinishBatchJobStatus._tagmap.update(async.PollResultBase._tagmap)
+UploadSessionFinishBatchJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
 UploadSessionFinishBatchLaunch._complete_validator = UploadSessionFinishBatchResult_validator
 UploadSessionFinishBatchLaunch._other_validator = bv.Void()
@@ -11845,7 +11845,7 @@ UploadSessionFinishBatchLaunch._tagmap = {
     'complete': UploadSessionFinishBatchLaunch._complete_validator,
     'other': UploadSessionFinishBatchLaunch._other_validator,
 }
-UploadSessionFinishBatchLaunch._tagmap.update(async.LaunchResultBase._tagmap)
+UploadSessionFinishBatchLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
 UploadSessionFinishBatchLaunch.other = UploadSessionFinishBatchLaunch('other')
 
@@ -12027,9 +12027,9 @@ copy_batch_check = bb.Route(
     'copy_batch/check',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     RelocationBatchJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -12087,9 +12087,9 @@ create_folder_batch_check = bb.Route(
     'create_folder_batch/check',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     CreateFolderBatchJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -12127,9 +12127,9 @@ delete_batch_check = bb.Route(
     'delete_batch/check',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     DeleteBatchJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -12287,9 +12287,9 @@ move_batch_check = bb.Route(
     'move_batch/check',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     RelocationBatchJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -12397,9 +12397,9 @@ save_url_check_job_status = bb.Route(
     'save_url/check_job_status',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     SaveUrlJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -12467,9 +12467,9 @@ upload_session_finish_batch_check = bb.Route(
     'upload_session/finish_batch/check',
     1,
     False,
-    async.PollArg_validator,
+    async_.PollArg_validator,
     UploadSessionFinishBatchJobStatus_validator,
-    async.PollError_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )

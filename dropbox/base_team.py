@@ -7,7 +7,7 @@ from abc import ABCMeta, abstractmethod
 import warnings
 
 from . import (
-    async,
+    async_,
     auth,
     common,
     file_properties,
@@ -322,7 +322,7 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.GroupsPollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             team.groups_job_status_get,
             'team',
@@ -879,7 +879,7 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             team.members_add_job_status_get,
             'team',
@@ -1050,7 +1050,7 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             team.members_remove_job_status_get,
             'team',
@@ -1496,7 +1496,7 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.PollError`
         """
-        arg = async.PollArg(async_job_id)
+        arg = async_.PollArg(async_job_id)
         r = self.request(
             team.team_folder_archive_check,
             'team',
