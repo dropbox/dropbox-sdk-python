@@ -31,14 +31,6 @@ _cmdline_parser.add_argument(
     help='Path to clone of stone repository.',
 )
 
-# List of namespaces for business endpoints
-TEAM_NAMESPACES = [
-    'team',
-    'team_common',
-    'team_log',
-    'team_policies',
-]
-
 def main():
     """The entry point for the program."""
 
@@ -74,24 +66,18 @@ def main():
     if verbose:
         print('Generating Python client')
 
-    blacklist_namespace_args = []
-    for namespace in TEAM_NAMESPACES:
-        blacklist_namespace_args.extend(('-b', namespace))
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
-         specs + ['-a', 'host', '-a', 'style'] + blacklist_namespace_args +
-         ['--', '-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox']),
+         specs + ['-a', 'host', '-a', 'style','-a', 'auth'] +
+         ['--', '-w','user,app','-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox']),
         cwd=stone_path)
     if o:
         print('Output:', o)
 
-    whitelist_namespace_args = []
-    for namespace in TEAM_NAMESPACES:
-        whitelist_namespace_args.extend(('-w', namespace))
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
-         specs + ['-a', 'host', '-a', 'style'] + whitelist_namespace_args +
-         ['--', '-m', 'base_team', '-c', 'DropboxTeamBase', '-t', 'dropbox']),
+         specs + ['-a', 'host', '-a', 'style','-a', 'auth'] +
+         ['--', '-w','team','-m', 'base_team', '-c', 'DropboxTeamBase', '-t', 'dropbox']),
         cwd=stone_path)
     if o:
         print('Output:', o)
