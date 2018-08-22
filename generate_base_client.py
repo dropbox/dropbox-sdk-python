@@ -69,7 +69,7 @@ def main():
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style','-a', 'auth'] +
-         ['--', '-w','user,app','-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox']),
+         ['--', '-w','user,app,noauth','-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox']),
         cwd=stone_path)
     if o:
         print('Output:', o)
