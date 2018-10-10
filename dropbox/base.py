@@ -250,32 +250,6 @@ class DropboxBase(object):
         )
         return None
 
-    def file_properties_templates_add_for_team(self,
-                                               name,
-                                               description,
-                                               fields):
-        """
-        Add a template associated with a team. See
-        :meth:`file_properties_properties_add` to add properties to a file or
-        folder. Note: this endpoint will create team-owned templates.
-
-        :rtype: :class:`dropbox.file_properties.AddTemplateResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.file_properties.ModifyTemplateError`
-        """
-        arg = file_properties.AddTemplateArg(name,
-                                             description,
-                                             fields)
-        r = self.request(
-            file_properties.templates_add_for_team,
-            'file_properties',
-            arg,
-            None,
-        )
-        return r
-
     def file_properties_templates_add_for_user(self,
                                                name,
                                                description,
@@ -296,29 +270,6 @@ class DropboxBase(object):
                                              fields)
         r = self.request(
             file_properties.templates_add_for_user,
-            'file_properties',
-            arg,
-            None,
-        )
-        return r
-
-    def file_properties_templates_get_for_team(self,
-                                               template_id):
-        """
-        Get the schema for a specified template.
-
-        :param str template_id: An identifier for template added by route  See
-            :meth:`file_properties_templates_add_for_user` or
-            :meth:`file_properties_templates_add_for_team`.
-        :rtype: :class:`dropbox.file_properties.GetTemplateResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.file_properties.TemplateError`
-        """
-        arg = file_properties.GetTemplateArg(template_id)
-        r = self.request(
-            file_properties.templates_get_for_team,
             'file_properties',
             arg,
             None,
@@ -349,26 +300,6 @@ class DropboxBase(object):
         )
         return r
 
-    def file_properties_templates_list_for_team(self):
-        """
-        Get the template identifiers for a team. To get the schema of each
-        template use :meth:`file_properties_templates_get_for_team`.
-
-        :rtype: :class:`dropbox.file_properties.ListTemplateResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.file_properties.TemplateError`
-        """
-        arg = None
-        r = self.request(
-            file_properties.templates_list_for_team,
-            'file_properties',
-            arg,
-            None,
-        )
-        return r
-
     def file_properties_templates_list_for_user(self):
         """
         Get the template identifiers for a team. To get the schema of each
@@ -389,32 +320,6 @@ class DropboxBase(object):
             None,
         )
         return r
-
-    def file_properties_templates_remove_for_team(self,
-                                                  template_id):
-        """
-        Permanently removes the specified template created from
-        :meth:`file_properties_templates_add_for_user`. All properties
-        associated with the template will also be removed. This action cannot be
-        undone.
-
-        :param str template_id: An identifier for a template created by
-            :meth:`file_properties_templates_add_for_user` or
-            :meth:`file_properties_templates_add_for_team`.
-        :rtype: None
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.file_properties.TemplateError`
-        """
-        arg = file_properties.RemoveTemplateArg(template_id)
-        r = self.request(
-            file_properties.templates_remove_for_team,
-            'file_properties',
-            arg,
-            None,
-        )
-        return None
 
     def file_properties_templates_remove_for_user(self,
                                                   template_id):
@@ -441,44 +346,6 @@ class DropboxBase(object):
             None,
         )
         return None
-
-    def file_properties_templates_update_for_team(self,
-                                                  template_id,
-                                                  name=None,
-                                                  description=None,
-                                                  add_fields=None):
-        """
-        Update a template associated with a team. This route can update the
-        template name, the template description and add optional properties to
-        templates.
-
-        :param str template_id: An identifier for template added by  See
-            :meth:`file_properties_templates_add_for_user` or
-            :meth:`file_properties_templates_add_for_team`.
-        :param Nullable name: A display name for the template. template names
-            can be up to 256 bytes.
-        :param Nullable description: Description for the new template. Template
-            descriptions can be up to 1024 bytes.
-        :param Nullable add_fields: Property field templates to be added to the
-            group template. There can be up to 32 properties in a single
-            template.
-        :rtype: :class:`dropbox.file_properties.UpdateTemplateResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.file_properties.ModifyTemplateError`
-        """
-        arg = file_properties.UpdateTemplateArg(template_id,
-                                                name,
-                                                description,
-                                                add_fields)
-        r = self.request(
-            file_properties.templates_update_for_team,
-            'file_properties',
-            arg,
-            None,
-        )
-        return r
 
     def file_properties_templates_update_for_user(self,
                                                   template_id,
@@ -4277,6 +4144,12 @@ class DropboxBase(object):
             None,
         )
         return r
+
+    # ------------------------------------------
+    # Routes in team namespace
+
+    # ------------------------------------------
+    # Routes in team_log namespace
 
     # ------------------------------------------
     # Routes in users namespace
