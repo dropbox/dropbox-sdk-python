@@ -61,6 +61,9 @@ class AccountType(bb.Union):
         """
         return self._tag == 'business'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountType(%r, %r)' % (self._tag, self._value)
 

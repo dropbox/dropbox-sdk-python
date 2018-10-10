@@ -215,6 +215,9 @@ class AccessMethodLogInfo(bb.Union):
             raise AttributeError("tag 'api' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccessMethodLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccessMethodLogInfo(%r, %r)' % (self._tag, self._value)
 
@@ -259,12 +262,15 @@ class AccountCaptureAvailability(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureAvailability, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureAvailability(%r, %r)' % (self._tag, self._value)
 
 AccountCaptureAvailability_validator = bv.Union(AccountCaptureAvailability)
 
-class AccountCaptureChangeAvailabilityDetails(object):
+class AccountCaptureChangeAvailabilityDetails(bb.Struct):
     """
     Granted/revoked option to enable account capture on team domains.
 
@@ -344,6 +350,9 @@ class AccountCaptureChangeAvailabilityDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureChangeAvailabilityDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureChangeAvailabilityDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -352,7 +361,7 @@ class AccountCaptureChangeAvailabilityDetails(object):
 
 AccountCaptureChangeAvailabilityDetails_validator = bv.Struct(AccountCaptureChangeAvailabilityDetails)
 
-class AccountCaptureChangeAvailabilityType(object):
+class AccountCaptureChangeAvailabilityType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -389,6 +398,9 @@ class AccountCaptureChangeAvailabilityType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureChangeAvailabilityType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureChangeAvailabilityType(description={!r})'.format(
             self._description_value,
@@ -396,7 +408,7 @@ class AccountCaptureChangeAvailabilityType(object):
 
 AccountCaptureChangeAvailabilityType_validator = bv.Struct(AccountCaptureChangeAvailabilityType)
 
-class AccountCaptureChangePolicyDetails(object):
+class AccountCaptureChangePolicyDetails(bb.Struct):
     """
     Changed account capture setting on team domain.
 
@@ -476,6 +488,9 @@ class AccountCaptureChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -484,7 +499,7 @@ class AccountCaptureChangePolicyDetails(object):
 
 AccountCaptureChangePolicyDetails_validator = bv.Struct(AccountCaptureChangePolicyDetails)
 
-class AccountCaptureChangePolicyType(object):
+class AccountCaptureChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -521,6 +536,9 @@ class AccountCaptureChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -528,7 +546,7 @@ class AccountCaptureChangePolicyType(object):
 
 AccountCaptureChangePolicyType_validator = bv.Struct(AccountCaptureChangePolicyType)
 
-class AccountCaptureMigrateAccountDetails(object):
+class AccountCaptureMigrateAccountDetails(bb.Struct):
     """
     Account-captured user migrated account to team.
 
@@ -572,6 +590,9 @@ class AccountCaptureMigrateAccountDetails(object):
         self._domain_name_value = None
         self._domain_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureMigrateAccountDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureMigrateAccountDetails(domain_name={!r})'.format(
             self._domain_name_value,
@@ -579,7 +600,7 @@ class AccountCaptureMigrateAccountDetails(object):
 
 AccountCaptureMigrateAccountDetails_validator = bv.Struct(AccountCaptureMigrateAccountDetails)
 
-class AccountCaptureMigrateAccountType(object):
+class AccountCaptureMigrateAccountType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -616,6 +637,9 @@ class AccountCaptureMigrateAccountType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureMigrateAccountType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureMigrateAccountType(description={!r})'.format(
             self._description_value,
@@ -623,7 +647,7 @@ class AccountCaptureMigrateAccountType(object):
 
 AccountCaptureMigrateAccountType_validator = bv.Struct(AccountCaptureMigrateAccountType)
 
-class AccountCaptureNotificationEmailsSentDetails(object):
+class AccountCaptureNotificationEmailsSentDetails(bb.Struct):
     """
     Sent proactive account capture email to all unmanaged members.
 
@@ -667,6 +691,9 @@ class AccountCaptureNotificationEmailsSentDetails(object):
         self._domain_name_value = None
         self._domain_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureNotificationEmailsSentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureNotificationEmailsSentDetails(domain_name={!r})'.format(
             self._domain_name_value,
@@ -674,7 +701,7 @@ class AccountCaptureNotificationEmailsSentDetails(object):
 
 AccountCaptureNotificationEmailsSentDetails_validator = bv.Struct(AccountCaptureNotificationEmailsSentDetails)
 
-class AccountCaptureNotificationEmailsSentType(object):
+class AccountCaptureNotificationEmailsSentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -710,6 +737,9 @@ class AccountCaptureNotificationEmailsSentType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureNotificationEmailsSentType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'AccountCaptureNotificationEmailsSentType(description={!r})'.format(
@@ -767,12 +797,15 @@ class AccountCapturePolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCapturePolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCapturePolicy(%r, %r)' % (self._tag, self._value)
 
 AccountCapturePolicy_validator = bv.Union(AccountCapturePolicy)
 
-class AccountCaptureRelinquishAccountDetails(object):
+class AccountCaptureRelinquishAccountDetails(bb.Struct):
     """
     Account-captured user changed account email to personal email.
 
@@ -816,6 +849,9 @@ class AccountCaptureRelinquishAccountDetails(object):
         self._domain_name_value = None
         self._domain_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureRelinquishAccountDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccountCaptureRelinquishAccountDetails(domain_name={!r})'.format(
             self._domain_name_value,
@@ -823,7 +859,7 @@ class AccountCaptureRelinquishAccountDetails(object):
 
 AccountCaptureRelinquishAccountDetails_validator = bv.Struct(AccountCaptureRelinquishAccountDetails)
 
-class AccountCaptureRelinquishAccountType(object):
+class AccountCaptureRelinquishAccountType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -859,6 +895,9 @@ class AccountCaptureRelinquishAccountType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccountCaptureRelinquishAccountType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'AccountCaptureRelinquishAccountType(description={!r})'.format(
@@ -955,6 +994,9 @@ class ActionDetails(bb.Union):
         if not self.is_remove_action():
             raise AttributeError("tag 'remove_action' not set")
         return self._value
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ActionDetails, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'ActionDetails(%r, %r)' % (self._tag, self._value)
@@ -1133,6 +1175,9 @@ class ActorLogInfo(bb.Union):
             raise AttributeError("tag 'reseller' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ActorLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ActorLogInfo(%r, %r)' % (self._tag, self._value)
 
@@ -1207,12 +1252,15 @@ class AdminRole(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AdminRole, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AdminRole(%r, %r)' % (self._tag, self._value)
 
 AdminRole_validator = bv.Union(AdminRole)
 
-class AllowDownloadDisabledDetails(object):
+class AllowDownloadDisabledDetails(bb.Struct):
     """
     Disabled downloads.
     """
@@ -1225,12 +1273,15 @@ class AllowDownloadDisabledDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AllowDownloadDisabledDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AllowDownloadDisabledDetails()'
 
 AllowDownloadDisabledDetails_validator = bv.Struct(AllowDownloadDisabledDetails)
 
-class AllowDownloadDisabledType(object):
+class AllowDownloadDisabledType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -1267,6 +1318,9 @@ class AllowDownloadDisabledType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AllowDownloadDisabledType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AllowDownloadDisabledType(description={!r})'.format(
             self._description_value,
@@ -1274,7 +1328,7 @@ class AllowDownloadDisabledType(object):
 
 AllowDownloadDisabledType_validator = bv.Struct(AllowDownloadDisabledType)
 
-class AllowDownloadEnabledDetails(object):
+class AllowDownloadEnabledDetails(bb.Struct):
     """
     Enabled downloads.
     """
@@ -1287,12 +1341,15 @@ class AllowDownloadEnabledDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AllowDownloadEnabledDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AllowDownloadEnabledDetails()'
 
 AllowDownloadEnabledDetails_validator = bv.Struct(AllowDownloadEnabledDetails)
 
-class AllowDownloadEnabledType(object):
+class AllowDownloadEnabledType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -1329,6 +1386,9 @@ class AllowDownloadEnabledType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AllowDownloadEnabledType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AllowDownloadEnabledType(description={!r})'.format(
             self._description_value,
@@ -1336,7 +1396,7 @@ class AllowDownloadEnabledType(object):
 
 AllowDownloadEnabledType_validator = bv.Struct(AllowDownloadEnabledType)
 
-class ApiSessionLogInfo(object):
+class ApiSessionLogInfo(bb.Struct):
     """
     Api session.
 
@@ -1380,6 +1440,9 @@ class ApiSessionLogInfo(object):
         self._request_id_value = None
         self._request_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ApiSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ApiSessionLogInfo(request_id={!r})'.format(
             self._request_id_value,
@@ -1387,7 +1450,7 @@ class ApiSessionLogInfo(object):
 
 ApiSessionLogInfo_validator = bv.Struct(ApiSessionLogInfo)
 
-class AppLinkTeamDetails(object):
+class AppLinkTeamDetails(bb.Struct):
     """
     Linked app for team.
 
@@ -1431,6 +1494,9 @@ class AppLinkTeamDetails(object):
         self._app_info_value = None
         self._app_info_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppLinkTeamDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AppLinkTeamDetails(app_info={!r})'.format(
             self._app_info_value,
@@ -1438,7 +1504,7 @@ class AppLinkTeamDetails(object):
 
 AppLinkTeamDetails_validator = bv.Struct(AppLinkTeamDetails)
 
-class AppLinkTeamType(object):
+class AppLinkTeamType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -1475,6 +1541,9 @@ class AppLinkTeamType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppLinkTeamType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AppLinkTeamType(description={!r})'.format(
             self._description_value,
@@ -1482,7 +1551,7 @@ class AppLinkTeamType(object):
 
 AppLinkTeamType_validator = bv.Struct(AppLinkTeamType)
 
-class AppLinkUserDetails(object):
+class AppLinkUserDetails(bb.Struct):
     """
     Linked app for member.
 
@@ -1526,6 +1595,9 @@ class AppLinkUserDetails(object):
         self._app_info_value = None
         self._app_info_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppLinkUserDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AppLinkUserDetails(app_info={!r})'.format(
             self._app_info_value,
@@ -1533,7 +1605,7 @@ class AppLinkUserDetails(object):
 
 AppLinkUserDetails_validator = bv.Struct(AppLinkUserDetails)
 
-class AppLinkUserType(object):
+class AppLinkUserType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -1570,6 +1642,9 @@ class AppLinkUserType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppLinkUserType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AppLinkUserType(description={!r})'.format(
             self._description_value,
@@ -1577,7 +1652,7 @@ class AppLinkUserType(object):
 
 AppLinkUserType_validator = bv.Struct(AppLinkUserType)
 
-class AppLogInfo(object):
+class AppLogInfo(bb.Struct):
     """
     App's logged information.
 
@@ -1659,6 +1734,9 @@ class AppLogInfo(object):
         self._display_name_value = None
         self._display_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AppLogInfo(app_id={!r}, display_name={!r})'.format(
             self._app_id_value,
@@ -1667,7 +1745,7 @@ class AppLogInfo(object):
 
 AppLogInfo_validator = bv.StructTree(AppLogInfo)
 
-class AppUnlinkTeamDetails(object):
+class AppUnlinkTeamDetails(bb.Struct):
     """
     Unlinked app for team.
 
@@ -1711,6 +1789,9 @@ class AppUnlinkTeamDetails(object):
         self._app_info_value = None
         self._app_info_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppUnlinkTeamDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AppUnlinkTeamDetails(app_info={!r})'.format(
             self._app_info_value,
@@ -1718,7 +1799,7 @@ class AppUnlinkTeamDetails(object):
 
 AppUnlinkTeamDetails_validator = bv.Struct(AppUnlinkTeamDetails)
 
-class AppUnlinkTeamType(object):
+class AppUnlinkTeamType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -1755,6 +1836,9 @@ class AppUnlinkTeamType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppUnlinkTeamType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AppUnlinkTeamType(description={!r})'.format(
             self._description_value,
@@ -1762,7 +1846,7 @@ class AppUnlinkTeamType(object):
 
 AppUnlinkTeamType_validator = bv.Struct(AppUnlinkTeamType)
 
-class AppUnlinkUserDetails(object):
+class AppUnlinkUserDetails(bb.Struct):
     """
     Unlinked app for member.
 
@@ -1806,6 +1890,9 @@ class AppUnlinkUserDetails(object):
         self._app_info_value = None
         self._app_info_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppUnlinkUserDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AppUnlinkUserDetails(app_info={!r})'.format(
             self._app_info_value,
@@ -1813,7 +1900,7 @@ class AppUnlinkUserDetails(object):
 
 AppUnlinkUserDetails_validator = bv.Struct(AppUnlinkUserDetails)
 
-class AppUnlinkUserType(object):
+class AppUnlinkUserType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -1849,6 +1936,9 @@ class AppUnlinkUserType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AppUnlinkUserType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'AppUnlinkUserType(description={!r})'.format(
@@ -2040,12 +2130,15 @@ class AssetLogInfo(bb.Union):
             raise AttributeError("tag 'showcase_document' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AssetLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AssetLogInfo(%r, %r)' % (self._tag, self._value)
 
 AssetLogInfo_validator = bv.Union(AssetLogInfo)
 
-class Certificate(object):
+class Certificate(bb.Struct):
     """
     Certificate details.
 
@@ -2278,6 +2371,9 @@ class Certificate(object):
         self._common_name_value = None
         self._common_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(Certificate, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'Certificate(subject={!r}, issuer={!r}, issue_date={!r}, expiration_date={!r}, serial_number={!r}, sha1_fingerprint={!r}, common_name={!r})'.format(
             self._subject_value,
@@ -2291,7 +2387,7 @@ class Certificate(object):
 
 Certificate_validator = bv.Struct(Certificate)
 
-class CollectionShareDetails(object):
+class CollectionShareDetails(bb.Struct):
     """
     Shared album.
 
@@ -2335,6 +2431,9 @@ class CollectionShareDetails(object):
         self._album_name_value = None
         self._album_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CollectionShareDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'CollectionShareDetails(album_name={!r})'.format(
             self._album_name_value,
@@ -2342,7 +2441,7 @@ class CollectionShareDetails(object):
 
 CollectionShareDetails_validator = bv.Struct(CollectionShareDetails)
 
-class CollectionShareType(object):
+class CollectionShareType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -2378,6 +2477,9 @@ class CollectionShareType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CollectionShareType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'CollectionShareType(description={!r})'.format(
@@ -2426,6 +2528,9 @@ class ContentPermanentDeletePolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ContentPermanentDeletePolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'ContentPermanentDeletePolicy(%r, %r)' % (self._tag, self._value)
@@ -2542,12 +2647,15 @@ class ContextLogInfo(bb.Union):
             raise AttributeError("tag 'non_team_member' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ContextLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ContextLogInfo(%r, %r)' % (self._tag, self._value)
 
 ContextLogInfo_validator = bv.Union(ContextLogInfo)
 
-class CreateFolderDetails(object):
+class CreateFolderDetails(bb.Struct):
     """
     Created folders.
     """
@@ -2560,12 +2668,15 @@ class CreateFolderDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CreateFolderDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'CreateFolderDetails()'
 
 CreateFolderDetails_validator = bv.Struct(CreateFolderDetails)
 
-class CreateFolderType(object):
+class CreateFolderType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -2602,6 +2713,9 @@ class CreateFolderType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CreateFolderType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'CreateFolderType(description={!r})'.format(
             self._description_value,
@@ -2609,7 +2723,7 @@ class CreateFolderType(object):
 
 CreateFolderType_validator = bv.Struct(CreateFolderType)
 
-class DataPlacementRestrictionChangePolicyDetails(object):
+class DataPlacementRestrictionChangePolicyDetails(bb.Struct):
     """
     Set restrictions on data center locations where team data resides.
 
@@ -2684,6 +2798,9 @@ class DataPlacementRestrictionChangePolicyDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DataPlacementRestrictionChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DataPlacementRestrictionChangePolicyDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -2692,7 +2809,7 @@ class DataPlacementRestrictionChangePolicyDetails(object):
 
 DataPlacementRestrictionChangePolicyDetails_validator = bv.Struct(DataPlacementRestrictionChangePolicyDetails)
 
-class DataPlacementRestrictionChangePolicyType(object):
+class DataPlacementRestrictionChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -2729,6 +2846,9 @@ class DataPlacementRestrictionChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DataPlacementRestrictionChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DataPlacementRestrictionChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -2736,7 +2856,7 @@ class DataPlacementRestrictionChangePolicyType(object):
 
 DataPlacementRestrictionChangePolicyType_validator = bv.Struct(DataPlacementRestrictionChangePolicyType)
 
-class DataPlacementRestrictionSatisfyPolicyDetails(object):
+class DataPlacementRestrictionSatisfyPolicyDetails(bb.Struct):
     """
     Completed restrictions on data center locations where team data resides.
 
@@ -2780,6 +2900,9 @@ class DataPlacementRestrictionSatisfyPolicyDetails(object):
         self._placement_restriction_value = None
         self._placement_restriction_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DataPlacementRestrictionSatisfyPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DataPlacementRestrictionSatisfyPolicyDetails(placement_restriction={!r})'.format(
             self._placement_restriction_value,
@@ -2787,7 +2910,7 @@ class DataPlacementRestrictionSatisfyPolicyDetails(object):
 
 DataPlacementRestrictionSatisfyPolicyDetails_validator = bv.Struct(DataPlacementRestrictionSatisfyPolicyDetails)
 
-class DataPlacementRestrictionSatisfyPolicyType(object):
+class DataPlacementRestrictionSatisfyPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -2824,6 +2947,9 @@ class DataPlacementRestrictionSatisfyPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DataPlacementRestrictionSatisfyPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DataPlacementRestrictionSatisfyPolicyType(description={!r})'.format(
             self._description_value,
@@ -2831,7 +2957,7 @@ class DataPlacementRestrictionSatisfyPolicyType(object):
 
 DataPlacementRestrictionSatisfyPolicyType_validator = bv.Struct(DataPlacementRestrictionSatisfyPolicyType)
 
-class DeviceSessionLogInfo(object):
+class DeviceSessionLogInfo(bb.Struct):
     """
     Device's session logged information.
 
@@ -2951,6 +3077,9 @@ class DeviceSessionLogInfo(object):
     def updated(self):
         self._updated_value = None
         self._updated_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'DeviceSessionLogInfo(ip_address={!r}, created={!r}, updated={!r})'.format(
@@ -3084,7 +3213,7 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
         """
         The Dropbox desktop client type.
 
-        :rtype: team.DesktopPlatform_validator
+        :rtype: team.DesktopPlatform
         """
         if self._client_type_present:
             return self._client_type_value
@@ -3175,6 +3304,9 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._is_delete_on_unlink_supported_value = None
         self._is_delete_on_unlink_supported_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DesktopDeviceSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DesktopDeviceSessionLogInfo(host_name={!r}, client_type={!r}, platform={!r}, is_delete_on_unlink_supported={!r}, ip_address={!r}, created={!r}, updated={!r}, session_info={!r}, client_version={!r})'.format(
             self._host_name_value,
@@ -3190,7 +3322,7 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
 
 DesktopDeviceSessionLogInfo_validator = bv.Struct(DesktopDeviceSessionLogInfo)
 
-class SessionLogInfo(object):
+class SessionLogInfo(bb.Struct):
     """
     Session's logged information.
 
@@ -3237,6 +3369,9 @@ class SessionLogInfo(object):
         self._session_id_value = None
         self._session_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SessionLogInfo(session_id={!r})'.format(
             self._session_id_value,
@@ -3258,6 +3393,9 @@ class DesktopSessionLogInfo(SessionLogInfo):
                  session_id=None):
         super(DesktopSessionLogInfo, self).__init__(session_id)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DesktopSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DesktopSessionLogInfo(session_id={!r})'.format(
             self._session_id_value,
@@ -3265,7 +3403,7 @@ class DesktopSessionLogInfo(SessionLogInfo):
 
 DesktopSessionLogInfo_validator = bv.Struct(DesktopSessionLogInfo)
 
-class DeviceApprovalsChangeDesktopPolicyDetails(object):
+class DeviceApprovalsChangeDesktopPolicyDetails(bb.Struct):
     """
     Set/removed limit on number of computers member can link to team Dropbox
     account.
@@ -3351,6 +3489,9 @@ class DeviceApprovalsChangeDesktopPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsChangeDesktopPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceApprovalsChangeDesktopPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -3359,7 +3500,7 @@ class DeviceApprovalsChangeDesktopPolicyDetails(object):
 
 DeviceApprovalsChangeDesktopPolicyDetails_validator = bv.Struct(DeviceApprovalsChangeDesktopPolicyDetails)
 
-class DeviceApprovalsChangeDesktopPolicyType(object):
+class DeviceApprovalsChangeDesktopPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -3396,6 +3537,9 @@ class DeviceApprovalsChangeDesktopPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsChangeDesktopPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceApprovalsChangeDesktopPolicyType(description={!r})'.format(
             self._description_value,
@@ -3403,7 +3547,7 @@ class DeviceApprovalsChangeDesktopPolicyType(object):
 
 DeviceApprovalsChangeDesktopPolicyType_validator = bv.Struct(DeviceApprovalsChangeDesktopPolicyType)
 
-class DeviceApprovalsChangeMobilePolicyDetails(object):
+class DeviceApprovalsChangeMobilePolicyDetails(bb.Struct):
     """
     Set/removed limit on number of mobile devices member can link to team
     Dropbox account.
@@ -3489,6 +3633,9 @@ class DeviceApprovalsChangeMobilePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsChangeMobilePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceApprovalsChangeMobilePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -3497,7 +3644,7 @@ class DeviceApprovalsChangeMobilePolicyDetails(object):
 
 DeviceApprovalsChangeMobilePolicyDetails_validator = bv.Struct(DeviceApprovalsChangeMobilePolicyDetails)
 
-class DeviceApprovalsChangeMobilePolicyType(object):
+class DeviceApprovalsChangeMobilePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -3534,6 +3681,9 @@ class DeviceApprovalsChangeMobilePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsChangeMobilePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceApprovalsChangeMobilePolicyType(description={!r})'.format(
             self._description_value,
@@ -3541,7 +3691,7 @@ class DeviceApprovalsChangeMobilePolicyType(object):
 
 DeviceApprovalsChangeMobilePolicyType_validator = bv.Struct(DeviceApprovalsChangeMobilePolicyType)
 
-class DeviceApprovalsChangeOverageActionDetails(object):
+class DeviceApprovalsChangeOverageActionDetails(bb.Struct):
     """
     Changed device approvals setting when member is over limit.
 
@@ -3577,7 +3727,7 @@ class DeviceApprovalsChangeOverageActionDetails(object):
         """
         New over the limits policy. Might be missing due to historical data gap.
 
-        :rtype: team_policies.RolloutMethod_validator
+        :rtype: team_policies.RolloutMethod
         """
         if self._new_value_present:
             return self._new_value_value
@@ -3604,7 +3754,7 @@ class DeviceApprovalsChangeOverageActionDetails(object):
         Previous over the limit policy. Might be missing due to historical data
         gap.
 
-        :rtype: team_policies.RolloutMethod_validator
+        :rtype: team_policies.RolloutMethod
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -3625,6 +3775,9 @@ class DeviceApprovalsChangeOverageActionDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsChangeOverageActionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceApprovalsChangeOverageActionDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -3633,7 +3786,7 @@ class DeviceApprovalsChangeOverageActionDetails(object):
 
 DeviceApprovalsChangeOverageActionDetails_validator = bv.Struct(DeviceApprovalsChangeOverageActionDetails)
 
-class DeviceApprovalsChangeOverageActionType(object):
+class DeviceApprovalsChangeOverageActionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -3670,6 +3823,9 @@ class DeviceApprovalsChangeOverageActionType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsChangeOverageActionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceApprovalsChangeOverageActionType(description={!r})'.format(
             self._description_value,
@@ -3677,7 +3833,7 @@ class DeviceApprovalsChangeOverageActionType(object):
 
 DeviceApprovalsChangeOverageActionType_validator = bv.Struct(DeviceApprovalsChangeOverageActionType)
 
-class DeviceApprovalsChangeUnlinkActionDetails(object):
+class DeviceApprovalsChangeUnlinkActionDetails(bb.Struct):
     """
     Changed device approvals setting when member unlinks approved device.
 
@@ -3761,6 +3917,9 @@ class DeviceApprovalsChangeUnlinkActionDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsChangeUnlinkActionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceApprovalsChangeUnlinkActionDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -3769,7 +3928,7 @@ class DeviceApprovalsChangeUnlinkActionDetails(object):
 
 DeviceApprovalsChangeUnlinkActionDetails_validator = bv.Struct(DeviceApprovalsChangeUnlinkActionDetails)
 
-class DeviceApprovalsChangeUnlinkActionType(object):
+class DeviceApprovalsChangeUnlinkActionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -3805,6 +3964,9 @@ class DeviceApprovalsChangeUnlinkActionType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsChangeUnlinkActionType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'DeviceApprovalsChangeUnlinkActionType(description={!r})'.format(
@@ -3852,12 +4014,15 @@ class DeviceApprovalsPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceApprovalsPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceApprovalsPolicy(%r, %r)' % (self._tag, self._value)
 
 DeviceApprovalsPolicy_validator = bv.Union(DeviceApprovalsPolicy)
 
-class DeviceChangeIpDesktopDetails(object):
+class DeviceChangeIpDesktopDetails(bb.Struct):
     """
     Changed IP address associated with active desktop session.
 
@@ -3901,6 +4066,9 @@ class DeviceChangeIpDesktopDetails(object):
         self._device_session_info_value = None
         self._device_session_info_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceChangeIpDesktopDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceChangeIpDesktopDetails(device_session_info={!r})'.format(
             self._device_session_info_value,
@@ -3908,7 +4076,7 @@ class DeviceChangeIpDesktopDetails(object):
 
 DeviceChangeIpDesktopDetails_validator = bv.Struct(DeviceChangeIpDesktopDetails)
 
-class DeviceChangeIpDesktopType(object):
+class DeviceChangeIpDesktopType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -3945,6 +4113,9 @@ class DeviceChangeIpDesktopType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceChangeIpDesktopType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceChangeIpDesktopType(description={!r})'.format(
             self._description_value,
@@ -3952,7 +4123,7 @@ class DeviceChangeIpDesktopType(object):
 
 DeviceChangeIpDesktopType_validator = bv.Struct(DeviceChangeIpDesktopType)
 
-class DeviceChangeIpMobileDetails(object):
+class DeviceChangeIpMobileDetails(bb.Struct):
     """
     Changed IP address associated with active mobile session.
 
@@ -3999,6 +4170,9 @@ class DeviceChangeIpMobileDetails(object):
         self._device_session_info_value = None
         self._device_session_info_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceChangeIpMobileDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceChangeIpMobileDetails(device_session_info={!r})'.format(
             self._device_session_info_value,
@@ -4006,7 +4180,7 @@ class DeviceChangeIpMobileDetails(object):
 
 DeviceChangeIpMobileDetails_validator = bv.Struct(DeviceChangeIpMobileDetails)
 
-class DeviceChangeIpMobileType(object):
+class DeviceChangeIpMobileType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -4043,6 +4217,9 @@ class DeviceChangeIpMobileType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceChangeIpMobileType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceChangeIpMobileType(description={!r})'.format(
             self._description_value,
@@ -4050,7 +4227,7 @@ class DeviceChangeIpMobileType(object):
 
 DeviceChangeIpMobileType_validator = bv.Struct(DeviceChangeIpMobileType)
 
-class DeviceChangeIpWebDetails(object):
+class DeviceChangeIpWebDetails(bb.Struct):
     """
     Changed IP address associated with active web session.
 
@@ -4094,6 +4271,9 @@ class DeviceChangeIpWebDetails(object):
         self._user_agent_value = None
         self._user_agent_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceChangeIpWebDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceChangeIpWebDetails(user_agent={!r})'.format(
             self._user_agent_value,
@@ -4101,7 +4281,7 @@ class DeviceChangeIpWebDetails(object):
 
 DeviceChangeIpWebDetails_validator = bv.Struct(DeviceChangeIpWebDetails)
 
-class DeviceChangeIpWebType(object):
+class DeviceChangeIpWebType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -4138,6 +4318,9 @@ class DeviceChangeIpWebType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceChangeIpWebType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceChangeIpWebType(description={!r})'.format(
             self._description_value,
@@ -4145,7 +4328,7 @@ class DeviceChangeIpWebType(object):
 
 DeviceChangeIpWebType_validator = bv.Struct(DeviceChangeIpWebType)
 
-class DeviceDeleteOnUnlinkFailDetails(object):
+class DeviceDeleteOnUnlinkFailDetails(bb.Struct):
     """
     Failed to delete all files from unlinked device.
 
@@ -4259,6 +4442,9 @@ class DeviceDeleteOnUnlinkFailDetails(object):
         self._num_failures_value = None
         self._num_failures_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceDeleteOnUnlinkFailDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceDeleteOnUnlinkFailDetails(num_failures={!r}, session_info={!r}, display_name={!r})'.format(
             self._num_failures_value,
@@ -4268,7 +4454,7 @@ class DeviceDeleteOnUnlinkFailDetails(object):
 
 DeviceDeleteOnUnlinkFailDetails_validator = bv.Struct(DeviceDeleteOnUnlinkFailDetails)
 
-class DeviceDeleteOnUnlinkFailType(object):
+class DeviceDeleteOnUnlinkFailType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -4305,6 +4491,9 @@ class DeviceDeleteOnUnlinkFailType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceDeleteOnUnlinkFailType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceDeleteOnUnlinkFailType(description={!r})'.format(
             self._description_value,
@@ -4312,7 +4501,7 @@ class DeviceDeleteOnUnlinkFailType(object):
 
 DeviceDeleteOnUnlinkFailType_validator = bv.Struct(DeviceDeleteOnUnlinkFailType)
 
-class DeviceDeleteOnUnlinkSuccessDetails(object):
+class DeviceDeleteOnUnlinkSuccessDetails(bb.Struct):
     """
     Deleted all files from unlinked device.
 
@@ -4395,6 +4584,9 @@ class DeviceDeleteOnUnlinkSuccessDetails(object):
         self._display_name_value = None
         self._display_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceDeleteOnUnlinkSuccessDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceDeleteOnUnlinkSuccessDetails(session_info={!r}, display_name={!r})'.format(
             self._session_info_value,
@@ -4403,7 +4595,7 @@ class DeviceDeleteOnUnlinkSuccessDetails(object):
 
 DeviceDeleteOnUnlinkSuccessDetails_validator = bv.Struct(DeviceDeleteOnUnlinkSuccessDetails)
 
-class DeviceDeleteOnUnlinkSuccessType(object):
+class DeviceDeleteOnUnlinkSuccessType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -4440,6 +4632,9 @@ class DeviceDeleteOnUnlinkSuccessType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceDeleteOnUnlinkSuccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceDeleteOnUnlinkSuccessType(description={!r})'.format(
             self._description_value,
@@ -4447,7 +4642,7 @@ class DeviceDeleteOnUnlinkSuccessType(object):
 
 DeviceDeleteOnUnlinkSuccessType_validator = bv.Struct(DeviceDeleteOnUnlinkSuccessType)
 
-class DeviceLinkFailDetails(object):
+class DeviceLinkFailDetails(bb.Struct):
     """
     Failed to link device.
 
@@ -4526,6 +4721,9 @@ class DeviceLinkFailDetails(object):
         self._device_type_value = None
         self._device_type_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceLinkFailDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceLinkFailDetails(device_type={!r}, ip_address={!r})'.format(
             self._device_type_value,
@@ -4534,7 +4732,7 @@ class DeviceLinkFailDetails(object):
 
 DeviceLinkFailDetails_validator = bv.Struct(DeviceLinkFailDetails)
 
-class DeviceLinkFailType(object):
+class DeviceLinkFailType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -4571,6 +4769,9 @@ class DeviceLinkFailType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceLinkFailType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceLinkFailType(description={!r})'.format(
             self._description_value,
@@ -4578,7 +4779,7 @@ class DeviceLinkFailType(object):
 
 DeviceLinkFailType_validator = bv.Struct(DeviceLinkFailType)
 
-class DeviceLinkSuccessDetails(object):
+class DeviceLinkSuccessDetails(bb.Struct):
     """
     Linked device.
 
@@ -4625,6 +4826,9 @@ class DeviceLinkSuccessDetails(object):
         self._device_session_info_value = None
         self._device_session_info_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceLinkSuccessDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceLinkSuccessDetails(device_session_info={!r})'.format(
             self._device_session_info_value,
@@ -4632,7 +4836,7 @@ class DeviceLinkSuccessDetails(object):
 
 DeviceLinkSuccessDetails_validator = bv.Struct(DeviceLinkSuccessDetails)
 
-class DeviceLinkSuccessType(object):
+class DeviceLinkSuccessType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -4669,6 +4873,9 @@ class DeviceLinkSuccessType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceLinkSuccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceLinkSuccessType(description={!r})'.format(
             self._description_value,
@@ -4676,7 +4883,7 @@ class DeviceLinkSuccessType(object):
 
 DeviceLinkSuccessType_validator = bv.Struct(DeviceLinkSuccessType)
 
-class DeviceManagementDisabledDetails(object):
+class DeviceManagementDisabledDetails(bb.Struct):
     """
     Disabled device management.
     """
@@ -4689,12 +4896,15 @@ class DeviceManagementDisabledDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceManagementDisabledDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceManagementDisabledDetails()'
 
 DeviceManagementDisabledDetails_validator = bv.Struct(DeviceManagementDisabledDetails)
 
-class DeviceManagementDisabledType(object):
+class DeviceManagementDisabledType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -4731,6 +4941,9 @@ class DeviceManagementDisabledType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceManagementDisabledType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceManagementDisabledType(description={!r})'.format(
             self._description_value,
@@ -4738,7 +4951,7 @@ class DeviceManagementDisabledType(object):
 
 DeviceManagementDisabledType_validator = bv.Struct(DeviceManagementDisabledType)
 
-class DeviceManagementEnabledDetails(object):
+class DeviceManagementEnabledDetails(bb.Struct):
     """
     Enabled device management.
     """
@@ -4751,12 +4964,15 @@ class DeviceManagementEnabledDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceManagementEnabledDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceManagementEnabledDetails()'
 
 DeviceManagementEnabledDetails_validator = bv.Struct(DeviceManagementEnabledDetails)
 
-class DeviceManagementEnabledType(object):
+class DeviceManagementEnabledType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -4792,6 +5008,9 @@ class DeviceManagementEnabledType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceManagementEnabledType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'DeviceManagementEnabledType(description={!r})'.format(
@@ -4839,12 +5058,15 @@ class DeviceType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceType(%r, %r)' % (self._tag, self._value)
 
 DeviceType_validator = bv.Union(DeviceType)
 
-class DeviceUnlinkDetails(object):
+class DeviceUnlinkDetails(bb.Struct):
     """
     Disconnected device.
 
@@ -4959,6 +5181,9 @@ class DeviceUnlinkDetails(object):
         self._delete_data_value = None
         self._delete_data_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceUnlinkDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceUnlinkDetails(delete_data={!r}, session_info={!r}, display_name={!r})'.format(
             self._delete_data_value,
@@ -5007,12 +5232,15 @@ class DeviceUnlinkPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceUnlinkPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceUnlinkPolicy(%r, %r)' % (self._tag, self._value)
 
 DeviceUnlinkPolicy_validator = bv.Union(DeviceUnlinkPolicy)
 
-class DeviceUnlinkType(object):
+class DeviceUnlinkType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5049,6 +5277,9 @@ class DeviceUnlinkType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DeviceUnlinkType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DeviceUnlinkType(description={!r})'.format(
             self._description_value,
@@ -5056,7 +5287,7 @@ class DeviceUnlinkType(object):
 
 DeviceUnlinkType_validator = bv.Struct(DeviceUnlinkType)
 
-class DirectoryRestrictionsAddMembersDetails(object):
+class DirectoryRestrictionsAddMembersDetails(bb.Struct):
     """
     Added members to directory restrictions list.
     """
@@ -5069,12 +5300,15 @@ class DirectoryRestrictionsAddMembersDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DirectoryRestrictionsAddMembersDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DirectoryRestrictionsAddMembersDetails()'
 
 DirectoryRestrictionsAddMembersDetails_validator = bv.Struct(DirectoryRestrictionsAddMembersDetails)
 
-class DirectoryRestrictionsAddMembersType(object):
+class DirectoryRestrictionsAddMembersType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5111,6 +5345,9 @@ class DirectoryRestrictionsAddMembersType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DirectoryRestrictionsAddMembersType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DirectoryRestrictionsAddMembersType(description={!r})'.format(
             self._description_value,
@@ -5118,7 +5355,7 @@ class DirectoryRestrictionsAddMembersType(object):
 
 DirectoryRestrictionsAddMembersType_validator = bv.Struct(DirectoryRestrictionsAddMembersType)
 
-class DirectoryRestrictionsRemoveMembersDetails(object):
+class DirectoryRestrictionsRemoveMembersDetails(bb.Struct):
     """
     Removed members from directory restrictions list.
     """
@@ -5131,12 +5368,15 @@ class DirectoryRestrictionsRemoveMembersDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DirectoryRestrictionsRemoveMembersDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DirectoryRestrictionsRemoveMembersDetails()'
 
 DirectoryRestrictionsRemoveMembersDetails_validator = bv.Struct(DirectoryRestrictionsRemoveMembersDetails)
 
-class DirectoryRestrictionsRemoveMembersType(object):
+class DirectoryRestrictionsRemoveMembersType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5173,6 +5413,9 @@ class DirectoryRestrictionsRemoveMembersType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DirectoryRestrictionsRemoveMembersType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DirectoryRestrictionsRemoveMembersType(description={!r})'.format(
             self._description_value,
@@ -5180,7 +5423,7 @@ class DirectoryRestrictionsRemoveMembersType(object):
 
 DirectoryRestrictionsRemoveMembersType_validator = bv.Struct(DirectoryRestrictionsRemoveMembersType)
 
-class DisabledDomainInvitesDetails(object):
+class DisabledDomainInvitesDetails(bb.Struct):
     """
     Disabled domain invites.
     """
@@ -5193,12 +5436,15 @@ class DisabledDomainInvitesDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DisabledDomainInvitesDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DisabledDomainInvitesDetails()'
 
 DisabledDomainInvitesDetails_validator = bv.Struct(DisabledDomainInvitesDetails)
 
-class DisabledDomainInvitesType(object):
+class DisabledDomainInvitesType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5235,6 +5481,9 @@ class DisabledDomainInvitesType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DisabledDomainInvitesType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DisabledDomainInvitesType(description={!r})'.format(
             self._description_value,
@@ -5242,7 +5491,7 @@ class DisabledDomainInvitesType(object):
 
 DisabledDomainInvitesType_validator = bv.Struct(DisabledDomainInvitesType)
 
-class DomainInvitesApproveRequestToJoinTeamDetails(object):
+class DomainInvitesApproveRequestToJoinTeamDetails(bb.Struct):
     """
     Approved user's request to join team.
     """
@@ -5255,12 +5504,15 @@ class DomainInvitesApproveRequestToJoinTeamDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesApproveRequestToJoinTeamDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesApproveRequestToJoinTeamDetails()'
 
 DomainInvitesApproveRequestToJoinTeamDetails_validator = bv.Struct(DomainInvitesApproveRequestToJoinTeamDetails)
 
-class DomainInvitesApproveRequestToJoinTeamType(object):
+class DomainInvitesApproveRequestToJoinTeamType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5297,6 +5549,9 @@ class DomainInvitesApproveRequestToJoinTeamType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesApproveRequestToJoinTeamType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesApproveRequestToJoinTeamType(description={!r})'.format(
             self._description_value,
@@ -5304,7 +5559,7 @@ class DomainInvitesApproveRequestToJoinTeamType(object):
 
 DomainInvitesApproveRequestToJoinTeamType_validator = bv.Struct(DomainInvitesApproveRequestToJoinTeamType)
 
-class DomainInvitesDeclineRequestToJoinTeamDetails(object):
+class DomainInvitesDeclineRequestToJoinTeamDetails(bb.Struct):
     """
     Declined user's request to join team.
     """
@@ -5317,12 +5572,15 @@ class DomainInvitesDeclineRequestToJoinTeamDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesDeclineRequestToJoinTeamDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesDeclineRequestToJoinTeamDetails()'
 
 DomainInvitesDeclineRequestToJoinTeamDetails_validator = bv.Struct(DomainInvitesDeclineRequestToJoinTeamDetails)
 
-class DomainInvitesDeclineRequestToJoinTeamType(object):
+class DomainInvitesDeclineRequestToJoinTeamType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5359,6 +5617,9 @@ class DomainInvitesDeclineRequestToJoinTeamType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesDeclineRequestToJoinTeamType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesDeclineRequestToJoinTeamType(description={!r})'.format(
             self._description_value,
@@ -5366,7 +5627,7 @@ class DomainInvitesDeclineRequestToJoinTeamType(object):
 
 DomainInvitesDeclineRequestToJoinTeamType_validator = bv.Struct(DomainInvitesDeclineRequestToJoinTeamType)
 
-class DomainInvitesEmailExistingUsersDetails(object):
+class DomainInvitesEmailExistingUsersDetails(bb.Struct):
     """
     Sent domain invites to existing domain accounts.
 
@@ -5441,6 +5702,9 @@ class DomainInvitesEmailExistingUsersDetails(object):
         self._num_recipients_value = None
         self._num_recipients_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesEmailExistingUsersDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesEmailExistingUsersDetails(domain_name={!r}, num_recipients={!r})'.format(
             self._domain_name_value,
@@ -5449,7 +5713,7 @@ class DomainInvitesEmailExistingUsersDetails(object):
 
 DomainInvitesEmailExistingUsersDetails_validator = bv.Struct(DomainInvitesEmailExistingUsersDetails)
 
-class DomainInvitesEmailExistingUsersType(object):
+class DomainInvitesEmailExistingUsersType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5486,6 +5750,9 @@ class DomainInvitesEmailExistingUsersType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesEmailExistingUsersType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesEmailExistingUsersType(description={!r})'.format(
             self._description_value,
@@ -5493,7 +5760,7 @@ class DomainInvitesEmailExistingUsersType(object):
 
 DomainInvitesEmailExistingUsersType_validator = bv.Struct(DomainInvitesEmailExistingUsersType)
 
-class DomainInvitesRequestToJoinTeamDetails(object):
+class DomainInvitesRequestToJoinTeamDetails(bb.Struct):
     """
     Requested to join team.
     """
@@ -5506,12 +5773,15 @@ class DomainInvitesRequestToJoinTeamDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesRequestToJoinTeamDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesRequestToJoinTeamDetails()'
 
 DomainInvitesRequestToJoinTeamDetails_validator = bv.Struct(DomainInvitesRequestToJoinTeamDetails)
 
-class DomainInvitesRequestToJoinTeamType(object):
+class DomainInvitesRequestToJoinTeamType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5548,6 +5818,9 @@ class DomainInvitesRequestToJoinTeamType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesRequestToJoinTeamType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesRequestToJoinTeamType(description={!r})'.format(
             self._description_value,
@@ -5555,7 +5828,7 @@ class DomainInvitesRequestToJoinTeamType(object):
 
 DomainInvitesRequestToJoinTeamType_validator = bv.Struct(DomainInvitesRequestToJoinTeamType)
 
-class DomainInvitesSetInviteNewUserPrefToNoDetails(object):
+class DomainInvitesSetInviteNewUserPrefToNoDetails(bb.Struct):
     """
     Disabled "Automatically invite new users".
     """
@@ -5568,12 +5841,15 @@ class DomainInvitesSetInviteNewUserPrefToNoDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesSetInviteNewUserPrefToNoDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesSetInviteNewUserPrefToNoDetails()'
 
 DomainInvitesSetInviteNewUserPrefToNoDetails_validator = bv.Struct(DomainInvitesSetInviteNewUserPrefToNoDetails)
 
-class DomainInvitesSetInviteNewUserPrefToNoType(object):
+class DomainInvitesSetInviteNewUserPrefToNoType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5610,6 +5886,9 @@ class DomainInvitesSetInviteNewUserPrefToNoType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesSetInviteNewUserPrefToNoType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesSetInviteNewUserPrefToNoType(description={!r})'.format(
             self._description_value,
@@ -5617,7 +5896,7 @@ class DomainInvitesSetInviteNewUserPrefToNoType(object):
 
 DomainInvitesSetInviteNewUserPrefToNoType_validator = bv.Struct(DomainInvitesSetInviteNewUserPrefToNoType)
 
-class DomainInvitesSetInviteNewUserPrefToYesDetails(object):
+class DomainInvitesSetInviteNewUserPrefToYesDetails(bb.Struct):
     """
     Enabled "Automatically invite new users".
     """
@@ -5630,12 +5909,15 @@ class DomainInvitesSetInviteNewUserPrefToYesDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesSetInviteNewUserPrefToYesDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesSetInviteNewUserPrefToYesDetails()'
 
 DomainInvitesSetInviteNewUserPrefToYesDetails_validator = bv.Struct(DomainInvitesSetInviteNewUserPrefToYesDetails)
 
-class DomainInvitesSetInviteNewUserPrefToYesType(object):
+class DomainInvitesSetInviteNewUserPrefToYesType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5672,6 +5954,9 @@ class DomainInvitesSetInviteNewUserPrefToYesType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainInvitesSetInviteNewUserPrefToYesType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainInvitesSetInviteNewUserPrefToYesType(description={!r})'.format(
             self._description_value,
@@ -5679,7 +5964,7 @@ class DomainInvitesSetInviteNewUserPrefToYesType(object):
 
 DomainInvitesSetInviteNewUserPrefToYesType_validator = bv.Struct(DomainInvitesSetInviteNewUserPrefToYesType)
 
-class DomainVerificationAddDomainFailDetails(object):
+class DomainVerificationAddDomainFailDetails(bb.Struct):
     """
     Failed to verify team domain.
 
@@ -5759,6 +6044,9 @@ class DomainVerificationAddDomainFailDetails(object):
         self._verification_method_value = None
         self._verification_method_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainVerificationAddDomainFailDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainVerificationAddDomainFailDetails(domain_name={!r}, verification_method={!r})'.format(
             self._domain_name_value,
@@ -5767,7 +6055,7 @@ class DomainVerificationAddDomainFailDetails(object):
 
 DomainVerificationAddDomainFailDetails_validator = bv.Struct(DomainVerificationAddDomainFailDetails)
 
-class DomainVerificationAddDomainFailType(object):
+class DomainVerificationAddDomainFailType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5804,6 +6092,9 @@ class DomainVerificationAddDomainFailType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainVerificationAddDomainFailType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainVerificationAddDomainFailType(description={!r})'.format(
             self._description_value,
@@ -5811,7 +6102,7 @@ class DomainVerificationAddDomainFailType(object):
 
 DomainVerificationAddDomainFailType_validator = bv.Struct(DomainVerificationAddDomainFailType)
 
-class DomainVerificationAddDomainSuccessDetails(object):
+class DomainVerificationAddDomainSuccessDetails(bb.Struct):
     """
     Verified team domain.
 
@@ -5891,6 +6182,9 @@ class DomainVerificationAddDomainSuccessDetails(object):
         self._verification_method_value = None
         self._verification_method_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainVerificationAddDomainSuccessDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainVerificationAddDomainSuccessDetails(domain_names={!r}, verification_method={!r})'.format(
             self._domain_names_value,
@@ -5899,7 +6193,7 @@ class DomainVerificationAddDomainSuccessDetails(object):
 
 DomainVerificationAddDomainSuccessDetails_validator = bv.Struct(DomainVerificationAddDomainSuccessDetails)
 
-class DomainVerificationAddDomainSuccessType(object):
+class DomainVerificationAddDomainSuccessType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -5936,6 +6230,9 @@ class DomainVerificationAddDomainSuccessType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainVerificationAddDomainSuccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainVerificationAddDomainSuccessType(description={!r})'.format(
             self._description_value,
@@ -5943,7 +6240,7 @@ class DomainVerificationAddDomainSuccessType(object):
 
 DomainVerificationAddDomainSuccessType_validator = bv.Struct(DomainVerificationAddDomainSuccessType)
 
-class DomainVerificationRemoveDomainDetails(object):
+class DomainVerificationRemoveDomainDetails(bb.Struct):
     """
     Removed domain from list of verified team domains.
 
@@ -5987,6 +6284,9 @@ class DomainVerificationRemoveDomainDetails(object):
         self._domain_names_value = None
         self._domain_names_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainVerificationRemoveDomainDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DomainVerificationRemoveDomainDetails(domain_names={!r})'.format(
             self._domain_names_value,
@@ -5994,7 +6294,7 @@ class DomainVerificationRemoveDomainDetails(object):
 
 DomainVerificationRemoveDomainDetails_validator = bv.Struct(DomainVerificationRemoveDomainDetails)
 
-class DomainVerificationRemoveDomainType(object):
+class DomainVerificationRemoveDomainType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6030,6 +6330,9 @@ class DomainVerificationRemoveDomainType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DomainVerificationRemoveDomainType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'DomainVerificationRemoveDomainType(description={!r})'.format(
@@ -6079,12 +6382,15 @@ class DownloadPolicyType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DownloadPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DownloadPolicyType(%r, %r)' % (self._tag, self._value)
 
 DownloadPolicyType_validator = bv.Union(DownloadPolicyType)
 
-class DurationLogInfo(object):
+class DurationLogInfo(bb.Struct):
     """
     Represents a time duration: unit and amount
 
@@ -6159,6 +6465,9 @@ class DurationLogInfo(object):
         self._amount_value = None
         self._amount_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(DurationLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'DurationLogInfo(unit={!r}, amount={!r})'.format(
             self._unit_value,
@@ -6167,7 +6476,7 @@ class DurationLogInfo(object):
 
 DurationLogInfo_validator = bv.Struct(DurationLogInfo)
 
-class EmmAddExceptionDetails(object):
+class EmmAddExceptionDetails(bb.Struct):
     """
     Added members to EMM exception list.
     """
@@ -6180,12 +6489,15 @@ class EmmAddExceptionDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmAddExceptionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmAddExceptionDetails()'
 
 EmmAddExceptionDetails_validator = bv.Struct(EmmAddExceptionDetails)
 
-class EmmAddExceptionType(object):
+class EmmAddExceptionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6222,6 +6534,9 @@ class EmmAddExceptionType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmAddExceptionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmAddExceptionType(description={!r})'.format(
             self._description_value,
@@ -6229,7 +6544,7 @@ class EmmAddExceptionType(object):
 
 EmmAddExceptionType_validator = bv.Struct(EmmAddExceptionType)
 
-class EmmChangePolicyDetails(object):
+class EmmChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled enterprise mobility management for members.
 
@@ -6264,7 +6579,7 @@ class EmmChangePolicyDetails(object):
         """
         New enterprise mobility management policy.
 
-        :rtype: team_policies.EmmState_validator
+        :rtype: team_policies.EmmState
         """
         if self._new_value_present:
             return self._new_value_value
@@ -6288,7 +6603,7 @@ class EmmChangePolicyDetails(object):
         Previous enterprise mobility management policy. Might be missing due to
         historical data gap.
 
-        :rtype: team_policies.EmmState_validator
+        :rtype: team_policies.EmmState
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -6309,6 +6624,9 @@ class EmmChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -6317,7 +6635,7 @@ class EmmChangePolicyDetails(object):
 
 EmmChangePolicyDetails_validator = bv.Struct(EmmChangePolicyDetails)
 
-class EmmChangePolicyType(object):
+class EmmChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6354,6 +6672,9 @@ class EmmChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -6361,7 +6682,7 @@ class EmmChangePolicyType(object):
 
 EmmChangePolicyType_validator = bv.Struct(EmmChangePolicyType)
 
-class EmmCreateExceptionsReportDetails(object):
+class EmmCreateExceptionsReportDetails(bb.Struct):
     """
     Created EMM-excluded users report.
     """
@@ -6374,12 +6695,15 @@ class EmmCreateExceptionsReportDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmCreateExceptionsReportDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmCreateExceptionsReportDetails()'
 
 EmmCreateExceptionsReportDetails_validator = bv.Struct(EmmCreateExceptionsReportDetails)
 
-class EmmCreateExceptionsReportType(object):
+class EmmCreateExceptionsReportType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6416,6 +6740,9 @@ class EmmCreateExceptionsReportType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmCreateExceptionsReportType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmCreateExceptionsReportType(description={!r})'.format(
             self._description_value,
@@ -6423,7 +6750,7 @@ class EmmCreateExceptionsReportType(object):
 
 EmmCreateExceptionsReportType_validator = bv.Struct(EmmCreateExceptionsReportType)
 
-class EmmCreateUsageReportDetails(object):
+class EmmCreateUsageReportDetails(bb.Struct):
     """
     Created EMM mobile app usage report.
     """
@@ -6436,12 +6763,15 @@ class EmmCreateUsageReportDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmCreateUsageReportDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmCreateUsageReportDetails()'
 
 EmmCreateUsageReportDetails_validator = bv.Struct(EmmCreateUsageReportDetails)
 
-class EmmCreateUsageReportType(object):
+class EmmCreateUsageReportType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6478,6 +6808,9 @@ class EmmCreateUsageReportType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmCreateUsageReportType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmCreateUsageReportType(description={!r})'.format(
             self._description_value,
@@ -6485,7 +6818,7 @@ class EmmCreateUsageReportType(object):
 
 EmmCreateUsageReportType_validator = bv.Struct(EmmCreateUsageReportType)
 
-class EmmErrorDetails(object):
+class EmmErrorDetails(bb.Struct):
     """
     Failed to sign in via EMM.
 
@@ -6529,6 +6862,9 @@ class EmmErrorDetails(object):
         self._error_details_value = None
         self._error_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmErrorDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmErrorDetails(error_details={!r})'.format(
             self._error_details_value,
@@ -6536,7 +6872,7 @@ class EmmErrorDetails(object):
 
 EmmErrorDetails_validator = bv.Struct(EmmErrorDetails)
 
-class EmmErrorType(object):
+class EmmErrorType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6573,6 +6909,9 @@ class EmmErrorType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmErrorType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmErrorType(description={!r})'.format(
             self._description_value,
@@ -6580,7 +6919,7 @@ class EmmErrorType(object):
 
 EmmErrorType_validator = bv.Struct(EmmErrorType)
 
-class EmmRefreshAuthTokenDetails(object):
+class EmmRefreshAuthTokenDetails(bb.Struct):
     """
     Refreshed auth token used for setting up enterprise mobility management.
     """
@@ -6593,12 +6932,15 @@ class EmmRefreshAuthTokenDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmRefreshAuthTokenDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmRefreshAuthTokenDetails()'
 
 EmmRefreshAuthTokenDetails_validator = bv.Struct(EmmRefreshAuthTokenDetails)
 
-class EmmRefreshAuthTokenType(object):
+class EmmRefreshAuthTokenType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6635,6 +6977,9 @@ class EmmRefreshAuthTokenType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmRefreshAuthTokenType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmRefreshAuthTokenType(description={!r})'.format(
             self._description_value,
@@ -6642,7 +6987,7 @@ class EmmRefreshAuthTokenType(object):
 
 EmmRefreshAuthTokenType_validator = bv.Struct(EmmRefreshAuthTokenType)
 
-class EmmRemoveExceptionDetails(object):
+class EmmRemoveExceptionDetails(bb.Struct):
     """
     Removed members from EMM exception list.
     """
@@ -6655,12 +7000,15 @@ class EmmRemoveExceptionDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmRemoveExceptionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmRemoveExceptionDetails()'
 
 EmmRemoveExceptionDetails_validator = bv.Struct(EmmRemoveExceptionDetails)
 
-class EmmRemoveExceptionType(object):
+class EmmRemoveExceptionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6697,6 +7045,9 @@ class EmmRemoveExceptionType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmRemoveExceptionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmRemoveExceptionType(description={!r})'.format(
             self._description_value,
@@ -6704,7 +7055,7 @@ class EmmRemoveExceptionType(object):
 
 EmmRemoveExceptionType_validator = bv.Struct(EmmRemoveExceptionType)
 
-class EnabledDomainInvitesDetails(object):
+class EnabledDomainInvitesDetails(bb.Struct):
     """
     Enabled domain invites.
     """
@@ -6717,12 +7068,15 @@ class EnabledDomainInvitesDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EnabledDomainInvitesDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EnabledDomainInvitesDetails()'
 
 EnabledDomainInvitesDetails_validator = bv.Struct(EnabledDomainInvitesDetails)
 
-class EnabledDomainInvitesType(object):
+class EnabledDomainInvitesType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -6758,6 +7112,9 @@ class EnabledDomainInvitesType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EnabledDomainInvitesType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'EnabledDomainInvitesType(description={!r})'.format(
@@ -7004,6 +7361,9 @@ class EventCategory(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EventCategory, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'EventCategory(%r, %r)' % (self._tag, self._value)
@@ -7957,6 +8317,17 @@ class EventDetails(bb.Union):
         return cls('member_change_status_details', val)
 
     @classmethod
+    def member_delete_manual_contacts_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_delete_manual_contacts_details`` tag with value ``val``.
+
+        :param MemberDeleteManualContactsDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_delete_manual_contacts_details', val)
+
+    @classmethod
     def member_permanently_delete_account_contents_details(cls, val):
         """
         Create an instance of this class set to the
@@ -8266,6 +8637,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('paper_doc_mention_details', val)
+
+    @classmethod
+    def paper_doc_ownership_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_doc_ownership_changed_details`` tag with value ``val``.
+
+        :param PaperDocOwnershipChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('paper_doc_ownership_changed_details', val)
 
     @classmethod
     def paper_doc_request_access_details(cls, val):
@@ -10210,6 +10592,17 @@ class EventDetails(bb.Union):
         return cls('sso_change_policy_details', val)
 
     @classmethod
+    def team_selective_sync_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_selective_sync_policy_changed_details`` tag with value ``val``.
+
+        :param TeamSelectiveSyncPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_selective_sync_policy_changed_details', val)
+
+    @classmethod
     def tfa_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -10230,6 +10623,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('two_account_change_policy_details', val)
+
+    @classmethod
+    def viewer_info_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``viewer_info_policy_changed_details`` tag with value ``val``.
+
+        :param ViewerInfoPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('viewer_info_policy_changed_details', val)
 
     @classmethod
     def web_sessions_change_fixed_length_policy_details(cls, val):
@@ -11092,6 +11496,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'member_change_status_details'
 
+    def is_member_delete_manual_contacts_details(self):
+        """
+        Check if the union tag is ``member_delete_manual_contacts_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_delete_manual_contacts_details'
+
     def is_member_permanently_delete_account_contents_details(self):
         """
         Check if the union tag is ``member_permanently_delete_account_contents_details``.
@@ -11315,6 +11727,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'paper_doc_mention_details'
+
+    def is_paper_doc_ownership_changed_details(self):
+        """
+        Check if the union tag is ``paper_doc_ownership_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_ownership_changed_details'
 
     def is_paper_doc_request_access_details(self):
         """
@@ -12716,6 +13136,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'sso_change_policy_details'
 
+    def is_team_selective_sync_policy_changed_details(self):
+        """
+        Check if the union tag is ``team_selective_sync_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_selective_sync_policy_changed_details'
+
     def is_tfa_change_policy_details(self):
         """
         Check if the union tag is ``tfa_change_policy_details``.
@@ -12731,6 +13159,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'two_account_change_policy_details'
+
+    def is_viewer_info_policy_changed_details(self):
+        """
+        Check if the union tag is ``viewer_info_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'viewer_info_policy_changed_details'
 
     def is_web_sessions_change_fixed_length_policy_details(self):
         """
@@ -13716,6 +14152,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'member_change_status_details' not set")
         return self._value
 
+    def get_member_delete_manual_contacts_details(self):
+        """
+        Only call this if :meth:`is_member_delete_manual_contacts_details` is true.
+
+        :rtype: MemberDeleteManualContactsDetails
+        """
+        if not self.is_member_delete_manual_contacts_details():
+            raise AttributeError("tag 'member_delete_manual_contacts_details' not set")
+        return self._value
+
     def get_member_permanently_delete_account_contents_details(self):
         """
         Only call this if :meth:`is_member_permanently_delete_account_contents_details` is true.
@@ -13994,6 +14440,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_paper_doc_mention_details():
             raise AttributeError("tag 'paper_doc_mention_details' not set")
+        return self._value
+
+    def get_paper_doc_ownership_changed_details(self):
+        """
+        Only call this if :meth:`is_paper_doc_ownership_changed_details` is true.
+
+        :rtype: PaperDocOwnershipChangedDetails
+        """
+        if not self.is_paper_doc_ownership_changed_details():
+            raise AttributeError("tag 'paper_doc_ownership_changed_details' not set")
         return self._value
 
     def get_paper_doc_request_access_details(self):
@@ -15746,6 +16202,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'sso_change_policy_details' not set")
         return self._value
 
+    def get_team_selective_sync_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_team_selective_sync_policy_changed_details` is true.
+
+        :rtype: TeamSelectiveSyncPolicyChangedDetails
+        """
+        if not self.is_team_selective_sync_policy_changed_details():
+            raise AttributeError("tag 'team_selective_sync_policy_changed_details' not set")
+        return self._value
+
     def get_tfa_change_policy_details(self):
         """
         Only call this if :meth:`is_tfa_change_policy_details` is true.
@@ -15764,6 +16230,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_two_account_change_policy_details():
             raise AttributeError("tag 'two_account_change_policy_details' not set")
+        return self._value
+
+    def get_viewer_info_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_viewer_info_policy_changed_details` is true.
+
+        :rtype: ViewerInfoPolicyChangedDetails
+        """
+        if not self.is_viewer_info_policy_changed_details():
+            raise AttributeError("tag 'viewer_info_policy_changed_details' not set")
         return self._value
 
     def get_web_sessions_change_fixed_length_policy_details(self):
@@ -15939,6 +16415,9 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'missing_details' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EventDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EventDetails(%r, %r)' % (self._tag, self._value)
 
@@ -16112,6 +16591,8 @@ class EventType(bb.Union):
         name
     :ivar MemberChangeStatusType member_change_status: (members) Changed member
         status (invited, joined, suspended, etc.)
+    :ivar MemberDeleteManualContactsType member_delete_manual_contacts:
+        (members) Cleared saved contacts
     :ivar MemberPermanentlyDeleteAccountContentsType
         member_permanently_delete_account_contents: (members) Permanently
         deleted contents of deleted team member account
@@ -16172,6 +16653,8 @@ class EventType(bb.Union):
         (deprecated, replaced by 'Followed/unfollowed Paper doc')
     :ivar PaperDocMentionType paper_doc_mention: (paper) Mentioned team member
         in Paper doc
+    :ivar PaperDocOwnershipChangedType paper_doc_ownership_changed: (paper)
+        Transferred ownership of Paper doc
     :ivar PaperDocRequestAccessType paper_doc_request_access: (paper) Requested
         access to Paper doc
     :ivar PaperDocResolveCommentType paper_doc_resolve_comment: (paper) Resolved
@@ -16552,11 +17035,15 @@ class EventType(bb.Union):
         of Smart Sync
     :ivar SsoChangePolicyType sso_change_policy: (team_policies) Changed single
         sign-on setting for team
+    :ivar TeamSelectiveSyncPolicyChangedType team_selective_sync_policy_changed:
+        (team_policies) Enabled/disabled Team Selective Sync for team
     :ivar TfaChangePolicyType tfa_change_policy: (team_policies) Changed
         two-step verification setting for team
     :ivar TwoAccountChangePolicyType two_account_change_policy: (team_policies)
         Enabled/disabled option for members to link personal Dropbox account and
         team account to same computer
+    :ivar ViewerInfoPolicyChangedType viewer_info_policy_changed:
+        (team_policies) Changed team policy for viewer info
     :ivar WebSessionsChangeFixedLengthPolicyType
         web_sessions_change_fixed_length_policy: (team_policies) Changed how
         long members can stay signed in to Dropbox.com
@@ -17525,6 +18012,17 @@ class EventType(bb.Union):
         return cls('member_change_status', val)
 
     @classmethod
+    def member_delete_manual_contacts(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_delete_manual_contacts`` tag with value ``val``.
+
+        :param MemberDeleteManualContactsType val:
+        :rtype: EventType
+        """
+        return cls('member_delete_manual_contacts', val)
+
+    @classmethod
     def member_permanently_delete_account_contents(cls, val):
         """
         Create an instance of this class set to the
@@ -17831,6 +18329,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('paper_doc_mention', val)
+
+    @classmethod
+    def paper_doc_ownership_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_doc_ownership_changed`` tag with value ``val``.
+
+        :param PaperDocOwnershipChangedType val:
+        :rtype: EventType
+        """
+        return cls('paper_doc_ownership_changed', val)
 
     @classmethod
     def paper_doc_request_access(cls, val):
@@ -19760,6 +20269,17 @@ class EventType(bb.Union):
         return cls('sso_change_policy', val)
 
     @classmethod
+    def team_selective_sync_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_selective_sync_policy_changed`` tag with value ``val``.
+
+        :param TeamSelectiveSyncPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('team_selective_sync_policy_changed', val)
+
+    @classmethod
     def tfa_change_policy(cls, val):
         """
         Create an instance of this class set to the ``tfa_change_policy`` tag
@@ -19780,6 +20300,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('two_account_change_policy', val)
+
+    @classmethod
+    def viewer_info_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``viewer_info_policy_changed`` tag with value ``val``.
+
+        :param ViewerInfoPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('viewer_info_policy_changed', val)
 
     @classmethod
     def web_sessions_change_fixed_length_policy(cls, val):
@@ -20629,6 +21160,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'member_change_status'
 
+    def is_member_delete_manual_contacts(self):
+        """
+        Check if the union tag is ``member_delete_manual_contacts``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_delete_manual_contacts'
+
     def is_member_permanently_delete_account_contents(self):
         """
         Check if the union tag is ``member_permanently_delete_account_contents``.
@@ -20852,6 +21391,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'paper_doc_mention'
+
+    def is_paper_doc_ownership_changed(self):
+        """
+        Check if the union tag is ``paper_doc_ownership_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_ownership_changed'
 
     def is_paper_doc_request_access(self):
         """
@@ -22253,6 +22800,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'sso_change_policy'
 
+    def is_team_selective_sync_policy_changed(self):
+        """
+        Check if the union tag is ``team_selective_sync_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_selective_sync_policy_changed'
+
     def is_tfa_change_policy(self):
         """
         Check if the union tag is ``tfa_change_policy``.
@@ -22268,6 +22823,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'two_account_change_policy'
+
+    def is_viewer_info_policy_changed(self):
+        """
+        Check if the union tag is ``viewer_info_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'viewer_info_policy_changed'
 
     def is_web_sessions_change_fixed_length_policy(self):
         """
@@ -23422,6 +23985,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'member_change_status' not set")
         return self._value
 
+    def get_member_delete_manual_contacts(self):
+        """
+        (members) Cleared saved contacts
+
+        Only call this if :meth:`is_member_delete_manual_contacts` is true.
+
+        :rtype: MemberDeleteManualContactsType
+        """
+        if not self.is_member_delete_manual_contacts():
+            raise AttributeError("tag 'member_delete_manual_contacts' not set")
+        return self._value
+
     def get_member_permanently_delete_account_contents(self):
         """
         (members) Permanently deleted contents of deleted team member account
@@ -23758,6 +24333,18 @@ class EventType(bb.Union):
         """
         if not self.is_paper_doc_mention():
             raise AttributeError("tag 'paper_doc_mention' not set")
+        return self._value
+
+    def get_paper_doc_ownership_changed(self):
+        """
+        (paper) Transferred ownership of Paper doc
+
+        Only call this if :meth:`is_paper_doc_ownership_changed` is true.
+
+        :rtype: PaperDocOwnershipChangedType
+        """
+        if not self.is_paper_doc_ownership_changed():
+            raise AttributeError("tag 'paper_doc_ownership_changed' not set")
         return self._value
 
     def get_paper_doc_request_access(self):
@@ -25903,6 +26490,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'sso_change_policy' not set")
         return self._value
 
+    def get_team_selective_sync_policy_changed(self):
+        """
+        (team_policies) Enabled/disabled Team Selective Sync for team
+
+        Only call this if :meth:`is_team_selective_sync_policy_changed` is true.
+
+        :rtype: TeamSelectiveSyncPolicyChangedType
+        """
+        if not self.is_team_selective_sync_policy_changed():
+            raise AttributeError("tag 'team_selective_sync_policy_changed' not set")
+        return self._value
+
     def get_tfa_change_policy(self):
         """
         (team_policies) Changed two-step verification setting for team
@@ -25926,6 +26525,18 @@ class EventType(bb.Union):
         """
         if not self.is_two_account_change_policy():
             raise AttributeError("tag 'two_account_change_policy' not set")
+        return self._value
+
+    def get_viewer_info_policy_changed(self):
+        """
+        (team_policies) Changed team policy for viewer info
+
+        Only call this if :meth:`is_viewer_info_policy_changed` is true.
+
+        :rtype: ViewerInfoPolicyChangedType
+        """
+        if not self.is_viewer_info_policy_changed():
+            raise AttributeError("tag 'viewer_info_policy_changed' not set")
         return self._value
 
     def get_web_sessions_change_fixed_length_policy(self):
@@ -26122,12 +26733,15 @@ class EventType(bb.Union):
             raise AttributeError("tag 'tfa_reset' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EventType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EventType(%r, %r)' % (self._tag, self._value)
 
 EventType_validator = bv.Union(EventType)
 
-class ExportMembersReportDetails(object):
+class ExportMembersReportDetails(bb.Struct):
     """
     Created member data report.
     """
@@ -26140,12 +26754,15 @@ class ExportMembersReportDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ExportMembersReportDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ExportMembersReportDetails()'
 
 ExportMembersReportDetails_validator = bv.Struct(ExportMembersReportDetails)
 
-class ExportMembersReportType(object):
+class ExportMembersReportType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -26182,6 +26799,9 @@ class ExportMembersReportType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ExportMembersReportType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ExportMembersReportType(description={!r})'.format(
             self._description_value,
@@ -26189,7 +26809,7 @@ class ExportMembersReportType(object):
 
 ExportMembersReportType_validator = bv.Struct(ExportMembersReportType)
 
-class ExtendedVersionHistoryChangePolicyDetails(object):
+class ExtendedVersionHistoryChangePolicyDetails(bb.Struct):
     """
     Accepted/opted out of extended version history.
 
@@ -26269,6 +26889,9 @@ class ExtendedVersionHistoryChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ExtendedVersionHistoryChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ExtendedVersionHistoryChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -26277,7 +26900,7 @@ class ExtendedVersionHistoryChangePolicyDetails(object):
 
 ExtendedVersionHistoryChangePolicyDetails_validator = bv.Struct(ExtendedVersionHistoryChangePolicyDetails)
 
-class ExtendedVersionHistoryChangePolicyType(object):
+class ExtendedVersionHistoryChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -26313,6 +26936,9 @@ class ExtendedVersionHistoryChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ExtendedVersionHistoryChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'ExtendedVersionHistoryChangePolicyType(description={!r})'.format(
@@ -26380,12 +27006,15 @@ class ExtendedVersionHistoryPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ExtendedVersionHistoryPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ExtendedVersionHistoryPolicy(%r, %r)' % (self._tag, self._value)
 
 ExtendedVersionHistoryPolicy_validator = bv.Union(ExtendedVersionHistoryPolicy)
 
-class ExternalUserLogInfo(object):
+class ExternalUserLogInfo(bb.Struct):
     """
     A user without a Dropbox account.
 
@@ -26460,6 +27089,9 @@ class ExternalUserLogInfo(object):
         self._identifier_type_value = None
         self._identifier_type_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ExternalUserLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ExternalUserLogInfo(user_identifier={!r}, identifier_type={!r})'.format(
             self._user_identifier_value,
@@ -26468,7 +27100,7 @@ class ExternalUserLogInfo(object):
 
 ExternalUserLogInfo_validator = bv.Struct(ExternalUserLogInfo)
 
-class FailureDetailsLogInfo(object):
+class FailureDetailsLogInfo(bb.Struct):
     """
     Provides details about a failure
 
@@ -26552,6 +27184,9 @@ class FailureDetailsLogInfo(object):
         self._technical_error_message_value = None
         self._technical_error_message_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FailureDetailsLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FailureDetailsLogInfo(user_friendly_message={!r}, technical_error_message={!r})'.format(
             self._user_friendly_message_value,
@@ -26560,7 +27195,7 @@ class FailureDetailsLogInfo(object):
 
 FailureDetailsLogInfo_validator = bv.Struct(FailureDetailsLogInfo)
 
-class FileAddCommentDetails(object):
+class FileAddCommentDetails(bb.Struct):
     """
     Added file comment.
 
@@ -26608,6 +27243,9 @@ class FileAddCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileAddCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileAddCommentDetails(comment_text={!r})'.format(
             self._comment_text_value,
@@ -26615,7 +27253,7 @@ class FileAddCommentDetails(object):
 
 FileAddCommentDetails_validator = bv.Struct(FileAddCommentDetails)
 
-class FileAddCommentType(object):
+class FileAddCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -26652,6 +27290,9 @@ class FileAddCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileAddCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileAddCommentType(description={!r})'.format(
             self._description_value,
@@ -26659,7 +27300,7 @@ class FileAddCommentType(object):
 
 FileAddCommentType_validator = bv.Struct(FileAddCommentType)
 
-class FileAddDetails(object):
+class FileAddDetails(bb.Struct):
     """
     Added files and/or folders.
     """
@@ -26672,12 +27313,15 @@ class FileAddDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileAddDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileAddDetails()'
 
 FileAddDetails_validator = bv.Struct(FileAddDetails)
 
-class FileAddType(object):
+class FileAddType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -26714,6 +27358,9 @@ class FileAddType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileAddType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileAddType(description={!r})'.format(
             self._description_value,
@@ -26721,7 +27368,7 @@ class FileAddType(object):
 
 FileAddType_validator = bv.Struct(FileAddType)
 
-class FileChangeCommentSubscriptionDetails(object):
+class FileChangeCommentSubscriptionDetails(bb.Struct):
     """
     Subscribed to or unsubscribed from comment notifications for file.
 
@@ -26801,6 +27448,9 @@ class FileChangeCommentSubscriptionDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileChangeCommentSubscriptionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileChangeCommentSubscriptionDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -26809,7 +27459,7 @@ class FileChangeCommentSubscriptionDetails(object):
 
 FileChangeCommentSubscriptionDetails_validator = bv.Struct(FileChangeCommentSubscriptionDetails)
 
-class FileChangeCommentSubscriptionType(object):
+class FileChangeCommentSubscriptionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -26845,6 +27495,9 @@ class FileChangeCommentSubscriptionType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileChangeCommentSubscriptionType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'FileChangeCommentSubscriptionType(description={!r})'.format(
@@ -26894,12 +27547,15 @@ class FileCommentNotificationPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileCommentNotificationPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileCommentNotificationPolicy(%r, %r)' % (self._tag, self._value)
 
 FileCommentNotificationPolicy_validator = bv.Union(FileCommentNotificationPolicy)
 
-class FileCommentsChangePolicyDetails(object):
+class FileCommentsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled commenting on team files.
 
@@ -26979,6 +27635,9 @@ class FileCommentsChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileCommentsChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileCommentsChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -26987,7 +27646,7 @@ class FileCommentsChangePolicyDetails(object):
 
 FileCommentsChangePolicyDetails_validator = bv.Struct(FileCommentsChangePolicyDetails)
 
-class FileCommentsChangePolicyType(object):
+class FileCommentsChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27023,6 +27682,9 @@ class FileCommentsChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileCommentsChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'FileCommentsChangePolicyType(description={!r})'.format(
@@ -27072,12 +27734,15 @@ class FileCommentsPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileCommentsPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileCommentsPolicy(%r, %r)' % (self._tag, self._value)
 
 FileCommentsPolicy_validator = bv.Union(FileCommentsPolicy)
 
-class FileCopyDetails(object):
+class FileCopyDetails(bb.Struct):
     """
     Copied files and/or folders.
 
@@ -27121,6 +27786,9 @@ class FileCopyDetails(object):
         self._relocate_action_details_value = None
         self._relocate_action_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileCopyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileCopyDetails(relocate_action_details={!r})'.format(
             self._relocate_action_details_value,
@@ -27128,7 +27796,7 @@ class FileCopyDetails(object):
 
 FileCopyDetails_validator = bv.Struct(FileCopyDetails)
 
-class FileCopyType(object):
+class FileCopyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27165,6 +27833,9 @@ class FileCopyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileCopyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileCopyType(description={!r})'.format(
             self._description_value,
@@ -27172,7 +27843,7 @@ class FileCopyType(object):
 
 FileCopyType_validator = bv.Struct(FileCopyType)
 
-class FileDeleteCommentDetails(object):
+class FileDeleteCommentDetails(bb.Struct):
     """
     Deleted file comment.
 
@@ -27220,6 +27891,9 @@ class FileDeleteCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileDeleteCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileDeleteCommentDetails(comment_text={!r})'.format(
             self._comment_text_value,
@@ -27227,7 +27901,7 @@ class FileDeleteCommentDetails(object):
 
 FileDeleteCommentDetails_validator = bv.Struct(FileDeleteCommentDetails)
 
-class FileDeleteCommentType(object):
+class FileDeleteCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27264,6 +27938,9 @@ class FileDeleteCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileDeleteCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileDeleteCommentType(description={!r})'.format(
             self._description_value,
@@ -27271,7 +27948,7 @@ class FileDeleteCommentType(object):
 
 FileDeleteCommentType_validator = bv.Struct(FileDeleteCommentType)
 
-class FileDeleteDetails(object):
+class FileDeleteDetails(bb.Struct):
     """
     Deleted files and/or folders.
     """
@@ -27284,12 +27961,15 @@ class FileDeleteDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileDeleteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileDeleteDetails()'
 
 FileDeleteDetails_validator = bv.Struct(FileDeleteDetails)
 
-class FileDeleteType(object):
+class FileDeleteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27326,6 +28006,9 @@ class FileDeleteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileDeleteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileDeleteType(description={!r})'.format(
             self._description_value,
@@ -27333,7 +28016,7 @@ class FileDeleteType(object):
 
 FileDeleteType_validator = bv.Struct(FileDeleteType)
 
-class FileDownloadDetails(object):
+class FileDownloadDetails(bb.Struct):
     """
     Downloaded files and/or folders.
     """
@@ -27346,12 +28029,15 @@ class FileDownloadDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileDownloadDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileDownloadDetails()'
 
 FileDownloadDetails_validator = bv.Struct(FileDownloadDetails)
 
-class FileDownloadType(object):
+class FileDownloadType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27388,6 +28074,9 @@ class FileDownloadType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileDownloadType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileDownloadType(description={!r})'.format(
             self._description_value,
@@ -27395,7 +28084,7 @@ class FileDownloadType(object):
 
 FileDownloadType_validator = bv.Struct(FileDownloadType)
 
-class FileEditDetails(object):
+class FileEditDetails(bb.Struct):
     """
     Edited files.
     """
@@ -27408,12 +28097,15 @@ class FileEditDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileEditDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileEditDetails()'
 
 FileEditDetails_validator = bv.Struct(FileEditDetails)
 
-class FileEditType(object):
+class FileEditType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27450,6 +28142,9 @@ class FileEditType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileEditType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileEditType(description={!r})'.format(
             self._description_value,
@@ -27457,7 +28152,7 @@ class FileEditType(object):
 
 FileEditType_validator = bv.Struct(FileEditType)
 
-class FileGetCopyReferenceDetails(object):
+class FileGetCopyReferenceDetails(bb.Struct):
     """
     Created copy reference to file/folder.
     """
@@ -27470,12 +28165,15 @@ class FileGetCopyReferenceDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileGetCopyReferenceDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileGetCopyReferenceDetails()'
 
 FileGetCopyReferenceDetails_validator = bv.Struct(FileGetCopyReferenceDetails)
 
-class FileGetCopyReferenceType(object):
+class FileGetCopyReferenceType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27512,6 +28210,9 @@ class FileGetCopyReferenceType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileGetCopyReferenceType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileGetCopyReferenceType(description={!r})'.format(
             self._description_value,
@@ -27519,7 +28220,7 @@ class FileGetCopyReferenceType(object):
 
 FileGetCopyReferenceType_validator = bv.Struct(FileGetCopyReferenceType)
 
-class FileLikeCommentDetails(object):
+class FileLikeCommentDetails(bb.Struct):
     """
     Liked file comment.
 
@@ -27567,6 +28268,9 @@ class FileLikeCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileLikeCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileLikeCommentDetails(comment_text={!r})'.format(
             self._comment_text_value,
@@ -27574,7 +28278,7 @@ class FileLikeCommentDetails(object):
 
 FileLikeCommentDetails_validator = bv.Struct(FileLikeCommentDetails)
 
-class FileLikeCommentType(object):
+class FileLikeCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27611,6 +28315,9 @@ class FileLikeCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileLikeCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileLikeCommentType(description={!r})'.format(
             self._description_value,
@@ -27618,7 +28325,7 @@ class FileLikeCommentType(object):
 
 FileLikeCommentType_validator = bv.Struct(FileLikeCommentType)
 
-class FileOrFolderLogInfo(object):
+class FileOrFolderLogInfo(bb.Struct):
     """
     Generic information relevant both for files and folders
 
@@ -27731,6 +28438,9 @@ class FileOrFolderLogInfo(object):
         self._file_id_value = None
         self._file_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileOrFolderLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileOrFolderLogInfo(path={!r}, display_name={!r}, file_id={!r})'.format(
             self._path_value,
@@ -27758,6 +28468,9 @@ class FileLogInfo(FileOrFolderLogInfo):
                                           display_name,
                                           file_id)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileLogInfo(path={!r}, display_name={!r}, file_id={!r})'.format(
             self._path_value,
@@ -27767,7 +28480,7 @@ class FileLogInfo(FileOrFolderLogInfo):
 
 FileLogInfo_validator = bv.Struct(FileLogInfo)
 
-class FileMoveDetails(object):
+class FileMoveDetails(bb.Struct):
     """
     Moved files and/or folders.
 
@@ -27811,6 +28524,9 @@ class FileMoveDetails(object):
         self._relocate_action_details_value = None
         self._relocate_action_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileMoveDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileMoveDetails(relocate_action_details={!r})'.format(
             self._relocate_action_details_value,
@@ -27818,7 +28534,7 @@ class FileMoveDetails(object):
 
 FileMoveDetails_validator = bv.Struct(FileMoveDetails)
 
-class FileMoveType(object):
+class FileMoveType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27855,6 +28571,9 @@ class FileMoveType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileMoveType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileMoveType(description={!r})'.format(
             self._description_value,
@@ -27862,7 +28581,7 @@ class FileMoveType(object):
 
 FileMoveType_validator = bv.Struct(FileMoveType)
 
-class FilePermanentlyDeleteDetails(object):
+class FilePermanentlyDeleteDetails(bb.Struct):
     """
     Permanently deleted files and/or folders.
     """
@@ -27875,12 +28594,15 @@ class FilePermanentlyDeleteDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FilePermanentlyDeleteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FilePermanentlyDeleteDetails()'
 
 FilePermanentlyDeleteDetails_validator = bv.Struct(FilePermanentlyDeleteDetails)
 
-class FilePermanentlyDeleteType(object):
+class FilePermanentlyDeleteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27917,6 +28639,9 @@ class FilePermanentlyDeleteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FilePermanentlyDeleteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FilePermanentlyDeleteType(description={!r})'.format(
             self._description_value,
@@ -27924,7 +28649,7 @@ class FilePermanentlyDeleteType(object):
 
 FilePermanentlyDeleteType_validator = bv.Struct(FilePermanentlyDeleteType)
 
-class FilePreviewDetails(object):
+class FilePreviewDetails(bb.Struct):
     """
     Previewed files and/or folders.
     """
@@ -27937,12 +28662,15 @@ class FilePreviewDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FilePreviewDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FilePreviewDetails()'
 
 FilePreviewDetails_validator = bv.Struct(FilePreviewDetails)
 
-class FilePreviewType(object):
+class FilePreviewType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -27979,6 +28707,9 @@ class FilePreviewType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FilePreviewType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FilePreviewType(description={!r})'.format(
             self._description_value,
@@ -27986,7 +28717,7 @@ class FilePreviewType(object):
 
 FilePreviewType_validator = bv.Struct(FilePreviewType)
 
-class FileRenameDetails(object):
+class FileRenameDetails(bb.Struct):
     """
     Renamed files and/or folders.
 
@@ -28030,6 +28761,9 @@ class FileRenameDetails(object):
         self._relocate_action_details_value = None
         self._relocate_action_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRenameDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRenameDetails(relocate_action_details={!r})'.format(
             self._relocate_action_details_value,
@@ -28037,7 +28771,7 @@ class FileRenameDetails(object):
 
 FileRenameDetails_validator = bv.Struct(FileRenameDetails)
 
-class FileRenameType(object):
+class FileRenameType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -28074,6 +28808,9 @@ class FileRenameType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRenameType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRenameType(description={!r})'.format(
             self._description_value,
@@ -28081,7 +28818,7 @@ class FileRenameType(object):
 
 FileRenameType_validator = bv.Struct(FileRenameType)
 
-class FileRequestChangeDetails(object):
+class FileRequestChangeDetails(bb.Struct):
     """
     Changed file request.
 
@@ -28196,6 +28933,9 @@ class FileRequestChangeDetails(object):
         self._new_details_value = None
         self._new_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestChangeDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestChangeDetails(new_details={!r}, file_request_id={!r}, previous_details={!r})'.format(
             self._new_details_value,
@@ -28205,7 +28945,7 @@ class FileRequestChangeDetails(object):
 
 FileRequestChangeDetails_validator = bv.Struct(FileRequestChangeDetails)
 
-class FileRequestChangeType(object):
+class FileRequestChangeType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -28242,6 +28982,9 @@ class FileRequestChangeType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestChangeType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestChangeType(description={!r})'.format(
             self._description_value,
@@ -28249,7 +28992,7 @@ class FileRequestChangeType(object):
 
 FileRequestChangeType_validator = bv.Struct(FileRequestChangeType)
 
-class FileRequestCloseDetails(object):
+class FileRequestCloseDetails(bb.Struct):
     """
     Closed file request.
 
@@ -28333,6 +29076,9 @@ class FileRequestCloseDetails(object):
         self._previous_details_value = None
         self._previous_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestCloseDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestCloseDetails(file_request_id={!r}, previous_details={!r})'.format(
             self._file_request_id_value,
@@ -28341,7 +29087,7 @@ class FileRequestCloseDetails(object):
 
 FileRequestCloseDetails_validator = bv.Struct(FileRequestCloseDetails)
 
-class FileRequestCloseType(object):
+class FileRequestCloseType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -28378,6 +29124,9 @@ class FileRequestCloseType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestCloseType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestCloseType(description={!r})'.format(
             self._description_value,
@@ -28385,7 +29134,7 @@ class FileRequestCloseType(object):
 
 FileRequestCloseType_validator = bv.Struct(FileRequestCloseType)
 
-class FileRequestCreateDetails(object):
+class FileRequestCreateDetails(bb.Struct):
     """
     Created file request.
 
@@ -28468,6 +29217,9 @@ class FileRequestCreateDetails(object):
         self._request_details_value = None
         self._request_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestCreateDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestCreateDetails(file_request_id={!r}, request_details={!r})'.format(
             self._file_request_id_value,
@@ -28476,7 +29228,7 @@ class FileRequestCreateDetails(object):
 
 FileRequestCreateDetails_validator = bv.Struct(FileRequestCreateDetails)
 
-class FileRequestCreateType(object):
+class FileRequestCreateType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -28513,6 +29265,9 @@ class FileRequestCreateType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestCreateType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestCreateType(description={!r})'.format(
             self._description_value,
@@ -28520,7 +29275,7 @@ class FileRequestCreateType(object):
 
 FileRequestCreateType_validator = bv.Struct(FileRequestCreateType)
 
-class FileRequestDeadline(object):
+class FileRequestDeadline(bb.Struct):
     """
     File request deadline
 
@@ -28605,6 +29360,9 @@ class FileRequestDeadline(object):
         self._allow_late_uploads_value = None
         self._allow_late_uploads_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestDeadline, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestDeadline(deadline={!r}, allow_late_uploads={!r})'.format(
             self._deadline_value,
@@ -28613,7 +29371,7 @@ class FileRequestDeadline(object):
 
 FileRequestDeadline_validator = bv.Struct(FileRequestDeadline)
 
-class FileRequestDetails(object):
+class FileRequestDetails(bb.Struct):
     """
     File request details
 
@@ -28692,6 +29450,9 @@ class FileRequestDetails(object):
         self._deadline_value = None
         self._deadline_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestDetails(asset_index={!r}, deadline={!r})'.format(
             self._asset_index_value,
@@ -28700,7 +29461,7 @@ class FileRequestDetails(object):
 
 FileRequestDetails_validator = bv.Struct(FileRequestDetails)
 
-class FileRequestReceiveFileDetails(object):
+class FileRequestReceiveFileDetails(bb.Struct):
     """
     Received files for file request.
 
@@ -28886,6 +29647,9 @@ class FileRequestReceiveFileDetails(object):
         self._submitter_email_value = None
         self._submitter_email_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestReceiveFileDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestReceiveFileDetails(submitted_file_names={!r}, file_request_id={!r}, file_request_details={!r}, submitter_name={!r}, submitter_email={!r})'.format(
             self._submitted_file_names_value,
@@ -28897,7 +29661,7 @@ class FileRequestReceiveFileDetails(object):
 
 FileRequestReceiveFileDetails_validator = bv.Struct(FileRequestReceiveFileDetails)
 
-class FileRequestReceiveFileType(object):
+class FileRequestReceiveFileType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -28934,6 +29698,9 @@ class FileRequestReceiveFileType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestReceiveFileType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestReceiveFileType(description={!r})'.format(
             self._description_value,
@@ -28941,7 +29708,7 @@ class FileRequestReceiveFileType(object):
 
 FileRequestReceiveFileType_validator = bv.Struct(FileRequestReceiveFileType)
 
-class FileRequestsChangePolicyDetails(object):
+class FileRequestsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled file requests.
 
@@ -29021,6 +29788,9 @@ class FileRequestsChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestsChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestsChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -29029,7 +29799,7 @@ class FileRequestsChangePolicyDetails(object):
 
 FileRequestsChangePolicyDetails_validator = bv.Struct(FileRequestsChangePolicyDetails)
 
-class FileRequestsChangePolicyType(object):
+class FileRequestsChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29066,6 +29836,9 @@ class FileRequestsChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestsChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestsChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -29073,7 +29846,7 @@ class FileRequestsChangePolicyType(object):
 
 FileRequestsChangePolicyType_validator = bv.Struct(FileRequestsChangePolicyType)
 
-class FileRequestsEmailsEnabledDetails(object):
+class FileRequestsEmailsEnabledDetails(bb.Struct):
     """
     Enabled file request emails for everyone.
     """
@@ -29086,12 +29859,15 @@ class FileRequestsEmailsEnabledDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestsEmailsEnabledDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestsEmailsEnabledDetails()'
 
 FileRequestsEmailsEnabledDetails_validator = bv.Struct(FileRequestsEmailsEnabledDetails)
 
-class FileRequestsEmailsEnabledType(object):
+class FileRequestsEmailsEnabledType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29128,6 +29904,9 @@ class FileRequestsEmailsEnabledType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestsEmailsEnabledType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestsEmailsEnabledType(description={!r})'.format(
             self._description_value,
@@ -29135,7 +29914,7 @@ class FileRequestsEmailsEnabledType(object):
 
 FileRequestsEmailsEnabledType_validator = bv.Struct(FileRequestsEmailsEnabledType)
 
-class FileRequestsEmailsRestrictedToTeamOnlyDetails(object):
+class FileRequestsEmailsRestrictedToTeamOnlyDetails(bb.Struct):
     """
     Enabled file request emails for team.
     """
@@ -29148,12 +29927,15 @@ class FileRequestsEmailsRestrictedToTeamOnlyDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestsEmailsRestrictedToTeamOnlyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestsEmailsRestrictedToTeamOnlyDetails()'
 
 FileRequestsEmailsRestrictedToTeamOnlyDetails_validator = bv.Struct(FileRequestsEmailsRestrictedToTeamOnlyDetails)
 
-class FileRequestsEmailsRestrictedToTeamOnlyType(object):
+class FileRequestsEmailsRestrictedToTeamOnlyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29189,6 +29971,9 @@ class FileRequestsEmailsRestrictedToTeamOnlyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestsEmailsRestrictedToTeamOnlyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'FileRequestsEmailsRestrictedToTeamOnlyType(description={!r})'.format(
@@ -29238,12 +30023,15 @@ class FileRequestsPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestsPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestsPolicy(%r, %r)' % (self._tag, self._value)
 
 FileRequestsPolicy_validator = bv.Union(FileRequestsPolicy)
 
-class FileResolveCommentDetails(object):
+class FileResolveCommentDetails(bb.Struct):
     """
     Resolved file comment.
 
@@ -29291,6 +30079,9 @@ class FileResolveCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileResolveCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileResolveCommentDetails(comment_text={!r})'.format(
             self._comment_text_value,
@@ -29298,7 +30089,7 @@ class FileResolveCommentDetails(object):
 
 FileResolveCommentDetails_validator = bv.Struct(FileResolveCommentDetails)
 
-class FileResolveCommentType(object):
+class FileResolveCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29335,6 +30126,9 @@ class FileResolveCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileResolveCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileResolveCommentType(description={!r})'.format(
             self._description_value,
@@ -29342,7 +30136,7 @@ class FileResolveCommentType(object):
 
 FileResolveCommentType_validator = bv.Struct(FileResolveCommentType)
 
-class FileRestoreDetails(object):
+class FileRestoreDetails(bb.Struct):
     """
     Restored deleted files and/or folders.
     """
@@ -29355,12 +30149,15 @@ class FileRestoreDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRestoreDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRestoreDetails()'
 
 FileRestoreDetails_validator = bv.Struct(FileRestoreDetails)
 
-class FileRestoreType(object):
+class FileRestoreType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29397,6 +30194,9 @@ class FileRestoreType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRestoreType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRestoreType(description={!r})'.format(
             self._description_value,
@@ -29404,7 +30204,7 @@ class FileRestoreType(object):
 
 FileRestoreType_validator = bv.Struct(FileRestoreType)
 
-class FileRevertDetails(object):
+class FileRevertDetails(bb.Struct):
     """
     Reverted files to previous version.
     """
@@ -29417,12 +30217,15 @@ class FileRevertDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRevertDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRevertDetails()'
 
 FileRevertDetails_validator = bv.Struct(FileRevertDetails)
 
-class FileRevertType(object):
+class FileRevertType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29459,6 +30262,9 @@ class FileRevertType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRevertType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRevertType(description={!r})'.format(
             self._description_value,
@@ -29466,7 +30272,7 @@ class FileRevertType(object):
 
 FileRevertType_validator = bv.Struct(FileRevertType)
 
-class FileRollbackChangesDetails(object):
+class FileRollbackChangesDetails(bb.Struct):
     """
     Rolled back file actions.
     """
@@ -29479,12 +30285,15 @@ class FileRollbackChangesDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRollbackChangesDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRollbackChangesDetails()'
 
 FileRollbackChangesDetails_validator = bv.Struct(FileRollbackChangesDetails)
 
-class FileRollbackChangesType(object):
+class FileRollbackChangesType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29521,6 +30330,9 @@ class FileRollbackChangesType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRollbackChangesType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRollbackChangesType(description={!r})'.format(
             self._description_value,
@@ -29528,7 +30340,7 @@ class FileRollbackChangesType(object):
 
 FileRollbackChangesType_validator = bv.Struct(FileRollbackChangesType)
 
-class FileSaveCopyReferenceDetails(object):
+class FileSaveCopyReferenceDetails(bb.Struct):
     """
     Saved file/folder using copy reference.
 
@@ -29572,6 +30384,9 @@ class FileSaveCopyReferenceDetails(object):
         self._relocate_action_details_value = None
         self._relocate_action_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileSaveCopyReferenceDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileSaveCopyReferenceDetails(relocate_action_details={!r})'.format(
             self._relocate_action_details_value,
@@ -29579,7 +30394,7 @@ class FileSaveCopyReferenceDetails(object):
 
 FileSaveCopyReferenceDetails_validator = bv.Struct(FileSaveCopyReferenceDetails)
 
-class FileSaveCopyReferenceType(object):
+class FileSaveCopyReferenceType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29616,6 +30431,9 @@ class FileSaveCopyReferenceType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileSaveCopyReferenceType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileSaveCopyReferenceType(description={!r})'.format(
             self._description_value,
@@ -29623,7 +30441,7 @@ class FileSaveCopyReferenceType(object):
 
 FileSaveCopyReferenceType_validator = bv.Struct(FileSaveCopyReferenceType)
 
-class FileUnlikeCommentDetails(object):
+class FileUnlikeCommentDetails(bb.Struct):
     """
     Unliked file comment.
 
@@ -29671,6 +30489,9 @@ class FileUnlikeCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileUnlikeCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileUnlikeCommentDetails(comment_text={!r})'.format(
             self._comment_text_value,
@@ -29678,7 +30499,7 @@ class FileUnlikeCommentDetails(object):
 
 FileUnlikeCommentDetails_validator = bv.Struct(FileUnlikeCommentDetails)
 
-class FileUnlikeCommentType(object):
+class FileUnlikeCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29715,6 +30536,9 @@ class FileUnlikeCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileUnlikeCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileUnlikeCommentType(description={!r})'.format(
             self._description_value,
@@ -29722,7 +30546,7 @@ class FileUnlikeCommentType(object):
 
 FileUnlikeCommentType_validator = bv.Struct(FileUnlikeCommentType)
 
-class FileUnresolveCommentDetails(object):
+class FileUnresolveCommentDetails(bb.Struct):
     """
     Unresolved file comment.
 
@@ -29770,6 +30594,9 @@ class FileUnresolveCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileUnresolveCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileUnresolveCommentDetails(comment_text={!r})'.format(
             self._comment_text_value,
@@ -29777,7 +30604,7 @@ class FileUnresolveCommentDetails(object):
 
 FileUnresolveCommentDetails_validator = bv.Struct(FileUnresolveCommentDetails)
 
-class FileUnresolveCommentType(object):
+class FileUnresolveCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -29814,6 +30641,9 @@ class FileUnresolveCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileUnresolveCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileUnresolveCommentType(description={!r})'.format(
             self._description_value,
@@ -29839,6 +30669,9 @@ class FolderLogInfo(FileOrFolderLogInfo):
                                             display_name,
                                             file_id)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FolderLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FolderLogInfo(path={!r}, display_name={!r}, file_id={!r})'.format(
             self._path_value,
@@ -29848,7 +30681,7 @@ class FolderLogInfo(FileOrFolderLogInfo):
 
 FolderLogInfo_validator = bv.Struct(FolderLogInfo)
 
-class GeoLocationLogInfo(object):
+class GeoLocationLogInfo(bb.Struct):
     """
     Geographic location details.
 
@@ -29994,6 +30827,9 @@ class GeoLocationLogInfo(object):
         self._ip_address_value = None
         self._ip_address_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GeoLocationLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GeoLocationLogInfo(ip_address={!r}, city={!r}, region={!r}, country={!r})'.format(
             self._ip_address_value,
@@ -30004,9 +30840,13 @@ class GeoLocationLogInfo(object):
 
 GeoLocationLogInfo_validator = bv.Struct(GeoLocationLogInfo)
 
-class GetTeamEventsArg(object):
+class GetTeamEventsArg(bb.Struct):
     """
-    :ivar limit: Number of results to return per call.
+    :ivar limit: The maximal number of results to return per call. Note that
+        some calls may not return ``limit`` number of events, and may even
+        return no events, even with `has_more` set to true. In this case,
+        callers should fetch again using
+        :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue`.
     :ivar account_id: Filter the events by account ID. Return ony events with
         this account_id as either Actor, Context, or Participants.
     :ivar time: Filter by time range.
@@ -30051,7 +30891,11 @@ class GetTeamEventsArg(object):
     @property
     def limit(self):
         """
-        Number of results to return per call.
+        The maximal number of results to return per call. Note that some calls
+        may not return ``limit`` number of events, and may even return no
+        events, even with `has_more` set to true. In this case, callers should
+        fetch again using
+        :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue`.
 
         :rtype: long
         """
@@ -30103,7 +30947,7 @@ class GetTeamEventsArg(object):
         """
         Filter by time range.
 
-        :rtype: team_common.TimeRange_validator
+        :rtype: team_common.TimeRange
         """
         if self._time_present:
             return self._time_value
@@ -30150,6 +30994,9 @@ class GetTeamEventsArg(object):
         self._category_value = None
         self._category_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetTeamEventsArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetTeamEventsArg(limit={!r}, account_id={!r}, time={!r}, category={!r})'.format(
             self._limit_value,
@@ -30160,7 +31007,7 @@ class GetTeamEventsArg(object):
 
 GetTeamEventsArg_validator = bv.Struct(GetTeamEventsArg)
 
-class GetTeamEventsContinueArg(object):
+class GetTeamEventsContinueArg(bb.Struct):
     """
     :ivar cursor: Indicates from what point to get the next set of events.
     """
@@ -30202,6 +31049,9 @@ class GetTeamEventsContinueArg(object):
         self._cursor_value = None
         self._cursor_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetTeamEventsContinueArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetTeamEventsContinueArg(cursor={!r})'.format(
             self._cursor_value,
@@ -30219,6 +31069,13 @@ class GetTeamEventsContinueError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar bad_cursor: Bad cursor.
+    :ivar datetime.datetime reset: Cursors are intended to be used quickly.
+        Individual cursor values are normally valid for days, but in rare cases
+        may be reset sooner. Cursor reset errors should be handled by fetching a
+        new cursor from :route:`get_events`. The associated value is the
+        approximate timestamp of the most recent event returned by the cursor.
+        This should be used as a resumption point when calling
+        :route:`get_events` to obtain a new cursor.
     """
 
     _catch_all = 'other'
@@ -30226,6 +31083,17 @@ class GetTeamEventsContinueError(bb.Union):
     bad_cursor = None
     # Attribute is overwritten below the class definition
     other = None
+
+    @classmethod
+    def reset(cls, val):
+        """
+        Create an instance of this class set to the ``reset`` tag with value
+        ``val``.
+
+        :param datetime.datetime val:
+        :rtype: GetTeamEventsContinueError
+        """
+        return cls('reset', val)
 
     def is_bad_cursor(self):
         """
@@ -30235,6 +31103,14 @@ class GetTeamEventsContinueError(bb.Union):
         """
         return self._tag == 'bad_cursor'
 
+    def is_reset(self):
+        """
+        Check if the union tag is ``reset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reset'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -30242,6 +31118,28 @@ class GetTeamEventsContinueError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def get_reset(self):
+        """
+        Cursors are intended to be used quickly. Individual cursor values are
+        normally valid for days, but in rare cases may be reset sooner. Cursor
+        reset errors should be handled by fetching a new cursor from
+        :meth:`dropbox.dropbox.Dropbox.team_log_get_events`. The associated
+        value is the approximate timestamp of the most recent event returned by
+        the cursor. This should be used as a resumption point when calling
+        :meth:`dropbox.dropbox.Dropbox.team_log_get_events` to obtain a new
+        cursor.
+
+        Only call this if :meth:`is_reset` is true.
+
+        :rtype: datetime.datetime
+        """
+        if not self.is_reset():
+            raise AttributeError("tag 'reset' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetTeamEventsContinueError, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'GetTeamEventsContinueError(%r, %r)' % (self._tag, self._value)
@@ -30293,21 +31191,32 @@ class GetTeamEventsError(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetTeamEventsError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetTeamEventsError(%r, %r)' % (self._tag, self._value)
 
 GetTeamEventsError_validator = bv.Union(GetTeamEventsError)
 
-class GetTeamEventsResult(object):
+class GetTeamEventsResult(bb.Struct):
     """
-    :ivar events: List of events.
+    :ivar events: List of events. Note that events are not guaranteed to be
+        sorted by their timestamp value.
     :ivar cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue` to obtain
-        additional events.
-    :ivar has_more: Is true if there are additional events that have not been
+        additional events. The value of ``cursor`` may change for each response
+        from :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue`,
+        regardless of the value of ``has_more``; older cursor strings may
+        expire. Thus, callers should ensure that they update their cursor based
+        on the latest value of ``cursor`` after each call, and poll regularly if
+        they wish to poll for new events. Callers should handle reset exceptions
+        for expired cursors.
+    :ivar has_more: Is true if there may be additional events that have not been
         returned yet. An additional call to
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue` can
-        retrieve them.
+        retrieve them. Note that ``has_more`` may be ``True``, even if
+        ``events`` is empty.
     """
 
     __slots__ = [
@@ -30341,7 +31250,8 @@ class GetTeamEventsResult(object):
     @property
     def events(self):
         """
-        List of events.
+        List of events. Note that events are not guaranteed to be sorted by
+        their timestamp value.
 
         :rtype: list of [TeamEvent]
         """
@@ -30366,7 +31276,13 @@ class GetTeamEventsResult(object):
         """
         Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue` to obtain
-        additional events.
+        additional events. The value of ``cursor`` may change for each response
+        from :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue`,
+        regardless of the value of ``has_more``; older cursor strings may
+        expire. Thus, callers should ensure that they update their cursor based
+        on the latest value of ``cursor`` after each call, and poll regularly if
+        they wish to poll for new events. Callers should handle reset exceptions
+        for expired cursors.
 
         :rtype: str
         """
@@ -30389,10 +31305,11 @@ class GetTeamEventsResult(object):
     @property
     def has_more(self):
         """
-        Is true if there are additional events that have not been returned yet.
-        An additional call to
+        Is true if there may be additional events that have not been returned
+        yet. An additional call to
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue` can
-        retrieve them.
+        retrieve them. Note that ``has_more`` may be ``True``, even if
+        ``events`` is empty.
 
         :rtype: bool
         """
@@ -30412,6 +31329,9 @@ class GetTeamEventsResult(object):
         self._has_more_value = None
         self._has_more_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetTeamEventsResult, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetTeamEventsResult(events={!r}, cursor={!r}, has_more={!r})'.format(
             self._events_value,
@@ -30421,7 +31341,7 @@ class GetTeamEventsResult(object):
 
 GetTeamEventsResult_validator = bv.Struct(GetTeamEventsResult)
 
-class GoogleSsoChangePolicyDetails(object):
+class GoogleSsoChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Google single sign-on for team.
 
@@ -30501,6 +31421,9 @@ class GoogleSsoChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GoogleSsoChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GoogleSsoChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -30509,7 +31432,7 @@ class GoogleSsoChangePolicyDetails(object):
 
 GoogleSsoChangePolicyDetails_validator = bv.Struct(GoogleSsoChangePolicyDetails)
 
-class GoogleSsoChangePolicyType(object):
+class GoogleSsoChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -30545,6 +31468,9 @@ class GoogleSsoChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GoogleSsoChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'GoogleSsoChangePolicyType(description={!r})'.format(
@@ -30594,12 +31520,15 @@ class GoogleSsoPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GoogleSsoPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GoogleSsoPolicy(%r, %r)' % (self._tag, self._value)
 
 GoogleSsoPolicy_validator = bv.Union(GoogleSsoPolicy)
 
-class GroupAddExternalIdDetails(object):
+class GroupAddExternalIdDetails(bb.Struct):
     """
     Added external ID for group.
 
@@ -30643,6 +31572,9 @@ class GroupAddExternalIdDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupAddExternalIdDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupAddExternalIdDetails(new_value={!r})'.format(
             self._new_value_value,
@@ -30650,7 +31582,7 @@ class GroupAddExternalIdDetails(object):
 
 GroupAddExternalIdDetails_validator = bv.Struct(GroupAddExternalIdDetails)
 
-class GroupAddExternalIdType(object):
+class GroupAddExternalIdType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -30687,6 +31619,9 @@ class GroupAddExternalIdType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupAddExternalIdType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupAddExternalIdType(description={!r})'.format(
             self._description_value,
@@ -30694,7 +31629,7 @@ class GroupAddExternalIdType(object):
 
 GroupAddExternalIdType_validator = bv.Struct(GroupAddExternalIdType)
 
-class GroupAddMemberDetails(object):
+class GroupAddMemberDetails(bb.Struct):
     """
     Added team members to group.
 
@@ -30738,6 +31673,9 @@ class GroupAddMemberDetails(object):
         self._is_group_owner_value = None
         self._is_group_owner_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupAddMemberDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupAddMemberDetails(is_group_owner={!r})'.format(
             self._is_group_owner_value,
@@ -30745,7 +31683,7 @@ class GroupAddMemberDetails(object):
 
 GroupAddMemberDetails_validator = bv.Struct(GroupAddMemberDetails)
 
-class GroupAddMemberType(object):
+class GroupAddMemberType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -30782,6 +31720,9 @@ class GroupAddMemberType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupAddMemberType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupAddMemberType(description={!r})'.format(
             self._description_value,
@@ -30789,7 +31730,7 @@ class GroupAddMemberType(object):
 
 GroupAddMemberType_validator = bv.Struct(GroupAddMemberType)
 
-class GroupChangeExternalIdDetails(object):
+class GroupChangeExternalIdDetails(bb.Struct):
     """
     Changed external ID for group.
 
@@ -30864,6 +31805,9 @@ class GroupChangeExternalIdDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupChangeExternalIdDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupChangeExternalIdDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -30872,7 +31816,7 @@ class GroupChangeExternalIdDetails(object):
 
 GroupChangeExternalIdDetails_validator = bv.Struct(GroupChangeExternalIdDetails)
 
-class GroupChangeExternalIdType(object):
+class GroupChangeExternalIdType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -30909,6 +31853,9 @@ class GroupChangeExternalIdType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupChangeExternalIdType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupChangeExternalIdType(description={!r})'.format(
             self._description_value,
@@ -30916,7 +31863,7 @@ class GroupChangeExternalIdType(object):
 
 GroupChangeExternalIdType_validator = bv.Struct(GroupChangeExternalIdType)
 
-class GroupChangeManagementTypeDetails(object):
+class GroupChangeManagementTypeDetails(bb.Struct):
     """
     Changed group management type.
 
@@ -30951,7 +31898,7 @@ class GroupChangeManagementTypeDetails(object):
         """
         New group management type.
 
-        :rtype: team_common.GroupManagementType_validator
+        :rtype: team_common.GroupManagementType
         """
         if self._new_value_present:
             return self._new_value_value
@@ -30975,7 +31922,7 @@ class GroupChangeManagementTypeDetails(object):
         Previous group management type. Might be missing due to historical data
         gap.
 
-        :rtype: team_common.GroupManagementType_validator
+        :rtype: team_common.GroupManagementType
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -30996,6 +31943,9 @@ class GroupChangeManagementTypeDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupChangeManagementTypeDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupChangeManagementTypeDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -31004,7 +31954,7 @@ class GroupChangeManagementTypeDetails(object):
 
 GroupChangeManagementTypeDetails_validator = bv.Struct(GroupChangeManagementTypeDetails)
 
-class GroupChangeManagementTypeType(object):
+class GroupChangeManagementTypeType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31041,6 +31991,9 @@ class GroupChangeManagementTypeType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupChangeManagementTypeType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupChangeManagementTypeType(description={!r})'.format(
             self._description_value,
@@ -31048,7 +32001,7 @@ class GroupChangeManagementTypeType(object):
 
 GroupChangeManagementTypeType_validator = bv.Struct(GroupChangeManagementTypeType)
 
-class GroupChangeMemberRoleDetails(object):
+class GroupChangeMemberRoleDetails(bb.Struct):
     """
     Changed manager permissions of group member.
 
@@ -31092,6 +32045,9 @@ class GroupChangeMemberRoleDetails(object):
         self._is_group_owner_value = None
         self._is_group_owner_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupChangeMemberRoleDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupChangeMemberRoleDetails(is_group_owner={!r})'.format(
             self._is_group_owner_value,
@@ -31099,7 +32055,7 @@ class GroupChangeMemberRoleDetails(object):
 
 GroupChangeMemberRoleDetails_validator = bv.Struct(GroupChangeMemberRoleDetails)
 
-class GroupChangeMemberRoleType(object):
+class GroupChangeMemberRoleType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31136,6 +32092,9 @@ class GroupChangeMemberRoleType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupChangeMemberRoleType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupChangeMemberRoleType(description={!r})'.format(
             self._description_value,
@@ -31143,7 +32102,7 @@ class GroupChangeMemberRoleType(object):
 
 GroupChangeMemberRoleType_validator = bv.Struct(GroupChangeMemberRoleType)
 
-class GroupCreateDetails(object):
+class GroupCreateDetails(bb.Struct):
     """
     Created group.
 
@@ -31225,6 +32184,9 @@ class GroupCreateDetails(object):
         self._join_policy_value = None
         self._join_policy_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupCreateDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupCreateDetails(is_company_managed={!r}, join_policy={!r})'.format(
             self._is_company_managed_value,
@@ -31233,7 +32195,7 @@ class GroupCreateDetails(object):
 
 GroupCreateDetails_validator = bv.Struct(GroupCreateDetails)
 
-class GroupCreateType(object):
+class GroupCreateType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31270,6 +32232,9 @@ class GroupCreateType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupCreateType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupCreateType(description={!r})'.format(
             self._description_value,
@@ -31277,7 +32242,7 @@ class GroupCreateType(object):
 
 GroupCreateType_validator = bv.Struct(GroupCreateType)
 
-class GroupDeleteDetails(object):
+class GroupDeleteDetails(bb.Struct):
     """
     Deleted group.
 
@@ -31325,6 +32290,9 @@ class GroupDeleteDetails(object):
         self._is_company_managed_value = None
         self._is_company_managed_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupDeleteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupDeleteDetails(is_company_managed={!r})'.format(
             self._is_company_managed_value,
@@ -31332,7 +32300,7 @@ class GroupDeleteDetails(object):
 
 GroupDeleteDetails_validator = bv.Struct(GroupDeleteDetails)
 
-class GroupDeleteType(object):
+class GroupDeleteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31369,6 +32337,9 @@ class GroupDeleteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupDeleteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupDeleteType(description={!r})'.format(
             self._description_value,
@@ -31376,7 +32347,7 @@ class GroupDeleteType(object):
 
 GroupDeleteType_validator = bv.Struct(GroupDeleteType)
 
-class GroupDescriptionUpdatedDetails(object):
+class GroupDescriptionUpdatedDetails(bb.Struct):
     """
     Updated group.
     """
@@ -31389,12 +32360,15 @@ class GroupDescriptionUpdatedDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupDescriptionUpdatedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupDescriptionUpdatedDetails()'
 
 GroupDescriptionUpdatedDetails_validator = bv.Struct(GroupDescriptionUpdatedDetails)
 
-class GroupDescriptionUpdatedType(object):
+class GroupDescriptionUpdatedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31430,6 +32404,9 @@ class GroupDescriptionUpdatedType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupDescriptionUpdatedType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'GroupDescriptionUpdatedType(description={!r})'.format(
@@ -31477,12 +32454,15 @@ class GroupJoinPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupJoinPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupJoinPolicy(%r, %r)' % (self._tag, self._value)
 
 GroupJoinPolicy_validator = bv.Union(GroupJoinPolicy)
 
-class GroupJoinPolicyUpdatedDetails(object):
+class GroupJoinPolicyUpdatedDetails(bb.Struct):
     """
     Updated group join policy.
 
@@ -31564,6 +32544,9 @@ class GroupJoinPolicyUpdatedDetails(object):
         self._join_policy_value = None
         self._join_policy_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupJoinPolicyUpdatedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupJoinPolicyUpdatedDetails(is_company_managed={!r}, join_policy={!r})'.format(
             self._is_company_managed_value,
@@ -31572,7 +32555,7 @@ class GroupJoinPolicyUpdatedDetails(object):
 
 GroupJoinPolicyUpdatedDetails_validator = bv.Struct(GroupJoinPolicyUpdatedDetails)
 
-class GroupJoinPolicyUpdatedType(object):
+class GroupJoinPolicyUpdatedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31609,6 +32592,9 @@ class GroupJoinPolicyUpdatedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupJoinPolicyUpdatedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupJoinPolicyUpdatedType(description={!r})'.format(
             self._description_value,
@@ -31616,7 +32602,7 @@ class GroupJoinPolicyUpdatedType(object):
 
 GroupJoinPolicyUpdatedType_validator = bv.Struct(GroupJoinPolicyUpdatedType)
 
-class GroupLogInfo(object):
+class GroupLogInfo(bb.Struct):
     """
     Group's logged information.
 
@@ -31731,6 +32717,9 @@ class GroupLogInfo(object):
         self._external_id_value = None
         self._external_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupLogInfo(display_name={!r}, group_id={!r}, external_id={!r})'.format(
             self._display_name_value,
@@ -31740,7 +32729,7 @@ class GroupLogInfo(object):
 
 GroupLogInfo_validator = bv.Struct(GroupLogInfo)
 
-class GroupMovedDetails(object):
+class GroupMovedDetails(bb.Struct):
     """
     Moved group.
     """
@@ -31753,12 +32742,15 @@ class GroupMovedDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupMovedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupMovedDetails()'
 
 GroupMovedDetails_validator = bv.Struct(GroupMovedDetails)
 
-class GroupMovedType(object):
+class GroupMovedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31795,6 +32787,9 @@ class GroupMovedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupMovedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupMovedType(description={!r})'.format(
             self._description_value,
@@ -31802,7 +32797,7 @@ class GroupMovedType(object):
 
 GroupMovedType_validator = bv.Struct(GroupMovedType)
 
-class GroupRemoveExternalIdDetails(object):
+class GroupRemoveExternalIdDetails(bb.Struct):
     """
     Removed external ID for group.
 
@@ -31846,6 +32841,9 @@ class GroupRemoveExternalIdDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupRemoveExternalIdDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupRemoveExternalIdDetails(previous_value={!r})'.format(
             self._previous_value_value,
@@ -31853,7 +32851,7 @@ class GroupRemoveExternalIdDetails(object):
 
 GroupRemoveExternalIdDetails_validator = bv.Struct(GroupRemoveExternalIdDetails)
 
-class GroupRemoveExternalIdType(object):
+class GroupRemoveExternalIdType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31890,6 +32888,9 @@ class GroupRemoveExternalIdType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupRemoveExternalIdType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupRemoveExternalIdType(description={!r})'.format(
             self._description_value,
@@ -31897,7 +32898,7 @@ class GroupRemoveExternalIdType(object):
 
 GroupRemoveExternalIdType_validator = bv.Struct(GroupRemoveExternalIdType)
 
-class GroupRemoveMemberDetails(object):
+class GroupRemoveMemberDetails(bb.Struct):
     """
     Removed team members from group.
     """
@@ -31910,12 +32911,15 @@ class GroupRemoveMemberDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupRemoveMemberDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupRemoveMemberDetails()'
 
 GroupRemoveMemberDetails_validator = bv.Struct(GroupRemoveMemberDetails)
 
-class GroupRemoveMemberType(object):
+class GroupRemoveMemberType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -31952,6 +32956,9 @@ class GroupRemoveMemberType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupRemoveMemberType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupRemoveMemberType(description={!r})'.format(
             self._description_value,
@@ -31959,7 +32966,7 @@ class GroupRemoveMemberType(object):
 
 GroupRemoveMemberType_validator = bv.Struct(GroupRemoveMemberType)
 
-class GroupRenameDetails(object):
+class GroupRenameDetails(bb.Struct):
     """
     Renamed group.
 
@@ -32034,6 +33041,9 @@ class GroupRenameDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupRenameDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupRenameDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -32042,7 +33052,7 @@ class GroupRenameDetails(object):
 
 GroupRenameDetails_validator = bv.Struct(GroupRenameDetails)
 
-class GroupRenameType(object):
+class GroupRenameType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -32079,6 +33089,9 @@ class GroupRenameType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupRenameType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupRenameType(description={!r})'.format(
             self._description_value,
@@ -32086,7 +33099,7 @@ class GroupRenameType(object):
 
 GroupRenameType_validator = bv.Struct(GroupRenameType)
 
-class GroupUserManagementChangePolicyDetails(object):
+class GroupUserManagementChangePolicyDetails(bb.Struct):
     """
     Changed who can create groups.
 
@@ -32121,7 +33134,7 @@ class GroupUserManagementChangePolicyDetails(object):
         """
         New group users management policy.
 
-        :rtype: team_policies.GroupCreation_validator
+        :rtype: team_policies.GroupCreation
         """
         if self._new_value_present:
             return self._new_value_value
@@ -32145,7 +33158,7 @@ class GroupUserManagementChangePolicyDetails(object):
         Previous group users management policy. Might be missing due to
         historical data gap.
 
-        :rtype: team_policies.GroupCreation_validator
+        :rtype: team_policies.GroupCreation
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -32166,6 +33179,9 @@ class GroupUserManagementChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupUserManagementChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GroupUserManagementChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -32174,7 +33190,7 @@ class GroupUserManagementChangePolicyDetails(object):
 
 GroupUserManagementChangePolicyDetails_validator = bv.Struct(GroupUserManagementChangePolicyDetails)
 
-class GroupUserManagementChangePolicyType(object):
+class GroupUserManagementChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -32210,6 +33226,9 @@ class GroupUserManagementChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupUserManagementChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'GroupUserManagementChangePolicyType(description={!r})'.format(
@@ -32257,12 +33276,15 @@ class IdentifierType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(IdentifierType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'IdentifierType(%r, %r)' % (self._tag, self._value)
 
 IdentifierType_validator = bv.Union(IdentifierType)
 
-class JoinTeamDetails(object):
+class JoinTeamDetails(bb.Struct):
     """
     Additional information relevant when a new member joins the team.
 
@@ -32367,6 +33389,9 @@ class JoinTeamDetails(object):
     def linked_shared_folders(self):
         self._linked_shared_folders_value = None
         self._linked_shared_folders_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(JoinTeamDetails, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'JoinTeamDetails(linked_apps={!r}, linked_devices={!r}, linked_shared_folders={!r})'.format(
@@ -32715,6 +33740,9 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._legacy_uniq_id_value = None
         self._legacy_uniq_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LegacyDeviceSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LegacyDeviceSessionLogInfo(ip_address={!r}, created={!r}, updated={!r}, session_info={!r}, display_name={!r}, is_emm_managed={!r}, platform={!r}, mac_address={!r}, os_version={!r}, device_type={!r}, client_version={!r}, legacy_uniq_id={!r})'.format(
             self._ip_address_value,
@@ -32887,12 +33915,15 @@ class LinkedDeviceLogInfo(bb.Union):
             raise AttributeError("tag 'legacy_device_session' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LinkedDeviceLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LinkedDeviceLogInfo(%r, %r)' % (self._tag, self._value)
 
 LinkedDeviceLogInfo_validator = bv.Union(LinkedDeviceLogInfo)
 
-class LoginFailDetails(object):
+class LoginFailDetails(bb.Struct):
     """
     Failed to sign in.
 
@@ -33003,6 +34034,9 @@ class LoginFailDetails(object):
         self._error_details_value = None
         self._error_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LoginFailDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LoginFailDetails(login_method={!r}, error_details={!r}, is_emm_managed={!r})'.format(
             self._login_method_value,
@@ -33012,7 +34046,7 @@ class LoginFailDetails(object):
 
 LoginFailDetails_validator = bv.Struct(LoginFailDetails)
 
-class LoginFailType(object):
+class LoginFailType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -33048,6 +34082,9 @@ class LoginFailType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LoginFailType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'LoginFailType(description={!r})'.format(
@@ -33105,12 +34142,15 @@ class LoginMethod(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LoginMethod, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LoginMethod(%r, %r)' % (self._tag, self._value)
 
 LoginMethod_validator = bv.Union(LoginMethod)
 
-class LoginSuccessDetails(object):
+class LoginSuccessDetails(bb.Struct):
     """
     Signed in.
 
@@ -33190,6 +34230,9 @@ class LoginSuccessDetails(object):
         self._login_method_value = None
         self._login_method_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LoginSuccessDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LoginSuccessDetails(login_method={!r}, is_emm_managed={!r})'.format(
             self._login_method_value,
@@ -33198,7 +34241,7 @@ class LoginSuccessDetails(object):
 
 LoginSuccessDetails_validator = bv.Struct(LoginSuccessDetails)
 
-class LoginSuccessType(object):
+class LoginSuccessType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -33235,6 +34278,9 @@ class LoginSuccessType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LoginSuccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LoginSuccessType(description={!r})'.format(
             self._description_value,
@@ -33242,7 +34288,7 @@ class LoginSuccessType(object):
 
 LoginSuccessType_validator = bv.Struct(LoginSuccessType)
 
-class LogoutDetails(object):
+class LogoutDetails(bb.Struct):
     """
     Signed out.
     """
@@ -33255,12 +34301,15 @@ class LogoutDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LogoutDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LogoutDetails()'
 
 LogoutDetails_validator = bv.Struct(LogoutDetails)
 
-class LogoutType(object):
+class LogoutType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -33297,6 +34346,9 @@ class LogoutType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LogoutType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LogoutType(description={!r})'.format(
             self._description_value,
@@ -33304,7 +34356,7 @@ class LogoutType(object):
 
 LogoutType_validator = bv.Struct(LogoutType)
 
-class MemberAddNameDetails(object):
+class MemberAddNameDetails(bb.Struct):
     """
     Added team member name.
 
@@ -33348,6 +34400,9 @@ class MemberAddNameDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberAddNameDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberAddNameDetails(new_value={!r})'.format(
             self._new_value_value,
@@ -33355,7 +34410,7 @@ class MemberAddNameDetails(object):
 
 MemberAddNameDetails_validator = bv.Struct(MemberAddNameDetails)
 
-class MemberAddNameType(object):
+class MemberAddNameType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -33392,6 +34447,9 @@ class MemberAddNameType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberAddNameType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberAddNameType(description={!r})'.format(
             self._description_value,
@@ -33399,7 +34457,7 @@ class MemberAddNameType(object):
 
 MemberAddNameType_validator = bv.Struct(MemberAddNameType)
 
-class MemberChangeAdminRoleDetails(object):
+class MemberChangeAdminRoleDetails(bb.Struct):
     """
     Changed team member admin role.
 
@@ -33485,6 +34543,9 @@ class MemberChangeAdminRoleDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeAdminRoleDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeAdminRoleDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -33493,7 +34554,7 @@ class MemberChangeAdminRoleDetails(object):
 
 MemberChangeAdminRoleDetails_validator = bv.Struct(MemberChangeAdminRoleDetails)
 
-class MemberChangeAdminRoleType(object):
+class MemberChangeAdminRoleType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -33530,6 +34591,9 @@ class MemberChangeAdminRoleType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeAdminRoleType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeAdminRoleType(description={!r})'.format(
             self._description_value,
@@ -33537,7 +34601,7 @@ class MemberChangeAdminRoleType(object):
 
 MemberChangeAdminRoleType_validator = bv.Struct(MemberChangeAdminRoleType)
 
-class MemberChangeEmailDetails(object):
+class MemberChangeEmailDetails(bb.Struct):
     """
     Changed team member email.
 
@@ -33616,6 +34680,9 @@ class MemberChangeEmailDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeEmailDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeEmailDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -33624,7 +34691,7 @@ class MemberChangeEmailDetails(object):
 
 MemberChangeEmailDetails_validator = bv.Struct(MemberChangeEmailDetails)
 
-class MemberChangeEmailType(object):
+class MemberChangeEmailType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -33661,6 +34728,9 @@ class MemberChangeEmailType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeEmailType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeEmailType(description={!r})'.format(
             self._description_value,
@@ -33668,7 +34738,7 @@ class MemberChangeEmailType(object):
 
 MemberChangeEmailType_validator = bv.Struct(MemberChangeEmailType)
 
-class MemberChangeMembershipTypeDetails(object):
+class MemberChangeMembershipTypeDetails(bb.Struct):
     """
     Changed membership type (limited/full) of member.
 
@@ -33743,6 +34813,9 @@ class MemberChangeMembershipTypeDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeMembershipTypeDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeMembershipTypeDetails(prev_value={!r}, new_value={!r})'.format(
             self._prev_value_value,
@@ -33751,7 +34824,7 @@ class MemberChangeMembershipTypeDetails(object):
 
 MemberChangeMembershipTypeDetails_validator = bv.Struct(MemberChangeMembershipTypeDetails)
 
-class MemberChangeMembershipTypeType(object):
+class MemberChangeMembershipTypeType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -33788,6 +34861,9 @@ class MemberChangeMembershipTypeType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeMembershipTypeType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeMembershipTypeType(description={!r})'.format(
             self._description_value,
@@ -33795,7 +34871,7 @@ class MemberChangeMembershipTypeType(object):
 
 MemberChangeMembershipTypeType_validator = bv.Struct(MemberChangeMembershipTypeType)
 
-class MemberChangeNameDetails(object):
+class MemberChangeNameDetails(bb.Struct):
     """
     Changed team member name.
 
@@ -33874,6 +34950,9 @@ class MemberChangeNameDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeNameDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeNameDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -33882,7 +34961,7 @@ class MemberChangeNameDetails(object):
 
 MemberChangeNameDetails_validator = bv.Struct(MemberChangeNameDetails)
 
-class MemberChangeNameType(object):
+class MemberChangeNameType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -33919,6 +34998,9 @@ class MemberChangeNameType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeNameType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeNameType(description={!r})'.format(
             self._description_value,
@@ -33926,7 +35008,7 @@ class MemberChangeNameType(object):
 
 MemberChangeNameType_validator = bv.Struct(MemberChangeNameType)
 
-class MemberChangeStatusDetails(object):
+class MemberChangeStatusDetails(bb.Struct):
     """
     Changed member status (invited, joined, suspended, etc.).
 
@@ -34041,6 +35123,9 @@ class MemberChangeStatusDetails(object):
         self._action_value = None
         self._action_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeStatusDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeStatusDetails(new_value={!r}, previous_value={!r}, action={!r})'.format(
             self._new_value_value,
@@ -34050,7 +35135,7 @@ class MemberChangeStatusDetails(object):
 
 MemberChangeStatusDetails_validator = bv.Struct(MemberChangeStatusDetails)
 
-class MemberChangeStatusType(object):
+class MemberChangeStatusType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -34087,6 +35172,9 @@ class MemberChangeStatusType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberChangeStatusType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberChangeStatusType(description={!r})'.format(
             self._description_value,
@@ -34094,7 +35182,75 @@ class MemberChangeStatusType(object):
 
 MemberChangeStatusType_validator = bv.Struct(MemberChangeStatusType)
 
-class MemberPermanentlyDeleteAccountContentsDetails(object):
+class MemberDeleteManualContactsDetails(bb.Struct):
+    """
+    Cleared saved contacts.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberDeleteManualContactsDetails, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'MemberDeleteManualContactsDetails()'
+
+MemberDeleteManualContactsDetails_validator = bv.Struct(MemberDeleteManualContactsDetails)
+
+class MemberDeleteManualContactsType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberDeleteManualContactsType, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'MemberDeleteManualContactsType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberDeleteManualContactsType_validator = bv.Struct(MemberDeleteManualContactsType)
+
+class MemberPermanentlyDeleteAccountContentsDetails(bb.Struct):
     """
     Permanently deleted contents of deleted team member account.
     """
@@ -34107,12 +35263,15 @@ class MemberPermanentlyDeleteAccountContentsDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberPermanentlyDeleteAccountContentsDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberPermanentlyDeleteAccountContentsDetails()'
 
 MemberPermanentlyDeleteAccountContentsDetails_validator = bv.Struct(MemberPermanentlyDeleteAccountContentsDetails)
 
-class MemberPermanentlyDeleteAccountContentsType(object):
+class MemberPermanentlyDeleteAccountContentsType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -34148,6 +35307,9 @@ class MemberPermanentlyDeleteAccountContentsType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberPermanentlyDeleteAccountContentsType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'MemberPermanentlyDeleteAccountContentsType(description={!r})'.format(
@@ -34205,12 +35367,15 @@ class MemberRemoveActionType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberRemoveActionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberRemoveActionType(%r, %r)' % (self._tag, self._value)
 
 MemberRemoveActionType_validator = bv.Union(MemberRemoveActionType)
 
-class MemberRequestsChangePolicyDetails(object):
+class MemberRequestsChangePolicyDetails(bb.Struct):
     """
     Changed whether users can find team when not invited.
 
@@ -34290,6 +35455,9 @@ class MemberRequestsChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberRequestsChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberRequestsChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -34298,7 +35466,7 @@ class MemberRequestsChangePolicyDetails(object):
 
 MemberRequestsChangePolicyDetails_validator = bv.Struct(MemberRequestsChangePolicyDetails)
 
-class MemberRequestsChangePolicyType(object):
+class MemberRequestsChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -34334,6 +35502,9 @@ class MemberRequestsChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberRequestsChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'MemberRequestsChangePolicyType(description={!r})'.format(
@@ -34391,12 +35562,15 @@ class MemberRequestsPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberRequestsPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberRequestsPolicy(%r, %r)' % (self._tag, self._value)
 
 MemberRequestsPolicy_validator = bv.Union(MemberRequestsPolicy)
 
-class MemberSpaceLimitsAddCustomQuotaDetails(object):
+class MemberSpaceLimitsAddCustomQuotaDetails(bb.Struct):
     """
     Set custom member space limit.
 
@@ -34440,6 +35614,9 @@ class MemberSpaceLimitsAddCustomQuotaDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsAddCustomQuotaDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsAddCustomQuotaDetails(new_value={!r})'.format(
             self._new_value_value,
@@ -34447,7 +35624,7 @@ class MemberSpaceLimitsAddCustomQuotaDetails(object):
 
 MemberSpaceLimitsAddCustomQuotaDetails_validator = bv.Struct(MemberSpaceLimitsAddCustomQuotaDetails)
 
-class MemberSpaceLimitsAddCustomQuotaType(object):
+class MemberSpaceLimitsAddCustomQuotaType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -34484,6 +35661,9 @@ class MemberSpaceLimitsAddCustomQuotaType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsAddCustomQuotaType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsAddCustomQuotaType(description={!r})'.format(
             self._description_value,
@@ -34491,7 +35671,7 @@ class MemberSpaceLimitsAddCustomQuotaType(object):
 
 MemberSpaceLimitsAddCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsAddCustomQuotaType)
 
-class MemberSpaceLimitsAddExceptionDetails(object):
+class MemberSpaceLimitsAddExceptionDetails(bb.Struct):
     """
     Added members to member space limit exception list.
     """
@@ -34504,12 +35684,15 @@ class MemberSpaceLimitsAddExceptionDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsAddExceptionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsAddExceptionDetails()'
 
 MemberSpaceLimitsAddExceptionDetails_validator = bv.Struct(MemberSpaceLimitsAddExceptionDetails)
 
-class MemberSpaceLimitsAddExceptionType(object):
+class MemberSpaceLimitsAddExceptionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -34546,6 +35729,9 @@ class MemberSpaceLimitsAddExceptionType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsAddExceptionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsAddExceptionType(description={!r})'.format(
             self._description_value,
@@ -34553,7 +35739,7 @@ class MemberSpaceLimitsAddExceptionType(object):
 
 MemberSpaceLimitsAddExceptionType_validator = bv.Struct(MemberSpaceLimitsAddExceptionType)
 
-class MemberSpaceLimitsChangeCapsTypePolicyDetails(object):
+class MemberSpaceLimitsChangeCapsTypePolicyDetails(bb.Struct):
     """
     Changed member space limit type for team.
 
@@ -34628,6 +35814,9 @@ class MemberSpaceLimitsChangeCapsTypePolicyDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsChangeCapsTypePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsChangeCapsTypePolicyDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -34636,7 +35825,7 @@ class MemberSpaceLimitsChangeCapsTypePolicyDetails(object):
 
 MemberSpaceLimitsChangeCapsTypePolicyDetails_validator = bv.Struct(MemberSpaceLimitsChangeCapsTypePolicyDetails)
 
-class MemberSpaceLimitsChangeCapsTypePolicyType(object):
+class MemberSpaceLimitsChangeCapsTypePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -34673,6 +35862,9 @@ class MemberSpaceLimitsChangeCapsTypePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsChangeCapsTypePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsChangeCapsTypePolicyType(description={!r})'.format(
             self._description_value,
@@ -34680,7 +35872,7 @@ class MemberSpaceLimitsChangeCapsTypePolicyType(object):
 
 MemberSpaceLimitsChangeCapsTypePolicyType_validator = bv.Struct(MemberSpaceLimitsChangeCapsTypePolicyType)
 
-class MemberSpaceLimitsChangeCustomQuotaDetails(object):
+class MemberSpaceLimitsChangeCustomQuotaDetails(bb.Struct):
     """
     Changed custom member space limit.
 
@@ -34755,6 +35947,9 @@ class MemberSpaceLimitsChangeCustomQuotaDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsChangeCustomQuotaDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsChangeCustomQuotaDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -34763,7 +35958,7 @@ class MemberSpaceLimitsChangeCustomQuotaDetails(object):
 
 MemberSpaceLimitsChangeCustomQuotaDetails_validator = bv.Struct(MemberSpaceLimitsChangeCustomQuotaDetails)
 
-class MemberSpaceLimitsChangeCustomQuotaType(object):
+class MemberSpaceLimitsChangeCustomQuotaType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -34800,6 +35995,9 @@ class MemberSpaceLimitsChangeCustomQuotaType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsChangeCustomQuotaType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsChangeCustomQuotaType(description={!r})'.format(
             self._description_value,
@@ -34807,7 +36005,7 @@ class MemberSpaceLimitsChangeCustomQuotaType(object):
 
 MemberSpaceLimitsChangeCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsChangeCustomQuotaType)
 
-class MemberSpaceLimitsChangePolicyDetails(object):
+class MemberSpaceLimitsChangePolicyDetails(bb.Struct):
     """
     Changed team default member space limit.
 
@@ -34892,6 +36090,9 @@ class MemberSpaceLimitsChangePolicyDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsChangePolicyDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -34900,7 +36101,7 @@ class MemberSpaceLimitsChangePolicyDetails(object):
 
 MemberSpaceLimitsChangePolicyDetails_validator = bv.Struct(MemberSpaceLimitsChangePolicyDetails)
 
-class MemberSpaceLimitsChangePolicyType(object):
+class MemberSpaceLimitsChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -34937,6 +36138,9 @@ class MemberSpaceLimitsChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -34944,7 +36148,7 @@ class MemberSpaceLimitsChangePolicyType(object):
 
 MemberSpaceLimitsChangePolicyType_validator = bv.Struct(MemberSpaceLimitsChangePolicyType)
 
-class MemberSpaceLimitsChangeStatusDetails(object):
+class MemberSpaceLimitsChangeStatusDetails(bb.Struct):
     """
     Changed space limit status.
 
@@ -35019,6 +36223,9 @@ class MemberSpaceLimitsChangeStatusDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsChangeStatusDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsChangeStatusDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -35027,7 +36234,7 @@ class MemberSpaceLimitsChangeStatusDetails(object):
 
 MemberSpaceLimitsChangeStatusDetails_validator = bv.Struct(MemberSpaceLimitsChangeStatusDetails)
 
-class MemberSpaceLimitsChangeStatusType(object):
+class MemberSpaceLimitsChangeStatusType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -35064,6 +36271,9 @@ class MemberSpaceLimitsChangeStatusType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsChangeStatusType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsChangeStatusType(description={!r})'.format(
             self._description_value,
@@ -35071,7 +36281,7 @@ class MemberSpaceLimitsChangeStatusType(object):
 
 MemberSpaceLimitsChangeStatusType_validator = bv.Struct(MemberSpaceLimitsChangeStatusType)
 
-class MemberSpaceLimitsRemoveCustomQuotaDetails(object):
+class MemberSpaceLimitsRemoveCustomQuotaDetails(bb.Struct):
     """
     Removed custom member space limit.
     """
@@ -35084,12 +36294,15 @@ class MemberSpaceLimitsRemoveCustomQuotaDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsRemoveCustomQuotaDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsRemoveCustomQuotaDetails()'
 
 MemberSpaceLimitsRemoveCustomQuotaDetails_validator = bv.Struct(MemberSpaceLimitsRemoveCustomQuotaDetails)
 
-class MemberSpaceLimitsRemoveCustomQuotaType(object):
+class MemberSpaceLimitsRemoveCustomQuotaType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -35126,6 +36339,9 @@ class MemberSpaceLimitsRemoveCustomQuotaType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsRemoveCustomQuotaType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsRemoveCustomQuotaType(description={!r})'.format(
             self._description_value,
@@ -35133,7 +36349,7 @@ class MemberSpaceLimitsRemoveCustomQuotaType(object):
 
 MemberSpaceLimitsRemoveCustomQuotaType_validator = bv.Struct(MemberSpaceLimitsRemoveCustomQuotaType)
 
-class MemberSpaceLimitsRemoveExceptionDetails(object):
+class MemberSpaceLimitsRemoveExceptionDetails(bb.Struct):
     """
     Removed members from member space limit exception list.
     """
@@ -35146,12 +36362,15 @@ class MemberSpaceLimitsRemoveExceptionDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsRemoveExceptionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSpaceLimitsRemoveExceptionDetails()'
 
 MemberSpaceLimitsRemoveExceptionDetails_validator = bv.Struct(MemberSpaceLimitsRemoveExceptionDetails)
 
-class MemberSpaceLimitsRemoveExceptionType(object):
+class MemberSpaceLimitsRemoveExceptionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -35187,6 +36406,9 @@ class MemberSpaceLimitsRemoveExceptionType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSpaceLimitsRemoveExceptionType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'MemberSpaceLimitsRemoveExceptionType(description={!r})'.format(
@@ -35264,12 +36486,15 @@ class MemberStatus(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberStatus, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberStatus(%r, %r)' % (self._tag, self._value)
 
 MemberStatus_validator = bv.Union(MemberStatus)
 
-class MemberSuggestDetails(object):
+class MemberSuggestDetails(bb.Struct):
     """
     Suggested person to add to team.
 
@@ -35313,6 +36538,9 @@ class MemberSuggestDetails(object):
         self._suggested_members_value = None
         self._suggested_members_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSuggestDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSuggestDetails(suggested_members={!r})'.format(
             self._suggested_members_value,
@@ -35320,7 +36548,7 @@ class MemberSuggestDetails(object):
 
 MemberSuggestDetails_validator = bv.Struct(MemberSuggestDetails)
 
-class MemberSuggestType(object):
+class MemberSuggestType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -35357,6 +36585,9 @@ class MemberSuggestType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSuggestType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSuggestType(description={!r})'.format(
             self._description_value,
@@ -35364,7 +36595,7 @@ class MemberSuggestType(object):
 
 MemberSuggestType_validator = bv.Struct(MemberSuggestType)
 
-class MemberSuggestionsChangePolicyDetails(object):
+class MemberSuggestionsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled option for team members to suggest people to add to team.
 
@@ -35444,6 +36675,9 @@ class MemberSuggestionsChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSuggestionsChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSuggestionsChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -35452,7 +36686,7 @@ class MemberSuggestionsChangePolicyDetails(object):
 
 MemberSuggestionsChangePolicyDetails_validator = bv.Struct(MemberSuggestionsChangePolicyDetails)
 
-class MemberSuggestionsChangePolicyType(object):
+class MemberSuggestionsChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -35488,6 +36722,9 @@ class MemberSuggestionsChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSuggestionsChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'MemberSuggestionsChangePolicyType(description={!r})'.format(
@@ -35537,12 +36774,15 @@ class MemberSuggestionsPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberSuggestionsPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberSuggestionsPolicy(%r, %r)' % (self._tag, self._value)
 
 MemberSuggestionsPolicy_validator = bv.Union(MemberSuggestionsPolicy)
 
-class MemberTransferAccountContentsDetails(object):
+class MemberTransferAccountContentsDetails(bb.Struct):
     """
     Transferred contents of deleted member account to another member.
     """
@@ -35555,12 +36795,15 @@ class MemberTransferAccountContentsDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberTransferAccountContentsDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberTransferAccountContentsDetails()'
 
 MemberTransferAccountContentsDetails_validator = bv.Struct(MemberTransferAccountContentsDetails)
 
-class MemberTransferAccountContentsType(object):
+class MemberTransferAccountContentsType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -35597,6 +36840,9 @@ class MemberTransferAccountContentsType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MemberTransferAccountContentsType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MemberTransferAccountContentsType(description={!r})'.format(
             self._description_value,
@@ -35604,7 +36850,7 @@ class MemberTransferAccountContentsType(object):
 
 MemberTransferAccountContentsType_validator = bv.Struct(MemberTransferAccountContentsType)
 
-class MicrosoftOfficeAddinChangePolicyDetails(object):
+class MicrosoftOfficeAddinChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Microsoft Office add-in.
 
@@ -35684,6 +36930,9 @@ class MicrosoftOfficeAddinChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MicrosoftOfficeAddinChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MicrosoftOfficeAddinChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -35692,7 +36941,7 @@ class MicrosoftOfficeAddinChangePolicyDetails(object):
 
 MicrosoftOfficeAddinChangePolicyDetails_validator = bv.Struct(MicrosoftOfficeAddinChangePolicyDetails)
 
-class MicrosoftOfficeAddinChangePolicyType(object):
+class MicrosoftOfficeAddinChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -35728,6 +36977,9 @@ class MicrosoftOfficeAddinChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MicrosoftOfficeAddinChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'MicrosoftOfficeAddinChangePolicyType(description={!r})'.format(
@@ -35777,12 +37029,15 @@ class MicrosoftOfficeAddinPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MicrosoftOfficeAddinPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MicrosoftOfficeAddinPolicy(%r, %r)' % (self._tag, self._value)
 
 MicrosoftOfficeAddinPolicy_validator = bv.Union(MicrosoftOfficeAddinPolicy)
 
-class MissingDetails(object):
+class MissingDetails(bb.Struct):
     """
     An indication that an error occurred while retrieving the event. Some
     attributes of the event may be omitted as a result.
@@ -35831,6 +37086,9 @@ class MissingDetails(object):
     def source_event_fields(self):
         self._source_event_fields_value = None
         self._source_event_fields_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MissingDetails, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'MissingDetails(source_event_fields={!r})'.format(
@@ -35961,7 +37219,7 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
         """
         The mobile application type.
 
-        :rtype: team.MobileClientPlatform_validator
+        :rtype: team.MobileClientPlatform
         """
         if self._client_type_present:
             return self._client_type_value
@@ -36057,6 +37315,9 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._last_carrier_value = None
         self._last_carrier_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MobileDeviceSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MobileDeviceSessionLogInfo(device_name={!r}, client_type={!r}, ip_address={!r}, created={!r}, updated={!r}, session_info={!r}, client_version={!r}, os_version={!r}, last_carrier={!r})'.format(
             self._device_name_value,
@@ -36086,6 +37347,9 @@ class MobileSessionLogInfo(SessionLogInfo):
                  session_id=None):
         super(MobileSessionLogInfo, self).__init__(session_id)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MobileSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'MobileSessionLogInfo(session_id={!r})'.format(
             self._session_id_value,
@@ -36093,7 +37357,7 @@ class MobileSessionLogInfo(SessionLogInfo):
 
 MobileSessionLogInfo_validator = bv.Struct(MobileSessionLogInfo)
 
-class NamespaceRelativePathLogInfo(object):
+class NamespaceRelativePathLogInfo(bb.Struct):
     """
     Namespace relative path details.
 
@@ -36176,6 +37440,9 @@ class NamespaceRelativePathLogInfo(object):
         self._relative_path_value = None
         self._relative_path_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NamespaceRelativePathLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NamespaceRelativePathLogInfo(ns_id={!r}, relative_path={!r})'.format(
             self._ns_id_value,
@@ -36184,7 +37451,7 @@ class NamespaceRelativePathLogInfo(object):
 
 NamespaceRelativePathLogInfo_validator = bv.Struct(NamespaceRelativePathLogInfo)
 
-class NetworkControlChangePolicyDetails(object):
+class NetworkControlChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled network control.
 
@@ -36264,6 +37531,9 @@ class NetworkControlChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NetworkControlChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NetworkControlChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -36272,7 +37542,7 @@ class NetworkControlChangePolicyDetails(object):
 
 NetworkControlChangePolicyDetails_validator = bv.Struct(NetworkControlChangePolicyDetails)
 
-class NetworkControlChangePolicyType(object):
+class NetworkControlChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -36308,6 +37578,9 @@ class NetworkControlChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NetworkControlChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'NetworkControlChangePolicyType(description={!r})'.format(
@@ -36357,12 +37630,15 @@ class NetworkControlPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NetworkControlPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NetworkControlPolicy(%r, %r)' % (self._tag, self._value)
 
 NetworkControlPolicy_validator = bv.Union(NetworkControlPolicy)
 
-class UserLogInfo(object):
+class UserLogInfo(bb.Struct):
     """
     User's logged information.
 
@@ -36480,6 +37756,9 @@ class UserLogInfo(object):
         self._email_value = None
         self._email_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UserLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UserLogInfo(account_id={!r}, display_name={!r}, email={!r})'.format(
             self._account_id_value,
@@ -36507,6 +37786,9 @@ class NonTeamMemberLogInfo(UserLogInfo):
                                                    display_name,
                                                    email)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NonTeamMemberLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NonTeamMemberLogInfo(account_id={!r}, display_name={!r}, email={!r})'.format(
             self._account_id_value,
@@ -36516,7 +37798,7 @@ class NonTeamMemberLogInfo(UserLogInfo):
 
 NonTeamMemberLogInfo_validator = bv.Struct(NonTeamMemberLogInfo)
 
-class NoteAclInviteOnlyDetails(object):
+class NoteAclInviteOnlyDetails(bb.Struct):
     """
     Changed Paper doc to invite-only.
     """
@@ -36529,12 +37811,15 @@ class NoteAclInviteOnlyDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteAclInviteOnlyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteAclInviteOnlyDetails()'
 
 NoteAclInviteOnlyDetails_validator = bv.Struct(NoteAclInviteOnlyDetails)
 
-class NoteAclInviteOnlyType(object):
+class NoteAclInviteOnlyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -36571,6 +37856,9 @@ class NoteAclInviteOnlyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteAclInviteOnlyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteAclInviteOnlyType(description={!r})'.format(
             self._description_value,
@@ -36578,7 +37866,7 @@ class NoteAclInviteOnlyType(object):
 
 NoteAclInviteOnlyType_validator = bv.Struct(NoteAclInviteOnlyType)
 
-class NoteAclLinkDetails(object):
+class NoteAclLinkDetails(bb.Struct):
     """
     Changed Paper doc to link-accessible.
     """
@@ -36591,12 +37879,15 @@ class NoteAclLinkDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteAclLinkDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteAclLinkDetails()'
 
 NoteAclLinkDetails_validator = bv.Struct(NoteAclLinkDetails)
 
-class NoteAclLinkType(object):
+class NoteAclLinkType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -36633,6 +37924,9 @@ class NoteAclLinkType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteAclLinkType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteAclLinkType(description={!r})'.format(
             self._description_value,
@@ -36640,7 +37934,7 @@ class NoteAclLinkType(object):
 
 NoteAclLinkType_validator = bv.Struct(NoteAclLinkType)
 
-class NoteAclTeamLinkDetails(object):
+class NoteAclTeamLinkDetails(bb.Struct):
     """
     Changed Paper doc to link-accessible for team.
     """
@@ -36653,12 +37947,15 @@ class NoteAclTeamLinkDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteAclTeamLinkDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteAclTeamLinkDetails()'
 
 NoteAclTeamLinkDetails_validator = bv.Struct(NoteAclTeamLinkDetails)
 
-class NoteAclTeamLinkType(object):
+class NoteAclTeamLinkType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -36695,6 +37992,9 @@ class NoteAclTeamLinkType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteAclTeamLinkType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteAclTeamLinkType(description={!r})'.format(
             self._description_value,
@@ -36702,7 +38002,7 @@ class NoteAclTeamLinkType(object):
 
 NoteAclTeamLinkType_validator = bv.Struct(NoteAclTeamLinkType)
 
-class NoteShareReceiveDetails(object):
+class NoteShareReceiveDetails(bb.Struct):
     """
     Shared received Paper doc.
     """
@@ -36715,12 +38015,15 @@ class NoteShareReceiveDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteShareReceiveDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteShareReceiveDetails()'
 
 NoteShareReceiveDetails_validator = bv.Struct(NoteShareReceiveDetails)
 
-class NoteShareReceiveType(object):
+class NoteShareReceiveType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -36757,6 +38060,9 @@ class NoteShareReceiveType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteShareReceiveType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteShareReceiveType(description={!r})'.format(
             self._description_value,
@@ -36764,7 +38070,7 @@ class NoteShareReceiveType(object):
 
 NoteShareReceiveType_validator = bv.Struct(NoteShareReceiveType)
 
-class NoteSharedDetails(object):
+class NoteSharedDetails(bb.Struct):
     """
     Shared Paper doc.
     """
@@ -36777,12 +38083,15 @@ class NoteSharedDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteSharedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteSharedDetails()'
 
 NoteSharedDetails_validator = bv.Struct(NoteSharedDetails)
 
-class NoteSharedType(object):
+class NoteSharedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -36819,6 +38128,9 @@ class NoteSharedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(NoteSharedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'NoteSharedType(description={!r})'.format(
             self._description_value,
@@ -36826,7 +38138,7 @@ class NoteSharedType(object):
 
 NoteSharedType_validator = bv.Struct(NoteSharedType)
 
-class OpenNoteSharedDetails(object):
+class OpenNoteSharedDetails(bb.Struct):
     """
     Opened shared Paper doc.
     """
@@ -36839,12 +38151,15 @@ class OpenNoteSharedDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(OpenNoteSharedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'OpenNoteSharedDetails()'
 
 OpenNoteSharedDetails_validator = bv.Struct(OpenNoteSharedDetails)
 
-class OpenNoteSharedType(object):
+class OpenNoteSharedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -36881,6 +38196,9 @@ class OpenNoteSharedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(OpenNoteSharedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'OpenNoteSharedType(description={!r})'.format(
             self._description_value,
@@ -36888,7 +38206,7 @@ class OpenNoteSharedType(object):
 
 OpenNoteSharedType_validator = bv.Struct(OpenNoteSharedType)
 
-class OriginLogInfo(object):
+class OriginLogInfo(bb.Struct):
     """
     The origin from which the actor performed the action.
 
@@ -36966,6 +38284,9 @@ class OriginLogInfo(object):
         self._access_method_value = None
         self._access_method_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(OriginLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'OriginLogInfo(access_method={!r}, geo_location={!r})'.format(
             self._access_method_value,
@@ -37023,12 +38344,15 @@ class PaperAccessType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperAccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperAccessType(%r, %r)' % (self._tag, self._value)
 
 PaperAccessType_validator = bv.Union(PaperAccessType)
 
-class PaperAdminExportStartDetails(object):
+class PaperAdminExportStartDetails(bb.Struct):
     """
     Exported all team Paper docs.
     """
@@ -37041,12 +38365,15 @@ class PaperAdminExportStartDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperAdminExportStartDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperAdminExportStartDetails()'
 
 PaperAdminExportStartDetails_validator = bv.Struct(PaperAdminExportStartDetails)
 
-class PaperAdminExportStartType(object):
+class PaperAdminExportStartType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -37083,6 +38410,9 @@ class PaperAdminExportStartType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperAdminExportStartType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperAdminExportStartType(description={!r})'.format(
             self._description_value,
@@ -37090,7 +38420,7 @@ class PaperAdminExportStartType(object):
 
 PaperAdminExportStartType_validator = bv.Struct(PaperAdminExportStartType)
 
-class PaperChangeDeploymentPolicyDetails(object):
+class PaperChangeDeploymentPolicyDetails(bb.Struct):
     """
     Changed whether Dropbox Paper, when enabled, is deployed to all members or
     to specific members.
@@ -37126,7 +38456,7 @@ class PaperChangeDeploymentPolicyDetails(object):
         """
         New Dropbox Paper deployment policy.
 
-        :rtype: team_policies.PaperDeploymentPolicy_validator
+        :rtype: team_policies.PaperDeploymentPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -37150,7 +38480,7 @@ class PaperChangeDeploymentPolicyDetails(object):
         Previous Dropbox Paper deployment policy. Might be missing due to
         historical data gap.
 
-        :rtype: team_policies.PaperDeploymentPolicy_validator
+        :rtype: team_policies.PaperDeploymentPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -37171,6 +38501,9 @@ class PaperChangeDeploymentPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperChangeDeploymentPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperChangeDeploymentPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -37179,7 +38512,7 @@ class PaperChangeDeploymentPolicyDetails(object):
 
 PaperChangeDeploymentPolicyDetails_validator = bv.Struct(PaperChangeDeploymentPolicyDetails)
 
-class PaperChangeDeploymentPolicyType(object):
+class PaperChangeDeploymentPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -37216,6 +38549,9 @@ class PaperChangeDeploymentPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperChangeDeploymentPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperChangeDeploymentPolicyType(description={!r})'.format(
             self._description_value,
@@ -37223,7 +38559,7 @@ class PaperChangeDeploymentPolicyType(object):
 
 PaperChangeDeploymentPolicyType_validator = bv.Struct(PaperChangeDeploymentPolicyType)
 
-class PaperChangeMemberLinkPolicyDetails(object):
+class PaperChangeMemberLinkPolicyDetails(bb.Struct):
     """
     Changed whether non-members can view Paper docs with link.
 
@@ -37267,6 +38603,9 @@ class PaperChangeMemberLinkPolicyDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperChangeMemberLinkPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperChangeMemberLinkPolicyDetails(new_value={!r})'.format(
             self._new_value_value,
@@ -37274,7 +38613,7 @@ class PaperChangeMemberLinkPolicyDetails(object):
 
 PaperChangeMemberLinkPolicyDetails_validator = bv.Struct(PaperChangeMemberLinkPolicyDetails)
 
-class PaperChangeMemberLinkPolicyType(object):
+class PaperChangeMemberLinkPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -37311,6 +38650,9 @@ class PaperChangeMemberLinkPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperChangeMemberLinkPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperChangeMemberLinkPolicyType(description={!r})'.format(
             self._description_value,
@@ -37318,7 +38660,7 @@ class PaperChangeMemberLinkPolicyType(object):
 
 PaperChangeMemberLinkPolicyType_validator = bv.Struct(PaperChangeMemberLinkPolicyType)
 
-class PaperChangeMemberPolicyDetails(object):
+class PaperChangeMemberPolicyDetails(bb.Struct):
     """
     Changed whether members can share Paper docs outside team, and if docs are
     accessible only by team members or anyone by default.
@@ -37399,6 +38741,9 @@ class PaperChangeMemberPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperChangeMemberPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperChangeMemberPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -37407,7 +38752,7 @@ class PaperChangeMemberPolicyDetails(object):
 
 PaperChangeMemberPolicyDetails_validator = bv.Struct(PaperChangeMemberPolicyDetails)
 
-class PaperChangeMemberPolicyType(object):
+class PaperChangeMemberPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -37444,6 +38789,9 @@ class PaperChangeMemberPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperChangeMemberPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperChangeMemberPolicyType(description={!r})'.format(
             self._description_value,
@@ -37451,7 +38799,7 @@ class PaperChangeMemberPolicyType(object):
 
 PaperChangeMemberPolicyType_validator = bv.Struct(PaperChangeMemberPolicyType)
 
-class PaperChangePolicyDetails(object):
+class PaperChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Dropbox Paper for team.
 
@@ -37486,7 +38834,7 @@ class PaperChangePolicyDetails(object):
         """
         New Dropbox Paper policy.
 
-        :rtype: team_policies.PaperEnabledPolicy_validator
+        :rtype: team_policies.PaperEnabledPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -37510,7 +38858,7 @@ class PaperChangePolicyDetails(object):
         Previous Dropbox Paper policy. Might be missing due to historical data
         gap.
 
-        :rtype: team_policies.PaperEnabledPolicy_validator
+        :rtype: team_policies.PaperEnabledPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -37531,6 +38879,9 @@ class PaperChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -37539,7 +38890,7 @@ class PaperChangePolicyDetails(object):
 
 PaperChangePolicyDetails_validator = bv.Struct(PaperChangePolicyDetails)
 
-class PaperChangePolicyType(object):
+class PaperChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -37576,6 +38927,9 @@ class PaperChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -37583,7 +38937,7 @@ class PaperChangePolicyType(object):
 
 PaperChangePolicyType_validator = bv.Struct(PaperChangePolicyType)
 
-class PaperContentAddMemberDetails(object):
+class PaperContentAddMemberDetails(bb.Struct):
     """
     Added team member to Paper doc/folder.
 
@@ -37627,6 +38981,9 @@ class PaperContentAddMemberDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentAddMemberDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentAddMemberDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -37634,7 +38991,7 @@ class PaperContentAddMemberDetails(object):
 
 PaperContentAddMemberDetails_validator = bv.Struct(PaperContentAddMemberDetails)
 
-class PaperContentAddMemberType(object):
+class PaperContentAddMemberType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -37671,6 +39028,9 @@ class PaperContentAddMemberType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentAddMemberType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentAddMemberType(description={!r})'.format(
             self._description_value,
@@ -37678,7 +39038,7 @@ class PaperContentAddMemberType(object):
 
 PaperContentAddMemberType_validator = bv.Struct(PaperContentAddMemberType)
 
-class PaperContentAddToFolderDetails(object):
+class PaperContentAddToFolderDetails(bb.Struct):
     """
     Added Paper doc/folder to folder.
 
@@ -37784,6 +39144,9 @@ class PaperContentAddToFolderDetails(object):
         self._parent_asset_index_value = None
         self._parent_asset_index_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentAddToFolderDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentAddToFolderDetails(event_uuid={!r}, target_asset_index={!r}, parent_asset_index={!r})'.format(
             self._event_uuid_value,
@@ -37793,7 +39156,7 @@ class PaperContentAddToFolderDetails(object):
 
 PaperContentAddToFolderDetails_validator = bv.Struct(PaperContentAddToFolderDetails)
 
-class PaperContentAddToFolderType(object):
+class PaperContentAddToFolderType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -37830,6 +39193,9 @@ class PaperContentAddToFolderType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentAddToFolderType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentAddToFolderType(description={!r})'.format(
             self._description_value,
@@ -37837,7 +39203,7 @@ class PaperContentAddToFolderType(object):
 
 PaperContentAddToFolderType_validator = bv.Struct(PaperContentAddToFolderType)
 
-class PaperContentArchiveDetails(object):
+class PaperContentArchiveDetails(bb.Struct):
     """
     Archived Paper doc/folder.
 
@@ -37881,6 +39247,9 @@ class PaperContentArchiveDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentArchiveDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentArchiveDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -37888,7 +39257,7 @@ class PaperContentArchiveDetails(object):
 
 PaperContentArchiveDetails_validator = bv.Struct(PaperContentArchiveDetails)
 
-class PaperContentArchiveType(object):
+class PaperContentArchiveType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -37925,6 +39294,9 @@ class PaperContentArchiveType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentArchiveType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentArchiveType(description={!r})'.format(
             self._description_value,
@@ -37932,7 +39304,7 @@ class PaperContentArchiveType(object):
 
 PaperContentArchiveType_validator = bv.Struct(PaperContentArchiveType)
 
-class PaperContentCreateDetails(object):
+class PaperContentCreateDetails(bb.Struct):
     """
     Created Paper doc/folder.
 
@@ -37976,6 +39348,9 @@ class PaperContentCreateDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentCreateDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentCreateDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -37983,7 +39358,7 @@ class PaperContentCreateDetails(object):
 
 PaperContentCreateDetails_validator = bv.Struct(PaperContentCreateDetails)
 
-class PaperContentCreateType(object):
+class PaperContentCreateType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38020,6 +39395,9 @@ class PaperContentCreateType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentCreateType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentCreateType(description={!r})'.format(
             self._description_value,
@@ -38027,7 +39405,7 @@ class PaperContentCreateType(object):
 
 PaperContentCreateType_validator = bv.Struct(PaperContentCreateType)
 
-class PaperContentPermanentlyDeleteDetails(object):
+class PaperContentPermanentlyDeleteDetails(bb.Struct):
     """
     Permanently deleted Paper doc/folder.
 
@@ -38071,6 +39449,9 @@ class PaperContentPermanentlyDeleteDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentPermanentlyDeleteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentPermanentlyDeleteDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -38078,7 +39459,7 @@ class PaperContentPermanentlyDeleteDetails(object):
 
 PaperContentPermanentlyDeleteDetails_validator = bv.Struct(PaperContentPermanentlyDeleteDetails)
 
-class PaperContentPermanentlyDeleteType(object):
+class PaperContentPermanentlyDeleteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38115,6 +39496,9 @@ class PaperContentPermanentlyDeleteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentPermanentlyDeleteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentPermanentlyDeleteType(description={!r})'.format(
             self._description_value,
@@ -38122,7 +39506,7 @@ class PaperContentPermanentlyDeleteType(object):
 
 PaperContentPermanentlyDeleteType_validator = bv.Struct(PaperContentPermanentlyDeleteType)
 
-class PaperContentRemoveFromFolderDetails(object):
+class PaperContentRemoveFromFolderDetails(bb.Struct):
     """
     Removed Paper doc/folder from folder.
 
@@ -38228,6 +39612,9 @@ class PaperContentRemoveFromFolderDetails(object):
         self._parent_asset_index_value = None
         self._parent_asset_index_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentRemoveFromFolderDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentRemoveFromFolderDetails(event_uuid={!r}, target_asset_index={!r}, parent_asset_index={!r})'.format(
             self._event_uuid_value,
@@ -38237,7 +39624,7 @@ class PaperContentRemoveFromFolderDetails(object):
 
 PaperContentRemoveFromFolderDetails_validator = bv.Struct(PaperContentRemoveFromFolderDetails)
 
-class PaperContentRemoveFromFolderType(object):
+class PaperContentRemoveFromFolderType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38274,6 +39661,9 @@ class PaperContentRemoveFromFolderType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentRemoveFromFolderType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentRemoveFromFolderType(description={!r})'.format(
             self._description_value,
@@ -38281,7 +39671,7 @@ class PaperContentRemoveFromFolderType(object):
 
 PaperContentRemoveFromFolderType_validator = bv.Struct(PaperContentRemoveFromFolderType)
 
-class PaperContentRemoveMemberDetails(object):
+class PaperContentRemoveMemberDetails(bb.Struct):
     """
     Removed team member from Paper doc/folder.
 
@@ -38325,6 +39715,9 @@ class PaperContentRemoveMemberDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentRemoveMemberDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentRemoveMemberDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -38332,7 +39725,7 @@ class PaperContentRemoveMemberDetails(object):
 
 PaperContentRemoveMemberDetails_validator = bv.Struct(PaperContentRemoveMemberDetails)
 
-class PaperContentRemoveMemberType(object):
+class PaperContentRemoveMemberType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38369,6 +39762,9 @@ class PaperContentRemoveMemberType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentRemoveMemberType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentRemoveMemberType(description={!r})'.format(
             self._description_value,
@@ -38376,7 +39772,7 @@ class PaperContentRemoveMemberType(object):
 
 PaperContentRemoveMemberType_validator = bv.Struct(PaperContentRemoveMemberType)
 
-class PaperContentRenameDetails(object):
+class PaperContentRenameDetails(bb.Struct):
     """
     Renamed Paper doc/folder.
 
@@ -38420,6 +39816,9 @@ class PaperContentRenameDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentRenameDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentRenameDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -38427,7 +39826,7 @@ class PaperContentRenameDetails(object):
 
 PaperContentRenameDetails_validator = bv.Struct(PaperContentRenameDetails)
 
-class PaperContentRenameType(object):
+class PaperContentRenameType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38464,6 +39863,9 @@ class PaperContentRenameType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentRenameType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentRenameType(description={!r})'.format(
             self._description_value,
@@ -38471,7 +39873,7 @@ class PaperContentRenameType(object):
 
 PaperContentRenameType_validator = bv.Struct(PaperContentRenameType)
 
-class PaperContentRestoreDetails(object):
+class PaperContentRestoreDetails(bb.Struct):
     """
     Restored archived Paper doc/folder.
 
@@ -38515,6 +39917,9 @@ class PaperContentRestoreDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentRestoreDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentRestoreDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -38522,7 +39927,7 @@ class PaperContentRestoreDetails(object):
 
 PaperContentRestoreDetails_validator = bv.Struct(PaperContentRestoreDetails)
 
-class PaperContentRestoreType(object):
+class PaperContentRestoreType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38559,6 +39964,9 @@ class PaperContentRestoreType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperContentRestoreType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperContentRestoreType(description={!r})'.format(
             self._description_value,
@@ -38566,7 +39974,7 @@ class PaperContentRestoreType(object):
 
 PaperContentRestoreType_validator = bv.Struct(PaperContentRestoreType)
 
-class PaperDocAddCommentDetails(object):
+class PaperDocAddCommentDetails(bb.Struct):
     """
     Added Paper doc comment.
 
@@ -38645,6 +40053,9 @@ class PaperDocAddCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocAddCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocAddCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -38653,7 +40064,7 @@ class PaperDocAddCommentDetails(object):
 
 PaperDocAddCommentDetails_validator = bv.Struct(PaperDocAddCommentDetails)
 
-class PaperDocAddCommentType(object):
+class PaperDocAddCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38690,6 +40101,9 @@ class PaperDocAddCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocAddCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocAddCommentType(description={!r})'.format(
             self._description_value,
@@ -38697,7 +40111,7 @@ class PaperDocAddCommentType(object):
 
 PaperDocAddCommentType_validator = bv.Struct(PaperDocAddCommentType)
 
-class PaperDocChangeMemberRoleDetails(object):
+class PaperDocChangeMemberRoleDetails(bb.Struct):
     """
     Changed team member permissions for Paper doc.
 
@@ -38772,6 +40186,9 @@ class PaperDocChangeMemberRoleDetails(object):
         self._access_type_value = None
         self._access_type_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocChangeMemberRoleDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocChangeMemberRoleDetails(event_uuid={!r}, access_type={!r})'.format(
             self._event_uuid_value,
@@ -38780,7 +40197,7 @@ class PaperDocChangeMemberRoleDetails(object):
 
 PaperDocChangeMemberRoleDetails_validator = bv.Struct(PaperDocChangeMemberRoleDetails)
 
-class PaperDocChangeMemberRoleType(object):
+class PaperDocChangeMemberRoleType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38817,6 +40234,9 @@ class PaperDocChangeMemberRoleType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocChangeMemberRoleType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocChangeMemberRoleType(description={!r})'.format(
             self._description_value,
@@ -38824,7 +40244,7 @@ class PaperDocChangeMemberRoleType(object):
 
 PaperDocChangeMemberRoleType_validator = bv.Struct(PaperDocChangeMemberRoleType)
 
-class PaperDocChangeSharingPolicyDetails(object):
+class PaperDocChangeSharingPolicyDetails(bb.Struct):
     """
     Changed sharing setting for Paper doc.
 
@@ -38939,6 +40359,9 @@ class PaperDocChangeSharingPolicyDetails(object):
         self._team_sharing_policy_value = None
         self._team_sharing_policy_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocChangeSharingPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocChangeSharingPolicyDetails(event_uuid={!r}, public_sharing_policy={!r}, team_sharing_policy={!r})'.format(
             self._event_uuid_value,
@@ -38948,7 +40371,7 @@ class PaperDocChangeSharingPolicyDetails(object):
 
 PaperDocChangeSharingPolicyDetails_validator = bv.Struct(PaperDocChangeSharingPolicyDetails)
 
-class PaperDocChangeSharingPolicyType(object):
+class PaperDocChangeSharingPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -38985,6 +40408,9 @@ class PaperDocChangeSharingPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocChangeSharingPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocChangeSharingPolicyType(description={!r})'.format(
             self._description_value,
@@ -38992,7 +40418,7 @@ class PaperDocChangeSharingPolicyType(object):
 
 PaperDocChangeSharingPolicyType_validator = bv.Struct(PaperDocChangeSharingPolicyType)
 
-class PaperDocChangeSubscriptionDetails(object):
+class PaperDocChangeSubscriptionDetails(bb.Struct):
     """
     Followed/unfollowed Paper doc.
 
@@ -39103,6 +40529,9 @@ class PaperDocChangeSubscriptionDetails(object):
         self._previous_subscription_level_value = None
         self._previous_subscription_level_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocChangeSubscriptionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocChangeSubscriptionDetails(event_uuid={!r}, new_subscription_level={!r}, previous_subscription_level={!r})'.format(
             self._event_uuid_value,
@@ -39112,7 +40541,7 @@ class PaperDocChangeSubscriptionDetails(object):
 
 PaperDocChangeSubscriptionDetails_validator = bv.Struct(PaperDocChangeSubscriptionDetails)
 
-class PaperDocChangeSubscriptionType(object):
+class PaperDocChangeSubscriptionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -39149,6 +40578,9 @@ class PaperDocChangeSubscriptionType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocChangeSubscriptionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocChangeSubscriptionType(description={!r})'.format(
             self._description_value,
@@ -39156,7 +40588,7 @@ class PaperDocChangeSubscriptionType(object):
 
 PaperDocChangeSubscriptionType_validator = bv.Struct(PaperDocChangeSubscriptionType)
 
-class PaperDocDeleteCommentDetails(object):
+class PaperDocDeleteCommentDetails(bb.Struct):
     """
     Deleted Paper doc comment.
 
@@ -39235,6 +40667,9 @@ class PaperDocDeleteCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocDeleteCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocDeleteCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -39243,7 +40678,7 @@ class PaperDocDeleteCommentDetails(object):
 
 PaperDocDeleteCommentDetails_validator = bv.Struct(PaperDocDeleteCommentDetails)
 
-class PaperDocDeleteCommentType(object):
+class PaperDocDeleteCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -39280,6 +40715,9 @@ class PaperDocDeleteCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocDeleteCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocDeleteCommentType(description={!r})'.format(
             self._description_value,
@@ -39287,7 +40725,7 @@ class PaperDocDeleteCommentType(object):
 
 PaperDocDeleteCommentType_validator = bv.Struct(PaperDocDeleteCommentType)
 
-class PaperDocDeletedDetails(object):
+class PaperDocDeletedDetails(bb.Struct):
     """
     Archived Paper doc.
 
@@ -39331,6 +40769,9 @@ class PaperDocDeletedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocDeletedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocDeletedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -39338,7 +40779,7 @@ class PaperDocDeletedDetails(object):
 
 PaperDocDeletedDetails_validator = bv.Struct(PaperDocDeletedDetails)
 
-class PaperDocDeletedType(object):
+class PaperDocDeletedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -39375,6 +40816,9 @@ class PaperDocDeletedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocDeletedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocDeletedType(description={!r})'.format(
             self._description_value,
@@ -39382,7 +40826,7 @@ class PaperDocDeletedType(object):
 
 PaperDocDeletedType_validator = bv.Struct(PaperDocDeletedType)
 
-class PaperDocDownloadDetails(object):
+class PaperDocDownloadDetails(bb.Struct):
     """
     Downloaded Paper doc in specific format.
 
@@ -39457,6 +40901,9 @@ class PaperDocDownloadDetails(object):
         self._export_file_format_value = None
         self._export_file_format_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocDownloadDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocDownloadDetails(event_uuid={!r}, export_file_format={!r})'.format(
             self._event_uuid_value,
@@ -39465,7 +40912,7 @@ class PaperDocDownloadDetails(object):
 
 PaperDocDownloadDetails_validator = bv.Struct(PaperDocDownloadDetails)
 
-class PaperDocDownloadType(object):
+class PaperDocDownloadType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -39502,6 +40949,9 @@ class PaperDocDownloadType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocDownloadType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocDownloadType(description={!r})'.format(
             self._description_value,
@@ -39509,7 +40959,7 @@ class PaperDocDownloadType(object):
 
 PaperDocDownloadType_validator = bv.Struct(PaperDocDownloadType)
 
-class PaperDocEditCommentDetails(object):
+class PaperDocEditCommentDetails(bb.Struct):
     """
     Edited Paper doc comment.
 
@@ -39588,6 +41038,9 @@ class PaperDocEditCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocEditCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocEditCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -39596,7 +41049,7 @@ class PaperDocEditCommentDetails(object):
 
 PaperDocEditCommentDetails_validator = bv.Struct(PaperDocEditCommentDetails)
 
-class PaperDocEditCommentType(object):
+class PaperDocEditCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -39633,6 +41086,9 @@ class PaperDocEditCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocEditCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocEditCommentType(description={!r})'.format(
             self._description_value,
@@ -39640,7 +41096,7 @@ class PaperDocEditCommentType(object):
 
 PaperDocEditCommentType_validator = bv.Struct(PaperDocEditCommentType)
 
-class PaperDocEditDetails(object):
+class PaperDocEditDetails(bb.Struct):
     """
     Edited Paper doc.
 
@@ -39684,6 +41140,9 @@ class PaperDocEditDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocEditDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocEditDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -39691,7 +41150,7 @@ class PaperDocEditDetails(object):
 
 PaperDocEditDetails_validator = bv.Struct(PaperDocEditDetails)
 
-class PaperDocEditType(object):
+class PaperDocEditType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -39728,6 +41187,9 @@ class PaperDocEditType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocEditType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocEditType(description={!r})'.format(
             self._description_value,
@@ -39735,7 +41197,7 @@ class PaperDocEditType(object):
 
 PaperDocEditType_validator = bv.Struct(PaperDocEditType)
 
-class PaperDocFollowedDetails(object):
+class PaperDocFollowedDetails(bb.Struct):
     """
     Followed Paper doc.
 
@@ -39779,6 +41241,9 @@ class PaperDocFollowedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocFollowedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocFollowedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -39786,7 +41251,7 @@ class PaperDocFollowedDetails(object):
 
 PaperDocFollowedDetails_validator = bv.Struct(PaperDocFollowedDetails)
 
-class PaperDocFollowedType(object):
+class PaperDocFollowedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -39823,6 +41288,9 @@ class PaperDocFollowedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocFollowedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocFollowedType(description={!r})'.format(
             self._description_value,
@@ -39830,7 +41298,7 @@ class PaperDocFollowedType(object):
 
 PaperDocFollowedType_validator = bv.Struct(PaperDocFollowedType)
 
-class PaperDocMentionDetails(object):
+class PaperDocMentionDetails(bb.Struct):
     """
     Mentioned team member in Paper doc.
 
@@ -39874,6 +41342,9 @@ class PaperDocMentionDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocMentionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocMentionDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -39881,7 +41352,7 @@ class PaperDocMentionDetails(object):
 
 PaperDocMentionDetails_validator = bv.Struct(PaperDocMentionDetails)
 
-class PaperDocMentionType(object):
+class PaperDocMentionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -39918,6 +41389,9 @@ class PaperDocMentionType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocMentionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocMentionType(description={!r})'.format(
             self._description_value,
@@ -39925,7 +41399,175 @@ class PaperDocMentionType(object):
 
 PaperDocMentionType_validator = bv.Struct(PaperDocMentionType)
 
-class PaperDocRequestAccessDetails(object):
+class PaperDocOwnershipChangedDetails(bb.Struct):
+    """
+    Transferred ownership of Paper doc.
+
+    :ivar event_uuid: Event unique identifier.
+    :ivar old_owner_user_id: Previous owner.
+    :ivar new_owner_user_id: New owner.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_old_owner_user_id_value',
+        '_old_owner_user_id_present',
+        '_new_owner_user_id_value',
+        '_new_owner_user_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 new_owner_user_id=None,
+                 old_owner_user_id=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._old_owner_user_id_value = None
+        self._old_owner_user_id_present = False
+        self._new_owner_user_id_value = None
+        self._new_owner_user_id_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if old_owner_user_id is not None:
+            self.old_owner_user_id = old_owner_user_id
+        if new_owner_user_id is not None:
+            self.new_owner_user_id = new_owner_user_id
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def old_owner_user_id(self):
+        """
+        Previous owner.
+
+        :rtype: str
+        """
+        if self._old_owner_user_id_present:
+            return self._old_owner_user_id_value
+        else:
+            return None
+
+    @old_owner_user_id.setter
+    def old_owner_user_id(self, val):
+        if val is None:
+            del self.old_owner_user_id
+            return
+        val = self._old_owner_user_id_validator.validate(val)
+        self._old_owner_user_id_value = val
+        self._old_owner_user_id_present = True
+
+    @old_owner_user_id.deleter
+    def old_owner_user_id(self):
+        self._old_owner_user_id_value = None
+        self._old_owner_user_id_present = False
+
+    @property
+    def new_owner_user_id(self):
+        """
+        New owner.
+
+        :rtype: str
+        """
+        if self._new_owner_user_id_present:
+            return self._new_owner_user_id_value
+        else:
+            raise AttributeError("missing required field 'new_owner_user_id'")
+
+    @new_owner_user_id.setter
+    def new_owner_user_id(self, val):
+        val = self._new_owner_user_id_validator.validate(val)
+        self._new_owner_user_id_value = val
+        self._new_owner_user_id_present = True
+
+    @new_owner_user_id.deleter
+    def new_owner_user_id(self):
+        self._new_owner_user_id_value = None
+        self._new_owner_user_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocOwnershipChangedDetails, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'PaperDocOwnershipChangedDetails(event_uuid={!r}, new_owner_user_id={!r}, old_owner_user_id={!r})'.format(
+            self._event_uuid_value,
+            self._new_owner_user_id_value,
+            self._old_owner_user_id_value,
+        )
+
+PaperDocOwnershipChangedDetails_validator = bv.Struct(PaperDocOwnershipChangedDetails)
+
+class PaperDocOwnershipChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocOwnershipChangedType, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'PaperDocOwnershipChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+PaperDocOwnershipChangedType_validator = bv.Struct(PaperDocOwnershipChangedType)
+
+class PaperDocRequestAccessDetails(bb.Struct):
     """
     Requested access to Paper doc.
 
@@ -39969,6 +41611,9 @@ class PaperDocRequestAccessDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocRequestAccessDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocRequestAccessDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -39976,7 +41621,7 @@ class PaperDocRequestAccessDetails(object):
 
 PaperDocRequestAccessDetails_validator = bv.Struct(PaperDocRequestAccessDetails)
 
-class PaperDocRequestAccessType(object):
+class PaperDocRequestAccessType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40013,6 +41658,9 @@ class PaperDocRequestAccessType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocRequestAccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocRequestAccessType(description={!r})'.format(
             self._description_value,
@@ -40020,7 +41668,7 @@ class PaperDocRequestAccessType(object):
 
 PaperDocRequestAccessType_validator = bv.Struct(PaperDocRequestAccessType)
 
-class PaperDocResolveCommentDetails(object):
+class PaperDocResolveCommentDetails(bb.Struct):
     """
     Resolved Paper doc comment.
 
@@ -40099,6 +41747,9 @@ class PaperDocResolveCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocResolveCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocResolveCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -40107,7 +41758,7 @@ class PaperDocResolveCommentDetails(object):
 
 PaperDocResolveCommentDetails_validator = bv.Struct(PaperDocResolveCommentDetails)
 
-class PaperDocResolveCommentType(object):
+class PaperDocResolveCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40144,6 +41795,9 @@ class PaperDocResolveCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocResolveCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocResolveCommentType(description={!r})'.format(
             self._description_value,
@@ -40151,7 +41805,7 @@ class PaperDocResolveCommentType(object):
 
 PaperDocResolveCommentType_validator = bv.Struct(PaperDocResolveCommentType)
 
-class PaperDocRevertDetails(object):
+class PaperDocRevertDetails(bb.Struct):
     """
     Restored Paper doc to previous version.
 
@@ -40195,6 +41849,9 @@ class PaperDocRevertDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocRevertDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocRevertDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -40202,7 +41859,7 @@ class PaperDocRevertDetails(object):
 
 PaperDocRevertDetails_validator = bv.Struct(PaperDocRevertDetails)
 
-class PaperDocRevertType(object):
+class PaperDocRevertType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40239,6 +41896,9 @@ class PaperDocRevertType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocRevertType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocRevertType(description={!r})'.format(
             self._description_value,
@@ -40246,7 +41906,7 @@ class PaperDocRevertType(object):
 
 PaperDocRevertType_validator = bv.Struct(PaperDocRevertType)
 
-class PaperDocSlackShareDetails(object):
+class PaperDocSlackShareDetails(bb.Struct):
     """
     Shared Paper doc via Slack.
 
@@ -40290,6 +41950,9 @@ class PaperDocSlackShareDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocSlackShareDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocSlackShareDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -40297,7 +41960,7 @@ class PaperDocSlackShareDetails(object):
 
 PaperDocSlackShareDetails_validator = bv.Struct(PaperDocSlackShareDetails)
 
-class PaperDocSlackShareType(object):
+class PaperDocSlackShareType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40334,6 +41997,9 @@ class PaperDocSlackShareType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocSlackShareType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocSlackShareType(description={!r})'.format(
             self._description_value,
@@ -40341,7 +42007,7 @@ class PaperDocSlackShareType(object):
 
 PaperDocSlackShareType_validator = bv.Struct(PaperDocSlackShareType)
 
-class PaperDocTeamInviteDetails(object):
+class PaperDocTeamInviteDetails(bb.Struct):
     """
     Shared Paper doc with team member.
 
@@ -40385,6 +42051,9 @@ class PaperDocTeamInviteDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocTeamInviteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocTeamInviteDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -40392,7 +42061,7 @@ class PaperDocTeamInviteDetails(object):
 
 PaperDocTeamInviteDetails_validator = bv.Struct(PaperDocTeamInviteDetails)
 
-class PaperDocTeamInviteType(object):
+class PaperDocTeamInviteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40429,6 +42098,9 @@ class PaperDocTeamInviteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocTeamInviteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocTeamInviteType(description={!r})'.format(
             self._description_value,
@@ -40436,7 +42108,7 @@ class PaperDocTeamInviteType(object):
 
 PaperDocTeamInviteType_validator = bv.Struct(PaperDocTeamInviteType)
 
-class PaperDocTrashedDetails(object):
+class PaperDocTrashedDetails(bb.Struct):
     """
     Deleted Paper doc.
 
@@ -40480,6 +42152,9 @@ class PaperDocTrashedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocTrashedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocTrashedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -40487,7 +42162,7 @@ class PaperDocTrashedDetails(object):
 
 PaperDocTrashedDetails_validator = bv.Struct(PaperDocTrashedDetails)
 
-class PaperDocTrashedType(object):
+class PaperDocTrashedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40524,6 +42199,9 @@ class PaperDocTrashedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocTrashedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocTrashedType(description={!r})'.format(
             self._description_value,
@@ -40531,7 +42209,7 @@ class PaperDocTrashedType(object):
 
 PaperDocTrashedType_validator = bv.Struct(PaperDocTrashedType)
 
-class PaperDocUnresolveCommentDetails(object):
+class PaperDocUnresolveCommentDetails(bb.Struct):
     """
     Unresolved Paper doc comment.
 
@@ -40610,6 +42288,9 @@ class PaperDocUnresolveCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocUnresolveCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocUnresolveCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -40618,7 +42299,7 @@ class PaperDocUnresolveCommentDetails(object):
 
 PaperDocUnresolveCommentDetails_validator = bv.Struct(PaperDocUnresolveCommentDetails)
 
-class PaperDocUnresolveCommentType(object):
+class PaperDocUnresolveCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40655,6 +42336,9 @@ class PaperDocUnresolveCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocUnresolveCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocUnresolveCommentType(description={!r})'.format(
             self._description_value,
@@ -40662,7 +42346,7 @@ class PaperDocUnresolveCommentType(object):
 
 PaperDocUnresolveCommentType_validator = bv.Struct(PaperDocUnresolveCommentType)
 
-class PaperDocUntrashedDetails(object):
+class PaperDocUntrashedDetails(bb.Struct):
     """
     Restored Paper doc.
 
@@ -40706,6 +42390,9 @@ class PaperDocUntrashedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocUntrashedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocUntrashedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -40713,7 +42400,7 @@ class PaperDocUntrashedDetails(object):
 
 PaperDocUntrashedDetails_validator = bv.Struct(PaperDocUntrashedDetails)
 
-class PaperDocUntrashedType(object):
+class PaperDocUntrashedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40750,6 +42437,9 @@ class PaperDocUntrashedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocUntrashedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocUntrashedType(description={!r})'.format(
             self._description_value,
@@ -40757,7 +42447,7 @@ class PaperDocUntrashedType(object):
 
 PaperDocUntrashedType_validator = bv.Struct(PaperDocUntrashedType)
 
-class PaperDocViewDetails(object):
+class PaperDocViewDetails(bb.Struct):
     """
     Viewed Paper doc.
 
@@ -40801,6 +42491,9 @@ class PaperDocViewDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocViewDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocViewDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -40808,7 +42501,7 @@ class PaperDocViewDetails(object):
 
 PaperDocViewDetails_validator = bv.Struct(PaperDocViewDetails)
 
-class PaperDocViewType(object):
+class PaperDocViewType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -40845,6 +42538,9 @@ class PaperDocViewType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocViewType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocViewType(description={!r})'.format(
             self._description_value,
@@ -40852,7 +42548,7 @@ class PaperDocViewType(object):
 
 PaperDocViewType_validator = bv.Struct(PaperDocViewType)
 
-class PaperDocumentLogInfo(object):
+class PaperDocumentLogInfo(bb.Struct):
     """
     Paper document's logged information.
 
@@ -40927,6 +42623,9 @@ class PaperDocumentLogInfo(object):
         self._doc_title_value = None
         self._doc_title_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDocumentLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDocumentLogInfo(doc_id={!r}, doc_title={!r})'.format(
             self._doc_id_value,
@@ -40984,12 +42683,15 @@ class PaperDownloadFormat(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDownloadFormat, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperDownloadFormat(%r, %r)' % (self._tag, self._value)
 
 PaperDownloadFormat_validator = bv.Union(PaperDownloadFormat)
 
-class PaperEnabledUsersGroupAdditionDetails(object):
+class PaperEnabledUsersGroupAdditionDetails(bb.Struct):
     """
     Added users to Paper-enabled users list.
     """
@@ -41002,12 +42704,15 @@ class PaperEnabledUsersGroupAdditionDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperEnabledUsersGroupAdditionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperEnabledUsersGroupAdditionDetails()'
 
 PaperEnabledUsersGroupAdditionDetails_validator = bv.Struct(PaperEnabledUsersGroupAdditionDetails)
 
-class PaperEnabledUsersGroupAdditionType(object):
+class PaperEnabledUsersGroupAdditionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41044,6 +42749,9 @@ class PaperEnabledUsersGroupAdditionType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperEnabledUsersGroupAdditionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperEnabledUsersGroupAdditionType(description={!r})'.format(
             self._description_value,
@@ -41051,7 +42759,7 @@ class PaperEnabledUsersGroupAdditionType(object):
 
 PaperEnabledUsersGroupAdditionType_validator = bv.Struct(PaperEnabledUsersGroupAdditionType)
 
-class PaperEnabledUsersGroupRemovalDetails(object):
+class PaperEnabledUsersGroupRemovalDetails(bb.Struct):
     """
     Removed users from Paper-enabled users list.
     """
@@ -41064,12 +42772,15 @@ class PaperEnabledUsersGroupRemovalDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperEnabledUsersGroupRemovalDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperEnabledUsersGroupRemovalDetails()'
 
 PaperEnabledUsersGroupRemovalDetails_validator = bv.Struct(PaperEnabledUsersGroupRemovalDetails)
 
-class PaperEnabledUsersGroupRemovalType(object):
+class PaperEnabledUsersGroupRemovalType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41106,6 +42817,9 @@ class PaperEnabledUsersGroupRemovalType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperEnabledUsersGroupRemovalType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperEnabledUsersGroupRemovalType(description={!r})'.format(
             self._description_value,
@@ -41113,7 +42827,7 @@ class PaperEnabledUsersGroupRemovalType(object):
 
 PaperEnabledUsersGroupRemovalType_validator = bv.Struct(PaperEnabledUsersGroupRemovalType)
 
-class PaperExternalViewAllowDetails(object):
+class PaperExternalViewAllowDetails(bb.Struct):
     """
     Changed Paper external sharing setting to anyone.
 
@@ -41157,6 +42871,9 @@ class PaperExternalViewAllowDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperExternalViewAllowDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperExternalViewAllowDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -41164,7 +42881,7 @@ class PaperExternalViewAllowDetails(object):
 
 PaperExternalViewAllowDetails_validator = bv.Struct(PaperExternalViewAllowDetails)
 
-class PaperExternalViewAllowType(object):
+class PaperExternalViewAllowType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41201,6 +42918,9 @@ class PaperExternalViewAllowType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperExternalViewAllowType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperExternalViewAllowType(description={!r})'.format(
             self._description_value,
@@ -41208,7 +42928,7 @@ class PaperExternalViewAllowType(object):
 
 PaperExternalViewAllowType_validator = bv.Struct(PaperExternalViewAllowType)
 
-class PaperExternalViewDefaultTeamDetails(object):
+class PaperExternalViewDefaultTeamDetails(bb.Struct):
     """
     Changed Paper external sharing setting to default team.
 
@@ -41252,6 +42972,9 @@ class PaperExternalViewDefaultTeamDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperExternalViewDefaultTeamDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperExternalViewDefaultTeamDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -41259,7 +42982,7 @@ class PaperExternalViewDefaultTeamDetails(object):
 
 PaperExternalViewDefaultTeamDetails_validator = bv.Struct(PaperExternalViewDefaultTeamDetails)
 
-class PaperExternalViewDefaultTeamType(object):
+class PaperExternalViewDefaultTeamType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41296,6 +43019,9 @@ class PaperExternalViewDefaultTeamType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperExternalViewDefaultTeamType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperExternalViewDefaultTeamType(description={!r})'.format(
             self._description_value,
@@ -41303,7 +43029,7 @@ class PaperExternalViewDefaultTeamType(object):
 
 PaperExternalViewDefaultTeamType_validator = bv.Struct(PaperExternalViewDefaultTeamType)
 
-class PaperExternalViewForbidDetails(object):
+class PaperExternalViewForbidDetails(bb.Struct):
     """
     Changed Paper external sharing setting to team-only.
 
@@ -41347,6 +43073,9 @@ class PaperExternalViewForbidDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperExternalViewForbidDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperExternalViewForbidDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -41354,7 +43083,7 @@ class PaperExternalViewForbidDetails(object):
 
 PaperExternalViewForbidDetails_validator = bv.Struct(PaperExternalViewForbidDetails)
 
-class PaperExternalViewForbidType(object):
+class PaperExternalViewForbidType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41391,6 +43120,9 @@ class PaperExternalViewForbidType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperExternalViewForbidType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperExternalViewForbidType(description={!r})'.format(
             self._description_value,
@@ -41398,7 +43130,7 @@ class PaperExternalViewForbidType(object):
 
 PaperExternalViewForbidType_validator = bv.Struct(PaperExternalViewForbidType)
 
-class PaperFolderChangeSubscriptionDetails(object):
+class PaperFolderChangeSubscriptionDetails(bb.Struct):
     """
     Followed/unfollowed Paper folder.
 
@@ -41509,6 +43241,9 @@ class PaperFolderChangeSubscriptionDetails(object):
         self._previous_subscription_level_value = None
         self._previous_subscription_level_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderChangeSubscriptionDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperFolderChangeSubscriptionDetails(event_uuid={!r}, new_subscription_level={!r}, previous_subscription_level={!r})'.format(
             self._event_uuid_value,
@@ -41518,7 +43253,7 @@ class PaperFolderChangeSubscriptionDetails(object):
 
 PaperFolderChangeSubscriptionDetails_validator = bv.Struct(PaperFolderChangeSubscriptionDetails)
 
-class PaperFolderChangeSubscriptionType(object):
+class PaperFolderChangeSubscriptionType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41555,6 +43290,9 @@ class PaperFolderChangeSubscriptionType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderChangeSubscriptionType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperFolderChangeSubscriptionType(description={!r})'.format(
             self._description_value,
@@ -41562,7 +43300,7 @@ class PaperFolderChangeSubscriptionType(object):
 
 PaperFolderChangeSubscriptionType_validator = bv.Struct(PaperFolderChangeSubscriptionType)
 
-class PaperFolderDeletedDetails(object):
+class PaperFolderDeletedDetails(bb.Struct):
     """
     Archived Paper folder.
 
@@ -41606,6 +43344,9 @@ class PaperFolderDeletedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderDeletedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperFolderDeletedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -41613,7 +43354,7 @@ class PaperFolderDeletedDetails(object):
 
 PaperFolderDeletedDetails_validator = bv.Struct(PaperFolderDeletedDetails)
 
-class PaperFolderDeletedType(object):
+class PaperFolderDeletedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41650,6 +43391,9 @@ class PaperFolderDeletedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderDeletedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperFolderDeletedType(description={!r})'.format(
             self._description_value,
@@ -41657,7 +43401,7 @@ class PaperFolderDeletedType(object):
 
 PaperFolderDeletedType_validator = bv.Struct(PaperFolderDeletedType)
 
-class PaperFolderFollowedDetails(object):
+class PaperFolderFollowedDetails(bb.Struct):
     """
     Followed Paper folder.
 
@@ -41701,6 +43445,9 @@ class PaperFolderFollowedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderFollowedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperFolderFollowedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -41708,7 +43455,7 @@ class PaperFolderFollowedDetails(object):
 
 PaperFolderFollowedDetails_validator = bv.Struct(PaperFolderFollowedDetails)
 
-class PaperFolderFollowedType(object):
+class PaperFolderFollowedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41745,6 +43492,9 @@ class PaperFolderFollowedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderFollowedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperFolderFollowedType(description={!r})'.format(
             self._description_value,
@@ -41752,7 +43502,7 @@ class PaperFolderFollowedType(object):
 
 PaperFolderFollowedType_validator = bv.Struct(PaperFolderFollowedType)
 
-class PaperFolderLogInfo(object):
+class PaperFolderLogInfo(bb.Struct):
     """
     Paper folder's logged information.
 
@@ -41827,6 +43577,9 @@ class PaperFolderLogInfo(object):
         self._folder_name_value = None
         self._folder_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperFolderLogInfo(folder_id={!r}, folder_name={!r})'.format(
             self._folder_id_value,
@@ -41835,7 +43588,7 @@ class PaperFolderLogInfo(object):
 
 PaperFolderLogInfo_validator = bv.Struct(PaperFolderLogInfo)
 
-class PaperFolderTeamInviteDetails(object):
+class PaperFolderTeamInviteDetails(bb.Struct):
     """
     Shared Paper folder with member.
 
@@ -41879,6 +43632,9 @@ class PaperFolderTeamInviteDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderTeamInviteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperFolderTeamInviteDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -41886,7 +43642,7 @@ class PaperFolderTeamInviteDetails(object):
 
 PaperFolderTeamInviteDetails_validator = bv.Struct(PaperFolderTeamInviteDetails)
 
-class PaperFolderTeamInviteType(object):
+class PaperFolderTeamInviteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -41922,6 +43678,9 @@ class PaperFolderTeamInviteType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperFolderTeamInviteType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'PaperFolderTeamInviteType(description={!r})'.format(
@@ -41980,6 +43739,9 @@ class PaperMemberPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperMemberPolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'PaperMemberPolicy(%r, %r)' % (self._tag, self._value)
@@ -42072,12 +43834,72 @@ class ParticipantLogInfo(bb.Union):
             raise AttributeError("tag 'group' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ParticipantLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ParticipantLogInfo(%r, %r)' % (self._tag, self._value)
 
 ParticipantLogInfo_validator = bv.Union(ParticipantLogInfo)
 
-class PasswordChangeDetails(object):
+class PassPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    allow = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_allow(self):
+        """
+        Check if the union tag is ``allow``.
+
+        :rtype: bool
+        """
+        return self._tag == 'allow'
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PassPolicy, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'PassPolicy(%r, %r)' % (self._tag, self._value)
+
+PassPolicy_validator = bv.Union(PassPolicy)
+
+class PasswordChangeDetails(bb.Struct):
     """
     Changed password.
     """
@@ -42090,12 +43912,15 @@ class PasswordChangeDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PasswordChangeDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PasswordChangeDetails()'
 
 PasswordChangeDetails_validator = bv.Struct(PasswordChangeDetails)
 
-class PasswordChangeType(object):
+class PasswordChangeType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -42132,6 +43957,9 @@ class PasswordChangeType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PasswordChangeType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PasswordChangeType(description={!r})'.format(
             self._description_value,
@@ -42139,7 +43967,7 @@ class PasswordChangeType(object):
 
 PasswordChangeType_validator = bv.Struct(PasswordChangeType)
 
-class PasswordResetAllDetails(object):
+class PasswordResetAllDetails(bb.Struct):
     """
     Reset all team member passwords.
     """
@@ -42152,12 +43980,15 @@ class PasswordResetAllDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PasswordResetAllDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PasswordResetAllDetails()'
 
 PasswordResetAllDetails_validator = bv.Struct(PasswordResetAllDetails)
 
-class PasswordResetAllType(object):
+class PasswordResetAllType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -42194,6 +44025,9 @@ class PasswordResetAllType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PasswordResetAllType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PasswordResetAllType(description={!r})'.format(
             self._description_value,
@@ -42201,7 +44035,7 @@ class PasswordResetAllType(object):
 
 PasswordResetAllType_validator = bv.Struct(PasswordResetAllType)
 
-class PasswordResetDetails(object):
+class PasswordResetDetails(bb.Struct):
     """
     Reset password.
     """
@@ -42214,12 +44048,15 @@ class PasswordResetDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PasswordResetDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PasswordResetDetails()'
 
 PasswordResetDetails_validator = bv.Struct(PasswordResetDetails)
 
-class PasswordResetType(object):
+class PasswordResetType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -42256,6 +44093,9 @@ class PasswordResetType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PasswordResetType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PasswordResetType(description={!r})'.format(
             self._description_value,
@@ -42263,7 +44103,7 @@ class PasswordResetType(object):
 
 PasswordResetType_validator = bv.Struct(PasswordResetType)
 
-class PathLogInfo(object):
+class PathLogInfo(bb.Struct):
     """
     Path's details.
 
@@ -42344,6 +44184,9 @@ class PathLogInfo(object):
         self._namespace_relative_value = None
         self._namespace_relative_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PathLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PathLogInfo(namespace_relative={!r}, contextual={!r})'.format(
             self._namespace_relative_value,
@@ -42352,7 +44195,7 @@ class PathLogInfo(object):
 
 PathLogInfo_validator = bv.Struct(PathLogInfo)
 
-class PermanentDeleteChangePolicyDetails(object):
+class PermanentDeleteChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled ability of team members to permanently delete content.
 
@@ -42432,6 +44275,9 @@ class PermanentDeleteChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PermanentDeleteChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PermanentDeleteChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -42440,7 +44286,7 @@ class PermanentDeleteChangePolicyDetails(object):
 
 PermanentDeleteChangePolicyDetails_validator = bv.Struct(PermanentDeleteChangePolicyDetails)
 
-class PermanentDeleteChangePolicyType(object):
+class PermanentDeleteChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -42476,6 +44322,9 @@ class PermanentDeleteChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PermanentDeleteChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'PermanentDeleteChangePolicyType(description={!r})'.format(
@@ -42523,12 +44372,54 @@ class PlacementRestriction(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PlacementRestriction, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PlacementRestriction(%r, %r)' % (self._tag, self._value)
 
 PlacementRestriction_validator = bv.Union(PlacementRestriction)
 
-class RelocateAssetReferencesLogInfo(object):
+class QuickActionType(bb.Union):
+    """
+    Quick action type.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    delete_shared_link = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_delete_shared_link(self):
+        """
+        Check if the union tag is ``delete_shared_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'delete_shared_link'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(QuickActionType, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'QuickActionType(%r, %r)' % (self._tag, self._value)
+
+QuickActionType_validator = bv.Union(QuickActionType)
+
+class RelocateAssetReferencesLogInfo(bb.Struct):
     """
     Provides the indices of the source asset and the destination asset for a
     relocate action.
@@ -42604,6 +44495,9 @@ class RelocateAssetReferencesLogInfo(object):
         self._dest_asset_index_value = None
         self._dest_asset_index_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RelocateAssetReferencesLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'RelocateAssetReferencesLogInfo(src_asset_index={!r}, dest_asset_index={!r})'.format(
             self._src_asset_index_value,
@@ -42612,7 +44506,7 @@ class RelocateAssetReferencesLogInfo(object):
 
 RelocateAssetReferencesLogInfo_validator = bv.Struct(RelocateAssetReferencesLogInfo)
 
-class ResellerLogInfo(object):
+class ResellerLogInfo(bb.Struct):
     """
     Reseller information.
 
@@ -42687,6 +44581,9 @@ class ResellerLogInfo(object):
         self._reseller_email_value = None
         self._reseller_email_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ResellerLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ResellerLogInfo(reseller_name={!r}, reseller_email={!r})'.format(
             self._reseller_name_value,
@@ -42695,7 +44592,7 @@ class ResellerLogInfo(object):
 
 ResellerLogInfo_validator = bv.Struct(ResellerLogInfo)
 
-class ResellerSupportSessionEndDetails(object):
+class ResellerSupportSessionEndDetails(bb.Struct):
     """
     Ended reseller support session.
     """
@@ -42708,12 +44605,15 @@ class ResellerSupportSessionEndDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ResellerSupportSessionEndDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ResellerSupportSessionEndDetails()'
 
 ResellerSupportSessionEndDetails_validator = bv.Struct(ResellerSupportSessionEndDetails)
 
-class ResellerSupportSessionEndType(object):
+class ResellerSupportSessionEndType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -42750,6 +44650,9 @@ class ResellerSupportSessionEndType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ResellerSupportSessionEndType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ResellerSupportSessionEndType(description={!r})'.format(
             self._description_value,
@@ -42757,7 +44660,7 @@ class ResellerSupportSessionEndType(object):
 
 ResellerSupportSessionEndType_validator = bv.Struct(ResellerSupportSessionEndType)
 
-class ResellerSupportSessionStartDetails(object):
+class ResellerSupportSessionStartDetails(bb.Struct):
     """
     Started reseller support session.
     """
@@ -42770,12 +44673,15 @@ class ResellerSupportSessionStartDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ResellerSupportSessionStartDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ResellerSupportSessionStartDetails()'
 
 ResellerSupportSessionStartDetails_validator = bv.Struct(ResellerSupportSessionStartDetails)
 
-class ResellerSupportSessionStartType(object):
+class ResellerSupportSessionStartType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -42811,6 +44717,9 @@ class ResellerSupportSessionStartType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ResellerSupportSessionStartType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'ResellerSupportSessionStartType(description={!r})'.format(
@@ -42858,12 +44767,15 @@ class SecondaryMailsPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SecondaryMailsPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SecondaryMailsPolicy(%r, %r)' % (self._tag, self._value)
 
 SecondaryMailsPolicy_validator = bv.Union(SecondaryMailsPolicy)
 
-class SecondaryMailsPolicyChangedDetails(object):
+class SecondaryMailsPolicyChangedDetails(bb.Struct):
     """
     Secondary mails policy changed.
 
@@ -42938,6 +44850,9 @@ class SecondaryMailsPolicyChangedDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SecondaryMailsPolicyChangedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SecondaryMailsPolicyChangedDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -42946,7 +44861,7 @@ class SecondaryMailsPolicyChangedDetails(object):
 
 SecondaryMailsPolicyChangedDetails_validator = bv.Struct(SecondaryMailsPolicyChangedDetails)
 
-class SecondaryMailsPolicyChangedType(object):
+class SecondaryMailsPolicyChangedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -42983,6 +44898,9 @@ class SecondaryMailsPolicyChangedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SecondaryMailsPolicyChangedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SecondaryMailsPolicyChangedType(description={!r})'.format(
             self._description_value,
@@ -42990,7 +44908,7 @@ class SecondaryMailsPolicyChangedType(object):
 
 SecondaryMailsPolicyChangedType_validator = bv.Struct(SecondaryMailsPolicyChangedType)
 
-class SfAddGroupDetails(object):
+class SfAddGroupDetails(bb.Struct):
     """
     Added team to shared folder.
 
@@ -43131,6 +45049,9 @@ class SfAddGroupDetails(object):
         self._team_name_value = None
         self._team_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfAddGroupDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfAddGroupDetails(target_asset_index={!r}, original_folder_name={!r}, team_name={!r}, sharing_permission={!r})'.format(
             self._target_asset_index_value,
@@ -43141,7 +45062,7 @@ class SfAddGroupDetails(object):
 
 SfAddGroupDetails_validator = bv.Struct(SfAddGroupDetails)
 
-class SfAddGroupType(object):
+class SfAddGroupType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -43178,6 +45099,9 @@ class SfAddGroupType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfAddGroupType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfAddGroupType(description={!r})'.format(
             self._description_value,
@@ -43185,7 +45109,7 @@ class SfAddGroupType(object):
 
 SfAddGroupType_validator = bv.Struct(SfAddGroupType)
 
-class SfAllowNonMembersToViewSharedLinksDetails(object):
+class SfAllowNonMembersToViewSharedLinksDetails(bb.Struct):
     """
     Allowed non-collaborators to view links to files in shared folder.
 
@@ -43295,6 +45219,9 @@ class SfAllowNonMembersToViewSharedLinksDetails(object):
         self._shared_folder_type_value = None
         self._shared_folder_type_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfAllowNonMembersToViewSharedLinksDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfAllowNonMembersToViewSharedLinksDetails(target_asset_index={!r}, original_folder_name={!r}, shared_folder_type={!r})'.format(
             self._target_asset_index_value,
@@ -43304,7 +45231,7 @@ class SfAllowNonMembersToViewSharedLinksDetails(object):
 
 SfAllowNonMembersToViewSharedLinksDetails_validator = bv.Struct(SfAllowNonMembersToViewSharedLinksDetails)
 
-class SfAllowNonMembersToViewSharedLinksType(object):
+class SfAllowNonMembersToViewSharedLinksType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -43341,6 +45268,9 @@ class SfAllowNonMembersToViewSharedLinksType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfAllowNonMembersToViewSharedLinksType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfAllowNonMembersToViewSharedLinksType(description={!r})'.format(
             self._description_value,
@@ -43348,7 +45278,7 @@ class SfAllowNonMembersToViewSharedLinksType(object):
 
 SfAllowNonMembersToViewSharedLinksType_validator = bv.Struct(SfAllowNonMembersToViewSharedLinksType)
 
-class SfExternalInviteWarnDetails(object):
+class SfExternalInviteWarnDetails(bb.Struct):
     """
     Set team members to see warning before sharing folders outside team.
 
@@ -43494,6 +45424,9 @@ class SfExternalInviteWarnDetails(object):
         self._previous_sharing_permission_value = None
         self._previous_sharing_permission_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfExternalInviteWarnDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfExternalInviteWarnDetails(target_asset_index={!r}, original_folder_name={!r}, new_sharing_permission={!r}, previous_sharing_permission={!r})'.format(
             self._target_asset_index_value,
@@ -43504,7 +45437,7 @@ class SfExternalInviteWarnDetails(object):
 
 SfExternalInviteWarnDetails_validator = bv.Struct(SfExternalInviteWarnDetails)
 
-class SfExternalInviteWarnType(object):
+class SfExternalInviteWarnType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -43541,6 +45474,9 @@ class SfExternalInviteWarnType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfExternalInviteWarnType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfExternalInviteWarnType(description={!r})'.format(
             self._description_value,
@@ -43548,7 +45484,7 @@ class SfExternalInviteWarnType(object):
 
 SfExternalInviteWarnType_validator = bv.Struct(SfExternalInviteWarnType)
 
-class SfFbInviteChangeRoleDetails(object):
+class SfFbInviteChangeRoleDetails(bb.Struct):
     """
     Changed Facebook user's role in shared folder.
 
@@ -43694,6 +45630,9 @@ class SfFbInviteChangeRoleDetails(object):
         self._new_sharing_permission_value = None
         self._new_sharing_permission_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfFbInviteChangeRoleDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfFbInviteChangeRoleDetails(target_asset_index={!r}, original_folder_name={!r}, previous_sharing_permission={!r}, new_sharing_permission={!r})'.format(
             self._target_asset_index_value,
@@ -43704,7 +45643,7 @@ class SfFbInviteChangeRoleDetails(object):
 
 SfFbInviteChangeRoleDetails_validator = bv.Struct(SfFbInviteChangeRoleDetails)
 
-class SfFbInviteChangeRoleType(object):
+class SfFbInviteChangeRoleType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -43741,6 +45680,9 @@ class SfFbInviteChangeRoleType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfFbInviteChangeRoleType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfFbInviteChangeRoleType(description={!r})'.format(
             self._description_value,
@@ -43748,7 +45690,7 @@ class SfFbInviteChangeRoleType(object):
 
 SfFbInviteChangeRoleType_validator = bv.Struct(SfFbInviteChangeRoleType)
 
-class SfFbInviteDetails(object):
+class SfFbInviteDetails(bb.Struct):
     """
     Invited Facebook users to shared folder.
 
@@ -43858,6 +45800,9 @@ class SfFbInviteDetails(object):
         self._sharing_permission_value = None
         self._sharing_permission_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfFbInviteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfFbInviteDetails(target_asset_index={!r}, original_folder_name={!r}, sharing_permission={!r})'.format(
             self._target_asset_index_value,
@@ -43867,7 +45812,7 @@ class SfFbInviteDetails(object):
 
 SfFbInviteDetails_validator = bv.Struct(SfFbInviteDetails)
 
-class SfFbInviteType(object):
+class SfFbInviteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -43904,6 +45849,9 @@ class SfFbInviteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfFbInviteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfFbInviteType(description={!r})'.format(
             self._description_value,
@@ -43911,7 +45859,7 @@ class SfFbInviteType(object):
 
 SfFbInviteType_validator = bv.Struct(SfFbInviteType)
 
-class SfFbUninviteDetails(object):
+class SfFbUninviteDetails(bb.Struct):
     """
     Uninvited Facebook user from shared folder.
 
@@ -43986,6 +45934,9 @@ class SfFbUninviteDetails(object):
         self._original_folder_name_value = None
         self._original_folder_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfFbUninviteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfFbUninviteDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
             self._target_asset_index_value,
@@ -43994,7 +45945,7 @@ class SfFbUninviteDetails(object):
 
 SfFbUninviteDetails_validator = bv.Struct(SfFbUninviteDetails)
 
-class SfFbUninviteType(object):
+class SfFbUninviteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -44031,6 +45982,9 @@ class SfFbUninviteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfFbUninviteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfFbUninviteType(description={!r})'.format(
             self._description_value,
@@ -44038,7 +45992,7 @@ class SfFbUninviteType(object):
 
 SfFbUninviteType_validator = bv.Struct(SfFbUninviteType)
 
-class SfInviteGroupDetails(object):
+class SfInviteGroupDetails(bb.Struct):
     """
     Invited group to shared folder.
 
@@ -44082,6 +46036,9 @@ class SfInviteGroupDetails(object):
         self._target_asset_index_value = None
         self._target_asset_index_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfInviteGroupDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfInviteGroupDetails(target_asset_index={!r})'.format(
             self._target_asset_index_value,
@@ -44089,7 +46046,7 @@ class SfInviteGroupDetails(object):
 
 SfInviteGroupDetails_validator = bv.Struct(SfInviteGroupDetails)
 
-class SfInviteGroupType(object):
+class SfInviteGroupType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -44126,6 +46083,9 @@ class SfInviteGroupType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfInviteGroupType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfInviteGroupType(description={!r})'.format(
             self._description_value,
@@ -44133,7 +46093,7 @@ class SfInviteGroupType(object):
 
 SfInviteGroupType_validator = bv.Struct(SfInviteGroupType)
 
-class SfTeamGrantAccessDetails(object):
+class SfTeamGrantAccessDetails(bb.Struct):
     """
     Granted access to shared folder.
 
@@ -44208,6 +46168,9 @@ class SfTeamGrantAccessDetails(object):
         self._original_folder_name_value = None
         self._original_folder_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamGrantAccessDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamGrantAccessDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
             self._target_asset_index_value,
@@ -44216,7 +46179,7 @@ class SfTeamGrantAccessDetails(object):
 
 SfTeamGrantAccessDetails_validator = bv.Struct(SfTeamGrantAccessDetails)
 
-class SfTeamGrantAccessType(object):
+class SfTeamGrantAccessType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -44253,6 +46216,9 @@ class SfTeamGrantAccessType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamGrantAccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamGrantAccessType(description={!r})'.format(
             self._description_value,
@@ -44260,7 +46226,7 @@ class SfTeamGrantAccessType(object):
 
 SfTeamGrantAccessType_validator = bv.Struct(SfTeamGrantAccessType)
 
-class SfTeamInviteChangeRoleDetails(object):
+class SfTeamInviteChangeRoleDetails(bb.Struct):
     """
     Changed team member's role in shared folder.
 
@@ -44406,6 +46372,9 @@ class SfTeamInviteChangeRoleDetails(object):
         self._previous_sharing_permission_value = None
         self._previous_sharing_permission_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamInviteChangeRoleDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamInviteChangeRoleDetails(target_asset_index={!r}, original_folder_name={!r}, new_sharing_permission={!r}, previous_sharing_permission={!r})'.format(
             self._target_asset_index_value,
@@ -44416,7 +46385,7 @@ class SfTeamInviteChangeRoleDetails(object):
 
 SfTeamInviteChangeRoleDetails_validator = bv.Struct(SfTeamInviteChangeRoleDetails)
 
-class SfTeamInviteChangeRoleType(object):
+class SfTeamInviteChangeRoleType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -44453,6 +46422,9 @@ class SfTeamInviteChangeRoleType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamInviteChangeRoleType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamInviteChangeRoleType(description={!r})'.format(
             self._description_value,
@@ -44460,7 +46432,7 @@ class SfTeamInviteChangeRoleType(object):
 
 SfTeamInviteChangeRoleType_validator = bv.Struct(SfTeamInviteChangeRoleType)
 
-class SfTeamInviteDetails(object):
+class SfTeamInviteDetails(bb.Struct):
     """
     Invited team members to shared folder.
 
@@ -44570,6 +46542,9 @@ class SfTeamInviteDetails(object):
         self._sharing_permission_value = None
         self._sharing_permission_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamInviteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamInviteDetails(target_asset_index={!r}, original_folder_name={!r}, sharing_permission={!r})'.format(
             self._target_asset_index_value,
@@ -44579,7 +46554,7 @@ class SfTeamInviteDetails(object):
 
 SfTeamInviteDetails_validator = bv.Struct(SfTeamInviteDetails)
 
-class SfTeamInviteType(object):
+class SfTeamInviteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -44616,6 +46591,9 @@ class SfTeamInviteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamInviteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamInviteType(description={!r})'.format(
             self._description_value,
@@ -44623,7 +46601,7 @@ class SfTeamInviteType(object):
 
 SfTeamInviteType_validator = bv.Struct(SfTeamInviteType)
 
-class SfTeamJoinDetails(object):
+class SfTeamJoinDetails(bb.Struct):
     """
     Joined team member's shared folder.
 
@@ -44698,6 +46676,9 @@ class SfTeamJoinDetails(object):
         self._original_folder_name_value = None
         self._original_folder_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamJoinDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamJoinDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
             self._target_asset_index_value,
@@ -44706,7 +46687,7 @@ class SfTeamJoinDetails(object):
 
 SfTeamJoinDetails_validator = bv.Struct(SfTeamJoinDetails)
 
-class SfTeamJoinFromOobLinkDetails(object):
+class SfTeamJoinFromOobLinkDetails(bb.Struct):
     """
     Joined team member's shared folder from link.
 
@@ -44850,6 +46831,9 @@ class SfTeamJoinFromOobLinkDetails(object):
         self._sharing_permission_value = None
         self._sharing_permission_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamJoinFromOobLinkDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamJoinFromOobLinkDetails(target_asset_index={!r}, original_folder_name={!r}, token_key={!r}, sharing_permission={!r})'.format(
             self._target_asset_index_value,
@@ -44860,7 +46844,7 @@ class SfTeamJoinFromOobLinkDetails(object):
 
 SfTeamJoinFromOobLinkDetails_validator = bv.Struct(SfTeamJoinFromOobLinkDetails)
 
-class SfTeamJoinFromOobLinkType(object):
+class SfTeamJoinFromOobLinkType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -44896,6 +46880,9 @@ class SfTeamJoinFromOobLinkType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamJoinFromOobLinkType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SfTeamJoinFromOobLinkType(description={!r})'.format(
@@ -44904,7 +46891,7 @@ class SfTeamJoinFromOobLinkType(object):
 
 SfTeamJoinFromOobLinkType_validator = bv.Struct(SfTeamJoinFromOobLinkType)
 
-class SfTeamJoinType(object):
+class SfTeamJoinType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -44941,6 +46928,9 @@ class SfTeamJoinType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamJoinType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamJoinType(description={!r})'.format(
             self._description_value,
@@ -44948,7 +46938,7 @@ class SfTeamJoinType(object):
 
 SfTeamJoinType_validator = bv.Struct(SfTeamJoinType)
 
-class SfTeamUninviteDetails(object):
+class SfTeamUninviteDetails(bb.Struct):
     """
     Unshared folder with team member.
 
@@ -45023,6 +47013,9 @@ class SfTeamUninviteDetails(object):
         self._original_folder_name_value = None
         self._original_folder_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamUninviteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamUninviteDetails(target_asset_index={!r}, original_folder_name={!r})'.format(
             self._target_asset_index_value,
@@ -45031,7 +47024,7 @@ class SfTeamUninviteDetails(object):
 
 SfTeamUninviteDetails_validator = bv.Struct(SfTeamUninviteDetails)
 
-class SfTeamUninviteType(object):
+class SfTeamUninviteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -45068,6 +47061,9 @@ class SfTeamUninviteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SfTeamUninviteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SfTeamUninviteType(description={!r})'.format(
             self._description_value,
@@ -45075,7 +47071,7 @@ class SfTeamUninviteType(object):
 
 SfTeamUninviteType_validator = bv.Struct(SfTeamUninviteType)
 
-class SharedContentAddInviteesDetails(object):
+class SharedContentAddInviteesDetails(bb.Struct):
     """
     Invited user to Dropbox and added them to shared file/folder.
 
@@ -45109,7 +47105,7 @@ class SharedContentAddInviteesDetails(object):
         """
         Shared content access level.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._shared_content_access_level_present:
             return self._shared_content_access_level_value
@@ -45150,6 +47146,9 @@ class SharedContentAddInviteesDetails(object):
         self._invitees_value = None
         self._invitees_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentAddInviteesDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentAddInviteesDetails(shared_content_access_level={!r}, invitees={!r})'.format(
             self._shared_content_access_level_value,
@@ -45158,7 +47157,7 @@ class SharedContentAddInviteesDetails(object):
 
 SharedContentAddInviteesDetails_validator = bv.Struct(SharedContentAddInviteesDetails)
 
-class SharedContentAddInviteesType(object):
+class SharedContentAddInviteesType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -45195,6 +47194,9 @@ class SharedContentAddInviteesType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentAddInviteesType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentAddInviteesType(description={!r})'.format(
             self._description_value,
@@ -45202,7 +47204,7 @@ class SharedContentAddInviteesType(object):
 
 SharedContentAddInviteesType_validator = bv.Struct(SharedContentAddInviteesType)
 
-class SharedContentAddLinkExpiryDetails(object):
+class SharedContentAddLinkExpiryDetails(bb.Struct):
     """
     Added expiration date to link for shared file/folder.
 
@@ -45251,6 +47253,9 @@ class SharedContentAddLinkExpiryDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentAddLinkExpiryDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentAddLinkExpiryDetails(new_value={!r})'.format(
             self._new_value_value,
@@ -45258,7 +47263,7 @@ class SharedContentAddLinkExpiryDetails(object):
 
 SharedContentAddLinkExpiryDetails_validator = bv.Struct(SharedContentAddLinkExpiryDetails)
 
-class SharedContentAddLinkExpiryType(object):
+class SharedContentAddLinkExpiryType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -45295,6 +47300,9 @@ class SharedContentAddLinkExpiryType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentAddLinkExpiryType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentAddLinkExpiryType(description={!r})'.format(
             self._description_value,
@@ -45302,7 +47310,7 @@ class SharedContentAddLinkExpiryType(object):
 
 SharedContentAddLinkExpiryType_validator = bv.Struct(SharedContentAddLinkExpiryType)
 
-class SharedContentAddLinkPasswordDetails(object):
+class SharedContentAddLinkPasswordDetails(bb.Struct):
     """
     Added password to link for shared file/folder.
     """
@@ -45315,12 +47323,15 @@ class SharedContentAddLinkPasswordDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentAddLinkPasswordDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentAddLinkPasswordDetails()'
 
 SharedContentAddLinkPasswordDetails_validator = bv.Struct(SharedContentAddLinkPasswordDetails)
 
-class SharedContentAddLinkPasswordType(object):
+class SharedContentAddLinkPasswordType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -45357,6 +47368,9 @@ class SharedContentAddLinkPasswordType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentAddLinkPasswordType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentAddLinkPasswordType(description={!r})'.format(
             self._description_value,
@@ -45364,7 +47378,7 @@ class SharedContentAddLinkPasswordType(object):
 
 SharedContentAddLinkPasswordType_validator = bv.Struct(SharedContentAddLinkPasswordType)
 
-class SharedContentAddMemberDetails(object):
+class SharedContentAddMemberDetails(bb.Struct):
     """
     Added users and/or groups to shared file/folder.
 
@@ -45390,7 +47404,7 @@ class SharedContentAddMemberDetails(object):
         """
         Shared content access level.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._shared_content_access_level_present:
             return self._shared_content_access_level_value
@@ -45408,6 +47422,9 @@ class SharedContentAddMemberDetails(object):
         self._shared_content_access_level_value = None
         self._shared_content_access_level_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentAddMemberDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentAddMemberDetails(shared_content_access_level={!r})'.format(
             self._shared_content_access_level_value,
@@ -45415,7 +47432,7 @@ class SharedContentAddMemberDetails(object):
 
 SharedContentAddMemberDetails_validator = bv.Struct(SharedContentAddMemberDetails)
 
-class SharedContentAddMemberType(object):
+class SharedContentAddMemberType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -45452,6 +47469,9 @@ class SharedContentAddMemberType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentAddMemberType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentAddMemberType(description={!r})'.format(
             self._description_value,
@@ -45459,7 +47479,7 @@ class SharedContentAddMemberType(object):
 
 SharedContentAddMemberType_validator = bv.Struct(SharedContentAddMemberType)
 
-class SharedContentChangeDownloadsPolicyDetails(object):
+class SharedContentChangeDownloadsPolicyDetails(bb.Struct):
     """
     Changed whether members can download shared file/folder.
 
@@ -45538,6 +47558,9 @@ class SharedContentChangeDownloadsPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeDownloadsPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeDownloadsPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -45546,7 +47569,7 @@ class SharedContentChangeDownloadsPolicyDetails(object):
 
 SharedContentChangeDownloadsPolicyDetails_validator = bv.Struct(SharedContentChangeDownloadsPolicyDetails)
 
-class SharedContentChangeDownloadsPolicyType(object):
+class SharedContentChangeDownloadsPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -45583,6 +47606,9 @@ class SharedContentChangeDownloadsPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeDownloadsPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeDownloadsPolicyType(description={!r})'.format(
             self._description_value,
@@ -45590,7 +47616,7 @@ class SharedContentChangeDownloadsPolicyType(object):
 
 SharedContentChangeDownloadsPolicyType_validator = bv.Struct(SharedContentChangeDownloadsPolicyType)
 
-class SharedContentChangeInviteeRoleDetails(object):
+class SharedContentChangeInviteeRoleDetails(bb.Struct):
     """
     Changed access type of invitee to shared file/folder before invite was
     accepted.
@@ -45634,7 +47660,7 @@ class SharedContentChangeInviteeRoleDetails(object):
         """
         Previous access level. Might be missing due to historical data gap.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._previous_access_level_present:
             return self._previous_access_level_value
@@ -45660,7 +47686,7 @@ class SharedContentChangeInviteeRoleDetails(object):
         """
         New access level.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._new_access_level_present:
             return self._new_access_level_value
@@ -45701,6 +47727,9 @@ class SharedContentChangeInviteeRoleDetails(object):
         self._invitee_value = None
         self._invitee_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeInviteeRoleDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeInviteeRoleDetails(new_access_level={!r}, invitee={!r}, previous_access_level={!r})'.format(
             self._new_access_level_value,
@@ -45710,7 +47739,7 @@ class SharedContentChangeInviteeRoleDetails(object):
 
 SharedContentChangeInviteeRoleDetails_validator = bv.Struct(SharedContentChangeInviteeRoleDetails)
 
-class SharedContentChangeInviteeRoleType(object):
+class SharedContentChangeInviteeRoleType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -45747,6 +47776,9 @@ class SharedContentChangeInviteeRoleType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeInviteeRoleType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeInviteeRoleType(description={!r})'.format(
             self._description_value,
@@ -45754,7 +47786,7 @@ class SharedContentChangeInviteeRoleType(object):
 
 SharedContentChangeInviteeRoleType_validator = bv.Struct(SharedContentChangeInviteeRoleType)
 
-class SharedContentChangeLinkAudienceDetails(object):
+class SharedContentChangeLinkAudienceDetails(bb.Struct):
     """
     Changed link audience of shared file/folder.
 
@@ -45788,7 +47820,7 @@ class SharedContentChangeLinkAudienceDetails(object):
         """
         New link audience value.
 
-        :rtype: sharing.LinkAudience_validator
+        :rtype: sharing.LinkAudience
         """
         if self._new_value_present:
             return self._new_value_value
@@ -45811,7 +47843,7 @@ class SharedContentChangeLinkAudienceDetails(object):
         """
         Previous link audience value.
 
-        :rtype: sharing.LinkAudience_validator
+        :rtype: sharing.LinkAudience
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -45832,6 +47864,9 @@ class SharedContentChangeLinkAudienceDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeLinkAudienceDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeLinkAudienceDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -45840,7 +47875,7 @@ class SharedContentChangeLinkAudienceDetails(object):
 
 SharedContentChangeLinkAudienceDetails_validator = bv.Struct(SharedContentChangeLinkAudienceDetails)
 
-class SharedContentChangeLinkAudienceType(object):
+class SharedContentChangeLinkAudienceType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -45877,6 +47912,9 @@ class SharedContentChangeLinkAudienceType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeLinkAudienceType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeLinkAudienceType(description={!r})'.format(
             self._description_value,
@@ -45884,7 +47922,7 @@ class SharedContentChangeLinkAudienceType(object):
 
 SharedContentChangeLinkAudienceType_validator = bv.Struct(SharedContentChangeLinkAudienceType)
 
-class SharedContentChangeLinkExpiryDetails(object):
+class SharedContentChangeLinkExpiryDetails(bb.Struct):
     """
     Changed link expiration of shared file/folder.
 
@@ -45969,6 +48007,9 @@ class SharedContentChangeLinkExpiryDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeLinkExpiryDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeLinkExpiryDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -45977,7 +48018,7 @@ class SharedContentChangeLinkExpiryDetails(object):
 
 SharedContentChangeLinkExpiryDetails_validator = bv.Struct(SharedContentChangeLinkExpiryDetails)
 
-class SharedContentChangeLinkExpiryType(object):
+class SharedContentChangeLinkExpiryType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46014,6 +48055,9 @@ class SharedContentChangeLinkExpiryType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeLinkExpiryType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeLinkExpiryType(description={!r})'.format(
             self._description_value,
@@ -46021,7 +48065,7 @@ class SharedContentChangeLinkExpiryType(object):
 
 SharedContentChangeLinkExpiryType_validator = bv.Struct(SharedContentChangeLinkExpiryType)
 
-class SharedContentChangeLinkPasswordDetails(object):
+class SharedContentChangeLinkPasswordDetails(bb.Struct):
     """
     Changed link password of shared file/folder.
     """
@@ -46034,12 +48078,15 @@ class SharedContentChangeLinkPasswordDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeLinkPasswordDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeLinkPasswordDetails()'
 
 SharedContentChangeLinkPasswordDetails_validator = bv.Struct(SharedContentChangeLinkPasswordDetails)
 
-class SharedContentChangeLinkPasswordType(object):
+class SharedContentChangeLinkPasswordType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46076,6 +48123,9 @@ class SharedContentChangeLinkPasswordType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeLinkPasswordType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeLinkPasswordType(description={!r})'.format(
             self._description_value,
@@ -46083,7 +48133,7 @@ class SharedContentChangeLinkPasswordType(object):
 
 SharedContentChangeLinkPasswordType_validator = bv.Struct(SharedContentChangeLinkPasswordType)
 
-class SharedContentChangeMemberRoleDetails(object):
+class SharedContentChangeMemberRoleDetails(bb.Struct):
     """
     Changed access type of shared file/folder member.
 
@@ -46118,7 +48168,7 @@ class SharedContentChangeMemberRoleDetails(object):
         """
         Previous access level. Might be missing due to historical data gap.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._previous_access_level_present:
             return self._previous_access_level_value
@@ -46144,7 +48194,7 @@ class SharedContentChangeMemberRoleDetails(object):
         """
         New access level.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._new_access_level_present:
             return self._new_access_level_value
@@ -46162,6 +48212,9 @@ class SharedContentChangeMemberRoleDetails(object):
         self._new_access_level_value = None
         self._new_access_level_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeMemberRoleDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeMemberRoleDetails(new_access_level={!r}, previous_access_level={!r})'.format(
             self._new_access_level_value,
@@ -46170,7 +48223,7 @@ class SharedContentChangeMemberRoleDetails(object):
 
 SharedContentChangeMemberRoleDetails_validator = bv.Struct(SharedContentChangeMemberRoleDetails)
 
-class SharedContentChangeMemberRoleType(object):
+class SharedContentChangeMemberRoleType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46207,6 +48260,9 @@ class SharedContentChangeMemberRoleType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeMemberRoleType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeMemberRoleType(description={!r})'.format(
             self._description_value,
@@ -46214,7 +48270,7 @@ class SharedContentChangeMemberRoleType(object):
 
 SharedContentChangeMemberRoleType_validator = bv.Struct(SharedContentChangeMemberRoleType)
 
-class SharedContentChangeViewerInfoPolicyDetails(object):
+class SharedContentChangeViewerInfoPolicyDetails(bb.Struct):
     """
     Changed whether members can see who viewed shared file/folder.
 
@@ -46249,7 +48305,7 @@ class SharedContentChangeViewerInfoPolicyDetails(object):
         """
         New viewer info policy.
 
-        :rtype: sharing.ViewerInfoPolicy_validator
+        :rtype: sharing.ViewerInfoPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -46272,7 +48328,7 @@ class SharedContentChangeViewerInfoPolicyDetails(object):
         """
         Previous view info policy. Might be missing due to historical data gap.
 
-        :rtype: sharing.ViewerInfoPolicy_validator
+        :rtype: sharing.ViewerInfoPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -46293,6 +48349,9 @@ class SharedContentChangeViewerInfoPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeViewerInfoPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeViewerInfoPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -46301,7 +48360,7 @@ class SharedContentChangeViewerInfoPolicyDetails(object):
 
 SharedContentChangeViewerInfoPolicyDetails_validator = bv.Struct(SharedContentChangeViewerInfoPolicyDetails)
 
-class SharedContentChangeViewerInfoPolicyType(object):
+class SharedContentChangeViewerInfoPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46338,6 +48397,9 @@ class SharedContentChangeViewerInfoPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentChangeViewerInfoPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentChangeViewerInfoPolicyType(description={!r})'.format(
             self._description_value,
@@ -46345,7 +48407,7 @@ class SharedContentChangeViewerInfoPolicyType(object):
 
 SharedContentChangeViewerInfoPolicyType_validator = bv.Struct(SharedContentChangeViewerInfoPolicyType)
 
-class SharedContentClaimInvitationDetails(object):
+class SharedContentClaimInvitationDetails(bb.Struct):
     """
     Acquired membership of shared file/folder by accepting invite.
 
@@ -46392,6 +48454,9 @@ class SharedContentClaimInvitationDetails(object):
         self._shared_content_link_value = None
         self._shared_content_link_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentClaimInvitationDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentClaimInvitationDetails(shared_content_link={!r})'.format(
             self._shared_content_link_value,
@@ -46399,7 +48464,7 @@ class SharedContentClaimInvitationDetails(object):
 
 SharedContentClaimInvitationDetails_validator = bv.Struct(SharedContentClaimInvitationDetails)
 
-class SharedContentClaimInvitationType(object):
+class SharedContentClaimInvitationType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46436,6 +48501,9 @@ class SharedContentClaimInvitationType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentClaimInvitationType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentClaimInvitationType(description={!r})'.format(
             self._description_value,
@@ -46443,7 +48511,7 @@ class SharedContentClaimInvitationType(object):
 
 SharedContentClaimInvitationType_validator = bv.Struct(SharedContentClaimInvitationType)
 
-class SharedContentCopyDetails(object):
+class SharedContentCopyDetails(bb.Struct):
     """
     Copied shared file/folder to own Dropbox.
 
@@ -46542,7 +48610,7 @@ class SharedContentCopyDetails(object):
         """
         Shared content access level.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._shared_content_access_level_present:
             return self._shared_content_access_level_value
@@ -46583,6 +48651,9 @@ class SharedContentCopyDetails(object):
         self._destination_path_value = None
         self._destination_path_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentCopyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentCopyDetails(shared_content_link={!r}, shared_content_access_level={!r}, destination_path={!r}, shared_content_owner={!r})'.format(
             self._shared_content_link_value,
@@ -46593,7 +48664,7 @@ class SharedContentCopyDetails(object):
 
 SharedContentCopyDetails_validator = bv.Struct(SharedContentCopyDetails)
 
-class SharedContentCopyType(object):
+class SharedContentCopyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46630,6 +48701,9 @@ class SharedContentCopyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentCopyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentCopyType(description={!r})'.format(
             self._description_value,
@@ -46637,7 +48711,7 @@ class SharedContentCopyType(object):
 
 SharedContentCopyType_validator = bv.Struct(SharedContentCopyType)
 
-class SharedContentDownloadDetails(object):
+class SharedContentDownloadDetails(bb.Struct):
     """
     Downloaded shared file/folder.
 
@@ -46728,7 +48802,7 @@ class SharedContentDownloadDetails(object):
         """
         Shared content access level.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._shared_content_access_level_present:
             return self._shared_content_access_level_value
@@ -46746,6 +48820,9 @@ class SharedContentDownloadDetails(object):
         self._shared_content_access_level_value = None
         self._shared_content_access_level_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentDownloadDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentDownloadDetails(shared_content_link={!r}, shared_content_access_level={!r}, shared_content_owner={!r})'.format(
             self._shared_content_link_value,
@@ -46755,7 +48832,7 @@ class SharedContentDownloadDetails(object):
 
 SharedContentDownloadDetails_validator = bv.Struct(SharedContentDownloadDetails)
 
-class SharedContentDownloadType(object):
+class SharedContentDownloadType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46792,6 +48869,9 @@ class SharedContentDownloadType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentDownloadType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentDownloadType(description={!r})'.format(
             self._description_value,
@@ -46799,7 +48879,7 @@ class SharedContentDownloadType(object):
 
 SharedContentDownloadType_validator = bv.Struct(SharedContentDownloadType)
 
-class SharedContentRelinquishMembershipDetails(object):
+class SharedContentRelinquishMembershipDetails(bb.Struct):
     """
     Left shared file/folder.
     """
@@ -46812,12 +48892,15 @@ class SharedContentRelinquishMembershipDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRelinquishMembershipDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRelinquishMembershipDetails()'
 
 SharedContentRelinquishMembershipDetails_validator = bv.Struct(SharedContentRelinquishMembershipDetails)
 
-class SharedContentRelinquishMembershipType(object):
+class SharedContentRelinquishMembershipType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46854,6 +48937,9 @@ class SharedContentRelinquishMembershipType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRelinquishMembershipType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRelinquishMembershipType(description={!r})'.format(
             self._description_value,
@@ -46861,7 +48947,7 @@ class SharedContentRelinquishMembershipType(object):
 
 SharedContentRelinquishMembershipType_validator = bv.Struct(SharedContentRelinquishMembershipType)
 
-class SharedContentRemoveInviteesDetails(object):
+class SharedContentRemoveInviteesDetails(bb.Struct):
     """
     Removed invitee from shared file/folder before invite was accepted.
 
@@ -46905,6 +48991,9 @@ class SharedContentRemoveInviteesDetails(object):
         self._invitees_value = None
         self._invitees_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRemoveInviteesDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRemoveInviteesDetails(invitees={!r})'.format(
             self._invitees_value,
@@ -46912,7 +49001,7 @@ class SharedContentRemoveInviteesDetails(object):
 
 SharedContentRemoveInviteesDetails_validator = bv.Struct(SharedContentRemoveInviteesDetails)
 
-class SharedContentRemoveInviteesType(object):
+class SharedContentRemoveInviteesType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -46949,6 +49038,9 @@ class SharedContentRemoveInviteesType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRemoveInviteesType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRemoveInviteesType(description={!r})'.format(
             self._description_value,
@@ -46956,7 +49048,7 @@ class SharedContentRemoveInviteesType(object):
 
 SharedContentRemoveInviteesType_validator = bv.Struct(SharedContentRemoveInviteesType)
 
-class SharedContentRemoveLinkExpiryDetails(object):
+class SharedContentRemoveLinkExpiryDetails(bb.Struct):
     """
     Removed link expiration date of shared file/folder.
 
@@ -47005,6 +49097,9 @@ class SharedContentRemoveLinkExpiryDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRemoveLinkExpiryDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRemoveLinkExpiryDetails(previous_value={!r})'.format(
             self._previous_value_value,
@@ -47012,7 +49107,7 @@ class SharedContentRemoveLinkExpiryDetails(object):
 
 SharedContentRemoveLinkExpiryDetails_validator = bv.Struct(SharedContentRemoveLinkExpiryDetails)
 
-class SharedContentRemoveLinkExpiryType(object):
+class SharedContentRemoveLinkExpiryType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47049,6 +49144,9 @@ class SharedContentRemoveLinkExpiryType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRemoveLinkExpiryType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRemoveLinkExpiryType(description={!r})'.format(
             self._description_value,
@@ -47056,7 +49154,7 @@ class SharedContentRemoveLinkExpiryType(object):
 
 SharedContentRemoveLinkExpiryType_validator = bv.Struct(SharedContentRemoveLinkExpiryType)
 
-class SharedContentRemoveLinkPasswordDetails(object):
+class SharedContentRemoveLinkPasswordDetails(bb.Struct):
     """
     Removed link password of shared file/folder.
     """
@@ -47069,12 +49167,15 @@ class SharedContentRemoveLinkPasswordDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRemoveLinkPasswordDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRemoveLinkPasswordDetails()'
 
 SharedContentRemoveLinkPasswordDetails_validator = bv.Struct(SharedContentRemoveLinkPasswordDetails)
 
-class SharedContentRemoveLinkPasswordType(object):
+class SharedContentRemoveLinkPasswordType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47111,6 +49212,9 @@ class SharedContentRemoveLinkPasswordType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRemoveLinkPasswordType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRemoveLinkPasswordType(description={!r})'.format(
             self._description_value,
@@ -47118,7 +49222,7 @@ class SharedContentRemoveLinkPasswordType(object):
 
 SharedContentRemoveLinkPasswordType_validator = bv.Struct(SharedContentRemoveLinkPasswordType)
 
-class SharedContentRemoveMemberDetails(object):
+class SharedContentRemoveMemberDetails(bb.Struct):
     """
     Removed user/group from shared file/folder.
 
@@ -47144,7 +49248,7 @@ class SharedContentRemoveMemberDetails(object):
         """
         Shared content access level.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._shared_content_access_level_present:
             return self._shared_content_access_level_value
@@ -47165,6 +49269,9 @@ class SharedContentRemoveMemberDetails(object):
         self._shared_content_access_level_value = None
         self._shared_content_access_level_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRemoveMemberDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRemoveMemberDetails(shared_content_access_level={!r})'.format(
             self._shared_content_access_level_value,
@@ -47172,7 +49279,7 @@ class SharedContentRemoveMemberDetails(object):
 
 SharedContentRemoveMemberDetails_validator = bv.Struct(SharedContentRemoveMemberDetails)
 
-class SharedContentRemoveMemberType(object):
+class SharedContentRemoveMemberType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47209,6 +49316,9 @@ class SharedContentRemoveMemberType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRemoveMemberType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRemoveMemberType(description={!r})'.format(
             self._description_value,
@@ -47216,7 +49326,7 @@ class SharedContentRemoveMemberType(object):
 
 SharedContentRemoveMemberType_validator = bv.Struct(SharedContentRemoveMemberType)
 
-class SharedContentRequestAccessDetails(object):
+class SharedContentRequestAccessDetails(bb.Struct):
     """
     Requested access to shared file/folder.
 
@@ -47263,6 +49373,9 @@ class SharedContentRequestAccessDetails(object):
         self._shared_content_link_value = None
         self._shared_content_link_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRequestAccessDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRequestAccessDetails(shared_content_link={!r})'.format(
             self._shared_content_link_value,
@@ -47270,7 +49383,7 @@ class SharedContentRequestAccessDetails(object):
 
 SharedContentRequestAccessDetails_validator = bv.Struct(SharedContentRequestAccessDetails)
 
-class SharedContentRequestAccessType(object):
+class SharedContentRequestAccessType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47307,6 +49420,9 @@ class SharedContentRequestAccessType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentRequestAccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentRequestAccessType(description={!r})'.format(
             self._description_value,
@@ -47314,7 +49430,7 @@ class SharedContentRequestAccessType(object):
 
 SharedContentRequestAccessType_validator = bv.Struct(SharedContentRequestAccessType)
 
-class SharedContentUnshareDetails(object):
+class SharedContentUnshareDetails(bb.Struct):
     """
     Unshared file/folder by clearing membership and turning off link.
     """
@@ -47327,12 +49443,15 @@ class SharedContentUnshareDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentUnshareDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentUnshareDetails()'
 
 SharedContentUnshareDetails_validator = bv.Struct(SharedContentUnshareDetails)
 
-class SharedContentUnshareType(object):
+class SharedContentUnshareType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47369,6 +49488,9 @@ class SharedContentUnshareType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentUnshareType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentUnshareType(description={!r})'.format(
             self._description_value,
@@ -47376,7 +49498,7 @@ class SharedContentUnshareType(object):
 
 SharedContentUnshareType_validator = bv.Struct(SharedContentUnshareType)
 
-class SharedContentViewDetails(object):
+class SharedContentViewDetails(bb.Struct):
     """
     Previewed shared file/folder.
 
@@ -47467,7 +49589,7 @@ class SharedContentViewDetails(object):
         """
         Shared content access level.
 
-        :rtype: sharing.AccessLevel_validator
+        :rtype: sharing.AccessLevel
         """
         if self._shared_content_access_level_present:
             return self._shared_content_access_level_value
@@ -47485,6 +49607,9 @@ class SharedContentViewDetails(object):
         self._shared_content_access_level_value = None
         self._shared_content_access_level_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentViewDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentViewDetails(shared_content_link={!r}, shared_content_access_level={!r}, shared_content_owner={!r})'.format(
             self._shared_content_link_value,
@@ -47494,7 +49619,7 @@ class SharedContentViewDetails(object):
 
 SharedContentViewDetails_validator = bv.Struct(SharedContentViewDetails)
 
-class SharedContentViewType(object):
+class SharedContentViewType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47531,6 +49656,9 @@ class SharedContentViewType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedContentViewType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedContentViewType(description={!r})'.format(
             self._description_value,
@@ -47538,7 +49666,7 @@ class SharedContentViewType(object):
 
 SharedContentViewType_validator = bv.Struct(SharedContentViewType)
 
-class SharedFolderChangeLinkPolicyDetails(object):
+class SharedFolderChangeLinkPolicyDetails(bb.Struct):
     """
     Changed who can access shared folder via link.
 
@@ -47573,7 +49701,7 @@ class SharedFolderChangeLinkPolicyDetails(object):
         """
         New shared folder link policy.
 
-        :rtype: sharing.SharedLinkPolicy_validator
+        :rtype: sharing.SharedLinkPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -47597,7 +49725,7 @@ class SharedFolderChangeLinkPolicyDetails(object):
         Previous shared folder link policy. Might be missing due to historical
         data gap.
 
-        :rtype: sharing.SharedLinkPolicy_validator
+        :rtype: sharing.SharedLinkPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -47618,6 +49746,9 @@ class SharedFolderChangeLinkPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderChangeLinkPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderChangeLinkPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -47626,7 +49757,7 @@ class SharedFolderChangeLinkPolicyDetails(object):
 
 SharedFolderChangeLinkPolicyDetails_validator = bv.Struct(SharedFolderChangeLinkPolicyDetails)
 
-class SharedFolderChangeLinkPolicyType(object):
+class SharedFolderChangeLinkPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47663,6 +49794,9 @@ class SharedFolderChangeLinkPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderChangeLinkPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderChangeLinkPolicyType(description={!r})'.format(
             self._description_value,
@@ -47670,7 +49804,7 @@ class SharedFolderChangeLinkPolicyType(object):
 
 SharedFolderChangeLinkPolicyType_validator = bv.Struct(SharedFolderChangeLinkPolicyType)
 
-class SharedFolderChangeMembersInheritancePolicyDetails(object):
+class SharedFolderChangeMembersInheritancePolicyDetails(bb.Struct):
     """
     Changed whether shared folder inherits members from parent folder.
 
@@ -47750,6 +49884,9 @@ class SharedFolderChangeMembersInheritancePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderChangeMembersInheritancePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderChangeMembersInheritancePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -47758,7 +49895,7 @@ class SharedFolderChangeMembersInheritancePolicyDetails(object):
 
 SharedFolderChangeMembersInheritancePolicyDetails_validator = bv.Struct(SharedFolderChangeMembersInheritancePolicyDetails)
 
-class SharedFolderChangeMembersInheritancePolicyType(object):
+class SharedFolderChangeMembersInheritancePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47795,6 +49932,9 @@ class SharedFolderChangeMembersInheritancePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderChangeMembersInheritancePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderChangeMembersInheritancePolicyType(description={!r})'.format(
             self._description_value,
@@ -47802,7 +49942,7 @@ class SharedFolderChangeMembersInheritancePolicyType(object):
 
 SharedFolderChangeMembersInheritancePolicyType_validator = bv.Struct(SharedFolderChangeMembersInheritancePolicyType)
 
-class SharedFolderChangeMembersManagementPolicyDetails(object):
+class SharedFolderChangeMembersManagementPolicyDetails(bb.Struct):
     """
     Changed who can add/remove members of shared folder.
 
@@ -47837,7 +49977,7 @@ class SharedFolderChangeMembersManagementPolicyDetails(object):
         """
         New members management policy.
 
-        :rtype: sharing.AclUpdatePolicy_validator
+        :rtype: sharing.AclUpdatePolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -47861,7 +50001,7 @@ class SharedFolderChangeMembersManagementPolicyDetails(object):
         Previous members management policy. Might be missing due to historical
         data gap.
 
-        :rtype: sharing.AclUpdatePolicy_validator
+        :rtype: sharing.AclUpdatePolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -47882,6 +50022,9 @@ class SharedFolderChangeMembersManagementPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderChangeMembersManagementPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderChangeMembersManagementPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -47890,7 +50033,7 @@ class SharedFolderChangeMembersManagementPolicyDetails(object):
 
 SharedFolderChangeMembersManagementPolicyDetails_validator = bv.Struct(SharedFolderChangeMembersManagementPolicyDetails)
 
-class SharedFolderChangeMembersManagementPolicyType(object):
+class SharedFolderChangeMembersManagementPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -47927,6 +50070,9 @@ class SharedFolderChangeMembersManagementPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderChangeMembersManagementPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderChangeMembersManagementPolicyType(description={!r})'.format(
             self._description_value,
@@ -47934,7 +50080,7 @@ class SharedFolderChangeMembersManagementPolicyType(object):
 
 SharedFolderChangeMembersManagementPolicyType_validator = bv.Struct(SharedFolderChangeMembersManagementPolicyType)
 
-class SharedFolderChangeMembersPolicyDetails(object):
+class SharedFolderChangeMembersPolicyDetails(bb.Struct):
     """
     Changed who can become member of shared folder.
 
@@ -47969,7 +50115,7 @@ class SharedFolderChangeMembersPolicyDetails(object):
         """
         New external invite policy.
 
-        :rtype: sharing.MemberPolicy_validator
+        :rtype: sharing.MemberPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -47993,7 +50139,7 @@ class SharedFolderChangeMembersPolicyDetails(object):
         Previous external invite policy. Might be missing due to historical data
         gap.
 
-        :rtype: sharing.MemberPolicy_validator
+        :rtype: sharing.MemberPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -48014,6 +50160,9 @@ class SharedFolderChangeMembersPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderChangeMembersPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderChangeMembersPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -48022,7 +50171,7 @@ class SharedFolderChangeMembersPolicyDetails(object):
 
 SharedFolderChangeMembersPolicyDetails_validator = bv.Struct(SharedFolderChangeMembersPolicyDetails)
 
-class SharedFolderChangeMembersPolicyType(object):
+class SharedFolderChangeMembersPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48059,6 +50208,9 @@ class SharedFolderChangeMembersPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderChangeMembersPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderChangeMembersPolicyType(description={!r})'.format(
             self._description_value,
@@ -48066,7 +50218,7 @@ class SharedFolderChangeMembersPolicyType(object):
 
 SharedFolderChangeMembersPolicyType_validator = bv.Struct(SharedFolderChangeMembersPolicyType)
 
-class SharedFolderCreateDetails(object):
+class SharedFolderCreateDetails(bb.Struct):
     """
     Created shared folder.
 
@@ -48114,6 +50266,9 @@ class SharedFolderCreateDetails(object):
         self._target_ns_id_value = None
         self._target_ns_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderCreateDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderCreateDetails(target_ns_id={!r})'.format(
             self._target_ns_id_value,
@@ -48121,7 +50276,7 @@ class SharedFolderCreateDetails(object):
 
 SharedFolderCreateDetails_validator = bv.Struct(SharedFolderCreateDetails)
 
-class SharedFolderCreateType(object):
+class SharedFolderCreateType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48158,6 +50313,9 @@ class SharedFolderCreateType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderCreateType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderCreateType(description={!r})'.format(
             self._description_value,
@@ -48165,7 +50323,7 @@ class SharedFolderCreateType(object):
 
 SharedFolderCreateType_validator = bv.Struct(SharedFolderCreateType)
 
-class SharedFolderDeclineInvitationDetails(object):
+class SharedFolderDeclineInvitationDetails(bb.Struct):
     """
     Declined team member's invite to shared folder.
     """
@@ -48178,12 +50336,15 @@ class SharedFolderDeclineInvitationDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderDeclineInvitationDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderDeclineInvitationDetails()'
 
 SharedFolderDeclineInvitationDetails_validator = bv.Struct(SharedFolderDeclineInvitationDetails)
 
-class SharedFolderDeclineInvitationType(object):
+class SharedFolderDeclineInvitationType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48219,6 +50380,9 @@ class SharedFolderDeclineInvitationType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderDeclineInvitationType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SharedFolderDeclineInvitationType(description={!r})'.format(
@@ -48268,12 +50432,15 @@ class SharedFolderMembersInheritancePolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderMembersInheritancePolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderMembersInheritancePolicy(%r, %r)' % (self._tag, self._value)
 
 SharedFolderMembersInheritancePolicy_validator = bv.Union(SharedFolderMembersInheritancePolicy)
 
-class SharedFolderMountDetails(object):
+class SharedFolderMountDetails(bb.Struct):
     """
     Added shared folder to own Dropbox.
     """
@@ -48286,12 +50453,15 @@ class SharedFolderMountDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderMountDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderMountDetails()'
 
 SharedFolderMountDetails_validator = bv.Struct(SharedFolderMountDetails)
 
-class SharedFolderMountType(object):
+class SharedFolderMountType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48328,6 +50498,9 @@ class SharedFolderMountType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderMountType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderMountType(description={!r})'.format(
             self._description_value,
@@ -48335,7 +50508,7 @@ class SharedFolderMountType(object):
 
 SharedFolderMountType_validator = bv.Struct(SharedFolderMountType)
 
-class SharedFolderNestDetails(object):
+class SharedFolderNestDetails(bb.Struct):
     """
     Changed parent of shared folder.
 
@@ -48343,6 +50516,10 @@ class SharedFolderNestDetails(object):
         due to historical data gap.
     :ivar new_parent_ns_id: New parent namespace ID. Might be missing due to
         historical data gap.
+    :ivar previous_ns_path: Previous namespace path. Might be missing due to
+        historical data gap.
+    :ivar new_ns_path: New namespace path. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -48350,21 +50527,35 @@ class SharedFolderNestDetails(object):
         '_previous_parent_ns_id_present',
         '_new_parent_ns_id_value',
         '_new_parent_ns_id_present',
+        '_previous_ns_path_value',
+        '_previous_ns_path_present',
+        '_new_ns_path_value',
+        '_new_ns_path_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  previous_parent_ns_id=None,
-                 new_parent_ns_id=None):
+                 new_parent_ns_id=None,
+                 previous_ns_path=None,
+                 new_ns_path=None):
         self._previous_parent_ns_id_value = None
         self._previous_parent_ns_id_present = False
         self._new_parent_ns_id_value = None
         self._new_parent_ns_id_present = False
+        self._previous_ns_path_value = None
+        self._previous_ns_path_present = False
+        self._new_ns_path_value = None
+        self._new_ns_path_present = False
         if previous_parent_ns_id is not None:
             self.previous_parent_ns_id = previous_parent_ns_id
         if new_parent_ns_id is not None:
             self.new_parent_ns_id = new_parent_ns_id
+        if previous_ns_path is not None:
+            self.previous_ns_path = previous_ns_path
+        if new_ns_path is not None:
+            self.new_ns_path = new_ns_path
 
     @property
     def previous_parent_ns_id(self):
@@ -48419,15 +50610,72 @@ class SharedFolderNestDetails(object):
         self._new_parent_ns_id_value = None
         self._new_parent_ns_id_present = False
 
+    @property
+    def previous_ns_path(self):
+        """
+        Previous namespace path. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._previous_ns_path_present:
+            return self._previous_ns_path_value
+        else:
+            return None
+
+    @previous_ns_path.setter
+    def previous_ns_path(self, val):
+        if val is None:
+            del self.previous_ns_path
+            return
+        val = self._previous_ns_path_validator.validate(val)
+        self._previous_ns_path_value = val
+        self._previous_ns_path_present = True
+
+    @previous_ns_path.deleter
+    def previous_ns_path(self):
+        self._previous_ns_path_value = None
+        self._previous_ns_path_present = False
+
+    @property
+    def new_ns_path(self):
+        """
+        New namespace path. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._new_ns_path_present:
+            return self._new_ns_path_value
+        else:
+            return None
+
+    @new_ns_path.setter
+    def new_ns_path(self, val):
+        if val is None:
+            del self.new_ns_path
+            return
+        val = self._new_ns_path_validator.validate(val)
+        self._new_ns_path_value = val
+        self._new_ns_path_present = True
+
+    @new_ns_path.deleter
+    def new_ns_path(self):
+        self._new_ns_path_value = None
+        self._new_ns_path_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderNestDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
-        return 'SharedFolderNestDetails(previous_parent_ns_id={!r}, new_parent_ns_id={!r})'.format(
+        return 'SharedFolderNestDetails(previous_parent_ns_id={!r}, new_parent_ns_id={!r}, previous_ns_path={!r}, new_ns_path={!r})'.format(
             self._previous_parent_ns_id_value,
             self._new_parent_ns_id_value,
+            self._previous_ns_path_value,
+            self._new_ns_path_value,
         )
 
 SharedFolderNestDetails_validator = bv.Struct(SharedFolderNestDetails)
 
-class SharedFolderNestType(object):
+class SharedFolderNestType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48464,6 +50712,9 @@ class SharedFolderNestType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderNestType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderNestType(description={!r})'.format(
             self._description_value,
@@ -48471,7 +50722,7 @@ class SharedFolderNestType(object):
 
 SharedFolderNestType_validator = bv.Struct(SharedFolderNestType)
 
-class SharedFolderTransferOwnershipDetails(object):
+class SharedFolderTransferOwnershipDetails(bb.Struct):
     """
     Transferred ownership of shared folder to another member.
 
@@ -48550,6 +50801,9 @@ class SharedFolderTransferOwnershipDetails(object):
         self._new_owner_email_value = None
         self._new_owner_email_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderTransferOwnershipDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderTransferOwnershipDetails(new_owner_email={!r}, previous_owner_email={!r})'.format(
             self._new_owner_email_value,
@@ -48558,7 +50812,7 @@ class SharedFolderTransferOwnershipDetails(object):
 
 SharedFolderTransferOwnershipDetails_validator = bv.Struct(SharedFolderTransferOwnershipDetails)
 
-class SharedFolderTransferOwnershipType(object):
+class SharedFolderTransferOwnershipType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48595,6 +50849,9 @@ class SharedFolderTransferOwnershipType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderTransferOwnershipType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderTransferOwnershipType(description={!r})'.format(
             self._description_value,
@@ -48602,7 +50859,7 @@ class SharedFolderTransferOwnershipType(object):
 
 SharedFolderTransferOwnershipType_validator = bv.Struct(SharedFolderTransferOwnershipType)
 
-class SharedFolderUnmountDetails(object):
+class SharedFolderUnmountDetails(bb.Struct):
     """
     Deleted shared folder from Dropbox.
     """
@@ -48615,12 +50872,15 @@ class SharedFolderUnmountDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderUnmountDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderUnmountDetails()'
 
 SharedFolderUnmountDetails_validator = bv.Struct(SharedFolderUnmountDetails)
 
-class SharedFolderUnmountType(object):
+class SharedFolderUnmountType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48656,6 +50916,9 @@ class SharedFolderUnmountType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderUnmountType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SharedFolderUnmountType(description={!r})'.format(
@@ -48715,12 +50978,15 @@ class SharedLinkAccessLevel(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkAccessLevel, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkAccessLevel(%r, %r)' % (self._tag, self._value)
 
 SharedLinkAccessLevel_validator = bv.Union(SharedLinkAccessLevel)
 
-class SharedLinkAddExpiryDetails(object):
+class SharedLinkAddExpiryDetails(bb.Struct):
     """
     Added shared link expiration date.
 
@@ -48764,6 +51030,9 @@ class SharedLinkAddExpiryDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkAddExpiryDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkAddExpiryDetails(new_value={!r})'.format(
             self._new_value_value,
@@ -48771,7 +51040,7 @@ class SharedLinkAddExpiryDetails(object):
 
 SharedLinkAddExpiryDetails_validator = bv.Struct(SharedLinkAddExpiryDetails)
 
-class SharedLinkAddExpiryType(object):
+class SharedLinkAddExpiryType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48808,6 +51077,9 @@ class SharedLinkAddExpiryType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkAddExpiryType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkAddExpiryType(description={!r})'.format(
             self._description_value,
@@ -48815,7 +51087,7 @@ class SharedLinkAddExpiryType(object):
 
 SharedLinkAddExpiryType_validator = bv.Struct(SharedLinkAddExpiryType)
 
-class SharedLinkChangeExpiryDetails(object):
+class SharedLinkChangeExpiryDetails(bb.Struct):
     """
     Changed shared link expiration date.
 
@@ -48900,6 +51172,9 @@ class SharedLinkChangeExpiryDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkChangeExpiryDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkChangeExpiryDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -48908,7 +51183,7 @@ class SharedLinkChangeExpiryDetails(object):
 
 SharedLinkChangeExpiryDetails_validator = bv.Struct(SharedLinkChangeExpiryDetails)
 
-class SharedLinkChangeExpiryType(object):
+class SharedLinkChangeExpiryType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -48945,6 +51220,9 @@ class SharedLinkChangeExpiryType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkChangeExpiryType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkChangeExpiryType(description={!r})'.format(
             self._description_value,
@@ -48952,7 +51230,7 @@ class SharedLinkChangeExpiryType(object):
 
 SharedLinkChangeExpiryType_validator = bv.Struct(SharedLinkChangeExpiryType)
 
-class SharedLinkChangeVisibilityDetails(object):
+class SharedLinkChangeVisibilityDetails(bb.Struct):
     """
     Changed visibility of shared link.
 
@@ -49032,6 +51310,9 @@ class SharedLinkChangeVisibilityDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkChangeVisibilityDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkChangeVisibilityDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -49040,7 +51321,7 @@ class SharedLinkChangeVisibilityDetails(object):
 
 SharedLinkChangeVisibilityDetails_validator = bv.Struct(SharedLinkChangeVisibilityDetails)
 
-class SharedLinkChangeVisibilityType(object):
+class SharedLinkChangeVisibilityType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49077,6 +51358,9 @@ class SharedLinkChangeVisibilityType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkChangeVisibilityType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkChangeVisibilityType(description={!r})'.format(
             self._description_value,
@@ -49084,7 +51368,7 @@ class SharedLinkChangeVisibilityType(object):
 
 SharedLinkChangeVisibilityType_validator = bv.Struct(SharedLinkChangeVisibilityType)
 
-class SharedLinkCopyDetails(object):
+class SharedLinkCopyDetails(bb.Struct):
     """
     Added file/folder to Dropbox from shared link.
 
@@ -49132,6 +51416,9 @@ class SharedLinkCopyDetails(object):
         self._shared_link_owner_value = None
         self._shared_link_owner_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkCopyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkCopyDetails(shared_link_owner={!r})'.format(
             self._shared_link_owner_value,
@@ -49139,7 +51426,7 @@ class SharedLinkCopyDetails(object):
 
 SharedLinkCopyDetails_validator = bv.Struct(SharedLinkCopyDetails)
 
-class SharedLinkCopyType(object):
+class SharedLinkCopyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49176,6 +51463,9 @@ class SharedLinkCopyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkCopyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkCopyType(description={!r})'.format(
             self._description_value,
@@ -49183,7 +51473,7 @@ class SharedLinkCopyType(object):
 
 SharedLinkCopyType_validator = bv.Struct(SharedLinkCopyType)
 
-class SharedLinkCreateDetails(object):
+class SharedLinkCreateDetails(bb.Struct):
     """
     Created shared link.
 
@@ -49232,6 +51522,9 @@ class SharedLinkCreateDetails(object):
         self._shared_link_access_level_value = None
         self._shared_link_access_level_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkCreateDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkCreateDetails(shared_link_access_level={!r})'.format(
             self._shared_link_access_level_value,
@@ -49239,7 +51532,7 @@ class SharedLinkCreateDetails(object):
 
 SharedLinkCreateDetails_validator = bv.Struct(SharedLinkCreateDetails)
 
-class SharedLinkCreateType(object):
+class SharedLinkCreateType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49276,6 +51569,9 @@ class SharedLinkCreateType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkCreateType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkCreateType(description={!r})'.format(
             self._description_value,
@@ -49283,7 +51579,7 @@ class SharedLinkCreateType(object):
 
 SharedLinkCreateType_validator = bv.Struct(SharedLinkCreateType)
 
-class SharedLinkDisableDetails(object):
+class SharedLinkDisableDetails(bb.Struct):
     """
     Removed shared link.
 
@@ -49331,6 +51627,9 @@ class SharedLinkDisableDetails(object):
         self._shared_link_owner_value = None
         self._shared_link_owner_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkDisableDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkDisableDetails(shared_link_owner={!r})'.format(
             self._shared_link_owner_value,
@@ -49338,7 +51637,7 @@ class SharedLinkDisableDetails(object):
 
 SharedLinkDisableDetails_validator = bv.Struct(SharedLinkDisableDetails)
 
-class SharedLinkDisableType(object):
+class SharedLinkDisableType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49375,6 +51674,9 @@ class SharedLinkDisableType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkDisableType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkDisableType(description={!r})'.format(
             self._description_value,
@@ -49382,7 +51684,7 @@ class SharedLinkDisableType(object):
 
 SharedLinkDisableType_validator = bv.Struct(SharedLinkDisableType)
 
-class SharedLinkDownloadDetails(object):
+class SharedLinkDownloadDetails(bb.Struct):
     """
     Downloaded file/folder from shared link.
 
@@ -49430,6 +51732,9 @@ class SharedLinkDownloadDetails(object):
         self._shared_link_owner_value = None
         self._shared_link_owner_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkDownloadDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkDownloadDetails(shared_link_owner={!r})'.format(
             self._shared_link_owner_value,
@@ -49437,7 +51742,7 @@ class SharedLinkDownloadDetails(object):
 
 SharedLinkDownloadDetails_validator = bv.Struct(SharedLinkDownloadDetails)
 
-class SharedLinkDownloadType(object):
+class SharedLinkDownloadType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49474,6 +51779,9 @@ class SharedLinkDownloadType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkDownloadType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkDownloadType(description={!r})'.format(
             self._description_value,
@@ -49481,7 +51789,7 @@ class SharedLinkDownloadType(object):
 
 SharedLinkDownloadType_validator = bv.Struct(SharedLinkDownloadType)
 
-class SharedLinkRemoveExpiryDetails(object):
+class SharedLinkRemoveExpiryDetails(bb.Struct):
     """
     Removed shared link expiration date.
 
@@ -49530,6 +51838,9 @@ class SharedLinkRemoveExpiryDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkRemoveExpiryDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkRemoveExpiryDetails(previous_value={!r})'.format(
             self._previous_value_value,
@@ -49537,7 +51848,7 @@ class SharedLinkRemoveExpiryDetails(object):
 
 SharedLinkRemoveExpiryDetails_validator = bv.Struct(SharedLinkRemoveExpiryDetails)
 
-class SharedLinkRemoveExpiryType(object):
+class SharedLinkRemoveExpiryType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49574,6 +51885,9 @@ class SharedLinkRemoveExpiryType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkRemoveExpiryType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkRemoveExpiryType(description={!r})'.format(
             self._description_value,
@@ -49581,7 +51895,7 @@ class SharedLinkRemoveExpiryType(object):
 
 SharedLinkRemoveExpiryType_validator = bv.Struct(SharedLinkRemoveExpiryType)
 
-class SharedLinkShareDetails(object):
+class SharedLinkShareDetails(bb.Struct):
     """
     Added members as audience of shared link.
 
@@ -49664,6 +51978,9 @@ class SharedLinkShareDetails(object):
         self._external_users_value = None
         self._external_users_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkShareDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkShareDetails(shared_link_owner={!r}, external_users={!r})'.format(
             self._shared_link_owner_value,
@@ -49672,7 +51989,7 @@ class SharedLinkShareDetails(object):
 
 SharedLinkShareDetails_validator = bv.Struct(SharedLinkShareDetails)
 
-class SharedLinkShareType(object):
+class SharedLinkShareType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49709,6 +52026,9 @@ class SharedLinkShareType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkShareType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkShareType(description={!r})'.format(
             self._description_value,
@@ -49716,7 +52036,7 @@ class SharedLinkShareType(object):
 
 SharedLinkShareType_validator = bv.Struct(SharedLinkShareType)
 
-class SharedLinkViewDetails(object):
+class SharedLinkViewDetails(bb.Struct):
     """
     Opened shared link.
 
@@ -49764,6 +52084,9 @@ class SharedLinkViewDetails(object):
         self._shared_link_owner_value = None
         self._shared_link_owner_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkViewDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkViewDetails(shared_link_owner={!r})'.format(
             self._shared_link_owner_value,
@@ -49771,7 +52094,7 @@ class SharedLinkViewDetails(object):
 
 SharedLinkViewDetails_validator = bv.Struct(SharedLinkViewDetails)
 
-class SharedLinkViewType(object):
+class SharedLinkViewType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49807,6 +52130,9 @@ class SharedLinkViewType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkViewType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SharedLinkViewType(description={!r})'.format(
@@ -49866,12 +52192,15 @@ class SharedLinkVisibility(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkVisibility, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkVisibility(%r, %r)' % (self._tag, self._value)
 
 SharedLinkVisibility_validator = bv.Union(SharedLinkVisibility)
 
-class SharedNoteOpenedDetails(object):
+class SharedNoteOpenedDetails(bb.Struct):
     """
     Opened shared Paper doc.
     """
@@ -49884,12 +52213,15 @@ class SharedNoteOpenedDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedNoteOpenedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedNoteOpenedDetails()'
 
 SharedNoteOpenedDetails_validator = bv.Struct(SharedNoteOpenedDetails)
 
-class SharedNoteOpenedType(object):
+class SharedNoteOpenedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -49926,6 +52258,9 @@ class SharedNoteOpenedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedNoteOpenedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedNoteOpenedType(description={!r})'.format(
             self._description_value,
@@ -49933,7 +52268,7 @@ class SharedNoteOpenedType(object):
 
 SharedNoteOpenedType_validator = bv.Struct(SharedNoteOpenedType)
 
-class SharingChangeFolderJoinPolicyDetails(object):
+class SharingChangeFolderJoinPolicyDetails(bb.Struct):
     """
     Changed whether team members can join shared folders owned outside team.
 
@@ -50013,6 +52348,9 @@ class SharingChangeFolderJoinPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingChangeFolderJoinPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharingChangeFolderJoinPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -50021,7 +52359,7 @@ class SharingChangeFolderJoinPolicyDetails(object):
 
 SharingChangeFolderJoinPolicyDetails_validator = bv.Struct(SharingChangeFolderJoinPolicyDetails)
 
-class SharingChangeFolderJoinPolicyType(object):
+class SharingChangeFolderJoinPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -50058,6 +52396,9 @@ class SharingChangeFolderJoinPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingChangeFolderJoinPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharingChangeFolderJoinPolicyType(description={!r})'.format(
             self._description_value,
@@ -50065,7 +52406,7 @@ class SharingChangeFolderJoinPolicyType(object):
 
 SharingChangeFolderJoinPolicyType_validator = bv.Struct(SharingChangeFolderJoinPolicyType)
 
-class SharingChangeLinkPolicyDetails(object):
+class SharingChangeLinkPolicyDetails(bb.Struct):
     """
     Changed whether members can share links outside team, and if links are
     accessible only by team members or anyone by default.
@@ -50146,6 +52487,9 @@ class SharingChangeLinkPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingChangeLinkPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharingChangeLinkPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -50154,7 +52498,7 @@ class SharingChangeLinkPolicyDetails(object):
 
 SharingChangeLinkPolicyDetails_validator = bv.Struct(SharingChangeLinkPolicyDetails)
 
-class SharingChangeLinkPolicyType(object):
+class SharingChangeLinkPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -50191,6 +52535,9 @@ class SharingChangeLinkPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingChangeLinkPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharingChangeLinkPolicyType(description={!r})'.format(
             self._description_value,
@@ -50198,7 +52545,7 @@ class SharingChangeLinkPolicyType(object):
 
 SharingChangeLinkPolicyType_validator = bv.Struct(SharingChangeLinkPolicyType)
 
-class SharingChangeMemberPolicyDetails(object):
+class SharingChangeMemberPolicyDetails(bb.Struct):
     """
     Changed whether members can share files/folders outside team.
 
@@ -50278,6 +52625,9 @@ class SharingChangeMemberPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingChangeMemberPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharingChangeMemberPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -50286,7 +52636,7 @@ class SharingChangeMemberPolicyDetails(object):
 
 SharingChangeMemberPolicyDetails_validator = bv.Struct(SharingChangeMemberPolicyDetails)
 
-class SharingChangeMemberPolicyType(object):
+class SharingChangeMemberPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -50322,6 +52672,9 @@ class SharingChangeMemberPolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingChangeMemberPolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SharingChangeMemberPolicyType(description={!r})'.format(
@@ -50371,6 +52724,9 @@ class SharingFolderJoinPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingFolderJoinPolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SharingFolderJoinPolicy(%r, %r)' % (self._tag, self._value)
@@ -50428,6 +52784,9 @@ class SharingLinkPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingLinkPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharingLinkPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -50448,6 +52807,8 @@ class SharingMemberPolicy(bb.Union):
     # Attribute is overwritten below the class definition
     forbid = None
     # Attribute is overwritten below the class definition
+    team_members_and_whitelist = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_allow(self):
@@ -50466,6 +52827,14 @@ class SharingMemberPolicy(bb.Union):
         """
         return self._tag == 'forbid'
 
+    def is_team_members_and_whitelist(self):
+        """
+        Check if the union tag is ``team_members_and_whitelist``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_members_and_whitelist'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -50474,12 +52843,15 @@ class SharingMemberPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharingMemberPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharingMemberPolicy(%r, %r)' % (self._tag, self._value)
 
 SharingMemberPolicy_validator = bv.Union(SharingMemberPolicy)
 
-class ShmodelGroupShareDetails(object):
+class ShmodelGroupShareDetails(bb.Struct):
     """
     Shared link with group.
     """
@@ -50492,12 +52864,15 @@ class ShmodelGroupShareDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShmodelGroupShareDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShmodelGroupShareDetails()'
 
 ShmodelGroupShareDetails_validator = bv.Struct(ShmodelGroupShareDetails)
 
-class ShmodelGroupShareType(object):
+class ShmodelGroupShareType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -50534,6 +52909,9 @@ class ShmodelGroupShareType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShmodelGroupShareType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShmodelGroupShareType(description={!r})'.format(
             self._description_value,
@@ -50541,7 +52919,7 @@ class ShmodelGroupShareType(object):
 
 ShmodelGroupShareType_validator = bv.Struct(ShmodelGroupShareType)
 
-class ShowcaseAccessGrantedDetails(object):
+class ShowcaseAccessGrantedDetails(bb.Struct):
     """
     Granted access to showcase.
 
@@ -50585,6 +52963,9 @@ class ShowcaseAccessGrantedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseAccessGrantedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseAccessGrantedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -50592,7 +52973,7 @@ class ShowcaseAccessGrantedDetails(object):
 
 ShowcaseAccessGrantedDetails_validator = bv.Struct(ShowcaseAccessGrantedDetails)
 
-class ShowcaseAccessGrantedType(object):
+class ShowcaseAccessGrantedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -50629,6 +53010,9 @@ class ShowcaseAccessGrantedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseAccessGrantedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseAccessGrantedType(description={!r})'.format(
             self._description_value,
@@ -50636,7 +53020,7 @@ class ShowcaseAccessGrantedType(object):
 
 ShowcaseAccessGrantedType_validator = bv.Struct(ShowcaseAccessGrantedType)
 
-class ShowcaseAddMemberDetails(object):
+class ShowcaseAddMemberDetails(bb.Struct):
     """
     Added member to showcase.
 
@@ -50680,6 +53064,9 @@ class ShowcaseAddMemberDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseAddMemberDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseAddMemberDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -50687,7 +53074,7 @@ class ShowcaseAddMemberDetails(object):
 
 ShowcaseAddMemberDetails_validator = bv.Struct(ShowcaseAddMemberDetails)
 
-class ShowcaseAddMemberType(object):
+class ShowcaseAddMemberType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -50724,6 +53111,9 @@ class ShowcaseAddMemberType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseAddMemberType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseAddMemberType(description={!r})'.format(
             self._description_value,
@@ -50731,7 +53121,7 @@ class ShowcaseAddMemberType(object):
 
 ShowcaseAddMemberType_validator = bv.Struct(ShowcaseAddMemberType)
 
-class ShowcaseArchivedDetails(object):
+class ShowcaseArchivedDetails(bb.Struct):
     """
     Archived showcase.
 
@@ -50775,6 +53165,9 @@ class ShowcaseArchivedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseArchivedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseArchivedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -50782,7 +53175,7 @@ class ShowcaseArchivedDetails(object):
 
 ShowcaseArchivedDetails_validator = bv.Struct(ShowcaseArchivedDetails)
 
-class ShowcaseArchivedType(object):
+class ShowcaseArchivedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -50819,6 +53212,9 @@ class ShowcaseArchivedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseArchivedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseArchivedType(description={!r})'.format(
             self._description_value,
@@ -50826,7 +53222,7 @@ class ShowcaseArchivedType(object):
 
 ShowcaseArchivedType_validator = bv.Struct(ShowcaseArchivedType)
 
-class ShowcaseChangeDownloadPolicyDetails(object):
+class ShowcaseChangeDownloadPolicyDetails(bb.Struct):
     """
     Enabled/disabled downloading files from Dropbox Showcase for team.
 
@@ -50901,6 +53297,9 @@ class ShowcaseChangeDownloadPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseChangeDownloadPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseChangeDownloadPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -50909,7 +53308,7 @@ class ShowcaseChangeDownloadPolicyDetails(object):
 
 ShowcaseChangeDownloadPolicyDetails_validator = bv.Struct(ShowcaseChangeDownloadPolicyDetails)
 
-class ShowcaseChangeDownloadPolicyType(object):
+class ShowcaseChangeDownloadPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -50946,6 +53345,9 @@ class ShowcaseChangeDownloadPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseChangeDownloadPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseChangeDownloadPolicyType(description={!r})'.format(
             self._description_value,
@@ -50953,7 +53355,7 @@ class ShowcaseChangeDownloadPolicyType(object):
 
 ShowcaseChangeDownloadPolicyType_validator = bv.Struct(ShowcaseChangeDownloadPolicyType)
 
-class ShowcaseChangeEnabledPolicyDetails(object):
+class ShowcaseChangeEnabledPolicyDetails(bb.Struct):
     """
     Enabled/disabled Dropbox Showcase for team.
 
@@ -51028,6 +53430,9 @@ class ShowcaseChangeEnabledPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseChangeEnabledPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseChangeEnabledPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -51036,7 +53441,7 @@ class ShowcaseChangeEnabledPolicyDetails(object):
 
 ShowcaseChangeEnabledPolicyDetails_validator = bv.Struct(ShowcaseChangeEnabledPolicyDetails)
 
-class ShowcaseChangeEnabledPolicyType(object):
+class ShowcaseChangeEnabledPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -51073,6 +53478,9 @@ class ShowcaseChangeEnabledPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseChangeEnabledPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseChangeEnabledPolicyType(description={!r})'.format(
             self._description_value,
@@ -51080,7 +53488,7 @@ class ShowcaseChangeEnabledPolicyType(object):
 
 ShowcaseChangeEnabledPolicyType_validator = bv.Struct(ShowcaseChangeEnabledPolicyType)
 
-class ShowcaseChangeExternalSharingPolicyDetails(object):
+class ShowcaseChangeExternalSharingPolicyDetails(bb.Struct):
     """
     Enabled/disabled sharing Dropbox Showcase externally for team.
 
@@ -51155,6 +53563,9 @@ class ShowcaseChangeExternalSharingPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseChangeExternalSharingPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseChangeExternalSharingPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -51163,7 +53574,7 @@ class ShowcaseChangeExternalSharingPolicyDetails(object):
 
 ShowcaseChangeExternalSharingPolicyDetails_validator = bv.Struct(ShowcaseChangeExternalSharingPolicyDetails)
 
-class ShowcaseChangeExternalSharingPolicyType(object):
+class ShowcaseChangeExternalSharingPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -51200,6 +53611,9 @@ class ShowcaseChangeExternalSharingPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseChangeExternalSharingPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseChangeExternalSharingPolicyType(description={!r})'.format(
             self._description_value,
@@ -51207,7 +53621,7 @@ class ShowcaseChangeExternalSharingPolicyType(object):
 
 ShowcaseChangeExternalSharingPolicyType_validator = bv.Struct(ShowcaseChangeExternalSharingPolicyType)
 
-class ShowcaseCreatedDetails(object):
+class ShowcaseCreatedDetails(bb.Struct):
     """
     Created showcase.
 
@@ -51251,6 +53665,9 @@ class ShowcaseCreatedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseCreatedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseCreatedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -51258,7 +53675,7 @@ class ShowcaseCreatedDetails(object):
 
 ShowcaseCreatedDetails_validator = bv.Struct(ShowcaseCreatedDetails)
 
-class ShowcaseCreatedType(object):
+class ShowcaseCreatedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -51295,6 +53712,9 @@ class ShowcaseCreatedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseCreatedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseCreatedType(description={!r})'.format(
             self._description_value,
@@ -51302,7 +53722,7 @@ class ShowcaseCreatedType(object):
 
 ShowcaseCreatedType_validator = bv.Struct(ShowcaseCreatedType)
 
-class ShowcaseDeleteCommentDetails(object):
+class ShowcaseDeleteCommentDetails(bb.Struct):
     """
     Deleted showcase comment.
 
@@ -51380,6 +53800,9 @@ class ShowcaseDeleteCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseDeleteCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseDeleteCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -51388,7 +53811,7 @@ class ShowcaseDeleteCommentDetails(object):
 
 ShowcaseDeleteCommentDetails_validator = bv.Struct(ShowcaseDeleteCommentDetails)
 
-class ShowcaseDeleteCommentType(object):
+class ShowcaseDeleteCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -51425,6 +53848,9 @@ class ShowcaseDeleteCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseDeleteCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseDeleteCommentType(description={!r})'.format(
             self._description_value,
@@ -51432,7 +53858,7 @@ class ShowcaseDeleteCommentType(object):
 
 ShowcaseDeleteCommentType_validator = bv.Struct(ShowcaseDeleteCommentType)
 
-class ShowcaseDocumentLogInfo(object):
+class ShowcaseDocumentLogInfo(bb.Struct):
     """
     Showcase document's logged information.
 
@@ -51507,6 +53933,9 @@ class ShowcaseDocumentLogInfo(object):
         self._showcase_title_value = None
         self._showcase_title_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseDocumentLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseDocumentLogInfo(showcase_id={!r}, showcase_title={!r})'.format(
             self._showcase_id_value,
@@ -51557,12 +53986,15 @@ class ShowcaseDownloadPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseDownloadPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseDownloadPolicy(%r, %r)' % (self._tag, self._value)
 
 ShowcaseDownloadPolicy_validator = bv.Union(ShowcaseDownloadPolicy)
 
-class ShowcaseEditCommentDetails(object):
+class ShowcaseEditCommentDetails(bb.Struct):
     """
     Edited showcase comment.
 
@@ -51640,6 +54072,9 @@ class ShowcaseEditCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseEditCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseEditCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -51648,7 +54083,7 @@ class ShowcaseEditCommentDetails(object):
 
 ShowcaseEditCommentDetails_validator = bv.Struct(ShowcaseEditCommentDetails)
 
-class ShowcaseEditCommentType(object):
+class ShowcaseEditCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -51685,6 +54120,9 @@ class ShowcaseEditCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseEditCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseEditCommentType(description={!r})'.format(
             self._description_value,
@@ -51692,7 +54130,7 @@ class ShowcaseEditCommentType(object):
 
 ShowcaseEditCommentType_validator = bv.Struct(ShowcaseEditCommentType)
 
-class ShowcaseEditedDetails(object):
+class ShowcaseEditedDetails(bb.Struct):
     """
     Edited showcase.
 
@@ -51736,6 +54174,9 @@ class ShowcaseEditedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseEditedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseEditedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -51743,7 +54184,7 @@ class ShowcaseEditedDetails(object):
 
 ShowcaseEditedDetails_validator = bv.Struct(ShowcaseEditedDetails)
 
-class ShowcaseEditedType(object):
+class ShowcaseEditedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -51779,6 +54220,9 @@ class ShowcaseEditedType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseEditedType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'ShowcaseEditedType(description={!r})'.format(
@@ -51828,6 +54272,9 @@ class ShowcaseEnabledPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseEnabledPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseEnabledPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -51874,12 +54321,15 @@ class ShowcaseExternalSharingPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseExternalSharingPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseExternalSharingPolicy(%r, %r)' % (self._tag, self._value)
 
 ShowcaseExternalSharingPolicy_validator = bv.Union(ShowcaseExternalSharingPolicy)
 
-class ShowcaseFileAddedDetails(object):
+class ShowcaseFileAddedDetails(bb.Struct):
     """
     Added file to showcase.
 
@@ -51923,6 +54373,9 @@ class ShowcaseFileAddedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseFileAddedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseFileAddedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -51930,7 +54383,7 @@ class ShowcaseFileAddedDetails(object):
 
 ShowcaseFileAddedDetails_validator = bv.Struct(ShowcaseFileAddedDetails)
 
-class ShowcaseFileAddedType(object):
+class ShowcaseFileAddedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -51967,6 +54420,9 @@ class ShowcaseFileAddedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseFileAddedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseFileAddedType(description={!r})'.format(
             self._description_value,
@@ -51974,7 +54430,7 @@ class ShowcaseFileAddedType(object):
 
 ShowcaseFileAddedType_validator = bv.Struct(ShowcaseFileAddedType)
 
-class ShowcaseFileDownloadDetails(object):
+class ShowcaseFileDownloadDetails(bb.Struct):
     """
     Downloaded file from showcase.
 
@@ -52049,6 +54505,9 @@ class ShowcaseFileDownloadDetails(object):
         self._download_type_value = None
         self._download_type_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseFileDownloadDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseFileDownloadDetails(event_uuid={!r}, download_type={!r})'.format(
             self._event_uuid_value,
@@ -52057,7 +54516,7 @@ class ShowcaseFileDownloadDetails(object):
 
 ShowcaseFileDownloadDetails_validator = bv.Struct(ShowcaseFileDownloadDetails)
 
-class ShowcaseFileDownloadType(object):
+class ShowcaseFileDownloadType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52094,6 +54553,9 @@ class ShowcaseFileDownloadType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseFileDownloadType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseFileDownloadType(description={!r})'.format(
             self._description_value,
@@ -52101,7 +54563,7 @@ class ShowcaseFileDownloadType(object):
 
 ShowcaseFileDownloadType_validator = bv.Struct(ShowcaseFileDownloadType)
 
-class ShowcaseFileRemovedDetails(object):
+class ShowcaseFileRemovedDetails(bb.Struct):
     """
     Removed file from showcase.
 
@@ -52145,6 +54607,9 @@ class ShowcaseFileRemovedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseFileRemovedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseFileRemovedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -52152,7 +54617,7 @@ class ShowcaseFileRemovedDetails(object):
 
 ShowcaseFileRemovedDetails_validator = bv.Struct(ShowcaseFileRemovedDetails)
 
-class ShowcaseFileRemovedType(object):
+class ShowcaseFileRemovedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52189,6 +54654,9 @@ class ShowcaseFileRemovedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseFileRemovedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseFileRemovedType(description={!r})'.format(
             self._description_value,
@@ -52196,7 +54664,7 @@ class ShowcaseFileRemovedType(object):
 
 ShowcaseFileRemovedType_validator = bv.Struct(ShowcaseFileRemovedType)
 
-class ShowcaseFileViewDetails(object):
+class ShowcaseFileViewDetails(bb.Struct):
     """
     Viewed file in showcase.
 
@@ -52240,6 +54708,9 @@ class ShowcaseFileViewDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseFileViewDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseFileViewDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -52247,7 +54718,7 @@ class ShowcaseFileViewDetails(object):
 
 ShowcaseFileViewDetails_validator = bv.Struct(ShowcaseFileViewDetails)
 
-class ShowcaseFileViewType(object):
+class ShowcaseFileViewType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52284,6 +54755,9 @@ class ShowcaseFileViewType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseFileViewType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseFileViewType(description={!r})'.format(
             self._description_value,
@@ -52291,7 +54765,7 @@ class ShowcaseFileViewType(object):
 
 ShowcaseFileViewType_validator = bv.Struct(ShowcaseFileViewType)
 
-class ShowcasePermanentlyDeletedDetails(object):
+class ShowcasePermanentlyDeletedDetails(bb.Struct):
     """
     Permanently deleted showcase.
 
@@ -52335,6 +54809,9 @@ class ShowcasePermanentlyDeletedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcasePermanentlyDeletedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcasePermanentlyDeletedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -52342,7 +54819,7 @@ class ShowcasePermanentlyDeletedDetails(object):
 
 ShowcasePermanentlyDeletedDetails_validator = bv.Struct(ShowcasePermanentlyDeletedDetails)
 
-class ShowcasePermanentlyDeletedType(object):
+class ShowcasePermanentlyDeletedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52379,6 +54856,9 @@ class ShowcasePermanentlyDeletedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcasePermanentlyDeletedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcasePermanentlyDeletedType(description={!r})'.format(
             self._description_value,
@@ -52386,7 +54866,7 @@ class ShowcasePermanentlyDeletedType(object):
 
 ShowcasePermanentlyDeletedType_validator = bv.Struct(ShowcasePermanentlyDeletedType)
 
-class ShowcasePostCommentDetails(object):
+class ShowcasePostCommentDetails(bb.Struct):
     """
     Added showcase comment.
 
@@ -52464,6 +54944,9 @@ class ShowcasePostCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcasePostCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcasePostCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -52472,7 +54955,7 @@ class ShowcasePostCommentDetails(object):
 
 ShowcasePostCommentDetails_validator = bv.Struct(ShowcasePostCommentDetails)
 
-class ShowcasePostCommentType(object):
+class ShowcasePostCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52509,6 +54992,9 @@ class ShowcasePostCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcasePostCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcasePostCommentType(description={!r})'.format(
             self._description_value,
@@ -52516,7 +55002,7 @@ class ShowcasePostCommentType(object):
 
 ShowcasePostCommentType_validator = bv.Struct(ShowcasePostCommentType)
 
-class ShowcaseRemoveMemberDetails(object):
+class ShowcaseRemoveMemberDetails(bb.Struct):
     """
     Removed member from showcase.
 
@@ -52560,6 +55046,9 @@ class ShowcaseRemoveMemberDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseRemoveMemberDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseRemoveMemberDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -52567,7 +55056,7 @@ class ShowcaseRemoveMemberDetails(object):
 
 ShowcaseRemoveMemberDetails_validator = bv.Struct(ShowcaseRemoveMemberDetails)
 
-class ShowcaseRemoveMemberType(object):
+class ShowcaseRemoveMemberType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52604,6 +55093,9 @@ class ShowcaseRemoveMemberType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseRemoveMemberType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseRemoveMemberType(description={!r})'.format(
             self._description_value,
@@ -52611,7 +55103,7 @@ class ShowcaseRemoveMemberType(object):
 
 ShowcaseRemoveMemberType_validator = bv.Struct(ShowcaseRemoveMemberType)
 
-class ShowcaseRenamedDetails(object):
+class ShowcaseRenamedDetails(bb.Struct):
     """
     Renamed showcase.
 
@@ -52655,6 +55147,9 @@ class ShowcaseRenamedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseRenamedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseRenamedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -52662,7 +55157,7 @@ class ShowcaseRenamedDetails(object):
 
 ShowcaseRenamedDetails_validator = bv.Struct(ShowcaseRenamedDetails)
 
-class ShowcaseRenamedType(object):
+class ShowcaseRenamedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52699,6 +55194,9 @@ class ShowcaseRenamedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseRenamedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseRenamedType(description={!r})'.format(
             self._description_value,
@@ -52706,7 +55204,7 @@ class ShowcaseRenamedType(object):
 
 ShowcaseRenamedType_validator = bv.Struct(ShowcaseRenamedType)
 
-class ShowcaseRequestAccessDetails(object):
+class ShowcaseRequestAccessDetails(bb.Struct):
     """
     Requested access to showcase.
 
@@ -52750,6 +55248,9 @@ class ShowcaseRequestAccessDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseRequestAccessDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseRequestAccessDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -52757,7 +55258,7 @@ class ShowcaseRequestAccessDetails(object):
 
 ShowcaseRequestAccessDetails_validator = bv.Struct(ShowcaseRequestAccessDetails)
 
-class ShowcaseRequestAccessType(object):
+class ShowcaseRequestAccessType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52794,6 +55295,9 @@ class ShowcaseRequestAccessType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseRequestAccessType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseRequestAccessType(description={!r})'.format(
             self._description_value,
@@ -52801,7 +55305,7 @@ class ShowcaseRequestAccessType(object):
 
 ShowcaseRequestAccessType_validator = bv.Struct(ShowcaseRequestAccessType)
 
-class ShowcaseResolveCommentDetails(object):
+class ShowcaseResolveCommentDetails(bb.Struct):
     """
     Resolved showcase comment.
 
@@ -52879,6 +55383,9 @@ class ShowcaseResolveCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseResolveCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseResolveCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -52887,7 +55394,7 @@ class ShowcaseResolveCommentDetails(object):
 
 ShowcaseResolveCommentDetails_validator = bv.Struct(ShowcaseResolveCommentDetails)
 
-class ShowcaseResolveCommentType(object):
+class ShowcaseResolveCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -52924,6 +55431,9 @@ class ShowcaseResolveCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseResolveCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseResolveCommentType(description={!r})'.format(
             self._description_value,
@@ -52931,7 +55441,7 @@ class ShowcaseResolveCommentType(object):
 
 ShowcaseResolveCommentType_validator = bv.Struct(ShowcaseResolveCommentType)
 
-class ShowcaseRestoredDetails(object):
+class ShowcaseRestoredDetails(bb.Struct):
     """
     Unarchived showcase.
 
@@ -52975,6 +55485,9 @@ class ShowcaseRestoredDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseRestoredDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseRestoredDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -52982,7 +55495,7 @@ class ShowcaseRestoredDetails(object):
 
 ShowcaseRestoredDetails_validator = bv.Struct(ShowcaseRestoredDetails)
 
-class ShowcaseRestoredType(object):
+class ShowcaseRestoredType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53019,6 +55532,9 @@ class ShowcaseRestoredType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseRestoredType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseRestoredType(description={!r})'.format(
             self._description_value,
@@ -53026,7 +55542,7 @@ class ShowcaseRestoredType(object):
 
 ShowcaseRestoredType_validator = bv.Struct(ShowcaseRestoredType)
 
-class ShowcaseTrashedDeprecatedDetails(object):
+class ShowcaseTrashedDeprecatedDetails(bb.Struct):
     """
     Deleted showcase (old version).
 
@@ -53070,6 +55586,9 @@ class ShowcaseTrashedDeprecatedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseTrashedDeprecatedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseTrashedDeprecatedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -53077,7 +55596,7 @@ class ShowcaseTrashedDeprecatedDetails(object):
 
 ShowcaseTrashedDeprecatedDetails_validator = bv.Struct(ShowcaseTrashedDeprecatedDetails)
 
-class ShowcaseTrashedDeprecatedType(object):
+class ShowcaseTrashedDeprecatedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53114,6 +55633,9 @@ class ShowcaseTrashedDeprecatedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseTrashedDeprecatedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseTrashedDeprecatedType(description={!r})'.format(
             self._description_value,
@@ -53121,7 +55643,7 @@ class ShowcaseTrashedDeprecatedType(object):
 
 ShowcaseTrashedDeprecatedType_validator = bv.Struct(ShowcaseTrashedDeprecatedType)
 
-class ShowcaseTrashedDetails(object):
+class ShowcaseTrashedDetails(bb.Struct):
     """
     Deleted showcase.
 
@@ -53165,6 +55687,9 @@ class ShowcaseTrashedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseTrashedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseTrashedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -53172,7 +55697,7 @@ class ShowcaseTrashedDetails(object):
 
 ShowcaseTrashedDetails_validator = bv.Struct(ShowcaseTrashedDetails)
 
-class ShowcaseTrashedType(object):
+class ShowcaseTrashedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53209,6 +55734,9 @@ class ShowcaseTrashedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseTrashedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseTrashedType(description={!r})'.format(
             self._description_value,
@@ -53216,7 +55744,7 @@ class ShowcaseTrashedType(object):
 
 ShowcaseTrashedType_validator = bv.Struct(ShowcaseTrashedType)
 
-class ShowcaseUnresolveCommentDetails(object):
+class ShowcaseUnresolveCommentDetails(bb.Struct):
     """
     Unresolved showcase comment.
 
@@ -53294,6 +55822,9 @@ class ShowcaseUnresolveCommentDetails(object):
         self._comment_text_value = None
         self._comment_text_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseUnresolveCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseUnresolveCommentDetails(event_uuid={!r}, comment_text={!r})'.format(
             self._event_uuid_value,
@@ -53302,7 +55833,7 @@ class ShowcaseUnresolveCommentDetails(object):
 
 ShowcaseUnresolveCommentDetails_validator = bv.Struct(ShowcaseUnresolveCommentDetails)
 
-class ShowcaseUnresolveCommentType(object):
+class ShowcaseUnresolveCommentType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53339,6 +55870,9 @@ class ShowcaseUnresolveCommentType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseUnresolveCommentType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseUnresolveCommentType(description={!r})'.format(
             self._description_value,
@@ -53346,7 +55880,7 @@ class ShowcaseUnresolveCommentType(object):
 
 ShowcaseUnresolveCommentType_validator = bv.Struct(ShowcaseUnresolveCommentType)
 
-class ShowcaseUntrashedDeprecatedDetails(object):
+class ShowcaseUntrashedDeprecatedDetails(bb.Struct):
     """
     Restored showcase (old version).
 
@@ -53390,6 +55924,9 @@ class ShowcaseUntrashedDeprecatedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseUntrashedDeprecatedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseUntrashedDeprecatedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -53397,7 +55934,7 @@ class ShowcaseUntrashedDeprecatedDetails(object):
 
 ShowcaseUntrashedDeprecatedDetails_validator = bv.Struct(ShowcaseUntrashedDeprecatedDetails)
 
-class ShowcaseUntrashedDeprecatedType(object):
+class ShowcaseUntrashedDeprecatedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53434,6 +55971,9 @@ class ShowcaseUntrashedDeprecatedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseUntrashedDeprecatedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseUntrashedDeprecatedType(description={!r})'.format(
             self._description_value,
@@ -53441,7 +55981,7 @@ class ShowcaseUntrashedDeprecatedType(object):
 
 ShowcaseUntrashedDeprecatedType_validator = bv.Struct(ShowcaseUntrashedDeprecatedType)
 
-class ShowcaseUntrashedDetails(object):
+class ShowcaseUntrashedDetails(bb.Struct):
     """
     Restored showcase.
 
@@ -53485,6 +56025,9 @@ class ShowcaseUntrashedDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseUntrashedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseUntrashedDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -53492,7 +56035,7 @@ class ShowcaseUntrashedDetails(object):
 
 ShowcaseUntrashedDetails_validator = bv.Struct(ShowcaseUntrashedDetails)
 
-class ShowcaseUntrashedType(object):
+class ShowcaseUntrashedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53529,6 +56072,9 @@ class ShowcaseUntrashedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseUntrashedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseUntrashedType(description={!r})'.format(
             self._description_value,
@@ -53536,7 +56082,7 @@ class ShowcaseUntrashedType(object):
 
 ShowcaseUntrashedType_validator = bv.Struct(ShowcaseUntrashedType)
 
-class ShowcaseViewDetails(object):
+class ShowcaseViewDetails(bb.Struct):
     """
     Viewed showcase.
 
@@ -53580,6 +56126,9 @@ class ShowcaseViewDetails(object):
         self._event_uuid_value = None
         self._event_uuid_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseViewDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseViewDetails(event_uuid={!r})'.format(
             self._event_uuid_value,
@@ -53587,7 +56136,7 @@ class ShowcaseViewDetails(object):
 
 ShowcaseViewDetails_validator = bv.Struct(ShowcaseViewDetails)
 
-class ShowcaseViewType(object):
+class ShowcaseViewType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53624,6 +56173,9 @@ class ShowcaseViewType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseViewType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseViewType(description={!r})'.format(
             self._description_value,
@@ -53631,7 +56183,7 @@ class ShowcaseViewType(object):
 
 ShowcaseViewType_validator = bv.Struct(ShowcaseViewType)
 
-class SignInAsSessionEndDetails(object):
+class SignInAsSessionEndDetails(bb.Struct):
     """
     Ended admin sign-in-as session.
     """
@@ -53644,12 +56196,15 @@ class SignInAsSessionEndDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SignInAsSessionEndDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SignInAsSessionEndDetails()'
 
 SignInAsSessionEndDetails_validator = bv.Struct(SignInAsSessionEndDetails)
 
-class SignInAsSessionEndType(object):
+class SignInAsSessionEndType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53686,6 +56241,9 @@ class SignInAsSessionEndType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SignInAsSessionEndType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SignInAsSessionEndType(description={!r})'.format(
             self._description_value,
@@ -53693,7 +56251,7 @@ class SignInAsSessionEndType(object):
 
 SignInAsSessionEndType_validator = bv.Struct(SignInAsSessionEndType)
 
-class SignInAsSessionStartDetails(object):
+class SignInAsSessionStartDetails(bb.Struct):
     """
     Started admin sign-in-as session.
     """
@@ -53706,12 +56264,15 @@ class SignInAsSessionStartDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SignInAsSessionStartDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SignInAsSessionStartDetails()'
 
 SignInAsSessionStartDetails_validator = bv.Struct(SignInAsSessionStartDetails)
 
-class SignInAsSessionStartType(object):
+class SignInAsSessionStartType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53748,6 +56309,9 @@ class SignInAsSessionStartType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SignInAsSessionStartType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SignInAsSessionStartType(description={!r})'.format(
             self._description_value,
@@ -53755,7 +56319,7 @@ class SignInAsSessionStartType(object):
 
 SignInAsSessionStartType_validator = bv.Struct(SignInAsSessionStartType)
 
-class SmartSyncChangePolicyDetails(object):
+class SmartSyncChangePolicyDetails(bb.Struct):
     """
     Changed default Smart Sync setting for team members.
 
@@ -53789,7 +56353,7 @@ class SmartSyncChangePolicyDetails(object):
         """
         New smart sync policy.
 
-        :rtype: team_policies.SmartSyncPolicy_validator
+        :rtype: team_policies.SmartSyncPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -53815,7 +56379,7 @@ class SmartSyncChangePolicyDetails(object):
         """
         Previous smart sync policy.
 
-        :rtype: team_policies.SmartSyncPolicy_validator
+        :rtype: team_policies.SmartSyncPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -53836,6 +56400,9 @@ class SmartSyncChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SmartSyncChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -53844,7 +56411,7 @@ class SmartSyncChangePolicyDetails(object):
 
 SmartSyncChangePolicyDetails_validator = bv.Struct(SmartSyncChangePolicyDetails)
 
-class SmartSyncChangePolicyType(object):
+class SmartSyncChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53881,6 +56448,9 @@ class SmartSyncChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SmartSyncChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -53888,7 +56458,7 @@ class SmartSyncChangePolicyType(object):
 
 SmartSyncChangePolicyType_validator = bv.Struct(SmartSyncChangePolicyType)
 
-class SmartSyncCreateAdminPrivilegeReportDetails(object):
+class SmartSyncCreateAdminPrivilegeReportDetails(bb.Struct):
     """
     Created Smart Sync non-admin devices report.
     """
@@ -53901,12 +56471,15 @@ class SmartSyncCreateAdminPrivilegeReportDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncCreateAdminPrivilegeReportDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SmartSyncCreateAdminPrivilegeReportDetails()'
 
 SmartSyncCreateAdminPrivilegeReportDetails_validator = bv.Struct(SmartSyncCreateAdminPrivilegeReportDetails)
 
-class SmartSyncCreateAdminPrivilegeReportType(object):
+class SmartSyncCreateAdminPrivilegeReportType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -53943,6 +56516,9 @@ class SmartSyncCreateAdminPrivilegeReportType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncCreateAdminPrivilegeReportType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SmartSyncCreateAdminPrivilegeReportType(description={!r})'.format(
             self._description_value,
@@ -53950,7 +56526,7 @@ class SmartSyncCreateAdminPrivilegeReportType(object):
 
 SmartSyncCreateAdminPrivilegeReportType_validator = bv.Struct(SmartSyncCreateAdminPrivilegeReportType)
 
-class SmartSyncNotOptOutDetails(object):
+class SmartSyncNotOptOutDetails(bb.Struct):
     """
     Opted team into Smart Sync.
 
@@ -54025,6 +56601,9 @@ class SmartSyncNotOptOutDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncNotOptOutDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SmartSyncNotOptOutDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -54033,7 +56612,7 @@ class SmartSyncNotOptOutDetails(object):
 
 SmartSyncNotOptOutDetails_validator = bv.Struct(SmartSyncNotOptOutDetails)
 
-class SmartSyncNotOptOutType(object):
+class SmartSyncNotOptOutType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -54070,6 +56649,9 @@ class SmartSyncNotOptOutType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncNotOptOutType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SmartSyncNotOptOutType(description={!r})'.format(
             self._description_value,
@@ -54077,7 +56659,7 @@ class SmartSyncNotOptOutType(object):
 
 SmartSyncNotOptOutType_validator = bv.Struct(SmartSyncNotOptOutType)
 
-class SmartSyncOptOutDetails(object):
+class SmartSyncOptOutDetails(bb.Struct):
     """
     Opted team out of Smart Sync.
 
@@ -54152,6 +56734,9 @@ class SmartSyncOptOutDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncOptOutDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SmartSyncOptOutDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -54199,12 +56784,15 @@ class SmartSyncOptOutPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncOptOutPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SmartSyncOptOutPolicy(%r, %r)' % (self._tag, self._value)
 
 SmartSyncOptOutPolicy_validator = bv.Union(SmartSyncOptOutPolicy)
 
-class SmartSyncOptOutType(object):
+class SmartSyncOptOutType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -54240,6 +56828,9 @@ class SmartSyncOptOutType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncOptOutType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SmartSyncOptOutType(description={!r})'.format(
@@ -54299,6 +56890,9 @@ class SpaceCapsType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SpaceCapsType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SpaceCapsType(%r, %r)' % (self._tag, self._value)
 
@@ -54353,12 +56947,15 @@ class SpaceLimitsStatus(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SpaceLimitsStatus, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SpaceLimitsStatus(%r, %r)' % (self._tag, self._value)
 
 SpaceLimitsStatus_validator = bv.Union(SpaceLimitsStatus)
 
-class SsoAddCertDetails(object):
+class SsoAddCertDetails(bb.Struct):
     """
     Added X.509 certificate for SSO.
 
@@ -54402,6 +56999,9 @@ class SsoAddCertDetails(object):
         self._certificate_details_value = None
         self._certificate_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoAddCertDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoAddCertDetails(certificate_details={!r})'.format(
             self._certificate_details_value,
@@ -54409,7 +57009,7 @@ class SsoAddCertDetails(object):
 
 SsoAddCertDetails_validator = bv.Struct(SsoAddCertDetails)
 
-class SsoAddCertType(object):
+class SsoAddCertType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -54446,6 +57046,9 @@ class SsoAddCertType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoAddCertType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoAddCertType(description={!r})'.format(
             self._description_value,
@@ -54453,7 +57056,7 @@ class SsoAddCertType(object):
 
 SsoAddCertType_validator = bv.Struct(SsoAddCertType)
 
-class SsoAddLoginUrlDetails(object):
+class SsoAddLoginUrlDetails(bb.Struct):
     """
     Added sign-in URL for SSO.
 
@@ -54497,6 +57100,9 @@ class SsoAddLoginUrlDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoAddLoginUrlDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoAddLoginUrlDetails(new_value={!r})'.format(
             self._new_value_value,
@@ -54504,7 +57110,7 @@ class SsoAddLoginUrlDetails(object):
 
 SsoAddLoginUrlDetails_validator = bv.Struct(SsoAddLoginUrlDetails)
 
-class SsoAddLoginUrlType(object):
+class SsoAddLoginUrlType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -54541,6 +57147,9 @@ class SsoAddLoginUrlType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoAddLoginUrlType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoAddLoginUrlType(description={!r})'.format(
             self._description_value,
@@ -54548,7 +57157,7 @@ class SsoAddLoginUrlType(object):
 
 SsoAddLoginUrlType_validator = bv.Struct(SsoAddLoginUrlType)
 
-class SsoAddLogoutUrlDetails(object):
+class SsoAddLogoutUrlDetails(bb.Struct):
     """
     Added sign-out URL for SSO.
 
@@ -54597,6 +57206,9 @@ class SsoAddLogoutUrlDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoAddLogoutUrlDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoAddLogoutUrlDetails(new_value={!r})'.format(
             self._new_value_value,
@@ -54604,7 +57216,7 @@ class SsoAddLogoutUrlDetails(object):
 
 SsoAddLogoutUrlDetails_validator = bv.Struct(SsoAddLogoutUrlDetails)
 
-class SsoAddLogoutUrlType(object):
+class SsoAddLogoutUrlType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -54641,6 +57253,9 @@ class SsoAddLogoutUrlType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoAddLogoutUrlType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoAddLogoutUrlType(description={!r})'.format(
             self._description_value,
@@ -54648,7 +57263,7 @@ class SsoAddLogoutUrlType(object):
 
 SsoAddLogoutUrlType_validator = bv.Struct(SsoAddLogoutUrlType)
 
-class SsoChangeCertDetails(object):
+class SsoChangeCertDetails(bb.Struct):
     """
     Changed X.509 certificate for SSO.
 
@@ -54728,6 +57343,9 @@ class SsoChangeCertDetails(object):
         self._new_certificate_details_value = None
         self._new_certificate_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangeCertDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangeCertDetails(new_certificate_details={!r}, previous_certificate_details={!r})'.format(
             self._new_certificate_details_value,
@@ -54736,7 +57354,7 @@ class SsoChangeCertDetails(object):
 
 SsoChangeCertDetails_validator = bv.Struct(SsoChangeCertDetails)
 
-class SsoChangeCertType(object):
+class SsoChangeCertType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -54773,6 +57391,9 @@ class SsoChangeCertType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangeCertType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangeCertType(description={!r})'.format(
             self._description_value,
@@ -54780,7 +57401,7 @@ class SsoChangeCertType(object):
 
 SsoChangeCertType_validator = bv.Struct(SsoChangeCertType)
 
-class SsoChangeLoginUrlDetails(object):
+class SsoChangeLoginUrlDetails(bb.Struct):
     """
     Changed sign-in URL for SSO.
 
@@ -54855,6 +57476,9 @@ class SsoChangeLoginUrlDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangeLoginUrlDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangeLoginUrlDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -54863,7 +57487,7 @@ class SsoChangeLoginUrlDetails(object):
 
 SsoChangeLoginUrlDetails_validator = bv.Struct(SsoChangeLoginUrlDetails)
 
-class SsoChangeLoginUrlType(object):
+class SsoChangeLoginUrlType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -54900,6 +57524,9 @@ class SsoChangeLoginUrlType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangeLoginUrlType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangeLoginUrlType(description={!r})'.format(
             self._description_value,
@@ -54907,7 +57534,7 @@ class SsoChangeLoginUrlType(object):
 
 SsoChangeLoginUrlType_validator = bv.Struct(SsoChangeLoginUrlType)
 
-class SsoChangeLogoutUrlDetails(object):
+class SsoChangeLogoutUrlDetails(bb.Struct):
     """
     Changed sign-out URL for SSO.
 
@@ -54992,6 +57619,9 @@ class SsoChangeLogoutUrlDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangeLogoutUrlDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangeLogoutUrlDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -55000,7 +57630,7 @@ class SsoChangeLogoutUrlDetails(object):
 
 SsoChangeLogoutUrlDetails_validator = bv.Struct(SsoChangeLogoutUrlDetails)
 
-class SsoChangeLogoutUrlType(object):
+class SsoChangeLogoutUrlType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -55037,6 +57667,9 @@ class SsoChangeLogoutUrlType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangeLogoutUrlType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangeLogoutUrlType(description={!r})'.format(
             self._description_value,
@@ -55044,7 +57677,7 @@ class SsoChangeLogoutUrlType(object):
 
 SsoChangeLogoutUrlType_validator = bv.Struct(SsoChangeLogoutUrlType)
 
-class SsoChangePolicyDetails(object):
+class SsoChangePolicyDetails(bb.Struct):
     """
     Changed single sign-on setting for team.
 
@@ -55079,7 +57712,7 @@ class SsoChangePolicyDetails(object):
         """
         New single sign-on policy.
 
-        :rtype: team_policies.SsoPolicy_validator
+        :rtype: team_policies.SsoPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -55103,7 +57736,7 @@ class SsoChangePolicyDetails(object):
         Previous single sign-on policy. Might be missing due to historical data
         gap.
 
-        :rtype: team_policies.SsoPolicy_validator
+        :rtype: team_policies.SsoPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -55124,6 +57757,9 @@ class SsoChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -55132,7 +57768,7 @@ class SsoChangePolicyDetails(object):
 
 SsoChangePolicyDetails_validator = bv.Struct(SsoChangePolicyDetails)
 
-class SsoChangePolicyType(object):
+class SsoChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -55169,6 +57805,9 @@ class SsoChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -55176,7 +57815,7 @@ class SsoChangePolicyType(object):
 
 SsoChangePolicyType_validator = bv.Struct(SsoChangePolicyType)
 
-class SsoChangeSamlIdentityModeDetails(object):
+class SsoChangeSamlIdentityModeDetails(bb.Struct):
     """
     Changed SAML identity mode for SSO.
 
@@ -55251,6 +57890,9 @@ class SsoChangeSamlIdentityModeDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangeSamlIdentityModeDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangeSamlIdentityModeDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -55259,7 +57901,7 @@ class SsoChangeSamlIdentityModeDetails(object):
 
 SsoChangeSamlIdentityModeDetails_validator = bv.Struct(SsoChangeSamlIdentityModeDetails)
 
-class SsoChangeSamlIdentityModeType(object):
+class SsoChangeSamlIdentityModeType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -55296,6 +57938,9 @@ class SsoChangeSamlIdentityModeType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoChangeSamlIdentityModeType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoChangeSamlIdentityModeType(description={!r})'.format(
             self._description_value,
@@ -55303,7 +57948,7 @@ class SsoChangeSamlIdentityModeType(object):
 
 SsoChangeSamlIdentityModeType_validator = bv.Struct(SsoChangeSamlIdentityModeType)
 
-class SsoErrorDetails(object):
+class SsoErrorDetails(bb.Struct):
     """
     Failed to sign in via SSO.
 
@@ -55347,6 +57992,9 @@ class SsoErrorDetails(object):
         self._error_details_value = None
         self._error_details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoErrorDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoErrorDetails(error_details={!r})'.format(
             self._error_details_value,
@@ -55354,7 +58002,7 @@ class SsoErrorDetails(object):
 
 SsoErrorDetails_validator = bv.Struct(SsoErrorDetails)
 
-class SsoErrorType(object):
+class SsoErrorType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -55391,6 +58039,9 @@ class SsoErrorType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoErrorType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoErrorType(description={!r})'.format(
             self._description_value,
@@ -55398,7 +58049,7 @@ class SsoErrorType(object):
 
 SsoErrorType_validator = bv.Struct(SsoErrorType)
 
-class SsoRemoveCertDetails(object):
+class SsoRemoveCertDetails(bb.Struct):
     """
     Removed X.509 certificate for SSO.
     """
@@ -55411,12 +58062,15 @@ class SsoRemoveCertDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoRemoveCertDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoRemoveCertDetails()'
 
 SsoRemoveCertDetails_validator = bv.Struct(SsoRemoveCertDetails)
 
-class SsoRemoveCertType(object):
+class SsoRemoveCertType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -55453,6 +58107,9 @@ class SsoRemoveCertType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoRemoveCertType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoRemoveCertType(description={!r})'.format(
             self._description_value,
@@ -55460,7 +58117,7 @@ class SsoRemoveCertType(object):
 
 SsoRemoveCertType_validator = bv.Struct(SsoRemoveCertType)
 
-class SsoRemoveLoginUrlDetails(object):
+class SsoRemoveLoginUrlDetails(bb.Struct):
     """
     Removed sign-in URL for SSO.
 
@@ -55504,6 +58161,9 @@ class SsoRemoveLoginUrlDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoRemoveLoginUrlDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoRemoveLoginUrlDetails(previous_value={!r})'.format(
             self._previous_value_value,
@@ -55511,7 +58171,7 @@ class SsoRemoveLoginUrlDetails(object):
 
 SsoRemoveLoginUrlDetails_validator = bv.Struct(SsoRemoveLoginUrlDetails)
 
-class SsoRemoveLoginUrlType(object):
+class SsoRemoveLoginUrlType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -55548,6 +58208,9 @@ class SsoRemoveLoginUrlType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoRemoveLoginUrlType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoRemoveLoginUrlType(description={!r})'.format(
             self._description_value,
@@ -55555,7 +58218,7 @@ class SsoRemoveLoginUrlType(object):
 
 SsoRemoveLoginUrlType_validator = bv.Struct(SsoRemoveLoginUrlType)
 
-class SsoRemoveLogoutUrlDetails(object):
+class SsoRemoveLogoutUrlDetails(bb.Struct):
     """
     Removed sign-out URL for SSO.
 
@@ -55599,6 +58262,9 @@ class SsoRemoveLogoutUrlDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoRemoveLogoutUrlDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoRemoveLogoutUrlDetails(previous_value={!r})'.format(
             self._previous_value_value,
@@ -55606,7 +58272,7 @@ class SsoRemoveLogoutUrlDetails(object):
 
 SsoRemoveLogoutUrlDetails_validator = bv.Struct(SsoRemoveLogoutUrlDetails)
 
-class SsoRemoveLogoutUrlType(object):
+class SsoRemoveLogoutUrlType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -55643,6 +58309,9 @@ class SsoRemoveLogoutUrlType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoRemoveLogoutUrlType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoRemoveLogoutUrlType(description={!r})'.format(
             self._description_value,
@@ -55650,7 +58319,7 @@ class SsoRemoveLogoutUrlType(object):
 
 SsoRemoveLogoutUrlType_validator = bv.Struct(SsoRemoveLogoutUrlType)
 
-class TeamActivityCreateReportDetails(object):
+class TeamActivityCreateReportDetails(bb.Struct):
     """
     Created team activity report.
 
@@ -55725,6 +58394,9 @@ class TeamActivityCreateReportDetails(object):
         self._end_date_value = None
         self._end_date_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamActivityCreateReportDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamActivityCreateReportDetails(start_date={!r}, end_date={!r})'.format(
             self._start_date_value,
@@ -55733,7 +58405,7 @@ class TeamActivityCreateReportDetails(object):
 
 TeamActivityCreateReportDetails_validator = bv.Struct(TeamActivityCreateReportDetails)
 
-class TeamActivityCreateReportType(object):
+class TeamActivityCreateReportType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -55770,6 +58442,9 @@ class TeamActivityCreateReportType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamActivityCreateReportType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamActivityCreateReportType(description={!r})'.format(
             self._description_value,
@@ -55777,7 +58452,7 @@ class TeamActivityCreateReportType(object):
 
 TeamActivityCreateReportType_validator = bv.Struct(TeamActivityCreateReportType)
 
-class TeamEvent(object):
+class TeamEvent(bb.Struct):
     """
     An audit log event.
 
@@ -56141,6 +58816,9 @@ class TeamEvent(object):
         self._details_value = None
         self._details_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamEvent, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamEvent(timestamp={!r}, event_category={!r}, event_type={!r}, details={!r}, actor={!r}, origin={!r}, involve_non_team_member={!r}, context={!r}, participants={!r}, assets={!r})'.format(
             self._timestamp_value,
@@ -56157,7 +58835,7 @@ class TeamEvent(object):
 
 TeamEvent_validator = bv.Struct(TeamEvent)
 
-class TeamFolderChangeStatusDetails(object):
+class TeamFolderChangeStatusDetails(bb.Struct):
     """
     Changed archival status of team folder.
 
@@ -56192,7 +58870,7 @@ class TeamFolderChangeStatusDetails(object):
         """
         New team folder status.
 
-        :rtype: team.TeamFolderStatus_validator
+        :rtype: team.TeamFolderStatus
         """
         if self._new_value_present:
             return self._new_value_value
@@ -56216,7 +58894,7 @@ class TeamFolderChangeStatusDetails(object):
         Previous team folder status. Might be missing due to historical data
         gap.
 
-        :rtype: team.TeamFolderStatus_validator
+        :rtype: team.TeamFolderStatus
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -56237,6 +58915,9 @@ class TeamFolderChangeStatusDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderChangeStatusDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderChangeStatusDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -56245,7 +58926,7 @@ class TeamFolderChangeStatusDetails(object):
 
 TeamFolderChangeStatusDetails_validator = bv.Struct(TeamFolderChangeStatusDetails)
 
-class TeamFolderChangeStatusType(object):
+class TeamFolderChangeStatusType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -56282,6 +58963,9 @@ class TeamFolderChangeStatusType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderChangeStatusType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderChangeStatusType(description={!r})'.format(
             self._description_value,
@@ -56289,7 +58973,7 @@ class TeamFolderChangeStatusType(object):
 
 TeamFolderChangeStatusType_validator = bv.Struct(TeamFolderChangeStatusType)
 
-class TeamFolderCreateDetails(object):
+class TeamFolderCreateDetails(bb.Struct):
     """
     Created team folder in active status.
     """
@@ -56302,12 +58986,15 @@ class TeamFolderCreateDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderCreateDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderCreateDetails()'
 
 TeamFolderCreateDetails_validator = bv.Struct(TeamFolderCreateDetails)
 
-class TeamFolderCreateType(object):
+class TeamFolderCreateType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -56344,6 +59031,9 @@ class TeamFolderCreateType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderCreateType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderCreateType(description={!r})'.format(
             self._description_value,
@@ -56351,7 +59041,7 @@ class TeamFolderCreateType(object):
 
 TeamFolderCreateType_validator = bv.Struct(TeamFolderCreateType)
 
-class TeamFolderDowngradeDetails(object):
+class TeamFolderDowngradeDetails(bb.Struct):
     """
     Downgraded team folder to regular shared folder.
 
@@ -56395,6 +59085,9 @@ class TeamFolderDowngradeDetails(object):
         self._target_asset_index_value = None
         self._target_asset_index_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderDowngradeDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderDowngradeDetails(target_asset_index={!r})'.format(
             self._target_asset_index_value,
@@ -56402,7 +59095,7 @@ class TeamFolderDowngradeDetails(object):
 
 TeamFolderDowngradeDetails_validator = bv.Struct(TeamFolderDowngradeDetails)
 
-class TeamFolderDowngradeType(object):
+class TeamFolderDowngradeType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -56439,6 +59132,9 @@ class TeamFolderDowngradeType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderDowngradeType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderDowngradeType(description={!r})'.format(
             self._description_value,
@@ -56446,7 +59142,7 @@ class TeamFolderDowngradeType(object):
 
 TeamFolderDowngradeType_validator = bv.Struct(TeamFolderDowngradeType)
 
-class TeamFolderPermanentlyDeleteDetails(object):
+class TeamFolderPermanentlyDeleteDetails(bb.Struct):
     """
     Permanently deleted archived team folder.
     """
@@ -56459,12 +59155,15 @@ class TeamFolderPermanentlyDeleteDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderPermanentlyDeleteDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderPermanentlyDeleteDetails()'
 
 TeamFolderPermanentlyDeleteDetails_validator = bv.Struct(TeamFolderPermanentlyDeleteDetails)
 
-class TeamFolderPermanentlyDeleteType(object):
+class TeamFolderPermanentlyDeleteType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -56501,6 +59200,9 @@ class TeamFolderPermanentlyDeleteType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderPermanentlyDeleteType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderPermanentlyDeleteType(description={!r})'.format(
             self._description_value,
@@ -56508,7 +59210,7 @@ class TeamFolderPermanentlyDeleteType(object):
 
 TeamFolderPermanentlyDeleteType_validator = bv.Struct(TeamFolderPermanentlyDeleteType)
 
-class TeamFolderRenameDetails(object):
+class TeamFolderRenameDetails(bb.Struct):
     """
     Renamed active/archived team folder.
 
@@ -56583,6 +59285,9 @@ class TeamFolderRenameDetails(object):
         self._new_folder_name_value = None
         self._new_folder_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderRenameDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderRenameDetails(previous_folder_name={!r}, new_folder_name={!r})'.format(
             self._previous_folder_name_value,
@@ -56591,7 +59296,7 @@ class TeamFolderRenameDetails(object):
 
 TeamFolderRenameDetails_validator = bv.Struct(TeamFolderRenameDetails)
 
-class TeamFolderRenameType(object):
+class TeamFolderRenameType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -56628,6 +59333,9 @@ class TeamFolderRenameType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamFolderRenameType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamFolderRenameType(description={!r})'.format(
             self._description_value,
@@ -56650,6 +59358,9 @@ class TeamLinkedAppLogInfo(AppLogInfo):
                  display_name=None):
         super(TeamLinkedAppLogInfo, self).__init__(app_id,
                                                    display_name)
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamLinkedAppLogInfo, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'TeamLinkedAppLogInfo(app_id={!r}, display_name={!r})'.format(
@@ -56747,6 +59458,9 @@ class TeamMemberLogInfo(UserLogInfo):
         self._member_external_id_value = None
         self._member_external_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamMemberLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamMemberLogInfo(account_id={!r}, display_name={!r}, email={!r}, team_member_id={!r}, member_external_id={!r})'.format(
             self._account_id_value,
@@ -56797,12 +59511,15 @@ class TeamMembershipType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamMembershipType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamMembershipType(%r, %r)' % (self._tag, self._value)
 
 TeamMembershipType_validator = bv.Union(TeamMembershipType)
 
-class TeamMergeFromDetails(object):
+class TeamMergeFromDetails(bb.Struct):
     """
     Merged another team into this team.
 
@@ -56846,6 +59563,9 @@ class TeamMergeFromDetails(object):
         self._team_name_value = None
         self._team_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamMergeFromDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamMergeFromDetails(team_name={!r})'.format(
             self._team_name_value,
@@ -56853,7 +59573,7 @@ class TeamMergeFromDetails(object):
 
 TeamMergeFromDetails_validator = bv.Struct(TeamMergeFromDetails)
 
-class TeamMergeFromType(object):
+class TeamMergeFromType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -56890,6 +59610,9 @@ class TeamMergeFromType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamMergeFromType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamMergeFromType(description={!r})'.format(
             self._description_value,
@@ -56897,7 +59620,7 @@ class TeamMergeFromType(object):
 
 TeamMergeFromType_validator = bv.Struct(TeamMergeFromType)
 
-class TeamMergeToDetails(object):
+class TeamMergeToDetails(bb.Struct):
     """
     Merged this team into another team.
 
@@ -56941,6 +59664,9 @@ class TeamMergeToDetails(object):
         self._team_name_value = None
         self._team_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamMergeToDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamMergeToDetails(team_name={!r})'.format(
             self._team_name_value,
@@ -56948,7 +59674,7 @@ class TeamMergeToDetails(object):
 
 TeamMergeToDetails_validator = bv.Struct(TeamMergeToDetails)
 
-class TeamMergeToType(object):
+class TeamMergeToType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -56985,6 +59711,9 @@ class TeamMergeToType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamMergeToType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamMergeToType(description={!r})'.format(
             self._description_value,
@@ -56992,7 +59721,7 @@ class TeamMergeToType(object):
 
 TeamMergeToType_validator = bv.Struct(TeamMergeToType)
 
-class TeamName(object):
+class TeamName(bb.Struct):
     """
     Team name details
 
@@ -57067,6 +59796,9 @@ class TeamName(object):
         self._team_legal_name_value = None
         self._team_legal_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamName, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamName(team_display_name={!r}, team_legal_name={!r})'.format(
             self._team_display_name_value,
@@ -57075,7 +59807,7 @@ class TeamName(object):
 
 TeamName_validator = bv.Struct(TeamName)
 
-class TeamProfileAddLogoDetails(object):
+class TeamProfileAddLogoDetails(bb.Struct):
     """
     Added team logo to display on shared link headers.
     """
@@ -57088,12 +59820,15 @@ class TeamProfileAddLogoDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileAddLogoDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileAddLogoDetails()'
 
 TeamProfileAddLogoDetails_validator = bv.Struct(TeamProfileAddLogoDetails)
 
-class TeamProfileAddLogoType(object):
+class TeamProfileAddLogoType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57130,6 +59865,9 @@ class TeamProfileAddLogoType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileAddLogoType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileAddLogoType(description={!r})'.format(
             self._description_value,
@@ -57137,7 +59875,7 @@ class TeamProfileAddLogoType(object):
 
 TeamProfileAddLogoType_validator = bv.Struct(TeamProfileAddLogoType)
 
-class TeamProfileChangeDefaultLanguageDetails(object):
+class TeamProfileChangeDefaultLanguageDetails(bb.Struct):
     """
     Changed default language for team.
 
@@ -57212,6 +59950,9 @@ class TeamProfileChangeDefaultLanguageDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileChangeDefaultLanguageDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileChangeDefaultLanguageDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -57220,7 +59961,7 @@ class TeamProfileChangeDefaultLanguageDetails(object):
 
 TeamProfileChangeDefaultLanguageDetails_validator = bv.Struct(TeamProfileChangeDefaultLanguageDetails)
 
-class TeamProfileChangeDefaultLanguageType(object):
+class TeamProfileChangeDefaultLanguageType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57257,6 +59998,9 @@ class TeamProfileChangeDefaultLanguageType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileChangeDefaultLanguageType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileChangeDefaultLanguageType(description={!r})'.format(
             self._description_value,
@@ -57264,7 +60008,7 @@ class TeamProfileChangeDefaultLanguageType(object):
 
 TeamProfileChangeDefaultLanguageType_validator = bv.Struct(TeamProfileChangeDefaultLanguageType)
 
-class TeamProfileChangeLogoDetails(object):
+class TeamProfileChangeLogoDetails(bb.Struct):
     """
     Changed team logo displayed on shared link headers.
     """
@@ -57277,12 +60021,15 @@ class TeamProfileChangeLogoDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileChangeLogoDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileChangeLogoDetails()'
 
 TeamProfileChangeLogoDetails_validator = bv.Struct(TeamProfileChangeLogoDetails)
 
-class TeamProfileChangeLogoType(object):
+class TeamProfileChangeLogoType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57319,6 +60066,9 @@ class TeamProfileChangeLogoType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileChangeLogoType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileChangeLogoType(description={!r})'.format(
             self._description_value,
@@ -57326,7 +60076,7 @@ class TeamProfileChangeLogoType(object):
 
 TeamProfileChangeLogoType_validator = bv.Struct(TeamProfileChangeLogoType)
 
-class TeamProfileChangeNameDetails(object):
+class TeamProfileChangeNameDetails(bb.Struct):
     """
     Changed team name.
 
@@ -57405,6 +60155,9 @@ class TeamProfileChangeNameDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileChangeNameDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileChangeNameDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -57413,7 +60166,7 @@ class TeamProfileChangeNameDetails(object):
 
 TeamProfileChangeNameDetails_validator = bv.Struct(TeamProfileChangeNameDetails)
 
-class TeamProfileChangeNameType(object):
+class TeamProfileChangeNameType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57450,6 +60203,9 @@ class TeamProfileChangeNameType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileChangeNameType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileChangeNameType(description={!r})'.format(
             self._description_value,
@@ -57457,7 +60213,7 @@ class TeamProfileChangeNameType(object):
 
 TeamProfileChangeNameType_validator = bv.Struct(TeamProfileChangeNameType)
 
-class TeamProfileRemoveLogoDetails(object):
+class TeamProfileRemoveLogoDetails(bb.Struct):
     """
     Removed team logo displayed on shared link headers.
     """
@@ -57470,12 +60226,15 @@ class TeamProfileRemoveLogoDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileRemoveLogoDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileRemoveLogoDetails()'
 
 TeamProfileRemoveLogoDetails_validator = bv.Struct(TeamProfileRemoveLogoDetails)
 
-class TeamProfileRemoveLogoType(object):
+class TeamProfileRemoveLogoType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57512,6 +60271,9 @@ class TeamProfileRemoveLogoType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamProfileRemoveLogoType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamProfileRemoveLogoType(description={!r})'.format(
             self._description_value,
@@ -57519,7 +60281,189 @@ class TeamProfileRemoveLogoType(object):
 
 TeamProfileRemoveLogoType_validator = bv.Struct(TeamProfileRemoveLogoType)
 
-class TeamSelectiveSyncSettingsChangedDetails(object):
+class TeamSelectiveSyncPolicy(bb.Union):
+    """
+    Policy for controlling whether team selective sync is enabled for team.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamSelectiveSyncPolicy, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'TeamSelectiveSyncPolicy(%r, %r)' % (self._tag, self._value)
+
+TeamSelectiveSyncPolicy_validator = bv.Union(TeamSelectiveSyncPolicy)
+
+class TeamSelectiveSyncPolicyChangedDetails(bb.Struct):
+    """
+    Enabled/disabled Team Selective Sync for team.
+
+    :ivar new_value: New Team Selective Sync policy.
+    :ivar previous_value: Previous Team Selective Sync policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New Team Selective Sync policy.
+
+        :rtype: TeamSelectiveSyncPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous Team Selective Sync policy.
+
+        :rtype: TeamSelectiveSyncPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamSelectiveSyncPolicyChangedDetails, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'TeamSelectiveSyncPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+TeamSelectiveSyncPolicyChangedDetails_validator = bv.Struct(TeamSelectiveSyncPolicyChangedDetails)
+
+class TeamSelectiveSyncPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamSelectiveSyncPolicyChangedType, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'TeamSelectiveSyncPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+TeamSelectiveSyncPolicyChangedType_validator = bv.Struct(TeamSelectiveSyncPolicyChangedType)
+
+class TeamSelectiveSyncSettingsChangedDetails(bb.Struct):
     """
     Changed sync default.
 
@@ -57553,7 +60497,7 @@ class TeamSelectiveSyncSettingsChangedDetails(object):
         """
         Previous value.
 
-        :rtype: files.SyncSetting_validator
+        :rtype: files.SyncSetting
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -57576,7 +60520,7 @@ class TeamSelectiveSyncSettingsChangedDetails(object):
         """
         New value.
 
-        :rtype: files.SyncSetting_validator
+        :rtype: files.SyncSetting
         """
         if self._new_value_present:
             return self._new_value_value
@@ -57594,6 +60538,9 @@ class TeamSelectiveSyncSettingsChangedDetails(object):
         self._new_value_value = None
         self._new_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamSelectiveSyncSettingsChangedDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamSelectiveSyncSettingsChangedDetails(previous_value={!r}, new_value={!r})'.format(
             self._previous_value_value,
@@ -57602,7 +60549,7 @@ class TeamSelectiveSyncSettingsChangedDetails(object):
 
 TeamSelectiveSyncSettingsChangedDetails_validator = bv.Struct(TeamSelectiveSyncSettingsChangedDetails)
 
-class TeamSelectiveSyncSettingsChangedType(object):
+class TeamSelectiveSyncSettingsChangedType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57639,6 +60586,9 @@ class TeamSelectiveSyncSettingsChangedType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamSelectiveSyncSettingsChangedType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamSelectiveSyncSettingsChangedType(description={!r})'.format(
             self._description_value,
@@ -57646,7 +60596,7 @@ class TeamSelectiveSyncSettingsChangedType(object):
 
 TeamSelectiveSyncSettingsChangedType_validator = bv.Struct(TeamSelectiveSyncSettingsChangedType)
 
-class TfaAddBackupPhoneDetails(object):
+class TfaAddBackupPhoneDetails(bb.Struct):
     """
     Added backup phone for two-step verification.
     """
@@ -57659,12 +60609,15 @@ class TfaAddBackupPhoneDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaAddBackupPhoneDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaAddBackupPhoneDetails()'
 
 TfaAddBackupPhoneDetails_validator = bv.Struct(TfaAddBackupPhoneDetails)
 
-class TfaAddBackupPhoneType(object):
+class TfaAddBackupPhoneType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57701,6 +60654,9 @@ class TfaAddBackupPhoneType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaAddBackupPhoneType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaAddBackupPhoneType(description={!r})'.format(
             self._description_value,
@@ -57708,7 +60664,7 @@ class TfaAddBackupPhoneType(object):
 
 TfaAddBackupPhoneType_validator = bv.Struct(TfaAddBackupPhoneType)
 
-class TfaAddSecurityKeyDetails(object):
+class TfaAddSecurityKeyDetails(bb.Struct):
     """
     Added security key for two-step verification.
     """
@@ -57721,12 +60677,15 @@ class TfaAddSecurityKeyDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaAddSecurityKeyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaAddSecurityKeyDetails()'
 
 TfaAddSecurityKeyDetails_validator = bv.Struct(TfaAddSecurityKeyDetails)
 
-class TfaAddSecurityKeyType(object):
+class TfaAddSecurityKeyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57763,6 +60722,9 @@ class TfaAddSecurityKeyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaAddSecurityKeyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaAddSecurityKeyType(description={!r})'.format(
             self._description_value,
@@ -57770,7 +60732,7 @@ class TfaAddSecurityKeyType(object):
 
 TfaAddSecurityKeyType_validator = bv.Struct(TfaAddSecurityKeyType)
 
-class TfaChangeBackupPhoneDetails(object):
+class TfaChangeBackupPhoneDetails(bb.Struct):
     """
     Changed backup phone for two-step verification.
     """
@@ -57783,12 +60745,15 @@ class TfaChangeBackupPhoneDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaChangeBackupPhoneDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaChangeBackupPhoneDetails()'
 
 TfaChangeBackupPhoneDetails_validator = bv.Struct(TfaChangeBackupPhoneDetails)
 
-class TfaChangeBackupPhoneType(object):
+class TfaChangeBackupPhoneType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57825,6 +60790,9 @@ class TfaChangeBackupPhoneType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaChangeBackupPhoneType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaChangeBackupPhoneType(description={!r})'.format(
             self._description_value,
@@ -57832,7 +60800,7 @@ class TfaChangeBackupPhoneType(object):
 
 TfaChangeBackupPhoneType_validator = bv.Struct(TfaChangeBackupPhoneType)
 
-class TfaChangePolicyDetails(object):
+class TfaChangePolicyDetails(bb.Struct):
     """
     Changed two-step verification setting for team.
 
@@ -57867,7 +60835,7 @@ class TfaChangePolicyDetails(object):
         """
         New change policy.
 
-        :rtype: team_policies.TwoStepVerificationPolicy_validator
+        :rtype: team_policies.TwoStepVerificationPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -57890,7 +60858,7 @@ class TfaChangePolicyDetails(object):
         """
         Previous change policy. Might be missing due to historical data gap.
 
-        :rtype: team_policies.TwoStepVerificationPolicy_validator
+        :rtype: team_policies.TwoStepVerificationPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -57911,6 +60879,9 @@ class TfaChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -57919,7 +60890,7 @@ class TfaChangePolicyDetails(object):
 
 TfaChangePolicyDetails_validator = bv.Struct(TfaChangePolicyDetails)
 
-class TfaChangePolicyType(object):
+class TfaChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -57956,6 +60927,9 @@ class TfaChangePolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaChangePolicyType(description={!r})'.format(
             self._description_value,
@@ -57963,7 +60937,7 @@ class TfaChangePolicyType(object):
 
 TfaChangePolicyType_validator = bv.Struct(TfaChangePolicyType)
 
-class TfaChangeStatusDetails(object):
+class TfaChangeStatusDetails(bb.Struct):
     """
     Enabled/disabled/changed two-step verification setting.
 
@@ -58080,6 +61054,9 @@ class TfaChangeStatusDetails(object):
         self._used_rescue_code_value = None
         self._used_rescue_code_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaChangeStatusDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaChangeStatusDetails(new_value={!r}, previous_value={!r}, used_rescue_code={!r})'.format(
             self._new_value_value,
@@ -58089,7 +61066,7 @@ class TfaChangeStatusDetails(object):
 
 TfaChangeStatusDetails_validator = bv.Struct(TfaChangeStatusDetails)
 
-class TfaChangeStatusType(object):
+class TfaChangeStatusType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -58125,6 +61102,9 @@ class TfaChangeStatusType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaChangeStatusType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'TfaChangeStatusType(description={!r})'.format(
@@ -58195,12 +61175,15 @@ class TfaConfiguration(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaConfiguration, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaConfiguration(%r, %r)' % (self._tag, self._value)
 
 TfaConfiguration_validator = bv.Union(TfaConfiguration)
 
-class TfaRemoveBackupPhoneDetails(object):
+class TfaRemoveBackupPhoneDetails(bb.Struct):
     """
     Removed backup phone for two-step verification.
     """
@@ -58213,12 +61196,15 @@ class TfaRemoveBackupPhoneDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaRemoveBackupPhoneDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaRemoveBackupPhoneDetails()'
 
 TfaRemoveBackupPhoneDetails_validator = bv.Struct(TfaRemoveBackupPhoneDetails)
 
-class TfaRemoveBackupPhoneType(object):
+class TfaRemoveBackupPhoneType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -58255,6 +61241,9 @@ class TfaRemoveBackupPhoneType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaRemoveBackupPhoneType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaRemoveBackupPhoneType(description={!r})'.format(
             self._description_value,
@@ -58262,7 +61251,7 @@ class TfaRemoveBackupPhoneType(object):
 
 TfaRemoveBackupPhoneType_validator = bv.Struct(TfaRemoveBackupPhoneType)
 
-class TfaRemoveSecurityKeyDetails(object):
+class TfaRemoveSecurityKeyDetails(bb.Struct):
     """
     Removed security key for two-step verification.
     """
@@ -58275,12 +61264,15 @@ class TfaRemoveSecurityKeyDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaRemoveSecurityKeyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaRemoveSecurityKeyDetails()'
 
 TfaRemoveSecurityKeyDetails_validator = bv.Struct(TfaRemoveSecurityKeyDetails)
 
-class TfaRemoveSecurityKeyType(object):
+class TfaRemoveSecurityKeyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -58317,6 +61309,9 @@ class TfaRemoveSecurityKeyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaRemoveSecurityKeyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaRemoveSecurityKeyType(description={!r})'.format(
             self._description_value,
@@ -58324,7 +61319,7 @@ class TfaRemoveSecurityKeyType(object):
 
 TfaRemoveSecurityKeyType_validator = bv.Struct(TfaRemoveSecurityKeyType)
 
-class TfaResetDetails(object):
+class TfaResetDetails(bb.Struct):
     """
     Reset two-step verification for team member.
     """
@@ -58337,12 +61332,15 @@ class TfaResetDetails(object):
     def __init__(self):
         pass
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaResetDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TfaResetDetails()'
 
 TfaResetDetails_validator = bv.Struct(TfaResetDetails)
 
-class TfaResetType(object):
+class TfaResetType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -58378,6 +61376,9 @@ class TfaResetType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TfaResetType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'TfaResetType(description={!r})'.format(
@@ -58485,12 +61486,15 @@ class TimeUnit(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TimeUnit, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TimeUnit(%r, %r)' % (self._tag, self._value)
 
 TimeUnit_validator = bv.Union(TimeUnit)
 
-class TwoAccountChangePolicyDetails(object):
+class TwoAccountChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled option for members to link personal Dropbox account and
     team account to same computer.
@@ -58571,6 +61575,9 @@ class TwoAccountChangePolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TwoAccountChangePolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TwoAccountChangePolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -58579,7 +61586,7 @@ class TwoAccountChangePolicyDetails(object):
 
 TwoAccountChangePolicyDetails_validator = bv.Struct(TwoAccountChangePolicyDetails)
 
-class TwoAccountChangePolicyType(object):
+class TwoAccountChangePolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -58615,6 +61622,9 @@ class TwoAccountChangePolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TwoAccountChangePolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'TwoAccountChangePolicyType(description={!r})'.format(
@@ -58664,6 +61674,9 @@ class TwoAccountPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TwoAccountPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TwoAccountPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -58685,6 +61698,9 @@ class UserLinkedAppLogInfo(AppLogInfo):
         super(UserLinkedAppLogInfo, self).__init__(app_id,
                                                    display_name)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UserLinkedAppLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UserLinkedAppLogInfo(app_id={!r}, display_name={!r})'.format(
             self._app_id_value,
@@ -58693,7 +61709,7 @@ class UserLinkedAppLogInfo(AppLogInfo):
 
 UserLinkedAppLogInfo_validator = bv.Struct(UserLinkedAppLogInfo)
 
-class UserNameLogInfo(object):
+class UserNameLogInfo(bb.Struct):
     """
     User's name logged information
 
@@ -58802,6 +61818,9 @@ class UserNameLogInfo(object):
         self._locale_value = None
         self._locale_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UserNameLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UserNameLogInfo(given_name={!r}, surname={!r}, locale={!r})'.format(
             self._given_name_value,
@@ -58828,6 +61847,9 @@ class UserOrTeamLinkedAppLogInfo(AppLogInfo):
         super(UserOrTeamLinkedAppLogInfo, self).__init__(app_id,
                                                          display_name)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UserOrTeamLinkedAppLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UserOrTeamLinkedAppLogInfo(app_id={!r}, display_name={!r})'.format(
             self._app_id_value,
@@ -58835,6 +61857,139 @@ class UserOrTeamLinkedAppLogInfo(AppLogInfo):
         )
 
 UserOrTeamLinkedAppLogInfo_validator = bv.Struct(UserOrTeamLinkedAppLogInfo)
+
+class ViewerInfoPolicyChangedDetails(bb.Struct):
+    """
+    Changed team policy for viewer info.
+
+    :ivar previous_value: Previous Viewer Info policy.
+    :ivar new_value: New Viewer Info policy.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Previous Viewer Info policy.
+
+        :rtype: PassPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New Viewer Info policy.
+
+        :rtype: PassPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ViewerInfoPolicyChangedDetails, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'ViewerInfoPolicyChangedDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+ViewerInfoPolicyChangedDetails_validator = bv.Struct(ViewerInfoPolicyChangedDetails)
+
+class ViewerInfoPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ViewerInfoPolicyChangedType, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'ViewerInfoPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ViewerInfoPolicyChangedType_validator = bv.Struct(ViewerInfoPolicyChangedType)
 
 class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
@@ -58983,6 +62138,9 @@ class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
         self._browser_value = None
         self._browser_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(WebDeviceSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'WebDeviceSessionLogInfo(user_agent={!r}, os={!r}, browser={!r}, ip_address={!r}, created={!r}, updated={!r}, session_info={!r})'.format(
             self._user_agent_value,
@@ -59010,6 +62168,9 @@ class WebSessionLogInfo(SessionLogInfo):
                  session_id=None):
         super(WebSessionLogInfo, self).__init__(session_id)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(WebSessionLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'WebSessionLogInfo(session_id={!r})'.format(
             self._session_id_value,
@@ -59017,7 +62178,7 @@ class WebSessionLogInfo(SessionLogInfo):
 
 WebSessionLogInfo_validator = bv.Struct(WebSessionLogInfo)
 
-class WebSessionsChangeFixedLengthPolicyDetails(object):
+class WebSessionsChangeFixedLengthPolicyDetails(bb.Struct):
     """
     Changed how long members can stay signed in to Dropbox.com.
 
@@ -59101,6 +62262,9 @@ class WebSessionsChangeFixedLengthPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(WebSessionsChangeFixedLengthPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'WebSessionsChangeFixedLengthPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -59109,7 +62273,7 @@ class WebSessionsChangeFixedLengthPolicyDetails(object):
 
 WebSessionsChangeFixedLengthPolicyDetails_validator = bv.Struct(WebSessionsChangeFixedLengthPolicyDetails)
 
-class WebSessionsChangeFixedLengthPolicyType(object):
+class WebSessionsChangeFixedLengthPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -59146,6 +62310,9 @@ class WebSessionsChangeFixedLengthPolicyType(object):
         self._description_value = None
         self._description_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(WebSessionsChangeFixedLengthPolicyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'WebSessionsChangeFixedLengthPolicyType(description={!r})'.format(
             self._description_value,
@@ -59153,7 +62320,7 @@ class WebSessionsChangeFixedLengthPolicyType(object):
 
 WebSessionsChangeFixedLengthPolicyType_validator = bv.Struct(WebSessionsChangeFixedLengthPolicyType)
 
-class WebSessionsChangeIdleLengthPolicyDetails(object):
+class WebSessionsChangeIdleLengthPolicyDetails(bb.Struct):
     """
     Changed how long team members can be idle while signed in to Dropbox.com.
 
@@ -59237,6 +62404,9 @@ class WebSessionsChangeIdleLengthPolicyDetails(object):
         self._previous_value_value = None
         self._previous_value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(WebSessionsChangeIdleLengthPolicyDetails, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'WebSessionsChangeIdleLengthPolicyDetails(new_value={!r}, previous_value={!r})'.format(
             self._new_value_value,
@@ -59245,7 +62415,7 @@ class WebSessionsChangeIdleLengthPolicyDetails(object):
 
 WebSessionsChangeIdleLengthPolicyDetails_validator = bv.Struct(WebSessionsChangeIdleLengthPolicyDetails)
 
-class WebSessionsChangeIdleLengthPolicyType(object):
+class WebSessionsChangeIdleLengthPolicyType(bb.Struct):
 
     __slots__ = [
         '_description_value',
@@ -59281,6 +62451,9 @@ class WebSessionsChangeIdleLengthPolicyType(object):
     def description(self):
         self._description_value = None
         self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(WebSessionsChangeIdleLengthPolicyType, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'WebSessionsChangeIdleLengthPolicyType(description={!r})'.format(
@@ -59354,6 +62527,9 @@ class WebSessionsFixedLengthPolicy(bb.Union):
             raise AttributeError("tag 'defined' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(WebSessionsFixedLengthPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'WebSessionsFixedLengthPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -59423,6 +62599,9 @@ class WebSessionsIdleLengthPolicy(bb.Union):
         if not self.is_defined():
             raise AttributeError("tag 'defined' not set")
         return self._value
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(WebSessionsIdleLengthPolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'WebSessionsIdleLengthPolicy(%r, %r)' % (self._tag, self._value)
@@ -60411,6 +63590,7 @@ EventDetails._member_change_email_details_validator = MemberChangeEmailDetails_v
 EventDetails._member_change_membership_type_details_validator = MemberChangeMembershipTypeDetails_validator
 EventDetails._member_change_name_details_validator = MemberChangeNameDetails_validator
 EventDetails._member_change_status_details_validator = MemberChangeStatusDetails_validator
+EventDetails._member_delete_manual_contacts_details_validator = MemberDeleteManualContactsDetails_validator
 EventDetails._member_permanently_delete_account_contents_details_validator = MemberPermanentlyDeleteAccountContentsDetails_validator
 EventDetails._member_space_limits_add_custom_quota_details_validator = MemberSpaceLimitsAddCustomQuotaDetails_validator
 EventDetails._member_space_limits_change_custom_quota_details_validator = MemberSpaceLimitsChangeCustomQuotaDetails_validator
@@ -60439,6 +63619,7 @@ EventDetails._paper_doc_edit_details_validator = PaperDocEditDetails_validator
 EventDetails._paper_doc_edit_comment_details_validator = PaperDocEditCommentDetails_validator
 EventDetails._paper_doc_followed_details_validator = PaperDocFollowedDetails_validator
 EventDetails._paper_doc_mention_details_validator = PaperDocMentionDetails_validator
+EventDetails._paper_doc_ownership_changed_details_validator = PaperDocOwnershipChangedDetails_validator
 EventDetails._paper_doc_request_access_details_validator = PaperDocRequestAccessDetails_validator
 EventDetails._paper_doc_resolve_comment_details_validator = PaperDocResolveCommentDetails_validator
 EventDetails._paper_doc_revert_details_validator = PaperDocRevertDetails_validator
@@ -60614,8 +63795,10 @@ EventDetails._smart_sync_change_policy_details_validator = SmartSyncChangePolicy
 EventDetails._smart_sync_not_opt_out_details_validator = SmartSyncNotOptOutDetails_validator
 EventDetails._smart_sync_opt_out_details_validator = SmartSyncOptOutDetails_validator
 EventDetails._sso_change_policy_details_validator = SsoChangePolicyDetails_validator
+EventDetails._team_selective_sync_policy_changed_details_validator = TeamSelectiveSyncPolicyChangedDetails_validator
 EventDetails._tfa_change_policy_details_validator = TfaChangePolicyDetails_validator
 EventDetails._two_account_change_policy_details_validator = TwoAccountChangePolicyDetails_validator
+EventDetails._viewer_info_policy_changed_details_validator = ViewerInfoPolicyChangedDetails_validator
 EventDetails._web_sessions_change_fixed_length_policy_details_validator = WebSessionsChangeFixedLengthPolicyDetails_validator
 EventDetails._web_sessions_change_idle_length_policy_details_validator = WebSessionsChangeIdleLengthPolicyDetails_validator
 EventDetails._team_merge_from_details_validator = TeamMergeFromDetails_validator
@@ -60719,6 +63902,7 @@ EventDetails._tagmap = {
     'member_change_membership_type_details': EventDetails._member_change_membership_type_details_validator,
     'member_change_name_details': EventDetails._member_change_name_details_validator,
     'member_change_status_details': EventDetails._member_change_status_details_validator,
+    'member_delete_manual_contacts_details': EventDetails._member_delete_manual_contacts_details_validator,
     'member_permanently_delete_account_contents_details': EventDetails._member_permanently_delete_account_contents_details_validator,
     'member_space_limits_add_custom_quota_details': EventDetails._member_space_limits_add_custom_quota_details_validator,
     'member_space_limits_change_custom_quota_details': EventDetails._member_space_limits_change_custom_quota_details_validator,
@@ -60747,6 +63931,7 @@ EventDetails._tagmap = {
     'paper_doc_edit_comment_details': EventDetails._paper_doc_edit_comment_details_validator,
     'paper_doc_followed_details': EventDetails._paper_doc_followed_details_validator,
     'paper_doc_mention_details': EventDetails._paper_doc_mention_details_validator,
+    'paper_doc_ownership_changed_details': EventDetails._paper_doc_ownership_changed_details_validator,
     'paper_doc_request_access_details': EventDetails._paper_doc_request_access_details_validator,
     'paper_doc_resolve_comment_details': EventDetails._paper_doc_resolve_comment_details_validator,
     'paper_doc_revert_details': EventDetails._paper_doc_revert_details_validator,
@@ -60922,8 +64107,10 @@ EventDetails._tagmap = {
     'smart_sync_not_opt_out_details': EventDetails._smart_sync_not_opt_out_details_validator,
     'smart_sync_opt_out_details': EventDetails._smart_sync_opt_out_details_validator,
     'sso_change_policy_details': EventDetails._sso_change_policy_details_validator,
+    'team_selective_sync_policy_changed_details': EventDetails._team_selective_sync_policy_changed_details_validator,
     'tfa_change_policy_details': EventDetails._tfa_change_policy_details_validator,
     'two_account_change_policy_details': EventDetails._two_account_change_policy_details_validator,
+    'viewer_info_policy_changed_details': EventDetails._viewer_info_policy_changed_details_validator,
     'web_sessions_change_fixed_length_policy_details': EventDetails._web_sessions_change_fixed_length_policy_details_validator,
     'web_sessions_change_idle_length_policy_details': EventDetails._web_sessions_change_idle_length_policy_details_validator,
     'team_merge_from_details': EventDetails._team_merge_from_details_validator,
@@ -61030,6 +64217,7 @@ EventType._member_change_email_validator = MemberChangeEmailType_validator
 EventType._member_change_membership_type_validator = MemberChangeMembershipTypeType_validator
 EventType._member_change_name_validator = MemberChangeNameType_validator
 EventType._member_change_status_validator = MemberChangeStatusType_validator
+EventType._member_delete_manual_contacts_validator = MemberDeleteManualContactsType_validator
 EventType._member_permanently_delete_account_contents_validator = MemberPermanentlyDeleteAccountContentsType_validator
 EventType._member_space_limits_add_custom_quota_validator = MemberSpaceLimitsAddCustomQuotaType_validator
 EventType._member_space_limits_change_custom_quota_validator = MemberSpaceLimitsChangeCustomQuotaType_validator
@@ -61058,6 +64246,7 @@ EventType._paper_doc_edit_validator = PaperDocEditType_validator
 EventType._paper_doc_edit_comment_validator = PaperDocEditCommentType_validator
 EventType._paper_doc_followed_validator = PaperDocFollowedType_validator
 EventType._paper_doc_mention_validator = PaperDocMentionType_validator
+EventType._paper_doc_ownership_changed_validator = PaperDocOwnershipChangedType_validator
 EventType._paper_doc_request_access_validator = PaperDocRequestAccessType_validator
 EventType._paper_doc_resolve_comment_validator = PaperDocResolveCommentType_validator
 EventType._paper_doc_revert_validator = PaperDocRevertType_validator
@@ -61233,8 +64422,10 @@ EventType._smart_sync_change_policy_validator = SmartSyncChangePolicyType_valida
 EventType._smart_sync_not_opt_out_validator = SmartSyncNotOptOutType_validator
 EventType._smart_sync_opt_out_validator = SmartSyncOptOutType_validator
 EventType._sso_change_policy_validator = SsoChangePolicyType_validator
+EventType._team_selective_sync_policy_changed_validator = TeamSelectiveSyncPolicyChangedType_validator
 EventType._tfa_change_policy_validator = TfaChangePolicyType_validator
 EventType._two_account_change_policy_validator = TwoAccountChangePolicyType_validator
+EventType._viewer_info_policy_changed_validator = ViewerInfoPolicyChangedType_validator
 EventType._web_sessions_change_fixed_length_policy_validator = WebSessionsChangeFixedLengthPolicyType_validator
 EventType._web_sessions_change_idle_length_policy_validator = WebSessionsChangeIdleLengthPolicyType_validator
 EventType._team_merge_from_validator = TeamMergeFromType_validator
@@ -61337,6 +64528,7 @@ EventType._tagmap = {
     'member_change_membership_type': EventType._member_change_membership_type_validator,
     'member_change_name': EventType._member_change_name_validator,
     'member_change_status': EventType._member_change_status_validator,
+    'member_delete_manual_contacts': EventType._member_delete_manual_contacts_validator,
     'member_permanently_delete_account_contents': EventType._member_permanently_delete_account_contents_validator,
     'member_space_limits_add_custom_quota': EventType._member_space_limits_add_custom_quota_validator,
     'member_space_limits_change_custom_quota': EventType._member_space_limits_change_custom_quota_validator,
@@ -61365,6 +64557,7 @@ EventType._tagmap = {
     'paper_doc_edit_comment': EventType._paper_doc_edit_comment_validator,
     'paper_doc_followed': EventType._paper_doc_followed_validator,
     'paper_doc_mention': EventType._paper_doc_mention_validator,
+    'paper_doc_ownership_changed': EventType._paper_doc_ownership_changed_validator,
     'paper_doc_request_access': EventType._paper_doc_request_access_validator,
     'paper_doc_resolve_comment': EventType._paper_doc_resolve_comment_validator,
     'paper_doc_revert': EventType._paper_doc_revert_validator,
@@ -61540,8 +64733,10 @@ EventType._tagmap = {
     'smart_sync_not_opt_out': EventType._smart_sync_not_opt_out_validator,
     'smart_sync_opt_out': EventType._smart_sync_opt_out_validator,
     'sso_change_policy': EventType._sso_change_policy_validator,
+    'team_selective_sync_policy_changed': EventType._team_selective_sync_policy_changed_validator,
     'tfa_change_policy': EventType._tfa_change_policy_validator,
     'two_account_change_policy': EventType._two_account_change_policy_validator,
+    'viewer_info_policy_changed': EventType._viewer_info_policy_changed_validator,
     'web_sessions_change_fixed_length_policy': EventType._web_sessions_change_fixed_length_policy_validator,
     'web_sessions_change_idle_length_policy': EventType._web_sessions_change_idle_length_policy_validator,
     'team_merge_from': EventType._team_merge_from_validator,
@@ -62027,9 +65222,11 @@ GetTeamEventsContinueArg._all_field_names_ = set(['cursor'])
 GetTeamEventsContinueArg._all_fields_ = [('cursor', GetTeamEventsContinueArg._cursor_validator)]
 
 GetTeamEventsContinueError._bad_cursor_validator = bv.Void()
+GetTeamEventsContinueError._reset_validator = common.DropboxTimestamp_validator
 GetTeamEventsContinueError._other_validator = bv.Void()
 GetTeamEventsContinueError._tagmap = {
     'bad_cursor': GetTeamEventsContinueError._bad_cursor_validator,
+    'reset': GetTeamEventsContinueError._reset_validator,
     'other': GetTeamEventsContinueError._other_validator,
 }
 
@@ -62486,6 +65683,13 @@ MemberChangeStatusDetails._all_fields_ = [
 MemberChangeStatusType._description_validator = bv.String()
 MemberChangeStatusType._all_field_names_ = set(['description'])
 MemberChangeStatusType._all_fields_ = [('description', MemberChangeStatusType._description_validator)]
+
+MemberDeleteManualContactsDetails._all_field_names_ = set([])
+MemberDeleteManualContactsDetails._all_fields_ = []
+
+MemberDeleteManualContactsType._description_validator = bv.String()
+MemberDeleteManualContactsType._all_field_names_ = set(['description'])
+MemberDeleteManualContactsType._all_fields_ = [('description', MemberDeleteManualContactsType._description_validator)]
 
 MemberPermanentlyDeleteAccountContentsDetails._all_field_names_ = set([])
 MemberPermanentlyDeleteAccountContentsDetails._all_fields_ = []
@@ -63191,6 +66395,24 @@ PaperDocMentionType._description_validator = bv.String()
 PaperDocMentionType._all_field_names_ = set(['description'])
 PaperDocMentionType._all_fields_ = [('description', PaperDocMentionType._description_validator)]
 
+PaperDocOwnershipChangedDetails._event_uuid_validator = bv.String()
+PaperDocOwnershipChangedDetails._old_owner_user_id_validator = bv.Nullable(users_common.AccountId_validator)
+PaperDocOwnershipChangedDetails._new_owner_user_id_validator = users_common.AccountId_validator
+PaperDocOwnershipChangedDetails._all_field_names_ = set([
+    'event_uuid',
+    'old_owner_user_id',
+    'new_owner_user_id',
+])
+PaperDocOwnershipChangedDetails._all_fields_ = [
+    ('event_uuid', PaperDocOwnershipChangedDetails._event_uuid_validator),
+    ('old_owner_user_id', PaperDocOwnershipChangedDetails._old_owner_user_id_validator),
+    ('new_owner_user_id', PaperDocOwnershipChangedDetails._new_owner_user_id_validator),
+]
+
+PaperDocOwnershipChangedType._description_validator = bv.String()
+PaperDocOwnershipChangedType._all_field_names_ = set(['description'])
+PaperDocOwnershipChangedType._all_fields_ = [('description', PaperDocOwnershipChangedType._description_validator)]
+
 PaperDocRequestAccessDetails._event_uuid_validator = bv.String()
 PaperDocRequestAccessDetails._all_field_names_ = set(['event_uuid'])
 PaperDocRequestAccessDetails._all_fields_ = [('event_uuid', PaperDocRequestAccessDetails._event_uuid_validator)]
@@ -63422,6 +66644,22 @@ ParticipantLogInfo._tagmap = {
 
 ParticipantLogInfo.other = ParticipantLogInfo('other')
 
+PassPolicy._enabled_validator = bv.Void()
+PassPolicy._allow_validator = bv.Void()
+PassPolicy._disabled_validator = bv.Void()
+PassPolicy._other_validator = bv.Void()
+PassPolicy._tagmap = {
+    'enabled': PassPolicy._enabled_validator,
+    'allow': PassPolicy._allow_validator,
+    'disabled': PassPolicy._disabled_validator,
+    'other': PassPolicy._other_validator,
+}
+
+PassPolicy.enabled = PassPolicy('enabled')
+PassPolicy.allow = PassPolicy('allow')
+PassPolicy.disabled = PassPolicy('disabled')
+PassPolicy.other = PassPolicy('other')
+
 PasswordChangeDetails._all_field_names_ = set([])
 PasswordChangeDetails._all_fields_ = []
 
@@ -63481,6 +66719,16 @@ PlacementRestriction._tagmap = {
 PlacementRestriction.europe_only = PlacementRestriction('europe_only')
 PlacementRestriction.none = PlacementRestriction('none')
 PlacementRestriction.other = PlacementRestriction('other')
+
+QuickActionType._delete_shared_link_validator = bv.Void()
+QuickActionType._other_validator = bv.Void()
+QuickActionType._tagmap = {
+    'delete_shared_link': QuickActionType._delete_shared_link_validator,
+    'other': QuickActionType._other_validator,
+}
+
+QuickActionType.delete_shared_link = QuickActionType('delete_shared_link')
+QuickActionType.other = QuickActionType('other')
 
 RelocateAssetReferencesLogInfo._src_asset_index_validator = bv.UInt64()
 RelocateAssetReferencesLogInfo._dest_asset_index_validator = bv.UInt64()
@@ -64126,13 +67374,19 @@ SharedFolderMountType._all_fields_ = [('description', SharedFolderMountType._des
 
 SharedFolderNestDetails._previous_parent_ns_id_validator = bv.Nullable(NamespaceId_validator)
 SharedFolderNestDetails._new_parent_ns_id_validator = bv.Nullable(NamespaceId_validator)
+SharedFolderNestDetails._previous_ns_path_validator = bv.Nullable(FilePath_validator)
+SharedFolderNestDetails._new_ns_path_validator = bv.Nullable(FilePath_validator)
 SharedFolderNestDetails._all_field_names_ = set([
     'previous_parent_ns_id',
     'new_parent_ns_id',
+    'previous_ns_path',
+    'new_ns_path',
 ])
 SharedFolderNestDetails._all_fields_ = [
     ('previous_parent_ns_id', SharedFolderNestDetails._previous_parent_ns_id_validator),
     ('new_parent_ns_id', SharedFolderNestDetails._new_parent_ns_id_validator),
+    ('previous_ns_path', SharedFolderNestDetails._previous_ns_path_validator),
+    ('new_ns_path', SharedFolderNestDetails._new_ns_path_validator),
 ]
 
 SharedFolderNestType._description_validator = bv.String()
@@ -64377,15 +67631,18 @@ SharingLinkPolicy.other = SharingLinkPolicy('other')
 
 SharingMemberPolicy._allow_validator = bv.Void()
 SharingMemberPolicy._forbid_validator = bv.Void()
+SharingMemberPolicy._team_members_and_whitelist_validator = bv.Void()
 SharingMemberPolicy._other_validator = bv.Void()
 SharingMemberPolicy._tagmap = {
     'allow': SharingMemberPolicy._allow_validator,
     'forbid': SharingMemberPolicy._forbid_validator,
+    'team_members_and_whitelist': SharingMemberPolicy._team_members_and_whitelist_validator,
     'other': SharingMemberPolicy._other_validator,
 }
 
 SharingMemberPolicy.allow = SharingMemberPolicy('allow')
 SharingMemberPolicy.forbid = SharingMemberPolicy('forbid')
+SharingMemberPolicy.team_members_and_whitelist = SharingMemberPolicy('team_members_and_whitelist')
 SharingMemberPolicy.other = SharingMemberPolicy('other')
 
 ShmodelGroupShareDetails._all_field_names_ = set([])
@@ -65176,6 +68433,34 @@ TeamProfileRemoveLogoType._description_validator = bv.String()
 TeamProfileRemoveLogoType._all_field_names_ = set(['description'])
 TeamProfileRemoveLogoType._all_fields_ = [('description', TeamProfileRemoveLogoType._description_validator)]
 
+TeamSelectiveSyncPolicy._disabled_validator = bv.Void()
+TeamSelectiveSyncPolicy._enabled_validator = bv.Void()
+TeamSelectiveSyncPolicy._other_validator = bv.Void()
+TeamSelectiveSyncPolicy._tagmap = {
+    'disabled': TeamSelectiveSyncPolicy._disabled_validator,
+    'enabled': TeamSelectiveSyncPolicy._enabled_validator,
+    'other': TeamSelectiveSyncPolicy._other_validator,
+}
+
+TeamSelectiveSyncPolicy.disabled = TeamSelectiveSyncPolicy('disabled')
+TeamSelectiveSyncPolicy.enabled = TeamSelectiveSyncPolicy('enabled')
+TeamSelectiveSyncPolicy.other = TeamSelectiveSyncPolicy('other')
+
+TeamSelectiveSyncPolicyChangedDetails._new_value_validator = TeamSelectiveSyncPolicy_validator
+TeamSelectiveSyncPolicyChangedDetails._previous_value_validator = TeamSelectiveSyncPolicy_validator
+TeamSelectiveSyncPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+TeamSelectiveSyncPolicyChangedDetails._all_fields_ = [
+    ('new_value', TeamSelectiveSyncPolicyChangedDetails._new_value_validator),
+    ('previous_value', TeamSelectiveSyncPolicyChangedDetails._previous_value_validator),
+]
+
+TeamSelectiveSyncPolicyChangedType._description_validator = bv.String()
+TeamSelectiveSyncPolicyChangedType._all_field_names_ = set(['description'])
+TeamSelectiveSyncPolicyChangedType._all_fields_ = [('description', TeamSelectiveSyncPolicyChangedType._description_validator)]
+
 TeamSelectiveSyncSettingsChangedDetails._previous_value_validator = files.SyncSetting_validator
 TeamSelectiveSyncSettingsChangedDetails._new_value_validator = files.SyncSetting_validator
 TeamSelectiveSyncSettingsChangedDetails._all_field_names_ = set([
@@ -65367,6 +68652,21 @@ UserOrTeamLinkedAppLogInfo._field_names_ = set([])
 UserOrTeamLinkedAppLogInfo._all_field_names_ = AppLogInfo._all_field_names_.union(UserOrTeamLinkedAppLogInfo._field_names_)
 UserOrTeamLinkedAppLogInfo._fields_ = []
 UserOrTeamLinkedAppLogInfo._all_fields_ = AppLogInfo._all_fields_ + UserOrTeamLinkedAppLogInfo._fields_
+
+ViewerInfoPolicyChangedDetails._previous_value_validator = PassPolicy_validator
+ViewerInfoPolicyChangedDetails._new_value_validator = PassPolicy_validator
+ViewerInfoPolicyChangedDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+ViewerInfoPolicyChangedDetails._all_fields_ = [
+    ('previous_value', ViewerInfoPolicyChangedDetails._previous_value_validator),
+    ('new_value', ViewerInfoPolicyChangedDetails._new_value_validator),
+]
+
+ViewerInfoPolicyChangedType._description_validator = bv.String()
+ViewerInfoPolicyChangedType._all_field_names_ = set(['description'])
+ViewerInfoPolicyChangedType._all_fields_ = [('description', ViewerInfoPolicyChangedType._description_validator)]
 
 WebDeviceSessionLogInfo._session_info_validator = bv.Nullable(WebSessionLogInfo_validator)
 WebDeviceSessionLogInfo._user_agent_validator = bv.String()

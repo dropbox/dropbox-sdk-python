@@ -960,6 +960,64 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_move_former_member_files(self,
+                                              user,
+                                              transfer_dest_id,
+                                              transfer_admin_id):
+        """
+        Moves removed member's files to a different member. This endpoint
+        initiates an asynchronous job. To obtain the final result of the job,
+        the client should periodically poll
+        :meth:`team_members_move_former_member_files_job_status_check`.
+        Permission : Team member management.
+
+        :param transfer_dest_id: Files from the deleted member account will be
+            transferred to this user.
+        :type transfer_dest_id: :class:`dropbox.team.UserSelectorArg`
+        :param transfer_admin_id: Errors during the transfer process will be
+            sent via email to this user.
+        :type transfer_admin_id: :class:`dropbox.team.UserSelectorArg`
+        :rtype: :class:`dropbox.team.LaunchEmptyResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersTransferFormerMembersFilesError`
+        """
+        arg = team.MembersDataTransferArg(user,
+                                          transfer_dest_id,
+                                          transfer_admin_id)
+        r = self.request(
+            team.members_move_former_member_files,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_move_former_member_files_job_status_check(self,
+                                                               async_job_id):
+        """
+        Once an async_job_id is returned from
+        :meth:`team_members_move_former_member_files` , use this to poll the
+        status of the asynchronous request. Permission : Team member management.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.team.PollEmptyResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            team.members_move_former_member_files_job_status_check,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_recover(self,
                              user):
         """
@@ -1161,8 +1219,6 @@ class DropboxTeamBase(object):
         Exactly one of team_member_id, email, or external_id must be provided to
         identify the user account.
 
-        :param user: Identity of user to remove/suspend.
-        :type user: :class:`dropbox.team.UserSelectorArg`
         :param bool wipe_data: If provided, controls if the user's data will be
             deleted on their linked devices.
         :rtype: None
@@ -1703,7 +1759,11 @@ class DropboxTeamBase(object):
         </developers/documentation/http/teams#team-features-get_values>`_ to
         check for this feature. Permission : Team Auditing.
 
-        :param long limit: Number of results to return per call.
+        :param long limit: The maximal number of results to return per call.
+            Note that some calls may not return ``limit`` number of events, and
+            may even return no events, even with `has_more` set to true. In this
+            case, callers should fetch again using
+            :meth:`team_log_get_events_continue`.
         :param Nullable account_id: Filter the events by account ID. Return ony
             events with this account_id as either Actor, Context, or
             Participants.

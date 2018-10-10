@@ -101,6 +101,9 @@ class AccessError(bb.Union):
             raise AttributeError("tag 'paper_access_denied' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AccessError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AccessError(%r, %r)' % (self._tag, self._value)
 
@@ -120,6 +123,7 @@ class AuthError(bb.Union):
     :ivar invalid_select_admin: The user specified in 'Dropbox-API-Select-Admin'
         is not a Dropbox Business team admin.
     :ivar user_suspended: The user has been suspended.
+    :ivar expired_access_token: The access token has expired.
     """
 
     _catch_all = 'other'
@@ -131,6 +135,8 @@ class AuthError(bb.Union):
     invalid_select_admin = None
     # Attribute is overwritten below the class definition
     user_suspended = None
+    # Attribute is overwritten below the class definition
+    expired_access_token = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -166,6 +172,14 @@ class AuthError(bb.Union):
         """
         return self._tag == 'user_suspended'
 
+    def is_expired_access_token(self):
+        """
+        Check if the union tag is ``expired_access_token``.
+
+        :rtype: bool
+        """
+        return self._tag == 'expired_access_token'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -173,6 +187,9 @@ class AuthError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AuthError, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'AuthError(%r, %r)' % (self._tag, self._value)
@@ -223,6 +240,9 @@ class InvalidAccountTypeError(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(InvalidAccountTypeError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'InvalidAccountTypeError(%r, %r)' % (self._tag, self._value)
 
@@ -270,12 +290,15 @@ class PaperAccessError(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperAccessError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PaperAccessError(%r, %r)' % (self._tag, self._value)
 
 PaperAccessError_validator = bv.Union(PaperAccessError)
 
-class RateLimitError(object):
+class RateLimitError(bb.Struct):
     """
     Error occurred because the app is being rate limited.
 
@@ -352,6 +375,9 @@ class RateLimitError(object):
         self._retry_after_value = None
         self._retry_after_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RateLimitError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'RateLimitError(reason={!r}, retry_after={!r})'.format(
             self._reason_value,
@@ -404,12 +430,15 @@ class RateLimitReason(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RateLimitReason, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'RateLimitReason(%r, %r)' % (self._tag, self._value)
 
 RateLimitReason_validator = bv.Union(RateLimitReason)
 
-class TokenFromOAuth1Arg(object):
+class TokenFromOAuth1Arg(bb.Struct):
     """
     :ivar oauth1_token: The supplied OAuth 1.0 access token.
     :ivar oauth1_token_secret: The token secret associated with the supplied
@@ -483,6 +512,9 @@ class TokenFromOAuth1Arg(object):
         self._oauth1_token_secret_value = None
         self._oauth1_token_secret_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TokenFromOAuth1Arg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TokenFromOAuth1Arg(oauth1_token={!r}, oauth1_token_secret={!r})'.format(
             self._oauth1_token_value,
@@ -535,12 +567,15 @@ class TokenFromOAuth1Error(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TokenFromOAuth1Error, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TokenFromOAuth1Error(%r, %r)' % (self._tag, self._value)
 
 TokenFromOAuth1Error_validator = bv.Union(TokenFromOAuth1Error)
 
-class TokenFromOAuth1Result(object):
+class TokenFromOAuth1Result(bb.Struct):
     """
     :ivar oauth2_token: The OAuth 2.0 token generated from the supplied OAuth
         1.0 token.
@@ -583,6 +618,9 @@ class TokenFromOAuth1Result(object):
         self._oauth2_token_value = None
         self._oauth2_token_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TokenFromOAuth1Result, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TokenFromOAuth1Result(oauth2_token={!r})'.format(
             self._oauth2_token_value,
@@ -605,12 +643,14 @@ AuthError._invalid_access_token_validator = bv.Void()
 AuthError._invalid_select_user_validator = bv.Void()
 AuthError._invalid_select_admin_validator = bv.Void()
 AuthError._user_suspended_validator = bv.Void()
+AuthError._expired_access_token_validator = bv.Void()
 AuthError._other_validator = bv.Void()
 AuthError._tagmap = {
     'invalid_access_token': AuthError._invalid_access_token_validator,
     'invalid_select_user': AuthError._invalid_select_user_validator,
     'invalid_select_admin': AuthError._invalid_select_admin_validator,
     'user_suspended': AuthError._user_suspended_validator,
+    'expired_access_token': AuthError._expired_access_token_validator,
     'other': AuthError._other_validator,
 }
 
@@ -618,6 +658,7 @@ AuthError.invalid_access_token = AuthError('invalid_access_token')
 AuthError.invalid_select_user = AuthError('invalid_select_user')
 AuthError.invalid_select_admin = AuthError('invalid_select_admin')
 AuthError.user_suspended = AuthError('user_suspended')
+AuthError.expired_access_token = AuthError('expired_access_token')
 AuthError.other = AuthError('other')
 
 InvalidAccountTypeError._endpoint_validator = bv.Void()

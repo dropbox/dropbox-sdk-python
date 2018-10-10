@@ -25,7 +25,7 @@ except (ImportError, SystemError, ValueError):
     import common
     import files
 
-class CreateFileRequestArgs(object):
+class CreateFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_create`.
 
@@ -175,6 +175,9 @@ class CreateFileRequestArgs(object):
         self._open_value = None
         self._open_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CreateFileRequestArgs, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'CreateFileRequestArgs(title={!r}, destination={!r}, deadline={!r}, open={!r})'.format(
             self._title_value,
@@ -218,6 +221,9 @@ class GeneralFileRequestsError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GeneralFileRequestsError, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'GeneralFileRequestsError(%r, %r)' % (self._tag, self._value)
@@ -309,6 +315,9 @@ class FileRequestError(GeneralFileRequestsError):
         """
         return self._tag == 'validation_error'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestError(%r, %r)' % (self._tag, self._value)
 
@@ -349,12 +358,15 @@ class CreateFileRequestError(FileRequestError):
         """
         return self._tag == 'rate_limit'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CreateFileRequestError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'CreateFileRequestError(%r, %r)' % (self._tag, self._value)
 
 CreateFileRequestError_validator = bv.Union(CreateFileRequestError)
 
-class FileRequest(object):
+class FileRequest(bb.Struct):
     """
     A `file request <https://www.dropbox.com/help/9090>`_ for receiving files
     into the user's Dropbox account.
@@ -631,6 +643,9 @@ class FileRequest(object):
         self._file_count_value = None
         self._file_count_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequest, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequest(id={!r}, url={!r}, title={!r}, created={!r}, is_open={!r}, file_count={!r}, destination={!r}, deadline={!r})'.format(
             self._id_value,
@@ -645,7 +660,7 @@ class FileRequest(object):
 
 FileRequest_validator = bv.Struct(FileRequest)
 
-class FileRequestDeadline(object):
+class FileRequestDeadline(bb.Struct):
     """
     :ivar deadline: The deadline for this file request.
     :ivar allow_late_uploads: If set, allow uploads after the deadline has
@@ -723,6 +738,9 @@ class FileRequestDeadline(object):
         self._allow_late_uploads_value = None
         self._allow_late_uploads_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileRequestDeadline, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FileRequestDeadline(deadline={!r}, allow_late_uploads={!r})'.format(
             self._deadline_value,
@@ -731,7 +749,7 @@ class FileRequestDeadline(object):
 
 FileRequestDeadline_validator = bv.Struct(FileRequestDeadline)
 
-class GetFileRequestArgs(object):
+class GetFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_get`.
 
@@ -775,6 +793,9 @@ class GetFileRequestArgs(object):
         self._id_value = None
         self._id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetFileRequestArgs, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetFileRequestArgs(id={!r})'.format(
             self._id_value,
@@ -790,6 +811,9 @@ class GetFileRequestError(FileRequestError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
     """
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetFileRequestError, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'GetFileRequestError(%r, %r)' % (self._tag, self._value)
@@ -865,6 +889,9 @@ class GracePeriod(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GracePeriod, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GracePeriod(%r, %r)' % (self._tag, self._value)
 
@@ -879,12 +906,15 @@ class ListFileRequestsError(GeneralFileRequestsError):
     corresponding ``get_*`` method.
     """
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ListFileRequestsError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ListFileRequestsError(%r, %r)' % (self._tag, self._value)
 
 ListFileRequestsError_validator = bv.Union(ListFileRequestsError)
 
-class ListFileRequestsResult(object):
+class ListFileRequestsResult(bb.Struct):
     """
     Result for :meth:`dropbox.dropbox.Dropbox.file_requests_list`.
 
@@ -930,6 +960,9 @@ class ListFileRequestsResult(object):
         self._file_requests_value = None
         self._file_requests_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ListFileRequestsResult, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ListFileRequestsResult(file_requests={!r})'.format(
             self._file_requests_value,
@@ -937,7 +970,7 @@ class ListFileRequestsResult(object):
 
 ListFileRequestsResult_validator = bv.Struct(ListFileRequestsResult)
 
-class UpdateFileRequestArgs(object):
+class UpdateFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_update`.
 
@@ -1118,6 +1151,9 @@ class UpdateFileRequestArgs(object):
         self._open_value = None
         self._open_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UpdateFileRequestArgs, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UpdateFileRequestArgs(id={!r}, title={!r}, destination={!r}, deadline={!r}, open={!r})'.format(
             self._id_value,
@@ -1193,6 +1229,9 @@ class UpdateFileRequestDeadline(bb.Union):
             raise AttributeError("tag 'update' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UpdateFileRequestDeadline, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UpdateFileRequestDeadline(%r, %r)' % (self._tag, self._value)
 
@@ -1206,6 +1245,9 @@ class UpdateFileRequestError(FileRequestError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
     """
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UpdateFileRequestError, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'UpdateFileRequestError(%r, %r)' % (self._tag, self._value)

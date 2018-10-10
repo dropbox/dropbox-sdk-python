@@ -674,7 +674,8 @@ class DropboxBase(object):
                            autorename=False,
                            client_modified=None,
                            mute=False,
-                           property_groups=None):
+                           property_groups=None,
+                           strict_conflict=False):
         """
         Create a new file with the contents provided in the request. Note that
         this endpoint is part of the properties API alpha and is slightly
@@ -694,12 +695,52 @@ class DropboxBase(object):
                                              autorename,
                                              client_modified,
                                              mute,
-                                             property_groups)
+                                             property_groups,
+                                             strict_conflict)
         r = self.request(
             files.alpha_upload,
             'files',
             arg,
             f,
+        )
+        return r
+
+    def files_copy_v2(self,
+                      from_path,
+                      to_path,
+                      allow_shared_folder=False,
+                      autorename=False,
+                      allow_ownership_transfer=False):
+        """
+        Copy a file or folder to a different location in the user's Dropbox. If
+        the source path is a folder all its contents will be copied.
+
+        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
+            contents in shared folder, otherwise
+            ``RelocationError.cant_copy_shared_folder`` will be returned if
+            ``from_path`` contains shared folder. This field is always true for
+            :meth:`files_move`.
+        :param bool autorename: If there's a conflict, have the Dropbox server
+            try to autorename the file to avoid the conflict.
+        :param bool allow_ownership_transfer: Allow moves by owner even if it
+            would result in an ownership transfer for the content being moved.
+            This does not apply to copies.
+        :rtype: :class:`dropbox.files.RelocationResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.RelocationError`
+        """
+        arg = files.RelocationArg(from_path,
+                                  to_path,
+                                  allow_shared_folder,
+                                  autorename,
+                                  allow_ownership_transfer)
+        r = self.request(
+            files.copy_v2,
+            'files',
+            arg,
+            None,
         )
         return r
 
@@ -730,7 +771,7 @@ class DropboxBase(object):
             :class:`dropbox.files.RelocationError`
         """
         warnings.warn(
-            'copy is deprecated. Use copy_v2.',
+            'copy is deprecated. Use copy.',
             DeprecationWarning,
         )
         arg = files.RelocationArg(from_path,
@@ -754,11 +795,11 @@ class DropboxBase(object):
         """
         Copy multiple files or folders to different locations at once in the
         user's Dropbox. If ``RelocationBatchArg.allow_shared_folder`` is false,
-        this route is atomic. If on entry failes, the whole transaction will
-        abort. If ``RelocationBatchArg.allow_shared_folder`` is true, not
-        atomicity is guaranteed, but you will be able to copy the contents of
-        shared folders to new locations. This route will return job ID
-        immediately and do the async copy job in background. Please use
+        this route is atomic. If one entry fails, the whole transaction will
+        abort. If ``RelocationBatchArg.allow_shared_folder`` is true, atomicity
+        is not guaranteed, but it allows you to copy the contents of shared
+        folders to new locations. This route will return job ID immediately and
+        do the async copy job in background. Please use
         :meth:`files_copy_batch_check` to check the job status.
 
         :param list entries: List of entries to be moved or copied. Each entry
@@ -860,39 +901,25 @@ class DropboxBase(object):
         )
         return r
 
-    def files_copy_v2(self,
-                      from_path,
-                      to_path,
-                      allow_shared_folder=False,
-                      autorename=False,
-                      allow_ownership_transfer=False):
+    def files_create_folder_v2(self,
+                               path,
+                               autorename=False):
         """
-        Copy a file or folder to a different location in the user's Dropbox. If
-        the source path is a folder all its contents will be copied.
+        Create a folder at a given path.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param str path: Path in the user's Dropbox to create.
         :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the file to avoid the conflict.
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
-        :rtype: :class:`dropbox.files.RelocationResult`
+            try to autorename the folder to avoid the conflict.
+        :rtype: :class:`dropbox.files.CreateFolderResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.RelocationError`
+            :class:`dropbox.files.CreateFolderError`
         """
-        arg = files.RelocationArg(from_path,
-                                  to_path,
-                                  allow_shared_folder,
-                                  autorename,
-                                  allow_ownership_transfer)
+        arg = files.CreateFolderArg(path,
+                                    autorename)
         r = self.request(
-            files.copy_v2,
+            files.create_folder_v2,
             'files',
             arg,
             None,
@@ -915,7 +942,7 @@ class DropboxBase(object):
             :class:`dropbox.files.CreateFolderError`
         """
         warnings.warn(
-            'create_folder is deprecated. Use create_folder_v2.',
+            'create_folder is deprecated. Use create_folder.',
             DeprecationWarning,
         )
         arg = files.CreateFolderArg(path,
@@ -983,25 +1010,31 @@ class DropboxBase(object):
         )
         return r
 
-    def files_create_folder_v2(self,
-                               path,
-                               autorename=False):
+    def files_delete_v2(self,
+                        path,
+                        parent_rev=None):
         """
-        Create a folder at a given path.
+        Delete the file or folder at a given path. If the path is a folder, all
+        its contents will be deleted too. A successful response indicates that
+        the file or folder was deleted. The returned metadata will be the
+        corresponding :class:`dropbox.files.FileMetadata` or
+        :class:`dropbox.files.FolderMetadata` for the item at time of deletion,
+        and not a :class:`dropbox.files.DeletedMetadata` object.
 
-        :param str path: Path in the user's Dropbox to create.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the folder to avoid the conflict.
-        :rtype: :class:`dropbox.files.CreateFolderResult`
+        :param str path: Path in the user's Dropbox to delete.
+        :param Nullable parent_rev: Perform delete if given "rev" matches the
+            existing file's latest "rev". This field does not support deleting a
+            folder.
+        :rtype: :class:`dropbox.files.DeleteResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.CreateFolderError`
+            :class:`dropbox.files.DeleteError`
         """
-        arg = files.CreateFolderArg(path,
-                                    autorename)
+        arg = files.DeleteArg(path,
+                              parent_rev)
         r = self.request(
-            files.create_folder_v2,
+            files.delete_v2,
             'files',
             arg,
             None,
@@ -1030,7 +1063,7 @@ class DropboxBase(object):
             :class:`dropbox.files.DeleteError`
         """
         warnings.warn(
-            'delete is deprecated. Use delete_v2.',
+            'delete is deprecated. Use delete.',
             DeprecationWarning,
         )
         arg = files.DeleteArg(path,
@@ -1080,37 +1113,6 @@ class DropboxBase(object):
         arg = async_.PollArg(async_job_id)
         r = self.request(
             files.delete_batch_check,
-            'files',
-            arg,
-            None,
-        )
-        return r
-
-    def files_delete_v2(self,
-                        path,
-                        parent_rev=None):
-        """
-        Delete the file or folder at a given path. If the path is a folder, all
-        its contents will be deleted too. A successful response indicates that
-        the file or folder was deleted. The returned metadata will be the
-        corresponding :class:`dropbox.files.FileMetadata` or
-        :class:`dropbox.files.FolderMetadata` for the item at time of deletion,
-        and not a :class:`dropbox.files.DeletedMetadata` object.
-
-        :param str path: Path in the user's Dropbox to delete.
-        :param Nullable parent_rev: Perform delete if given "rev" matches the
-            existing file's latest "rev". This field does not support deleting a
-            folder.
-        :rtype: :class:`dropbox.files.DeleteResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.files.DeleteError`
-        """
-        arg = files.DeleteArg(path,
-                              parent_rev)
-        r = self.request(
-            files.delete_v2,
             'files',
             arg,
             None,
@@ -1179,8 +1181,9 @@ class DropboxBase(object):
                            path):
         """
         Download a folder from the user's Dropbox, as a zip file. The folder
-        must be less than 1 GB in size and have fewer than 10,000 total files.
-        The input cannot be a single file.
+        must be less than 20 GB in size and have fewer than 10,000 total files.
+        The input cannot be a single file. Any single file must be less than 4GB
+        in size.
 
         :param str path: The path of the folder to download.
         :rtype: (:class:`dropbox.files.DownloadZipResult`,
@@ -1210,8 +1213,9 @@ class DropboxBase(object):
                                    path):
         """
         Download a folder from the user's Dropbox, as a zip file. The folder
-        must be less than 1 GB in size and have fewer than 10,000 total files.
-        The input cannot be a single file.
+        must be less than 20 GB in size and have fewer than 10,000 total files.
+        The input cannot be a single file. Any single file must be less than 4GB
+        in size.
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the folder to download.
@@ -1344,8 +1348,9 @@ class DropboxBase(object):
                                  path):
         """
         Get a temporary link to stream content of a file. This link will expire
-        in four hours and afterwards you will get 410 Gone. Content-Type of the
-        link is determined automatically by the file's mime type.
+        in four hours and afterwards you will get 410 Gone. So this URL should
+        not be used to display content directly in the browser.  Content-Type of
+        the link is determined automatically by the file's mime type.
 
         :param str path: The path to the file you want a temporary link to.
         :rtype: :class:`dropbox.files.GetTemporaryLinkResult`
@@ -1357,6 +1362,60 @@ class DropboxBase(object):
         arg = files.GetTemporaryLinkArg(path)
         r = self.request(
             files.get_temporary_link,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_get_temporary_upload_link(self,
+                                        commit_info,
+                                        duration=14400.0):
+        """
+        Get a one-time use temporary upload link to upload a file to a Dropbox
+        location.  This endpoint acts as a delayed :meth:`files_upload`. The
+        returned temporary upload link may be used to make a POST request with
+        the data to be uploaded. The upload will then be perfomed with the
+        :class:`dropbox.files.CommitInfo` previously provided to
+        :meth:`files_get_temporary_upload_link` but evaluated only upon
+        consumption. Hence, errors stemming from invalid
+        :class:`dropbox.files.CommitInfo` with respect to the state of the
+        user's Dropbox will only be communicated at consumption time.
+        Additionally, these errors are surfaced as generic HTTP 409 Conflict
+        responses, potentially hiding issue details. The maximum temporary
+        upload link duration is 4 hours. Upon consumption or expiration, a new
+        link will have to be generated. Multiple links may exist for a specific
+        upload path at any given time.  The POST request on the temporary upload
+        link must have its Content-Type set to "application/octet-stream".
+        Example temporary upload link consumption request:  curl -X POST
+        https://dl.dropboxusercontent.com/apitul/1/bNi2uIYF51cVBND --header
+        "Content-Type: application/octet-stream" --data-binary @local_file.txt
+        A successful temporary upload link consumption request returns the
+        content hash of the uploaded data in JSON format.  Example succesful
+        temporary upload link consumption response: {"content-hash":
+        "599d71033d700ac892a0e48fa61b125d2f5994"}  An unsuccessful temporary
+        upload link consumption request returns any of the following status
+        codes:  HTTP 400 Bad Request: Content-Type is not one of
+        application/octet-stream and text/plain or request is invalid. HTTP 409
+        Conflict: The temporary upload link does not exist or is currently
+        unavailable, the upload failed, or another error happened. HTTP 410
+        Gone: The temporary upload link is expired or consumed.  Example
+        unsuccessful temporary upload link consumption response: Temporary
+        upload link has been recently consumed.
+
+        :param commit_info: Contains the path and other optional modifiers for
+            the future upload commit. Equivalent to the parameters provided to
+            :meth:`files_upload`.
+        :type commit_info: :class:`dropbox.files.CommitInfo`
+        :param float duration: How long before this link expires, in seconds.
+            Attempting to start an upload with this link longer than this period
+            of time after link creation will result in an error.
+        :rtype: :class:`dropbox.files.GetTemporaryUploadLinkResult`
+        """
+        arg = files.GetTemporaryUploadLinkArg(commit_info,
+                                              duration)
+        r = self.request(
+            files.get_temporary_upload_link,
             'files',
             arg,
             None,
@@ -1723,6 +1782,45 @@ class DropboxBase(object):
         )
         return r
 
+    def files_move_v2(self,
+                      from_path,
+                      to_path,
+                      allow_shared_folder=False,
+                      autorename=False,
+                      allow_ownership_transfer=False):
+        """
+        Move a file or folder to a different location in the user's Dropbox. If
+        the source path is a folder all its contents will be moved.
+
+        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
+            contents in shared folder, otherwise
+            ``RelocationError.cant_copy_shared_folder`` will be returned if
+            ``from_path`` contains shared folder. This field is always true for
+            :meth:`files_move`.
+        :param bool autorename: If there's a conflict, have the Dropbox server
+            try to autorename the file to avoid the conflict.
+        :param bool allow_ownership_transfer: Allow moves by owner even if it
+            would result in an ownership transfer for the content being moved.
+            This does not apply to copies.
+        :rtype: :class:`dropbox.files.RelocationResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.RelocationError`
+        """
+        arg = files.RelocationArg(from_path,
+                                  to_path,
+                                  allow_shared_folder,
+                                  autorename,
+                                  allow_ownership_transfer)
+        r = self.request(
+            files.move_v2,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_move(self,
                    from_path,
                    to_path,
@@ -1750,7 +1848,7 @@ class DropboxBase(object):
             :class:`dropbox.files.RelocationError`
         """
         warnings.warn(
-            'move is deprecated. Use move_v2.',
+            'move is deprecated. Use move.',
             DeprecationWarning,
         )
         arg = files.RelocationArg(from_path,
@@ -1821,45 +1919,6 @@ class DropboxBase(object):
         arg = async_.PollArg(async_job_id)
         r = self.request(
             files.move_batch_check,
-            'files',
-            arg,
-            None,
-        )
-        return r
-
-    def files_move_v2(self,
-                      from_path,
-                      to_path,
-                      allow_shared_folder=False,
-                      autorename=False,
-                      allow_ownership_transfer=False):
-        """
-        Move a file or folder to a different location in the user's Dropbox. If
-        the source path is a folder all its contents will be moved.
-
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the file to avoid the conflict.
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
-        :rtype: :class:`dropbox.files.RelocationResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.files.RelocationError`
-        """
-        arg = files.RelocationArg(from_path,
-                                  to_path,
-                                  allow_shared_folder,
-                                  autorename,
-                                  allow_ownership_transfer)
-        r = self.request(
-            files.move_v2,
             'files',
             arg,
             None,
@@ -2046,10 +2105,10 @@ class DropboxBase(object):
                       path,
                       rev):
         """
-        Restore a file to a specific revision.
+        Restore a specific revision of a file to the given path.
 
-        :param str path: The path to the file you want to restore.
-        :param str rev: The revision to restore for the file.
+        :param str path: The path to save the restored file.
+        :param str rev: The revision to restore.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2163,11 +2222,16 @@ class DropboxBase(object):
                      autorename=False,
                      client_modified=None,
                      mute=False,
-                     property_groups=None):
+                     property_groups=None,
+                     strict_conflict=False):
         """
         Create a new file with the contents provided in the request. Do not use
         this to upload a file larger than 150 MB. Instead, create an upload
-        session with :meth:`files_upload_session_start`.
+        session with :meth:`files_upload_session_start`. Calls to this endpoint
+        will count as data transport calls for any Dropbox Business teams with a
+        limit on the number of data transport calls allowed per month. For more
+        information, see the `Data transport limit page
+        <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
 
         :param bytes f: Contents to upload.
         :param str path: Path in the user's Dropbox to save the file.
@@ -2188,6 +2252,11 @@ class DropboxBase(object):
             modification shouldn't result in a user notification.
         :param Nullable property_groups: List of custom properties to add to
             file.
+        :param bool strict_conflict: Be more strict about how each
+            :class:`dropbox.files.WriteMode` detects conflict. For example,
+            always return a conflict error when ``mode`` = ``WriteMode.update``
+            and the given "rev" doesn't match the existing file's "rev", even if
+            the existing file has been deleted.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2199,7 +2268,8 @@ class DropboxBase(object):
                                autorename,
                                client_modified,
                                mute,
-                               property_groups)
+                               property_groups,
+                               strict_conflict)
         r = self.request(
             files.upload,
             'files',
@@ -2207,41 +2277,6 @@ class DropboxBase(object):
             f,
         )
         return r
-
-    def files_upload_session_append(self,
-                                    f,
-                                    session_id,
-                                    offset):
-        """
-        Append more data to an upload session. A single request should not
-        upload more than 150 MB. The maximum size of a file one can upload to an
-        upload session is 350 GB.
-
-        :param bytes f: Contents to upload.
-        :param str session_id: The upload session ID (returned by
-            :meth:`files_upload_session_start`).
-        :param long offset: The amount of data that has been uploaded so far. We
-            use this to make sure upload data isn't lost or duplicated in the
-            event of a network error.
-        :rtype: None
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.files.UploadSessionLookupError`
-        """
-        warnings.warn(
-            'upload_session/append is deprecated. Use upload_session/append_v2.',
-            DeprecationWarning,
-        )
-        arg = files.UploadSessionCursor(session_id,
-                                        offset)
-        r = self.request(
-            files.upload_session_append,
-            'files',
-            arg,
-            f,
-        )
-        return None
 
     def files_upload_session_append_v2(self,
                                        f,
@@ -2251,7 +2286,11 @@ class DropboxBase(object):
         Append more data to an upload session. When the parameter close is set,
         this call will close the session. A single request should not upload
         more than 150 MB. The maximum size of a file one can upload to an upload
-        session is 350 GB.
+        session is 350 GB. Calls to this endpoint will count as data transport
+        calls for any Dropbox Business teams with a limit on the number of data
+        transport calls allowed per month. For more information, see the `Data
+        transport limit page
+        <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
 
         :param bytes f: Contents to upload.
         :param cursor: Contains the upload session ID and the offset.
@@ -2276,6 +2315,45 @@ class DropboxBase(object):
         )
         return None
 
+    def files_upload_session_append(self,
+                                    f,
+                                    session_id,
+                                    offset):
+        """
+        Append more data to an upload session. A single request should not
+        upload more than 150 MB. The maximum size of a file one can upload to an
+        upload session is 350 GB. Calls to this endpoint will count as data
+        transport calls for any Dropbox Business teams with a limit on the
+        number of data transport calls allowed per month. For more information,
+        see the `Data transport limit page
+        <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
+
+        :param bytes f: Contents to upload.
+        :param str session_id: The upload session ID (returned by
+            :meth:`files_upload_session_start`).
+        :param long offset: The amount of data that has been uploaded so far. We
+            use this to make sure upload data isn't lost or duplicated in the
+            event of a network error.
+        :rtype: None
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.UploadSessionLookupError`
+        """
+        warnings.warn(
+            'upload_session/append is deprecated. Use upload_session/append.',
+            DeprecationWarning,
+        )
+        arg = files.UploadSessionCursor(session_id,
+                                        offset)
+        r = self.request(
+            files.upload_session_append,
+            'files',
+            arg,
+            f,
+        )
+        return None
+
     def files_upload_session_finish(self,
                                     f,
                                     cursor,
@@ -2283,7 +2361,12 @@ class DropboxBase(object):
         """
         Finish an upload session and save the uploaded data to the given file
         path. A single request should not upload more than 150 MB. The maximum
-        size of a file one can upload to an upload session is 350 GB.
+        size of a file one can upload to an upload session is 350 GB. Calls to
+        this endpoint will count as data transport calls for any Dropbox
+        Business teams with a limit on the number of data transport calls
+        allowed per month. For more information, see the `Data transport limit
+        page
+        <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
 
         :param bytes f: Contents to upload.
         :param cursor: Contains the upload session ID and the offset.
@@ -2325,7 +2408,11 @@ class DropboxBase(object):
         :meth:`files_upload_session_finish_batch_check` to check the job status.
         For the same account, this route should be executed serially. That means
         you should not start the next job before current job finishes. We allow
-        up to 1000 entries in a single request.
+        up to 1000 entries in a single request. Calls to this endpoint will
+        count as data transport calls for any Dropbox Business teams with a
+        limit on the number of data transport calls allowed per month. For more
+        information, see the `Data transport limit page
+        <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
 
         :param list entries: Commit information for each file in the batch.
         :rtype: :class:`dropbox.files.UploadSessionFinishBatchLaunch`
@@ -2378,7 +2465,12 @@ class DropboxBase(object):
         an ``UploadSessionStartResult.session_id`` with
         :meth:`files_upload_session_append_v2` or
         :meth:`files_upload_session_finish` more than 48 hours after its
-        creation will return a ``UploadSessionLookupError.not_found``.
+        creation will return a ``UploadSessionLookupError.not_found``. Calls to
+        this endpoint will count as data transport calls for any Dropbox
+        Business teams with a limit on the number of data transport calls
+        allowed per month. For more information, see the `Data transport limit
+        page
+        <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
 
         :param bytes f: Contents to upload.
         :param bool close: If true, the current session will be closed, at which
@@ -3939,6 +4031,7 @@ class DropboxBase(object):
                              member_policy=None,
                              shared_link_policy=None,
                              viewer_info_policy=None,
+                             access_inheritance=sharing.AccessInheritance.inherit,
                              actions=None,
                              link_settings=None):
         """
@@ -3967,6 +4060,7 @@ class DropboxBase(object):
                                      member_policy,
                                      shared_link_policy,
                                      viewer_info_policy,
+                                     access_inheritance,
                                      actions,
                                      link_settings)
         r = self.request(

@@ -12,6 +12,56 @@ except (ImportError, SystemError, ValueError):
     import stone_validators as bv
     import stone_base as bb
 
+class CameraUploadsPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar disabled: Background camera uploads are disabled.
+    :ivar enabled: Background camera uploads are allowed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CameraUploadsPolicyState, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'CameraUploadsPolicyState(%r, %r)' % (self._tag, self._value)
+
+CameraUploadsPolicyState_validator = bv.Union(CameraUploadsPolicyState)
+
 class EmmState(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -65,6 +115,9 @@ class EmmState(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(EmmState, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'EmmState(%r, %r)' % (self._tag, self._value)
 
@@ -101,6 +154,9 @@ class GroupCreation(bb.Union):
         :rtype: bool
         """
         return self._tag == 'admins_only'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GroupCreation, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'GroupCreation(%r, %r)' % (self._tag, self._value)
@@ -149,6 +205,9 @@ class OfficeAddInPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(OfficeAddInPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'OfficeAddInPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -196,6 +255,9 @@ class PaperDeploymentPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperDeploymentPolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'PaperDeploymentPolicy(%r, %r)' % (self._tag, self._value)
@@ -254,6 +316,9 @@ class PaperEnabledPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PaperEnabledPolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'PaperEnabledPolicy(%r, %r)' % (self._tag, self._value)
@@ -316,6 +381,9 @@ class PasswordStrengthPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PasswordStrengthPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PasswordStrengthPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -363,6 +431,9 @@ class RolloutMethod(bb.Union):
         :rtype: bool
         """
         return self._tag == 'add_member_to_exceptions'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RolloutMethod, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'RolloutMethod(%r, %r)' % (self._tag, self._value)
@@ -415,6 +486,9 @@ class SharedFolderJoinPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderJoinPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedFolderJoinPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -464,6 +538,9 @@ class SharedFolderMemberPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedFolderMemberPolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SharedFolderMemberPolicy(%r, %r)' % (self._tag, self._value)
@@ -531,6 +608,9 @@ class SharedLinkCreatePolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SharedLinkCreatePolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SharedLinkCreatePolicy(%r, %r)' % (self._tag, self._value)
 
@@ -578,6 +658,9 @@ class ShowcaseDownloadPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseDownloadPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseDownloadPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -624,6 +707,9 @@ class ShowcaseEnabledPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseEnabledPolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'ShowcaseEnabledPolicy(%r, %r)' % (self._tag, self._value)
@@ -673,6 +759,9 @@ class ShowcaseExternalSharingPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ShowcaseExternalSharingPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ShowcaseExternalSharingPolicy(%r, %r)' % (self._tag, self._value)
 
@@ -720,6 +809,9 @@ class SmartSyncPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SmartSyncPolicy, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'SmartSyncPolicy(%r, %r)' % (self._tag, self._value)
@@ -782,12 +874,15 @@ class SsoPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SsoPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SsoPolicy(%r, %r)' % (self._tag, self._value)
 
 SsoPolicy_validator = bv.Union(SsoPolicy)
 
-class TeamMemberPolicies(object):
+class TeamMemberPolicies(bb.Struct):
     """
     Policies governing team members.
 
@@ -904,6 +999,9 @@ class TeamMemberPolicies(object):
         self._office_addin_value = None
         self._office_addin_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamMemberPolicies, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamMemberPolicies(sharing={!r}, emm_state={!r}, office_addin={!r})'.format(
             self._sharing_value,
@@ -913,7 +1011,7 @@ class TeamMemberPolicies(object):
 
 TeamMemberPolicies_validator = bv.Struct(TeamMemberPolicies)
 
-class TeamSharingPolicies(object):
+class TeamSharingPolicies(bb.Struct):
     """
     Policies governing sharing within and outside of the team.
 
@@ -1021,6 +1119,9 @@ class TeamSharingPolicies(object):
         self._shared_link_create_policy_value = None
         self._shared_link_create_policy_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamSharingPolicies(shared_folder_member_policy={!r}, shared_folder_join_policy={!r}, shared_link_create_policy={!r})'.format(
             self._shared_folder_member_policy_value,
@@ -1072,10 +1173,26 @@ class TwoStepVerificationPolicy(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TwoStepVerificationPolicy, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TwoStepVerificationPolicy(%r, %r)' % (self._tag, self._value)
 
 TwoStepVerificationPolicy_validator = bv.Union(TwoStepVerificationPolicy)
+
+CameraUploadsPolicyState._disabled_validator = bv.Void()
+CameraUploadsPolicyState._enabled_validator = bv.Void()
+CameraUploadsPolicyState._other_validator = bv.Void()
+CameraUploadsPolicyState._tagmap = {
+    'disabled': CameraUploadsPolicyState._disabled_validator,
+    'enabled': CameraUploadsPolicyState._enabled_validator,
+    'other': CameraUploadsPolicyState._other_validator,
+}
+
+CameraUploadsPolicyState.disabled = CameraUploadsPolicyState('disabled')
+CameraUploadsPolicyState.enabled = CameraUploadsPolicyState('enabled')
+CameraUploadsPolicyState.other = CameraUploadsPolicyState('other')
 
 EmmState._disabled_validator = bv.Void()
 EmmState._optional_validator = bv.Void()

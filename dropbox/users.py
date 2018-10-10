@@ -29,7 +29,7 @@ except (ImportError, SystemError, ValueError):
     import team_policies
     import users_common
 
-class Account(object):
+class Account(bb.Struct):
     """
     The amount of detail revealed about an account depends on the user being
     queried and the user making the query.
@@ -237,6 +237,9 @@ class Account(object):
         self._disabled_value = None
         self._disabled_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(Account, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'Account(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, profile_photo_url={!r})'.format(
             self._account_id_value,
@@ -343,6 +346,9 @@ class BasicAccount(Account):
     def team_member_id(self):
         self._team_member_id_value = None
         self._team_member_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(BasicAccount, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'BasicAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, is_teammate={!r}, profile_photo_url={!r}, team_member_id={!r})'.format(
@@ -612,7 +618,7 @@ class FullAccount(Account):
         """
         What type of account this user has.
 
-        :rtype: users_common.AccountType_validator
+        :rtype: users_common.AccountType
         """
         if self._account_type_present:
             return self._account_type_value
@@ -635,7 +641,7 @@ class FullAccount(Account):
         """
         The root info for this account.
 
-        :rtype: common.RootInfo_validator
+        :rtype: common.RootInfo
         """
         if self._root_info_present:
             return self._root_info_value
@@ -652,6 +658,9 @@ class FullAccount(Account):
     def root_info(self):
         self._root_info_value = None
         self._root_info_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FullAccount, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'FullAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, root_info={!r}, profile_photo_url={!r}, country={!r}, team={!r}, team_member_id={!r})'.format(
@@ -673,7 +682,7 @@ class FullAccount(Account):
 
 FullAccount_validator = bv.Struct(FullAccount)
 
-class Team(object):
+class Team(bb.Struct):
     """
     Information about a team.
 
@@ -748,6 +757,9 @@ class Team(object):
         self._name_value = None
         self._name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(Team, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'Team(id={!r}, name={!r})'.format(
             self._id_value,
@@ -795,7 +807,7 @@ class FullTeam(Team):
         """
         Team policies governing sharing.
 
-        :rtype: team_policies.TeamSharingPolicies_validator
+        :rtype: team_policies.TeamSharingPolicies
         """
         if self._sharing_policies_present:
             return self._sharing_policies_value
@@ -818,7 +830,7 @@ class FullTeam(Team):
         """
         Team policy governing the use of the Office Add-In.
 
-        :rtype: team_policies.OfficeAddInPolicy_validator
+        :rtype: team_policies.OfficeAddInPolicy
         """
         if self._office_addin_policy_present:
             return self._office_addin_policy_value
@@ -836,6 +848,9 @@ class FullTeam(Team):
         self._office_addin_policy_value = None
         self._office_addin_policy_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FullTeam, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'FullTeam(id={!r}, name={!r}, sharing_policies={!r}, office_addin_policy={!r})'.format(
             self._id_value,
@@ -846,7 +861,7 @@ class FullTeam(Team):
 
 FullTeam_validator = bv.Struct(FullTeam)
 
-class GetAccountArg(object):
+class GetAccountArg(bb.Struct):
     """
     :ivar account_id: A user's account identifier.
     """
@@ -888,6 +903,9 @@ class GetAccountArg(object):
         self._account_id_value = None
         self._account_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetAccountArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetAccountArg(account_id={!r})'.format(
             self._account_id_value,
@@ -895,7 +913,7 @@ class GetAccountArg(object):
 
 GetAccountArg_validator = bv.Struct(GetAccountArg)
 
-class GetAccountBatchArg(object):
+class GetAccountBatchArg(bb.Struct):
     """
     :ivar account_ids: List of user account identifiers.  Should not contain any
         duplicate account IDs.
@@ -938,6 +956,9 @@ class GetAccountBatchArg(object):
     def account_ids(self):
         self._account_ids_value = None
         self._account_ids_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetAccountBatchArg, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'GetAccountBatchArg(account_ids={!r})'.format(
@@ -1000,6 +1021,9 @@ class GetAccountBatchError(bb.Union):
             raise AttributeError("tag 'no_account' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetAccountBatchError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetAccountBatchError(%r, %r)' % (self._tag, self._value)
 
@@ -1036,12 +1060,15 @@ class GetAccountError(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetAccountError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetAccountError(%r, %r)' % (self._tag, self._value)
 
 GetAccountError_validator = bv.Union(GetAccountError)
 
-class IndividualSpaceAllocation(object):
+class IndividualSpaceAllocation(bb.Struct):
     """
     :ivar allocated: The total space allocated to the user's account (bytes).
     """
@@ -1083,6 +1110,9 @@ class IndividualSpaceAllocation(object):
         self._allocated_value = None
         self._allocated_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(IndividualSpaceAllocation, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'IndividualSpaceAllocation(allocated={!r})'.format(
             self._allocated_value,
@@ -1090,7 +1120,7 @@ class IndividualSpaceAllocation(object):
 
 IndividualSpaceAllocation_validator = bv.Struct(IndividualSpaceAllocation)
 
-class Name(object):
+class Name(bb.Struct):
     """
     Representations for a person's name to assist with internationalization.
 
@@ -1266,6 +1296,9 @@ class Name(object):
         self._abbreviated_name_value = None
         self._abbreviated_name_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(Name, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'Name(given_name={!r}, surname={!r}, familiar_name={!r}, display_name={!r}, abbreviated_name={!r})'.format(
             self._given_name_value,
@@ -1365,12 +1398,15 @@ class SpaceAllocation(bb.Union):
             raise AttributeError("tag 'team' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SpaceAllocation, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SpaceAllocation(%r, %r)' % (self._tag, self._value)
 
 SpaceAllocation_validator = bv.Union(SpaceAllocation)
 
-class SpaceUsage(object):
+class SpaceUsage(bb.Struct):
     """
     Information about a user's space usage and quota.
 
@@ -1445,6 +1481,9 @@ class SpaceUsage(object):
         self._allocation_value = None
         self._allocation_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(SpaceUsage, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'SpaceUsage(used={!r}, allocation={!r})'.format(
             self._used_value,
@@ -1453,7 +1492,7 @@ class SpaceUsage(object):
 
 SpaceUsage_validator = bv.Struct(SpaceUsage)
 
-class TeamSpaceAllocation(object):
+class TeamSpaceAllocation(bb.Struct):
     """
     :ivar used: The total space currently used by the user's team (bytes).
     :ivar allocated: The total space allocated to the user's team (bytes).
@@ -1576,7 +1615,7 @@ class TeamSpaceAllocation(object):
         The type of the space limit imposed on the team member (off, alert_only,
         stop_sync).
 
-        :rtype: team_common.MemberSpaceLimitType_validator
+        :rtype: team_common.MemberSpaceLimitType
         """
         if self._user_within_team_space_limit_type_present:
             return self._user_within_team_space_limit_type_value
@@ -1593,6 +1632,9 @@ class TeamSpaceAllocation(object):
     def user_within_team_space_limit_type(self):
         self._user_within_team_space_limit_type_value = None
         self._user_within_team_space_limit_type_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamSpaceAllocation, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'TeamSpaceAllocation(used={!r}, allocated={!r}, user_within_team_space_allocated={!r}, user_within_team_space_limit_type={!r})'.format(

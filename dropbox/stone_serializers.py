@@ -122,11 +122,12 @@ class StoneSerializerBase(StoneEncoderInterface):
         delegate encoding of sub-values. Arguments have the same semantics
         as with the ``encode`` method.
         """
+
         if isinstance(validator, bv.List):
             # Because Lists are mutable, we always validate them during
             # serialization
-            validate_f = validator.validate
-            encode_f = self.encode_list
+            validate_f = validator.validate  # type: typing.Callable[[typing.Any], None]
+            encode_f = self.encode_list  # type: typing.Callable[[typing.Any, typing.Any], typing.Any] # noqa: E501
         elif isinstance(validator, bv.Map):
             # Also validate maps during serialization because they are also mutable
             validate_f = validator.validate

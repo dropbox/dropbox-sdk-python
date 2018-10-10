@@ -116,6 +116,9 @@ class PathRoot(bb.Union):
             raise AttributeError("tag 'namespace_id' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PathRoot, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PathRoot(%r, %r)' % (self._tag, self._value)
 
@@ -187,12 +190,15 @@ class PathRootError(bb.Union):
             raise AttributeError("tag 'invalid_root' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PathRootError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PathRootError(%r, %r)' % (self._tag, self._value)
 
 PathRootError_validator = bv.Union(PathRootError)
 
-class RootInfo(object):
+class RootInfo(bb.Struct):
     """
     Information about current user's root.
 
@@ -272,6 +278,9 @@ class RootInfo(object):
         self._home_namespace_id_value = None
         self._home_namespace_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RootInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'RootInfo(root_namespace_id={!r}, home_namespace_id={!r})'.format(
             self._root_namespace_id_value,
@@ -329,6 +338,9 @@ class TeamRootInfo(RootInfo):
         self._home_path_value = None
         self._home_path_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamRootInfo, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TeamRootInfo(root_namespace_id={!r}, home_namespace_id={!r}, home_path={!r})'.format(
             self._root_namespace_id_value,
@@ -354,6 +366,9 @@ class UserRootInfo(RootInfo):
                  home_namespace_id=None):
         super(UserRootInfo, self).__init__(root_namespace_id,
                                            home_namespace_id)
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UserRootInfo, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'UserRootInfo(root_namespace_id={!r}, home_namespace_id={!r})'.format(

@@ -32,7 +32,7 @@ except (ImportError, SystemError, ValueError):
     import stone_validators as bv
     import stone_base as bb
 
-class AddPropertiesArg(object):
+class AddPropertiesArg(bb.Struct):
     """
     :ivar path: A unique identifier for the file or folder.
     :ivar property_groups: The property groups which are to be added to a
@@ -105,6 +105,9 @@ class AddPropertiesArg(object):
     def property_groups(self):
         self._property_groups_value = None
         self._property_groups_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AddPropertiesArg, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'AddPropertiesArg(path={!r}, property_groups={!r})'.format(
@@ -179,6 +182,9 @@ class TemplateError(bb.Union):
             raise AttributeError("tag 'template_not_found' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TemplateError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TemplateError(%r, %r)' % (self._tag, self._value)
 
@@ -234,6 +240,9 @@ class PropertiesError(TemplateError):
             raise AttributeError("tag 'path' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertiesError(%r, %r)' % (self._tag, self._value)
 
@@ -272,6 +281,9 @@ class InvalidPropertyGroupError(PropertiesError):
         """
         return self._tag == 'does_not_fit_template'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(InvalidPropertyGroupError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'InvalidPropertyGroupError(%r, %r)' % (self._tag, self._value)
 
@@ -298,12 +310,15 @@ class AddPropertiesError(InvalidPropertyGroupError):
         """
         return self._tag == 'property_group_already_exists'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AddPropertiesError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AddPropertiesError(%r, %r)' % (self._tag, self._value)
 
 AddPropertiesError_validator = bv.Union(AddPropertiesError)
 
-class PropertyGroupTemplate(object):
+class PropertyGroupTemplate(bb.Struct):
     """
     Defines how a property group may be structured.
 
@@ -414,6 +429,9 @@ class PropertyGroupTemplate(object):
         self._fields_value = None
         self._fields_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertyGroupTemplate, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertyGroupTemplate(name={!r}, description={!r}, fields={!r})'.format(
             self._name_value,
@@ -438,6 +456,9 @@ class AddTemplateArg(PropertyGroupTemplate):
                                              description,
                                              fields)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AddTemplateArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AddTemplateArg(name={!r}, description={!r}, fields={!r})'.format(
             self._name_value,
@@ -447,7 +468,7 @@ class AddTemplateArg(PropertyGroupTemplate):
 
 AddTemplateArg_validator = bv.Struct(AddTemplateArg)
 
-class AddTemplateResult(object):
+class AddTemplateResult(bb.Struct):
     """
     :ivar template_id: An identifier for template added by  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
@@ -495,6 +516,9 @@ class AddTemplateResult(object):
         self._template_id_value = None
         self._template_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(AddTemplateResult, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'AddTemplateResult(template_id={!r})'.format(
             self._template_id_value,
@@ -502,7 +526,7 @@ class AddTemplateResult(object):
 
 AddTemplateResult_validator = bv.Struct(AddTemplateResult)
 
-class GetTemplateArg(object):
+class GetTemplateArg(bb.Struct):
     """
     :ivar template_id: An identifier for template added by route  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
@@ -550,6 +574,9 @@ class GetTemplateArg(object):
         self._template_id_value = None
         self._template_id_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetTemplateArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetTemplateArg(template_id={!r})'.format(
             self._template_id_value,
@@ -572,6 +599,9 @@ class GetTemplateResult(PropertyGroupTemplate):
                                                 description,
                                                 fields)
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(GetTemplateResult, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'GetTemplateResult(name={!r}, description={!r}, fields={!r})'.format(
             self._name_value,
@@ -581,7 +611,7 @@ class GetTemplateResult(PropertyGroupTemplate):
 
 GetTemplateResult_validator = bv.Struct(GetTemplateResult)
 
-class ListTemplateResult(object):
+class ListTemplateResult(bb.Struct):
     """
     :ivar template_ids: List of identifiers for templates added by  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
@@ -629,6 +659,9 @@ class ListTemplateResult(object):
         self._template_ids_value = None
         self._template_ids_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ListTemplateResult, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ListTemplateResult(template_ids={!r})'.format(
             self._template_ids_value,
@@ -669,6 +702,9 @@ class LogicalOperator(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LogicalOperator, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LogicalOperator(%r, %r)' % (self._tag, self._value)
 
@@ -704,6 +740,9 @@ class LookUpPropertiesError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LookUpPropertiesError, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'LookUpPropertiesError(%r, %r)' % (self._tag, self._value)
@@ -807,6 +846,9 @@ class LookupError(bb.Union):
             raise AttributeError("tag 'malformed_path' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(LookupError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'LookupError(%r, %r)' % (self._tag, self._value)
 
@@ -868,12 +910,15 @@ class ModifyTemplateError(TemplateError):
         """
         return self._tag == 'template_attribute_too_large'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(ModifyTemplateError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'ModifyTemplateError(%r, %r)' % (self._tag, self._value)
 
 ModifyTemplateError_validator = bv.Union(ModifyTemplateError)
 
-class OverwritePropertyGroupArg(object):
+class OverwritePropertyGroupArg(bb.Struct):
     """
     :ivar path: A unique identifier for the file or folder.
     :ivar property_groups: The property groups "snapshot" updates to force
@@ -947,6 +992,9 @@ class OverwritePropertyGroupArg(object):
         self._property_groups_value = None
         self._property_groups_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(OverwritePropertyGroupArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'OverwritePropertyGroupArg(path={!r}, property_groups={!r})'.format(
             self._path_value,
@@ -955,7 +1003,7 @@ class OverwritePropertyGroupArg(object):
 
 OverwritePropertyGroupArg_validator = bv.Struct(OverwritePropertyGroupArg)
 
-class PropertiesSearchArg(object):
+class PropertiesSearchArg(bb.Struct):
     """
     :ivar queries: Queries to search.
     :ivar template_filter: Filter results to contain only properties associated
@@ -1030,6 +1078,9 @@ class PropertiesSearchArg(object):
         self._template_filter_value = None
         self._template_filter_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesSearchArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertiesSearchArg(queries={!r}, template_filter={!r})'.format(
             self._queries_value,
@@ -1038,7 +1089,7 @@ class PropertiesSearchArg(object):
 
 PropertiesSearchArg_validator = bv.Struct(PropertiesSearchArg)
 
-class PropertiesSearchContinueArg(object):
+class PropertiesSearchContinueArg(bb.Struct):
     """
     :ivar cursor: The cursor returned by your last call to
         :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search` or
@@ -1084,6 +1135,9 @@ class PropertiesSearchContinueArg(object):
         self._cursor_value = None
         self._cursor_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesSearchContinueArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertiesSearchContinueArg(cursor={!r})'.format(
             self._cursor_value,
@@ -1123,6 +1177,9 @@ class PropertiesSearchContinueError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesSearchContinueError, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'PropertiesSearchContinueError(%r, %r)' % (self._tag, self._value)
@@ -1177,12 +1234,15 @@ class PropertiesSearchError(bb.Union):
             raise AttributeError("tag 'property_group_lookup' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesSearchError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertiesSearchError(%r, %r)' % (self._tag, self._value)
 
 PropertiesSearchError_validator = bv.Union(PropertiesSearchError)
 
-class PropertiesSearchMatch(object):
+class PropertiesSearchMatch(bb.Struct):
     """
     :ivar id: The ID for the matched file or folder.
     :ivar path: The path for the matched file or folder.
@@ -1318,6 +1378,9 @@ class PropertiesSearchMatch(object):
         self._property_groups_value = None
         self._property_groups_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesSearchMatch, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertiesSearchMatch(id={!r}, path={!r}, is_deleted={!r}, property_groups={!r})'.format(
             self._id_value,
@@ -1380,12 +1443,15 @@ class PropertiesSearchMode(bb.Union):
             raise AttributeError("tag 'field_name' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesSearchMode, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertiesSearchMode(%r, %r)' % (self._tag, self._value)
 
 PropertiesSearchMode_validator = bv.Union(PropertiesSearchMode)
 
-class PropertiesSearchQuery(object):
+class PropertiesSearchQuery(bb.Struct):
     """
     :ivar query: The property field value for which to search across templates.
     :ivar mode: The mode with which to perform the search.
@@ -1489,6 +1555,9 @@ class PropertiesSearchQuery(object):
         self._logical_operator_value = None
         self._logical_operator_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesSearchQuery, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertiesSearchQuery(query={!r}, mode={!r}, logical_operator={!r})'.format(
             self._query_value,
@@ -1498,7 +1567,7 @@ class PropertiesSearchQuery(object):
 
 PropertiesSearchQuery_validator = bv.Struct(PropertiesSearchQuery)
 
-class PropertiesSearchResult(object):
+class PropertiesSearchResult(bb.Struct):
     """
     :ivar matches: A list (possibly empty) of matches for the query.
     :ivar cursor: Pass the cursor into
@@ -1580,6 +1649,9 @@ class PropertiesSearchResult(object):
         self._cursor_value = None
         self._cursor_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertiesSearchResult, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertiesSearchResult(matches={!r}, cursor={!r})'.format(
             self._matches_value,
@@ -1588,7 +1660,7 @@ class PropertiesSearchResult(object):
 
 PropertiesSearchResult_validator = bv.Struct(PropertiesSearchResult)
 
-class PropertyField(object):
+class PropertyField(bb.Struct):
     """
     Raw key/value data to be associated with a Dropbox file. Property fields are
     added to Dropbox files as a :class:`PropertyGroup`.
@@ -1668,6 +1740,9 @@ class PropertyField(object):
         self._value_value = None
         self._value_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertyField, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertyField(name={!r}, value={!r})'.format(
             self._name_value,
@@ -1676,7 +1751,7 @@ class PropertyField(object):
 
 PropertyField_validator = bv.Struct(PropertyField)
 
-class PropertyFieldTemplate(object):
+class PropertyFieldTemplate(bb.Struct):
     """
     Defines how a single property field may be structured. Used exclusively by
     :class:`PropertyGroupTemplate`.
@@ -1789,6 +1864,9 @@ class PropertyFieldTemplate(object):
         self._type_value = None
         self._type_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertyFieldTemplate, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertyFieldTemplate(name={!r}, description={!r}, type={!r})'.format(
             self._name_value,
@@ -1798,7 +1876,7 @@ class PropertyFieldTemplate(object):
 
 PropertyFieldTemplate_validator = bv.Struct(PropertyFieldTemplate)
 
-class PropertyGroup(object):
+class PropertyGroup(bb.Struct):
     """
     A subset of the property fields described by the corresponding
     :class:`PropertyGroupTemplate`. Properties are always added to a Dropbox
@@ -1878,6 +1956,9 @@ class PropertyGroup(object):
         self._fields_value = None
         self._fields_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertyGroup, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertyGroup(template_id={!r}, fields={!r})'.format(
             self._template_id_value,
@@ -1886,7 +1967,7 @@ class PropertyGroup(object):
 
 PropertyGroup_validator = bv.Struct(PropertyGroup)
 
-class PropertyGroupUpdate(object):
+class PropertyGroupUpdate(bb.Struct):
     """
     :ivar template_id: A unique identifier for a property template.
     :ivar add_or_update_fields: Property fields to update. If the property field
@@ -2001,6 +2082,9 @@ class PropertyGroupUpdate(object):
         self._remove_fields_value = None
         self._remove_fields_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertyGroupUpdate, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertyGroupUpdate(template_id={!r}, add_or_update_fields={!r}, remove_fields={!r})'.format(
             self._template_id_value,
@@ -2044,12 +2128,15 @@ class PropertyType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PropertyType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PropertyType(%r, %r)' % (self._tag, self._value)
 
 PropertyType_validator = bv.Union(PropertyType)
 
-class RemovePropertiesArg(object):
+class RemovePropertiesArg(bb.Struct):
     """
     :ivar path: A unique identifier for the file or folder.
     :ivar property_template_ids: A list of identifiers for a template created by
@@ -2128,6 +2215,9 @@ class RemovePropertiesArg(object):
         self._property_template_ids_value = None
         self._property_template_ids_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RemovePropertiesArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'RemovePropertiesArg(path={!r}, property_template_ids={!r})'.format(
             self._path_value,
@@ -2172,12 +2262,15 @@ class RemovePropertiesError(PropertiesError):
             raise AttributeError("tag 'property_group_lookup' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RemovePropertiesError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'RemovePropertiesError(%r, %r)' % (self._tag, self._value)
 
 RemovePropertiesError_validator = bv.Union(RemovePropertiesError)
 
-class RemoveTemplateArg(object):
+class RemoveTemplateArg(bb.Struct):
     """
     :ivar template_id: An identifier for a template created by
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
@@ -2224,6 +2317,9 @@ class RemoveTemplateArg(object):
     def template_id(self):
         self._template_id_value = None
         self._template_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RemoveTemplateArg, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'RemoveTemplateArg(template_id={!r})'.format(
@@ -2286,6 +2382,9 @@ class TemplateFilterBase(bb.Union):
             raise AttributeError("tag 'filter_some' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TemplateFilterBase, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TemplateFilterBase(%r, %r)' % (self._tag, self._value)
 
@@ -2311,6 +2410,9 @@ class TemplateFilter(TemplateFilterBase):
         :rtype: bool
         """
         return self._tag == 'filter_none'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TemplateFilter, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'TemplateFilter(%r, %r)' % (self._tag, self._value)
@@ -2359,12 +2461,15 @@ class TemplateOwnerType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TemplateOwnerType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'TemplateOwnerType(%r, %r)' % (self._tag, self._value)
 
 TemplateOwnerType_validator = bv.Union(TemplateOwnerType)
 
-class UpdatePropertiesArg(object):
+class UpdatePropertiesArg(bb.Struct):
     """
     :ivar path: A unique identifier for the file or folder.
     :ivar update_property_groups: The property groups "delta" updates to apply.
@@ -2437,6 +2542,9 @@ class UpdatePropertiesArg(object):
         self._update_property_groups_value = None
         self._update_property_groups_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UpdatePropertiesArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UpdatePropertiesArg(path={!r}, update_property_groups={!r})'.format(
             self._path_value,
@@ -2481,12 +2589,15 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
             raise AttributeError("tag 'property_group_lookup' not set")
         return self._value
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UpdatePropertiesError, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UpdatePropertiesError(%r, %r)' % (self._tag, self._value)
 
 UpdatePropertiesError_validator = bv.Union(UpdatePropertiesError)
 
-class UpdateTemplateArg(object):
+class UpdateTemplateArg(bb.Struct):
     """
     :ivar template_id: An identifier for template added by  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
@@ -2641,6 +2752,9 @@ class UpdateTemplateArg(object):
         self._add_fields_value = None
         self._add_fields_present = False
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UpdateTemplateArg, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'UpdateTemplateArg(template_id={!r}, name={!r}, description={!r}, add_fields={!r})'.format(
             self._template_id_value,
@@ -2651,7 +2765,7 @@ class UpdateTemplateArg(object):
 
 UpdateTemplateArg_validator = bv.Struct(UpdateTemplateArg)
 
-class UpdateTemplateResult(object):
+class UpdateTemplateResult(bb.Struct):
     """
     :ivar template_id: An identifier for template added by route  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
@@ -2698,6 +2812,9 @@ class UpdateTemplateResult(object):
     def template_id(self):
         self._template_id_value = None
         self._template_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(UpdateTemplateResult, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
         return 'UpdateTemplateResult(template_id={!r})'.format(

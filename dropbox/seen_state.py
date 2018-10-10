@@ -78,6 +78,9 @@ class PlatformType(bb.Union):
         """
         return self._tag == 'other'
 
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(PlatformType, self)._process_custom_annotations(annotation_type, processor)
+
     def __repr__(self):
         return 'PlatformType(%r, %r)' % (self._tag, self._value)
 
