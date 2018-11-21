@@ -2138,6 +2138,188 @@ class AssetLogInfo(bb.Union):
 
 AssetLogInfo_validator = bv.Union(AssetLogInfo)
 
+class CameraUploadsPolicy(bb.Union):
+    """
+    Policy for controlling if team members can activate camera uploads
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CameraUploadsPolicy, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'CameraUploadsPolicy(%r, %r)' % (self._tag, self._value)
+
+CameraUploadsPolicy_validator = bv.Union(CameraUploadsPolicy)
+
+class CameraUploadsPolicyChangedDetails(bb.Struct):
+    """
+    Changed camera uploads setting for team.
+
+    :ivar new_value: New camera uploads setting.
+    :ivar previous_value: Previous camera uploads setting.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New camera uploads setting.
+
+        :rtype: CameraUploadsPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous camera uploads setting.
+
+        :rtype: CameraUploadsPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CameraUploadsPolicyChangedDetails, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'CameraUploadsPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+CameraUploadsPolicyChangedDetails_validator = bv.Struct(CameraUploadsPolicyChangedDetails)
+
+class CameraUploadsPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(CameraUploadsPolicyChangedType, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'CameraUploadsPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+CameraUploadsPolicyChangedType_validator = bv.Struct(CameraUploadsPolicyChangedType)
+
 class Certificate(bb.Struct):
     """
     Certificate details.
@@ -2551,6 +2733,8 @@ class ContextLogInfo(bb.Union):
         non team member.
     :ivar anonymous: Anonymous context.
     :ivar team: Action was done on behalf of the team.
+    :ivar TrustedNonTeamMemberLogInfo trusted_non_team_member: Action was done
+        on behalf of a trusted non team member.
     """
 
     _catch_all = 'other'
@@ -2582,6 +2766,17 @@ class ContextLogInfo(bb.Union):
         :rtype: ContextLogInfo
         """
         return cls('non_team_member', val)
+
+    @classmethod
+    def trusted_non_team_member(cls, val):
+        """
+        Create an instance of this class set to the ``trusted_non_team_member``
+        tag with value ``val``.
+
+        :param TrustedNonTeamMemberLogInfo val:
+        :rtype: ContextLogInfo
+        """
+        return cls('trusted_non_team_member', val)
 
     def is_team_member(self):
         """
@@ -2615,6 +2810,14 @@ class ContextLogInfo(bb.Union):
         """
         return self._tag == 'team'
 
+    def is_trusted_non_team_member(self):
+        """
+        Check if the union tag is ``trusted_non_team_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'trusted_non_team_member'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -2645,6 +2848,18 @@ class ContextLogInfo(bb.Union):
         """
         if not self.is_non_team_member():
             raise AttributeError("tag 'non_team_member' not set")
+        return self._value
+
+    def get_trusted_non_team_member(self):
+        """
+        Action was done on behalf of a trusted non team member.
+
+        Only call this if :meth:`is_trusted_non_team_member` is true.
+
+        :rtype: TrustedNonTeamMemberLogInfo
+        """
+        if not self.is_trusted_non_team_member():
+            raise AttributeError("tag 'trusted_non_team_member' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, processor):
@@ -7464,6 +7679,17 @@ class EventDetails(bb.Union):
         return cls('file_delete_comment_details', val)
 
     @classmethod
+    def file_edit_comment_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_edit_comment_details`` tag with value ``val``.
+
+        :param FileEditCommentDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_edit_comment_details', val)
+
+    @classmethod
     def file_like_comment_details(cls, val):
         """
         Create an instance of this class set to the
@@ -10108,6 +10334,17 @@ class EventDetails(bb.Union):
         return cls('allow_download_enabled_details', val)
 
     @classmethod
+    def camera_uploads_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``camera_uploads_policy_changed_details`` tag with value ``val``.
+
+        :param CameraUploadsPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('camera_uploads_policy_changed_details', val)
+
+    @classmethod
     def data_placement_restriction_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -10879,6 +11116,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_delete_comment_details'
+
+    def is_file_edit_comment_details(self):
+        """
+        Check if the union tag is ``file_edit_comment_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_edit_comment_details'
 
     def is_file_like_comment_details(self):
         """
@@ -12792,6 +13037,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'allow_download_enabled_details'
 
+    def is_camera_uploads_policy_changed_details(self):
+        """
+        Check if the union tag is ``camera_uploads_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'camera_uploads_policy_changed_details'
+
     def is_data_placement_restriction_change_policy_details(self):
         """
         Check if the union tag is ``data_placement_restriction_change_policy_details``.
@@ -13380,6 +13633,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_file_delete_comment_details():
             raise AttributeError("tag 'file_delete_comment_details' not set")
+        return self._value
+
+    def get_file_edit_comment_details(self):
+        """
+        Only call this if :meth:`is_file_edit_comment_details` is true.
+
+        :rtype: FileEditCommentDetails
+        """
+        if not self.is_file_edit_comment_details():
+            raise AttributeError("tag 'file_edit_comment_details' not set")
         return self._value
 
     def get_file_like_comment_details(self):
@@ -15772,6 +16035,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'allow_download_enabled_details' not set")
         return self._value
 
+    def get_camera_uploads_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_camera_uploads_policy_changed_details` is true.
+
+        :rtype: CameraUploadsPolicyChangedDetails
+        """
+        if not self.is_camera_uploads_policy_changed_details():
+            raise AttributeError("tag 'camera_uploads_policy_changed_details' not set")
+        return self._value
+
     def get_data_placement_restriction_change_policy_details(self):
         """
         Only call this if :meth:`is_data_placement_restriction_change_policy_details` is true.
@@ -16441,6 +16714,7 @@ class EventType(bb.Union):
         file
     :ivar FileDeleteCommentType file_delete_comment: (comments) Deleted file
         comment
+    :ivar FileEditCommentType file_edit_comment: (comments) Edited file comment
     :ivar FileLikeCommentType file_like_comment: (comments) Liked file comment
         (deprecated, no longer logged)
     :ivar FileResolveCommentType file_resolve_comment: (comments) Resolved file
@@ -16592,7 +16866,7 @@ class EventType(bb.Union):
     :ivar MemberChangeStatusType member_change_status: (members) Changed member
         status (invited, joined, suspended, etc.)
     :ivar MemberDeleteManualContactsType member_delete_manual_contacts:
-        (members) Cleared saved contacts
+        (members) Cleared manually added contacts
     :ivar MemberPermanentlyDeleteAccountContentsType
         member_permanently_delete_account_contents: (members) Permanently
         deleted contents of deleted team member account
@@ -16923,6 +17197,8 @@ class EventType(bb.Union):
         Disabled downloads (deprecated, no longer logged)
     :ivar AllowDownloadEnabledType allow_download_enabled: (team_policies)
         Enabled downloads (deprecated, no longer logged)
+    :ivar CameraUploadsPolicyChangedType camera_uploads_policy_changed:
+        (team_policies) Changed camera uploads setting for team
     :ivar DataPlacementRestrictionChangePolicyType
         data_placement_restriction_change_policy: (team_policies) Set
         restrictions on data center locations where team data resides
@@ -17161,6 +17437,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('file_delete_comment', val)
+
+    @classmethod
+    def file_edit_comment(cls, val):
+        """
+        Create an instance of this class set to the ``file_edit_comment`` tag
+        with value ``val``.
+
+        :param FileEditCommentType val:
+        :rtype: EventType
+        """
+        return cls('file_edit_comment', val)
 
     @classmethod
     def file_like_comment(cls, val):
@@ -19796,6 +20083,17 @@ class EventType(bb.Union):
         return cls('allow_download_enabled', val)
 
     @classmethod
+    def camera_uploads_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``camera_uploads_policy_changed`` tag with value ``val``.
+
+        :param CameraUploadsPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('camera_uploads_policy_changed', val)
+
+    @classmethod
     def data_placement_restriction_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -20543,6 +20841,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_delete_comment'
+
+    def is_file_edit_comment(self):
+        """
+        Check if the union tag is ``file_edit_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_edit_comment'
 
     def is_file_like_comment(self):
         """
@@ -22456,6 +22762,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'allow_download_enabled'
 
+    def is_camera_uploads_policy_changed(self):
+        """
+        Check if the union tag is ``camera_uploads_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'camera_uploads_policy_changed'
+
     def is_data_placement_restriction_change_policy(self):
         """
         Check if the union tag is ``data_placement_restriction_change_policy``.
@@ -23051,6 +23365,18 @@ class EventType(bb.Union):
         """
         if not self.is_file_delete_comment():
             raise AttributeError("tag 'file_delete_comment' not set")
+        return self._value
+
+    def get_file_edit_comment(self):
+        """
+        (comments) Edited file comment
+
+        Only call this if :meth:`is_file_edit_comment` is true.
+
+        :rtype: FileEditCommentType
+        """
+        if not self.is_file_edit_comment():
+            raise AttributeError("tag 'file_edit_comment' not set")
         return self._value
 
     def get_file_like_comment(self):
@@ -23987,7 +24313,7 @@ class EventType(bb.Union):
 
     def get_member_delete_manual_contacts(self):
         """
-        (members) Cleared saved contacts
+        (members) Cleared manually added contacts
 
         Only call this if :meth:`is_member_delete_manual_contacts` is true.
 
@@ -25952,6 +26278,18 @@ class EventType(bb.Union):
         """
         if not self.is_allow_download_enabled():
             raise AttributeError("tag 'allow_download_enabled' not set")
+        return self._value
+
+    def get_camera_uploads_policy_changed(self):
+        """
+        (team_policies) Changed camera uploads setting for team
+
+        Only call this if :meth:`is_camera_uploads_policy_changed` is true.
+
+        :rtype: CameraUploadsPolicyChangedType
+        """
+        if not self.is_camera_uploads_policy_changed():
+            raise AttributeError("tag 'camera_uploads_policy_changed' not set")
         return self._value
 
     def get_data_placement_restriction_change_policy(self):
@@ -28083,6 +28421,143 @@ class FileDownloadType(bb.Struct):
         )
 
 FileDownloadType_validator = bv.Struct(FileDownloadType)
+
+class FileEditCommentDetails(bb.Struct):
+    """
+    Edited file comment.
+
+    :ivar comment_text: Comment text. Might be missing due to historical data
+        gap.
+    :ivar previous_comment_text: Previous comment text.
+    """
+
+    __slots__ = [
+        '_comment_text_value',
+        '_comment_text_present',
+        '_previous_comment_text_value',
+        '_previous_comment_text_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_comment_text=None,
+                 comment_text=None):
+        self._comment_text_value = None
+        self._comment_text_present = False
+        self._previous_comment_text_value = None
+        self._previous_comment_text_present = False
+        if comment_text is not None:
+            self.comment_text = comment_text
+        if previous_comment_text is not None:
+            self.previous_comment_text = previous_comment_text
+
+    @property
+    def comment_text(self):
+        """
+        Comment text. Might be missing due to historical data gap.
+
+        :rtype: str
+        """
+        if self._comment_text_present:
+            return self._comment_text_value
+        else:
+            return None
+
+    @comment_text.setter
+    def comment_text(self, val):
+        if val is None:
+            del self.comment_text
+            return
+        val = self._comment_text_validator.validate(val)
+        self._comment_text_value = val
+        self._comment_text_present = True
+
+    @comment_text.deleter
+    def comment_text(self):
+        self._comment_text_value = None
+        self._comment_text_present = False
+
+    @property
+    def previous_comment_text(self):
+        """
+        Previous comment text.
+
+        :rtype: str
+        """
+        if self._previous_comment_text_present:
+            return self._previous_comment_text_value
+        else:
+            raise AttributeError("missing required field 'previous_comment_text'")
+
+    @previous_comment_text.setter
+    def previous_comment_text(self, val):
+        val = self._previous_comment_text_validator.validate(val)
+        self._previous_comment_text_value = val
+        self._previous_comment_text_present = True
+
+    @previous_comment_text.deleter
+    def previous_comment_text(self):
+        self._previous_comment_text_value = None
+        self._previous_comment_text_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileEditCommentDetails, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'FileEditCommentDetails(previous_comment_text={!r}, comment_text={!r})'.format(
+            self._previous_comment_text_value,
+            self._comment_text_value,
+        )
+
+FileEditCommentDetails_validator = bv.Struct(FileEditCommentDetails)
+
+class FileEditCommentType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(FileEditCommentType, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'FileEditCommentType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileEditCommentType_validator = bv.Struct(FileEditCommentType)
 
 class FileEditDetails(bb.Struct):
     """
@@ -35184,7 +35659,7 @@ MemberChangeStatusType_validator = bv.Struct(MemberChangeStatusType)
 
 class MemberDeleteManualContactsDetails(bb.Struct):
     """
-    Cleared saved contacts.
+    Cleared manually added contacts.
     """
 
     __slots__ = [
@@ -42649,6 +43124,8 @@ class PaperDownloadFormat(bb.Union):
     # Attribute is overwritten below the class definition
     markdown = None
     # Attribute is overwritten below the class definition
+    pdf = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_docx(self):
@@ -42674,6 +43151,14 @@ class PaperDownloadFormat(bb.Union):
         :rtype: bool
         """
         return self._tag == 'markdown'
+
+    def is_pdf(self):
+        """
+        Check if the union tag is ``pdf``.
+
+        :rtype: bool
+        """
+        return self._tag == 'pdf'
 
     def is_other(self):
         """
@@ -52807,8 +53292,6 @@ class SharingMemberPolicy(bb.Union):
     # Attribute is overwritten below the class definition
     forbid = None
     # Attribute is overwritten below the class definition
-    team_members_and_whitelist = None
-    # Attribute is overwritten below the class definition
     other = None
 
     def is_allow(self):
@@ -52826,14 +53309,6 @@ class SharingMemberPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'forbid'
-
-    def is_team_members_and_whitelist(self):
-        """
-        Check if the union tag is ``team_members_and_whitelist``.
-
-        :rtype: bool
-        """
-        return self._tag == 'team_members_and_whitelist'
 
     def is_other(self):
         """
@@ -61494,6 +61969,107 @@ class TimeUnit(bb.Union):
 
 TimeUnit_validator = bv.Union(TimeUnit)
 
+class TrustedNonTeamMemberLogInfo(UserLogInfo):
+    """
+    User that is not a member of the team but considered trusted.
+
+    :ivar trusted_non_team_member_type: Indicates the type of the trusted non
+        team member user.
+    """
+
+    __slots__ = [
+        '_trusted_non_team_member_type_value',
+        '_trusted_non_team_member_type_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 trusted_non_team_member_type=None,
+                 account_id=None,
+                 display_name=None,
+                 email=None):
+        super(TrustedNonTeamMemberLogInfo, self).__init__(account_id,
+                                                          display_name,
+                                                          email)
+        self._trusted_non_team_member_type_value = None
+        self._trusted_non_team_member_type_present = False
+        if trusted_non_team_member_type is not None:
+            self.trusted_non_team_member_type = trusted_non_team_member_type
+
+    @property
+    def trusted_non_team_member_type(self):
+        """
+        Indicates the type of the trusted non team member user.
+
+        :rtype: TrustedNonTeamMemberType
+        """
+        if self._trusted_non_team_member_type_present:
+            return self._trusted_non_team_member_type_value
+        else:
+            raise AttributeError("missing required field 'trusted_non_team_member_type'")
+
+    @trusted_non_team_member_type.setter
+    def trusted_non_team_member_type(self, val):
+        self._trusted_non_team_member_type_validator.validate_type_only(val)
+        self._trusted_non_team_member_type_value = val
+        self._trusted_non_team_member_type_present = True
+
+    @trusted_non_team_member_type.deleter
+    def trusted_non_team_member_type(self):
+        self._trusted_non_team_member_type_value = None
+        self._trusted_non_team_member_type_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TrustedNonTeamMemberLogInfo, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'TrustedNonTeamMemberLogInfo(trusted_non_team_member_type={!r}, account_id={!r}, display_name={!r}, email={!r})'.format(
+            self._trusted_non_team_member_type_value,
+            self._account_id_value,
+            self._display_name_value,
+            self._email_value,
+        )
+
+TrustedNonTeamMemberLogInfo_validator = bv.Struct(TrustedNonTeamMemberLogInfo)
+
+class TrustedNonTeamMemberType(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    multi_instance_admin = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_multi_instance_admin(self):
+        """
+        Check if the union tag is ``multi_instance_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'multi_instance_admin'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TrustedNonTeamMemberType, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'TrustedNonTeamMemberType(%r, %r)' % (self._tag, self._value)
+
+TrustedNonTeamMemberType_validator = bv.Union(TrustedNonTeamMemberType)
+
 class TwoAccountChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled option for members to link personal Dropbox account and
@@ -62861,6 +63437,34 @@ AssetLogInfo._tagmap = {
 
 AssetLogInfo.other = AssetLogInfo('other')
 
+CameraUploadsPolicy._disabled_validator = bv.Void()
+CameraUploadsPolicy._enabled_validator = bv.Void()
+CameraUploadsPolicy._other_validator = bv.Void()
+CameraUploadsPolicy._tagmap = {
+    'disabled': CameraUploadsPolicy._disabled_validator,
+    'enabled': CameraUploadsPolicy._enabled_validator,
+    'other': CameraUploadsPolicy._other_validator,
+}
+
+CameraUploadsPolicy.disabled = CameraUploadsPolicy('disabled')
+CameraUploadsPolicy.enabled = CameraUploadsPolicy('enabled')
+CameraUploadsPolicy.other = CameraUploadsPolicy('other')
+
+CameraUploadsPolicyChangedDetails._new_value_validator = CameraUploadsPolicy_validator
+CameraUploadsPolicyChangedDetails._previous_value_validator = CameraUploadsPolicy_validator
+CameraUploadsPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+CameraUploadsPolicyChangedDetails._all_fields_ = [
+    ('new_value', CameraUploadsPolicyChangedDetails._new_value_validator),
+    ('previous_value', CameraUploadsPolicyChangedDetails._previous_value_validator),
+]
+
+CameraUploadsPolicyChangedType._description_validator = bv.String()
+CameraUploadsPolicyChangedType._all_field_names_ = set(['description'])
+CameraUploadsPolicyChangedType._all_fields_ = [('description', CameraUploadsPolicyChangedType._description_validator)]
+
 Certificate._subject_validator = bv.String()
 Certificate._issuer_validator = bv.String()
 Certificate._issue_date_validator = bv.String()
@@ -62912,12 +63516,14 @@ ContextLogInfo._team_member_validator = TeamMemberLogInfo_validator
 ContextLogInfo._non_team_member_validator = NonTeamMemberLogInfo_validator
 ContextLogInfo._anonymous_validator = bv.Void()
 ContextLogInfo._team_validator = bv.Void()
+ContextLogInfo._trusted_non_team_member_validator = TrustedNonTeamMemberLogInfo_validator
 ContextLogInfo._other_validator = bv.Void()
 ContextLogInfo._tagmap = {
     'team_member': ContextLogInfo._team_member_validator,
     'non_team_member': ContextLogInfo._non_team_member_validator,
     'anonymous': ContextLogInfo._anonymous_validator,
     'team': ContextLogInfo._team_validator,
+    'trusted_non_team_member': ContextLogInfo._trusted_non_team_member_validator,
     'other': ContextLogInfo._other_validator,
 }
 
@@ -63513,6 +64119,7 @@ EventDetails._app_unlink_user_details_validator = AppUnlinkUserDetails_validator
 EventDetails._file_add_comment_details_validator = FileAddCommentDetails_validator
 EventDetails._file_change_comment_subscription_details_validator = FileChangeCommentSubscriptionDetails_validator
 EventDetails._file_delete_comment_details_validator = FileDeleteCommentDetails_validator
+EventDetails._file_edit_comment_details_validator = FileEditCommentDetails_validator
 EventDetails._file_like_comment_details_validator = FileLikeCommentDetails_validator
 EventDetails._file_resolve_comment_details_validator = FileResolveCommentDetails_validator
 EventDetails._file_unlike_comment_details_validator = FileUnlikeCommentDetails_validator
@@ -63752,6 +64359,7 @@ EventDetails._team_selective_sync_settings_changed_details_validator = TeamSelec
 EventDetails._account_capture_change_policy_details_validator = AccountCaptureChangePolicyDetails_validator
 EventDetails._allow_download_disabled_details_validator = AllowDownloadDisabledDetails_validator
 EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDetails_validator
+EventDetails._camera_uploads_policy_changed_details_validator = CameraUploadsPolicyChangedDetails_validator
 EventDetails._data_placement_restriction_change_policy_details_validator = DataPlacementRestrictionChangePolicyDetails_validator
 EventDetails._data_placement_restriction_satisfy_policy_details_validator = DataPlacementRestrictionSatisfyPolicyDetails_validator
 EventDetails._device_approvals_change_desktop_policy_details_validator = DeviceApprovalsChangeDesktopPolicyDetails_validator
@@ -63825,6 +64433,7 @@ EventDetails._tagmap = {
     'file_add_comment_details': EventDetails._file_add_comment_details_validator,
     'file_change_comment_subscription_details': EventDetails._file_change_comment_subscription_details_validator,
     'file_delete_comment_details': EventDetails._file_delete_comment_details_validator,
+    'file_edit_comment_details': EventDetails._file_edit_comment_details_validator,
     'file_like_comment_details': EventDetails._file_like_comment_details_validator,
     'file_resolve_comment_details': EventDetails._file_resolve_comment_details_validator,
     'file_unlike_comment_details': EventDetails._file_unlike_comment_details_validator,
@@ -64064,6 +64673,7 @@ EventDetails._tagmap = {
     'account_capture_change_policy_details': EventDetails._account_capture_change_policy_details_validator,
     'allow_download_disabled_details': EventDetails._allow_download_disabled_details_validator,
     'allow_download_enabled_details': EventDetails._allow_download_enabled_details_validator,
+    'camera_uploads_policy_changed_details': EventDetails._camera_uploads_policy_changed_details_validator,
     'data_placement_restriction_change_policy_details': EventDetails._data_placement_restriction_change_policy_details_validator,
     'data_placement_restriction_satisfy_policy_details': EventDetails._data_placement_restriction_satisfy_policy_details_validator,
     'device_approvals_change_desktop_policy_details': EventDetails._device_approvals_change_desktop_policy_details_validator,
@@ -64140,6 +64750,7 @@ EventType._app_unlink_user_validator = AppUnlinkUserType_validator
 EventType._file_add_comment_validator = FileAddCommentType_validator
 EventType._file_change_comment_subscription_validator = FileChangeCommentSubscriptionType_validator
 EventType._file_delete_comment_validator = FileDeleteCommentType_validator
+EventType._file_edit_comment_validator = FileEditCommentType_validator
 EventType._file_like_comment_validator = FileLikeCommentType_validator
 EventType._file_resolve_comment_validator = FileResolveCommentType_validator
 EventType._file_unlike_comment_validator = FileUnlikeCommentType_validator
@@ -64379,6 +64990,7 @@ EventType._team_selective_sync_settings_changed_validator = TeamSelectiveSyncSet
 EventType._account_capture_change_policy_validator = AccountCaptureChangePolicyType_validator
 EventType._allow_download_disabled_validator = AllowDownloadDisabledType_validator
 EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
+EventType._camera_uploads_policy_changed_validator = CameraUploadsPolicyChangedType_validator
 EventType._data_placement_restriction_change_policy_validator = DataPlacementRestrictionChangePolicyType_validator
 EventType._data_placement_restriction_satisfy_policy_validator = DataPlacementRestrictionSatisfyPolicyType_validator
 EventType._device_approvals_change_desktop_policy_validator = DeviceApprovalsChangeDesktopPolicyType_validator
@@ -64451,6 +65063,7 @@ EventType._tagmap = {
     'file_add_comment': EventType._file_add_comment_validator,
     'file_change_comment_subscription': EventType._file_change_comment_subscription_validator,
     'file_delete_comment': EventType._file_delete_comment_validator,
+    'file_edit_comment': EventType._file_edit_comment_validator,
     'file_like_comment': EventType._file_like_comment_validator,
     'file_resolve_comment': EventType._file_resolve_comment_validator,
     'file_unlike_comment': EventType._file_unlike_comment_validator,
@@ -64690,6 +65303,7 @@ EventType._tagmap = {
     'account_capture_change_policy': EventType._account_capture_change_policy_validator,
     'allow_download_disabled': EventType._allow_download_disabled_validator,
     'allow_download_enabled': EventType._allow_download_enabled_validator,
+    'camera_uploads_policy_changed': EventType._camera_uploads_policy_changed_validator,
     'data_placement_restriction_change_policy': EventType._data_placement_restriction_change_policy_validator,
     'data_placement_restriction_satisfy_policy': EventType._data_placement_restriction_satisfy_policy_validator,
     'device_approvals_change_desktop_policy': EventType._device_approvals_change_desktop_policy_validator,
@@ -64921,6 +65535,21 @@ FileDownloadDetails._all_fields_ = []
 FileDownloadType._description_validator = bv.String()
 FileDownloadType._all_field_names_ = set(['description'])
 FileDownloadType._all_fields_ = [('description', FileDownloadType._description_validator)]
+
+FileEditCommentDetails._comment_text_validator = bv.Nullable(bv.String())
+FileEditCommentDetails._previous_comment_text_validator = bv.String()
+FileEditCommentDetails._all_field_names_ = set([
+    'comment_text',
+    'previous_comment_text',
+])
+FileEditCommentDetails._all_fields_ = [
+    ('comment_text', FileEditCommentDetails._comment_text_validator),
+    ('previous_comment_text', FileEditCommentDetails._previous_comment_text_validator),
+]
+
+FileEditCommentType._description_validator = bv.String()
+FileEditCommentType._all_field_names_ = set(['description'])
+FileEditCommentType._all_fields_ = [('description', FileEditCommentType._description_validator)]
 
 FileEditDetails._all_field_names_ = set([])
 FileEditDetails._all_fields_ = []
@@ -66018,10 +66647,12 @@ UserLogInfo._all_fields_ = UserLogInfo._fields_
 
 UserLogInfo._tag_to_subtype_ = {
     (u'team_member',): TeamMemberLogInfo_validator,
+    (u'trusted_non_team_member',): TrustedNonTeamMemberLogInfo_validator,
     (u'non_team_member',): NonTeamMemberLogInfo_validator,
 }
 UserLogInfo._pytype_to_tag_and_subtype_ = {
     TeamMemberLogInfo: ((u'team_member',), TeamMemberLogInfo_validator),
+    TrustedNonTeamMemberLogInfo: ((u'trusted_non_team_member',), TrustedNonTeamMemberLogInfo_validator),
     NonTeamMemberLogInfo: ((u'non_team_member',), NonTeamMemberLogInfo_validator),
 }
 UserLogInfo._is_catch_all_ = True
@@ -66513,17 +67144,20 @@ PaperDocumentLogInfo._all_fields_ = [
 PaperDownloadFormat._docx_validator = bv.Void()
 PaperDownloadFormat._html_validator = bv.Void()
 PaperDownloadFormat._markdown_validator = bv.Void()
+PaperDownloadFormat._pdf_validator = bv.Void()
 PaperDownloadFormat._other_validator = bv.Void()
 PaperDownloadFormat._tagmap = {
     'docx': PaperDownloadFormat._docx_validator,
     'html': PaperDownloadFormat._html_validator,
     'markdown': PaperDownloadFormat._markdown_validator,
+    'pdf': PaperDownloadFormat._pdf_validator,
     'other': PaperDownloadFormat._other_validator,
 }
 
 PaperDownloadFormat.docx = PaperDownloadFormat('docx')
 PaperDownloadFormat.html = PaperDownloadFormat('html')
 PaperDownloadFormat.markdown = PaperDownloadFormat('markdown')
+PaperDownloadFormat.pdf = PaperDownloadFormat('pdf')
 PaperDownloadFormat.other = PaperDownloadFormat('other')
 
 PaperEnabledUsersGroupAdditionDetails._all_field_names_ = set([])
@@ -67631,18 +68265,15 @@ SharingLinkPolicy.other = SharingLinkPolicy('other')
 
 SharingMemberPolicy._allow_validator = bv.Void()
 SharingMemberPolicy._forbid_validator = bv.Void()
-SharingMemberPolicy._team_members_and_whitelist_validator = bv.Void()
 SharingMemberPolicy._other_validator = bv.Void()
 SharingMemberPolicy._tagmap = {
     'allow': SharingMemberPolicy._allow_validator,
     'forbid': SharingMemberPolicy._forbid_validator,
-    'team_members_and_whitelist': SharingMemberPolicy._team_members_and_whitelist_validator,
     'other': SharingMemberPolicy._other_validator,
 }
 
 SharingMemberPolicy.allow = SharingMemberPolicy('allow')
 SharingMemberPolicy.forbid = SharingMemberPolicy('forbid')
-SharingMemberPolicy.team_members_and_whitelist = SharingMemberPolicy('team_members_and_whitelist')
 SharingMemberPolicy.other = SharingMemberPolicy('other')
 
 ShmodelGroupShareDetails._all_field_names_ = set([])
@@ -68600,6 +69231,22 @@ TimeUnit.weeks = TimeUnit('weeks')
 TimeUnit.months = TimeUnit('months')
 TimeUnit.years = TimeUnit('years')
 TimeUnit.other = TimeUnit('other')
+
+TrustedNonTeamMemberLogInfo._trusted_non_team_member_type_validator = TrustedNonTeamMemberType_validator
+TrustedNonTeamMemberLogInfo._field_names_ = set(['trusted_non_team_member_type'])
+TrustedNonTeamMemberLogInfo._all_field_names_ = UserLogInfo._all_field_names_.union(TrustedNonTeamMemberLogInfo._field_names_)
+TrustedNonTeamMemberLogInfo._fields_ = [('trusted_non_team_member_type', TrustedNonTeamMemberLogInfo._trusted_non_team_member_type_validator)]
+TrustedNonTeamMemberLogInfo._all_fields_ = UserLogInfo._all_fields_ + TrustedNonTeamMemberLogInfo._fields_
+
+TrustedNonTeamMemberType._multi_instance_admin_validator = bv.Void()
+TrustedNonTeamMemberType._other_validator = bv.Void()
+TrustedNonTeamMemberType._tagmap = {
+    'multi_instance_admin': TrustedNonTeamMemberType._multi_instance_admin_validator,
+    'other': TrustedNonTeamMemberType._other_validator,
+}
+
+TrustedNonTeamMemberType.multi_instance_admin = TrustedNonTeamMemberType('multi_instance_admin')
+TrustedNonTeamMemberType.other = TrustedNonTeamMemberType('other')
 
 TwoAccountChangePolicyDetails._new_value_validator = TwoAccountPolicy_validator
 TwoAccountChangePolicyDetails._previous_value_validator = bv.Nullable(TwoAccountPolicy_validator)

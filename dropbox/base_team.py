@@ -10,6 +10,7 @@ from . import (
     async_,
     auth,
     common,
+    contacts,
     file_properties,
     file_requests,
     files,
@@ -34,6 +35,9 @@ class DropboxTeamBase(object):
 
     # ------------------------------------------
     # Routes in auth namespace
+
+    # ------------------------------------------
+    # Routes in contacts namespace
 
     # ------------------------------------------
     # Routes in file_properties namespace
@@ -1424,6 +1428,10 @@ class DropboxTeamBase(object):
 
         :param long limit: Specifying a value here has no effect.
         :rtype: :class:`dropbox.team.TeamNamespacesListResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.TeamNamespacesListError`
         """
         arg = team.TeamNamespacesListArg(limit)
         r = self.request(

@@ -12420,21 +12420,30 @@ RemoveCustomQuotaResult_validator = bv.Union(RemoveCustomQuotaResult)
 class RemovedStatus(bb.Struct):
     """
     :ivar is_recoverable: True if the removed team member is recoverable.
+    :ivar is_disconnected: True if the team member's account was converted to
+        individual account.
     """
 
     __slots__ = [
         '_is_recoverable_value',
         '_is_recoverable_present',
+        '_is_disconnected_value',
+        '_is_disconnected_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 is_recoverable=None):
+                 is_recoverable=None,
+                 is_disconnected=None):
         self._is_recoverable_value = None
         self._is_recoverable_present = False
+        self._is_disconnected_value = None
+        self._is_disconnected_present = False
         if is_recoverable is not None:
             self.is_recoverable = is_recoverable
+        if is_disconnected is not None:
+            self.is_disconnected = is_disconnected
 
     @property
     def is_recoverable(self):
@@ -12459,12 +12468,36 @@ class RemovedStatus(bb.Struct):
         self._is_recoverable_value = None
         self._is_recoverable_present = False
 
+    @property
+    def is_disconnected(self):
+        """
+        True if the team member's account was converted to individual account.
+
+        :rtype: bool
+        """
+        if self._is_disconnected_present:
+            return self._is_disconnected_value
+        else:
+            raise AttributeError("missing required field 'is_disconnected'")
+
+    @is_disconnected.setter
+    def is_disconnected(self, val):
+        val = self._is_disconnected_validator.validate(val)
+        self._is_disconnected_value = val
+        self._is_disconnected_present = True
+
+    @is_disconnected.deleter
+    def is_disconnected(self):
+        self._is_disconnected_value = None
+        self._is_disconnected_present = False
+
     def _process_custom_annotations(self, annotation_type, processor):
         super(RemovedStatus, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
-        return 'RemovedStatus(is_recoverable={!r})'.format(
+        return 'RemovedStatus(is_recoverable={!r}, is_disconnected={!r})'.format(
             self._is_recoverable_value,
+            self._is_disconnected_value,
         )
 
 RemovedStatus_validator = bv.Struct(RemovedStatus)
@@ -15685,28 +15718,28 @@ class TeamNamespacesListContinueArg(bb.Struct):
 
 TeamNamespacesListContinueArg_validator = bv.Struct(TeamNamespacesListContinueArg)
 
-class TeamNamespacesListContinueError(bb.Union):
+class TeamNamespacesListError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: The cursor is invalid.
+    :ivar invalid_arg: Argument passed in is invalid.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    invalid_cursor = None
+    invalid_arg = None
     # Attribute is overwritten below the class definition
     other = None
 
-    def is_invalid_cursor(self):
+    def is_invalid_arg(self):
         """
-        Check if the union tag is ``invalid_cursor``.
+        Check if the union tag is ``invalid_arg``.
 
         :rtype: bool
         """
-        return self._tag == 'invalid_cursor'
+        return self._tag == 'invalid_arg'
 
     def is_other(self):
         """
@@ -15715,6 +15748,34 @@ class TeamNamespacesListContinueError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(TeamNamespacesListError, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'TeamNamespacesListError(%r, %r)' % (self._tag, self._value)
+
+TeamNamespacesListError_validator = bv.Union(TeamNamespacesListError)
+
+class TeamNamespacesListContinueError(TeamNamespacesListError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar invalid_cursor: The cursor is invalid.
+    """
+
+    # Attribute is overwritten below the class definition
+    invalid_cursor = None
+
+    def is_invalid_cursor(self):
+        """
+        Check if the union tag is ``invalid_cursor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_cursor'
 
     def _process_custom_annotations(self, annotation_type, processor):
         super(TeamNamespacesListContinueError, self)._process_custom_annotations(annotation_type, processor)
@@ -18041,8 +18102,15 @@ RemoveCustomQuotaResult._tagmap = {
 RemoveCustomQuotaResult.other = RemoveCustomQuotaResult('other')
 
 RemovedStatus._is_recoverable_validator = bv.Boolean()
-RemovedStatus._all_field_names_ = set(['is_recoverable'])
-RemovedStatus._all_fields_ = [('is_recoverable', RemovedStatus._is_recoverable_validator)]
+RemovedStatus._is_disconnected_validator = bv.Boolean()
+RemovedStatus._all_field_names_ = set([
+    'is_recoverable',
+    'is_disconnected',
+])
+RemovedStatus._all_fields_ = [
+    ('is_recoverable', RemovedStatus._is_recoverable_validator),
+    ('is_disconnected', RemovedStatus._is_disconnected_validator),
+]
 
 RevokeDesktopClientArg._delete_on_unlink_validator = bv.Boolean()
 RevokeDesktopClientArg._all_field_names_ = DeviceSessionArg._all_field_names_.union(set(['delete_on_unlink']))
@@ -18470,15 +18538,23 @@ TeamNamespacesListContinueArg._cursor_validator = bv.String()
 TeamNamespacesListContinueArg._all_field_names_ = set(['cursor'])
 TeamNamespacesListContinueArg._all_fields_ = [('cursor', TeamNamespacesListContinueArg._cursor_validator)]
 
-TeamNamespacesListContinueError._invalid_cursor_validator = bv.Void()
-TeamNamespacesListContinueError._other_validator = bv.Void()
-TeamNamespacesListContinueError._tagmap = {
-    'invalid_cursor': TeamNamespacesListContinueError._invalid_cursor_validator,
-    'other': TeamNamespacesListContinueError._other_validator,
+TeamNamespacesListError._invalid_arg_validator = bv.Void()
+TeamNamespacesListError._other_validator = bv.Void()
+TeamNamespacesListError._tagmap = {
+    'invalid_arg': TeamNamespacesListError._invalid_arg_validator,
+    'other': TeamNamespacesListError._other_validator,
 }
 
+TeamNamespacesListError.invalid_arg = TeamNamespacesListError('invalid_arg')
+TeamNamespacesListError.other = TeamNamespacesListError('other')
+
+TeamNamespacesListContinueError._invalid_cursor_validator = bv.Void()
+TeamNamespacesListContinueError._tagmap = {
+    'invalid_cursor': TeamNamespacesListContinueError._invalid_cursor_validator,
+}
+TeamNamespacesListContinueError._tagmap.update(TeamNamespacesListError._tagmap)
+
 TeamNamespacesListContinueError.invalid_cursor = TeamNamespacesListContinueError('invalid_cursor')
-TeamNamespacesListContinueError.other = TeamNamespacesListContinueError('other')
 
 TeamNamespacesListResult._namespaces_validator = bv.List(NamespaceMetadata_validator)
 TeamNamespacesListResult._cursor_validator = bv.String()
@@ -19029,7 +19105,7 @@ namespaces_list = bb.Route(
     False,
     TeamNamespacesListArg_validator,
     TeamNamespacesListResult_validator,
-    bv.Void(),
+    TeamNamespacesListError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )

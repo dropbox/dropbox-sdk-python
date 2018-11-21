@@ -6271,6 +6271,10 @@ class LinkAudience(bb.Union):
 
     :ivar public: Link is accessible by anyone.
     :ivar team: Link is accessible only by team members.
+    :ivar no_one: The link can be used by no one. The link merely points the
+        user to the content, and does not grant additional rights to the user.
+        Members of the content who use this link can only access the content
+        with their pre-existing access rights.
     :ivar members: Link is accessible only by members of the content.
     """
 
@@ -6279,6 +6283,8 @@ class LinkAudience(bb.Union):
     public = None
     # Attribute is overwritten below the class definition
     team = None
+    # Attribute is overwritten below the class definition
+    no_one = None
     # Attribute is overwritten below the class definition
     members = None
     # Attribute is overwritten below the class definition
@@ -6299,6 +6305,14 @@ class LinkAudience(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team'
+
+    def is_no_one(self):
+        """
+        Check if the union tag is ``no_one``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_one'
 
     def is_members(self):
         """
@@ -17339,17 +17353,20 @@ LinkAction.other = LinkAction('other')
 
 LinkAudience._public_validator = bv.Void()
 LinkAudience._team_validator = bv.Void()
+LinkAudience._no_one_validator = bv.Void()
 LinkAudience._members_validator = bv.Void()
 LinkAudience._other_validator = bv.Void()
 LinkAudience._tagmap = {
     'public': LinkAudience._public_validator,
     'team': LinkAudience._team_validator,
+    'no_one': LinkAudience._no_one_validator,
     'members': LinkAudience._members_validator,
     'other': LinkAudience._other_validator,
 }
 
 LinkAudience.public = LinkAudience('public')
 LinkAudience.team = LinkAudience('team')
+LinkAudience.no_one = LinkAudience('no_one')
 LinkAudience.members = LinkAudience('members')
 LinkAudience.other = LinkAudience('other')
 

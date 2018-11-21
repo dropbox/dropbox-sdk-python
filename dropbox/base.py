@@ -10,6 +10,7 @@ from . import (
     async_,
     auth,
     common,
+    contacts,
     file_properties,
     file_requests,
     files,
@@ -71,6 +72,48 @@ class DropboxBase(object):
         r = self.request(
             auth.token_revoke,
             'auth',
+            arg,
+            None,
+        )
+        return None
+
+    # ------------------------------------------
+    # Routes in contacts namespace
+
+    def contacts_delete_manual_contacts(self):
+        """
+        Removes all manually added contacts. You'll still keep contacts who are
+        on your team or who you imported. New contacts will be added when you
+        share.
+
+        :rtype: None
+        """
+        arg = None
+        r = self.request(
+            contacts.delete_manual_contacts,
+            'contacts',
+            arg,
+            None,
+        )
+        return None
+
+    def contacts_delete_manual_contacts_batch(self,
+                                              email_addresses):
+        """
+        Removes manually added contacts from the given list.
+
+        :param list email_addresses: List of manually added contacts to be
+            deleted.
+        :rtype: None
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.contacts.DeleteManualContactsError`
+        """
+        arg = contacts.DeleteManualContactsArg(email_addresses)
+        r = self.request(
+            contacts.delete_manual_contacts_batch,
+            'contacts',
             arg,
             None,
         )
