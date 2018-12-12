@@ -4639,7 +4639,7 @@ class DeviceDeleteOnUnlinkFailDetails(bb.Struct):
         """
         The number of times that remote file deletion failed.
 
-        :rtype: long
+        :rtype: int
         """
         if self._num_failures_present:
             return self._num_failures_value
@@ -5899,7 +5899,7 @@ class DomainInvitesEmailExistingUsersDetails(bb.Struct):
         """
         Number of recipients.
 
-        :rtype: long
+        :rtype: int
         """
         if self._num_recipients_present:
             return self._num_recipients_value
@@ -6662,7 +6662,7 @@ class DurationLogInfo(bb.Struct):
         """
         Amount of time.
 
-        :rtype: long
+        :rtype: int
         """
         if self._amount_present:
             return self._amount_value
@@ -29881,7 +29881,7 @@ class FileRequestDetails(bb.Struct):
         """
         Asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._asset_index_present:
             return self._asset_index_value
@@ -31372,7 +31372,7 @@ class GetTeamEventsArg(bb.Struct):
         fetch again using
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue`.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -36071,7 +36071,7 @@ class MemberSpaceLimitsAddCustomQuotaDetails(bb.Struct):
         """
         New custom quota value in bytes.
 
-        :rtype: long
+        :rtype: int
         """
         if self._new_value_present:
             return self._new_value_value
@@ -36381,7 +36381,7 @@ class MemberSpaceLimitsChangeCustomQuotaDetails(bb.Struct):
         """
         Previous custom quota value in bytes.
 
-        :rtype: long
+        :rtype: int
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -36404,7 +36404,7 @@ class MemberSpaceLimitsChangeCustomQuotaDetails(bb.Struct):
         """
         New custom quota value in bytes.
 
-        :rtype: long
+        :rtype: int
         """
         if self._new_value_present:
             return self._new_value_value
@@ -36517,7 +36517,7 @@ class MemberSpaceLimitsChangePolicyDetails(bb.Struct):
         Previous team default limit value in bytes. Might be missing due to
         historical data gap.
 
-        :rtype: long
+        :rtype: int
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -36544,7 +36544,7 @@ class MemberSpaceLimitsChangePolicyDetails(bb.Struct):
         New team default limit value in bytes. Might be missing due to
         historical data gap.
 
-        :rtype: long
+        :rtype: int
         """
         if self._new_value_present:
             return self._new_value_value
@@ -39578,7 +39578,7 @@ class PaperContentAddToFolderDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -39601,7 +39601,7 @@ class PaperContentAddToFolderDetails(bb.Struct):
         """
         Parent asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._parent_asset_index_present:
             return self._parent_asset_index_value
@@ -40046,7 +40046,7 @@ class PaperContentRemoveFromFolderDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -40069,7 +40069,7 @@ class PaperContentRemoveFromFolderDetails(bb.Struct):
         """
         Parent asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._parent_asset_index_present:
             return self._parent_asset_index_value
@@ -44939,7 +44939,7 @@ class RelocateAssetReferencesLogInfo(bb.Struct):
         """
         Source asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._src_asset_index_present:
             return self._src_asset_index_value
@@ -44962,7 +44962,7 @@ class RelocateAssetReferencesLogInfo(bb.Struct):
         """
         Destination asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._dest_asset_index_present:
             return self._dest_asset_index_value
@@ -45444,7 +45444,7 @@ class SfAddGroupDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -45637,7 +45637,7 @@ class SfAllowNonMembersToViewSharedLinksDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -45815,7 +45815,7 @@ class SfExternalInviteWarnDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -46021,7 +46021,7 @@ class SfFbInviteChangeRoleDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -46218,7 +46218,7 @@ class SfFbInviteDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -46378,7 +46378,7 @@ class SfFbUninviteDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -46503,7 +46503,7 @@ class SfInviteGroupDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -46612,7 +46612,7 @@ class SfTeamGrantAccessDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -46763,7 +46763,7 @@ class SfTeamInviteChangeRoleDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -46960,7 +46960,7 @@ class SfTeamInviteDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -47120,7 +47120,7 @@ class SfTeamJoinDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -47223,7 +47223,7 @@ class SfTeamJoinFromOobLinkDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -47457,7 +47457,7 @@ class SfTeamUninviteDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value
@@ -58324,7 +58324,7 @@ class SsoChangeSamlIdentityModeDetails(bb.Struct):
         """
         Previous single sign-on identity mode.
 
-        :rtype: long
+        :rtype: int
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -58347,7 +58347,7 @@ class SsoChangeSamlIdentityModeDetails(bb.Struct):
         """
         New single sign-on identity mode.
 
-        :rtype: long
+        :rtype: int
         """
         if self._new_value_present:
             return self._new_value_value
@@ -59542,7 +59542,7 @@ class TeamFolderDowngradeDetails(bb.Struct):
         """
         Target asset position in the Assets list.
 
-        :rtype: long
+        :rtype: int
         """
         if self._target_asset_index_present:
             return self._target_asset_index_value

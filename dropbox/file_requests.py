@@ -34,7 +34,7 @@ class CreateFileRequestArgs(bb.Struct):
         files will be sent. For apps with the app folder permission, this will
         be relative to the app folder.
     :ivar deadline: The deadline for the file request. Deadlines can only be set
-        by Pro and Business accounts.
+        by Professional and Business accounts.
     :ivar open: Whether or not the file request should be open. If the file
         request is closed, it will not accept any file submissions, but it can
         be opened later.
@@ -126,8 +126,8 @@ class CreateFileRequestArgs(bb.Struct):
     @property
     def deadline(self):
         """
-        The deadline for the file request. Deadlines can only be set by Pro and
-        Business accounts.
+        The deadline for the file request. Deadlines can only be set by
+        Professional and Business accounts.
 
         :rtype: FileRequestDeadline
         """
@@ -625,7 +625,7 @@ class FileRequest(bb.Struct):
         """
         The number of files this file request has received.
 
-        :rtype: long
+        :rtype: int
         """
         if self._file_count_present:
             return self._file_count_value
@@ -979,7 +979,8 @@ class UpdateFileRequestArgs(bb.Struct):
     :ivar destination: The new path of the folder in the Dropbox where uploaded
         files will be sent. For apps with the app folder permission, this will
         be relative to the app folder.
-    :ivar deadline: The new deadline for the file request.
+    :ivar deadline: The new deadline for the file request. Deadlines can only be
+        set by Professional and Business accounts.
     :ivar open: Whether to set this file request as open or closed.
     """
 
@@ -1105,7 +1106,8 @@ class UpdateFileRequestArgs(bb.Struct):
     @property
     def deadline(self):
         """
-        The new deadline for the file request.
+        The new deadline for the file request. Deadlines can only be set by
+        Professional and Business accounts.
 
         :rtype: UpdateFileRequestDeadline
         """

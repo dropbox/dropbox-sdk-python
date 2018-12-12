@@ -725,8 +725,8 @@ class AddFolderMemberError(bb.Union):
         contains a bad invitation recipient.
     :ivar cant_share_outside_team: Your team policy does not allow sharing
         outside of the team.
-    :ivar long too_many_members: The value is the member limit that was reached.
-    :ivar long too_many_pending_invites: The value is the pending invite limit
+    :ivar int too_many_members: The value is the member limit that was reached.
+    :ivar int too_many_pending_invites: The value is the pending invite limit
         that was reached.
     :ivar rate_limit: The current user has hit the limit of invites they can
         send per day. Try again in 24 hours.
@@ -787,7 +787,7 @@ class AddFolderMemberError(bb.Union):
         Create an instance of this class set to the ``too_many_members`` tag
         with value ``val``.
 
-        :param long val:
+        :param int val:
         :rtype: AddFolderMemberError
         """
         return cls('too_many_members', val)
@@ -798,7 +798,7 @@ class AddFolderMemberError(bb.Union):
         Create an instance of this class set to the ``too_many_pending_invites``
         tag with value ``val``.
 
-        :param long val:
+        :param int val:
         :rtype: AddFolderMemberError
         """
         return cls('too_many_pending_invites', val)
@@ -929,7 +929,7 @@ class AddFolderMemberError(bb.Union):
 
         Only call this if :meth:`is_too_many_members` is true.
 
-        :rtype: long
+        :rtype: int
         """
         if not self.is_too_many_members():
             raise AttributeError("tag 'too_many_members' not set")
@@ -941,7 +941,7 @@ class AddFolderMemberError(bb.Union):
 
         Only call this if :meth:`is_too_many_pending_invites` is true.
 
-        :rtype: long
+        :rtype: int
         """
         if not self.is_too_many_pending_invites():
             raise AttributeError("tag 'too_many_pending_invites' not set")
@@ -1299,7 +1299,7 @@ class AudienceExceptions(bb.Struct):
     @property
     def count(self):
         """
-        :rtype: long
+        :rtype: int
         """
         if self._count_present:
             return self._count_value
@@ -3152,7 +3152,7 @@ class FileLinkMetadata(SharedLinkMetadata):
         """
         The file size in bytes.
 
-        :rtype: long
+        :rtype: int
         """
         if self._size_present:
             return self._size_value
@@ -5729,7 +5729,7 @@ class InsufficientQuotaAmounts(bb.Struct):
         """
         The amount of space needed to add the item (the size of the item).
 
-        :rtype: long
+        :rtype: int
         """
         if self._space_needed_present:
             return self._space_needed_value
@@ -5752,7 +5752,7 @@ class InsufficientQuotaAmounts(bb.Struct):
         """
         The amount of extra space needed to add the item.
 
-        :rtype: long
+        :rtype: int
         """
         if self._space_shortage_present:
             return self._space_shortage_value
@@ -5775,7 +5775,7 @@ class InsufficientQuotaAmounts(bb.Struct):
         """
         The amount of space left in the user's Dropbox, less than space_needed.
 
-        :rtype: long
+        :rtype: int
         """
         if self._space_left_present:
             return self._space_left_value
@@ -7057,7 +7057,7 @@ class ListFileMembersArg(bb.Struct):
         Number of members to return max per query. Defaults to 100 if no limit
         is specified.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -7148,7 +7148,7 @@ class ListFileMembersBatchArg(bb.Struct):
         Number of members to return max per query. Defaults to 10 if no limit is
         specified.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -7482,7 +7482,7 @@ class ListFileMembersCountResult(bb.Struct):
         The number of members on this file. This does not include inherited
         members.
 
-        :rtype: long
+        :rtype: int
         """
         if self._member_count_present:
             return self._member_count_value
@@ -7731,7 +7731,7 @@ class ListFilesArg(bb.Struct):
         Number of files to return max per query. Defaults to 100 if no limit is
         specified.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -8071,7 +8071,7 @@ class ListFolderMembersCursorArg(bb.Struct):
         The maximum number of results that include members, groups and invitees
         to return per request.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -8317,7 +8317,7 @@ class ListFoldersArgs(bb.Struct):
         """
         The maximum number of results to return per request.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value

@@ -208,7 +208,7 @@ class GroupSummary(bb.Struct):
         """
         The number of members in the group.
 
-        :rtype: long
+        :rtype: int
         """
         if self._member_count_present:
             return self._member_count_value

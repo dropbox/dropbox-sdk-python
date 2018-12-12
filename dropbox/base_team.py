@@ -229,7 +229,8 @@ class DropboxTeamBase(object):
                                           include_desktop_clients=True,
                                           include_mobile_clients=True):
         """
-        List all device sessions of a team.
+        List all device sessions of a team. Permission : Team member file
+        access.
 
         :param Nullable cursor: At the first call to the
             :meth:`team_devices_list_members_devices` the cursor shouldn't be
@@ -266,7 +267,8 @@ class DropboxTeamBase(object):
                                        include_desktop_clients=True,
                                        include_mobile_clients=True):
         """
-        List all device sessions of a team.
+        List all device sessions of a team. Permission : Team member file
+        access.
 
         :param Nullable cursor: At the first call to the
             :meth:`team_devices_list_team_devices` the cursor shouldn't be
@@ -491,7 +493,7 @@ class DropboxTeamBase(object):
         """
         Lists groups on a team. Permission : Team Information.
 
-        :param long limit: Number of results to return per call.
+        :param int limit: Number of results to return per call.
         :rtype: :class:`dropbox.team.GroupsListResult`
         """
         arg = team.GroupsListArg(limit)
@@ -564,7 +566,7 @@ class DropboxTeamBase(object):
 
         :param group: The group whose members are to be listed.
         :type group: :class:`dropbox.team.GroupSelector`
-        :param long limit: Number of results to return per call.
+        :param int limit: Number of results to return per call.
         :rtype: :class:`dropbox.team.GroupsMembersListResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -863,7 +865,7 @@ class DropboxTeamBase(object):
         """
         List member space limits excluded users.
 
-        :param long limit: Number of results to return per call.
+        :param int limit: Number of results to return per call.
         :rtype: :class:`dropbox.team.ExcludedUsersListResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1073,7 +1075,7 @@ class DropboxTeamBase(object):
         """
         Lists members of a team. Permission : Team information.
 
-        :param long limit: Number of results to return per call.
+        :param int limit: Number of results to return per call.
         :param bool include_removed: Whether to return removed members.
         :rtype: :class:`dropbox.team.MembersListResult`
         :raises: :class:`.exceptions.ApiError`
@@ -1426,7 +1428,7 @@ class DropboxTeamBase(object):
         folders may be owned by other users or other teams. Duplicates may occur
         in the list.
 
-        :param long limit: Specifying a value here has no effect.
+        :param int limit: Specifying a value here has no effect.
         :rtype: :class:`dropbox.team.TeamNamespacesListResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1470,6 +1472,15 @@ class DropboxTeamBase(object):
                                      name,
                                      description,
                                      fields):
+        """
+        Permission : Team member file access.
+
+        :rtype: :class:`dropbox.team.AddTemplateResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.ModifyTemplateError`
+        """
         warnings.warn(
             'properties/template/add is deprecated.',
             DeprecationWarning,
@@ -1488,6 +1499,8 @@ class DropboxTeamBase(object):
     def team_properties_template_get(self,
                                      template_id):
         """
+        Permission : Team member file access.
+
         :param str template_id: An identifier for template added by route  See
             :meth:`team_templates_add_for_user` or
             :meth:`team_templates_add_for_team`.
@@ -1511,6 +1524,15 @@ class DropboxTeamBase(object):
         return r
 
     def team_properties_template_list(self):
+        """
+        Permission : Team member file access.
+
+        :rtype: :class:`dropbox.team.ListTemplateResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.TemplateError`
+        """
         warnings.warn(
             'properties/template/list is deprecated.',
             DeprecationWarning,
@@ -1530,6 +1552,8 @@ class DropboxTeamBase(object):
                                         description=None,
                                         add_fields=None):
         """
+        Permission : Team member file access.
+
         :param str template_id: An identifier for template added by  See
             :meth:`team_templates_add_for_user` or
             :meth:`team_templates_add_for_team`.
@@ -1769,7 +1793,7 @@ class DropboxTeamBase(object):
         """
         Lists all team folders. Permission : Team member file access.
 
-        :param long limit: The maximum number of results to return per request.
+        :param int limit: The maximum number of results to return per request.
         :rtype: :class:`dropbox.team.TeamFolderListResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1918,9 +1942,9 @@ class DropboxTeamBase(object):
         </developers/documentation/http/teams#team-features-get_values>`_ to
         check for this feature. Permission : Team Auditing.
 
-        :param long limit: The maximal number of results to return per call.
-            Note that some calls may not return ``limit`` number of events, and
-            may even return no events, even with `has_more` set to true. In this
+        :param int limit: The maximal number of results to return per call. Note
+            that some calls may not return ``limit`` number of events, and may
+            even return no events, even with `has_more` set to true. In this
             case, callers should fetch again using
             :meth:`team_log_get_events_continue`.
         :param Nullable account_id: Filter the events by account ID. Return ony

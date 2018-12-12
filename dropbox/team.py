@@ -1584,7 +1584,7 @@ class DevicesActive(bb.Struct):
         """
         Array of number of linked windows (desktop) clients with activity.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._windows_present:
             return self._windows_value
@@ -1607,7 +1607,7 @@ class DevicesActive(bb.Struct):
         """
         Array of number of linked mac (desktop) clients with activity.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._macos_present:
             return self._macos_value
@@ -1630,7 +1630,7 @@ class DevicesActive(bb.Struct):
         """
         Array of number of linked linus (desktop) clients with activity.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._linux_present:
             return self._linux_value
@@ -1653,7 +1653,7 @@ class DevicesActive(bb.Struct):
         """
         Array of number of linked ios devices with activity.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._ios_present:
             return self._ios_value
@@ -1676,7 +1676,7 @@ class DevicesActive(bb.Struct):
         """
         Array of number of linked android devices with activity.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._android_present:
             return self._android_value
@@ -1700,7 +1700,7 @@ class DevicesActive(bb.Struct):
         Array of number of other linked devices (blackberry, windows phone, etc)
         with activity.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._other_present:
             return self._other_value
@@ -1723,7 +1723,7 @@ class DevicesActive(bb.Struct):
         """
         Array of total number of linked clients with activity.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._total_present:
             return self._total_value
@@ -1783,7 +1783,7 @@ class ExcludedUsersListArg(bb.Struct):
         """
         Number of results to return per call.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -2790,7 +2790,7 @@ class GetActivityReport(BaseDfbReport):
         """
         Array of total number of adds by team members.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._adds_present:
             return self._adds_value
@@ -2814,7 +2814,7 @@ class GetActivityReport(BaseDfbReport):
         Array of number of edits by team members. If the same user edits the
         same file multiple times this is counted as a single edit.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._edits_present:
             return self._edits_value
@@ -2837,7 +2837,7 @@ class GetActivityReport(BaseDfbReport):
         """
         Array of total number of deletes by team members.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._deletes_present:
             return self._deletes_value
@@ -2860,7 +2860,7 @@ class GetActivityReport(BaseDfbReport):
         """
         Array of the number of users who have been active in the last 28 days.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._active_users_28_day_present:
             return self._active_users_28_day_value
@@ -2883,7 +2883,7 @@ class GetActivityReport(BaseDfbReport):
         """
         Array of the number of users who have been active in the last week.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._active_users_7_day_present:
             return self._active_users_7_day_value
@@ -2906,7 +2906,7 @@ class GetActivityReport(BaseDfbReport):
         """
         Array of the number of users who have been active in the last day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._active_users_1_day_present:
             return self._active_users_1_day_value
@@ -2930,7 +2930,7 @@ class GetActivityReport(BaseDfbReport):
         Array of the number of shared folders with some activity in the last 28
         days.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._active_shared_folders_28_day_present:
             return self._active_shared_folders_28_day_value
@@ -2954,7 +2954,7 @@ class GetActivityReport(BaseDfbReport):
         Array of the number of shared folders with some activity in the last
         week.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._active_shared_folders_7_day_present:
             return self._active_shared_folders_7_day_value
@@ -2978,7 +2978,7 @@ class GetActivityReport(BaseDfbReport):
         Array of the number of shared folders with some activity in the last
         day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._active_shared_folders_1_day_present:
             return self._active_shared_folders_1_day_value
@@ -3001,7 +3001,7 @@ class GetActivityReport(BaseDfbReport):
         """
         Array of the number of shared links created.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._shared_links_created_present:
             return self._shared_links_created_value
@@ -3025,7 +3025,7 @@ class GetActivityReport(BaseDfbReport):
         Array of the number of views by team users to shared links created by
         the team.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._shared_links_viewed_by_team_present:
             return self._shared_links_viewed_by_team_value
@@ -3049,7 +3049,7 @@ class GetActivityReport(BaseDfbReport):
         Array of the number of views by users outside of the team to shared
         links created by the team.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._shared_links_viewed_by_outside_user_present:
             return self._shared_links_viewed_by_outside_user_value
@@ -3073,7 +3073,7 @@ class GetActivityReport(BaseDfbReport):
         Array of the number of views by non-logged-in users to shared links
         created by the team.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._shared_links_viewed_by_not_logged_in_present:
             return self._shared_links_viewed_by_not_logged_in_value
@@ -3096,7 +3096,7 @@ class GetActivityReport(BaseDfbReport):
         """
         Array of the total number of views to shared links created by the team.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._shared_links_viewed_total_present:
             return self._shared_links_viewed_total_value
@@ -3328,7 +3328,7 @@ class GetMembershipReport(BaseDfbReport):
         """
         Team size, for each day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._team_size_present:
             return self._team_size_value
@@ -3351,7 +3351,7 @@ class GetMembershipReport(BaseDfbReport):
         """
         The number of pending invites to the team, for each day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._pending_invites_present:
             return self._pending_invites_value
@@ -3374,7 +3374,7 @@ class GetMembershipReport(BaseDfbReport):
         """
         The number of members that joined the team, for each day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._members_joined_present:
             return self._members_joined_value
@@ -3397,7 +3397,7 @@ class GetMembershipReport(BaseDfbReport):
         """
         The number of suspended team members, for each day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._suspended_members_present:
             return self._suspended_members_value
@@ -3420,7 +3420,7 @@ class GetMembershipReport(BaseDfbReport):
         """
         The total number of licenses the team has, for each day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._licenses_present:
             return self._licenses_value
@@ -3524,7 +3524,7 @@ class GetStorageReport(BaseDfbReport):
         """
         Sum of the shared, unshared, and datastore usages, for each day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._total_usage_present:
             return self._total_usage_value
@@ -3548,7 +3548,7 @@ class GetStorageReport(BaseDfbReport):
         Array of the combined size (bytes) of team members' shared folders, for
         each day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._shared_usage_present:
             return self._shared_usage_value
@@ -3572,7 +3572,7 @@ class GetStorageReport(BaseDfbReport):
         Array of the combined size (bytes) of team members' root namespaces, for
         each day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._unshared_usage_present:
             return self._unshared_usage_value
@@ -3596,7 +3596,7 @@ class GetStorageReport(BaseDfbReport):
         Array of the number of shared folders owned by team members, for each
         day.
 
-        :rtype: list of [Optional[long]]
+        :rtype: list of [Optional[int]]
         """
         if self._shared_folders_present:
             return self._shared_folders_value
@@ -4074,7 +4074,7 @@ class GroupFullInfo(team_common.GroupSummary):
         The group creation time as a UTC timestamp in milliseconds since the
         Unix epoch.
 
-        :rtype: long
+        :rtype: int
         """
         if self._created_present:
             return self._created_value
@@ -5577,7 +5577,7 @@ class GroupsListArg(bb.Struct):
         """
         Number of results to return per call.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -5874,7 +5874,7 @@ class GroupsMembersListArg(bb.Struct):
         """
         Number of results to return per call.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -10162,7 +10162,7 @@ class MembersListArg(bb.Struct):
         """
         Number of results to return per call.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -13462,7 +13462,7 @@ class StorageBucket(bb.Struct):
         The number of people whose storage is in the range of this storage
         bucket.
 
-        :rtype: long
+        :rtype: int
         """
         if self._users_present:
             return self._users_value
@@ -14217,7 +14217,7 @@ class TeamFolderListArg(bb.Struct):
         """
         The maximum number of results to return per request.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -15199,7 +15199,7 @@ class TeamGetInfoResult(bb.Struct):
         """
         The number of licenses available to the team.
 
-        :rtype: long
+        :rtype: int
         """
         if self._num_licensed_users_present:
             return self._num_licensed_users_value
@@ -15223,7 +15223,7 @@ class TeamGetInfoResult(bb.Struct):
         The number of accounts that have been invited or are already active
         members of the team.
 
-        :rtype: long
+        :rtype: int
         """
         if self._num_provisioned_users_present:
             return self._num_provisioned_users_value
@@ -15636,7 +15636,7 @@ class TeamNamespacesListArg(bb.Struct):
         """
         Specifying a value here has no effect.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -16032,7 +16032,7 @@ class UploadApiRateLimitValue(bb.Union):
     :ivar unlimited: This team has unlimited upload API quota. So far both
         server version account and legacy  account type have unlimited monthly
         upload api quota.
-    :ivar long limit: The number of upload API calls allowed per month.
+    :ivar int limit: The number of upload API calls allowed per month.
     """
 
     _catch_all = 'other'
@@ -16047,7 +16047,7 @@ class UploadApiRateLimitValue(bb.Union):
         Create an instance of this class set to the ``limit`` tag with value
         ``val``.
 
-        :param long val:
+        :param int val:
         :rtype: UploadApiRateLimitValue
         """
         return cls('limit', val)
@@ -16082,7 +16082,7 @@ class UploadApiRateLimitValue(bb.Union):
 
         Only call this if :meth:`is_limit` is true.
 
-        :rtype: long
+        :rtype: int
         """
         if not self.is_limit():
             raise AttributeError("tag 'limit' not set")
@@ -16146,7 +16146,7 @@ class UserCustomQuotaArg(bb.Struct):
     @property
     def quota_gb(self):
         """
-        :rtype: long
+        :rtype: int
         """
         if self._quota_gb_present:
             return self._quota_gb_value
@@ -16226,7 +16226,7 @@ class UserCustomQuotaResult(bb.Struct):
     @property
     def quota_gb(self):
         """
-        :rtype: long
+        :rtype: int
         """
         if self._quota_gb_present:
             return self._quota_gb_value

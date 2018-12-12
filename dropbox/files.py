@@ -1281,6 +1281,10 @@ class FileOpsResult(bb.Struct):
 FileOpsResult_validator = bv.Struct(FileOpsResult)
 
 class CreateFolderBatchResult(FileOpsResult):
+    """
+    :ivar entries: Each entry in ``CreateFolderBatchArg.paths`` will appear at
+        the same position inside ``CreateFolderBatchResult.entries``.
+    """
 
     __slots__ = [
         '_entries_value',
@@ -1300,6 +1304,9 @@ class CreateFolderBatchResult(FileOpsResult):
     @property
     def entries(self):
         """
+        Each entry in ``CreateFolderBatchArg.paths`` will appear at the same
+        position inside ``CreateFolderBatchResult.entries``.
+
         :rtype: list of [CreateFolderBatchResultEntry]
         """
         if self._entries_present:
@@ -1940,6 +1947,10 @@ class DeleteBatchLaunch(async_.LaunchResultBase):
 DeleteBatchLaunch_validator = bv.Union(DeleteBatchLaunch)
 
 class DeleteBatchResult(FileOpsResult):
+    """
+    :ivar entries: Each entry in ``DeleteBatchArg.entries`` will appear at the
+        same position inside ``DeleteBatchResult.entries``.
+    """
 
     __slots__ = [
         '_entries_value',
@@ -1959,6 +1970,9 @@ class DeleteBatchResult(FileOpsResult):
     @property
     def entries(self):
         """
+        Each entry in ``DeleteBatchArg.entries`` will appear at the same
+        position inside ``DeleteBatchResult.entries``.
+
         :rtype: list of [DeleteBatchResultEntry]
         """
         if self._entries_present:
@@ -2524,7 +2538,7 @@ class Dimensions(bb.Struct):
         """
         Height of the photo/video.
 
-        :rtype: long
+        :rtype: int
         """
         if self._height_present:
             return self._height_value
@@ -2547,7 +2561,7 @@ class Dimensions(bb.Struct):
         """
         Width of the photo/video.
 
-        :rtype: long
+        :rtype: int
         """
         if self._width_present:
             return self._width_value
@@ -3124,7 +3138,7 @@ class FileMetadata(Metadata):
         """
         The file size in bytes.
 
-        :rtype: long
+        :rtype: int
         """
         if self._size_present:
             return self._size_value
@@ -5042,7 +5056,7 @@ class ListFolderArg(bb.Struct):
         approximate number and there can be slightly more entries returned in
         some cases.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -5446,7 +5460,7 @@ class ListFolderLongpollArg(bb.Struct):
         thundering herd problem. Care should be taken when using this parameter,
         as some network infrastructure does not support long timeouts.
 
-        :rtype: long
+        :rtype: int
         """
         if self._timeout_present:
             return self._timeout_value
@@ -5578,7 +5592,7 @@ class ListFolderLongpollResult(bb.Struct):
         If present, backoff for at least this many seconds before calling
         :meth:`dropbox.dropbox.Dropbox.files_list_folder_longpoll` again.
 
-        :rtype: long
+        :rtype: int
         """
         if self._backoff_present:
             return self._backoff_value
@@ -5822,7 +5836,7 @@ class ListRevisionsArg(bb.Struct):
         """
         The maximum number of revision entries returned.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -6387,6 +6401,155 @@ class MediaMetadata(bb.Struct):
 
 MediaMetadata_validator = bv.StructTree(MediaMetadata)
 
+class RelocationBatchArgBase(bb.Struct):
+    """
+    :ivar entries: List of entries to be moved or copied. Each entry is
+        :class:`RelocationPath`.
+    :ivar autorename: If there's a conflict with any file, have the Dropbox
+        server try to autorename that file to avoid the conflict.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+        '_autorename_value',
+        '_autorename_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None,
+                 autorename=None):
+        self._entries_value = None
+        self._entries_present = False
+        self._autorename_value = None
+        self._autorename_present = False
+        if entries is not None:
+            self.entries = entries
+        if autorename is not None:
+            self.autorename = autorename
+
+    @property
+    def entries(self):
+        """
+        List of entries to be moved or copied. Each entry is
+        :class:`RelocationPath`.
+
+        :rtype: list of [RelocationPath]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    @property
+    def autorename(self):
+        """
+        If there's a conflict with any file, have the Dropbox server try to
+        autorename that file to avoid the conflict.
+
+        :rtype: bool
+        """
+        if self._autorename_present:
+            return self._autorename_value
+        else:
+            return False
+
+    @autorename.setter
+    def autorename(self, val):
+        val = self._autorename_validator.validate(val)
+        self._autorename_value = val
+        self._autorename_present = True
+
+    @autorename.deleter
+    def autorename(self):
+        self._autorename_value = None
+        self._autorename_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RelocationBatchArgBase, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'RelocationBatchArgBase(entries={!r}, autorename={!r})'.format(
+            self._entries_value,
+            self._autorename_value,
+        )
+
+RelocationBatchArgBase_validator = bv.Struct(RelocationBatchArgBase)
+
+class MoveBatchArg(RelocationBatchArgBase):
+    """
+    :ivar allow_ownership_transfer: Allow moves by owner even if it would result
+        in an ownership transfer for the content being moved. This does not
+        apply to copies.
+    """
+
+    __slots__ = [
+        '_allow_ownership_transfer_value',
+        '_allow_ownership_transfer_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None,
+                 autorename=None,
+                 allow_ownership_transfer=None):
+        super(MoveBatchArg, self).__init__(entries,
+                                           autorename)
+        self._allow_ownership_transfer_value = None
+        self._allow_ownership_transfer_present = False
+        if allow_ownership_transfer is not None:
+            self.allow_ownership_transfer = allow_ownership_transfer
+
+    @property
+    def allow_ownership_transfer(self):
+        """
+        Allow moves by owner even if it would result in an ownership transfer
+        for the content being moved. This does not apply to copies.
+
+        :rtype: bool
+        """
+        if self._allow_ownership_transfer_present:
+            return self._allow_ownership_transfer_value
+        else:
+            return False
+
+    @allow_ownership_transfer.setter
+    def allow_ownership_transfer(self, val):
+        val = self._allow_ownership_transfer_validator.validate(val)
+        self._allow_ownership_transfer_value = val
+        self._allow_ownership_transfer_present = True
+
+    @allow_ownership_transfer.deleter
+    def allow_ownership_transfer(self):
+        self._allow_ownership_transfer_value = None
+        self._allow_ownership_transfer_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(MoveBatchArg, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'MoveBatchArg(entries={!r}, autorename={!r}, allow_ownership_transfer={!r})'.format(
+            self._entries_value,
+            self._autorename_value,
+            self._allow_ownership_transfer_value,
+        )
+
+MoveBatchArg_validator = bv.Struct(MoveBatchArg)
+
 class PhotoMetadata(MediaMetadata):
     """
     Metadata for a photo.
@@ -6809,30 +6972,22 @@ class RelocationArg(RelocationPath):
 
 RelocationArg_validator = bv.Struct(RelocationArg)
 
-class RelocationBatchArg(bb.Struct):
+class RelocationBatchArg(RelocationBatchArgBase):
     """
-    :ivar entries: List of entries to be moved or copied. Each entry is
-        :class:`RelocationPath`.
     :ivar allow_shared_folder: If true,
         :meth:`dropbox.dropbox.Dropbox.files_copy_batch` will copy contents in
         shared folder, otherwise ``RelocationError.cant_copy_shared_folder``
         will be returned if ``RelocationPath.from_path`` contains shared folder.
         This field is always true for
         :meth:`dropbox.dropbox.Dropbox.files_move_batch`.
-    :ivar autorename: If there's a conflict with any file, have the Dropbox
-        server try to autorename that file to avoid the conflict.
     :ivar allow_ownership_transfer: Allow moves by owner even if it would result
         in an ownership transfer for the content being moved. This does not
         apply to copies.
     """
 
     __slots__ = [
-        '_entries_value',
-        '_entries_present',
         '_allow_shared_folder_value',
         '_allow_shared_folder_present',
-        '_autorename_value',
-        '_autorename_present',
         '_allow_ownership_transfer_value',
         '_allow_ownership_transfer_present',
     ]
@@ -6841,49 +6996,19 @@ class RelocationBatchArg(bb.Struct):
 
     def __init__(self,
                  entries=None,
-                 allow_shared_folder=None,
                  autorename=None,
+                 allow_shared_folder=None,
                  allow_ownership_transfer=None):
-        self._entries_value = None
-        self._entries_present = False
+        super(RelocationBatchArg, self).__init__(entries,
+                                                 autorename)
         self._allow_shared_folder_value = None
         self._allow_shared_folder_present = False
-        self._autorename_value = None
-        self._autorename_present = False
         self._allow_ownership_transfer_value = None
         self._allow_ownership_transfer_present = False
-        if entries is not None:
-            self.entries = entries
         if allow_shared_folder is not None:
             self.allow_shared_folder = allow_shared_folder
-        if autorename is not None:
-            self.autorename = autorename
         if allow_ownership_transfer is not None:
             self.allow_ownership_transfer = allow_ownership_transfer
-
-    @property
-    def entries(self):
-        """
-        List of entries to be moved or copied. Each entry is
-        :class:`RelocationPath`.
-
-        :rtype: list of [RelocationPath]
-        """
-        if self._entries_present:
-            return self._entries_value
-        else:
-            raise AttributeError("missing required field 'entries'")
-
-    @entries.setter
-    def entries(self, val):
-        val = self._entries_validator.validate(val)
-        self._entries_value = val
-        self._entries_present = True
-
-    @entries.deleter
-    def entries(self):
-        self._entries_value = None
-        self._entries_present = False
 
     @property
     def allow_shared_folder(self):
@@ -6891,7 +7016,7 @@ class RelocationBatchArg(bb.Struct):
         If true, :meth:`dropbox.dropbox.Dropbox.files_copy_batch` will copy
         contents in shared folder, otherwise
         ``RelocationError.cant_copy_shared_folder`` will be returned if
-        ``RelocationPath.from_path`` contains shared folder.  This field is
+        ``RelocationPath.from_path`` contains shared folder. This field is
         always true for :meth:`dropbox.dropbox.Dropbox.files_move_batch`.
 
         :rtype: bool
@@ -6911,30 +7036,6 @@ class RelocationBatchArg(bb.Struct):
     def allow_shared_folder(self):
         self._allow_shared_folder_value = None
         self._allow_shared_folder_present = False
-
-    @property
-    def autorename(self):
-        """
-        If there's a conflict with any file, have the Dropbox server try to
-        autorename that file to avoid the conflict.
-
-        :rtype: bool
-        """
-        if self._autorename_present:
-            return self._autorename_value
-        else:
-            return False
-
-    @autorename.setter
-    def autorename(self, val):
-        val = self._autorename_validator.validate(val)
-        self._autorename_value = val
-        self._autorename_present = True
-
-    @autorename.deleter
-    def autorename(self):
-        self._autorename_value = None
-        self._autorename_present = False
 
     @property
     def allow_ownership_transfer(self):
@@ -6964,10 +7065,10 @@ class RelocationBatchArg(bb.Struct):
         super(RelocationBatchArg, self)._process_custom_annotations(annotation_type, processor)
 
     def __repr__(self):
-        return 'RelocationBatchArg(entries={!r}, allow_shared_folder={!r}, autorename={!r}, allow_ownership_transfer={!r})'.format(
+        return 'RelocationBatchArg(entries={!r}, autorename={!r}, allow_shared_folder={!r}, allow_ownership_transfer={!r})'.format(
             self._entries_value,
-            self._allow_shared_folder_value,
             self._autorename_value,
+            self._allow_shared_folder_value,
             self._allow_ownership_transfer_value,
         )
 
@@ -6992,6 +7093,9 @@ class RelocationError(bb.Union):
         ``RelocationArg.allow_ownership_transfer`` to true.
     :ivar insufficient_quota: The current user does not have enough space to
         move or copy the files.
+    :ivar internal_error: Something went wrong with the job on Dropbox's end.
+        You'll need to verify that the action you were taking succeeded, and if
+        not, try again. This should happen very rarely.
     """
 
     _catch_all = 'other'
@@ -7009,6 +7113,8 @@ class RelocationError(bb.Union):
     cant_transfer_ownership = None
     # Attribute is overwritten below the class definition
     insufficient_quota = None
+    # Attribute is overwritten below the class definition
+    internal_error = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -7125,6 +7231,14 @@ class RelocationError(bb.Union):
         """
         return self._tag == 'insufficient_quota'
 
+    def is_internal_error(self):
+        """
+        Check if the union tag is ``internal_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'internal_error'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -7199,6 +7313,91 @@ class RelocationBatchError(RelocationError):
         return 'RelocationBatchError(%r, %r)' % (self._tag, self._value)
 
 RelocationBatchError_validator = bv.Union(RelocationBatchError)
+
+class RelocationBatchErrorEntry(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar RelocationError relocation_error: User errors that retry won't help.
+    :ivar internal_error: Something went wrong with the job on Dropbox's end.
+        You'll need to verify that the action you were taking succeeded, and if
+        not, try again. This should happen very rarely.
+    :ivar too_many_write_operations: There are too many write operations in
+        user's Dropbox. Please retry this request.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    internal_error = None
+    # Attribute is overwritten below the class definition
+    too_many_write_operations = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def relocation_error(cls, val):
+        """
+        Create an instance of this class set to the ``relocation_error`` tag
+        with value ``val``.
+
+        :param RelocationError val:
+        :rtype: RelocationBatchErrorEntry
+        """
+        return cls('relocation_error', val)
+
+    def is_relocation_error(self):
+        """
+        Check if the union tag is ``relocation_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'relocation_error'
+
+    def is_internal_error(self):
+        """
+        Check if the union tag is ``internal_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'internal_error'
+
+    def is_too_many_write_operations(self):
+        """
+        Check if the union tag is ``too_many_write_operations``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_write_operations'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_relocation_error(self):
+        """
+        User errors that retry won't help.
+
+        Only call this if :meth:`is_relocation_error` is true.
+
+        :rtype: RelocationError
+        """
+        if not self.is_relocation_error():
+            raise AttributeError("tag 'relocation_error' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RelocationBatchErrorEntry, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'RelocationBatchErrorEntry(%r, %r)' % (self._tag, self._value)
+
+RelocationBatchErrorEntry_validator = bv.Union(RelocationBatchErrorEntry)
 
 class RelocationBatchJobStatus(async_.PollResultBase):
     """
@@ -7441,6 +7640,248 @@ class RelocationBatchResultData(bb.Struct):
         )
 
 RelocationBatchResultData_validator = bv.Struct(RelocationBatchResultData)
+
+class RelocationBatchResultEntry(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param Metadata val:
+        :rtype: RelocationBatchResultEntry
+        """
+        return cls('success', val)
+
+    @classmethod
+    def failure(cls, val):
+        """
+        Create an instance of this class set to the ``failure`` tag with value
+        ``val``.
+
+        :param RelocationBatchErrorEntry val:
+        :rtype: RelocationBatchResultEntry
+        """
+        return cls('failure', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_failure(self):
+        """
+        Check if the union tag is ``failure``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failure'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: Metadata
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_failure(self):
+        """
+        Only call this if :meth:`is_failure` is true.
+
+        :rtype: RelocationBatchErrorEntry
+        """
+        if not self.is_failure():
+            raise AttributeError("tag 'failure' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RelocationBatchResultEntry, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'RelocationBatchResultEntry(%r, %r)' % (self._tag, self._value)
+
+RelocationBatchResultEntry_validator = bv.Union(RelocationBatchResultEntry)
+
+class RelocationBatchV2JobStatus(async_.PollResultBase):
+    """
+    Result returned by :meth:`dropbox.dropbox.Dropbox.files_copy_batch` or
+    :meth:`dropbox.dropbox.Dropbox.files_move_batch` that may either launch an
+    asynchronous job or complete synchronously.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar RelocationBatchV2Result complete: The copy or move batch job has
+        finished.
+    """
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param RelocationBatchV2Result val:
+        :rtype: RelocationBatchV2JobStatus
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def get_complete(self):
+        """
+        The copy or move batch job has finished.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: RelocationBatchV2Result
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RelocationBatchV2JobStatus, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'RelocationBatchV2JobStatus(%r, %r)' % (self._tag, self._value)
+
+RelocationBatchV2JobStatus_validator = bv.Union(RelocationBatchV2JobStatus)
+
+class RelocationBatchV2Launch(async_.LaunchResultBase):
+    """
+    Result returned by :meth:`dropbox.dropbox.Dropbox.files_copy_batch` or
+    :meth:`dropbox.dropbox.Dropbox.files_move_batch` that may either launch an
+    asynchronous job or complete synchronously.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param RelocationBatchV2Result val:
+        :rtype: RelocationBatchV2Launch
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: RelocationBatchV2Result
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RelocationBatchV2Launch, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'RelocationBatchV2Launch(%r, %r)' % (self._tag, self._value)
+
+RelocationBatchV2Launch_validator = bv.Union(RelocationBatchV2Launch)
+
+class RelocationBatchV2Result(FileOpsResult):
+    """
+    :ivar entries: Each entry in CopyBatchArg.entries or
+        ``MoveBatchArg.entries`` will appear at the same position inside
+        ``RelocationBatchV2Result.entries``.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        super(RelocationBatchV2Result, self).__init__()
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        Each entry in CopyBatchArg.entries or ``MoveBatchArg.entries`` will
+        appear at the same position inside ``RelocationBatchV2Result.entries``.
+
+        :rtype: list of [RelocationBatchResultEntry]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def _process_custom_annotations(self, annotation_type, processor):
+        super(RelocationBatchV2Result, self)._process_custom_annotations(annotation_type, processor)
+
+    def __repr__(self):
+        return 'RelocationBatchV2Result(entries={!r})'.format(
+            self._entries_value,
+        )
+
+RelocationBatchV2Result_validator = bv.Struct(RelocationBatchV2Result)
 
 class RelocationResult(FileOpsResult):
     """
@@ -8336,7 +8777,7 @@ class SearchArg(bb.Struct):
         """
         The starting index within the search results (used for paging).
 
-        :rtype: long
+        :rtype: int
         """
         if self._start_present:
             return self._start_value
@@ -8359,7 +8800,7 @@ class SearchArg(bb.Struct):
         """
         The maximum number of search results to return.
 
-        :rtype: long
+        :rtype: int
         """
         if self._max_results_present:
             return self._max_results_value
@@ -8756,7 +9197,7 @@ class SearchResult(bb.Struct):
         :meth:`dropbox.dropbox.Dropbox.files_search` to fetch the next page of
         results.
 
-        :rtype: long
+        :rtype: int
         """
         if self._start_present:
             return self._start_value
@@ -9829,7 +10270,7 @@ class UploadSessionCursor(bb.Struct):
         sure upload data isn't lost or duplicated in the event of a network
         error.
 
-        :rtype: long
+        :rtype: int
         """
         if self._offset_present:
             return self._offset_value
@@ -10107,7 +10548,9 @@ UploadSessionFinishBatchLaunch_validator = bv.Union(UploadSessionFinishBatchLaun
 
 class UploadSessionFinishBatchResult(bb.Struct):
     """
-    :ivar entries: Commit result for each file in the batch.
+    :ivar entries: Each entry in ``UploadSessionFinishBatchArg.entries`` will
+        appear at the same position inside
+        ``UploadSessionFinishBatchResult.entries``.
     """
 
     __slots__ = [
@@ -10127,7 +10570,8 @@ class UploadSessionFinishBatchResult(bb.Struct):
     @property
     def entries(self):
         """
-        Commit result for each file in the batch.
+        Each entry in ``UploadSessionFinishBatchArg.entries`` will appear at the
+        same position inside ``UploadSessionFinishBatchResult.entries``.
 
         :rtype: list of [UploadSessionFinishBatchResultEntry]
         """
@@ -10526,7 +10970,7 @@ class UploadSessionOffsetError(bb.Struct):
         """
         The offset up to which data has been collected.
 
-        :rtype: long
+        :rtype: int
         """
         if self._correct_offset_present:
             return self._correct_offset_value
@@ -10788,7 +11232,7 @@ class VideoMetadata(MediaMetadata):
         """
         The duration of the video in milliseconds.
 
-        :rtype: long
+        :rtype: int
         """
         if self._duration_present:
             return self._duration_value
@@ -11135,6 +11579,8 @@ class WriteMode(bb.Union):
 
 WriteMode_validator = bv.Union(WriteMode)
 
+CopyBatchArg_validator = RelocationBatchArgBase_validator
+CopyBatchArg = RelocationBatchArgBase
 FileId_validator = bv.String(min_length=4, pattern=u'id:.+')
 Id_validator = bv.String(min_length=1)
 ListFolderCursor_validator = bv.String(min_length=1)
@@ -11922,6 +12368,21 @@ MediaMetadata._pytype_to_tag_and_subtype_ = {
 }
 MediaMetadata._is_catch_all_ = False
 
+RelocationBatchArgBase._entries_validator = bv.List(RelocationPath_validator, min_items=1)
+RelocationBatchArgBase._autorename_validator = bv.Boolean()
+RelocationBatchArgBase._all_field_names_ = set([
+    'entries',
+    'autorename',
+])
+RelocationBatchArgBase._all_fields_ = [
+    ('entries', RelocationBatchArgBase._entries_validator),
+    ('autorename', RelocationBatchArgBase._autorename_validator),
+]
+
+MoveBatchArg._allow_ownership_transfer_validator = bv.Boolean()
+MoveBatchArg._all_field_names_ = RelocationBatchArgBase._all_field_names_.union(set(['allow_ownership_transfer']))
+MoveBatchArg._all_fields_ = RelocationBatchArgBase._all_fields_ + [('allow_ownership_transfer', MoveBatchArg._allow_ownership_transfer_validator)]
+
 PhotoMetadata._field_names_ = set([])
 PhotoMetadata._all_field_names_ = MediaMetadata._all_field_names_.union(PhotoMetadata._field_names_)
 PhotoMetadata._fields_ = []
@@ -11978,20 +12439,14 @@ RelocationArg._all_fields_ = RelocationPath._all_fields_ + [
     ('allow_ownership_transfer', RelocationArg._allow_ownership_transfer_validator),
 ]
 
-RelocationBatchArg._entries_validator = bv.List(RelocationPath_validator, min_items=1)
 RelocationBatchArg._allow_shared_folder_validator = bv.Boolean()
-RelocationBatchArg._autorename_validator = bv.Boolean()
 RelocationBatchArg._allow_ownership_transfer_validator = bv.Boolean()
-RelocationBatchArg._all_field_names_ = set([
-    'entries',
+RelocationBatchArg._all_field_names_ = RelocationBatchArgBase._all_field_names_.union(set([
     'allow_shared_folder',
-    'autorename',
     'allow_ownership_transfer',
-])
-RelocationBatchArg._all_fields_ = [
-    ('entries', RelocationBatchArg._entries_validator),
+]))
+RelocationBatchArg._all_fields_ = RelocationBatchArgBase._all_fields_ + [
     ('allow_shared_folder', RelocationBatchArg._allow_shared_folder_validator),
-    ('autorename', RelocationBatchArg._autorename_validator),
     ('allow_ownership_transfer', RelocationBatchArg._allow_ownership_transfer_validator),
 ]
 
@@ -12005,6 +12460,7 @@ RelocationError._too_many_files_validator = bv.Void()
 RelocationError._duplicated_or_nested_paths_validator = bv.Void()
 RelocationError._cant_transfer_ownership_validator = bv.Void()
 RelocationError._insufficient_quota_validator = bv.Void()
+RelocationError._internal_error_validator = bv.Void()
 RelocationError._other_validator = bv.Void()
 RelocationError._tagmap = {
     'from_lookup': RelocationError._from_lookup_validator,
@@ -12017,6 +12473,7 @@ RelocationError._tagmap = {
     'duplicated_or_nested_paths': RelocationError._duplicated_or_nested_paths_validator,
     'cant_transfer_ownership': RelocationError._cant_transfer_ownership_validator,
     'insufficient_quota': RelocationError._insufficient_quota_validator,
+    'internal_error': RelocationError._internal_error_validator,
     'other': RelocationError._other_validator,
 }
 
@@ -12027,6 +12484,7 @@ RelocationError.too_many_files = RelocationError('too_many_files')
 RelocationError.duplicated_or_nested_paths = RelocationError('duplicated_or_nested_paths')
 RelocationError.cant_transfer_ownership = RelocationError('cant_transfer_ownership')
 RelocationError.insufficient_quota = RelocationError('insufficient_quota')
+RelocationError.internal_error = RelocationError('internal_error')
 RelocationError.other = RelocationError('other')
 
 RelocationBatchError._too_many_write_operations_validator = bv.Void()
@@ -12036,6 +12494,21 @@ RelocationBatchError._tagmap = {
 RelocationBatchError._tagmap.update(RelocationError._tagmap)
 
 RelocationBatchError.too_many_write_operations = RelocationBatchError('too_many_write_operations')
+
+RelocationBatchErrorEntry._relocation_error_validator = RelocationError_validator
+RelocationBatchErrorEntry._internal_error_validator = bv.Void()
+RelocationBatchErrorEntry._too_many_write_operations_validator = bv.Void()
+RelocationBatchErrorEntry._other_validator = bv.Void()
+RelocationBatchErrorEntry._tagmap = {
+    'relocation_error': RelocationBatchErrorEntry._relocation_error_validator,
+    'internal_error': RelocationBatchErrorEntry._internal_error_validator,
+    'too_many_write_operations': RelocationBatchErrorEntry._too_many_write_operations_validator,
+    'other': RelocationBatchErrorEntry._other_validator,
+}
+
+RelocationBatchErrorEntry.internal_error = RelocationBatchErrorEntry('internal_error')
+RelocationBatchErrorEntry.too_many_write_operations = RelocationBatchErrorEntry('too_many_write_operations')
+RelocationBatchErrorEntry.other = RelocationBatchErrorEntry('other')
 
 RelocationBatchJobStatus._complete_validator = RelocationBatchResult_validator
 RelocationBatchJobStatus._failed_validator = RelocationBatchError_validator
@@ -12062,6 +12535,33 @@ RelocationBatchResult._all_fields_ = FileOpsResult._all_fields_ + [('entries', R
 RelocationBatchResultData._metadata_validator = Metadata_validator
 RelocationBatchResultData._all_field_names_ = set(['metadata'])
 RelocationBatchResultData._all_fields_ = [('metadata', RelocationBatchResultData._metadata_validator)]
+
+RelocationBatchResultEntry._success_validator = Metadata_validator
+RelocationBatchResultEntry._failure_validator = RelocationBatchErrorEntry_validator
+RelocationBatchResultEntry._other_validator = bv.Void()
+RelocationBatchResultEntry._tagmap = {
+    'success': RelocationBatchResultEntry._success_validator,
+    'failure': RelocationBatchResultEntry._failure_validator,
+    'other': RelocationBatchResultEntry._other_validator,
+}
+
+RelocationBatchResultEntry.other = RelocationBatchResultEntry('other')
+
+RelocationBatchV2JobStatus._complete_validator = RelocationBatchV2Result_validator
+RelocationBatchV2JobStatus._tagmap = {
+    'complete': RelocationBatchV2JobStatus._complete_validator,
+}
+RelocationBatchV2JobStatus._tagmap.update(async_.PollResultBase._tagmap)
+
+RelocationBatchV2Launch._complete_validator = RelocationBatchV2Result_validator
+RelocationBatchV2Launch._tagmap = {
+    'complete': RelocationBatchV2Launch._complete_validator,
+}
+RelocationBatchV2Launch._tagmap.update(async_.LaunchResultBase._tagmap)
+
+RelocationBatchV2Result._entries_validator = bv.List(RelocationBatchResultEntry_validator)
+RelocationBatchV2Result._all_field_names_ = FileOpsResult._all_field_names_.union(set(['entries']))
+RelocationBatchV2Result._all_fields_ = FileOpsResult._all_fields_ + [('entries', RelocationBatchV2Result._entries_validator)]
 
 RelocationResult._metadata_validator = Metadata_validator
 RelocationResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['metadata']))
@@ -12638,20 +13138,40 @@ copy = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+copy_batch_v2 = bb.Route(
+    'copy_batch',
+    2,
+    False,
+    CopyBatchArg_validator,
+    RelocationBatchV2Launch_validator,
+    bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
 copy_batch = bb.Route(
     'copy_batch',
     1,
-    False,
+    True,
     RelocationBatchArg_validator,
     RelocationBatchLaunch_validator,
     bv.Void(),
     {'host': u'api',
      'style': u'rpc'},
 )
+copy_batch_check_v2 = bb.Route(
+    'copy_batch/check',
+    2,
+    False,
+    async_.PollArg_validator,
+    RelocationBatchV2JobStatus_validator,
+    async_.PollError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 copy_batch_check = bb.Route(
     'copy_batch/check',
     1,
-    False,
+    True,
     async_.PollArg_validator,
     RelocationBatchJobStatus_validator,
     async_.PollError_validator,
@@ -12908,6 +13428,16 @@ move = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+move_batch_v2 = bb.Route(
+    'move_batch',
+    2,
+    False,
+    MoveBatchArg_validator,
+    RelocationBatchV2Launch_validator,
+    bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
 move_batch = bb.Route(
     'move_batch',
     1,
@@ -12915,6 +13445,16 @@ move_batch = bb.Route(
     RelocationBatchArg_validator,
     RelocationBatchLaunch_validator,
     bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
+move_batch_check_v2 = bb.Route(
+    'move_batch/check',
+    2,
+    False,
+    async_.PollArg_validator,
+    RelocationBatchV2JobStatus_validator,
+    async_.PollError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -13114,7 +13654,9 @@ ROUTES = {
     'alpha/upload': alpha_upload,
     'copy:2': copy_v2,
     'copy': copy,
+    'copy_batch:2': copy_batch_v2,
     'copy_batch': copy_batch,
+    'copy_batch/check:2': copy_batch_check_v2,
     'copy_batch/check': copy_batch_check,
     'copy_reference/get': copy_reference_get,
     'copy_reference/save': copy_reference_save,
@@ -13141,7 +13683,9 @@ ROUTES = {
     'list_revisions': list_revisions,
     'move:2': move_v2,
     'move': move,
+    'move_batch:2': move_batch_v2,
     'move_batch': move_batch,
+    'move_batch/check:2': move_batch_check_v2,
     'move_batch/check': move_batch_check,
     'permanently_delete': permanently_delete,
     'properties/add': properties_add,

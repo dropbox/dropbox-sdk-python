@@ -357,7 +357,7 @@ class RateLimitError(bb.Struct):
         The number of seconds that the app should wait before making another
         request.
 
-        :rtype: long
+        :rtype: int
         """
         if self._retry_after_present:
             return self._retry_after_value

@@ -1092,7 +1092,7 @@ class IndividualSpaceAllocation(bb.Struct):
         """
         The total space allocated to the user's account (bytes).
 
-        :rtype: long
+        :rtype: int
         """
         if self._allocated_present:
             return self._allocated_value
@@ -1440,7 +1440,7 @@ class SpaceUsage(bb.Struct):
         """
         The user's total space usage (bytes).
 
-        :rtype: long
+        :rtype: int
         """
         if self._used_present:
             return self._used_value
@@ -1543,7 +1543,7 @@ class TeamSpaceAllocation(bb.Struct):
         """
         The total space currently used by the user's team (bytes).
 
-        :rtype: long
+        :rtype: int
         """
         if self._used_present:
             return self._used_value
@@ -1566,7 +1566,7 @@ class TeamSpaceAllocation(bb.Struct):
         """
         The total space allocated to the user's team (bytes).
 
-        :rtype: long
+        :rtype: int
         """
         if self._allocated_present:
             return self._allocated_value
@@ -1591,7 +1591,7 @@ class TeamSpaceAllocation(bb.Struct):
         means that no restriction is imposed on the user's quota within its
         team).
 
-        :rtype: long
+        :rtype: int
         """
         if self._user_within_team_space_allocated_present:
             return self._user_within_team_space_allocated_value

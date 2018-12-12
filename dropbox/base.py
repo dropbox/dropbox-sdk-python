@@ -445,7 +445,7 @@ class DropboxBase(object):
             uploaded files will be sent. For apps with the app folder
             permission, this will be relative to the app folder.
         :param Nullable deadline: The deadline for the file request. Deadlines
-            can only be set by Pro and Business accounts.
+            can only be set by Professional and Business accounts.
         :param bool open: Whether or not the file request should be open. If the
             file request is closed, it will not accept any file submissions, but
             it can be opened later.
@@ -516,7 +516,8 @@ class DropboxBase(object):
         :param Nullable destination: The new path of the folder in the Dropbox
             where uploaded files will be sent. For apps with the app folder
             permission, this will be relative to the app folder.
-        :param deadline: The new deadline for the file request.
+        :param deadline: The new deadline for the file request. Deadlines can
+            only be set by Professional and Business accounts.
         :type deadline: :class:`dropbox.file_requests.UpdateFileRequestDeadline`
         :param Nullable open: Whether to set this file request as open or
             closed.
@@ -697,10 +698,38 @@ class DropboxBase(object):
         )
         return r
 
+    def files_copy_batch_v2(self,
+                            entries,
+                            autorename=False):
+        """
+        Copy multiple files or folders to different locations at once in the
+        user's Dropbox. This route will replace :meth:`files_copy_batch`. The
+        main difference is this route will return stutus for each entry, while
+        :meth:`files_copy_batch` raises failure if any entry fails. This route
+        will either finish synchronously, or return a job ID and do the async
+        copy job in background. Please use :meth:`files_copy_batch_check_v2` to
+        check the job status.
+
+        :param list entries: List of entries to be moved or copied. Each entry
+            is :class:`dropbox.files.RelocationPath`.
+        :param bool autorename: If there's a conflict with any file, have the
+            Dropbox server try to autorename that file to avoid the conflict.
+        :rtype: :class:`dropbox.files.RelocationBatchV2Launch`
+        """
+        arg = files.RelocationBatchArgBase(entries,
+                                           autorename)
+        r = self.request(
+            files.copy_batch_v2,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_copy_batch(self,
                          entries,
-                         allow_shared_folder=False,
                          autorename=False,
+                         allow_shared_folder=False,
                          allow_ownership_transfer=False):
         """
         Copy multiple files or folders to different locations at once in the
@@ -712,26 +741,49 @@ class DropboxBase(object):
         do the async copy job in background. Please use
         :meth:`files_copy_batch_check` to check the job status.
 
-        :param list entries: List of entries to be moved or copied. Each entry
-            is :class:`dropbox.files.RelocationPath`.
         :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
             copy contents in shared folder, otherwise
             ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``RelocationPath.from_path`` contains shared folder.  This field is
+            ``RelocationPath.from_path`` contains shared folder. This field is
             always true for :meth:`files_move_batch`.
-        :param bool autorename: If there's a conflict with any file, have the
-            Dropbox server try to autorename that file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
             would result in an ownership transfer for the content being moved.
             This does not apply to copies.
         :rtype: :class:`dropbox.files.RelocationBatchLaunch`
         """
+        warnings.warn(
+            'copy_batch is deprecated. Use copy_batch.',
+            DeprecationWarning,
+        )
         arg = files.RelocationBatchArg(entries,
-                                       allow_shared_folder,
                                        autorename,
+                                       allow_shared_folder,
                                        allow_ownership_transfer)
         r = self.request(
             files.copy_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_copy_batch_check_v2(self,
+                                  async_job_id):
+        """
+        Returns the status of an asynchronous job for
+        :meth:`files_copy_batch_v2`. It returns list of results for each entry.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.files.RelocationBatchV2JobStatus`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            files.copy_batch_check_v2,
             'files',
             arg,
             None,
@@ -752,6 +804,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.PollError`
         """
+        warnings.warn(
+            'copy_batch/check is deprecated. Use copy_batch/check.',
+            DeprecationWarning,
+        )
         arg = async_.PollArg(async_job_id)
         r = self.request(
             files.copy_batch_check,
@@ -1634,7 +1690,7 @@ class DropboxBase(object):
         :param str cursor: A cursor as returned by :meth:`files_list_folder` or
             :meth:`files_list_folder_continue`. Cursors retrieved by setting
             ``ListFolderArg.include_media_info`` to ``True`` are not supported.
-        :param long timeout: A timeout in seconds. The request will block for at
+        :param int timeout: A timeout in seconds. The request will block for at
             most this length of time, plus up to 90 seconds of random jitter
             added to avoid the thundering herd problem. Care should be taken
             when using this parameter, as some network infrastructure does not
@@ -1674,7 +1730,7 @@ class DropboxBase(object):
         :param mode: Determines the behavior of the API in listing the revisions
             for a given file path or id.
         :type mode: :class:`dropbox.files.ListRevisionsMode`
-        :param long limit: The maximum number of revision entries returned.
+        :param int limit: The maximum number of revision entries returned.
         :rtype: :class:`dropbox.files.ListRevisionsResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1774,10 +1830,39 @@ class DropboxBase(object):
         )
         return r
 
+    def files_move_batch_v2(self,
+                            entries,
+                            autorename=False,
+                            allow_ownership_transfer=False):
+        """
+        Move multiple files or folders to different locations at once in the
+        user's Dropbox. This route will replace :meth:`files_move_batch_v2`. The
+        main difference is this route will return stutus for each entry, while
+        :meth:`files_move_batch` raises failure if any entry fails. This route
+        will either finish synchronously, or return a job ID and do the async
+        move job in background. Please use :meth:`files_move_batch_check_v2` to
+        check the job status.
+
+        :param bool allow_ownership_transfer: Allow moves by owner even if it
+            would result in an ownership transfer for the content being moved.
+            This does not apply to copies.
+        :rtype: :class:`dropbox.files.RelocationBatchV2Launch`
+        """
+        arg = files.MoveBatchArg(entries,
+                                 autorename,
+                                 allow_ownership_transfer)
+        r = self.request(
+            files.move_batch_v2,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_move_batch(self,
                          entries,
-                         allow_shared_folder=False,
                          autorename=False,
+                         allow_shared_folder=False,
                          allow_ownership_transfer=False):
         """
         Move multiple files or folders to different locations at once in the
@@ -1786,26 +1871,45 @@ class DropboxBase(object):
         immediately and do the async moving job in background. Please use
         :meth:`files_move_batch_check` to check the job status.
 
-        :param list entries: List of entries to be moved or copied. Each entry
-            is :class:`dropbox.files.RelocationPath`.
         :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
             copy contents in shared folder, otherwise
             ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``RelocationPath.from_path`` contains shared folder.  This field is
+            ``RelocationPath.from_path`` contains shared folder. This field is
             always true for :meth:`files_move_batch`.
-        :param bool autorename: If there's a conflict with any file, have the
-            Dropbox server try to autorename that file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
             would result in an ownership transfer for the content being moved.
             This does not apply to copies.
         :rtype: :class:`dropbox.files.RelocationBatchLaunch`
         """
         arg = files.RelocationBatchArg(entries,
-                                       allow_shared_folder,
                                        autorename,
+                                       allow_shared_folder,
                                        allow_ownership_transfer)
         r = self.request(
             files.move_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_move_batch_check_v2(self,
+                                  async_job_id):
+        """
+        Returns the status of an asynchronous job for
+        :meth:`files_move_batch_v2`. It returns list of results for each entry.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.files.RelocationBatchV2JobStatus`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            files.move_batch_check_v2,
             'files',
             arg,
             None,
@@ -2039,9 +2143,11 @@ class DropboxBase(object):
                        path,
                        url):
         """
-        Save a specified URL into a file in user's Dropbox. If the given path
-        already exists, the file will be renamed to avoid the conflict (e.g.
-        myfile (1).txt).
+        Save the data from a specified URL into a file in user's Dropbox. Note
+        that the transfer from the URL must complete within 5 minutes, or the
+        operation will time out and the job will fail. If the given path already
+        exists, the file will be renamed to avoid the conflict (e.g. myfile
+        (1).txt).
 
         :param str path: The path in Dropbox where the URL will be saved to.
         :param str url: The URL to be saved.
@@ -2099,9 +2205,9 @@ class DropboxBase(object):
             on spaces into multiple tokens. For file name searching, the last
             token is used for prefix matching (i.e. "bat c" matches "bat cave"
             but not "batman car").
-        :param long start: The starting index within the search results (used
-            for paging).
-        :param long max_results: The maximum number of search results to return.
+        :param int start: The starting index within the search results (used for
+            paging).
+        :param int max_results: The maximum number of search results to return.
         :param mode: The search mode (filename, filename_and_content, or
             deleted_filename). Note that searching file content is only
             available for Dropbox Business accounts.
@@ -2241,7 +2347,7 @@ class DropboxBase(object):
         :param bytes f: Contents to upload.
         :param str session_id: The upload session ID (returned by
             :meth:`files_upload_session_start`).
-        :param long offset: The amount of data that has been uploaded so far. We
+        :param int offset: The amount of data that has been uploaded so far. We
             use this to make sure upload data isn't lost or duplicated in the
             event of a network error.
         :rtype: None
@@ -2733,7 +2839,7 @@ class DropboxBase(object):
         :param bytes f: Contents to upload.
         :param doc_update_policy: The policy used for the current update call.
         :type doc_update_policy: :class:`dropbox.paper.PaperDocUpdatePolicy`
-        :param long revision: The latest doc revision. This value must match the
+        :param int revision: The latest doc revision. This value must match the
             head revision or an error code will be returned. This is to prevent
             colliding writes.
         :param import_format: The format of provided data.
@@ -2931,8 +3037,7 @@ class DropboxBase(object):
         Allows an owner or editor (if the ACL update policy allows) of a shared
         folder to add another member. For the new member to get access to all
         the functionality for this folder, you will need to call
-        :meth:`sharing_mount_folder` on their behalf. Apps must have full
-        Dropbox access to use this endpoint.
+        :meth:`sharing_mount_folder` on their behalf.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param list members: The intended list of members to add.  Added members
@@ -2995,8 +3100,7 @@ class DropboxBase(object):
     def sharing_check_job_status(self,
                                  async_job_id):
         """
-        Returns the status of an asynchronous job. Apps must have full Dropbox
-        access to use this endpoint.
+        Returns the status of an asynchronous job.
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -3018,8 +3122,7 @@ class DropboxBase(object):
     def sharing_check_remove_member_job_status(self,
                                                async_job_id):
         """
-        Returns the status of an asynchronous job for sharing a folder. Apps
-        must have full Dropbox access to use this endpoint.
+        Returns the status of an asynchronous job for sharing a folder.
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -3041,8 +3144,7 @@ class DropboxBase(object):
     def sharing_check_share_job_status(self,
                                        async_job_id):
         """
-        Returns the status of an asynchronous job for sharing a folder. Apps
-        must have full Dropbox access to use this endpoint.
+        Returns the status of an asynchronous job for sharing a folder.
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -3189,8 +3291,7 @@ class DropboxBase(object):
                                     shared_folder_id,
                                     actions=None):
         """
-        Returns shared folder metadata by its folder ID. Apps must have full
-        Dropbox access to use this endpoint.
+        Returns shared folder metadata by its folder ID.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param Nullable actions: A list of `FolderAction`s corresponding to
@@ -3358,8 +3459,8 @@ class DropboxBase(object):
             a member.
         :param bool include_inherited: Whether to include members who only have
             access from a parent shared folder.
-        :param long limit: Number of members to return max per query. Defaults
-            to 100 if no limit is specified.
+        :param int limit: Number of members to return max per query. Defaults to
+            100 if no limit is specified.
         :rtype: :class:`dropbox.sharing.SharedFileMembers`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3389,8 +3490,8 @@ class DropboxBase(object):
         permissions are not returned for this endpoint.
 
         :param list files: Files for which to return members.
-        :param long limit: Number of members to return max per query. Defaults
-            to 10 if no limit is specified.
+        :param int limit: Number of members to return max per query. Defaults to
+            10 if no limit is specified.
         :rtype: list
         :raises: :class:`.exceptions.ApiError`
 
@@ -3438,8 +3539,7 @@ class DropboxBase(object):
                                     actions=None,
                                     limit=1000):
         """
-        Returns shared folder membership by its folder ID. Apps must have full
-        Dropbox access to use this endpoint.
+        Returns shared folder membership by its folder ID.
 
         :param str shared_folder_id: The ID for the shared folder.
         :rtype: :class:`dropbox.sharing.SharedFolderMembers`
@@ -3464,8 +3564,7 @@ class DropboxBase(object):
         """
         Once a cursor has been retrieved from
         :meth:`sharing_list_folder_members`, use this to paginate through all
-        shared folder members. Apps must have full Dropbox access to use this
-        endpoint.
+        shared folder members.
 
         :param str cursor: The cursor returned by your last call to
             :meth:`sharing_list_folder_members` or
@@ -3490,9 +3589,8 @@ class DropboxBase(object):
                              actions=None):
         """
         Return the list of all shared folders the current user has access to.
-        Apps must have full Dropbox access to use this endpoint.
 
-        :param long limit: The maximum number of results to return per request.
+        :param int limit: The maximum number of results to return per request.
         :param Nullable actions: A list of `FolderAction`s corresponding to
             `FolderPermission`s that should appear in the  response's
             ``SharedFolderMetadata.permissions`` field describing the actions
@@ -3515,8 +3613,7 @@ class DropboxBase(object):
         Once a cursor has been retrieved from :meth:`sharing_list_folders`, use
         this to paginate through all shared folders. The cursor must come from a
         previous call to :meth:`sharing_list_folders` or
-        :meth:`sharing_list_folders_continue`. Apps must have full Dropbox
-        access to use this endpoint.
+        :meth:`sharing_list_folders_continue`.
 
         :param str cursor: The cursor returned by the previous API call
             specified in the endpoint description.
@@ -3540,9 +3637,9 @@ class DropboxBase(object):
                                        actions=None):
         """
         Return the list of all shared folders the current user can mount or
-        unmount. Apps must have full Dropbox access to use this endpoint.
+        unmount.
 
-        :param long limit: The maximum number of results to return per request.
+        :param int limit: The maximum number of results to return per request.
         :param Nullable actions: A list of `FolderAction`s corresponding to
             `FolderPermission`s that should appear in the  response's
             ``SharedFolderMetadata.permissions`` field describing the actions
@@ -3566,8 +3663,7 @@ class DropboxBase(object):
         :meth:`sharing_list_mountable_folders`, use this to paginate through all
         mountable shared folders. The cursor must come from a previous call to
         :meth:`sharing_list_mountable_folders` or
-        :meth:`sharing_list_mountable_folders_continue`. Apps must have full
-        Dropbox access to use this endpoint.
+        :meth:`sharing_list_mountable_folders_continue`.
 
         :param str cursor: The cursor returned by the previous API call
             specified in the endpoint description.
@@ -3594,7 +3690,7 @@ class DropboxBase(object):
         files the user has received via shared folders, and does  not include
         unclaimed invitations.
 
-        :param long limit: Number of files to return max per query. Defaults to
+        :param int limit: Number of files to return max per query. Defaults to
             100 if no limit is specified.
         :param Nullable actions: A list of `FileAction`s corresponding to
             `FilePermission`s that should appear in the  response's
@@ -3712,8 +3808,7 @@ class DropboxBase(object):
         """
         The current user mounts the designated folder. Mount a shared folder for
         a user after they have been added as a member. Once mounted, the shared
-        folder will appear in their Dropbox. Apps must have full Dropbox access
-        to use this endpoint.
+        folder will appear in their Dropbox.
 
         :param str shared_folder_id: The ID of the shared folder to mount.
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
@@ -3736,8 +3831,7 @@ class DropboxBase(object):
         """
         The current user relinquishes their membership in the designated file.
         Note that the current user may still have inherited access to this file
-        through the parent folder. Apps must have full Dropbox access to use
-        this endpoint.
+        through the parent folder.
 
         :param str file: The path or id for the file.
         :rtype: None
@@ -3763,8 +3857,7 @@ class DropboxBase(object):
         folder and will no longer have access to the folder.  A folder owner
         cannot relinquish membership in their own folder. This will run
         synchronously if leave_a_copy is false, and asynchronously if
-        leave_a_copy is true. Apps must have full Dropbox access to use this
-        endpoint.
+        leave_a_copy is true.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param bool leave_a_copy: Keep a copy of the folder's contents upon
@@ -3851,8 +3944,7 @@ class DropboxBase(object):
                                      leave_a_copy):
         """
         Allows an owner or editor (if the ACL update policy allows) of a shared
-        folder to remove another member. Apps must have full Dropbox access to
-        use this endpoint.
+        folder to remove another member.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param member: The member to remove from the folder.
@@ -3950,8 +4042,7 @@ class DropboxBase(object):
         testing the async case repeatable, set `ShareFolderArg.force_async`. If
         a ``ShareFolderLaunch.async_job_id`` is returned, you'll need to call
         :meth:`sharing_check_share_job_status` until the action completes to get
-        the metadata for the folder. Apps must have full Dropbox access to use
-        this endpoint.
+        the metadata for the folder.
 
         :param Nullable actions: A list of `FolderAction`s corresponding to
             `FolderPermission`s that should appear in the  response's
@@ -3987,8 +4078,7 @@ class DropboxBase(object):
         """
         Transfer ownership of a shared folder to a member of the shared folder.
         User must have ``AccessLevel.owner`` access to the shared folder to
-        perform a transfer. Apps must have full Dropbox access to use this
-        endpoint.
+        perform a transfer.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param str to_dropbox_id: A account or team member ID to transfer
@@ -4013,8 +4103,7 @@ class DropboxBase(object):
                                shared_folder_id):
         """
         The current user unmounts the designated folder. They can re-mount the
-        folder at a later time using :meth:`sharing_mount_folder`. Apps must
-        have full Dropbox access to use this endpoint.
+        folder at a later time using :meth:`sharing_mount_folder`.
 
         :param str shared_folder_id: The ID for the shared folder.
         :rtype: None
@@ -4059,8 +4148,7 @@ class DropboxBase(object):
         """
         Allows a shared folder owner to unshare the folder. You'll need to call
         :meth:`sharing_check_job_status` to determine if the action has
-        completed successfully. Apps must have full Dropbox access to use this
-        endpoint.
+        completed successfully.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param bool leave_a_copy: If true, members of this shared folder will
@@ -4113,7 +4201,7 @@ class DropboxBase(object):
                                      access_level):
         """
         Allows an owner or editor of a shared folder to update another member's
-        permissions. Apps must have full Dropbox access to use this endpoint.
+        permissions.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param member: The member of the shared folder to update.  Only the
@@ -4150,7 +4238,7 @@ class DropboxBase(object):
         """
         Update the sharing policies for a shared folder. User must have
         ``AccessLevel.owner`` access to the shared folder to update its
-        policies. Apps must have full Dropbox access to use this endpoint.
+        policies.
 
         :param str shared_folder_id: The ID for the shared folder.
         :param Nullable member_policy: Who can be a member of this shared

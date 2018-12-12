@@ -1399,7 +1399,7 @@ class ListPaperDocsArgs(bb.Struct):
         Size limit per batch. The maximum number of docs that can be retrieved
         per batch is 1000. Higher value results in invalid arguments error.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -1872,7 +1872,7 @@ class ListUsersOnFolderArgs(RefPaperDoc):
         Size limit per batch. The maximum number of users that can be retrieved
         per batch is 1000. Higher value results in invalid arguments error.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -2166,7 +2166,7 @@ class ListUsersOnPaperDocArgs(RefPaperDoc):
         Size limit per batch. The maximum number of users that can be retrieved
         per batch is 1000. Higher value results in invalid arguments error.
 
-        :rtype: long
+        :rtype: int
         """
         if self._limit_present:
             return self._limit_value
@@ -2773,7 +2773,7 @@ class PaperDocCreateUpdateResult(bb.Struct):
         """
         The Paper doc revision. Simply an ever increasing number.
 
-        :rtype: long
+        :rtype: int
         """
         if self._revision_present:
             return self._revision_value
@@ -2971,7 +2971,7 @@ class PaperDocExportResult(bb.Struct):
         """
         The Paper doc revision. Simply an ever increasing number.
 
-        :rtype: long
+        :rtype: int
         """
         if self._revision_present:
             return self._revision_value
@@ -3200,7 +3200,7 @@ class PaperDocUpdateArgs(RefPaperDoc):
         The latest doc revision. This value must match the head revision or an
         error code will be returned. This is to prevent colliding writes.
 
-        :rtype: long
+        :rtype: int
         """
         if self._revision_present:
             return self._revision_value
