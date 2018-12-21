@@ -1,0 +1,5 @@
+# .readthedocs.yml
+
+# Don't build any extra formats
+# https://docs.readthedocs.io/en/latest/yaml-config.html#formats
+formats: []
