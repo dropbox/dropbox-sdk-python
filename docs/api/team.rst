@@ -1,5 +1,5 @@
 :mod:`dropbox.team` -- Team
-============================================
+===========================
 .. automodule:: dropbox.team
    :members:
    :show-inheritance:

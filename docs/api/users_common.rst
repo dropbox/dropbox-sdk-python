@@ -1,5 +1,5 @@
 :mod:`dropbox.users_common` -- Users Common
-============================================
+===========================================
 .. automodule:: dropbox.users_common
    :members:
    :show-inheritance:

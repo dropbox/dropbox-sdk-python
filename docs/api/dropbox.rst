@@ -1,5 +1,5 @@
 :mod:`dropbox.dropbox` -- Dropbox
-============================================
+=================================
 .. automodule:: dropbox.dropbox
    :members:
    :show-inheritance:
