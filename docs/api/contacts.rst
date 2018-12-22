@@ -1,5 +1,5 @@
 :mod:`dropbox.contacts` -- Contacts
-============================================
+===================================
 .. automodule:: dropbox.contacts
    :members:
    :show-inheritance:

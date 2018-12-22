@@ -1,5 +1,5 @@
 :mod:`dropbox.files` -- Files
-============================================
+=============================
 .. automodule:: dropbox.files
    :members:
    :show-inheritance:

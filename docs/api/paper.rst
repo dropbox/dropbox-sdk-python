@@ -1,5 +1,5 @@
 :mod:`dropbox.paper` -- Paper
-============================================
+=============================
 .. automodule:: dropbox.paper
    :members:
    :show-inheritance:
