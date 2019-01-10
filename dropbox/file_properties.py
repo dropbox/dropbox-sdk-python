@@ -34,9 +34,10 @@ except (ImportError, SystemError, ValueError):
 
 class AddPropertiesArg(bb.Struct):
     """
-    :ivar path: A unique identifier for the file or folder.
-    :ivar property_groups: The property groups which are to be added to a
-        Dropbox file.
+    :ivar file_properties.AddPropertiesArg.path: A unique identifier for the
+        file or folder.
+    :ivar file_properties.AddPropertiesArg.property_groups: The property groups
+        which are to be added to a Dropbox file.
     """
 
     __slots__ = [
@@ -88,7 +89,7 @@ class AddPropertiesArg(bb.Struct):
         """
         The property groups which are to be added to a Dropbox file.
 
-        :rtype: list of [PropertyGroup]
+        :rtype: list of [file_properties.PropertyGroup]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -123,10 +124,10 @@ class TemplateError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str template_not_found: Template does not exist for the given
-        identifier.
-    :ivar restricted_content: You do not have permission to modify this
-        template.
+    :ivar str file_properties.TemplateError.template_not_found: Template does
+        not exist for the given identifier.
+    :ivar file_properties.TemplateError.restricted_content: You do not have
+        permission to modify this template.
     """
 
     _catch_all = 'other'
@@ -142,7 +143,7 @@ class TemplateError(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: TemplateError
+        :rtype: file_properties.TemplateError
         """
         return cls('template_not_found', val)
 
@@ -196,8 +197,8 @@ class PropertiesError(TemplateError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar unsupported_folder: This folder cannot be tagged. Tagging folders is
-        not supported for team-owned templates.
+    :ivar file_properties.PropertiesError.unsupported_folder: This folder cannot
+        be tagged. Tagging folders is not supported for team-owned templates.
     """
 
     # Attribute is overwritten below the class definition
@@ -209,8 +210,8 @@ class PropertiesError(TemplateError):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param LookupError val:
-        :rtype: PropertiesError
+        :param file_properties.LookupError val:
+        :rtype: file_properties.PropertiesError
         """
         return cls('path', val)
 
@@ -234,7 +235,7 @@ class PropertiesError(TemplateError):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: LookupError
+        :rtype: file_properties.LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
@@ -254,10 +255,11 @@ class InvalidPropertyGroupError(PropertiesError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar property_field_too_large: One or more of the supplied property field
-        values is too large.
-    :ivar does_not_fit_template: One or more of the supplied property fields
-        does not conform to the template specifications.
+    :ivar file_properties.InvalidPropertyGroupError.property_field_too_large:
+        One or more of the supplied property field values is too large.
+    :ivar file_properties.InvalidPropertyGroupError.does_not_fit_template: One
+        or more of the supplied property fields does not conform to the template
+        specifications.
     """
 
     # Attribute is overwritten below the class definition
@@ -295,8 +297,8 @@ class AddPropertiesError(InvalidPropertyGroupError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar property_group_already_exists: A property group associated with this
-        template and file already exists.
+    :ivar file_properties.AddPropertiesError.property_group_already_exists: A
+        property group associated with this template and file already exists.
     """
 
     # Attribute is overwritten below the class definition
@@ -322,12 +324,13 @@ class PropertyGroupTemplate(bb.Struct):
     """
     Defines how a property group may be structured.
 
-    :ivar name: Display name for the template. Template names can be up to 256
-        bytes.
-    :ivar description: Description for the template. Template descriptions can
-        be up to 1024 bytes.
-    :ivar fields: Definitions of the property fields associated with this
-        template. There can be up to 32 properties in a single template.
+    :ivar file_properties.PropertyGroupTemplate.name: Display name for the
+        template. Template names can be up to 256 bytes.
+    :ivar file_properties.PropertyGroupTemplate.description: Description for the
+        template. Template descriptions can be up to 1024 bytes.
+    :ivar file_properties.PropertyGroupTemplate.fields: Definitions of the
+        property fields associated with this template. There can be up to 32
+        properties in a single template.
     """
 
     __slots__ = [
@@ -411,7 +414,7 @@ class PropertyGroupTemplate(bb.Struct):
         Definitions of the property fields associated with this template. There
         can be up to 32 properties in a single template.
 
-        :rtype: list of [PropertyFieldTemplate]
+        :rtype: list of [file_properties.PropertyFieldTemplate]
         """
         if self._fields_present:
             return self._fields_value
@@ -470,7 +473,8 @@ AddTemplateArg_validator = bv.Struct(AddTemplateArg)
 
 class AddTemplateResult(bb.Struct):
     """
-    :ivar template_id: An identifier for template added by  See
+    :ivar file_properties.AddTemplateResult.template_id: An identifier for
+        template added by  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
         or
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
@@ -528,7 +532,8 @@ AddTemplateResult_validator = bv.Struct(AddTemplateResult)
 
 class GetTemplateArg(bb.Struct):
     """
-    :ivar template_id: An identifier for template added by route  See
+    :ivar file_properties.GetTemplateArg.template_id: An identifier for template
+        added by route  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
         or
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
@@ -613,7 +618,8 @@ GetTemplateResult_validator = bv.Struct(GetTemplateResult)
 
 class ListTemplateResult(bb.Struct):
     """
-    :ivar template_ids: List of identifiers for templates added by  See
+    :ivar file_properties.ListTemplateResult.template_ids: List of identifiers
+        for templates added by  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
         or
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
@@ -677,7 +683,8 @@ class LogicalOperator(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar or_operator: Append a query with an "or" operator.
+    :ivar file_properties.LogicalOperator.or_operator: Append a query with an
+        "or" operator.
     """
 
     _catch_all = 'other'
@@ -716,7 +723,8 @@ class LookUpPropertiesError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar property_group_not_found: No property group was found.
+    :ivar file_properties.LookUpPropertiesError.property_group_not_found: No
+        property group was found.
     """
 
     _catch_all = 'other'
@@ -755,14 +763,15 @@ class LookupError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar not_found: There is nothing at the given path.
-    :ivar not_file: We were expecting a file, but the given path refers to
-        something that isn't a file.
-    :ivar not_folder: We were expecting a folder, but the given path refers to
-        something that isn't a folder.
-    :ivar restricted_content: The file cannot be transferred because the content
-        is restricted.  For example, sometimes there are legal restrictions due
-        to copyright claims.
+    :ivar file_properties.LookupError.not_found: There is nothing at the given
+        path.
+    :ivar file_properties.LookupError.not_file: We were expecting a file, but
+        the given path refers to something that isn't a file.
+    :ivar file_properties.LookupError.not_folder: We were expecting a folder,
+        but the given path refers to something that isn't a folder.
+    :ivar file_properties.LookupError.restricted_content: The file cannot be
+        transferred because the content is restricted.  For example, sometimes
+        there are legal restrictions due to copyright claims.
     """
 
     _catch_all = 'other'
@@ -784,7 +793,7 @@ class LookupError(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: LookupError
+        :rtype: file_properties.LookupError
         """
         return cls('malformed_path', val)
 
@@ -860,13 +869,16 @@ class ModifyTemplateError(TemplateError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar conflicting_property_names: A property field key with that name
-        already exists in the template.
-    :ivar too_many_properties: There are too many properties in the changed
-        template. The maximum number of properties per template is 32.
-    :ivar too_many_templates: There are too many templates for the team.
-    :ivar template_attribute_too_large: The template name, description or one or
-        more of the property field keys is too large.
+    :ivar file_properties.ModifyTemplateError.conflicting_property_names: A
+        property field key with that name already exists in the template.
+    :ivar file_properties.ModifyTemplateError.too_many_properties: There are too
+        many properties in the changed template. The maximum number of
+        properties per template is 32.
+    :ivar file_properties.ModifyTemplateError.too_many_templates: There are too
+        many templates for the team.
+    :ivar file_properties.ModifyTemplateError.template_attribute_too_large: The
+        template name, description or one or more of the property field keys is
+        too large.
     """
 
     # Attribute is overwritten below the class definition
@@ -920,9 +932,10 @@ ModifyTemplateError_validator = bv.Union(ModifyTemplateError)
 
 class OverwritePropertyGroupArg(bb.Struct):
     """
-    :ivar path: A unique identifier for the file or folder.
-    :ivar property_groups: The property groups "snapshot" updates to force
-        apply.
+    :ivar file_properties.OverwritePropertyGroupArg.path: A unique identifier
+        for the file or folder.
+    :ivar file_properties.OverwritePropertyGroupArg.property_groups: The
+        property groups "snapshot" updates to force apply.
     """
 
     __slots__ = [
@@ -974,7 +987,7 @@ class OverwritePropertyGroupArg(bb.Struct):
         """
         The property groups "snapshot" updates to force apply.
 
-        :rtype: list of [PropertyGroup]
+        :rtype: list of [file_properties.PropertyGroup]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -1005,9 +1018,9 @@ OverwritePropertyGroupArg_validator = bv.Struct(OverwritePropertyGroupArg)
 
 class PropertiesSearchArg(bb.Struct):
     """
-    :ivar queries: Queries to search.
-    :ivar template_filter: Filter results to contain only properties associated
-        with these template IDs.
+    :ivar file_properties.PropertiesSearchArg.queries: Queries to search.
+    :ivar file_properties.PropertiesSearchArg.template_filter: Filter results to
+        contain only properties associated with these template IDs.
     """
 
     __slots__ = [
@@ -1036,7 +1049,7 @@ class PropertiesSearchArg(bb.Struct):
         """
         Queries to search.
 
-        :rtype: list of [PropertiesSearchQuery]
+        :rtype: list of [file_properties.PropertiesSearchQuery]
         """
         if self._queries_present:
             return self._queries_value
@@ -1060,7 +1073,7 @@ class PropertiesSearchArg(bb.Struct):
         Filter results to contain only properties associated with these template
         IDs.
 
-        :rtype: TemplateFilter
+        :rtype: file_properties.TemplateFilter
         """
         if self._template_filter_present:
             return self._template_filter_value
@@ -1091,7 +1104,8 @@ PropertiesSearchArg_validator = bv.Struct(PropertiesSearchArg)
 
 class PropertiesSearchContinueArg(bb.Struct):
     """
-    :ivar cursor: The cursor returned by your last call to
+    :ivar file_properties.PropertiesSearchContinueArg.cursor: The cursor
+        returned by your last call to
         :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search` or
         :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search_continue`.
     """
@@ -1151,7 +1165,8 @@ class PropertiesSearchContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar reset: Indicates that the cursor has been invalidated. Call
+    :ivar file_properties.PropertiesSearchContinueError.reset: Indicates that
+        the cursor has been invalidated. Call
         :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search` to
         obtain a new cursor.
     """
@@ -1203,8 +1218,8 @@ class PropertiesSearchError(bb.Union):
         Create an instance of this class set to the ``property_group_lookup``
         tag with value ``val``.
 
-        :param LookUpPropertiesError val:
-        :rtype: PropertiesSearchError
+        :param file_properties.LookUpPropertiesError val:
+        :rtype: file_properties.PropertiesSearchError
         """
         return cls('property_group_lookup', val)
 
@@ -1228,7 +1243,7 @@ class PropertiesSearchError(bb.Union):
         """
         Only call this if :meth:`is_property_group_lookup` is true.
 
-        :rtype: LookUpPropertiesError
+        :rtype: file_properties.LookUpPropertiesError
         """
         if not self.is_property_group_lookup():
             raise AttributeError("tag 'property_group_lookup' not set")
@@ -1244,11 +1259,14 @@ PropertiesSearchError_validator = bv.Union(PropertiesSearchError)
 
 class PropertiesSearchMatch(bb.Struct):
     """
-    :ivar id: The ID for the matched file or folder.
-    :ivar path: The path for the matched file or folder.
-    :ivar is_deleted: Whether the file or folder is deleted.
-    :ivar property_groups: List of custom property groups associated with the
-        file.
+    :ivar file_properties.PropertiesSearchMatch.id: The ID for the matched file
+        or folder.
+    :ivar file_properties.PropertiesSearchMatch.path: The path for the matched
+        file or folder.
+    :ivar file_properties.PropertiesSearchMatch.is_deleted: Whether the file or
+        folder is deleted.
+    :ivar file_properties.PropertiesSearchMatch.property_groups: List of custom
+        property groups associated with the file.
     """
 
     __slots__ = [
@@ -1360,7 +1378,7 @@ class PropertiesSearchMatch(bb.Struct):
         """
         List of custom property groups associated with the file.
 
-        :rtype: list of [PropertyGroup]
+        :rtype: list of [file_properties.PropertyGroup]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -1397,7 +1415,8 @@ class PropertiesSearchMode(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str field_name: Search for a value associated with this field name.
+    :ivar str file_properties.PropertiesSearchMode.field_name: Search for a
+        value associated with this field name.
     """
 
     _catch_all = 'other'
@@ -1411,7 +1430,7 @@ class PropertiesSearchMode(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: PropertiesSearchMode
+        :rtype: file_properties.PropertiesSearchMode
         """
         return cls('field_name', val)
 
@@ -1453,9 +1472,12 @@ PropertiesSearchMode_validator = bv.Union(PropertiesSearchMode)
 
 class PropertiesSearchQuery(bb.Struct):
     """
-    :ivar query: The property field value for which to search across templates.
-    :ivar mode: The mode with which to perform the search.
-    :ivar logical_operator: The logical operator with which to append the query.
+    :ivar file_properties.PropertiesSearchQuery.query: The property field value
+        for which to search across templates.
+    :ivar file_properties.PropertiesSearchQuery.mode: The mode with which to
+        perform the search.
+    :ivar file_properties.PropertiesSearchQuery.logical_operator: The logical
+        operator with which to append the query.
     """
 
     __slots__ = [
@@ -1514,7 +1536,7 @@ class PropertiesSearchQuery(bb.Struct):
         """
         The mode with which to perform the search.
 
-        :rtype: PropertiesSearchMode
+        :rtype: file_properties.PropertiesSearchMode
         """
         if self._mode_present:
             return self._mode_value
@@ -1537,7 +1559,7 @@ class PropertiesSearchQuery(bb.Struct):
         """
         The logical operator with which to append the query.
 
-        :rtype: LogicalOperator
+        :rtype: file_properties.LogicalOperator
         """
         if self._logical_operator_present:
             return self._logical_operator_value
@@ -1569,8 +1591,9 @@ PropertiesSearchQuery_validator = bv.Struct(PropertiesSearchQuery)
 
 class PropertiesSearchResult(bb.Struct):
     """
-    :ivar matches: A list (possibly empty) of matches for the query.
-    :ivar cursor: Pass the cursor into
+    :ivar file_properties.PropertiesSearchResult.matches: A list (possibly
+        empty) of matches for the query.
+    :ivar file_properties.PropertiesSearchResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search_continue`
         to continue to receive search results. Cursor will be null when there
         are no more results.
@@ -1602,7 +1625,7 @@ class PropertiesSearchResult(bb.Struct):
         """
         A list (possibly empty) of matches for the query.
 
-        :rtype: list of [PropertiesSearchMatch]
+        :rtype: list of [file_properties.PropertiesSearchMatch]
         """
         if self._matches_present:
             return self._matches_value
@@ -1665,10 +1688,10 @@ class PropertyField(bb.Struct):
     Raw key/value data to be associated with a Dropbox file. Property fields are
     added to Dropbox files as a :class:`PropertyGroup`.
 
-    :ivar name: Key of the property field associated with a file and template.
-        Keys can be up to 256 bytes.
-    :ivar value: Value of the property field associated with a file and
-        template. Values can be up to 1024 bytes.
+    :ivar file_properties.PropertyField.name: Key of the property field
+        associated with a file and template. Keys can be up to 256 bytes.
+    :ivar file_properties.PropertyField.value: Value of the property field
+        associated with a file and template. Values can be up to 1024 bytes.
     """
 
     __slots__ = [
@@ -1756,12 +1779,13 @@ class PropertyFieldTemplate(bb.Struct):
     Defines how a single property field may be structured. Used exclusively by
     :class:`PropertyGroupTemplate`.
 
-    :ivar name: Key of the property field being described. Property field keys
-        can be up to 256 bytes.
-    :ivar description: Description of the property field. Property field
-        descriptions can be up to 1024 bytes.
-    :ivar type: Data type of the value of this property field. This type will be
-        enforced upon property creation and modifications.
+    :ivar file_properties.PropertyFieldTemplate.name: Key of the property field
+        being described. Property field keys can be up to 256 bytes.
+    :ivar file_properties.PropertyFieldTemplate.description: Description of the
+        property field. Property field descriptions can be up to 1024 bytes.
+    :ivar file_properties.PropertyFieldTemplate.type: Data type of the value of
+        this property field. This type will be enforced upon property creation
+        and modifications.
     """
 
     __slots__ = [
@@ -1846,7 +1870,7 @@ class PropertyFieldTemplate(bb.Struct):
         Data type of the value of this property field. This type will be
         enforced upon property creation and modifications.
 
-        :rtype: PropertyType
+        :rtype: file_properties.PropertyType
         """
         if self._type_present:
             return self._type_value
@@ -1883,9 +1907,10 @@ class PropertyGroup(bb.Struct):
     file as a :class:`PropertyGroup`. The possible key names and value types in
     this group are defined by the corresponding :class:`PropertyGroupTemplate`.
 
-    :ivar template_id: A unique identifier for the associated template.
-    :ivar fields: The actual properties associated with the template. There can
-        be up to 32 property types per template.
+    :ivar file_properties.PropertyGroup.template_id: A unique identifier for the
+        associated template.
+    :ivar file_properties.PropertyGroup.fields: The actual properties associated
+        with the template. There can be up to 32 property types per template.
     """
 
     __slots__ = [
@@ -1938,7 +1963,7 @@ class PropertyGroup(bb.Struct):
         The actual properties associated with the template. There can be up to
         32 property types per template.
 
-        :rtype: list of [PropertyField]
+        :rtype: list of [file_properties.PropertyField]
         """
         if self._fields_present:
             return self._fields_value
@@ -1969,12 +1994,13 @@ PropertyGroup_validator = bv.Struct(PropertyGroup)
 
 class PropertyGroupUpdate(bb.Struct):
     """
-    :ivar template_id: A unique identifier for a property template.
-    :ivar add_or_update_fields: Property fields to update. If the property field
-        already exists, it is updated. If the property field doesn't exist, the
-        property group is added.
-    :ivar remove_fields: Property fields to remove (by name), provided they
-        exist.
+    :ivar file_properties.PropertyGroupUpdate.template_id: A unique identifier
+        for a property template.
+    :ivar file_properties.PropertyGroupUpdate.add_or_update_fields: Property
+        fields to update. If the property field already exists, it is updated.
+        If the property field doesn't exist, the property group is added.
+    :ivar file_properties.PropertyGroupUpdate.remove_fields: Property fields to
+        remove (by name), provided they exist.
     """
 
     __slots__ = [
@@ -2035,7 +2061,7 @@ class PropertyGroupUpdate(bb.Struct):
         updated. If the property field doesn't exist, the property group is
         added.
 
-        :rtype: list of [PropertyField]
+        :rtype: list of [file_properties.PropertyField]
         """
         if self._add_or_update_fields_present:
             return self._add_or_update_fields_value
@@ -2102,8 +2128,8 @@ class PropertyType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar string: The associated property field will be of type string. Unicode
-        is supported.
+    :ivar file_properties.PropertyType.string: The associated property field
+        will be of type string. Unicode is supported.
     """
 
     _catch_all = 'other'
@@ -2138,8 +2164,10 @@ PropertyType_validator = bv.Union(PropertyType)
 
 class RemovePropertiesArg(bb.Struct):
     """
-    :ivar path: A unique identifier for the file or folder.
-    :ivar property_template_ids: A list of identifiers for a template created by
+    :ivar file_properties.RemovePropertiesArg.path: A unique identifier for the
+        file or folder.
+    :ivar file_properties.RemovePropertiesArg.property_template_ids: A list of
+        identifiers for a template created by
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
         or
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
@@ -2239,8 +2267,8 @@ class RemovePropertiesError(PropertiesError):
         Create an instance of this class set to the ``property_group_lookup``
         tag with value ``val``.
 
-        :param LookUpPropertiesError val:
-        :rtype: RemovePropertiesError
+        :param file_properties.LookUpPropertiesError val:
+        :rtype: file_properties.RemovePropertiesError
         """
         return cls('property_group_lookup', val)
 
@@ -2256,7 +2284,7 @@ class RemovePropertiesError(PropertiesError):
         """
         Only call this if :meth:`is_property_group_lookup` is true.
 
-        :rtype: LookUpPropertiesError
+        :rtype: file_properties.LookUpPropertiesError
         """
         if not self.is_property_group_lookup():
             raise AttributeError("tag 'property_group_lookup' not set")
@@ -2272,7 +2300,8 @@ RemovePropertiesError_validator = bv.Union(RemovePropertiesError)
 
 class RemoveTemplateArg(bb.Struct):
     """
-    :ivar template_id: An identifier for a template created by
+    :ivar file_properties.RemoveTemplateArg.template_id: An identifier for a
+        template created by
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
         or
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
@@ -2334,8 +2363,9 @@ class TemplateFilterBase(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar list of [str] filter_some: Only templates with an ID in the supplied
-        list will be returned (a subset of templates will be returned).
+    :ivar list of [str] file_properties.TemplateFilterBase.filter_some: Only
+        templates with an ID in the supplied list will be returned (a subset of
+        templates will be returned).
     """
 
     _catch_all = 'other'
@@ -2349,7 +2379,7 @@ class TemplateFilterBase(bb.Union):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: TemplateFilterBase
+        :rtype: file_properties.TemplateFilterBase
         """
         return cls('filter_some', val)
 
@@ -2396,8 +2426,8 @@ class TemplateFilter(TemplateFilterBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar filter_none: No templates will be filtered from the result (all
-        templates will be returned).
+    :ivar file_properties.TemplateFilter.filter_none: No templates will be
+        filtered from the result (all templates will be returned).
     """
 
     # Attribute is overwritten below the class definition
@@ -2425,8 +2455,10 @@ class TemplateOwnerType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar user: Template will be associated with a user.
-    :ivar team: Template will be associated with a team.
+    :ivar file_properties.TemplateOwnerType.user: Template will be associated
+        with a user.
+    :ivar file_properties.TemplateOwnerType.team: Template will be associated
+        with a team.
     """
 
     _catch_all = 'other'
@@ -2471,8 +2503,10 @@ TemplateOwnerType_validator = bv.Union(TemplateOwnerType)
 
 class UpdatePropertiesArg(bb.Struct):
     """
-    :ivar path: A unique identifier for the file or folder.
-    :ivar update_property_groups: The property groups "delta" updates to apply.
+    :ivar file_properties.UpdatePropertiesArg.path: A unique identifier for the
+        file or folder.
+    :ivar file_properties.UpdatePropertiesArg.update_property_groups: The
+        property groups "delta" updates to apply.
     """
 
     __slots__ = [
@@ -2524,7 +2558,7 @@ class UpdatePropertiesArg(bb.Struct):
         """
         The property groups "delta" updates to apply.
 
-        :rtype: list of [PropertyGroupUpdate]
+        :rtype: list of [file_properties.PropertyGroupUpdate]
         """
         if self._update_property_groups_present:
             return self._update_property_groups_value
@@ -2566,8 +2600,8 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
         Create an instance of this class set to the ``property_group_lookup``
         tag with value ``val``.
 
-        :param LookUpPropertiesError val:
-        :rtype: UpdatePropertiesError
+        :param file_properties.LookUpPropertiesError val:
+        :rtype: file_properties.UpdatePropertiesError
         """
         return cls('property_group_lookup', val)
 
@@ -2583,7 +2617,7 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
         """
         Only call this if :meth:`is_property_group_lookup` is true.
 
-        :rtype: LookUpPropertiesError
+        :rtype: file_properties.LookUpPropertiesError
         """
         if not self.is_property_group_lookup():
             raise AttributeError("tag 'property_group_lookup' not set")
@@ -2599,16 +2633,18 @@ UpdatePropertiesError_validator = bv.Union(UpdatePropertiesError)
 
 class UpdateTemplateArg(bb.Struct):
     """
-    :ivar template_id: An identifier for template added by  See
+    :ivar file_properties.UpdateTemplateArg.template_id: An identifier for
+        template added by  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
         or
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
-    :ivar name: A display name for the template. template names can be up to 256
-        bytes.
-    :ivar description: Description for the new template. Template descriptions
-        can be up to 1024 bytes.
-    :ivar add_fields: Property field templates to be added to the group
-        template. There can be up to 32 properties in a single template.
+    :ivar file_properties.UpdateTemplateArg.name: A display name for the
+        template. template names can be up to 256 bytes.
+    :ivar file_properties.UpdateTemplateArg.description: Description for the new
+        template. Template descriptions can be up to 1024 bytes.
+    :ivar file_properties.UpdateTemplateArg.add_fields: Property field templates
+        to be added to the group template. There can be up to 32 properties in a
+        single template.
     """
 
     __slots__ = [
@@ -2731,7 +2767,7 @@ class UpdateTemplateArg(bb.Struct):
         Property field templates to be added to the group template. There can be
         up to 32 properties in a single template.
 
-        :rtype: list of [PropertyFieldTemplate]
+        :rtype: list of [file_properties.PropertyFieldTemplate]
         """
         if self._add_fields_present:
             return self._add_fields_value
@@ -2767,7 +2803,8 @@ UpdateTemplateArg_validator = bv.Struct(UpdateTemplateArg)
 
 class UpdateTemplateResult(bb.Struct):
     """
-    :ivar template_id: An identifier for template added by route  See
+    :ivar file_properties.UpdateTemplateResult.template_id: An identifier for
+        template added by route  See
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
         or
         :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.

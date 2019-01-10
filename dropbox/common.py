@@ -18,14 +18,15 @@ class PathRoot(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar home: Paths are relative to the authenticating user's home namespace,
-        whether or not that user belongs to a team.
-    :ivar str root: Paths are relative to the authenticating user's root
-        namespace (This results in :field:`PathRootError.invalid_root` if the
-        user's root namespace has changed.).
-    :ivar str namespace_id: Paths are relative to given namespace id (This
-        results in :field:`PathRootError.no_permission` if you don't have access
-        to this namespace.).
+    :ivar common.PathRoot.home: Paths are relative to the authenticating user's
+        home namespace, whether or not that user belongs to a team.
+    :ivar str common.PathRoot.root: Paths are relative to the authenticating
+        user's root namespace (This results in
+        :field:`PathRootError.invalid_root` if the user's root namespace has
+        changed.).
+    :ivar str common.PathRoot.namespace_id: Paths are relative to given
+        namespace id (This results in :field:`PathRootError.no_permission` if
+        you don't have access to this namespace.).
     """
 
     _catch_all = 'other'
@@ -41,7 +42,7 @@ class PathRoot(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: PathRoot
+        :rtype: common.PathRoot
         """
         return cls('root', val)
 
@@ -52,7 +53,7 @@ class PathRoot(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: PathRoot
+        :rtype: common.PathRoot
         """
         return cls('namespace_id', val)
 
@@ -130,10 +131,11 @@ class PathRootError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar RootInfo invalid_root: The root namespace id in Dropbox-API-Path-Root
-        header is not valid. The value of this error is use's latest root info.
-    :ivar no_permission: You don't have permission to access the namespace id in
-        Dropbox-API-Path-Root  header.
+    :ivar RootInfo common.PathRootError.invalid_root: The root namespace id in
+        Dropbox-API-Path-Root header is not valid. The value of this error is
+        use's latest root info.
+    :ivar common.PathRootError.no_permission: You don't have permission to
+        access the namespace id in Dropbox-API-Path-Root  header.
     """
 
     _catch_all = 'other'
@@ -148,8 +150,8 @@ class PathRootError(bb.Union):
         Create an instance of this class set to the ``invalid_root`` tag with
         value ``val``.
 
-        :param RootInfo val:
-        :rtype: PathRootError
+        :param common.RootInfo val:
+        :rtype: common.PathRootError
         """
         return cls('invalid_root', val)
 
@@ -184,7 +186,7 @@ class PathRootError(bb.Union):
 
         Only call this if :meth:`is_invalid_root` is true.
 
-        :rtype: RootInfo
+        :rtype: common.RootInfo
         """
         if not self.is_invalid_root():
             raise AttributeError("tag 'invalid_root' not set")
@@ -202,11 +204,12 @@ class RootInfo(bb.Struct):
     """
     Information about current user's root.
 
-    :ivar root_namespace_id: The namespace ID for user's root namespace. It will
-        be the namespace ID of the shared team root if the user is member of a
-        team with a separate team root. Otherwise it will be same as
-        ``RootInfo.home_namespace_id``.
-    :ivar home_namespace_id: The namespace ID for user's home namespace.
+    :ivar common.RootInfo.root_namespace_id: The namespace ID for user's root
+        namespace. It will be the namespace ID of the shared team root if the
+        user is member of a team with a separate team root. Otherwise it will be
+        same as ``RootInfo.home_namespace_id``.
+    :ivar common.RootInfo.home_namespace_id: The namespace ID for user's home
+        namespace.
     """
 
     __slots__ = [
@@ -293,8 +296,8 @@ class TeamRootInfo(RootInfo):
     """
     Root info when user is member of a team with a separate root namespace ID.
 
-    :ivar home_path: The path for user's home directory under the shared team
-        root.
+    :ivar common.TeamRootInfo.home_path: The path for user's home directory
+        under the shared team root.
     """
 
     __slots__ = [

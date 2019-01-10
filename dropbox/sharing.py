@@ -43,10 +43,10 @@ class AccessInheritance(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar inherit: The shared folder inherits its members from the parent
-        folder.
-    :ivar no_inherit: The shared folder does not inherit its members from the
-        parent folder.
+    :ivar sharing.AccessInheritance.inherit: The shared folder inherits its
+        members from the parent folder.
+    :ivar sharing.AccessInheritance.no_inherit: The shared folder does not
+        inherit its members from the parent folder.
     """
 
     _catch_all = 'other'
@@ -97,13 +97,16 @@ class AccessLevel(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar owner: The collaborator is the owner of the shared folder. Owners can
-        view and edit the shared folder as well as set the folder's policies
-        using :meth:`dropbox.dropbox.Dropbox.sharing_update_folder_policy`.
-    :ivar editor: The collaborator can both view and edit the shared folder.
-    :ivar viewer: The collaborator can only view the shared folder.
-    :ivar viewer_no_comment: The collaborator can only view the shared folder
-        and does not have any access to comments.
+    :ivar sharing.AccessLevel.owner: The collaborator is the owner of the shared
+        folder. Owners can view and edit the shared folder as well as set the
+        folder's policies using
+        :meth:`dropbox.dropbox.Dropbox.sharing_update_folder_policy`.
+    :ivar sharing.AccessLevel.editor: The collaborator can both view and edit
+        the shared folder.
+    :ivar sharing.AccessLevel.viewer: The collaborator can only view the shared
+        folder.
+    :ivar sharing.AccessLevel.viewer_no_comment: The collaborator can only view
+        the shared folder and does not have any access to comments.
     """
 
     _catch_all = 'other'
@@ -175,9 +178,9 @@ class AclUpdatePolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar owner: Only the owner can update the ACL.
-    :ivar editors: Any editor can update the ACL. This may be further restricted
-        to editors on the same team.
+    :ivar sharing.AclUpdatePolicy.owner: Only the owner can update the ACL.
+    :ivar sharing.AclUpdatePolicy.editors: Any editor can update the ACL. This
+        may be further restricted to editors on the same team.
     """
 
     _catch_all = 'other'
@@ -224,17 +227,18 @@ class AddFileMemberArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_add_file_member`.
 
-    :ivar file: File to which to add members.
-    :ivar members: Members to add. Note that even an email address is given,
-        this may result in a user being directy added to the membership if that
-        email is the user's main account email.
-    :ivar custom_message: Message to send to added members in their invitation.
-    :ivar quiet: Whether added members should be notified via device
-        notifications of their invitation.
-    :ivar access_level: AccessLevel union object, describing what access level
-        we want to give new members.
-    :ivar add_message_as_comment: If the custom message should be added as a
-        comment on the file.
+    :ivar sharing.AddFileMemberArgs.file: File to which to add members.
+    :ivar sharing.AddFileMemberArgs.members: Members to add. Note that even an
+        email address is given, this may result in a user being directy added to
+        the membership if that email is the user's main account email.
+    :ivar sharing.AddFileMemberArgs.custom_message: Message to send to added
+        members in their invitation.
+    :ivar sharing.AddFileMemberArgs.quiet: Whether added members should be
+        notified via device notifications of their invitation.
+    :ivar sharing.AddFileMemberArgs.access_level: AccessLevel union object,
+        describing what access level we want to give new members.
+    :ivar sharing.AddFileMemberArgs.add_message_as_comment: If the custom
+        message should be added as a comment on the file.
     """
 
     __slots__ = [
@@ -316,7 +320,7 @@ class AddFileMemberArgs(bb.Struct):
         result in a user being directy added to the membership if that email is
         the user's main account email.
 
-        :rtype: list of [MemberSelector]
+        :rtype: list of [sharing.MemberSelector]
         """
         if self._members_present:
             return self._members_value
@@ -390,7 +394,7 @@ class AddFileMemberArgs(bb.Struct):
         AccessLevel union object, describing what access level we want to give
         new members.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_level_present:
             return self._access_level_value
@@ -454,9 +458,10 @@ class AddFileMemberError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar rate_limit: The user has reached the rate limit for invitations.
-    :ivar invalid_comment: The custom message did not pass comment permissions
-        checks.
+    :ivar sharing.AddFileMemberError.rate_limit: The user has reached the rate
+        limit for invitations.
+    :ivar sharing.AddFileMemberError.invalid_comment: The custom message did not
+        pass comment permissions checks.
     """
 
     _catch_all = 'other'
@@ -473,8 +478,8 @@ class AddFileMemberError(bb.Union):
         Create an instance of this class set to the ``user_error`` tag with
         value ``val``.
 
-        :param SharingUserError val:
-        :rtype: AddFileMemberError
+        :param sharing.SharingUserError val:
+        :rtype: sharing.AddFileMemberError
         """
         return cls('user_error', val)
 
@@ -484,8 +489,8 @@ class AddFileMemberError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: AddFileMemberError
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.AddFileMemberError
         """
         return cls('access_error', val)
 
@@ -533,7 +538,7 @@ class AddFileMemberError(bb.Union):
         """
         Only call this if :meth:`is_user_error` is true.
 
-        :rtype: SharingUserError
+        :rtype: sharing.SharingUserError
         """
         if not self.is_user_error():
             raise AttributeError("tag 'user_error' not set")
@@ -543,7 +548,7 @@ class AddFileMemberError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -559,13 +564,14 @@ AddFileMemberError_validator = bv.Union(AddFileMemberError)
 
 class AddFolderMemberArg(bb.Struct):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar members: The intended list of members to add.  Added members will
-        receive invites to join the shared folder.
-    :ivar quiet: Whether added members should be notified via email and device
-        notifications of their invite.
-    :ivar custom_message: Optional message to display to added members in their
-        invitation.
+    :ivar sharing.AddFolderMemberArg.shared_folder_id: The ID for the shared
+        folder.
+    :ivar sharing.AddFolderMemberArg.members: The intended list of members to
+        add.  Added members will receive invites to join the shared folder.
+    :ivar sharing.AddFolderMemberArg.quiet: Whether added members should be
+        notified via email and device notifications of their invite.
+    :ivar sharing.AddFolderMemberArg.custom_message: Optional message to display
+        to added members in their invitation.
     """
 
     __slots__ = [
@@ -632,7 +638,7 @@ class AddFolderMemberArg(bb.Struct):
         The intended list of members to add.  Added members will receive invites
         to join the shared folder.
 
-        :rtype: list of [AddMember]
+        :rtype: list of [sharing.AddMember]
         """
         if self._members_present:
             return self._members_value
@@ -719,26 +725,30 @@ class AddFolderMemberError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SharedFolderAccessError access_error: Unable to access shared folder.
-    :ivar email_unverified: The current user's e-mail address is unverified.
-    :ivar AddMemberSelectorError bad_member: ``AddFolderMemberArg.members``
-        contains a bad invitation recipient.
-    :ivar cant_share_outside_team: Your team policy does not allow sharing
-        outside of the team.
-    :ivar int too_many_members: The value is the member limit that was reached.
-    :ivar int too_many_pending_invites: The value is the pending invite limit
-        that was reached.
-    :ivar rate_limit: The current user has hit the limit of invites they can
-        send per day. Try again in 24 hours.
-    :ivar too_many_invitees: The current user is trying to share with too many
-        people at once.
-    :ivar insufficient_plan: The current user's account doesn't support this
-        action. An example of this is when adding a read-only member. This
-        action can only be performed by users that have upgraded to a Pro or
-        Business plan.
-    :ivar team_folder: This action cannot be performed on a team shared folder.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
+    :ivar SharedFolderAccessError sharing.AddFolderMemberError.access_error:
+        Unable to access shared folder.
+    :ivar sharing.AddFolderMemberError.email_unverified: The current user's
+        e-mail address is unverified.
+    :ivar AddMemberSelectorError sharing.AddFolderMemberError.bad_member:
+        ``AddFolderMemberArg.members`` contains a bad invitation recipient.
+    :ivar sharing.AddFolderMemberError.cant_share_outside_team: Your team policy
+        does not allow sharing outside of the team.
+    :ivar int sharing.AddFolderMemberError.too_many_members: The value is the
+        member limit that was reached.
+    :ivar int sharing.AddFolderMemberError.too_many_pending_invites: The value
+        is the pending invite limit that was reached.
+    :ivar sharing.AddFolderMemberError.rate_limit: The current user has hit the
+        limit of invites they can send per day. Try again in 24 hours.
+    :ivar sharing.AddFolderMemberError.too_many_invitees: The current user is
+        trying to share with too many people at once.
+    :ivar sharing.AddFolderMemberError.insufficient_plan: The current user's
+        account doesn't support this action. An example of this is when adding a
+        read-only member. This action can only be performed by users that have
+        upgraded to a Pro or Business plan.
+    :ivar sharing.AddFolderMemberError.team_folder: This action cannot be
+        performed on a team shared folder.
+    :ivar sharing.AddFolderMemberError.no_permission: The current user does not
+        have permission to perform this action.
     """
 
     _catch_all = 'other'
@@ -765,8 +775,8 @@ class AddFolderMemberError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: AddFolderMemberError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.AddFolderMemberError
         """
         return cls('access_error', val)
 
@@ -776,8 +786,8 @@ class AddFolderMemberError(bb.Union):
         Create an instance of this class set to the ``bad_member`` tag with
         value ``val``.
 
-        :param AddMemberSelectorError val:
-        :rtype: AddFolderMemberError
+        :param sharing.AddMemberSelectorError val:
+        :rtype: sharing.AddFolderMemberError
         """
         return cls('bad_member', val)
 
@@ -788,7 +798,7 @@ class AddFolderMemberError(bb.Union):
         with value ``val``.
 
         :param int val:
-        :rtype: AddFolderMemberError
+        :rtype: sharing.AddFolderMemberError
         """
         return cls('too_many_members', val)
 
@@ -799,7 +809,7 @@ class AddFolderMemberError(bb.Union):
         tag with value ``val``.
 
         :param int val:
-        :rtype: AddFolderMemberError
+        :rtype: sharing.AddFolderMemberError
         """
         return cls('too_many_pending_invites', val)
 
@@ -905,7 +915,7 @@ class AddFolderMemberError(bb.Union):
 
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -917,7 +927,7 @@ class AddFolderMemberError(bb.Union):
 
         Only call this if :meth:`is_bad_member` is true.
 
-        :rtype: AddMemberSelectorError
+        :rtype: sharing.AddMemberSelectorError
         """
         if not self.is_bad_member():
             raise AttributeError("tag 'bad_member' not set")
@@ -960,9 +970,9 @@ class AddMember(bb.Struct):
     The member and type of access the member should have when added to a shared
     folder.
 
-    :ivar member: The member to add to the shared folder.
-    :ivar access_level: The access level to grant ``member`` to the shared
-        folder.  ``AccessLevel.owner`` is disallowed.
+    :ivar sharing.AddMember.member: The member to add to the shared folder.
+    :ivar sharing.AddMember.access_level: The access level to grant ``member``
+        to the shared folder.  ``AccessLevel.owner`` is disallowed.
     """
 
     __slots__ = [
@@ -991,7 +1001,7 @@ class AddMember(bb.Struct):
         """
         The member to add to the shared folder.
 
-        :rtype: MemberSelector
+        :rtype: sharing.MemberSelector
         """
         if self._member_present:
             return self._member_value
@@ -1015,7 +1025,7 @@ class AddMember(bb.Struct):
         The access level to grant ``member`` to the shared folder.
         ``AccessLevel.owner`` is disallowed.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_level_present:
             return self._access_level_value
@@ -1050,18 +1060,19 @@ class AddMemberSelectorError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar automatic_group: Automatically created groups can only be added to
-        team folders.
-    :ivar str invalid_dropbox_id: The value is the ID that could not be
-        identified.
-    :ivar str invalid_email: The value is the e-email address that is malformed.
-    :ivar str unverified_dropbox_id: The value is the ID of the Dropbox user
-        with an unverified e-mail address.  Invite unverified users by e-mail
-        address instead of by their Dropbox ID.
-    :ivar group_deleted: At least one of the specified groups in
-        ``AddFolderMemberArg.members`` is deleted.
-    :ivar group_not_on_team: Sharing to a group that is not on the current
-        user's team.
+    :ivar sharing.AddMemberSelectorError.automatic_group: Automatically created
+        groups can only be added to team folders.
+    :ivar str sharing.AddMemberSelectorError.invalid_dropbox_id: The value is
+        the ID that could not be identified.
+    :ivar str sharing.AddMemberSelectorError.invalid_email: The value is the
+        e-email address that is malformed.
+    :ivar str sharing.AddMemberSelectorError.unverified_dropbox_id: The value is
+        the ID of the Dropbox user with an unverified e-mail address.  Invite
+        unverified users by e-mail address instead of by their Dropbox ID.
+    :ivar sharing.AddMemberSelectorError.group_deleted: At least one of the
+        specified groups in ``AddFolderMemberArg.members`` is deleted.
+    :ivar sharing.AddMemberSelectorError.group_not_on_team: Sharing to a group
+        that is not on the current user's team.
     """
 
     _catch_all = 'other'
@@ -1081,7 +1092,7 @@ class AddMemberSelectorError(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: AddMemberSelectorError
+        :rtype: sharing.AddMemberSelectorError
         """
         return cls('invalid_dropbox_id', val)
 
@@ -1092,7 +1103,7 @@ class AddMemberSelectorError(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: AddMemberSelectorError
+        :rtype: sharing.AddMemberSelectorError
         """
         return cls('invalid_email', val)
 
@@ -1103,7 +1114,7 @@ class AddMemberSelectorError(bb.Union):
         tag with value ``val``.
 
         :param str val:
-        :rtype: AddMemberSelectorError
+        :rtype: sharing.AddMemberSelectorError
         """
         return cls('unverified_dropbox_id', val)
 
@@ -1214,7 +1225,8 @@ class AudienceExceptionContentInfo(bb.Struct):
     Information about the content that has a link audience different than that
     of this folder.
 
-    :ivar name: The name of the content, which is either a file or a folder.
+    :ivar sharing.AudienceExceptionContentInfo.name: The name of the content,
+        which is either a file or a folder.
     """
 
     __slots__ = [
@@ -1270,9 +1282,10 @@ class AudienceExceptions(bb.Struct):
     folder that has a different audience than the link on this folder. This is
     only returned for folders.
 
-    :ivar exceptions: A truncated list of some of the content that is an
-        exception. The length of this list could be smaller than the count since
-        it is only a sample but will not be empty as long as count is not 0.
+    :ivar sharing.AudienceExceptions.exceptions: A truncated list of some of the
+        content that is an exception. The length of this list could be smaller
+        than the count since it is only a sample but will not be empty as long
+        as count is not 0.
     """
 
     __slots__ = [
@@ -1324,7 +1337,7 @@ class AudienceExceptions(bb.Struct):
         of this list could be smaller than the count since it is only a sample
         but will not be empty as long as count is not 0.
 
-        :rtype: list of [AudienceExceptionContentInfo]
+        :rtype: list of [sharing.AudienceExceptionContentInfo]
         """
         if self._exceptions_present:
             return self._exceptions_value
@@ -1358,9 +1371,12 @@ class AudienceRestrictingSharedFolder(bb.Struct):
     Information about the shared folder that prevents the link audience for this
     link from being more restrictive.
 
-    :ivar shared_folder_id: The ID of the shared folder.
-    :ivar name: The name of the shared folder.
-    :ivar audience: The link audience of the shared folder.
+    :ivar sharing.AudienceRestrictingSharedFolder.shared_folder_id: The ID of
+        the shared folder.
+    :ivar sharing.AudienceRestrictingSharedFolder.name: The name of the shared
+        folder.
+    :ivar sharing.AudienceRestrictingSharedFolder.audience: The link audience of
+        the shared folder.
     """
 
     __slots__ = [
@@ -1442,7 +1458,7 @@ class AudienceRestrictingSharedFolder(bb.Struct):
         """
         The link audience of the shared folder.
 
-        :rtype: LinkAudience
+        :rtype: sharing.LinkAudience
         """
         if self._audience_present:
             return self._audience_value
@@ -1477,9 +1493,12 @@ class ChangeFileMemberAccessArgs(bb.Struct):
     Arguments for
     :meth:`dropbox.dropbox.Dropbox.sharing_change_file_member_access`.
 
-    :ivar file: File for which we are changing a member's access.
-    :ivar member: The member whose access we are changing.
-    :ivar access_level: The new access level for the member.
+    :ivar sharing.ChangeFileMemberAccessArgs.file: File for which we are
+        changing a member's access.
+    :ivar sharing.ChangeFileMemberAccessArgs.member: The member whose access we
+        are changing.
+    :ivar sharing.ChangeFileMemberAccessArgs.access_level: The new access level
+        for the member.
     """
 
     __slots__ = [
@@ -1538,7 +1557,7 @@ class ChangeFileMemberAccessArgs(bb.Struct):
         """
         The member whose access we are changing.
 
-        :rtype: MemberSelector
+        :rtype: sharing.MemberSelector
         """
         if self._member_present:
             return self._member_value
@@ -1561,7 +1580,7 @@ class ChangeFileMemberAccessArgs(bb.Struct):
         """
         The new access level for the member.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_level_present:
             return self._access_level_value
@@ -1596,9 +1615,10 @@ class LinkMetadata(bb.Struct):
     Metadata for a shared link. This can be either a :class:`PathLinkMetadata`
     or :class:`CollectionLinkMetadata`.
 
-    :ivar url: URL of the shared link.
-    :ivar visibility: Who can access the link.
-    :ivar expires: Expiration time, if set. By default the link won't expire.
+    :ivar sharing.LinkMetadata.url: URL of the shared link.
+    :ivar sharing.LinkMetadata.visibility: Who can access the link.
+    :ivar sharing.LinkMetadata.expires: Expiration time, if set. By default the
+        link won't expire.
     """
 
     __slots__ = [
@@ -1657,7 +1677,7 @@ class LinkMetadata(bb.Struct):
         """
         Who can access the link.
 
-        :rtype: Visibility
+        :rtype: sharing.Visibility
         """
         if self._visibility_present:
             return self._visibility_value
@@ -1745,12 +1765,13 @@ CollectionLinkMetadata_validator = bv.Struct(CollectionLinkMetadata)
 
 class CreateSharedLinkArg(bb.Struct):
     """
-    :ivar path: The path to share.
-    :ivar short_url: Whether to return a shortened URL.
-    :ivar pending_upload: If it's okay to share a path that does not yet exist,
-        set this to either ``PendingUploadMode.file`` or
-        ``PendingUploadMode.folder`` to indicate whether to assume it's a file
-        or folder.
+    :ivar sharing.CreateSharedLinkArg.path: The path to share.
+    :ivar sharing.CreateSharedLinkArg.short_url: Whether to return a shortened
+        URL.
+    :ivar sharing.CreateSharedLinkArg.pending_upload: If it's okay to share a
+        path that does not yet exist, set this to either
+        ``PendingUploadMode.file`` or ``PendingUploadMode.folder`` to indicate
+        whether to assume it's a file or folder.
     """
 
     __slots__ = [
@@ -1834,7 +1855,7 @@ class CreateSharedLinkArg(bb.Struct):
         ``PendingUploadMode.file`` or ``PendingUploadMode.folder`` to indicate
         whether to assume it's a file or folder.
 
-        :rtype: PendingUploadMode
+        :rtype: sharing.PendingUploadMode
         """
         if self._pending_upload_present:
             return self._pending_upload_value
@@ -1885,7 +1906,7 @@ class CreateSharedLinkError(bb.Union):
         ``val``.
 
         :param files.LookupError val:
-        :rtype: CreateSharedLinkError
+        :rtype: sharing.CreateSharedLinkError
         """
         return cls('path', val)
 
@@ -1925,8 +1946,10 @@ CreateSharedLinkError_validator = bv.Union(CreateSharedLinkError)
 
 class CreateSharedLinkWithSettingsArg(bb.Struct):
     """
-    :ivar path: The path to be shared by the shared link.
-    :ivar settings: The requested settings for the newly created shared link.
+    :ivar sharing.CreateSharedLinkWithSettingsArg.path: The path to be shared by
+        the shared link.
+    :ivar sharing.CreateSharedLinkWithSettingsArg.settings: The requested
+        settings for the newly created shared link.
     """
 
     __slots__ = [
@@ -1978,7 +2001,7 @@ class CreateSharedLinkWithSettingsArg(bb.Struct):
         """
         The requested settings for the newly created shared link.
 
-        :rtype: SharedLinkSettings
+        :rtype: sharing.SharedLinkSettings
         """
         if self._settings_present:
             return self._settings_value
@@ -2016,13 +2039,17 @@ class CreateSharedLinkWithSettingsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar email_not_verified: User's email should be verified.
-    :ivar shared_link_already_exists: The shared link already exists. You can
-        call :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to get
-        the existing link.
-    :ivar SharedLinkSettingsError settings_error: There is an error with the
-        given settings.
-    :ivar access_denied: Access to the requested path is forbidden.
+    :ivar sharing.CreateSharedLinkWithSettingsError.email_not_verified: User's
+        email should be verified.
+    :ivar sharing.CreateSharedLinkWithSettingsError.shared_link_already_exists:
+        The shared link already exists. You can call
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to get the
+        existing link.
+    :ivar SharedLinkSettingsError
+        sharing.CreateSharedLinkWithSettingsError.settings_error: There is an
+        error with the given settings.
+    :ivar sharing.CreateSharedLinkWithSettingsError.access_denied: Access to the
+        requested path is forbidden.
     """
 
     _catch_all = None
@@ -2040,7 +2067,7 @@ class CreateSharedLinkWithSettingsError(bb.Union):
         ``val``.
 
         :param files.LookupError val:
-        :rtype: CreateSharedLinkWithSettingsError
+        :rtype: sharing.CreateSharedLinkWithSettingsError
         """
         return cls('path', val)
 
@@ -2050,8 +2077,8 @@ class CreateSharedLinkWithSettingsError(bb.Union):
         Create an instance of this class set to the ``settings_error`` tag with
         value ``val``.
 
-        :param SharedLinkSettingsError val:
-        :rtype: CreateSharedLinkWithSettingsError
+        :param sharing.SharedLinkSettingsError val:
+        :rtype: sharing.CreateSharedLinkWithSettingsError
         """
         return cls('settings_error', val)
 
@@ -2111,7 +2138,7 @@ class CreateSharedLinkWithSettingsError(bb.Union):
 
         Only call this if :meth:`is_settings_error` is true.
 
-        :rtype: SharedLinkSettingsError
+        :rtype: sharing.SharedLinkSettingsError
         """
         if not self.is_settings_error():
             raise AttributeError("tag 'settings_error' not set")
@@ -2127,21 +2154,26 @@ CreateSharedLinkWithSettingsError_validator = bv.Union(CreateSharedLinkWithSetti
 
 class SharedContentLinkMetadataBase(bb.Struct):
     """
-    :ivar access_level: The access level on the link for this file.
-    :ivar audience_options: The audience options that are available for the
-        content. Some audience options may be unavailable. For example,
-        team_only may be unavailable if the content is not owned by a user on a
-        team. The 'default' audience option is always available if the user can
-        modify link settings.
-    :ivar audience_restricting_shared_folder: The shared folder that prevents
-        the link audience for this link from being more restrictive.
-    :ivar current_audience: The current audience of the link.
-    :ivar expiry: Whether the link has an expiry set on it. A link with an
-        expiry will have its  audience changed to members when the expiry is
-        reached.
-    :ivar link_permissions: A list of permissions for actions you can perform on
-        the link.
-    :ivar password_protected: Whether the link is protected by a password.
+    :ivar sharing.SharedContentLinkMetadataBase.access_level: The access level
+        on the link for this file.
+    :ivar sharing.SharedContentLinkMetadataBase.audience_options: The audience
+        options that are available for the content. Some audience options may be
+        unavailable. For example, team_only may be unavailable if the content is
+        not owned by a user on a team. The 'default' audience option is always
+        available if the user can modify link settings.
+    :ivar
+        sharing.SharedContentLinkMetadataBase.audience_restricting_shared_folder:
+        The shared folder that prevents the link audience for this link from
+        being more restrictive.
+    :ivar sharing.SharedContentLinkMetadataBase.current_audience: The current
+        audience of the link.
+    :ivar sharing.SharedContentLinkMetadataBase.expiry: Whether the link has an
+        expiry set on it. A link with an expiry will have its  audience changed
+        to members when the expiry is reached.
+    :ivar sharing.SharedContentLinkMetadataBase.link_permissions: A list of
+        permissions for actions you can perform on the link.
+    :ivar sharing.SharedContentLinkMetadataBase.password_protected: Whether the
+        link is protected by a password.
     """
 
     __slots__ = [
@@ -2205,7 +2237,7 @@ class SharedContentLinkMetadataBase(bb.Struct):
         """
         The access level on the link for this file.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_level_present:
             return self._access_level_value
@@ -2234,7 +2266,7 @@ class SharedContentLinkMetadataBase(bb.Struct):
         the content is not owned by a user on a team. The 'default' audience
         option is always available if the user can modify link settings.
 
-        :rtype: list of [LinkAudience]
+        :rtype: list of [sharing.LinkAudience]
         """
         if self._audience_options_present:
             return self._audience_options_value
@@ -2258,7 +2290,7 @@ class SharedContentLinkMetadataBase(bb.Struct):
         The shared folder that prevents the link audience for this link from
         being more restrictive.
 
-        :rtype: AudienceRestrictingSharedFolder
+        :rtype: sharing.AudienceRestrictingSharedFolder
         """
         if self._audience_restricting_shared_folder_present:
             return self._audience_restricting_shared_folder_value
@@ -2284,7 +2316,7 @@ class SharedContentLinkMetadataBase(bb.Struct):
         """
         The current audience of the link.
 
-        :rtype: LinkAudience
+        :rtype: sharing.LinkAudience
         """
         if self._current_audience_present:
             return self._current_audience_value
@@ -2334,7 +2366,7 @@ class SharedContentLinkMetadataBase(bb.Struct):
         """
         A list of permissions for actions you can perform on the link.
 
-        :rtype: list of [LinkPermission]
+        :rtype: list of [sharing.LinkPermission]
         """
         if self._link_permissions_present:
             return self._link_permissions_value
@@ -2442,17 +2474,20 @@ class FileAction(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disable_viewer_info: Disable viewer information on the file.
-    :ivar edit_contents: Change or edit contents of the file.
-    :ivar enable_viewer_info: Enable viewer information on the file.
-    :ivar invite_viewer: Add a member with view permissions.
-    :ivar invite_viewer_no_comment: Add a member with view permissions but no
-        comment permissions.
-    :ivar invite_editor: Add a member with edit permissions.
-    :ivar unshare: Stop sharing this file.
-    :ivar relinquish_membership: Relinquish one's own membership to the file.
-    :ivar share_link: Use create_link instead.
-    :ivar create_link: Create a shared link to the file.
+    :ivar sharing.FileAction.disable_viewer_info: Disable viewer information on
+        the file.
+    :ivar sharing.FileAction.edit_contents: Change or edit contents of the file.
+    :ivar sharing.FileAction.enable_viewer_info: Enable viewer information on
+        the file.
+    :ivar sharing.FileAction.invite_viewer: Add a member with view permissions.
+    :ivar sharing.FileAction.invite_viewer_no_comment: Add a member with view
+        permissions but no comment permissions.
+    :ivar sharing.FileAction.invite_editor: Add a member with edit permissions.
+    :ivar sharing.FileAction.unshare: Stop sharing this file.
+    :ivar sharing.FileAction.relinquish_membership: Relinquish one's own
+        membership to the file.
+    :ivar sharing.FileAction.share_link: Use create_link instead.
+    :ivar sharing.FileAction.create_link: Create a shared link to the file.
     """
 
     _catch_all = 'other'
@@ -2581,11 +2616,12 @@ class FileErrorResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str file_not_found_error: File specified by id was not found.
-    :ivar str invalid_file_action_error: User does not have permission to take
-        the specified action on the file.
-    :ivar str permission_denied_error: User does not have permission to access
-        file specified by file.Id.
+    :ivar str sharing.FileErrorResult.file_not_found_error: File specified by id
+        was not found.
+    :ivar str sharing.FileErrorResult.invalid_file_action_error: User does not
+        have permission to take the specified action on the file.
+    :ivar str sharing.FileErrorResult.permission_denied_error: User does not
+        have permission to access file specified by file.Id.
     """
 
     _catch_all = 'other'
@@ -2599,7 +2635,7 @@ class FileErrorResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: FileErrorResult
+        :rtype: sharing.FileErrorResult
         """
         return cls('file_not_found_error', val)
 
@@ -2610,7 +2646,7 @@ class FileErrorResult(bb.Union):
         ``invalid_file_action_error`` tag with value ``val``.
 
         :param str val:
-        :rtype: FileErrorResult
+        :rtype: sharing.FileErrorResult
         """
         return cls('invalid_file_action_error', val)
 
@@ -2621,7 +2657,7 @@ class FileErrorResult(bb.Union):
         tag with value ``val``.
 
         :param str val:
-        :rtype: FileErrorResult
+        :rtype: sharing.FileErrorResult
         """
         return cls('permission_denied_error', val)
 
@@ -2705,20 +2741,25 @@ class SharedLinkMetadata(bb.Struct):
     """
     The metadata of a shared link.
 
-    :ivar url: URL of the shared link.
-    :ivar id: A unique identifier for the linked file.
-    :ivar name: The linked file name (including extension). This never contains
-        a slash.
-    :ivar expires: Expiration time, if set. By default the link won't expire.
-    :ivar path_lower: The lowercased full path in the user's Dropbox. This
-        always starts with a slash. This field will only be present only if the
-        linked file is in the authenticated user's  dropbox.
-    :ivar link_permissions: The link's access permissions.
-    :ivar team_member_info: The team membership information of the link's owner.
-        This field will only be present  if the link's owner is a team member.
-    :ivar content_owner_team_info: The team information of the content's owner.
-        This field will only be present if the content's owner is a team member
-        and the content's owner team is different from the link's owner team.
+    :ivar sharing.SharedLinkMetadata.url: URL of the shared link.
+    :ivar sharing.SharedLinkMetadata.id: A unique identifier for the linked
+        file.
+    :ivar sharing.SharedLinkMetadata.name: The linked file name (including
+        extension). This never contains a slash.
+    :ivar sharing.SharedLinkMetadata.expires: Expiration time, if set. By
+        default the link won't expire.
+    :ivar sharing.SharedLinkMetadata.path_lower: The lowercased full path in the
+        user's Dropbox. This always starts with a slash. This field will only be
+        present only if the linked file is in the authenticated user's  dropbox.
+    :ivar sharing.SharedLinkMetadata.link_permissions: The link's access
+        permissions.
+    :ivar sharing.SharedLinkMetadata.team_member_info: The team membership
+        information of the link's owner.  This field will only be present  if
+        the link's owner is a team member.
+    :ivar sharing.SharedLinkMetadata.content_owner_team_info: The team
+        information of the content's owner. This field will only be present if
+        the content's owner is a team member and the content's owner team is
+        different from the link's owner team.
     """
 
     __slots__ = [
@@ -2915,7 +2956,7 @@ class SharedLinkMetadata(bb.Struct):
         """
         The link's access permissions.
 
-        :rtype: LinkPermissions
+        :rtype: sharing.LinkPermissions
         """
         if self._link_permissions_present:
             return self._link_permissions_value
@@ -2939,7 +2980,7 @@ class SharedLinkMetadata(bb.Struct):
         The team membership information of the link's owner.  This field will
         only be present  if the link's owner is a team member.
 
-        :rtype: TeamMemberInfo
+        :rtype: sharing.TeamMemberInfo
         """
         if self._team_member_info_present:
             return self._team_member_info_value
@@ -3009,16 +3050,18 @@ class FileLinkMetadata(SharedLinkMetadata):
     """
     The metadata of a file shared link.
 
-    :ivar client_modified: The modification time set by the desktop client when
-        the file was added to Dropbox. Since this time is not verified (the
-        Dropbox server stores whatever the desktop client sends up), this should
-        only be used for display purposes (such as sorting) and not, for
-        example, to determine if a file has changed or not.
-    :ivar server_modified: The last time the file was modified on Dropbox.
-    :ivar rev: A unique identifier for the current revision of a file. This
-        field is the same rev as elsewhere in the API and can be used to detect
-        changes and avoid conflicts.
-    :ivar size: The file size in bytes.
+    :ivar sharing.FileLinkMetadata.client_modified: The modification time set by
+        the desktop client when the file was added to Dropbox. Since this time
+        is not verified (the Dropbox server stores whatever the desktop client
+        sends up), this should only be used for display purposes (such as
+        sorting) and not, for example, to determine if a file has changed or
+        not.
+    :ivar sharing.FileLinkMetadata.server_modified: The last time the file was
+        modified on Dropbox.
+    :ivar sharing.FileLinkMetadata.rev: A unique identifier for the current
+        revision of a file. This field is the same rev as elsewhere in the API
+        and can be used to detect changes and avoid conflicts.
+    :ivar sharing.FileLinkMetadata.size: The file size in bytes.
     """
 
     __slots__ = [
@@ -3197,12 +3240,14 @@ class FileMemberActionError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_member: Specified member was not found.
-    :ivar no_permission: User does not have permission to perform this action on
-        this member.
-    :ivar SharingFileAccessError access_error: Specified file was invalid or
-        user does not have access.
-    :ivar MemberAccessLevelResult no_explicit_access: The action cannot be
+    :ivar sharing.FileMemberActionError.invalid_member: Specified member was not
+        found.
+    :ivar sharing.FileMemberActionError.no_permission: User does not have
+        permission to perform this action on this member.
+    :ivar SharingFileAccessError sharing.FileMemberActionError.access_error:
+        Specified file was invalid or user does not have access.
+    :ivar MemberAccessLevelResult
+        sharing.FileMemberActionError.no_explicit_access: The action cannot be
         completed because the target member does not have explicit access to the
         file. The return value is the access that the member has to the file
         from a parent folder.
@@ -3222,8 +3267,8 @@ class FileMemberActionError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: FileMemberActionError
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.FileMemberActionError
         """
         return cls('access_error', val)
 
@@ -3233,8 +3278,8 @@ class FileMemberActionError(bb.Union):
         Create an instance of this class set to the ``no_explicit_access`` tag
         with value ``val``.
 
-        :param MemberAccessLevelResult val:
-        :rtype: FileMemberActionError
+        :param sharing.MemberAccessLevelResult val:
+        :rtype: sharing.FileMemberActionError
         """
         return cls('no_explicit_access', val)
 
@@ -3284,7 +3329,7 @@ class FileMemberActionError(bb.Union):
 
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -3298,7 +3343,7 @@ class FileMemberActionError(bb.Union):
 
         Only call this if :meth:`is_no_explicit_access` is true.
 
-        :rtype: MemberAccessLevelResult
+        :rtype: sharing.MemberAccessLevelResult
         """
         if not self.is_no_explicit_access():
             raise AttributeError("tag 'no_explicit_access' not set")
@@ -3318,11 +3363,13 @@ class FileMemberActionIndividualResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar Optional[AccessLevel] success: Member was successfully removed from
-        this file. If AccessLevel is given, the member still has access via a
-        parent shared folder.
-    :ivar FileMemberActionError member_error: User was not able to perform this
-        action.
+    :ivar Optional[sharing.AccessLevel]
+        sharing.FileMemberActionIndividualResult.success: Member was
+        successfully removed from this file. If AccessLevel is given, the member
+        still has access via a parent shared folder.
+    :ivar FileMemberActionError
+        sharing.FileMemberActionIndividualResult.member_error: User was not able
+        to perform this action.
     """
 
     _catch_all = None
@@ -3333,8 +3380,8 @@ class FileMemberActionIndividualResult(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param AccessLevel val:
-        :rtype: FileMemberActionIndividualResult
+        :param sharing.AccessLevel val:
+        :rtype: sharing.FileMemberActionIndividualResult
         """
         return cls('success', val)
 
@@ -3344,8 +3391,8 @@ class FileMemberActionIndividualResult(bb.Union):
         Create an instance of this class set to the ``member_error`` tag with
         value ``val``.
 
-        :param FileMemberActionError val:
-        :rtype: FileMemberActionIndividualResult
+        :param sharing.FileMemberActionError val:
+        :rtype: sharing.FileMemberActionIndividualResult
         """
         return cls('member_error', val)
 
@@ -3372,7 +3419,7 @@ class FileMemberActionIndividualResult(bb.Union):
 
         Only call this if :meth:`is_success` is true.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -3384,7 +3431,7 @@ class FileMemberActionIndividualResult(bb.Union):
 
         Only call this if :meth:`is_member_error` is true.
 
-        :rtype: FileMemberActionError
+        :rtype: sharing.FileMemberActionError
         """
         if not self.is_member_error():
             raise AttributeError("tag 'member_error' not set")
@@ -3404,8 +3451,9 @@ class FileMemberActionResult(bb.Struct):
     :meth:`dropbox.dropbox.Dropbox.sharing_add_file_member` or
     :meth:`dropbox.dropbox.Dropbox.sharing_change_file_member_access`.
 
-    :ivar member: One of specified input members.
-    :ivar result: The outcome of the action on this member.
+    :ivar sharing.FileMemberActionResult.member: One of specified input members.
+    :ivar sharing.FileMemberActionResult.result: The outcome of the action on
+        this member.
     """
 
     __slots__ = [
@@ -3434,7 +3482,7 @@ class FileMemberActionResult(bb.Struct):
         """
         One of specified input members.
 
-        :rtype: MemberSelector
+        :rtype: sharing.MemberSelector
         """
         if self._member_present:
             return self._member_value
@@ -3457,7 +3505,7 @@ class FileMemberActionResult(bb.Struct):
         """
         The outcome of the action on this member.
 
-        :rtype: FileMemberActionIndividualResult
+        :rtype: sharing.FileMemberActionIndividualResult
         """
         if self._result_present:
             return self._result_value
@@ -3492,10 +3540,11 @@ class FileMemberRemoveActionResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar MemberAccessLevelResult success: Member was successfully removed from
-        this file.
-    :ivar FileMemberActionError member_error: User was not able to remove this
-        member.
+    :ivar MemberAccessLevelResult sharing.FileMemberRemoveActionResult.success:
+        Member was successfully removed from this file.
+    :ivar FileMemberActionError
+        sharing.FileMemberRemoveActionResult.member_error: User was not able to
+        remove this member.
     """
 
     _catch_all = 'other'
@@ -3508,8 +3557,8 @@ class FileMemberRemoveActionResult(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param MemberAccessLevelResult val:
-        :rtype: FileMemberRemoveActionResult
+        :param sharing.MemberAccessLevelResult val:
+        :rtype: sharing.FileMemberRemoveActionResult
         """
         return cls('success', val)
 
@@ -3519,8 +3568,8 @@ class FileMemberRemoveActionResult(bb.Union):
         Create an instance of this class set to the ``member_error`` tag with
         value ``val``.
 
-        :param FileMemberActionError val:
-        :rtype: FileMemberRemoveActionResult
+        :param sharing.FileMemberActionError val:
+        :rtype: sharing.FileMemberRemoveActionResult
         """
         return cls('member_error', val)
 
@@ -3554,7 +3603,7 @@ class FileMemberRemoveActionResult(bb.Union):
 
         Only call this if :meth:`is_success` is true.
 
-        :rtype: MemberAccessLevelResult
+        :rtype: sharing.MemberAccessLevelResult
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -3566,7 +3615,7 @@ class FileMemberRemoveActionResult(bb.Union):
 
         Only call this if :meth:`is_member_error` is true.
 
-        :rtype: FileMemberActionError
+        :rtype: sharing.FileMemberActionError
         """
         if not self.is_member_error():
             raise AttributeError("tag 'member_error' not set")
@@ -3584,10 +3633,12 @@ class FilePermission(bb.Struct):
     """
     Whether the user is allowed to take the sharing action on the file.
 
-    :ivar action: The action that the user may wish to take on the file.
-    :ivar allow: True if the user is allowed to take the action.
-    :ivar reason: The reason why the user is denied the permission. Not present
-        if the action is allowed.
+    :ivar sharing.FilePermission.action: The action that the user may wish to
+        take on the file.
+    :ivar sharing.FilePermission.allow: True if the user is allowed to take the
+        action.
+    :ivar sharing.FilePermission.reason: The reason why the user is denied the
+        permission. Not present if the action is allowed.
     """
 
     __slots__ = [
@@ -3623,7 +3674,7 @@ class FilePermission(bb.Struct):
         """
         The action that the user may wish to take on the file.
 
-        :rtype: FileAction
+        :rtype: sharing.FileAction
         """
         if self._action_present:
             return self._action_value
@@ -3670,7 +3721,7 @@ class FilePermission(bb.Struct):
         The reason why the user is denied the permission. Not present if the
         action is allowed.
 
-        :rtype: PermissionDeniedReason
+        :rtype: sharing.PermissionDeniedReason
         """
         if self._reason_present:
             return self._reason_value
@@ -3711,26 +3762,30 @@ class FolderAction(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar change_options: Change folder options, such as who can be invited to
-        join the folder.
-    :ivar disable_viewer_info: Disable viewer information for this folder.
-    :ivar edit_contents: Change or edit contents of the folder.
-    :ivar enable_viewer_info: Enable viewer information on the folder.
-    :ivar invite_editor: Invite a user or group to join the folder with read and
-        write permission.
-    :ivar invite_viewer: Invite a user or group to join the folder with read
-        permission.
-    :ivar invite_viewer_no_comment: Invite a user or group to join the folder
-        with read permission but no comment permissions.
-    :ivar relinquish_membership: Relinquish one's own membership in the folder.
-    :ivar unmount: Unmount the folder.
-    :ivar unshare: Stop sharing this folder.
-    :ivar leave_a_copy: Keep a copy of the contents upon leaving or being kicked
-        from the folder.
-    :ivar share_link: Use create_link instead.
-    :ivar create_link: Create a shared link for folder.
-    :ivar set_access_inheritance: Set whether the folder inherits permissions
-        from its parent.
+    :ivar sharing.FolderAction.change_options: Change folder options, such as
+        who can be invited to join the folder.
+    :ivar sharing.FolderAction.disable_viewer_info: Disable viewer information
+        for this folder.
+    :ivar sharing.FolderAction.edit_contents: Change or edit contents of the
+        folder.
+    :ivar sharing.FolderAction.enable_viewer_info: Enable viewer information on
+        the folder.
+    :ivar sharing.FolderAction.invite_editor: Invite a user or group to join the
+        folder with read and write permission.
+    :ivar sharing.FolderAction.invite_viewer: Invite a user or group to join the
+        folder with read permission.
+    :ivar sharing.FolderAction.invite_viewer_no_comment: Invite a user or group
+        to join the folder with read permission but no comment permissions.
+    :ivar sharing.FolderAction.relinquish_membership: Relinquish one's own
+        membership in the folder.
+    :ivar sharing.FolderAction.unmount: Unmount the folder.
+    :ivar sharing.FolderAction.unshare: Stop sharing this folder.
+    :ivar sharing.FolderAction.leave_a_copy: Keep a copy of the contents upon
+        leaving or being kicked from the folder.
+    :ivar sharing.FolderAction.share_link: Use create_link instead.
+    :ivar sharing.FolderAction.create_link: Create a shared link for folder.
+    :ivar sharing.FolderAction.set_access_inheritance: Set whether the folder
+        inherits permissions from its parent.
     """
 
     _catch_all = 'other'
@@ -3942,10 +3997,13 @@ class FolderPermission(bb.Struct):
     """
     Whether the user is allowed to take the action on the shared folder.
 
-    :ivar action: The action that the user may wish to take on the folder.
-    :ivar allow: True if the user is allowed to take the action.
-    :ivar reason: The reason why the user is denied the permission. Not present
-        if the action is allowed, or if no reason is available.
+    :ivar sharing.FolderPermission.action: The action that the user may wish to
+        take on the folder.
+    :ivar sharing.FolderPermission.allow: True if the user is allowed to take
+        the action.
+    :ivar sharing.FolderPermission.reason: The reason why the user is denied the
+        permission. Not present if the action is allowed, or if no reason is
+        available.
     """
 
     __slots__ = [
@@ -3981,7 +4039,7 @@ class FolderPermission(bb.Struct):
         """
         The action that the user may wish to take on the folder.
 
-        :rtype: FolderAction
+        :rtype: sharing.FolderAction
         """
         if self._action_present:
             return self._action_value
@@ -4028,7 +4086,7 @@ class FolderPermission(bb.Struct):
         The reason why the user is denied the permission. Not present if the
         action is allowed, or if no reason is available.
 
-        :rtype: PermissionDeniedReason
+        :rtype: sharing.PermissionDeniedReason
         """
         if self._reason_present:
             return self._reason_value
@@ -4065,20 +4123,20 @@ class FolderPolicy(bb.Struct):
     """
     A set of policies governing membership and privileges for a shared folder.
 
-    :ivar member_policy: Who can be a member of this shared folder, as set on
-        the folder itself. The effective policy may differ from this value if
-        the team-wide policy is more restrictive. Present only if the folder is
-        owned by a team.
-    :ivar resolved_member_policy: Who can be a member of this shared folder,
-        taking into account both the folder and the team-wide policy. This value
-        may differ from that of member_policy if the team-wide policy is more
-        restrictive than the folder policy. Present only if the folder is owned
-        by a team.
-    :ivar acl_update_policy: Who can add and remove members from this shared
-        folder.
-    :ivar shared_link_policy: Who links can be shared with.
-    :ivar viewer_info_policy: Who can enable/disable viewer info for this shared
-        folder.
+    :ivar sharing.FolderPolicy.member_policy: Who can be a member of this shared
+        folder, as set on the folder itself. The effective policy may differ
+        from this value if the team-wide policy is more restrictive. Present
+        only if the folder is owned by a team.
+    :ivar sharing.FolderPolicy.resolved_member_policy: Who can be a member of
+        this shared folder, taking into account both the folder and the
+        team-wide policy. This value may differ from that of member_policy if
+        the team-wide policy is more restrictive than the folder policy. Present
+        only if the folder is owned by a team.
+    :ivar sharing.FolderPolicy.acl_update_policy: Who can add and remove members
+        from this shared folder.
+    :ivar sharing.FolderPolicy.shared_link_policy: Who links can be shared with.
+    :ivar sharing.FolderPolicy.viewer_info_policy: Who can enable/disable viewer
+        info for this shared folder.
     """
 
     __slots__ = [
@@ -4130,7 +4188,7 @@ class FolderPolicy(bb.Struct):
         The effective policy may differ from this value if the team-wide policy
         is more restrictive. Present only if the folder is owned by a team.
 
-        :rtype: MemberPolicy
+        :rtype: sharing.MemberPolicy
         """
         if self._member_policy_present:
             return self._member_policy_value
@@ -4159,7 +4217,7 @@ class FolderPolicy(bb.Struct):
         member_policy if the team-wide policy is more restrictive than the
         folder policy. Present only if the folder is owned by a team.
 
-        :rtype: MemberPolicy
+        :rtype: sharing.MemberPolicy
         """
         if self._resolved_member_policy_present:
             return self._resolved_member_policy_value
@@ -4185,7 +4243,7 @@ class FolderPolicy(bb.Struct):
         """
         Who can add and remove members from this shared folder.
 
-        :rtype: AclUpdatePolicy
+        :rtype: sharing.AclUpdatePolicy
         """
         if self._acl_update_policy_present:
             return self._acl_update_policy_value
@@ -4208,7 +4266,7 @@ class FolderPolicy(bb.Struct):
         """
         Who links can be shared with.
 
-        :rtype: SharedLinkPolicy
+        :rtype: sharing.SharedLinkPolicy
         """
         if self._shared_link_policy_present:
             return self._shared_link_policy_value
@@ -4231,7 +4289,7 @@ class FolderPolicy(bb.Struct):
         """
         Who can enable/disable viewer info for this shared folder.
 
-        :rtype: ViewerInfoPolicy
+        :rtype: sharing.ViewerInfoPolicy
         """
         if self._viewer_info_policy_present:
             return self._viewer_info_policy_value
@@ -4270,11 +4328,11 @@ class GetFileMetadataArg(bb.Struct):
     """
     Arguments of :meth:`dropbox.dropbox.Dropbox.sharing_get_file_metadata`.
 
-    :ivar file: The file to query.
-    :ivar actions: A list of `FileAction`s corresponding to `FilePermission`s
-        that should appear in the  response's ``SharedFileMetadata.permissions``
-        field describing the actions the  authenticated user can perform on the
-        file.
+    :ivar sharing.GetFileMetadataArg.file: The file to query.
+    :ivar sharing.GetFileMetadataArg.actions: A list of `FileAction`s
+        corresponding to `FilePermission`s that should appear in the  response's
+        ``SharedFileMetadata.permissions`` field describing the actions the
+        authenticated user can perform on the file.
     """
 
     __slots__ = [
@@ -4328,7 +4386,7 @@ class GetFileMetadataArg(bb.Struct):
         appear in the  response's ``SharedFileMetadata.permissions`` field
         describing the actions the  authenticated user can perform on the file.
 
-        :rtype: list of [FileAction]
+        :rtype: list of [sharing.FileAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -4365,11 +4423,11 @@ class GetFileMetadataBatchArg(bb.Struct):
     Arguments of
     :meth:`dropbox.dropbox.Dropbox.sharing_get_file_metadata_batch`.
 
-    :ivar files: The files to query.
-    :ivar actions: A list of `FileAction`s corresponding to `FilePermission`s
-        that should appear in the  response's ``SharedFileMetadata.permissions``
-        field describing the actions the  authenticated user can perform on the
-        file.
+    :ivar sharing.GetFileMetadataBatchArg.files: The files to query.
+    :ivar sharing.GetFileMetadataBatchArg.actions: A list of `FileAction`s
+        corresponding to `FilePermission`s that should appear in the  response's
+        ``SharedFileMetadata.permissions`` field describing the actions the
+        authenticated user can perform on the file.
     """
 
     __slots__ = [
@@ -4423,7 +4481,7 @@ class GetFileMetadataBatchArg(bb.Struct):
         appear in the  response's ``SharedFileMetadata.permissions`` field
         describing the actions the  authenticated user can perform on the file.
 
-        :rtype: list of [FileAction]
+        :rtype: list of [sharing.FileAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -4460,9 +4518,10 @@ class GetFileMetadataBatchResult(bb.Struct):
     Per file results of
     :meth:`dropbox.dropbox.Dropbox.sharing_get_file_metadata_batch`.
 
-    :ivar file: This is the input file identifier corresponding to one of
-        ``GetFileMetadataBatchArg.files``.
-    :ivar result: The result for this particular file.
+    :ivar sharing.GetFileMetadataBatchResult.file: This is the input file
+        identifier corresponding to one of ``GetFileMetadataBatchArg.files``.
+    :ivar sharing.GetFileMetadataBatchResult.result: The result for this
+        particular file.
     """
 
     __slots__ = [
@@ -4515,7 +4574,7 @@ class GetFileMetadataBatchResult(bb.Struct):
         """
         The result for this particular file.
 
-        :rtype: GetFileMetadataIndividualResult
+        :rtype: sharing.GetFileMetadataIndividualResult
         """
         if self._result_present:
             return self._result_value
@@ -4563,8 +4622,8 @@ class GetFileMetadataError(bb.Union):
         Create an instance of this class set to the ``user_error`` tag with
         value ``val``.
 
-        :param SharingUserError val:
-        :rtype: GetFileMetadataError
+        :param sharing.SharingUserError val:
+        :rtype: sharing.GetFileMetadataError
         """
         return cls('user_error', val)
 
@@ -4574,8 +4633,8 @@ class GetFileMetadataError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: GetFileMetadataError
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.GetFileMetadataError
         """
         return cls('access_error', val)
 
@@ -4607,7 +4666,7 @@ class GetFileMetadataError(bb.Union):
         """
         Only call this if :meth:`is_user_error` is true.
 
-        :rtype: SharingUserError
+        :rtype: sharing.SharingUserError
         """
         if not self.is_user_error():
             raise AttributeError("tag 'user_error' not set")
@@ -4617,7 +4676,7 @@ class GetFileMetadataError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -4637,10 +4696,11 @@ class GetFileMetadataIndividualResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SharedFileMetadata metadata: The result for this file if it was
-        successful.
-    :ivar SharingFileAccessError access_error: The result for this file if it
-        was an error.
+    :ivar SharedFileMetadata sharing.GetFileMetadataIndividualResult.metadata:
+        The result for this file if it was successful.
+    :ivar SharingFileAccessError
+        sharing.GetFileMetadataIndividualResult.access_error: The result for
+        this file if it was an error.
     """
 
     _catch_all = 'other'
@@ -4653,8 +4713,8 @@ class GetFileMetadataIndividualResult(bb.Union):
         Create an instance of this class set to the ``metadata`` tag with value
         ``val``.
 
-        :param SharedFileMetadata val:
-        :rtype: GetFileMetadataIndividualResult
+        :param sharing.SharedFileMetadata val:
+        :rtype: sharing.GetFileMetadataIndividualResult
         """
         return cls('metadata', val)
 
@@ -4664,8 +4724,8 @@ class GetFileMetadataIndividualResult(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: GetFileMetadataIndividualResult
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.GetFileMetadataIndividualResult
         """
         return cls('access_error', val)
 
@@ -4699,7 +4759,7 @@ class GetFileMetadataIndividualResult(bb.Union):
 
         Only call this if :meth:`is_metadata` is true.
 
-        :rtype: SharedFileMetadata
+        :rtype: sharing.SharedFileMetadata
         """
         if not self.is_metadata():
             raise AttributeError("tag 'metadata' not set")
@@ -4711,7 +4771,7 @@ class GetFileMetadataIndividualResult(bb.Union):
 
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -4727,11 +4787,12 @@ GetFileMetadataIndividualResult_validator = bv.Union(GetFileMetadataIndividualRe
 
 class GetMetadataArgs(bb.Struct):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar actions: A list of `FolderAction`s corresponding to
-        `FolderPermission`s that should appear in the  response's
-        ``SharedFolderMetadata.permissions`` field describing the actions the
-        authenticated user can perform on the folder.
+    :ivar sharing.GetMetadataArgs.shared_folder_id: The ID for the shared
+        folder.
+    :ivar sharing.GetMetadataArgs.actions: A list of `FolderAction`s
+        corresponding to `FolderPermission`s that should appear in the
+        response's ``SharedFolderMetadata.permissions`` field describing the
+        actions the  authenticated user can perform on the folder.
     """
 
     __slots__ = [
@@ -4786,7 +4847,7 @@ class GetMetadataArgs(bb.Struct):
         field describing the actions the  authenticated user can perform on the
         folder.
 
-        :rtype: list of [FolderAction]
+        :rtype: list of [sharing.FolderAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -4824,10 +4885,12 @@ class SharedLinkError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar shared_link_not_found: The shared link wasn't found.
-    :ivar shared_link_access_denied: The caller is not allowed to access this
-        shared link.
-    :ivar unsupported_link_type: This type of link is not supported.
+    :ivar sharing.SharedLinkError.shared_link_not_found: The shared link wasn't
+        found.
+    :ivar sharing.SharedLinkError.shared_link_access_denied: The caller is not
+        allowed to access this shared link.
+    :ivar sharing.SharedLinkError.unsupported_link_type: This type of link is
+        not supported.
     """
 
     _catch_all = 'other'
@@ -4886,8 +4949,8 @@ class GetSharedLinkFileError(SharedLinkError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar shared_link_is_directory: Directories cannot be retrieved by this
-        endpoint.
+    :ivar sharing.GetSharedLinkFileError.shared_link_is_directory: Directories
+        cannot be retrieved by this endpoint.
     """
 
     # Attribute is overwritten below the class definition
@@ -4911,12 +4974,13 @@ GetSharedLinkFileError_validator = bv.Union(GetSharedLinkFileError)
 
 class GetSharedLinkMetadataArg(bb.Struct):
     """
-    :ivar url: URL of the shared link.
-    :ivar path: If the shared link is to a folder, this parameter can be used to
-        retrieve the metadata for a specific file or sub-folder in this folder.
-        A relative path should be used.
-    :ivar link_password: If the shared link has a password, this parameter can
-        be used.
+    :ivar sharing.GetSharedLinkMetadataArg.url: URL of the shared link.
+    :ivar sharing.GetSharedLinkMetadataArg.path: If the shared link is to a
+        folder, this parameter can be used to retrieve the metadata for a
+        specific file or sub-folder in this folder. A relative path should be
+        used.
+    :ivar sharing.GetSharedLinkMetadataArg.link_password: If the shared link has
+        a password, this parameter can be used.
     """
 
     __slots__ = [
@@ -5038,8 +5102,8 @@ GetSharedLinkMetadataArg_validator = bv.Struct(GetSharedLinkMetadataArg)
 
 class GetSharedLinksArg(bb.Struct):
     """
-    :ivar path: See :meth:`dropbox.dropbox.Dropbox.sharing_get_shared_links`
-        description.
+    :ivar sharing.GetSharedLinksArg.path: See
+        :meth:`dropbox.dropbox.Dropbox.sharing_get_shared_links` description.
     """
 
     __slots__ = [
@@ -5111,7 +5175,7 @@ class GetSharedLinksError(bb.Union):
         ``val``.
 
         :param Optional[str] val:
-        :rtype: GetSharedLinksError
+        :rtype: sharing.GetSharedLinksError
         """
         return cls('path', val)
 
@@ -5151,7 +5215,8 @@ GetSharedLinksError_validator = bv.Union(GetSharedLinksError)
 
 class GetSharedLinksResult(bb.Struct):
     """
-    :ivar links: Shared links applicable to the path argument.
+    :ivar sharing.GetSharedLinksResult.links: Shared links applicable to the
+        path argument.
     """
 
     __slots__ = [
@@ -5173,7 +5238,7 @@ class GetSharedLinksResult(bb.Struct):
         """
         Shared links applicable to the path argument.
 
-        :rtype: list of [LinkMetadata]
+        :rtype: list of [sharing.LinkMetadata]
         """
         if self._links_present:
             return self._links_value
@@ -5206,10 +5271,13 @@ class GroupInfo(team_common.GroupSummary):
     The information about a group. Groups is a way to manage a list of users
     who need same access permission to the shared folder.
 
-    :ivar group_type: The type of group.
-    :ivar is_member: If the current user is a member of the group.
-    :ivar is_owner: If the current user is an owner of the group.
-    :ivar same_team: If the group is owned by the current user's team.
+    :ivar sharing.GroupInfo.group_type: The type of group.
+    :ivar sharing.GroupInfo.is_member: If the current user is a member of the
+        group.
+    :ivar sharing.GroupInfo.is_owner: If the current user is an owner of the
+        group.
+    :ivar sharing.GroupInfo.same_team: If the group is owned by the current
+        user's team.
     """
 
     __slots__ = [
@@ -5371,13 +5439,15 @@ class MembershipInfo(bb.Struct):
     """
     The information about a member of the shared content.
 
-    :ivar access_type: The access type for this member. It contains inherited
-        access type from parent folder, and acquired access type from this
-        folder.
-    :ivar permissions: The permissions that requesting user has on this member.
-        The set of permissions corresponds to the MemberActions in the request.
-    :ivar initials: Never set.
-    :ivar is_inherited: True if the member has access from a parent folder.
+    :ivar sharing.MembershipInfo.access_type: The access type for this member.
+        It contains inherited access type from parent folder, and acquired
+        access type from this folder.
+    :ivar sharing.MembershipInfo.permissions: The permissions that requesting
+        user has on this member. The set of permissions corresponds to the
+        MemberActions in the request.
+    :ivar sharing.MembershipInfo.initials: Never set.
+    :ivar sharing.MembershipInfo.is_inherited: True if the member has access
+        from a parent folder.
     """
 
     __slots__ = [
@@ -5421,7 +5491,7 @@ class MembershipInfo(bb.Struct):
         The access type for this member. It contains inherited access type from
         parent folder, and acquired access type from this folder.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_type_present:
             return self._access_type_value
@@ -5445,7 +5515,7 @@ class MembershipInfo(bb.Struct):
         The permissions that requesting user has on this member. The set of
         permissions corresponds to the MemberActions in the request.
 
-        :rtype: list of [MemberPermission]
+        :rtype: list of [sharing.MemberPermission]
         """
         if self._permissions_present:
             return self._permissions_value
@@ -5532,7 +5602,8 @@ class GroupMembershipInfo(MembershipInfo):
     """
     The information about a group member of the shared content.
 
-    :ivar group: The information about the membership group.
+    :ivar sharing.GroupMembershipInfo.group: The information about the
+        membership group.
     """
 
     __slots__ = [
@@ -5562,7 +5633,7 @@ class GroupMembershipInfo(MembershipInfo):
         """
         The information about the membership group.
 
-        :rtype: GroupInfo
+        :rtype: sharing.GroupInfo
         """
         if self._group_present:
             return self._group_value
@@ -5596,11 +5667,11 @@ GroupMembershipInfo_validator = bv.Struct(GroupMembershipInfo)
 
 class InsufficientPlan(bb.Struct):
     """
-    :ivar message: A message to tell the user to upgrade in order to support
-        expected action.
-    :ivar upsell_url: A URL to send the user to in order to obtain the account
-        type they need, e.g. upgrading. Absent if there is no action the user
-        can take to upgrade.
+    :ivar sharing.InsufficientPlan.message: A message to tell the user to
+        upgrade in order to support expected action.
+    :ivar sharing.InsufficientPlan.upsell_url: A URL to send the user to in
+        order to obtain the account type they need, e.g. upgrading. Absent if
+        there is no action the user can take to upgrade.
     """
 
     __slots__ = [
@@ -5689,11 +5760,12 @@ InsufficientPlan_validator = bv.Struct(InsufficientPlan)
 
 class InsufficientQuotaAmounts(bb.Struct):
     """
-    :ivar space_needed: The amount of space needed to add the item (the size of
-        the item).
-    :ivar space_shortage: The amount of extra space needed to add the item.
-    :ivar space_left: The amount of space left in the user's Dropbox, less than
-        space_needed.
+    :ivar sharing.InsufficientQuotaAmounts.space_needed: The amount of space
+        needed to add the item (the size of the item).
+    :ivar sharing.InsufficientQuotaAmounts.space_shortage: The amount of extra
+        space needed to add the item.
+    :ivar sharing.InsufficientQuotaAmounts.space_left: The amount of space left
+        in the user's Dropbox, less than space_needed.
     """
 
     __slots__ = [
@@ -5813,7 +5885,7 @@ class InviteeInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str email: E-mail address of invited user.
+    :ivar str sharing.InviteeInfo.email: E-mail address of invited user.
     """
 
     _catch_all = 'other'
@@ -5827,7 +5899,7 @@ class InviteeInfo(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: InviteeInfo
+        :rtype: sharing.InviteeInfo
         """
         return cls('email', val)
 
@@ -5871,8 +5943,9 @@ class InviteeMembershipInfo(MembershipInfo):
     """
     Information about an invited member of a shared content.
 
-    :ivar invitee: Recipient of the invitation.
-    :ivar user: The user this invitation is tied to, if available.
+    :ivar sharing.InviteeMembershipInfo.invitee: Recipient of the invitation.
+    :ivar sharing.InviteeMembershipInfo.user: The user this invitation is tied
+        to, if available.
     """
 
     __slots__ = [
@@ -5909,7 +5982,7 @@ class InviteeMembershipInfo(MembershipInfo):
         """
         Recipient of the invitation.
 
-        :rtype: InviteeInfo
+        :rtype: sharing.InviteeInfo
         """
         if self._invitee_present:
             return self._invitee_value
@@ -5932,7 +6005,7 @@ class InviteeMembershipInfo(MembershipInfo):
         """
         The user this invitation is tied to, if available.
 
-        :rtype: UserInfo
+        :rtype: sharing.UserInfo
         """
         if self._user_present:
             return self._user_value
@@ -5978,14 +6051,15 @@ class JobError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UnshareFolderError unshare_folder_error: Error occurred while
-        performing :meth:`dropbox.dropbox.Dropbox.sharing_unshare_folder`
-        action.
-    :ivar RemoveFolderMemberError remove_folder_member_error: Error occurred
-        while performing
-        :meth:`dropbox.dropbox.Dropbox.sharing_remove_folder_member` action.
-    :ivar RelinquishFolderMembershipError relinquish_folder_membership_error:
+    :ivar UnshareFolderError sharing.JobError.unshare_folder_error: Error
+        occurred while performing
+        :meth:`dropbox.dropbox.Dropbox.sharing_unshare_folder` action.
+    :ivar RemoveFolderMemberError sharing.JobError.remove_folder_member_error:
         Error occurred while performing
+        :meth:`dropbox.dropbox.Dropbox.sharing_remove_folder_member` action.
+    :ivar RelinquishFolderMembershipError
+        sharing.JobError.relinquish_folder_membership_error: Error occurred
+        while performing
         :meth:`dropbox.dropbox.Dropbox.sharing_relinquish_folder_membership`
         action.
     """
@@ -6000,8 +6074,8 @@ class JobError(bb.Union):
         Create an instance of this class set to the ``unshare_folder_error`` tag
         with value ``val``.
 
-        :param UnshareFolderError val:
-        :rtype: JobError
+        :param sharing.UnshareFolderError val:
+        :rtype: sharing.JobError
         """
         return cls('unshare_folder_error', val)
 
@@ -6011,8 +6085,8 @@ class JobError(bb.Union):
         Create an instance of this class set to the
         ``remove_folder_member_error`` tag with value ``val``.
 
-        :param RemoveFolderMemberError val:
-        :rtype: JobError
+        :param sharing.RemoveFolderMemberError val:
+        :rtype: sharing.JobError
         """
         return cls('remove_folder_member_error', val)
 
@@ -6022,8 +6096,8 @@ class JobError(bb.Union):
         Create an instance of this class set to the
         ``relinquish_folder_membership_error`` tag with value ``val``.
 
-        :param RelinquishFolderMembershipError val:
-        :rtype: JobError
+        :param sharing.RelinquishFolderMembershipError val:
+        :rtype: sharing.JobError
         """
         return cls('relinquish_folder_membership_error', val)
 
@@ -6066,7 +6140,7 @@ class JobError(bb.Union):
 
         Only call this if :meth:`is_unshare_folder_error` is true.
 
-        :rtype: UnshareFolderError
+        :rtype: sharing.UnshareFolderError
         """
         if not self.is_unshare_folder_error():
             raise AttributeError("tag 'unshare_folder_error' not set")
@@ -6079,7 +6153,7 @@ class JobError(bb.Union):
 
         Only call this if :meth:`is_remove_folder_member_error` is true.
 
-        :rtype: RemoveFolderMemberError
+        :rtype: sharing.RemoveFolderMemberError
         """
         if not self.is_remove_folder_member_error():
             raise AttributeError("tag 'remove_folder_member_error' not set")
@@ -6093,7 +6167,7 @@ class JobError(bb.Union):
 
         Only call this if :meth:`is_relinquish_folder_membership_error` is true.
 
-        :rtype: RelinquishFolderMembershipError
+        :rtype: sharing.RelinquishFolderMembershipError
         """
         if not self.is_relinquish_folder_membership_error():
             raise AttributeError("tag 'relinquish_folder_membership_error' not set")
@@ -6113,8 +6187,9 @@ class JobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar complete: The asynchronous job has finished.
-    :ivar JobError failed: The asynchronous job returned an error.
+    :ivar sharing.JobStatus.complete: The asynchronous job has finished.
+    :ivar JobError sharing.JobStatus.failed: The asynchronous job returned an
+        error.
     """
 
     # Attribute is overwritten below the class definition
@@ -6126,8 +6201,8 @@ class JobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param JobError val:
-        :rtype: JobStatus
+        :param sharing.JobError val:
+        :rtype: sharing.JobStatus
         """
         return cls('failed', val)
 
@@ -6153,7 +6228,7 @@ class JobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: JobError
+        :rtype: sharing.JobError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
@@ -6175,12 +6250,15 @@ class LinkAction(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar change_access_level: Change the access level of the link.
-    :ivar change_audience: Change the audience of the link.
-    :ivar remove_expiry: Remove the expiry date of the link.
-    :ivar remove_password: Remove the password of the link.
-    :ivar set_expiry: Create or modify the expiry date of the link.
-    :ivar set_password: Create or modify the password of the link.
+    :ivar sharing.LinkAction.change_access_level: Change the access level of the
+        link.
+    :ivar sharing.LinkAction.change_audience: Change the audience of the link.
+    :ivar sharing.LinkAction.remove_expiry: Remove the expiry date of the link.
+    :ivar sharing.LinkAction.remove_password: Remove the password of the link.
+    :ivar sharing.LinkAction.set_expiry: Create or modify the expiry date of the
+        link.
+    :ivar sharing.LinkAction.set_password: Create or modify the password of the
+        link.
     """
 
     _catch_all = 'other'
@@ -6269,13 +6347,14 @@ class LinkAudience(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar public: Link is accessible by anyone.
-    :ivar team: Link is accessible only by team members.
-    :ivar no_one: The link can be used by no one. The link merely points the
-        user to the content, and does not grant additional rights to the user.
-        Members of the content who use this link can only access the content
-        with their pre-existing access rights.
-    :ivar members: Link is accessible only by members of the content.
+    :ivar sharing.LinkAudience.public: Link is accessible by anyone.
+    :ivar sharing.LinkAudience.team: Link is accessible only by team members.
+    :ivar sharing.LinkAudience.no_one: The link can be used by no one. The link
+        merely points the user to the content, and does not grant additional
+        rights to the user. Members of the content who use this link can only
+        access the content with their pre-existing access rights.
+    :ivar sharing.LinkAudience.members: Link is accessible only by members of
+        the content.
     """
 
     _catch_all = 'other'
@@ -6344,9 +6423,10 @@ class LinkExpiry(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar remove_expiry: Remove the currently set expiry for the link.
-    :ivar datetime.datetime set_expiry: Set a new expiry or change an existing
-        expiry.
+    :ivar sharing.LinkExpiry.remove_expiry: Remove the currently set expiry for
+        the link.
+    :ivar datetime.datetime sharing.LinkExpiry.set_expiry: Set a new expiry or
+        change an existing expiry.
     """
 
     _catch_all = 'other'
@@ -6362,7 +6442,7 @@ class LinkExpiry(bb.Union):
         value ``val``.
 
         :param datetime.datetime val:
-        :rtype: LinkExpiry
+        :rtype: sharing.LinkExpiry
         """
         return cls('set_expiry', val)
 
@@ -6416,8 +6496,10 @@ class LinkPassword(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar remove_password: Remove the currently set password for the link.
-    :ivar str set_password: Set a new password or change an existing password.
+    :ivar sharing.LinkPassword.remove_password: Remove the currently set
+        password for the link.
+    :ivar str sharing.LinkPassword.set_password: Set a new password or change an
+        existing password.
     """
 
     _catch_all = 'other'
@@ -6433,7 +6515,7 @@ class LinkPassword(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: LinkPassword
+        :rtype: sharing.LinkPassword
         """
         return cls('set_password', val)
 
@@ -6517,7 +6599,7 @@ class LinkPermission(bb.Struct):
     @property
     def action(self):
         """
-        :rtype: LinkAction
+        :rtype: sharing.LinkAction
         """
         if self._action_present:
             return self._action_value
@@ -6559,7 +6641,7 @@ class LinkPermission(bb.Struct):
     @property
     def reason(self):
         """
-        :rtype: PermissionDeniedReason
+        :rtype: sharing.PermissionDeniedReason
         """
         if self._reason_present:
             return self._reason_value
@@ -6594,20 +6676,22 @@ LinkPermission_validator = bv.Struct(LinkPermission)
 
 class LinkPermissions(bb.Struct):
     """
-    :ivar resolved_visibility: The current visibility of the link after
-        considering the shared links policies of the the team (in case the
-        link's owner is part of a team) and the shared folder (in case the
-        linked file is part of a shared folder). This field is shown only if the
-        caller has access to this info (the link's owner always has access to
-        this data).
-    :ivar requested_visibility: The shared link's requested visibility. This can
-        be overridden by the team and shared folder policies. The final
-        visibility, after considering these policies, can be found in
-        ``resolved_visibility``. This is shown only if the caller is the link's
-        owner.
-    :ivar can_revoke: Whether the caller can revoke the shared link.
-    :ivar revoke_failure_reason: The failure reason for revoking the link. This
-        field will only be present if the ``can_revoke`` is ``False``.
+    :ivar sharing.LinkPermissions.resolved_visibility: The current visibility of
+        the link after considering the shared links policies of the the team (in
+        case the link's owner is part of a team) and the shared folder (in case
+        the linked file is part of a shared folder). This field is shown only if
+        the caller has access to this info (the link's owner always has access
+        to this data).
+    :ivar sharing.LinkPermissions.requested_visibility: The shared link's
+        requested visibility. This can be overridden by the team and shared
+        folder policies. The final visibility, after considering these policies,
+        can be found in ``resolved_visibility``. This is shown only if the
+        caller is the link's owner.
+    :ivar sharing.LinkPermissions.can_revoke: Whether the caller can revoke the
+        shared link.
+    :ivar sharing.LinkPermissions.revoke_failure_reason: The failure reason for
+        revoking the link. This field will only be present if the ``can_revoke``
+        is ``False``.
     """
 
     __slots__ = [
@@ -6654,7 +6738,7 @@ class LinkPermissions(bb.Struct):
         folder). This field is shown only if the caller has access to this info
         (the link's owner always has access to this data).
 
-        :rtype: ResolvedVisibility
+        :rtype: sharing.ResolvedVisibility
         """
         if self._resolved_visibility_present:
             return self._resolved_visibility_value
@@ -6683,7 +6767,7 @@ class LinkPermissions(bb.Struct):
         these policies, can be found in ``resolved_visibility``. This is shown
         only if the caller is the link's owner.
 
-        :rtype: RequestedVisibility
+        :rtype: sharing.RequestedVisibility
         """
         if self._requested_visibility_present:
             return self._requested_visibility_value
@@ -6733,7 +6817,7 @@ class LinkPermissions(bb.Struct):
         The failure reason for revoking the link. This field will only be
         present if the ``can_revoke`` is ``False``.
 
-        :rtype: SharedLinkAccessFailureReason
+        :rtype: sharing.SharedLinkAccessFailureReason
         """
         if self._revoke_failure_reason_present:
             return self._revoke_failure_reason_value
@@ -6771,11 +6855,12 @@ class LinkSettings(bb.Struct):
     """
     Settings that apply to a link.
 
-    :ivar access_level: The access level on the link for this file. Currently,
-        it only accepts 'viewer' and 'viewer_no_comment'.
-    :ivar audience: The type of audience on the link for this file.
-    :ivar expiry: An expiry timestamp to set on a link.
-    :ivar password: The password for the link.
+    :ivar sharing.LinkSettings.access_level: The access level on the link for
+        this file. Currently, it only accepts 'viewer' and 'viewer_no_comment'.
+    :ivar sharing.LinkSettings.audience: The type of audience on the link for
+        this file.
+    :ivar sharing.LinkSettings.expiry: An expiry timestamp to set on a link.
+    :ivar sharing.LinkSettings.password: The password for the link.
     """
 
     __slots__ = [
@@ -6819,7 +6904,7 @@ class LinkSettings(bb.Struct):
         The access level on the link for this file. Currently, it only accepts
         'viewer' and 'viewer_no_comment'.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_level_present:
             return self._access_level_value
@@ -6845,7 +6930,7 @@ class LinkSettings(bb.Struct):
         """
         The type of audience on the link for this file.
 
-        :rtype: LinkAudience
+        :rtype: sharing.LinkAudience
         """
         if self._audience_present:
             return self._audience_value
@@ -6871,7 +6956,7 @@ class LinkSettings(bb.Struct):
         """
         An expiry timestamp to set on a link.
 
-        :rtype: LinkExpiry
+        :rtype: sharing.LinkExpiry
         """
         if self._expiry_present:
             return self._expiry_value
@@ -6897,7 +6982,7 @@ class LinkSettings(bb.Struct):
         """
         The password for the link.
 
-        :rtype: LinkPassword
+        :rtype: sharing.LinkPassword
         """
         if self._password_present:
             return self._password_value
@@ -6935,12 +7020,14 @@ class ListFileMembersArg(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members`.
 
-    :ivar file: The file for which you want to see members.
-    :ivar actions: The actions for which to return permissions on a member.
-    :ivar include_inherited: Whether to include members who only have access
-        from a parent shared folder.
-    :ivar limit: Number of members to return max per query. Defaults to 100 if
-        no limit is specified.
+    :ivar sharing.ListFileMembersArg.file: The file for which you want to see
+        members.
+    :ivar sharing.ListFileMembersArg.actions: The actions for which to return
+        permissions on a member.
+    :ivar sharing.ListFileMembersArg.include_inherited: Whether to include
+        members who only have access from a parent shared folder.
+    :ivar sharing.ListFileMembersArg.limit: Number of members to return max per
+        query. Defaults to 100 if no limit is specified.
     """
 
     __slots__ = [
@@ -7006,7 +7093,7 @@ class ListFileMembersArg(bb.Struct):
         """
         The actions for which to return permissions on a member.
 
-        :rtype: list of [MemberAction]
+        :rtype: list of [sharing.MemberAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -7093,9 +7180,10 @@ class ListFileMembersBatchArg(bb.Struct):
     Arguments for
     :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
 
-    :ivar files: Files for which to return members.
-    :ivar limit: Number of members to return max per query. Defaults to 10 if no
-        limit is specified.
+    :ivar sharing.ListFileMembersBatchArg.files: Files for which to return
+        members.
+    :ivar sharing.ListFileMembersBatchArg.limit: Number of members to return max
+        per query. Defaults to 10 if no limit is specified.
     """
 
     __slots__ = [
@@ -7182,8 +7270,10 @@ class ListFileMembersBatchResult(bb.Struct):
     Per-file result for
     :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
 
-    :ivar file: This is the input file identifier, whether an ID or a path.
-    :ivar result: The result for this particular file.
+    :ivar sharing.ListFileMembersBatchResult.file: This is the input file
+        identifier, whether an ID or a path.
+    :ivar sharing.ListFileMembersBatchResult.result: The result for this
+        particular file.
     """
 
     __slots__ = [
@@ -7235,7 +7325,7 @@ class ListFileMembersBatchResult(bb.Struct):
         """
         The result for this particular file.
 
-        :rtype: ListFileMembersIndividualResult
+        :rtype: sharing.ListFileMembersIndividualResult
         """
         if self._result_present:
             return self._result_value
@@ -7269,8 +7359,8 @@ class ListFileMembersContinueArg(bb.Struct):
     Arguments for
     :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue`.
 
-    :ivar cursor: The cursor returned by your last call to
-        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members`,
+    :ivar sharing.ListFileMembersContinueArg.cursor: The cursor returned by your
+        last call to :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members`,
         :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue`, or
         :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
     """
@@ -7334,7 +7424,8 @@ class ListFileMembersContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: ``ListFileMembersContinueArg.cursor`` is invalid.
+    :ivar sharing.ListFileMembersContinueError.invalid_cursor:
+        ``ListFileMembersContinueArg.cursor`` is invalid.
     """
 
     _catch_all = 'other'
@@ -7349,8 +7440,8 @@ class ListFileMembersContinueError(bb.Union):
         Create an instance of this class set to the ``user_error`` tag with
         value ``val``.
 
-        :param SharingUserError val:
-        :rtype: ListFileMembersContinueError
+        :param sharing.SharingUserError val:
+        :rtype: sharing.ListFileMembersContinueError
         """
         return cls('user_error', val)
 
@@ -7360,8 +7451,8 @@ class ListFileMembersContinueError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: ListFileMembersContinueError
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.ListFileMembersContinueError
         """
         return cls('access_error', val)
 
@@ -7401,7 +7492,7 @@ class ListFileMembersContinueError(bb.Union):
         """
         Only call this if :meth:`is_user_error` is true.
 
-        :rtype: SharingUserError
+        :rtype: sharing.SharingUserError
         """
         if not self.is_user_error():
             raise AttributeError("tag 'user_error' not set")
@@ -7411,7 +7502,7 @@ class ListFileMembersContinueError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -7427,9 +7518,10 @@ ListFileMembersContinueError_validator = bv.Union(ListFileMembersContinueError)
 
 class ListFileMembersCountResult(bb.Struct):
     """
-    :ivar members: A list of members on this file.
-    :ivar member_count: The number of members on this file. This does not
-        include inherited members.
+    :ivar sharing.ListFileMembersCountResult.members: A list of members on this
+        file.
+    :ivar sharing.ListFileMembersCountResult.member_count: The number of members
+        on this file. This does not include inherited members.
     """
 
     __slots__ = [
@@ -7458,7 +7550,7 @@ class ListFileMembersCountResult(bb.Struct):
         """
         A list of members on this file.
 
-        :rtype: SharedFileMembers
+        :rtype: sharing.SharedFileMembers
         """
         if self._members_present:
             return self._members_value
@@ -7530,8 +7622,8 @@ class ListFileMembersError(bb.Union):
         Create an instance of this class set to the ``user_error`` tag with
         value ``val``.
 
-        :param SharingUserError val:
-        :rtype: ListFileMembersError
+        :param sharing.SharingUserError val:
+        :rtype: sharing.ListFileMembersError
         """
         return cls('user_error', val)
 
@@ -7541,8 +7633,8 @@ class ListFileMembersError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: ListFileMembersError
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.ListFileMembersError
         """
         return cls('access_error', val)
 
@@ -7574,7 +7666,7 @@ class ListFileMembersError(bb.Union):
         """
         Only call this if :meth:`is_user_error` is true.
 
-        :rtype: SharingUserError
+        :rtype: sharing.SharingUserError
         """
         if not self.is_user_error():
             raise AttributeError("tag 'user_error' not set")
@@ -7584,7 +7676,7 @@ class ListFileMembersError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -7604,10 +7696,12 @@ class ListFileMembersIndividualResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar ListFileMembersCountResult result: The results of the query for this
-        file if it was successful.
-    :ivar SharingFileAccessError access_error: The result of the query for this
-        file if it was an error.
+    :ivar ListFileMembersCountResult
+        sharing.ListFileMembersIndividualResult.result: The results of the query
+        for this file if it was successful.
+    :ivar SharingFileAccessError
+        sharing.ListFileMembersIndividualResult.access_error: The result of the
+        query for this file if it was an error.
     """
 
     _catch_all = 'other'
@@ -7620,8 +7714,8 @@ class ListFileMembersIndividualResult(bb.Union):
         Create an instance of this class set to the ``result`` tag with value
         ``val``.
 
-        :param ListFileMembersCountResult val:
-        :rtype: ListFileMembersIndividualResult
+        :param sharing.ListFileMembersCountResult val:
+        :rtype: sharing.ListFileMembersIndividualResult
         """
         return cls('result', val)
 
@@ -7631,8 +7725,8 @@ class ListFileMembersIndividualResult(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: ListFileMembersIndividualResult
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.ListFileMembersIndividualResult
         """
         return cls('access_error', val)
 
@@ -7666,7 +7760,7 @@ class ListFileMembersIndividualResult(bb.Union):
 
         Only call this if :meth:`is_result` is true.
 
-        :rtype: ListFileMembersCountResult
+        :rtype: sharing.ListFileMembersCountResult
         """
         if not self.is_result():
             raise AttributeError("tag 'result' not set")
@@ -7678,7 +7772,7 @@ class ListFileMembersIndividualResult(bb.Union):
 
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -7696,12 +7790,12 @@ class ListFilesArg(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_list_received_files`.
 
-    :ivar limit: Number of files to return max per query. Defaults to 100 if no
-        limit is specified.
-    :ivar actions: A list of `FileAction`s corresponding to `FilePermission`s
-        that should appear in the  response's ``SharedFileMetadata.permissions``
-        field describing the actions the  authenticated user can perform on the
-        file.
+    :ivar sharing.ListFilesArg.limit: Number of files to return max per query.
+        Defaults to 100 if no limit is specified.
+    :ivar sharing.ListFilesArg.actions: A list of `FileAction`s corresponding to
+        `FilePermission`s that should appear in the  response's
+        ``SharedFileMetadata.permissions`` field describing the actions the
+        authenticated user can perform on the file.
     """
 
     __slots__ = [
@@ -7756,7 +7850,7 @@ class ListFilesArg(bb.Struct):
         appear in the  response's ``SharedFileMetadata.permissions`` field
         describing the actions the  authenticated user can perform on the file.
 
-        :rtype: list of [FileAction]
+        :rtype: list of [sharing.FileAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -7793,7 +7887,8 @@ class ListFilesContinueArg(bb.Struct):
     Arguments for
     :meth:`dropbox.dropbox.Dropbox.sharing_list_received_files_continue`.
 
-    :ivar cursor: Cursor in ``ListFilesResult.cursor``.
+    :ivar sharing.ListFilesContinueArg.cursor: Cursor in
+        ``ListFilesResult.cursor``.
     """
 
     __slots__ = [
@@ -7852,8 +7947,10 @@ class ListFilesContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SharingUserError user_error: User account had a problem.
-    :ivar invalid_cursor: ``ListFilesContinueArg.cursor`` is invalid.
+    :ivar SharingUserError sharing.ListFilesContinueError.user_error: User
+        account had a problem.
+    :ivar sharing.ListFilesContinueError.invalid_cursor:
+        ``ListFilesContinueArg.cursor`` is invalid.
     """
 
     _catch_all = 'other'
@@ -7868,8 +7965,8 @@ class ListFilesContinueError(bb.Union):
         Create an instance of this class set to the ``user_error`` tag with
         value ``val``.
 
-        :param SharingUserError val:
-        :rtype: ListFilesContinueError
+        :param sharing.SharingUserError val:
+        :rtype: sharing.ListFilesContinueError
         """
         return cls('user_error', val)
 
@@ -7903,7 +8000,7 @@ class ListFilesContinueError(bb.Union):
 
         Only call this if :meth:`is_user_error` is true.
 
-        :rtype: SharingUserError
+        :rtype: sharing.SharingUserError
         """
         if not self.is_user_error():
             raise AttributeError("tag 'user_error' not set")
@@ -7922,8 +8019,10 @@ class ListFilesResult(bb.Struct):
     Success results for
     :meth:`dropbox.dropbox.Dropbox.sharing_list_received_files`.
 
-    :ivar entries: Information about the files shared with current user.
-    :ivar cursor: Cursor used to obtain additional shared files.
+    :ivar sharing.ListFilesResult.entries: Information about the files shared
+        with current user.
+    :ivar sharing.ListFilesResult.cursor: Cursor used to obtain additional
+        shared files.
     """
 
     __slots__ = [
@@ -7952,7 +8051,7 @@ class ListFilesResult(bb.Struct):
         """
         Information about the files shared with current user.
 
-        :rtype: list of [SharedFileMetadata]
+        :rtype: list of [sharing.SharedFileMetadata]
         """
         if self._entries_present:
             return self._entries_value
@@ -8009,11 +8108,12 @@ ListFilesResult_validator = bv.Struct(ListFilesResult)
 
 class ListFolderMembersCursorArg(bb.Struct):
     """
-    :ivar actions: This is a list indicating whether each returned member will
-        include a boolean value ``MemberPermission.allow`` that describes
-        whether the current user can perform the MemberAction on the member.
-    :ivar limit: The maximum number of results that include members, groups and
-        invitees to return per request.
+    :ivar sharing.ListFolderMembersCursorArg.actions: This is a list indicating
+        whether each returned member will include a boolean value
+        ``MemberPermission.allow`` that describes whether the current user can
+        perform the MemberAction on the member.
+    :ivar sharing.ListFolderMembersCursorArg.limit: The maximum number of
+        results that include members, groups and invitees to return per request.
     """
 
     __slots__ = [
@@ -8044,7 +8144,7 @@ class ListFolderMembersCursorArg(bb.Struct):
         boolean value ``MemberPermission.allow`` that describes whether the
         current user can perform the MemberAction on the member.
 
-        :rtype: list of [MemberAction]
+        :rtype: list of [sharing.MemberAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -8102,7 +8202,8 @@ ListFolderMembersCursorArg_validator = bv.Struct(ListFolderMembersCursorArg)
 
 class ListFolderMembersArgs(ListFolderMembersCursorArg):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
+    :ivar sharing.ListFolderMembersArgs.shared_folder_id: The ID for the shared
+        folder.
     """
 
     __slots__ = [
@@ -8160,7 +8261,8 @@ ListFolderMembersArgs_validator = bv.Struct(ListFolderMembersArgs)
 
 class ListFolderMembersContinueArg(bb.Struct):
     """
-    :ivar cursor: The cursor returned by your last call to
+    :ivar sharing.ListFolderMembersContinueArg.cursor: The cursor returned by
+        your last call to
         :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members` or
         :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members_continue`.
     """
@@ -8220,7 +8322,8 @@ class ListFolderMembersContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: ``ListFolderMembersContinueArg.cursor`` is invalid.
+    :ivar sharing.ListFolderMembersContinueError.invalid_cursor:
+        ``ListFolderMembersContinueArg.cursor`` is invalid.
     """
 
     _catch_all = 'other'
@@ -8235,8 +8338,8 @@ class ListFolderMembersContinueError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: ListFolderMembersContinueError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.ListFolderMembersContinueError
         """
         return cls('access_error', val)
 
@@ -8268,7 +8371,7 @@ class ListFolderMembersContinueError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -8284,11 +8387,12 @@ ListFolderMembersContinueError_validator = bv.Union(ListFolderMembersContinueErr
 
 class ListFoldersArgs(bb.Struct):
     """
-    :ivar limit: The maximum number of results to return per request.
-    :ivar actions: A list of `FolderAction`s corresponding to
-        `FolderPermission`s that should appear in the  response's
-        ``SharedFolderMetadata.permissions`` field describing the actions the
-        authenticated user can perform on the folder.
+    :ivar sharing.ListFoldersArgs.limit: The maximum number of results to return
+        per request.
+    :ivar sharing.ListFoldersArgs.actions: A list of `FolderAction`s
+        corresponding to `FolderPermission`s that should appear in the
+        response's ``SharedFolderMetadata.permissions`` field describing the
+        actions the  authenticated user can perform on the folder.
     """
 
     __slots__ = [
@@ -8343,7 +8447,7 @@ class ListFoldersArgs(bb.Struct):
         field describing the actions the  authenticated user can perform on the
         folder.
 
-        :rtype: list of [FolderAction]
+        :rtype: list of [sharing.FolderAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -8377,8 +8481,8 @@ ListFoldersArgs_validator = bv.Struct(ListFoldersArgs)
 
 class ListFoldersContinueArg(bb.Struct):
     """
-    :ivar cursor: The cursor returned by the previous API call specified in the
-        endpoint description.
+    :ivar sharing.ListFoldersContinueArg.cursor: The cursor returned by the
+        previous API call specified in the endpoint description.
     """
 
     __slots__ = [
@@ -8435,7 +8539,8 @@ class ListFoldersContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: ``ListFoldersContinueArg.cursor`` is invalid.
+    :ivar sharing.ListFoldersContinueError.invalid_cursor:
+        ``ListFoldersContinueArg.cursor`` is invalid.
     """
 
     _catch_all = 'other'
@@ -8475,11 +8580,11 @@ class ListFoldersResult(bb.Struct):
     which endpoint was requested. Unmounted shared folders can be identified by
     the absence of ``SharedFolderMetadata.path_lower``.
 
-    :ivar entries: List of all shared folders the authenticated user has access
-        to.
-    :ivar cursor: Present if there are additional shared folders that have not
-        been returned yet. Pass the cursor into the corresponding continue
-        endpoint (either
+    :ivar sharing.ListFoldersResult.entries: List of all shared folders the
+        authenticated user has access to.
+    :ivar sharing.ListFoldersResult.cursor: Present if there are additional
+        shared folders that have not been returned yet. Pass the cursor into the
+        corresponding continue endpoint (either
         :meth:`dropbox.dropbox.Dropbox.sharing_list_folders_continue` or
         :meth:`dropbox.dropbox.Dropbox.sharing_list_mountable_folders_continue`)
         to list additional folders.
@@ -8511,7 +8616,7 @@ class ListFoldersResult(bb.Struct):
         """
         List of all shared folders the authenticated user has access to.
 
-        :rtype: list of [SharedFolderMetadata]
+        :rtype: list of [sharing.SharedFolderMetadata]
         """
         if self._entries_present:
             return self._entries_value
@@ -8572,11 +8677,11 @@ ListFoldersResult_validator = bv.Struct(ListFoldersResult)
 
 class ListSharedLinksArg(bb.Struct):
     """
-    :ivar path: See :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links`
-        description.
-    :ivar cursor: The cursor returned by your last call to
-        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links`.
-    :ivar direct_only: See
+    :ivar sharing.ListSharedLinksArg.path: See
+        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` description.
+    :ivar sharing.ListSharedLinksArg.cursor: The cursor returned by your last
+        call to :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links`.
+    :ivar sharing.ListSharedLinksArg.direct_only: See
         :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` description.
     """
 
@@ -8707,7 +8812,8 @@ class ListSharedLinksError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar reset: Indicates that the cursor has been invalidated. Call
+    :ivar sharing.ListSharedLinksError.reset: Indicates that the cursor has been
+        invalidated. Call
         :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to obtain a
         new cursor.
     """
@@ -8725,7 +8831,7 @@ class ListSharedLinksError(bb.Union):
         ``val``.
 
         :param files.LookupError val:
-        :rtype: ListSharedLinksError
+        :rtype: sharing.ListSharedLinksError
         """
         return cls('path', val)
 
@@ -8773,12 +8879,13 @@ ListSharedLinksError_validator = bv.Union(ListSharedLinksError)
 
 class ListSharedLinksResult(bb.Struct):
     """
-    :ivar links: Shared links applicable to the path argument.
-    :ivar has_more: Is true if there are additional shared links that have not
-        been returned yet. Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to retrieve
-        them.
-    :ivar cursor: Pass the cursor into
+    :ivar sharing.ListSharedLinksResult.links: Shared links applicable to the
+        path argument.
+    :ivar sharing.ListSharedLinksResult.has_more: Is true if there are
+        additional shared links that have not been returned yet. Pass the cursor
+        into :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to
+        retrieve them.
+    :ivar sharing.ListSharedLinksResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.sharing_list_shared_links` to obtain the
         additional links. Cursor is returned only if no path is given.
     """
@@ -8816,7 +8923,7 @@ class ListSharedLinksResult(bb.Struct):
         """
         Shared links applicable to the path argument.
 
-        :rtype: list of [SharedLinkMetadata]
+        :rtype: list of [sharing.SharedLinkMetadata]
         """
         if self._links_present:
             return self._links_value
@@ -8905,13 +9012,14 @@ class MemberAccessLevelResult(bb.Struct):
     Contains information about a member's access level to content after an
     operation.
 
-    :ivar access_level: The member still has this level of access to the content
-        through a parent folder.
-    :ivar warning: A localized string with additional information about why the
-        user has this access level to the content.
-    :ivar access_details: The parent folders that a member has access to. The
-        field is present if the user has access to the first parent folder where
-        the member gains access.
+    :ivar sharing.MemberAccessLevelResult.access_level: The member still has
+        this level of access to the content through a parent folder.
+    :ivar sharing.MemberAccessLevelResult.warning: A localized string with
+        additional information about why the user has this access level to the
+        content.
+    :ivar sharing.MemberAccessLevelResult.access_details: The parent folders
+        that a member has access to. The field is present if the user has access
+        to the first parent folder where the member gains access.
     """
 
     __slots__ = [
@@ -8948,7 +9056,7 @@ class MemberAccessLevelResult(bb.Struct):
         The member still has this level of access to the content through a
         parent folder.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_level_present:
             return self._access_level_value
@@ -9003,7 +9111,7 @@ class MemberAccessLevelResult(bb.Struct):
         the user has access to the first parent folder where the member gains
         access.
 
-        :rtype: list of [ParentFolderAccessInfo]
+        :rtype: list of [sharing.ParentFolderAccessInfo]
         """
         if self._access_details_present:
             return self._access_details_value
@@ -9044,14 +9152,17 @@ class MemberAction(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar leave_a_copy: Allow the member to keep a copy of the folder when
-        removing.
-    :ivar make_editor: Make the member an editor of the folder.
-    :ivar make_owner: Make the member an owner of the folder.
-    :ivar make_viewer: Make the member a viewer of the folder.
-    :ivar make_viewer_no_comment: Make the member a viewer of the folder without
-        commenting permissions.
-    :ivar remove: Remove the member from the folder.
+    :ivar sharing.MemberAction.leave_a_copy: Allow the member to keep a copy of
+        the folder when removing.
+    :ivar sharing.MemberAction.make_editor: Make the member an editor of the
+        folder.
+    :ivar sharing.MemberAction.make_owner: Make the member an owner of the
+        folder.
+    :ivar sharing.MemberAction.make_viewer: Make the member a viewer of the
+        folder.
+    :ivar sharing.MemberAction.make_viewer_no_comment: Make the member a viewer
+        of the folder without commenting permissions.
+    :ivar sharing.MemberAction.remove: Remove the member from the folder.
     """
 
     _catch_all = 'other'
@@ -9138,10 +9249,12 @@ class MemberPermission(bb.Struct):
     """
     Whether the user is allowed to take the action on the associated member.
 
-    :ivar action: The action that the user may wish to take on the member.
-    :ivar allow: True if the user is allowed to take the action.
-    :ivar reason: The reason why the user is denied the permission. Not present
-        if the action is allowed.
+    :ivar sharing.MemberPermission.action: The action that the user may wish to
+        take on the member.
+    :ivar sharing.MemberPermission.allow: True if the user is allowed to take
+        the action.
+    :ivar sharing.MemberPermission.reason: The reason why the user is denied the
+        permission. Not present if the action is allowed.
     """
 
     __slots__ = [
@@ -9177,7 +9290,7 @@ class MemberPermission(bb.Struct):
         """
         The action that the user may wish to take on the member.
 
-        :rtype: MemberAction
+        :rtype: sharing.MemberAction
         """
         if self._action_present:
             return self._action_value
@@ -9224,7 +9337,7 @@ class MemberPermission(bb.Struct):
         The reason why the user is denied the permission. Not present if the
         action is allowed.
 
-        :rtype: PermissionDeniedReason
+        :rtype: sharing.PermissionDeniedReason
         """
         if self._reason_present:
             return self._reason_value
@@ -9266,8 +9379,8 @@ class MemberPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team: Only a teammate can become a member.
-    :ivar anyone: Anyone can become a member.
+    :ivar sharing.MemberPolicy.team: Only a teammate can become a member.
+    :ivar sharing.MemberPolicy.anyone: Anyone can become a member.
     """
 
     _catch_all = 'other'
@@ -9318,8 +9431,9 @@ class MemberSelector(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str dropbox_id: Dropbox account, team member, or group ID of member.
-    :ivar str email: E-mail address of member.
+    :ivar str sharing.MemberSelector.dropbox_id: Dropbox account, team member,
+        or group ID of member.
+    :ivar str sharing.MemberSelector.email: E-mail address of member.
     """
 
     _catch_all = 'other'
@@ -9333,7 +9447,7 @@ class MemberSelector(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: MemberSelector
+        :rtype: sharing.MemberSelector
         """
         return cls('dropbox_id', val)
 
@@ -9344,7 +9458,7 @@ class MemberSelector(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: MemberSelector
+        :rtype: sharing.MemberSelector
         """
         return cls('email', val)
 
@@ -9406,10 +9520,12 @@ MemberSelector_validator = bv.Union(MemberSelector)
 
 class ModifySharedLinkSettingsArgs(bb.Struct):
     """
-    :ivar url: URL of the shared link to change its settings.
-    :ivar settings: Set of settings for the shared link.
-    :ivar remove_expiration: If set to true, removes the expiration of the
+    :ivar sharing.ModifySharedLinkSettingsArgs.url: URL of the shared link to
+        change its settings.
+    :ivar sharing.ModifySharedLinkSettingsArgs.settings: Set of settings for the
         shared link.
+    :ivar sharing.ModifySharedLinkSettingsArgs.remove_expiration: If set to
+        true, removes the expiration of the shared link.
     """
 
     __slots__ = [
@@ -9468,7 +9584,7 @@ class ModifySharedLinkSettingsArgs(bb.Struct):
         """
         Set of settings for the shared link.
 
-        :rtype: SharedLinkSettings
+        :rtype: sharing.SharedLinkSettings
         """
         if self._settings_present:
             return self._settings_value
@@ -9527,9 +9643,11 @@ class ModifySharedLinkSettingsError(SharedLinkError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SharedLinkSettingsError settings_error: There is an error with the
-        given settings.
-    :ivar email_not_verified: The caller's email should be verified.
+    :ivar SharedLinkSettingsError
+        sharing.ModifySharedLinkSettingsError.settings_error: There is an error
+        with the given settings.
+    :ivar sharing.ModifySharedLinkSettingsError.email_not_verified: The caller's
+        email should be verified.
     """
 
     # Attribute is overwritten below the class definition
@@ -9541,8 +9659,8 @@ class ModifySharedLinkSettingsError(SharedLinkError):
         Create an instance of this class set to the ``settings_error`` tag with
         value ``val``.
 
-        :param SharedLinkSettingsError val:
-        :rtype: ModifySharedLinkSettingsError
+        :param sharing.SharedLinkSettingsError val:
+        :rtype: sharing.ModifySharedLinkSettingsError
         """
         return cls('settings_error', val)
 
@@ -9568,7 +9686,7 @@ class ModifySharedLinkSettingsError(SharedLinkError):
 
         Only call this if :meth:`is_settings_error` is true.
 
-        :rtype: SharedLinkSettingsError
+        :rtype: sharing.SharedLinkSettingsError
         """
         if not self.is_settings_error():
             raise AttributeError("tag 'settings_error' not set")
@@ -9584,7 +9702,8 @@ ModifySharedLinkSettingsError_validator = bv.Union(ModifySharedLinkSettingsError
 
 class MountFolderArg(bb.Struct):
     """
-    :ivar shared_folder_id: The ID of the shared folder to mount.
+    :ivar sharing.MountFolderArg.shared_folder_id: The ID of the shared folder
+        to mount.
     """
 
     __slots__ = [
@@ -9640,16 +9759,17 @@ class MountFolderError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar inside_shared_folder: Mounting would cause a shared folder to be
-        inside another, which is disallowed.
-    :ivar InsufficientQuotaAmounts insufficient_quota: The current user does not
-        have enough space to mount the shared folder.
-    :ivar already_mounted: The shared folder is already mounted.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
-    :ivar not_mountable: The shared folder is not mountable. One example where
-        this can occur is when the shared folder belongs within a team folder in
-        the user's Dropbox.
+    :ivar sharing.MountFolderError.inside_shared_folder: Mounting would cause a
+        shared folder to be inside another, which is disallowed.
+    :ivar InsufficientQuotaAmounts sharing.MountFolderError.insufficient_quota:
+        The current user does not have enough space to mount the shared folder.
+    :ivar sharing.MountFolderError.already_mounted: The shared folder is already
+        mounted.
+    :ivar sharing.MountFolderError.no_permission: The current user does not have
+        permission to perform this action.
+    :ivar sharing.MountFolderError.not_mountable: The shared folder is not
+        mountable. One example where this can occur is when the shared folder
+        belongs within a team folder in the user's Dropbox.
     """
 
     _catch_all = 'other'
@@ -9670,8 +9790,8 @@ class MountFolderError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: MountFolderError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.MountFolderError
         """
         return cls('access_error', val)
 
@@ -9681,8 +9801,8 @@ class MountFolderError(bb.Union):
         Create an instance of this class set to the ``insufficient_quota`` tag
         with value ``val``.
 
-        :param InsufficientQuotaAmounts val:
-        :rtype: MountFolderError
+        :param sharing.InsufficientQuotaAmounts val:
+        :rtype: sharing.MountFolderError
         """
         return cls('insufficient_quota', val)
 
@@ -9746,7 +9866,7 @@ class MountFolderError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -9758,7 +9878,7 @@ class MountFolderError(bb.Union):
 
         Only call this if :meth:`is_insufficient_quota` is true.
 
-        :rtype: InsufficientQuotaAmounts
+        :rtype: sharing.InsufficientQuotaAmounts
         """
         if not self.is_insufficient_quota():
             raise AttributeError("tag 'insufficient_quota' not set")
@@ -9776,11 +9896,14 @@ class ParentFolderAccessInfo(bb.Struct):
     """
     Contains information about a parent folder that a member has access to.
 
-    :ivar folder_name: Display name for the folder.
-    :ivar shared_folder_id: The identifier of the parent shared folder.
-    :ivar permissions: The user's permissions for the parent shared folder.
-    :ivar path: The full path to the parent shared folder relative to the acting
-        user's root.
+    :ivar sharing.ParentFolderAccessInfo.folder_name: Display name for the
+        folder.
+    :ivar sharing.ParentFolderAccessInfo.shared_folder_id: The identifier of the
+        parent shared folder.
+    :ivar sharing.ParentFolderAccessInfo.permissions: The user's permissions for
+        the parent shared folder.
+    :ivar sharing.ParentFolderAccessInfo.path: The full path to the parent
+        shared folder relative to the acting user's root.
     """
 
     __slots__ = [
@@ -9869,7 +9992,7 @@ class ParentFolderAccessInfo(bb.Struct):
         """
         The user's permissions for the parent shared folder.
 
-        :rtype: list of [MemberPermission]
+        :rtype: list of [sharing.MemberPermission]
         """
         if self._permissions_present:
             return self._permissions_value
@@ -9928,7 +10051,7 @@ class PathLinkMetadata(LinkMetadata):
     """
     Metadata for a path-based shared link.
 
-    :ivar path: Path in user's Dropbox.
+    :ivar sharing.PathLinkMetadata.path: Path in user's Dropbox.
     """
 
     __slots__ = [
@@ -9996,8 +10119,8 @@ class PendingUploadMode(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar file: Assume pending uploads are files.
-    :ivar folder: Assume pending uploads are folders.
+    :ivar sharing.PendingUploadMode.file: Assume pending uploads are files.
+    :ivar sharing.PendingUploadMode.folder: Assume pending uploads are folders.
     """
 
     _catch_all = None
@@ -10038,31 +10161,34 @@ class PermissionDeniedReason(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar user_not_same_team_as_owner: User is not on the same team as the
-        folder owner.
-    :ivar user_not_allowed_by_owner: User is prohibited by the owner from taking
-        the action.
-    :ivar target_is_indirect_member: Target is indirectly a member of the
-        folder, for example by being part of a group.
-    :ivar target_is_owner: Target is the owner of the folder.
-    :ivar target_is_self: Target is the user itself.
-    :ivar target_not_active: Target is not an active member of the team.
-    :ivar folder_is_limited_team_folder: Folder is team folder for a limited
-        team.
-    :ivar owner_not_on_team: The content owner needs to be on a Dropbox team to
-        perform this action.
-    :ivar permission_denied: The user does not have permission to perform this
-        action on the link.
-    :ivar restricted_by_team: The user's team policy prevents performing this
-        action on the link.
-    :ivar user_account_type: The user's account type does not support this
-        action.
-    :ivar user_not_on_team: The user needs to be on a Dropbox team to perform
-        this action.
-    :ivar folder_is_inside_shared_folder: Folder is inside of another shared
-        folder.
-    :ivar restricted_by_parent_folder: Policy cannot be changed due to
-        restrictions from parent folder.
+    :ivar sharing.PermissionDeniedReason.user_not_same_team_as_owner: User is
+        not on the same team as the folder owner.
+    :ivar sharing.PermissionDeniedReason.user_not_allowed_by_owner: User is
+        prohibited by the owner from taking the action.
+    :ivar sharing.PermissionDeniedReason.target_is_indirect_member: Target is
+        indirectly a member of the folder, for example by being part of a group.
+    :ivar sharing.PermissionDeniedReason.target_is_owner: Target is the owner of
+        the folder.
+    :ivar sharing.PermissionDeniedReason.target_is_self: Target is the user
+        itself.
+    :ivar sharing.PermissionDeniedReason.target_not_active: Target is not an
+        active member of the team.
+    :ivar sharing.PermissionDeniedReason.folder_is_limited_team_folder: Folder
+        is team folder for a limited team.
+    :ivar sharing.PermissionDeniedReason.owner_not_on_team: The content owner
+        needs to be on a Dropbox team to perform this action.
+    :ivar sharing.PermissionDeniedReason.permission_denied: The user does not
+        have permission to perform this action on the link.
+    :ivar sharing.PermissionDeniedReason.restricted_by_team: The user's team
+        policy prevents performing this action on the link.
+    :ivar sharing.PermissionDeniedReason.user_account_type: The user's account
+        type does not support this action.
+    :ivar sharing.PermissionDeniedReason.user_not_on_team: The user needs to be
+        on a Dropbox team to perform this action.
+    :ivar sharing.PermissionDeniedReason.folder_is_inside_shared_folder: Folder
+        is inside of another shared folder.
+    :ivar sharing.PermissionDeniedReason.restricted_by_parent_folder: Policy
+        cannot be changed due to restrictions from parent folder.
     """
 
     _catch_all = 'other'
@@ -10103,8 +10229,8 @@ class PermissionDeniedReason(bb.Union):
         Create an instance of this class set to the ``insufficient_plan`` tag
         with value ``val``.
 
-        :param InsufficientPlan val:
-        :rtype: PermissionDeniedReason
+        :param sharing.InsufficientPlan val:
+        :rtype: sharing.PermissionDeniedReason
         """
         return cls('insufficient_plan', val)
 
@@ -10240,7 +10366,7 @@ class PermissionDeniedReason(bb.Union):
         """
         Only call this if :meth:`is_insufficient_plan` is true.
 
-        :rtype: InsufficientPlan
+        :rtype: sharing.InsufficientPlan
         """
         if not self.is_insufficient_plan():
             raise AttributeError("tag 'insufficient_plan' not set")
@@ -10256,7 +10382,7 @@ PermissionDeniedReason_validator = bv.Union(PermissionDeniedReason)
 
 class RelinquishFileMembershipArg(bb.Struct):
     """
-    :ivar file: The path or id for the file.
+    :ivar sharing.RelinquishFileMembershipArg.file: The path or id for the file.
     """
 
     __slots__ = [
@@ -10312,10 +10438,11 @@ class RelinquishFileMembershipError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar group_access: The current user has access to the shared file via a
-        group.  You can't relinquish membership to a file shared via groups.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
+    :ivar sharing.RelinquishFileMembershipError.group_access: The current user
+        has access to the shared file via a group.  You can't relinquish
+        membership to a file shared via groups.
+    :ivar sharing.RelinquishFileMembershipError.no_permission: The current user
+        does not have permission to perform this action.
     """
 
     _catch_all = 'other'
@@ -10332,8 +10459,8 @@ class RelinquishFileMembershipError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: RelinquishFileMembershipError
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.RelinquishFileMembershipError
         """
         return cls('access_error', val)
 
@@ -10373,7 +10500,7 @@ class RelinquishFileMembershipError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -10389,9 +10516,10 @@ RelinquishFileMembershipError_validator = bv.Union(RelinquishFileMembershipError
 
 class RelinquishFolderMembershipArg(bb.Struct):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar leave_a_copy: Keep a copy of the folder's contents upon relinquishing
-        membership.
+    :ivar sharing.RelinquishFolderMembershipArg.shared_folder_id: The ID for the
+        shared folder.
+    :ivar sharing.RelinquishFolderMembershipArg.leave_a_copy: Keep a copy of the
+        folder's contents upon relinquishing membership.
     """
 
     __slots__ = [
@@ -10478,18 +10606,22 @@ class RelinquishFolderMembershipError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar folder_owner: The current user is the owner of the shared folder.
-        Owners cannot relinquish membership to their own folders. Try unsharing
-        or transferring ownership first.
-    :ivar mounted: The shared folder is currently mounted.  Unmount the shared
-        folder before relinquishing membership.
-    :ivar group_access: The current user has access to the shared folder via a
-        group.  You can't relinquish membership to folders shared via groups.
-    :ivar team_folder: This action cannot be performed on a team shared folder.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
-    :ivar no_explicit_access: The current user only has inherited access to the
-        shared folder.  You can't relinquish inherited membership to folders.
+    :ivar sharing.RelinquishFolderMembershipError.folder_owner: The current user
+        is the owner of the shared folder. Owners cannot relinquish membership
+        to their own folders. Try unsharing or transferring ownership first.
+    :ivar sharing.RelinquishFolderMembershipError.mounted: The shared folder is
+        currently mounted.  Unmount the shared folder before relinquishing
+        membership.
+    :ivar sharing.RelinquishFolderMembershipError.group_access: The current user
+        has access to the shared folder via a group.  You can't relinquish
+        membership to folders shared via groups.
+    :ivar sharing.RelinquishFolderMembershipError.team_folder: This action
+        cannot be performed on a team shared folder.
+    :ivar sharing.RelinquishFolderMembershipError.no_permission: The current
+        user does not have permission to perform this action.
+    :ivar sharing.RelinquishFolderMembershipError.no_explicit_access: The
+        current user only has inherited access to the shared folder.  You can't
+        relinquish inherited membership to folders.
     """
 
     _catch_all = 'other'
@@ -10514,8 +10646,8 @@ class RelinquishFolderMembershipError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: RelinquishFolderMembershipError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.RelinquishFolderMembershipError
         """
         return cls('access_error', val)
 
@@ -10587,7 +10719,7 @@ class RelinquishFolderMembershipError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -10605,10 +10737,11 @@ class RemoveFileMemberArg(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_remove_file_member_2`.
 
-    :ivar file: File from which to remove members.
-    :ivar member: Member to remove from this file. Note that even if an email is
-        specified, it may result in the removal of a user (not an invitee) if
-        the user's main account corresponds to that email address.
+    :ivar sharing.RemoveFileMemberArg.file: File from which to remove members.
+    :ivar sharing.RemoveFileMemberArg.member: Member to remove from this file.
+        Note that even if an email is specified, it may result in the removal of
+        a user (not an invitee) if the user's main account corresponds to that
+        email address.
     """
 
     __slots__ = [
@@ -10662,7 +10795,7 @@ class RemoveFileMemberArg(bb.Struct):
         specified, it may result in the removal of a user (not an invitee) if
         the user's main account corresponds to that email address.
 
-        :rtype: MemberSelector
+        :rtype: sharing.MemberSelector
         """
         if self._member_present:
             return self._member_value
@@ -10699,10 +10832,11 @@ class RemoveFileMemberError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar MemberAccessLevelResult no_explicit_access: This member does not have
-        explicit access to the file and therefore cannot be removed. The return
-        value is the access that a user might have to the file from a parent
-        folder.
+    :ivar MemberAccessLevelResult
+        sharing.RemoveFileMemberError.no_explicit_access: This member does not
+        have explicit access to the file and therefore cannot be removed. The
+        return value is the access that a user might have to the file from a
+        parent folder.
     """
 
     _catch_all = 'other'
@@ -10715,8 +10849,8 @@ class RemoveFileMemberError(bb.Union):
         Create an instance of this class set to the ``user_error`` tag with
         value ``val``.
 
-        :param SharingUserError val:
-        :rtype: RemoveFileMemberError
+        :param sharing.SharingUserError val:
+        :rtype: sharing.RemoveFileMemberError
         """
         return cls('user_error', val)
 
@@ -10726,8 +10860,8 @@ class RemoveFileMemberError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: RemoveFileMemberError
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.RemoveFileMemberError
         """
         return cls('access_error', val)
 
@@ -10737,8 +10871,8 @@ class RemoveFileMemberError(bb.Union):
         Create an instance of this class set to the ``no_explicit_access`` tag
         with value ``val``.
 
-        :param MemberAccessLevelResult val:
-        :rtype: RemoveFileMemberError
+        :param sharing.MemberAccessLevelResult val:
+        :rtype: sharing.RemoveFileMemberError
         """
         return cls('no_explicit_access', val)
 
@@ -10778,7 +10912,7 @@ class RemoveFileMemberError(bb.Union):
         """
         Only call this if :meth:`is_user_error` is true.
 
-        :rtype: SharingUserError
+        :rtype: sharing.SharingUserError
         """
         if not self.is_user_error():
             raise AttributeError("tag 'user_error' not set")
@@ -10788,7 +10922,7 @@ class RemoveFileMemberError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -10802,7 +10936,7 @@ class RemoveFileMemberError(bb.Union):
 
         Only call this if :meth:`is_no_explicit_access` is true.
 
-        :rtype: MemberAccessLevelResult
+        :rtype: sharing.MemberAccessLevelResult
         """
         if not self.is_no_explicit_access():
             raise AttributeError("tag 'no_explicit_access' not set")
@@ -10818,12 +10952,14 @@ RemoveFileMemberError_validator = bv.Union(RemoveFileMemberError)
 
 class RemoveFolderMemberArg(bb.Struct):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar member: The member to remove from the folder.
-    :ivar leave_a_copy: If true, the removed user will keep their copy of the
-        folder after it's unshared, assuming it was mounted. Otherwise, it will
-        be removed from their Dropbox. Also, this must be set to false when
-        kicking a group.
+    :ivar sharing.RemoveFolderMemberArg.shared_folder_id: The ID for the shared
+        folder.
+    :ivar sharing.RemoveFolderMemberArg.member: The member to remove from the
+        folder.
+    :ivar sharing.RemoveFolderMemberArg.leave_a_copy: If true, the removed user
+        will keep their copy of the folder after it's unshared, assuming it was
+        mounted. Otherwise, it will be removed from their Dropbox. Also, this
+        must be set to false when kicking a group.
     """
 
     __slots__ = [
@@ -10882,7 +11018,7 @@ class RemoveFolderMemberArg(bb.Struct):
         """
         The member to remove from the folder.
 
-        :rtype: MemberSelector
+        :rtype: sharing.MemberSelector
         """
         if self._member_present:
             return self._member_value
@@ -10943,16 +11079,18 @@ class RemoveFolderMemberError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar folder_owner: The target user is the owner of the shared folder. You
-        can't remove this user until ownership has been transferred to another
-        member.
-    :ivar group_access: The target user has access to the shared folder via a
-        group.
-    :ivar team_folder: This action cannot be performed on a team shared folder.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
-    :ivar too_many_files: This shared folder has too many files for leaving a
-        copy. You can still remove this user without leaving a copy.
+    :ivar sharing.RemoveFolderMemberError.folder_owner: The target user is the
+        owner of the shared folder. You can't remove this user until ownership
+        has been transferred to another member.
+    :ivar sharing.RemoveFolderMemberError.group_access: The target user has
+        access to the shared folder via a group.
+    :ivar sharing.RemoveFolderMemberError.team_folder: This action cannot be
+        performed on a team shared folder.
+    :ivar sharing.RemoveFolderMemberError.no_permission: The current user does
+        not have permission to perform this action.
+    :ivar sharing.RemoveFolderMemberError.too_many_files: This shared folder has
+        too many files for leaving a copy. You can still remove this user
+        without leaving a copy.
     """
 
     _catch_all = 'other'
@@ -10975,8 +11113,8 @@ class RemoveFolderMemberError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: RemoveFolderMemberError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.RemoveFolderMemberError
         """
         return cls('access_error', val)
 
@@ -10986,8 +11124,8 @@ class RemoveFolderMemberError(bb.Union):
         Create an instance of this class set to the ``member_error`` tag with
         value ``val``.
 
-        :param SharedFolderMemberError val:
-        :rtype: RemoveFolderMemberError
+        :param sharing.SharedFolderMemberError val:
+        :rtype: sharing.RemoveFolderMemberError
         """
         return cls('member_error', val)
 
@@ -11059,7 +11197,7 @@ class RemoveFolderMemberError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -11069,7 +11207,7 @@ class RemoveFolderMemberError(bb.Union):
         """
         Only call this if :meth:`is_member_error` is true.
 
-        :rtype: SharedFolderMemberError
+        :rtype: sharing.SharedFolderMemberError
         """
         if not self.is_member_error():
             raise AttributeError("tag 'member_error' not set")
@@ -11089,9 +11227,9 @@ class RemoveMemberJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar MemberAccessLevelResult complete: Removing the folder member has
-        finished. The value is information about whether the member has another
-        form of access.
+    :ivar MemberAccessLevelResult sharing.RemoveMemberJobStatus.complete:
+        Removing the folder member has finished. The value is information about
+        whether the member has another form of access.
     """
 
     @classmethod
@@ -11100,8 +11238,8 @@ class RemoveMemberJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param MemberAccessLevelResult val:
-        :rtype: RemoveMemberJobStatus
+        :param sharing.MemberAccessLevelResult val:
+        :rtype: sharing.RemoveMemberJobStatus
         """
         return cls('complete', val)
 
@@ -11111,8 +11249,8 @@ class RemoveMemberJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param RemoveFolderMemberError val:
-        :rtype: RemoveMemberJobStatus
+        :param sharing.RemoveFolderMemberError val:
+        :rtype: sharing.RemoveMemberJobStatus
         """
         return cls('failed', val)
 
@@ -11139,7 +11277,7 @@ class RemoveMemberJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: MemberAccessLevelResult
+        :rtype: sharing.MemberAccessLevelResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -11149,7 +11287,7 @@ class RemoveMemberJobStatus(async_.PollResultBase):
         """
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: RemoveFolderMemberError
+        :rtype: sharing.RemoveFolderMemberError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
@@ -11175,12 +11313,12 @@ class RequestedVisibility(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar public: Anyone who has received the link can access it. No login
-        required.
-    :ivar team_only: Only members of the same team can access the link. Login is
-        required.
-    :ivar password: A link-specific password is required to access the link.
-        Login is not required.
+    :ivar sharing.RequestedVisibility.public: Anyone who has received the link
+        can access it. No login required.
+    :ivar sharing.RequestedVisibility.team_only: Only members of the same team
+        can access the link. Login is required.
+    :ivar sharing.RequestedVisibility.password: A link-specific password is
+        required to access the link. Login is not required.
     """
 
     _catch_all = None
@@ -11234,10 +11372,12 @@ class ResolvedVisibility(RequestedVisibility):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_and_password: Only members of the same team who have the
-        link-specific password can access the link. Login is required.
-    :ivar shared_folder_only: Only members of the shared folder containing the
-        linked file can access the link. Login is required.
+    :ivar sharing.ResolvedVisibility.team_and_password: Only members of the same
+        team who have the link-specific password can access the link. Login is
+        required.
+    :ivar sharing.ResolvedVisibility.shared_folder_only: Only members of the
+        shared folder containing the linked file can access the link. Login is
+        required.
     """
 
     _catch_all = 'other'
@@ -11282,7 +11422,7 @@ ResolvedVisibility_validator = bv.Union(ResolvedVisibility)
 
 class RevokeSharedLinkArg(bb.Struct):
     """
-    :ivar url: URL of the shared link.
+    :ivar sharing.RevokeSharedLinkArg.url: URL of the shared link.
     """
 
     __slots__ = [
@@ -11338,7 +11478,8 @@ class RevokeSharedLinkError(SharedLinkError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar shared_link_malformed: Shared link is malformed.
+    :ivar sharing.RevokeSharedLinkError.shared_link_malformed: Shared link is
+        malformed.
     """
 
     # Attribute is overwritten below the class definition
@@ -11362,8 +11503,10 @@ RevokeSharedLinkError_validator = bv.Union(RevokeSharedLinkError)
 
 class SetAccessInheritanceArg(bb.Struct):
     """
-    :ivar access_inheritance: The access inheritance settings for the folder.
-    :ivar shared_folder_id: The ID for the shared folder.
+    :ivar sharing.SetAccessInheritanceArg.access_inheritance: The access
+        inheritance settings for the folder.
+    :ivar sharing.SetAccessInheritanceArg.shared_folder_id: The ID for the
+        shared folder.
     """
 
     __slots__ = [
@@ -11392,7 +11535,7 @@ class SetAccessInheritanceArg(bb.Struct):
         """
         The access inheritance settings for the folder.
 
-        :rtype: AccessInheritance
+        :rtype: sharing.AccessInheritance
         """
         if self._access_inheritance_present:
             return self._access_inheritance_value
@@ -11450,9 +11593,11 @@ class SetAccessInheritanceError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SharedFolderAccessError access_error: Unable to access shared folder.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
+    :ivar SharedFolderAccessError
+        sharing.SetAccessInheritanceError.access_error: Unable to access shared
+        folder.
+    :ivar sharing.SetAccessInheritanceError.no_permission: The current user does
+        not have permission to perform this action.
     """
 
     _catch_all = 'other'
@@ -11467,8 +11612,8 @@ class SetAccessInheritanceError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: SetAccessInheritanceError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.SetAccessInheritanceError
         """
         return cls('access_error', val)
 
@@ -11502,7 +11647,7 @@ class SetAccessInheritanceError(bb.Union):
 
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -11518,19 +11663,22 @@ SetAccessInheritanceError_validator = bv.Union(SetAccessInheritanceError)
 
 class ShareFolderArgBase(bb.Struct):
     """
-    :ivar acl_update_policy: Who can add and remove members of this shared
-        folder.
-    :ivar force_async: Whether to force the share to happen asynchronously.
-    :ivar member_policy: Who can be a member of this shared folder. Only
-        applicable if the current user is on a team.
-    :ivar path: The path to the folder to share. If it does not exist, then a
-        new one is created.
-    :ivar shared_link_policy: The policy to apply to shared links created for
-        content inside this shared folder.  The current user must be on a team
-        to set this policy to ``SharedLinkPolicy.members``.
-    :ivar viewer_info_policy: Who can enable/disable viewer info for this shared
-        folder.
-    :ivar access_inheritance: The access inheritance settings for the folder.
+    :ivar sharing.ShareFolderArgBase.acl_update_policy: Who can add and remove
+        members of this shared folder.
+    :ivar sharing.ShareFolderArgBase.force_async: Whether to force the share to
+        happen asynchronously.
+    :ivar sharing.ShareFolderArgBase.member_policy: Who can be a member of this
+        shared folder. Only applicable if the current user is on a team.
+    :ivar sharing.ShareFolderArgBase.path: The path to the folder to share. If
+        it does not exist, then a new one is created.
+    :ivar sharing.ShareFolderArgBase.shared_link_policy: The policy to apply to
+        shared links created for content inside this shared folder.  The current
+        user must be on a team to set this policy to
+        ``SharedLinkPolicy.members``.
+    :ivar sharing.ShareFolderArgBase.viewer_info_policy: Who can enable/disable
+        viewer info for this shared folder.
+    :ivar sharing.ShareFolderArgBase.access_inheritance: The access inheritance
+        settings for the folder.
     """
 
     __slots__ = [
@@ -11594,7 +11742,7 @@ class ShareFolderArgBase(bb.Struct):
         """
         Who can add and remove members of this shared folder.
 
-        :rtype: AclUpdatePolicy
+        :rtype: sharing.AclUpdatePolicy
         """
         if self._acl_update_policy_present:
             return self._acl_update_policy_value
@@ -11644,7 +11792,7 @@ class ShareFolderArgBase(bb.Struct):
         Who can be a member of this shared folder. Only applicable if the
         current user is on a team.
 
-        :rtype: MemberPolicy
+        :rtype: sharing.MemberPolicy
         """
         if self._member_policy_present:
             return self._member_policy_value
@@ -11696,7 +11844,7 @@ class ShareFolderArgBase(bb.Struct):
         shared folder.  The current user must be on a team to set this policy to
         ``SharedLinkPolicy.members``.
 
-        :rtype: SharedLinkPolicy
+        :rtype: sharing.SharedLinkPolicy
         """
         if self._shared_link_policy_present:
             return self._shared_link_policy_value
@@ -11722,7 +11870,7 @@ class ShareFolderArgBase(bb.Struct):
         """
         Who can enable/disable viewer info for this shared folder.
 
-        :rtype: ViewerInfoPolicy
+        :rtype: sharing.ViewerInfoPolicy
         """
         if self._viewer_info_policy_present:
             return self._viewer_info_policy_value
@@ -11748,7 +11896,7 @@ class ShareFolderArgBase(bb.Struct):
         """
         The access inheritance settings for the folder.
 
-        :rtype: AccessInheritance
+        :rtype: sharing.AccessInheritance
         """
         if self._access_inheritance_present:
             return self._access_inheritance_value
@@ -11784,11 +11932,12 @@ ShareFolderArgBase_validator = bv.Struct(ShareFolderArgBase)
 
 class ShareFolderArg(ShareFolderArgBase):
     """
-    :ivar actions: A list of `FolderAction`s corresponding to
-        `FolderPermission`s that should appear in the  response's
-        ``SharedFolderMetadata.permissions`` field describing the actions the
-        authenticated user can perform on the folder.
-    :ivar link_settings: Settings on the link for this folder.
+    :ivar sharing.ShareFolderArg.actions: A list of `FolderAction`s
+        corresponding to `FolderPermission`s that should appear in the
+        response's ``SharedFolderMetadata.permissions`` field describing the
+        actions the  authenticated user can perform on the folder.
+    :ivar sharing.ShareFolderArg.link_settings: Settings on the link for this
+        folder.
     """
 
     __slots__ = [
@@ -11834,7 +11983,7 @@ class ShareFolderArg(ShareFolderArgBase):
         field describing the actions the  authenticated user can perform on the
         folder.
 
-        :rtype: list of [FolderAction]
+        :rtype: list of [sharing.FolderAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -11860,7 +12009,7 @@ class ShareFolderArg(ShareFolderArgBase):
         """
         Settings on the link for this folder.
 
-        :rtype: LinkSettings
+        :rtype: sharing.LinkSettings
         """
         if self._link_settings_present:
             return self._link_settings_value
@@ -11905,12 +12054,15 @@ class ShareFolderErrorBase(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar email_unverified: The current user's e-mail address is unverified.
-    :ivar SharePathError bad_path: ``ShareFolderArg.path`` is invalid.
-    :ivar team_policy_disallows_member_policy: Team policy is more restrictive
-        than ``ShareFolderArg.member_policy``.
-    :ivar disallowed_shared_link_policy: The current user's account is not
-        allowed to select the specified ``ShareFolderArg.shared_link_policy``.
+    :ivar sharing.ShareFolderErrorBase.email_unverified: The current user's
+        e-mail address is unverified.
+    :ivar SharePathError sharing.ShareFolderErrorBase.bad_path:
+        ``ShareFolderArg.path`` is invalid.
+    :ivar sharing.ShareFolderErrorBase.team_policy_disallows_member_policy: Team
+        policy is more restrictive than ``ShareFolderArg.member_policy``.
+    :ivar sharing.ShareFolderErrorBase.disallowed_shared_link_policy: The
+        current user's account is not allowed to select the specified
+        ``ShareFolderArg.shared_link_policy``.
     """
 
     _catch_all = 'other'
@@ -11929,8 +12081,8 @@ class ShareFolderErrorBase(bb.Union):
         Create an instance of this class set to the ``bad_path`` tag with value
         ``val``.
 
-        :param SharePathError val:
-        :rtype: ShareFolderErrorBase
+        :param sharing.SharePathError val:
+        :rtype: sharing.ShareFolderErrorBase
         """
         return cls('bad_path', val)
 
@@ -11980,7 +12132,7 @@ class ShareFolderErrorBase(bb.Union):
 
         Only call this if :meth:`is_bad_path` is true.
 
-        :rtype: SharePathError
+        :rtype: sharing.SharePathError
         """
         if not self.is_bad_path():
             raise AttributeError("tag 'bad_path' not set")
@@ -12000,8 +12152,8 @@ class ShareFolderError(ShareFolderErrorBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
+    :ivar sharing.ShareFolderError.no_permission: The current user does not have
+        permission to perform this action.
     """
 
     # Attribute is overwritten below the class definition
@@ -12029,8 +12181,8 @@ class ShareFolderJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SharedFolderMetadata complete: The share job has finished. The value
-        is the metadata for the folder.
+    :ivar SharedFolderMetadata sharing.ShareFolderJobStatus.complete: The share
+        job has finished. The value is the metadata for the folder.
     """
 
     @classmethod
@@ -12039,8 +12191,8 @@ class ShareFolderJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param SharedFolderMetadata val:
-        :rtype: ShareFolderJobStatus
+        :param sharing.SharedFolderMetadata val:
+        :rtype: sharing.ShareFolderJobStatus
         """
         return cls('complete', val)
 
@@ -12050,8 +12202,8 @@ class ShareFolderJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param ShareFolderError val:
-        :rtype: ShareFolderJobStatus
+        :param sharing.ShareFolderError val:
+        :rtype: sharing.ShareFolderJobStatus
         """
         return cls('failed', val)
 
@@ -12077,7 +12229,7 @@ class ShareFolderJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: SharedFolderMetadata
+        :rtype: sharing.SharedFolderMetadata
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -12087,7 +12239,7 @@ class ShareFolderJobStatus(async_.PollResultBase):
         """
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: ShareFolderError
+        :rtype: sharing.ShareFolderError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
@@ -12114,8 +12266,8 @@ class ShareFolderLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param SharedFolderMetadata val:
-        :rtype: ShareFolderLaunch
+        :param sharing.SharedFolderMetadata val:
+        :rtype: sharing.ShareFolderLaunch
         """
         return cls('complete', val)
 
@@ -12131,7 +12283,7 @@ class ShareFolderLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: SharedFolderMetadata
+        :rtype: sharing.SharedFolderMetadata
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -12151,28 +12303,30 @@ class SharePathError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar is_file: A file is at the specified path.
-    :ivar inside_shared_folder: We do not support sharing a folder inside a
-        shared folder.
-    :ivar contains_shared_folder: We do not support shared folders that contain
-        shared folders.
-    :ivar contains_app_folder: We do not support shared folders that contain app
-        folders.
-    :ivar contains_team_folder: We do not support shared folders that contain
-        team folders.
-    :ivar is_app_folder: We do not support sharing an app folder.
-    :ivar inside_app_folder: We do not support sharing a folder inside an app
+    :ivar sharing.SharePathError.is_file: A file is at the specified path.
+    :ivar sharing.SharePathError.inside_shared_folder: We do not support sharing
+        a folder inside a shared folder.
+    :ivar sharing.SharePathError.contains_shared_folder: We do not support
+        shared folders that contain shared folders.
+    :ivar sharing.SharePathError.contains_app_folder: We do not support shared
+        folders that contain app folders.
+    :ivar sharing.SharePathError.contains_team_folder: We do not support shared
+        folders that contain team folders.
+    :ivar sharing.SharePathError.is_app_folder: We do not support sharing an app
         folder.
-    :ivar is_public_folder: A public folder can't be shared this way. Use a
-        public link instead.
-    :ivar inside_public_folder: A folder inside a public folder can't be shared
-        this way. Use a public link instead.
-    :ivar SharedFolderMetadata already_shared: Folder is already shared.
-        Contains metadata about the existing shared folder.
-    :ivar invalid_path: Path is not valid.
-    :ivar is_osx_package: We do not support sharing a Mac OS X package.
-    :ivar inside_osx_package: We do not support sharing a folder inside a Mac OS
-        X package.
+    :ivar sharing.SharePathError.inside_app_folder: We do not support sharing a
+        folder inside an app folder.
+    :ivar sharing.SharePathError.is_public_folder: A public folder can't be
+        shared this way. Use a public link instead.
+    :ivar sharing.SharePathError.inside_public_folder: A folder inside a public
+        folder can't be shared this way. Use a public link instead.
+    :ivar SharedFolderMetadata sharing.SharePathError.already_shared: Folder is
+        already shared. Contains metadata about the existing shared folder.
+    :ivar sharing.SharePathError.invalid_path: Path is not valid.
+    :ivar sharing.SharePathError.is_osx_package: We do not support sharing a Mac
+        OS X package.
+    :ivar sharing.SharePathError.inside_osx_package: We do not support sharing a
+        folder inside a Mac OS X package.
     """
 
     _catch_all = 'other'
@@ -12209,8 +12363,8 @@ class SharePathError(bb.Union):
         Create an instance of this class set to the ``already_shared`` tag with
         value ``val``.
 
-        :param SharedFolderMetadata val:
-        :rtype: SharePathError
+        :param sharing.SharedFolderMetadata val:
+        :rtype: sharing.SharePathError
         """
         return cls('already_shared', val)
 
@@ -12333,7 +12487,7 @@ class SharePathError(bb.Union):
 
         Only call this if :meth:`is_already_shared` is true.
 
-        :rtype: SharedFolderMetadata
+        :rtype: sharing.SharedFolderMetadata
         """
         if not self.is_already_shared():
             raise AttributeError("tag 'already_shared' not set")
@@ -12351,11 +12505,11 @@ class SharedContentLinkMetadata(SharedContentLinkMetadataBase):
     """
     Metadata of a shared link for a file or folder.
 
-    :ivar audience_exceptions: The content inside this folder with link audience
-        different than this folder's. This is only returned when an endpoint
-        that returns metadata for a single shared folder is called, e.g.
-        /get_folder_metadata.
-    :ivar url: The URL of the link.
+    :ivar sharing.SharedContentLinkMetadata.audience_exceptions: The content
+        inside this folder with link audience different than this folder's. This
+        is only returned when an endpoint that returns metadata for a single
+        shared folder is called, e.g. /get_folder_metadata.
+    :ivar sharing.SharedContentLinkMetadata.url: The URL of the link.
     """
 
     __slots__ = [
@@ -12400,7 +12554,7 @@ class SharedContentLinkMetadata(SharedContentLinkMetadataBase):
         folder's. This is only returned when an endpoint that returns metadata
         for a single shared folder is called, e.g. /get_folder_metadata.
 
-        :rtype: AudienceExceptions
+        :rtype: sharing.AudienceExceptions
         """
         if self._audience_exceptions_present:
             return self._audience_exceptions_value
@@ -12470,14 +12624,16 @@ class SharedFileMembers(bb.Struct):
     as part of the results for
     :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_batch`.
 
-    :ivar users: The list of user members of the shared file.
-    :ivar groups: The list of group members of the shared file.
-    :ivar invitees: The list of invited members of a file, but have not logged
-        in and claimed this.
-    :ivar cursor: Present if there are additional shared file members that have
-        not been returned yet. Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue` to
-        list additional members.
+    :ivar sharing.SharedFileMembers.users: The list of user members of the
+        shared file.
+    :ivar sharing.SharedFileMembers.groups: The list of group members of the
+        shared file.
+    :ivar sharing.SharedFileMembers.invitees: The list of invited members of a
+        file, but have not logged in and claimed this.
+    :ivar sharing.SharedFileMembers.cursor: Present if there are additional
+        shared file members that have not been returned yet. Pass the cursor
+        into :meth:`dropbox.dropbox.Dropbox.sharing_list_file_members_continue`
+        to list additional members.
     """
 
     __slots__ = [
@@ -12520,7 +12676,7 @@ class SharedFileMembers(bb.Struct):
         """
         The list of user members of the shared file.
 
-        :rtype: list of [UserFileMembershipInfo]
+        :rtype: list of [sharing.UserFileMembershipInfo]
         """
         if self._users_present:
             return self._users_value
@@ -12543,7 +12699,7 @@ class SharedFileMembers(bb.Struct):
         """
         The list of group members of the shared file.
 
-        :rtype: list of [GroupMembershipInfo]
+        :rtype: list of [sharing.GroupMembershipInfo]
         """
         if self._groups_present:
             return self._groups_value
@@ -12567,7 +12723,7 @@ class SharedFileMembers(bb.Struct):
         The list of invited members of a file, but have not logged in and
         claimed this.
 
-        :rtype: list of [InviteeMembershipInfo]
+        :rtype: list of [sharing.InviteeMembershipInfo]
         """
         if self._invitees_present:
             return self._invitees_value
@@ -12631,37 +12787,44 @@ class SharedFileMetadata(bb.Struct):
     """
     Properties of the shared file.
 
-    :ivar access_type: The current user's access level for this shared file.
-    :ivar id: The ID of the file.
-    :ivar expected_link_metadata: The expected metadata of the link associated
-        for the file when it is first shared. Absent if the link already exists.
-        This is for an unreleased feature so it may not be returned yet.
-    :ivar link_metadata: The metadata of the link associated for the file. This
-        is for an unreleased feature so it may not be returned yet.
-    :ivar name: The name of this file.
-    :ivar owner_display_names: The display names of the users that own the file.
-        If the file is part of a team folder, the display names of the team
-        admins are also included. Absent if the owner display names cannot be
-        fetched.
-    :ivar owner_team: The team that owns the file. This field is not present if
-        the file is not owned by a team.
-    :ivar parent_shared_folder_id: The ID of the parent shared folder. This
-        field is present only if the file is contained within a shared folder.
-    :ivar path_display: The cased path to be used for display purposes only. In
-        rare instances the casing will not correctly match the user's
-        filesystem, but this behavior will match the path provided in the Core
-        API v1. Absent for unmounted files.
-    :ivar path_lower: The lower-case full path of this file. Absent for
-        unmounted files.
-    :ivar permissions: The sharing permissions that requesting user has on this
-        file. This corresponds to the entries given in
-        ``GetFileMetadataBatchArg.actions`` or ``GetFileMetadataArg.actions``.
-    :ivar policy: Policies governing this shared file.
-    :ivar preview_url: URL for displaying a web preview of the shared file.
-    :ivar time_invited: Timestamp indicating when the current user was invited
-        to this shared file. If the user was not invited to the shared file, the
-        timestamp will indicate when the user was invited to the parent shared
-        folder. This value may be absent.
+    :ivar sharing.SharedFileMetadata.access_type: The current user's access
+        level for this shared file.
+    :ivar sharing.SharedFileMetadata.id: The ID of the file.
+    :ivar sharing.SharedFileMetadata.expected_link_metadata: The expected
+        metadata of the link associated for the file when it is first shared.
+        Absent if the link already exists. This is for an unreleased feature so
+        it may not be returned yet.
+    :ivar sharing.SharedFileMetadata.link_metadata: The metadata of the link
+        associated for the file. This is for an unreleased feature so it may not
+        be returned yet.
+    :ivar sharing.SharedFileMetadata.name: The name of this file.
+    :ivar sharing.SharedFileMetadata.owner_display_names: The display names of
+        the users that own the file. If the file is part of a team folder, the
+        display names of the team admins are also included. Absent if the owner
+        display names cannot be fetched.
+    :ivar sharing.SharedFileMetadata.owner_team: The team that owns the file.
+        This field is not present if the file is not owned by a team.
+    :ivar sharing.SharedFileMetadata.parent_shared_folder_id: The ID of the
+        parent shared folder. This field is present only if the file is
+        contained within a shared folder.
+    :ivar sharing.SharedFileMetadata.path_display: The cased path to be used for
+        display purposes only. In rare instances the casing will not correctly
+        match the user's filesystem, but this behavior will match the path
+        provided in the Core API v1. Absent for unmounted files.
+    :ivar sharing.SharedFileMetadata.path_lower: The lower-case full path of
+        this file. Absent for unmounted files.
+    :ivar sharing.SharedFileMetadata.permissions: The sharing permissions that
+        requesting user has on this file. This corresponds to the entries given
+        in ``GetFileMetadataBatchArg.actions`` or
+        ``GetFileMetadataArg.actions``.
+    :ivar sharing.SharedFileMetadata.policy: Policies governing this shared
+        file.
+    :ivar sharing.SharedFileMetadata.preview_url: URL for displaying a web
+        preview of the shared file.
+    :ivar sharing.SharedFileMetadata.time_invited: Timestamp indicating when the
+        current user was invited to this shared file. If the user was not
+        invited to the shared file, the timestamp will indicate when the user
+        was invited to the parent shared folder. This value may be absent.
     """
 
     __slots__ = [
@@ -12774,7 +12937,7 @@ class SharedFileMetadata(bb.Struct):
         """
         The current user's access level for this shared file.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_type_present:
             return self._access_type_value
@@ -12825,7 +12988,7 @@ class SharedFileMetadata(bb.Struct):
         first shared. Absent if the link already exists. This is for an
         unreleased feature so it may not be returned yet.
 
-        :rtype: ExpectedSharedContentLinkMetadata
+        :rtype: sharing.ExpectedSharedContentLinkMetadata
         """
         if self._expected_link_metadata_present:
             return self._expected_link_metadata_value
@@ -12852,7 +13015,7 @@ class SharedFileMetadata(bb.Struct):
         The metadata of the link associated for the file. This is for an
         unreleased feature so it may not be returned yet.
 
-        :rtype: SharedContentLinkMetadata
+        :rtype: sharing.SharedContentLinkMetadata
         """
         if self._link_metadata_present:
             return self._link_metadata_value
@@ -13040,7 +13203,7 @@ class SharedFileMetadata(bb.Struct):
         corresponds to the entries given in ``GetFileMetadataBatchArg.actions``
         or ``GetFileMetadataArg.actions``.
 
-        :rtype: list of [FilePermission]
+        :rtype: list of [sharing.FilePermission]
         """
         if self._permissions_present:
             return self._permissions_value
@@ -13066,7 +13229,7 @@ class SharedFileMetadata(bb.Struct):
         """
         Policies governing this shared file.
 
-        :rtype: FolderPolicy
+        :rtype: sharing.FolderPolicy
         """
         if self._policy_present:
             return self._policy_value
@@ -13167,11 +13330,13 @@ class SharedFolderAccessError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_id: This shared folder ID is invalid.
-    :ivar not_a_member: The user is not a member of the shared folder thus
-        cannot access it.
-    :ivar email_unverified: Never set.
-    :ivar unmounted: The shared folder is unmounted.
+    :ivar sharing.SharedFolderAccessError.invalid_id: This shared folder ID is
+        invalid.
+    :ivar sharing.SharedFolderAccessError.not_a_member: The user is not a member
+        of the shared folder thus cannot access it.
+    :ivar sharing.SharedFolderAccessError.email_unverified: Never set.
+    :ivar sharing.SharedFolderAccessError.unmounted: The shared folder is
+        unmounted.
     """
 
     _catch_all = 'other'
@@ -13240,11 +13405,13 @@ class SharedFolderMemberError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_dropbox_id: The target dropbox_id is invalid.
-    :ivar not_a_member: The target dropbox_id is not a member of the shared
-        folder.
-    :ivar MemberAccessLevelResult no_explicit_access: The target member only has
-        inherited access to the shared folder.
+    :ivar sharing.SharedFolderMemberError.invalid_dropbox_id: The target
+        dropbox_id is invalid.
+    :ivar sharing.SharedFolderMemberError.not_a_member: The target dropbox_id is
+        not a member of the shared folder.
+    :ivar MemberAccessLevelResult
+        sharing.SharedFolderMemberError.no_explicit_access: The target member
+        only has inherited access to the shared folder.
     """
 
     _catch_all = 'other'
@@ -13261,8 +13428,8 @@ class SharedFolderMemberError(bb.Union):
         Create an instance of this class set to the ``no_explicit_access`` tag
         with value ``val``.
 
-        :param MemberAccessLevelResult val:
-        :rtype: SharedFolderMemberError
+        :param sharing.MemberAccessLevelResult val:
+        :rtype: sharing.SharedFolderMemberError
         """
         return cls('no_explicit_access', val)
 
@@ -13304,7 +13471,7 @@ class SharedFolderMemberError(bb.Union):
 
         Only call this if :meth:`is_no_explicit_access` is true.
 
-        :rtype: MemberAccessLevelResult
+        :rtype: sharing.MemberAccessLevelResult
         """
         if not self.is_no_explicit_access():
             raise AttributeError("tag 'no_explicit_access' not set")
@@ -13322,11 +13489,15 @@ class SharedFolderMembers(bb.Struct):
     """
     Shared folder user and group membership.
 
-    :ivar users: The list of user members of the shared folder.
-    :ivar groups: The list of group members of the shared folder.
-    :ivar invitees: The list of invitees to the shared folder.
-    :ivar cursor: Present if there are additional shared folder members that
-        have not been returned yet. Pass the cursor into
+    :ivar sharing.SharedFolderMembers.users: The list of user members of the
+        shared folder.
+    :ivar sharing.SharedFolderMembers.groups: The list of group members of the
+        shared folder.
+    :ivar sharing.SharedFolderMembers.invitees: The list of invitees to the
+        shared folder.
+    :ivar sharing.SharedFolderMembers.cursor: Present if there are additional
+        shared folder members that have not been returned yet. Pass the cursor
+        into
         :meth:`dropbox.dropbox.Dropbox.sharing_list_folder_members_continue` to
         list additional members.
     """
@@ -13371,7 +13542,7 @@ class SharedFolderMembers(bb.Struct):
         """
         The list of user members of the shared folder.
 
-        :rtype: list of [UserMembershipInfo]
+        :rtype: list of [sharing.UserMembershipInfo]
         """
         if self._users_present:
             return self._users_value
@@ -13394,7 +13565,7 @@ class SharedFolderMembers(bb.Struct):
         """
         The list of group members of the shared folder.
 
-        :rtype: list of [GroupMembershipInfo]
+        :rtype: list of [sharing.GroupMembershipInfo]
         """
         if self._groups_present:
             return self._groups_value
@@ -13417,7 +13588,7 @@ class SharedFolderMembers(bb.Struct):
         """
         The list of invitees to the shared folder.
 
-        :rtype: list of [InviteeMembershipInfo]
+        :rtype: list of [sharing.InviteeMembershipInfo]
         """
         if self._invitees_present:
             return self._invitees_value
@@ -13481,21 +13652,23 @@ class SharedFolderMetadataBase(bb.Struct):
     """
     Properties of the shared folder.
 
-    :ivar access_type: The current user's access level for this shared folder.
-    :ivar is_inside_team_folder: Whether this folder is inside of a team folder.
-    :ivar is_team_folder: Whether this folder is a `team folder
-        <https://www.dropbox.com/en/help/986>`_.
-    :ivar owner_display_names: The display names of the users that own the
-        folder. If the folder is part of a team folder, the display names of the
-        team admins are also included. Absent if the owner display names cannot
-        be fetched.
-    :ivar owner_team: The team that owns the folder. This field is not present
-        if the folder is not owned by a team.
-    :ivar parent_shared_folder_id: The ID of the parent shared folder. This
-        field is present only if the folder is contained within another shared
-        folder.
-    :ivar path_lower: The lower-cased full path of this shared folder. Absent
-        for unmounted folders.
+    :ivar sharing.SharedFolderMetadataBase.access_type: The current user's
+        access level for this shared folder.
+    :ivar sharing.SharedFolderMetadataBase.is_inside_team_folder: Whether this
+        folder is inside of a team folder.
+    :ivar sharing.SharedFolderMetadataBase.is_team_folder: Whether this folder
+        is a `team folder <https://www.dropbox.com/en/help/986>`_.
+    :ivar sharing.SharedFolderMetadataBase.owner_display_names: The display
+        names of the users that own the folder. If the folder is part of a team
+        folder, the display names of the team admins are also included. Absent
+        if the owner display names cannot be fetched.
+    :ivar sharing.SharedFolderMetadataBase.owner_team: The team that owns the
+        folder. This field is not present if the folder is not owned by a team.
+    :ivar sharing.SharedFolderMetadataBase.parent_shared_folder_id: The ID of
+        the parent shared folder. This field is present only if the folder is
+        contained within another shared folder.
+    :ivar sharing.SharedFolderMetadataBase.path_lower: The lower-cased full path
+        of this shared folder. Absent for unmounted folders.
     """
 
     __slots__ = [
@@ -13559,7 +13732,7 @@ class SharedFolderMetadataBase(bb.Struct):
         """
         The current user's access level for this shared folder.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_type_present:
             return self._access_type_value
@@ -13753,20 +13926,23 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
     """
     The metadata which includes basic information about the shared folder.
 
-    :ivar link_metadata: The metadata of the shared content link to this shared
-        folder. Absent if there is no link on the folder. This is for an
-        unreleased feature so it may not be returned yet.
-    :ivar name: The name of the this shared folder.
-    :ivar permissions: Actions the current user may perform on the folder and
-        its contents. The set of permissions corresponds to the FolderActions in
-        the request.
-    :ivar policy: Policies governing this shared folder.
-    :ivar preview_url: URL for displaying a web preview of the shared folder.
-    :ivar shared_folder_id: The ID of the shared folder.
-    :ivar time_invited: Timestamp indicating when the current user was invited
-        to this shared folder.
-    :ivar access_inheritance: Whether the folder inherits its members from its
-        parent.
+    :ivar sharing.SharedFolderMetadata.link_metadata: The metadata of the shared
+        content link to this shared folder. Absent if there is no link on the
+        folder. This is for an unreleased feature so it may not be returned yet.
+    :ivar sharing.SharedFolderMetadata.name: The name of the this shared folder.
+    :ivar sharing.SharedFolderMetadata.permissions: Actions the current user may
+        perform on the folder and its contents. The set of permissions
+        corresponds to the FolderActions in the request.
+    :ivar sharing.SharedFolderMetadata.policy: Policies governing this shared
+        folder.
+    :ivar sharing.SharedFolderMetadata.preview_url: URL for displaying a web
+        preview of the shared folder.
+    :ivar sharing.SharedFolderMetadata.shared_folder_id: The ID of the shared
+        folder.
+    :ivar sharing.SharedFolderMetadata.time_invited: Timestamp indicating when
+        the current user was invited to this shared folder.
+    :ivar sharing.SharedFolderMetadata.access_inheritance: Whether the folder
+        inherits its members from its parent.
     """
 
     __slots__ = [
@@ -13853,7 +14029,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
         there is no link on the folder. This is for an unreleased feature so it
         may not be returned yet.
 
-        :rtype: SharedContentLinkMetadata
+        :rtype: sharing.SharedContentLinkMetadata
         """
         if self._link_metadata_present:
             return self._link_metadata_value
@@ -13903,7 +14079,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
         Actions the current user may perform on the folder and its contents. The
         set of permissions corresponds to the FolderActions in the request.
 
-        :rtype: list of [FolderPermission]
+        :rtype: list of [sharing.FolderPermission]
         """
         if self._permissions_present:
             return self._permissions_value
@@ -13929,7 +14105,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
         """
         Policies governing this shared folder.
 
-        :rtype: FolderPolicy
+        :rtype: sharing.FolderPolicy
         """
         if self._policy_present:
             return self._policy_value
@@ -14022,7 +14198,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
         """
         Whether the folder inherits its members from its parent.
 
-        :rtype: AccessInheritance
+        :rtype: sharing.AccessInheritance
         """
         if self._access_inheritance_present:
             return self._access_inheritance_value
@@ -14070,11 +14246,16 @@ class SharedLinkAccessFailureReason(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar login_required: User is not logged in.
-    :ivar email_verify_required: User's email is not verified.
-    :ivar password_required: The link is password protected.
-    :ivar team_only: Access is allowed for team members only.
-    :ivar owner_only: Access is allowed for the shared link's owner only.
+    :ivar sharing.SharedLinkAccessFailureReason.login_required: User is not
+        logged in.
+    :ivar sharing.SharedLinkAccessFailureReason.email_verify_required: User's
+        email is not verified.
+    :ivar sharing.SharedLinkAccessFailureReason.password_required: The link is
+        password protected.
+    :ivar sharing.SharedLinkAccessFailureReason.team_only: Access is allowed for
+        team members only.
+    :ivar sharing.SharedLinkAccessFailureReason.owner_only: Access is allowed
+        for the shared link's owner only.
     """
 
     _catch_all = 'other'
@@ -14155,9 +14336,11 @@ class SharedLinkPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar anyone: Links can be shared with anyone.
-    :ivar team: Links can be shared with anyone on the same team as the owner.
-    :ivar members: Links can only be shared among members of the shared folder.
+    :ivar sharing.SharedLinkPolicy.anyone: Links can be shared with anyone.
+    :ivar sharing.SharedLinkPolicy.team: Links can be shared with anyone on the
+        same team as the owner.
+    :ivar sharing.SharedLinkPolicy.members: Links can only be shared among
+        members of the shared folder.
     """
 
     _catch_all = 'other'
@@ -14212,12 +14395,13 @@ SharedLinkPolicy_validator = bv.Union(SharedLinkPolicy)
 
 class SharedLinkSettings(bb.Struct):
     """
-    :ivar requested_visibility: The requested access for this shared link.
-    :ivar link_password: If ``requested_visibility`` is
-        ``RequestedVisibility.password`` this is needed to specify the password
-        to access the link.
-    :ivar expires: Expiration time of the shared link. By default the link won't
-        expire.
+    :ivar sharing.SharedLinkSettings.requested_visibility: The requested access
+        for this shared link.
+    :ivar sharing.SharedLinkSettings.link_password: If ``requested_visibility``
+        is ``RequestedVisibility.password`` this is needed to specify the
+        password to access the link.
+    :ivar sharing.SharedLinkSettings.expires: Expiration time of the shared
+        link. By default the link won't expire.
     """
 
     __slots__ = [
@@ -14253,7 +14437,7 @@ class SharedLinkSettings(bb.Struct):
         """
         The requested access for this shared link.
 
-        :rtype: RequestedVisibility
+        :rtype: sharing.RequestedVisibility
         """
         if self._requested_visibility_present:
             return self._requested_visibility_value
@@ -14345,14 +14529,16 @@ class SharedLinkSettingsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_settings: The given settings are invalid (for example, all
-        attributes of the :class:`SharedLinkSettings` are empty, the requested
-        visibility is ``RequestedVisibility.password`` but the
+    :ivar sharing.SharedLinkSettingsError.invalid_settings: The given settings
+        are invalid (for example, all attributes of the
+        :class:`SharedLinkSettings` are empty, the requested visibility is
+        ``RequestedVisibility.password`` but the
         ``SharedLinkSettings.link_password`` is missing,
         ``SharedLinkSettings.expires`` is set to the past, etc.).
-    :ivar not_authorized: User is not allowed to modify the settings of this
-        link. Note that basic users can only set ``RequestedVisibility.public``
-        as the ``SharedLinkSettings.requested_visibility`` and cannot set
+    :ivar sharing.SharedLinkSettingsError.not_authorized: User is not allowed to
+        modify the settings of this link. Note that basic users can only set
+        ``RequestedVisibility.public`` as the
+        ``SharedLinkSettings.requested_visibility`` and cannot set
         ``SharedLinkSettings.expires``.
     """
 
@@ -14394,15 +14580,16 @@ class SharingFileAccessError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar no_permission: Current user does not have sufficient privileges to
-        perform the desired action.
-    :ivar invalid_file: File specified was not found.
-    :ivar is_folder: A folder can't be shared this way. Use folder sharing or a
-        shared link instead.
-    :ivar inside_public_folder: A file inside a public folder can't be shared
-        this way. Use a public link instead.
-    :ivar inside_osx_package: A Mac OS X package can't be shared this way. Use a
-        shared link instead.
+    :ivar sharing.SharingFileAccessError.no_permission: Current user does not
+        have sufficient privileges to perform the desired action.
+    :ivar sharing.SharingFileAccessError.invalid_file: File specified was not
+        found.
+    :ivar sharing.SharingFileAccessError.is_folder: A folder can't be shared
+        this way. Use folder sharing or a shared link instead.
+    :ivar sharing.SharingFileAccessError.inside_public_folder: A file inside a
+        public folder can't be shared this way. Use a public link instead.
+    :ivar sharing.SharingFileAccessError.inside_osx_package: A Mac OS X package
+        can't be shared this way. Use a shared link instead.
     """
 
     _catch_all = 'other'
@@ -14483,8 +14670,8 @@ class SharingUserError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar email_unverified: The current user must verify the account e-mail
-        address before performing this action.
+    :ivar sharing.SharingUserError.email_unverified: The current user must
+        verify the account e-mail address before performing this action.
     """
 
     _catch_all = 'other'
@@ -14521,10 +14708,11 @@ class TeamMemberInfo(bb.Struct):
     """
     Information about a team member.
 
-    :ivar team_info: Information about the member's team.
-    :ivar display_name: The display name of the user.
-    :ivar member_id: ID of user as a member of a team. This field will only be
-        present if the member is in the same team as current user.
+    :ivar sharing.TeamMemberInfo.team_info: Information about the member's team.
+    :ivar sharing.TeamMemberInfo.display_name: The display name of the user.
+    :ivar sharing.TeamMemberInfo.member_id: ID of user as a member of a team.
+        This field will only be present if the member is in the same team as
+        current user.
     """
 
     __slots__ = [
@@ -14642,8 +14830,10 @@ TeamMemberInfo_validator = bv.Struct(TeamMemberInfo)
 
 class TransferFolderArg(bb.Struct):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar to_dropbox_id: A account or team member ID to transfer ownership to.
+    :ivar sharing.TransferFolderArg.shared_folder_id: The ID for the shared
+        folder.
+    :ivar sharing.TransferFolderArg.to_dropbox_id: A account or team member ID
+        to transfer ownership to.
     """
 
     __slots__ = [
@@ -14730,16 +14920,18 @@ class TransferFolderError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_dropbox_id: ``TransferFolderArg.to_dropbox_id`` is invalid.
-    :ivar new_owner_not_a_member: The new designated owner is not currently a
-        member of the shared folder.
-    :ivar new_owner_unmounted: The new designated owner has not added the folder
-        to their Dropbox.
-    :ivar new_owner_email_unverified: The new designated owner's e-mail address
-        is unverified.
-    :ivar team_folder: This action cannot be performed on a team shared folder.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
+    :ivar sharing.TransferFolderError.invalid_dropbox_id:
+        ``TransferFolderArg.to_dropbox_id`` is invalid.
+    :ivar sharing.TransferFolderError.new_owner_not_a_member: The new designated
+        owner is not currently a member of the shared folder.
+    :ivar sharing.TransferFolderError.new_owner_unmounted: The new designated
+        owner has not added the folder to their Dropbox.
+    :ivar sharing.TransferFolderError.new_owner_email_unverified: The new
+        designated owner's e-mail address is unverified.
+    :ivar sharing.TransferFolderError.team_folder: This action cannot be
+        performed on a team shared folder.
+    :ivar sharing.TransferFolderError.no_permission: The current user does not
+        have permission to perform this action.
     """
 
     _catch_all = 'other'
@@ -14764,8 +14956,8 @@ class TransferFolderError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: TransferFolderError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.TransferFolderError
         """
         return cls('access_error', val)
 
@@ -14837,7 +15029,7 @@ class TransferFolderError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -14853,7 +15045,8 @@ TransferFolderError_validator = bv.Union(TransferFolderError)
 
 class UnmountFolderArg(bb.Struct):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
+    :ivar sharing.UnmountFolderArg.shared_folder_id: The ID for the shared
+        folder.
     """
 
     __slots__ = [
@@ -14909,11 +15102,12 @@ class UnmountFolderError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
-    :ivar not_unmountable: The shared folder can't be unmounted. One example
-        where this can occur is when the shared folder's parent folder is also a
-        shared folder that resides in the current user's Dropbox.
+    :ivar sharing.UnmountFolderError.no_permission: The current user does not
+        have permission to perform this action.
+    :ivar sharing.UnmountFolderError.not_unmountable: The shared folder can't be
+        unmounted. One example where this can occur is when the shared folder's
+        parent folder is also a shared folder that resides in the current user's
+        Dropbox.
     """
 
     _catch_all = 'other'
@@ -14930,8 +15124,8 @@ class UnmountFolderError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: UnmountFolderError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.UnmountFolderError
         """
         return cls('access_error', val)
 
@@ -14971,7 +15165,7 @@ class UnmountFolderError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -14989,7 +15183,7 @@ class UnshareFileArg(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.sharing_unshare_file`.
 
-    :ivar file: The file to unshare.
+    :ivar sharing.UnshareFileArg.file: The file to unshare.
     """
 
     __slots__ = [
@@ -15058,8 +15252,8 @@ class UnshareFileError(bb.Union):
         Create an instance of this class set to the ``user_error`` tag with
         value ``val``.
 
-        :param SharingUserError val:
-        :rtype: UnshareFileError
+        :param sharing.SharingUserError val:
+        :rtype: sharing.UnshareFileError
         """
         return cls('user_error', val)
 
@@ -15069,8 +15263,8 @@ class UnshareFileError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharingFileAccessError val:
-        :rtype: UnshareFileError
+        :param sharing.SharingFileAccessError val:
+        :rtype: sharing.UnshareFileError
         """
         return cls('access_error', val)
 
@@ -15102,7 +15296,7 @@ class UnshareFileError(bb.Union):
         """
         Only call this if :meth:`is_user_error` is true.
 
-        :rtype: SharingUserError
+        :rtype: sharing.SharingUserError
         """
         if not self.is_user_error():
             raise AttributeError("tag 'user_error' not set")
@@ -15112,7 +15306,7 @@ class UnshareFileError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharingFileAccessError
+        :rtype: sharing.SharingFileAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -15128,11 +15322,12 @@ UnshareFileError_validator = bv.Union(UnshareFileError)
 
 class UnshareFolderArg(bb.Struct):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar leave_a_copy: If true, members of this shared folder will get a copy
-        of this folder after it's unshared. Otherwise, it will be removed from
-        their Dropbox. The current user, who is an owner, will always retain
-        their copy.
+    :ivar sharing.UnshareFolderArg.shared_folder_id: The ID for the shared
+        folder.
+    :ivar sharing.UnshareFolderArg.leave_a_copy: If true, members of this shared
+        folder will get a copy of this folder after it's unshared. Otherwise, it
+        will be removed from their Dropbox. The current user, who is an owner,
+        will always retain their copy.
     """
 
     __slots__ = [
@@ -15221,10 +15416,12 @@ class UnshareFolderError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_folder: This action cannot be performed on a team shared folder.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
-    :ivar too_many_files: This shared folder has too many files to be unshared.
+    :ivar sharing.UnshareFolderError.team_folder: This action cannot be
+        performed on a team shared folder.
+    :ivar sharing.UnshareFolderError.no_permission: The current user does not
+        have permission to perform this action.
+    :ivar sharing.UnshareFolderError.too_many_files: This shared folder has too
+        many files to be unshared.
     """
 
     _catch_all = 'other'
@@ -15243,8 +15440,8 @@ class UnshareFolderError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: UnshareFolderError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.UnshareFolderError
         """
         return cls('access_error', val)
 
@@ -15292,7 +15489,7 @@ class UnshareFolderError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -15338,11 +15535,13 @@ UpdateFileMemberArgs_validator = bv.Struct(UpdateFileMemberArgs)
 
 class UpdateFolderMemberArg(bb.Struct):
     """
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar member: The member of the shared folder to update.  Only the
-        ``MemberSelector.dropbox_id`` may be set at this time.
-    :ivar access_level: The new access level for ``member``.
-        ``AccessLevel.owner`` is disallowed.
+    :ivar sharing.UpdateFolderMemberArg.shared_folder_id: The ID for the shared
+        folder.
+    :ivar sharing.UpdateFolderMemberArg.member: The member of the shared folder
+        to update.  Only the ``MemberSelector.dropbox_id`` may be set at this
+        time.
+    :ivar sharing.UpdateFolderMemberArg.access_level: The new access level for
+        ``member``. ``AccessLevel.owner`` is disallowed.
     """
 
     __slots__ = [
@@ -15402,7 +15601,7 @@ class UpdateFolderMemberArg(bb.Struct):
         The member of the shared folder to update.  Only the
         ``MemberSelector.dropbox_id`` may be set at this time.
 
-        :rtype: MemberSelector
+        :rtype: sharing.MemberSelector
         """
         if self._member_present:
             return self._member_value
@@ -15426,7 +15625,7 @@ class UpdateFolderMemberArg(bb.Struct):
         The new access level for ``member``. ``AccessLevel.owner`` is
         disallowed.
 
-        :rtype: AccessLevel
+        :rtype: sharing.AccessLevel
         """
         if self._access_level_present:
             return self._access_level_value
@@ -15462,15 +15661,16 @@ class UpdateFolderMemberError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar AddFolderMemberError no_explicit_access: If updating the access type
-        required the member to be added to the shared folder and there was an
-        error when adding the member.
-    :ivar insufficient_plan: The current user's account doesn't support this
-        action. An example of this is when downgrading a member from editor to
-        viewer. This action can only be performed by users that have upgraded to
-        a Pro or Business plan.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
+    :ivar AddFolderMemberError
+        sharing.UpdateFolderMemberError.no_explicit_access: If updating the
+        access type required the member to be added to the shared folder and
+        there was an error when adding the member.
+    :ivar sharing.UpdateFolderMemberError.insufficient_plan: The current user's
+        account doesn't support this action. An example of this is when
+        downgrading a member from editor to viewer. This action can only be
+        performed by users that have upgraded to a Pro or Business plan.
+    :ivar sharing.UpdateFolderMemberError.no_permission: The current user does
+        not have permission to perform this action.
     """
 
     _catch_all = 'other'
@@ -15487,8 +15687,8 @@ class UpdateFolderMemberError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: UpdateFolderMemberError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.UpdateFolderMemberError
         """
         return cls('access_error', val)
 
@@ -15498,8 +15698,8 @@ class UpdateFolderMemberError(bb.Union):
         Create an instance of this class set to the ``member_error`` tag with
         value ``val``.
 
-        :param SharedFolderMemberError val:
-        :rtype: UpdateFolderMemberError
+        :param sharing.SharedFolderMemberError val:
+        :rtype: sharing.UpdateFolderMemberError
         """
         return cls('member_error', val)
 
@@ -15509,8 +15709,8 @@ class UpdateFolderMemberError(bb.Union):
         Create an instance of this class set to the ``no_explicit_access`` tag
         with value ``val``.
 
-        :param AddFolderMemberError val:
-        :rtype: UpdateFolderMemberError
+        :param sharing.AddFolderMemberError val:
+        :rtype: sharing.UpdateFolderMemberError
         """
         return cls('no_explicit_access', val)
 
@@ -15566,7 +15766,7 @@ class UpdateFolderMemberError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -15576,7 +15776,7 @@ class UpdateFolderMemberError(bb.Union):
         """
         Only call this if :meth:`is_member_error` is true.
 
-        :rtype: SharedFolderMemberError
+        :rtype: sharing.SharedFolderMemberError
         """
         if not self.is_member_error():
             raise AttributeError("tag 'member_error' not set")
@@ -15589,7 +15789,7 @@ class UpdateFolderMemberError(bb.Union):
 
         Only call this if :meth:`is_no_explicit_access` is true.
 
-        :rtype: AddFolderMemberError
+        :rtype: sharing.AddFolderMemberError
         """
         if not self.is_no_explicit_access():
             raise AttributeError("tag 'no_explicit_access' not set")
@@ -15607,21 +15807,24 @@ class UpdateFolderPolicyArg(bb.Struct):
     """
     If any of the policies are unset, then they retain their current setting.
 
-    :ivar shared_folder_id: The ID for the shared folder.
-    :ivar member_policy: Who can be a member of this shared folder. Only
-        applicable if the current user is on a team.
-    :ivar acl_update_policy: Who can add and remove members of this shared
+    :ivar sharing.UpdateFolderPolicyArg.shared_folder_id: The ID for the shared
         folder.
-    :ivar viewer_info_policy: Who can enable/disable viewer info for this shared
-        folder.
-    :ivar shared_link_policy: The policy to apply to shared links created for
-        content inside this shared folder. The current user must be on a team to
-        set this policy to ``SharedLinkPolicy.members``.
-    :ivar link_settings: Settings on the link for this folder.
-    :ivar actions: A list of `FolderAction`s corresponding to
-        `FolderPermission`s that should appear in the  response's
-        ``SharedFolderMetadata.permissions`` field describing the actions the
-        authenticated user can perform on the folder.
+    :ivar sharing.UpdateFolderPolicyArg.member_policy: Who can be a member of
+        this shared folder. Only applicable if the current user is on a team.
+    :ivar sharing.UpdateFolderPolicyArg.acl_update_policy: Who can add and
+        remove members of this shared folder.
+    :ivar sharing.UpdateFolderPolicyArg.viewer_info_policy: Who can
+        enable/disable viewer info for this shared folder.
+    :ivar sharing.UpdateFolderPolicyArg.shared_link_policy: The policy to apply
+        to shared links created for content inside this shared folder. The
+        current user must be on a team to set this policy to
+        ``SharedLinkPolicy.members``.
+    :ivar sharing.UpdateFolderPolicyArg.link_settings: Settings on the link for
+        this folder.
+    :ivar sharing.UpdateFolderPolicyArg.actions: A list of `FolderAction`s
+        corresponding to `FolderPermission`s that should appear in the
+        response's ``SharedFolderMetadata.permissions`` field describing the
+        actions the  authenticated user can perform on the folder.
     """
 
     __slots__ = [
@@ -15709,7 +15912,7 @@ class UpdateFolderPolicyArg(bb.Struct):
         Who can be a member of this shared folder. Only applicable if the
         current user is on a team.
 
-        :rtype: MemberPolicy
+        :rtype: sharing.MemberPolicy
         """
         if self._member_policy_present:
             return self._member_policy_value
@@ -15735,7 +15938,7 @@ class UpdateFolderPolicyArg(bb.Struct):
         """
         Who can add and remove members of this shared folder.
 
-        :rtype: AclUpdatePolicy
+        :rtype: sharing.AclUpdatePolicy
         """
         if self._acl_update_policy_present:
             return self._acl_update_policy_value
@@ -15761,7 +15964,7 @@ class UpdateFolderPolicyArg(bb.Struct):
         """
         Who can enable/disable viewer info for this shared folder.
 
-        :rtype: ViewerInfoPolicy
+        :rtype: sharing.ViewerInfoPolicy
         """
         if self._viewer_info_policy_present:
             return self._viewer_info_policy_value
@@ -15789,7 +15992,7 @@ class UpdateFolderPolicyArg(bb.Struct):
         shared folder. The current user must be on a team to set this policy to
         ``SharedLinkPolicy.members``.
 
-        :rtype: SharedLinkPolicy
+        :rtype: sharing.SharedLinkPolicy
         """
         if self._shared_link_policy_present:
             return self._shared_link_policy_value
@@ -15815,7 +16018,7 @@ class UpdateFolderPolicyArg(bb.Struct):
         """
         Settings on the link for this folder.
 
-        :rtype: LinkSettings
+        :rtype: sharing.LinkSettings
         """
         if self._link_settings_present:
             return self._link_settings_value
@@ -15844,7 +16047,7 @@ class UpdateFolderPolicyArg(bb.Struct):
         field describing the actions the  authenticated user can perform on the
         folder.
 
-        :rtype: list of [FolderAction]
+        :rtype: list of [sharing.FolderAction]
         """
         if self._actions_present:
             return self._actions_value
@@ -15887,15 +16090,18 @@ class UpdateFolderPolicyError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar not_on_team: ``UpdateFolderPolicyArg.member_policy`` was set even
-        though user is not on a team.
-    :ivar team_policy_disallows_member_policy: Team policy is more restrictive
-        than ``ShareFolderArg.member_policy``.
-    :ivar disallowed_shared_link_policy: The current account is not allowed to
-        select the specified ``ShareFolderArg.shared_link_policy``.
-    :ivar no_permission: The current user does not have permission to perform
-        this action.
-    :ivar team_folder: This action cannot be performed on a team shared folder.
+    :ivar sharing.UpdateFolderPolicyError.not_on_team:
+        ``UpdateFolderPolicyArg.member_policy`` was set even though user is not
+        on a team.
+    :ivar sharing.UpdateFolderPolicyError.team_policy_disallows_member_policy:
+        Team policy is more restrictive than ``ShareFolderArg.member_policy``.
+    :ivar sharing.UpdateFolderPolicyError.disallowed_shared_link_policy: The
+        current account is not allowed to select the specified
+        ``ShareFolderArg.shared_link_policy``.
+    :ivar sharing.UpdateFolderPolicyError.no_permission: The current user does
+        not have permission to perform this action.
+    :ivar sharing.UpdateFolderPolicyError.team_folder: This action cannot be
+        performed on a team shared folder.
     """
 
     _catch_all = 'other'
@@ -15918,8 +16124,8 @@ class UpdateFolderPolicyError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param SharedFolderAccessError val:
-        :rtype: UpdateFolderPolicyError
+        :param sharing.SharedFolderAccessError val:
+        :rtype: sharing.UpdateFolderPolicyError
         """
         return cls('access_error', val)
 
@@ -15983,7 +16189,7 @@ class UpdateFolderPolicyError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: SharedFolderAccessError
+        :rtype: sharing.SharedFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -16001,7 +16207,8 @@ class UserMembershipInfo(MembershipInfo):
     """
     The information about a user member of the shared content.
 
-    :ivar user: The account information for the membership user.
+    :ivar sharing.UserMembershipInfo.user: The account information for the
+        membership user.
     """
 
     __slots__ = [
@@ -16031,7 +16238,7 @@ class UserMembershipInfo(MembershipInfo):
         """
         The account information for the membership user.
 
-        :rtype: UserInfo
+        :rtype: sharing.UserInfo
         """
         if self._user_present:
             return self._user_value
@@ -16068,10 +16275,10 @@ class UserFileMembershipInfo(UserMembershipInfo):
     The information about a user member of the shared content with an appended
     last seen timestamp.
 
-    :ivar time_last_seen: The UTC timestamp of when the user has last seen the
-        content, if they have.
-    :ivar platform_type: The platform on which the user has last seen the
-        content, or unknown.
+    :ivar sharing.UserFileMembershipInfo.time_last_seen: The UTC timestamp of
+        when the user has last seen the content, if they have.
+    :ivar sharing.UserFileMembershipInfo.platform_type: The platform on which
+        the user has last seen the content, or unknown.
     """
 
     __slots__ = [
@@ -16181,12 +16388,13 @@ class UserInfo(bb.Struct):
     :meth:`dropbox.dropbox.Dropbox.sharing_users_account_batch` to obtain more
     detailed information.
 
-    :ivar account_id: The account ID of the user.
-    :ivar email: Email address of user.
-    :ivar display_name: The display name of the user.
-    :ivar same_team: If the user is in the same team as current user.
-    :ivar team_member_id: The team member ID of the shared folder member. Only
-        present if ``same_team`` is true.
+    :ivar sharing.UserInfo.account_id: The account ID of the user.
+    :ivar sharing.UserInfo.email: Email address of user.
+    :ivar sharing.UserInfo.display_name: The display name of the user.
+    :ivar sharing.UserInfo.same_team: If the user is in the same team as current
+        user.
+    :ivar sharing.UserInfo.team_member_id: The team member ID of the shared
+        folder member. Only present if ``same_team`` is true.
     """
 
     __slots__ = [
@@ -16370,8 +16578,10 @@ class ViewerInfoPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar enabled: Viewer information is available on this file.
-    :ivar disabled: Viewer information is disabled on this file.
+    :ivar sharing.ViewerInfoPolicy.enabled: Viewer information is available on
+        this file.
+    :ivar sharing.ViewerInfoPolicy.disabled: Viewer information is disabled on
+        this file.
     """
 
     _catch_all = 'other'
@@ -16424,16 +16634,17 @@ class Visibility(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar public: Anyone who has received the link can access it. No login
+    :ivar sharing.Visibility.public: Anyone who has received the link can access
+        it. No login required.
+    :ivar sharing.Visibility.team_only: Only members of the same team can access
+        the link. Login is required.
+    :ivar sharing.Visibility.password: A link-specific password is required to
+        access the link. Login is not required.
+    :ivar sharing.Visibility.team_and_password: Only members of the same team
+        who have the link-specific password can access the link.
+    :ivar sharing.Visibility.shared_folder_only: Only members of the shared
+        folder containing the linked file can access the link. Login is
         required.
-    :ivar team_only: Only members of the same team can access the link. Login is
-        required.
-    :ivar password: A link-specific password is required to access the link.
-        Login is not required.
-    :ivar team_and_password: Only members of the same team who have the
-        link-specific password can access the link.
-    :ivar shared_folder_only: Only members of the shared folder containing the
-        linked file can access the link. Login is required.
     """
 
     _catch_all = 'other'

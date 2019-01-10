@@ -20,10 +20,13 @@ class PlatformType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar web: The content was viewed on the web.
-    :ivar mobile: The content was viewed on a mobile client.
-    :ivar desktop: The content was viewed on a desktop client.
-    :ivar unknown: The content was viewed on an unknown platform.
+    :ivar seen_state.PlatformType.web: The content was viewed on the web.
+    :ivar seen_state.PlatformType.mobile: The content was viewed on a mobile
+        client.
+    :ivar seen_state.PlatformType.desktop: The content was viewed on a desktop
+        client.
+    :ivar seen_state.PlatformType.unknown: The content was viewed on an unknown
+        platform.
     """
 
     _catch_all = 'other'

@@ -41,11 +41,16 @@ class AccessMethodLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SessionLogInfo end_user: End user session details.
-    :ivar WebSessionLogInfo sign_in_as: Sign in as session details.
-    :ivar WebSessionLogInfo content_manager: Content manager session details.
-    :ivar WebSessionLogInfo admin_console: Admin console session details.
-    :ivar ApiSessionLogInfo api: Api session details.
+    :ivar SessionLogInfo team_log.AccessMethodLogInfo.end_user: End user session
+        details.
+    :ivar WebSessionLogInfo team_log.AccessMethodLogInfo.sign_in_as: Sign in as
+        session details.
+    :ivar WebSessionLogInfo team_log.AccessMethodLogInfo.content_manager:
+        Content manager session details.
+    :ivar WebSessionLogInfo team_log.AccessMethodLogInfo.admin_console: Admin
+        console session details.
+    :ivar ApiSessionLogInfo team_log.AccessMethodLogInfo.api: Api session
+        details.
     """
 
     _catch_all = 'other'
@@ -58,8 +63,8 @@ class AccessMethodLogInfo(bb.Union):
         Create an instance of this class set to the ``end_user`` tag with value
         ``val``.
 
-        :param SessionLogInfo val:
-        :rtype: AccessMethodLogInfo
+        :param team_log.SessionLogInfo val:
+        :rtype: team_log.AccessMethodLogInfo
         """
         return cls('end_user', val)
 
@@ -69,8 +74,8 @@ class AccessMethodLogInfo(bb.Union):
         Create an instance of this class set to the ``sign_in_as`` tag with
         value ``val``.
 
-        :param WebSessionLogInfo val:
-        :rtype: AccessMethodLogInfo
+        :param team_log.WebSessionLogInfo val:
+        :rtype: team_log.AccessMethodLogInfo
         """
         return cls('sign_in_as', val)
 
@@ -80,8 +85,8 @@ class AccessMethodLogInfo(bb.Union):
         Create an instance of this class set to the ``content_manager`` tag with
         value ``val``.
 
-        :param WebSessionLogInfo val:
-        :rtype: AccessMethodLogInfo
+        :param team_log.WebSessionLogInfo val:
+        :rtype: team_log.AccessMethodLogInfo
         """
         return cls('content_manager', val)
 
@@ -91,8 +96,8 @@ class AccessMethodLogInfo(bb.Union):
         Create an instance of this class set to the ``admin_console`` tag with
         value ``val``.
 
-        :param WebSessionLogInfo val:
-        :rtype: AccessMethodLogInfo
+        :param team_log.WebSessionLogInfo val:
+        :rtype: team_log.AccessMethodLogInfo
         """
         return cls('admin_console', val)
 
@@ -102,8 +107,8 @@ class AccessMethodLogInfo(bb.Union):
         Create an instance of this class set to the ``api`` tag with value
         ``val``.
 
-        :param ApiSessionLogInfo val:
-        :rtype: AccessMethodLogInfo
+        :param team_log.ApiSessionLogInfo val:
+        :rtype: team_log.AccessMethodLogInfo
         """
         return cls('api', val)
 
@@ -161,7 +166,7 @@ class AccessMethodLogInfo(bb.Union):
 
         Only call this if :meth:`is_end_user` is true.
 
-        :rtype: SessionLogInfo
+        :rtype: team_log.SessionLogInfo
         """
         if not self.is_end_user():
             raise AttributeError("tag 'end_user' not set")
@@ -173,7 +178,7 @@ class AccessMethodLogInfo(bb.Union):
 
         Only call this if :meth:`is_sign_in_as` is true.
 
-        :rtype: WebSessionLogInfo
+        :rtype: team_log.WebSessionLogInfo
         """
         if not self.is_sign_in_as():
             raise AttributeError("tag 'sign_in_as' not set")
@@ -185,7 +190,7 @@ class AccessMethodLogInfo(bb.Union):
 
         Only call this if :meth:`is_content_manager` is true.
 
-        :rtype: WebSessionLogInfo
+        :rtype: team_log.WebSessionLogInfo
         """
         if not self.is_content_manager():
             raise AttributeError("tag 'content_manager' not set")
@@ -197,7 +202,7 @@ class AccessMethodLogInfo(bb.Union):
 
         Only call this if :meth:`is_admin_console` is true.
 
-        :rtype: WebSessionLogInfo
+        :rtype: team_log.WebSessionLogInfo
         """
         if not self.is_admin_console():
             raise AttributeError("tag 'admin_console' not set")
@@ -209,7 +214,7 @@ class AccessMethodLogInfo(bb.Union):
 
         Only call this if :meth:`is_api` is true.
 
-        :rtype: ApiSessionLogInfo
+        :rtype: team_log.ApiSessionLogInfo
         """
         if not self.is_api():
             raise AttributeError("tag 'api' not set")
@@ -274,9 +279,11 @@ class AccountCaptureChangeAvailabilityDetails(bb.Struct):
     """
     Granted/revoked option to enable account capture on team domains.
 
-    :ivar new_value: New account capture availabilty value.
-    :ivar previous_value: Previous account capture availabilty value. Might be
-        missing due to historical data gap.
+    :ivar team_log.AccountCaptureChangeAvailabilityDetails.new_value: New
+        account capture availabilty value.
+    :ivar team_log.AccountCaptureChangeAvailabilityDetails.previous_value:
+        Previous account capture availabilty value. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -305,7 +312,7 @@ class AccountCaptureChangeAvailabilityDetails(bb.Struct):
         """
         New account capture availabilty value.
 
-        :rtype: AccountCaptureAvailability
+        :rtype: team_log.AccountCaptureAvailability
         """
         if self._new_value_present:
             return self._new_value_value
@@ -329,7 +336,7 @@ class AccountCaptureChangeAvailabilityDetails(bb.Struct):
         Previous account capture availabilty value. Might be missing due to
         historical data gap.
 
-        :rtype: AccountCaptureAvailability
+        :rtype: team_log.AccountCaptureAvailability
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -412,9 +419,10 @@ class AccountCaptureChangePolicyDetails(bb.Struct):
     """
     Changed account capture setting on team domain.
 
-    :ivar new_value: New account capture policy.
-    :ivar previous_value: Previous account capture policy. Might be missing due
-        to historical data gap.
+    :ivar team_log.AccountCaptureChangePolicyDetails.new_value: New account
+        capture policy.
+    :ivar team_log.AccountCaptureChangePolicyDetails.previous_value: Previous
+        account capture policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -443,7 +451,7 @@ class AccountCaptureChangePolicyDetails(bb.Struct):
         """
         New account capture policy.
 
-        :rtype: AccountCapturePolicy
+        :rtype: team_log.AccountCapturePolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -467,7 +475,7 @@ class AccountCaptureChangePolicyDetails(bb.Struct):
         Previous account capture policy. Might be missing due to historical data
         gap.
 
-        :rtype: AccountCapturePolicy
+        :rtype: team_log.AccountCapturePolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -550,7 +558,7 @@ class AccountCaptureMigrateAccountDetails(bb.Struct):
     """
     Account-captured user migrated account to team.
 
-    :ivar domain_name: Domain name.
+    :ivar team_log.AccountCaptureMigrateAccountDetails.domain_name: Domain name.
     """
 
     __slots__ = [
@@ -651,7 +659,8 @@ class AccountCaptureNotificationEmailsSentDetails(bb.Struct):
     """
     Sent proactive account capture email to all unmanaged members.
 
-    :ivar domain_name: Domain name.
+    :ivar team_log.AccountCaptureNotificationEmailsSentDetails.domain_name:
+        Domain name.
     """
 
     __slots__ = [
@@ -809,7 +818,8 @@ class AccountCaptureRelinquishAccountDetails(bb.Struct):
     """
     Account-captured user changed account email to personal email.
 
-    :ivar domain_name: Domain name.
+    :ivar team_log.AccountCaptureRelinquishAccountDetails.domain_name: Domain
+        name.
     """
 
     __slots__ = [
@@ -915,10 +925,10 @@ class ActionDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar JoinTeamDetails team_join_details: Additional information relevant
-        when a new member joins the team.
-    :ivar MemberRemoveActionType remove_action: Define how the user was removed
-        from the team.
+    :ivar JoinTeamDetails team_log.ActionDetails.team_join_details: Additional
+        information relevant when a new member joins the team.
+    :ivar MemberRemoveActionType team_log.ActionDetails.remove_action: Define
+        how the user was removed from the team.
     """
 
     _catch_all = 'other'
@@ -931,8 +941,8 @@ class ActionDetails(bb.Union):
         Create an instance of this class set to the ``team_join_details`` tag
         with value ``val``.
 
-        :param JoinTeamDetails val:
-        :rtype: ActionDetails
+        :param team_log.JoinTeamDetails val:
+        :rtype: team_log.ActionDetails
         """
         return cls('team_join_details', val)
 
@@ -942,8 +952,8 @@ class ActionDetails(bb.Union):
         Create an instance of this class set to the ``remove_action`` tag with
         value ``val``.
 
-        :param MemberRemoveActionType val:
-        :rtype: ActionDetails
+        :param team_log.MemberRemoveActionType val:
+        :rtype: team_log.ActionDetails
         """
         return cls('remove_action', val)
 
@@ -977,7 +987,7 @@ class ActionDetails(bb.Union):
 
         Only call this if :meth:`is_team_join_details` is true.
 
-        :rtype: JoinTeamDetails
+        :rtype: team_log.JoinTeamDetails
         """
         if not self.is_team_join_details():
             raise AttributeError("tag 'team_join_details' not set")
@@ -989,7 +999,7 @@ class ActionDetails(bb.Union):
 
         Only call this if :meth:`is_remove_action` is true.
 
-        :rtype: MemberRemoveActionType
+        :rtype: team_log.MemberRemoveActionType
         """
         if not self.is_remove_action():
             raise AttributeError("tag 'remove_action' not set")
@@ -1011,12 +1021,14 @@ class ActorLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserLogInfo user: The user who did the action.
-    :ivar UserLogInfo admin: The admin who did the action.
-    :ivar AppLogInfo app: The application who did the action.
-    :ivar ResellerLogInfo reseller: Action done by reseller.
-    :ivar dropbox: Action done by Dropbox.
-    :ivar anonymous: Anonymous actor.
+    :ivar UserLogInfo team_log.ActorLogInfo.user: The user who did the action.
+    :ivar UserLogInfo team_log.ActorLogInfo.admin: The admin who did the action.
+    :ivar AppLogInfo team_log.ActorLogInfo.app: The application who did the
+        action.
+    :ivar ResellerLogInfo team_log.ActorLogInfo.reseller: Action done by
+        reseller.
+    :ivar team_log.ActorLogInfo.dropbox: Action done by Dropbox.
+    :ivar team_log.ActorLogInfo.anonymous: Anonymous actor.
     """
 
     _catch_all = 'other'
@@ -1033,8 +1045,8 @@ class ActorLogInfo(bb.Union):
         Create an instance of this class set to the ``user`` tag with value
         ``val``.
 
-        :param UserLogInfo val:
-        :rtype: ActorLogInfo
+        :param team_log.UserLogInfo val:
+        :rtype: team_log.ActorLogInfo
         """
         return cls('user', val)
 
@@ -1044,8 +1056,8 @@ class ActorLogInfo(bb.Union):
         Create an instance of this class set to the ``admin`` tag with value
         ``val``.
 
-        :param UserLogInfo val:
-        :rtype: ActorLogInfo
+        :param team_log.UserLogInfo val:
+        :rtype: team_log.ActorLogInfo
         """
         return cls('admin', val)
 
@@ -1055,8 +1067,8 @@ class ActorLogInfo(bb.Union):
         Create an instance of this class set to the ``app`` tag with value
         ``val``.
 
-        :param AppLogInfo val:
-        :rtype: ActorLogInfo
+        :param team_log.AppLogInfo val:
+        :rtype: team_log.ActorLogInfo
         """
         return cls('app', val)
 
@@ -1066,8 +1078,8 @@ class ActorLogInfo(bb.Union):
         Create an instance of this class set to the ``reseller`` tag with value
         ``val``.
 
-        :param ResellerLogInfo val:
-        :rtype: ActorLogInfo
+        :param team_log.ResellerLogInfo val:
+        :rtype: team_log.ActorLogInfo
         """
         return cls('reseller', val)
 
@@ -1133,7 +1145,7 @@ class ActorLogInfo(bb.Union):
 
         Only call this if :meth:`is_user` is true.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if not self.is_user():
             raise AttributeError("tag 'user' not set")
@@ -1145,7 +1157,7 @@ class ActorLogInfo(bb.Union):
 
         Only call this if :meth:`is_admin` is true.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if not self.is_admin():
             raise AttributeError("tag 'admin' not set")
@@ -1157,7 +1169,7 @@ class ActorLogInfo(bb.Union):
 
         Only call this if :meth:`is_app` is true.
 
-        :rtype: AppLogInfo
+        :rtype: team_log.AppLogInfo
         """
         if not self.is_app():
             raise AttributeError("tag 'app' not set")
@@ -1169,7 +1181,7 @@ class ActorLogInfo(bb.Union):
 
         Only call this if :meth:`is_reseller` is true.
 
-        :rtype: ResellerLogInfo
+        :rtype: team_log.ResellerLogInfo
         """
         if not self.is_reseller():
             raise AttributeError("tag 'reseller' not set")
@@ -1400,7 +1412,7 @@ class ApiSessionLogInfo(bb.Struct):
     """
     Api session.
 
-    :ivar request_id: Api request ID.
+    :ivar team_log.ApiSessionLogInfo.request_id: Api request ID.
     """
 
     __slots__ = [
@@ -1454,7 +1466,7 @@ class AppLinkTeamDetails(bb.Struct):
     """
     Linked app for team.
 
-    :ivar app_info: Relevant application details.
+    :ivar team_log.AppLinkTeamDetails.app_info: Relevant application details.
     """
 
     __slots__ = [
@@ -1476,7 +1488,7 @@ class AppLinkTeamDetails(bb.Struct):
         """
         Relevant application details.
 
-        :rtype: AppLogInfo
+        :rtype: team_log.AppLogInfo
         """
         if self._app_info_present:
             return self._app_info_value
@@ -1555,7 +1567,7 @@ class AppLinkUserDetails(bb.Struct):
     """
     Linked app for member.
 
-    :ivar app_info: Relevant application details.
+    :ivar team_log.AppLinkUserDetails.app_info: Relevant application details.
     """
 
     __slots__ = [
@@ -1577,7 +1589,7 @@ class AppLinkUserDetails(bb.Struct):
         """
         Relevant application details.
 
-        :rtype: AppLogInfo
+        :rtype: team_log.AppLogInfo
         """
         if self._app_info_present:
             return self._app_info_value
@@ -1656,9 +1668,10 @@ class AppLogInfo(bb.Struct):
     """
     App's logged information.
 
-    :ivar app_id: App unique ID. Might be missing due to historical data gap.
-    :ivar display_name: App display name. Might be missing due to historical
-        data gap.
+    :ivar team_log.AppLogInfo.app_id: App unique ID. Might be missing due to
+        historical data gap.
+    :ivar team_log.AppLogInfo.display_name: App display name. Might be missing
+        due to historical data gap.
     """
 
     __slots__ = [
@@ -1749,7 +1762,7 @@ class AppUnlinkTeamDetails(bb.Struct):
     """
     Unlinked app for team.
 
-    :ivar app_info: Relevant application details.
+    :ivar team_log.AppUnlinkTeamDetails.app_info: Relevant application details.
     """
 
     __slots__ = [
@@ -1771,7 +1784,7 @@ class AppUnlinkTeamDetails(bb.Struct):
         """
         Relevant application details.
 
-        :rtype: AppLogInfo
+        :rtype: team_log.AppLogInfo
         """
         if self._app_info_present:
             return self._app_info_value
@@ -1850,7 +1863,7 @@ class AppUnlinkUserDetails(bb.Struct):
     """
     Unlinked app for member.
 
-    :ivar app_info: Relevant application details.
+    :ivar team_log.AppUnlinkUserDetails.app_info: Relevant application details.
     """
 
     __slots__ = [
@@ -1872,7 +1885,7 @@ class AppUnlinkUserDetails(bb.Struct):
         """
         Relevant application details.
 
-        :rtype: AppLogInfo
+        :rtype: team_log.AppLogInfo
         """
         if self._app_info_present:
             return self._app_info_value
@@ -1955,12 +1968,14 @@ class AssetLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar FileLogInfo file: File's details.
-    :ivar FolderLogInfo folder: Folder's details.
-    :ivar PaperDocumentLogInfo paper_document: Paper docuement's details.
-    :ivar PaperFolderLogInfo paper_folder: Paper folder's details.
-    :ivar ShowcaseDocumentLogInfo showcase_document: Showcase document's
+    :ivar FileLogInfo team_log.AssetLogInfo.file: File's details.
+    :ivar FolderLogInfo team_log.AssetLogInfo.folder: Folder's details.
+    :ivar PaperDocumentLogInfo team_log.AssetLogInfo.paper_document: Paper
+        docuement's details.
+    :ivar PaperFolderLogInfo team_log.AssetLogInfo.paper_folder: Paper folder's
         details.
+    :ivar ShowcaseDocumentLogInfo team_log.AssetLogInfo.showcase_document:
+        Showcase document's details.
     """
 
     _catch_all = 'other'
@@ -1973,8 +1988,8 @@ class AssetLogInfo(bb.Union):
         Create an instance of this class set to the ``file`` tag with value
         ``val``.
 
-        :param FileLogInfo val:
-        :rtype: AssetLogInfo
+        :param team_log.FileLogInfo val:
+        :rtype: team_log.AssetLogInfo
         """
         return cls('file', val)
 
@@ -1984,8 +1999,8 @@ class AssetLogInfo(bb.Union):
         Create an instance of this class set to the ``folder`` tag with value
         ``val``.
 
-        :param FolderLogInfo val:
-        :rtype: AssetLogInfo
+        :param team_log.FolderLogInfo val:
+        :rtype: team_log.AssetLogInfo
         """
         return cls('folder', val)
 
@@ -1995,8 +2010,8 @@ class AssetLogInfo(bb.Union):
         Create an instance of this class set to the ``paper_document`` tag with
         value ``val``.
 
-        :param PaperDocumentLogInfo val:
-        :rtype: AssetLogInfo
+        :param team_log.PaperDocumentLogInfo val:
+        :rtype: team_log.AssetLogInfo
         """
         return cls('paper_document', val)
 
@@ -2006,8 +2021,8 @@ class AssetLogInfo(bb.Union):
         Create an instance of this class set to the ``paper_folder`` tag with
         value ``val``.
 
-        :param PaperFolderLogInfo val:
-        :rtype: AssetLogInfo
+        :param team_log.PaperFolderLogInfo val:
+        :rtype: team_log.AssetLogInfo
         """
         return cls('paper_folder', val)
 
@@ -2017,8 +2032,8 @@ class AssetLogInfo(bb.Union):
         Create an instance of this class set to the ``showcase_document`` tag
         with value ``val``.
 
-        :param ShowcaseDocumentLogInfo val:
-        :rtype: AssetLogInfo
+        :param team_log.ShowcaseDocumentLogInfo val:
+        :rtype: team_log.AssetLogInfo
         """
         return cls('showcase_document', val)
 
@@ -2076,7 +2091,7 @@ class AssetLogInfo(bb.Union):
 
         Only call this if :meth:`is_file` is true.
 
-        :rtype: FileLogInfo
+        :rtype: team_log.FileLogInfo
         """
         if not self.is_file():
             raise AttributeError("tag 'file' not set")
@@ -2088,7 +2103,7 @@ class AssetLogInfo(bb.Union):
 
         Only call this if :meth:`is_folder` is true.
 
-        :rtype: FolderLogInfo
+        :rtype: team_log.FolderLogInfo
         """
         if not self.is_folder():
             raise AttributeError("tag 'folder' not set")
@@ -2100,7 +2115,7 @@ class AssetLogInfo(bb.Union):
 
         Only call this if :meth:`is_paper_document` is true.
 
-        :rtype: PaperDocumentLogInfo
+        :rtype: team_log.PaperDocumentLogInfo
         """
         if not self.is_paper_document():
             raise AttributeError("tag 'paper_document' not set")
@@ -2112,7 +2127,7 @@ class AssetLogInfo(bb.Union):
 
         Only call this if :meth:`is_paper_folder` is true.
 
-        :rtype: PaperFolderLogInfo
+        :rtype: team_log.PaperFolderLogInfo
         """
         if not self.is_paper_folder():
             raise AttributeError("tag 'paper_folder' not set")
@@ -2124,7 +2139,7 @@ class AssetLogInfo(bb.Union):
 
         Only call this if :meth:`is_showcase_document` is true.
 
-        :rtype: ShowcaseDocumentLogInfo
+        :rtype: team_log.ShowcaseDocumentLogInfo
         """
         if not self.is_showcase_document():
             raise AttributeError("tag 'showcase_document' not set")
@@ -2191,8 +2206,10 @@ class CameraUploadsPolicyChangedDetails(bb.Struct):
     """
     Changed camera uploads setting for team.
 
-    :ivar new_value: New camera uploads setting.
-    :ivar previous_value: Previous camera uploads setting.
+    :ivar team_log.CameraUploadsPolicyChangedDetails.new_value: New camera
+        uploads setting.
+    :ivar team_log.CameraUploadsPolicyChangedDetails.previous_value: Previous
+        camera uploads setting.
     """
 
     __slots__ = [
@@ -2221,7 +2238,7 @@ class CameraUploadsPolicyChangedDetails(bb.Struct):
         """
         New camera uploads setting.
 
-        :rtype: CameraUploadsPolicy
+        :rtype: team_log.CameraUploadsPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -2244,7 +2261,7 @@ class CameraUploadsPolicyChangedDetails(bb.Struct):
         """
         Previous camera uploads setting.
 
-        :rtype: CameraUploadsPolicy
+        :rtype: team_log.CameraUploadsPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -2324,13 +2341,13 @@ class Certificate(bb.Struct):
     """
     Certificate details.
 
-    :ivar subject: Certificate subject.
-    :ivar issuer: Certificate issuer.
-    :ivar issue_date: Certificate issue date.
-    :ivar expiration_date: Certificate expiration date.
-    :ivar serial_number: Certificate serial number.
-    :ivar sha1_fingerprint: Certificate sha1 fingerprint.
-    :ivar common_name: Certificate common name.
+    :ivar team_log.Certificate.subject: Certificate subject.
+    :ivar team_log.Certificate.issuer: Certificate issuer.
+    :ivar team_log.Certificate.issue_date: Certificate issue date.
+    :ivar team_log.Certificate.expiration_date: Certificate expiration date.
+    :ivar team_log.Certificate.serial_number: Certificate serial number.
+    :ivar team_log.Certificate.sha1_fingerprint: Certificate sha1 fingerprint.
+    :ivar team_log.Certificate.common_name: Certificate common name.
     """
 
     __slots__ = [
@@ -2573,7 +2590,7 @@ class CollectionShareDetails(bb.Struct):
     """
     Shared album.
 
-    :ivar album_name: Album name.
+    :ivar team_log.CollectionShareDetails.album_name: Album name.
     """
 
     __slots__ = [
@@ -2727,14 +2744,15 @@ class ContextLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar TeamMemberLogInfo team_member: Action was done on behalf of a team
-        member.
-    :ivar NonTeamMemberLogInfo non_team_member: Action was done on behalf of a
-        non team member.
-    :ivar anonymous: Anonymous context.
-    :ivar team: Action was done on behalf of the team.
-    :ivar TrustedNonTeamMemberLogInfo trusted_non_team_member: Action was done
-        on behalf of a trusted non team member.
+    :ivar TeamMemberLogInfo team_log.ContextLogInfo.team_member: Action was done
+        on behalf of a team member.
+    :ivar NonTeamMemberLogInfo team_log.ContextLogInfo.non_team_member: Action
+        was done on behalf of a non team member.
+    :ivar team_log.ContextLogInfo.anonymous: Anonymous context.
+    :ivar team_log.ContextLogInfo.team: Action was done on behalf of the team.
+    :ivar TrustedNonTeamMemberLogInfo
+        team_log.ContextLogInfo.trusted_non_team_member: Action was done on
+        behalf of a trusted non team member.
     """
 
     _catch_all = 'other'
@@ -2751,8 +2769,8 @@ class ContextLogInfo(bb.Union):
         Create an instance of this class set to the ``team_member`` tag with
         value ``val``.
 
-        :param TeamMemberLogInfo val:
-        :rtype: ContextLogInfo
+        :param team_log.TeamMemberLogInfo val:
+        :rtype: team_log.ContextLogInfo
         """
         return cls('team_member', val)
 
@@ -2762,8 +2780,8 @@ class ContextLogInfo(bb.Union):
         Create an instance of this class set to the ``non_team_member`` tag with
         value ``val``.
 
-        :param NonTeamMemberLogInfo val:
-        :rtype: ContextLogInfo
+        :param team_log.NonTeamMemberLogInfo val:
+        :rtype: team_log.ContextLogInfo
         """
         return cls('non_team_member', val)
 
@@ -2773,8 +2791,8 @@ class ContextLogInfo(bb.Union):
         Create an instance of this class set to the ``trusted_non_team_member``
         tag with value ``val``.
 
-        :param TrustedNonTeamMemberLogInfo val:
-        :rtype: ContextLogInfo
+        :param team_log.TrustedNonTeamMemberLogInfo val:
+        :rtype: team_log.ContextLogInfo
         """
         return cls('trusted_non_team_member', val)
 
@@ -2832,7 +2850,7 @@ class ContextLogInfo(bb.Union):
 
         Only call this if :meth:`is_team_member` is true.
 
-        :rtype: TeamMemberLogInfo
+        :rtype: team_log.TeamMemberLogInfo
         """
         if not self.is_team_member():
             raise AttributeError("tag 'team_member' not set")
@@ -2844,7 +2862,7 @@ class ContextLogInfo(bb.Union):
 
         Only call this if :meth:`is_non_team_member` is true.
 
-        :rtype: NonTeamMemberLogInfo
+        :rtype: team_log.NonTeamMemberLogInfo
         """
         if not self.is_non_team_member():
             raise AttributeError("tag 'non_team_member' not set")
@@ -2856,7 +2874,7 @@ class ContextLogInfo(bb.Union):
 
         Only call this if :meth:`is_trusted_non_team_member` is true.
 
-        :rtype: TrustedNonTeamMemberLogInfo
+        :rtype: team_log.TrustedNonTeamMemberLogInfo
         """
         if not self.is_trusted_non_team_member():
             raise AttributeError("tag 'trusted_non_team_member' not set")
@@ -2942,8 +2960,10 @@ class DataPlacementRestrictionChangePolicyDetails(bb.Struct):
     """
     Set restrictions on data center locations where team data resides.
 
-    :ivar previous_value: Previous placement restriction.
-    :ivar new_value: New placement restriction.
+    :ivar team_log.DataPlacementRestrictionChangePolicyDetails.previous_value:
+        Previous placement restriction.
+    :ivar team_log.DataPlacementRestrictionChangePolicyDetails.new_value: New
+        placement restriction.
     """
 
     __slots__ = [
@@ -2972,7 +2992,7 @@ class DataPlacementRestrictionChangePolicyDetails(bb.Struct):
         """
         Previous placement restriction.
 
-        :rtype: PlacementRestriction
+        :rtype: team_log.PlacementRestriction
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -2995,7 +3015,7 @@ class DataPlacementRestrictionChangePolicyDetails(bb.Struct):
         """
         New placement restriction.
 
-        :rtype: PlacementRestriction
+        :rtype: team_log.PlacementRestriction
         """
         if self._new_value_present:
             return self._new_value_value
@@ -3075,7 +3095,9 @@ class DataPlacementRestrictionSatisfyPolicyDetails(bb.Struct):
     """
     Completed restrictions on data center locations where team data resides.
 
-    :ivar placement_restriction: Placement restriction.
+    :ivar
+        team_log.DataPlacementRestrictionSatisfyPolicyDetails.placement_restriction:
+        Placement restriction.
     """
 
     __slots__ = [
@@ -3097,7 +3119,7 @@ class DataPlacementRestrictionSatisfyPolicyDetails(bb.Struct):
         """
         Placement restriction.
 
-        :rtype: PlacementRestriction
+        :rtype: team_log.PlacementRestriction
         """
         if self._placement_restriction_present:
             return self._placement_restriction_value
@@ -3176,12 +3198,12 @@ class DeviceSessionLogInfo(bb.Struct):
     """
     Device's session logged information.
 
-    :ivar ip_address: The IP address of the last activity from this session.
-        Might be missing due to historical data gap.
-    :ivar created: The time this session was created. Might be missing due to
-        historical data gap.
-    :ivar updated: The time of the last activity from this session. Might be
-        missing due to historical data gap.
+    :ivar team_log.DeviceSessionLogInfo.ip_address: The IP address of the last
+        activity from this session. Might be missing due to historical data gap.
+    :ivar team_log.DeviceSessionLogInfo.created: The time this session was
+        created. Might be missing due to historical data gap.
+    :ivar team_log.DeviceSessionLogInfo.updated: The time of the last activity
+        from this session. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -3309,14 +3331,19 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information about linked Dropbox desktop client sessions
 
-    :ivar session_info: Desktop session unique id. Might be missing due to
-        historical data gap.
-    :ivar host_name: Name of the hosting desktop.
-    :ivar client_type: The Dropbox desktop client type.
-    :ivar client_version: The Dropbox client version.
-    :ivar platform: Information on the hosting platform.
-    :ivar is_delete_on_unlink_supported: Whether itu2019s possible to delete all
-        of the account files upon unlinking.
+    :ivar team_log.DesktopDeviceSessionLogInfo.session_info: Desktop session
+        unique id. Might be missing due to historical data gap.
+    :ivar team_log.DesktopDeviceSessionLogInfo.host_name: Name of the hosting
+        desktop.
+    :ivar team_log.DesktopDeviceSessionLogInfo.client_type: The Dropbox desktop
+        client type.
+    :ivar team_log.DesktopDeviceSessionLogInfo.client_version: The Dropbox
+        client version.
+    :ivar team_log.DesktopDeviceSessionLogInfo.platform: Information on the
+        hosting platform.
+    :ivar team_log.DesktopDeviceSessionLogInfo.is_delete_on_unlink_supported:
+        Whether itu2019s possible to delete all of the account files upon
+        unlinking.
     """
 
     __slots__ = [
@@ -3379,7 +3406,7 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
         """
         Desktop session unique id. Might be missing due to historical data gap.
 
-        :rtype: DesktopSessionLogInfo
+        :rtype: team_log.DesktopSessionLogInfo
         """
         if self._session_info_present:
             return self._session_info_value
@@ -3541,7 +3568,8 @@ class SessionLogInfo(bb.Struct):
     """
     Session's logged information.
 
-    :ivar session_id: Session ID. Might be missing due to historical data gap.
+    :ivar team_log.SessionLogInfo.session_id: Session ID. Might be missing due
+        to historical data gap.
     """
 
     __slots__ = [
@@ -3623,10 +3651,12 @@ class DeviceApprovalsChangeDesktopPolicyDetails(bb.Struct):
     Set/removed limit on number of computers member can link to team Dropbox
     account.
 
-    :ivar new_value: New desktop device approvals policy. Might be missing due
-        to historical data gap.
-    :ivar previous_value: Previous desktop device approvals policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.DeviceApprovalsChangeDesktopPolicyDetails.new_value: New
+        desktop device approvals policy. Might be missing due to historical data
+        gap.
+    :ivar team_log.DeviceApprovalsChangeDesktopPolicyDetails.previous_value:
+        Previous desktop device approvals policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -3656,7 +3686,7 @@ class DeviceApprovalsChangeDesktopPolicyDetails(bb.Struct):
         New desktop device approvals policy. Might be missing due to historical
         data gap.
 
-        :rtype: DeviceApprovalsPolicy
+        :rtype: team_log.DeviceApprovalsPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -3683,7 +3713,7 @@ class DeviceApprovalsChangeDesktopPolicyDetails(bb.Struct):
         Previous desktop device approvals policy. Might be missing due to
         historical data gap.
 
-        :rtype: DeviceApprovalsPolicy
+        :rtype: team_log.DeviceApprovalsPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -3767,10 +3797,12 @@ class DeviceApprovalsChangeMobilePolicyDetails(bb.Struct):
     Set/removed limit on number of mobile devices member can link to team
     Dropbox account.
 
-    :ivar new_value: New mobile device approvals policy. Might be missing due to
+    :ivar team_log.DeviceApprovalsChangeMobilePolicyDetails.new_value: New
+        mobile device approvals policy. Might be missing due to historical data
+        gap.
+    :ivar team_log.DeviceApprovalsChangeMobilePolicyDetails.previous_value:
+        Previous mobile device approvals policy. Might be missing due to
         historical data gap.
-    :ivar previous_value: Previous mobile device approvals policy. Might be
-        missing due to historical data gap.
     """
 
     __slots__ = [
@@ -3800,7 +3832,7 @@ class DeviceApprovalsChangeMobilePolicyDetails(bb.Struct):
         New mobile device approvals policy. Might be missing due to historical
         data gap.
 
-        :rtype: DeviceApprovalsPolicy
+        :rtype: team_log.DeviceApprovalsPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -3827,7 +3859,7 @@ class DeviceApprovalsChangeMobilePolicyDetails(bb.Struct):
         Previous mobile device approvals policy. Might be missing due to
         historical data gap.
 
-        :rtype: DeviceApprovalsPolicy
+        :rtype: team_log.DeviceApprovalsPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -3910,10 +3942,11 @@ class DeviceApprovalsChangeOverageActionDetails(bb.Struct):
     """
     Changed device approvals setting when member is over limit.
 
-    :ivar new_value: New over the limits policy. Might be missing due to
-        historical data gap.
-    :ivar previous_value: Previous over the limit policy. Might be missing due
-        to historical data gap.
+    :ivar team_log.DeviceApprovalsChangeOverageActionDetails.new_value: New over
+        the limits policy. Might be missing due to historical data gap.
+    :ivar team_log.DeviceApprovalsChangeOverageActionDetails.previous_value:
+        Previous over the limit policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -4052,10 +4085,11 @@ class DeviceApprovalsChangeUnlinkActionDetails(bb.Struct):
     """
     Changed device approvals setting when member unlinks approved device.
 
-    :ivar new_value: New device unlink policy. Might be missing due to
-        historical data gap.
-    :ivar previous_value: Previous device unlink policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.DeviceApprovalsChangeUnlinkActionDetails.new_value: New
+        device unlink policy. Might be missing due to historical data gap.
+    :ivar team_log.DeviceApprovalsChangeUnlinkActionDetails.previous_value:
+        Previous device unlink policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -4084,7 +4118,7 @@ class DeviceApprovalsChangeUnlinkActionDetails(bb.Struct):
         """
         New device unlink policy. Might be missing due to historical data gap.
 
-        :rtype: DeviceUnlinkPolicy
+        :rtype: team_log.DeviceUnlinkPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -4111,7 +4145,7 @@ class DeviceApprovalsChangeUnlinkActionDetails(bb.Struct):
         Previous device unlink policy. Might be missing due to historical data
         gap.
 
-        :rtype: DeviceUnlinkPolicy
+        :rtype: team_log.DeviceUnlinkPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -4241,7 +4275,8 @@ class DeviceChangeIpDesktopDetails(bb.Struct):
     """
     Changed IP address associated with active desktop session.
 
-    :ivar device_session_info: Device's session logged information.
+    :ivar team_log.DeviceChangeIpDesktopDetails.device_session_info: Device's
+        session logged information.
     """
 
     __slots__ = [
@@ -4263,7 +4298,7 @@ class DeviceChangeIpDesktopDetails(bb.Struct):
         """
         Device's session logged information.
 
-        :rtype: DeviceSessionLogInfo
+        :rtype: team_log.DeviceSessionLogInfo
         """
         if self._device_session_info_present:
             return self._device_session_info_value
@@ -4342,7 +4377,8 @@ class DeviceChangeIpMobileDetails(bb.Struct):
     """
     Changed IP address associated with active mobile session.
 
-    :ivar device_session_info: Device's session logged information.
+    :ivar team_log.DeviceChangeIpMobileDetails.device_session_info: Device's
+        session logged information.
     """
 
     __slots__ = [
@@ -4364,7 +4400,7 @@ class DeviceChangeIpMobileDetails(bb.Struct):
         """
         Device's session logged information.
 
-        :rtype: DeviceSessionLogInfo
+        :rtype: team_log.DeviceSessionLogInfo
         """
         if self._device_session_info_present:
             return self._device_session_info_value
@@ -4446,7 +4482,7 @@ class DeviceChangeIpWebDetails(bb.Struct):
     """
     Changed IP address associated with active web session.
 
-    :ivar user_agent: Web browser name.
+    :ivar team_log.DeviceChangeIpWebDetails.user_agent: Web browser name.
     """
 
     __slots__ = [
@@ -4547,11 +4583,12 @@ class DeviceDeleteOnUnlinkFailDetails(bb.Struct):
     """
     Failed to delete all files from unlinked device.
 
-    :ivar session_info: Session unique id. Might be missing due to historical
-        data gap.
-    :ivar display_name: The device name. Might be missing due to historical data
-        gap.
-    :ivar num_failures: The number of times that remote file deletion failed.
+    :ivar team_log.DeviceDeleteOnUnlinkFailDetails.session_info: Session unique
+        id. Might be missing due to historical data gap.
+    :ivar team_log.DeviceDeleteOnUnlinkFailDetails.display_name: The device
+        name. Might be missing due to historical data gap.
+    :ivar team_log.DeviceDeleteOnUnlinkFailDetails.num_failures: The number of
+        times that remote file deletion failed.
     """
 
     __slots__ = [
@@ -4587,7 +4624,7 @@ class DeviceDeleteOnUnlinkFailDetails(bb.Struct):
         """
         Session unique id. Might be missing due to historical data gap.
 
-        :rtype: SessionLogInfo
+        :rtype: team_log.SessionLogInfo
         """
         if self._session_info_present:
             return self._session_info_value
@@ -4720,10 +4757,10 @@ class DeviceDeleteOnUnlinkSuccessDetails(bb.Struct):
     """
     Deleted all files from unlinked device.
 
-    :ivar session_info: Session unique id. Might be missing due to historical
-        data gap.
-    :ivar display_name: The device name. Might be missing due to historical data
-        gap.
+    :ivar team_log.DeviceDeleteOnUnlinkSuccessDetails.session_info: Session
+        unique id. Might be missing due to historical data gap.
+    :ivar team_log.DeviceDeleteOnUnlinkSuccessDetails.display_name: The device
+        name. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -4752,7 +4789,7 @@ class DeviceDeleteOnUnlinkSuccessDetails(bb.Struct):
         """
         Session unique id. Might be missing due to historical data gap.
 
-        :rtype: SessionLogInfo
+        :rtype: team_log.SessionLogInfo
         """
         if self._session_info_present:
             return self._session_info_value
@@ -4861,9 +4898,10 @@ class DeviceLinkFailDetails(bb.Struct):
     """
     Failed to link device.
 
-    :ivar ip_address: IP address. Might be missing due to historical data gap.
-    :ivar device_type: A description of the device used while user approval
-        blocked.
+    :ivar team_log.DeviceLinkFailDetails.ip_address: IP address. Might be
+        missing due to historical data gap.
+    :ivar team_log.DeviceLinkFailDetails.device_type: A description of the
+        device used while user approval blocked.
     """
 
     __slots__ = [
@@ -4918,7 +4956,7 @@ class DeviceLinkFailDetails(bb.Struct):
         """
         A description of the device used while user approval blocked.
 
-        :rtype: DeviceType
+        :rtype: team_log.DeviceType
         """
         if self._device_type_present:
             return self._device_type_value
@@ -4998,7 +5036,8 @@ class DeviceLinkSuccessDetails(bb.Struct):
     """
     Linked device.
 
-    :ivar device_session_info: Device's session logged information.
+    :ivar team_log.DeviceLinkSuccessDetails.device_session_info: Device's
+        session logged information.
     """
 
     __slots__ = [
@@ -5020,7 +5059,7 @@ class DeviceLinkSuccessDetails(bb.Struct):
         """
         Device's session logged information.
 
-        :rtype: DeviceSessionLogInfo
+        :rtype: team_log.DeviceSessionLogInfo
         """
         if self._device_session_info_present:
             return self._device_session_info_value
@@ -5285,11 +5324,11 @@ class DeviceUnlinkDetails(bb.Struct):
     """
     Disconnected device.
 
-    :ivar session_info: Session unique id.
-    :ivar display_name: The device name. Might be missing due to historical data
-        gap.
-    :ivar delete_data: True if the user requested to delete data after device
-        unlink, false otherwise.
+    :ivar team_log.DeviceUnlinkDetails.session_info: Session unique id.
+    :ivar team_log.DeviceUnlinkDetails.display_name: The device name. Might be
+        missing due to historical data gap.
+    :ivar team_log.DeviceUnlinkDetails.delete_data: True if the user requested
+        to delete data after device unlink, false otherwise.
     """
 
     __slots__ = [
@@ -5325,7 +5364,7 @@ class DeviceUnlinkDetails(bb.Struct):
         """
         Session unique id.
 
-        :rtype: SessionLogInfo
+        :rtype: team_log.SessionLogInfo
         """
         if self._session_info_present:
             return self._session_info_value
@@ -5846,8 +5885,10 @@ class DomainInvitesEmailExistingUsersDetails(bb.Struct):
     """
     Sent domain invites to existing domain accounts.
 
-    :ivar domain_name: Domain names.
-    :ivar num_recipients: Number of recipients.
+    :ivar team_log.DomainInvitesEmailExistingUsersDetails.domain_name: Domain
+        names.
+    :ivar team_log.DomainInvitesEmailExistingUsersDetails.num_recipients: Number
+        of recipients.
     """
 
     __slots__ = [
@@ -6183,9 +6224,11 @@ class DomainVerificationAddDomainFailDetails(bb.Struct):
     """
     Failed to verify team domain.
 
-    :ivar domain_name: Domain name.
-    :ivar verification_method: Domain name verification method. Might be missing
-        due to historical data gap.
+    :ivar team_log.DomainVerificationAddDomainFailDetails.domain_name: Domain
+        name.
+    :ivar team_log.DomainVerificationAddDomainFailDetails.verification_method:
+        Domain name verification method. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -6321,9 +6364,12 @@ class DomainVerificationAddDomainSuccessDetails(bb.Struct):
     """
     Verified team domain.
 
-    :ivar domain_names: Domain names.
-    :ivar verification_method: Domain name verification method. Might be missing
-        due to historical data gap.
+    :ivar team_log.DomainVerificationAddDomainSuccessDetails.domain_names:
+        Domain names.
+    :ivar
+        team_log.DomainVerificationAddDomainSuccessDetails.verification_method:
+        Domain name verification method. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -6459,7 +6505,8 @@ class DomainVerificationRemoveDomainDetails(bb.Struct):
     """
     Removed domain from list of verified team domains.
 
-    :ivar domain_names: Domain names.
+    :ivar team_log.DomainVerificationRemoveDomainDetails.domain_names: Domain
+        names.
     """
 
     __slots__ = [
@@ -6609,8 +6656,8 @@ class DurationLogInfo(bb.Struct):
     """
     Represents a time duration: unit and amount
 
-    :ivar unit: Time unit.
-    :ivar amount: Amount of time.
+    :ivar team_log.DurationLogInfo.unit: Time unit.
+    :ivar team_log.DurationLogInfo.amount: Amount of time.
     """
 
     __slots__ = [
@@ -6639,7 +6686,7 @@ class DurationLogInfo(bb.Struct):
         """
         Time unit.
 
-        :rtype: TimeUnit
+        :rtype: team_log.TimeUnit
         """
         if self._unit_present:
             return self._unit_value
@@ -6763,9 +6810,10 @@ class EmmChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled enterprise mobility management for members.
 
-    :ivar new_value: New enterprise mobility management policy.
-    :ivar previous_value: Previous enterprise mobility management policy. Might
-        be missing due to historical data gap.
+    :ivar team_log.EmmChangePolicyDetails.new_value: New enterprise mobility
+        management policy.
+    :ivar team_log.EmmChangePolicyDetails.previous_value: Previous enterprise
+        mobility management policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -7037,7 +7085,7 @@ class EmmErrorDetails(bb.Struct):
     """
     Failed to sign in via EMM.
 
-    :ivar error_details: Error details.
+    :ivar team_log.EmmErrorDetails.error_details: Error details.
     """
 
     __slots__ = [
@@ -7059,7 +7107,7 @@ class EmmErrorDetails(bb.Struct):
         """
         Error details.
 
-        :rtype: FailureDetailsLogInfo
+        :rtype: team_log.FailureDetailsLogInfo
         """
         if self._error_details_present:
             return self._error_details_value
@@ -7346,33 +7394,44 @@ class EventCategory(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar apps: Events that apply to management of linked apps.
-    :ivar comments: Events that have to do with comments on files and Paper
-        documents.
-    :ivar devices: Events that apply to linked devices on mobile, desktop and
-        Web platforms.
-    :ivar domains: Events that involve domain management feature: domain
-        verification, invite enforcement and account capture.
-    :ivar file_operations: Events that have to do with filesystem operations on
-        files and folders: copy, move, delete, etc.
-    :ivar file_requests: Events that apply to the file requests feature.
-    :ivar groups: Events that involve group management.
-    :ivar logins: Events that involve users signing in to or out of Dropbox.
-    :ivar members: Events that involve team member management.
-    :ivar paper: Events that apply to Dropbox Paper.
-    :ivar passwords: Events that involve using, changing or resetting passwords.
-    :ivar reports: Events that concern generation of admin reports, including
-        team activity and device usage.
-    :ivar sharing: Events that apply to all types of sharing and collaboration.
-    :ivar showcase: Events that apply to Dropbox Showcase.
-    :ivar sso: Events that involve using or configuring single sign-on as well
-        as administrative policies concerning single sign-on.
-    :ivar team_folders: Events that involve team folder management.
-    :ivar team_policies: Events that involve a change in team-wide policies.
-    :ivar team_profile: Events that involve a change in the team profile.
-    :ivar tfa: Events that involve using or configuring two factor
-        authentication as well as administrative policies concerning two factor
-        authentication.
+    :ivar team_log.EventCategory.apps: Events that apply to management of linked
+        apps.
+    :ivar team_log.EventCategory.comments: Events that have to do with comments
+        on files and Paper documents.
+    :ivar team_log.EventCategory.devices: Events that apply to linked devices on
+        mobile, desktop and Web platforms.
+    :ivar team_log.EventCategory.domains: Events that involve domain management
+        feature: domain verification, invite enforcement and account capture.
+    :ivar team_log.EventCategory.file_operations: Events that have to do with
+        filesystem operations on files and folders: copy, move, delete, etc.
+    :ivar team_log.EventCategory.file_requests: Events that apply to the file
+        requests feature.
+    :ivar team_log.EventCategory.groups: Events that involve group management.
+    :ivar team_log.EventCategory.logins: Events that involve users signing in to
+        or out of Dropbox.
+    :ivar team_log.EventCategory.members: Events that involve team member
+        management.
+    :ivar team_log.EventCategory.paper: Events that apply to Dropbox Paper.
+    :ivar team_log.EventCategory.passwords: Events that involve using, changing
+        or resetting passwords.
+    :ivar team_log.EventCategory.reports: Events that concern generation of
+        admin reports, including team activity and device usage.
+    :ivar team_log.EventCategory.sharing: Events that apply to all types of
+        sharing and collaboration.
+    :ivar team_log.EventCategory.showcase: Events that apply to Dropbox
+        Showcase.
+    :ivar team_log.EventCategory.sso: Events that involve using or configuring
+        single sign-on as well as administrative policies concerning single
+        sign-on.
+    :ivar team_log.EventCategory.team_folders: Events that involve team folder
+        management.
+    :ivar team_log.EventCategory.team_policies: Events that involve a change in
+        team-wide policies.
+    :ivar team_log.EventCategory.team_profile: Events that involve a change in
+        the team profile.
+    :ivar team_log.EventCategory.tfa: Events that involve using or configuring
+        two factor authentication as well as administrative policies concerning
+        two factor authentication.
     """
 
     _catch_all = 'other'
@@ -7593,8 +7652,8 @@ class EventDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar MissingDetails missing_details: Hints that this event was returned
-        with missing details due to an internal error.
+    :ivar MissingDetails team_log.EventDetails.missing_details: Hints that this
+        event was returned with missing details due to an internal error.
     """
 
     _catch_all = 'other'
@@ -7607,8 +7666,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``app_link_team_details``
         tag with value ``val``.
 
-        :param AppLinkTeamDetails val:
-        :rtype: EventDetails
+        :param team_log.AppLinkTeamDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('app_link_team_details', val)
 
@@ -7618,8 +7677,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``app_link_user_details``
         tag with value ``val``.
 
-        :param AppLinkUserDetails val:
-        :rtype: EventDetails
+        :param team_log.AppLinkUserDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('app_link_user_details', val)
 
@@ -7629,8 +7688,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``app_unlink_team_details``
         tag with value ``val``.
 
-        :param AppUnlinkTeamDetails val:
-        :rtype: EventDetails
+        :param team_log.AppUnlinkTeamDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('app_unlink_team_details', val)
 
@@ -7640,8 +7699,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``app_unlink_user_details``
         tag with value ``val``.
 
-        :param AppUnlinkUserDetails val:
-        :rtype: EventDetails
+        :param team_log.AppUnlinkUserDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('app_unlink_user_details', val)
 
@@ -7651,8 +7710,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_add_comment_details``
         tag with value ``val``.
 
-        :param FileAddCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.FileAddCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_add_comment_details', val)
 
@@ -7662,8 +7721,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_change_comment_subscription_details`` tag with value ``val``.
 
-        :param FileChangeCommentSubscriptionDetails val:
-        :rtype: EventDetails
+        :param team_log.FileChangeCommentSubscriptionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_change_comment_subscription_details', val)
 
@@ -7673,8 +7732,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_delete_comment_details`` tag with value ``val``.
 
-        :param FileDeleteCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.FileDeleteCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_delete_comment_details', val)
 
@@ -7684,8 +7743,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_edit_comment_details`` tag with value ``val``.
 
-        :param FileEditCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.FileEditCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_edit_comment_details', val)
 
@@ -7695,8 +7754,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_like_comment_details`` tag with value ``val``.
 
-        :param FileLikeCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.FileLikeCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_like_comment_details', val)
 
@@ -7706,8 +7765,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_resolve_comment_details`` tag with value ``val``.
 
-        :param FileResolveCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.FileResolveCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_resolve_comment_details', val)
 
@@ -7717,8 +7776,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_unlike_comment_details`` tag with value ``val``.
 
-        :param FileUnlikeCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.FileUnlikeCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_unlike_comment_details', val)
 
@@ -7728,8 +7787,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_unresolve_comment_details`` tag with value ``val``.
 
-        :param FileUnresolveCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.FileUnresolveCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_unresolve_comment_details', val)
 
@@ -7739,8 +7798,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``device_change_ip_desktop_details`` tag with value ``val``.
 
-        :param DeviceChangeIpDesktopDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceChangeIpDesktopDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_change_ip_desktop_details', val)
 
@@ -7750,8 +7809,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``device_change_ip_mobile_details`` tag with value ``val``.
 
-        :param DeviceChangeIpMobileDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceChangeIpMobileDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_change_ip_mobile_details', val)
 
@@ -7761,8 +7820,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``device_change_ip_web_details`` tag with value ``val``.
 
-        :param DeviceChangeIpWebDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceChangeIpWebDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_change_ip_web_details', val)
 
@@ -7772,8 +7831,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``device_delete_on_unlink_fail_details`` tag with value ``val``.
 
-        :param DeviceDeleteOnUnlinkFailDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceDeleteOnUnlinkFailDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_delete_on_unlink_fail_details', val)
 
@@ -7783,8 +7842,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``device_delete_on_unlink_success_details`` tag with value ``val``.
 
-        :param DeviceDeleteOnUnlinkSuccessDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceDeleteOnUnlinkSuccessDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_delete_on_unlink_success_details', val)
 
@@ -7794,8 +7853,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``device_link_fail_details``
         tag with value ``val``.
 
-        :param DeviceLinkFailDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceLinkFailDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_link_fail_details', val)
 
@@ -7805,8 +7864,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``device_link_success_details`` tag with value ``val``.
 
-        :param DeviceLinkSuccessDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceLinkSuccessDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_link_success_details', val)
 
@@ -7816,8 +7875,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``device_management_disabled_details`` tag with value ``val``.
 
-        :param DeviceManagementDisabledDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceManagementDisabledDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_management_disabled_details', val)
 
@@ -7827,8 +7886,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``device_management_enabled_details`` tag with value ``val``.
 
-        :param DeviceManagementEnabledDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceManagementEnabledDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_management_enabled_details', val)
 
@@ -7838,8 +7897,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``device_unlink_details``
         tag with value ``val``.
 
-        :param DeviceUnlinkDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceUnlinkDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_unlink_details', val)
 
@@ -7849,8 +7908,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``emm_refresh_auth_token_details`` tag with value ``val``.
 
-        :param EmmRefreshAuthTokenDetails val:
-        :rtype: EventDetails
+        :param team_log.EmmRefreshAuthTokenDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('emm_refresh_auth_token_details', val)
 
@@ -7860,8 +7919,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``account_capture_change_availability_details`` tag with value ``val``.
 
-        :param AccountCaptureChangeAvailabilityDetails val:
-        :rtype: EventDetails
+        :param team_log.AccountCaptureChangeAvailabilityDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('account_capture_change_availability_details', val)
 
@@ -7871,8 +7930,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``account_capture_migrate_account_details`` tag with value ``val``.
 
-        :param AccountCaptureMigrateAccountDetails val:
-        :rtype: EventDetails
+        :param team_log.AccountCaptureMigrateAccountDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('account_capture_migrate_account_details', val)
 
@@ -7883,8 +7942,8 @@ class EventDetails(bb.Union):
         ``account_capture_notification_emails_sent_details`` tag with value
         ``val``.
 
-        :param AccountCaptureNotificationEmailsSentDetails val:
-        :rtype: EventDetails
+        :param team_log.AccountCaptureNotificationEmailsSentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('account_capture_notification_emails_sent_details', val)
 
@@ -7894,8 +7953,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``account_capture_relinquish_account_details`` tag with value ``val``.
 
-        :param AccountCaptureRelinquishAccountDetails val:
-        :rtype: EventDetails
+        :param team_log.AccountCaptureRelinquishAccountDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('account_capture_relinquish_account_details', val)
 
@@ -7905,8 +7964,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``disabled_domain_invites_details`` tag with value ``val``.
 
-        :param DisabledDomainInvitesDetails val:
-        :rtype: EventDetails
+        :param team_log.DisabledDomainInvitesDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('disabled_domain_invites_details', val)
 
@@ -7917,8 +7976,8 @@ class EventDetails(bb.Union):
         ``domain_invites_approve_request_to_join_team_details`` tag with value
         ``val``.
 
-        :param DomainInvitesApproveRequestToJoinTeamDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainInvitesApproveRequestToJoinTeamDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_invites_approve_request_to_join_team_details', val)
 
@@ -7929,8 +7988,8 @@ class EventDetails(bb.Union):
         ``domain_invites_decline_request_to_join_team_details`` tag with value
         ``val``.
 
-        :param DomainInvitesDeclineRequestToJoinTeamDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainInvitesDeclineRequestToJoinTeamDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_invites_decline_request_to_join_team_details', val)
 
@@ -7940,8 +7999,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``domain_invites_email_existing_users_details`` tag with value ``val``.
 
-        :param DomainInvitesEmailExistingUsersDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainInvitesEmailExistingUsersDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_invites_email_existing_users_details', val)
 
@@ -7951,8 +8010,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``domain_invites_request_to_join_team_details`` tag with value ``val``.
 
-        :param DomainInvitesRequestToJoinTeamDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainInvitesRequestToJoinTeamDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_invites_request_to_join_team_details', val)
 
@@ -7963,8 +8022,8 @@ class EventDetails(bb.Union):
         ``domain_invites_set_invite_new_user_pref_to_no_details`` tag with value
         ``val``.
 
-        :param DomainInvitesSetInviteNewUserPrefToNoDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainInvitesSetInviteNewUserPrefToNoDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_invites_set_invite_new_user_pref_to_no_details', val)
 
@@ -7975,8 +8034,8 @@ class EventDetails(bb.Union):
         ``domain_invites_set_invite_new_user_pref_to_yes_details`` tag with
         value ``val``.
 
-        :param DomainInvitesSetInviteNewUserPrefToYesDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainInvitesSetInviteNewUserPrefToYesDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_invites_set_invite_new_user_pref_to_yes_details', val)
 
@@ -7986,8 +8045,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``domain_verification_add_domain_fail_details`` tag with value ``val``.
 
-        :param DomainVerificationAddDomainFailDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainVerificationAddDomainFailDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_verification_add_domain_fail_details', val)
 
@@ -7998,8 +8057,8 @@ class EventDetails(bb.Union):
         ``domain_verification_add_domain_success_details`` tag with value
         ``val``.
 
-        :param DomainVerificationAddDomainSuccessDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainVerificationAddDomainSuccessDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_verification_add_domain_success_details', val)
 
@@ -8009,8 +8068,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``domain_verification_remove_domain_details`` tag with value ``val``.
 
-        :param DomainVerificationRemoveDomainDetails val:
-        :rtype: EventDetails
+        :param team_log.DomainVerificationRemoveDomainDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('domain_verification_remove_domain_details', val)
 
@@ -8020,8 +8079,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``enabled_domain_invites_details`` tag with value ``val``.
 
-        :param EnabledDomainInvitesDetails val:
-        :rtype: EventDetails
+        :param team_log.EnabledDomainInvitesDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('enabled_domain_invites_details', val)
 
@@ -8031,8 +8090,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``create_folder_details``
         tag with value ``val``.
 
-        :param CreateFolderDetails val:
-        :rtype: EventDetails
+        :param team_log.CreateFolderDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('create_folder_details', val)
 
@@ -8042,8 +8101,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_add_details`` tag
         with value ``val``.
 
-        :param FileAddDetails val:
-        :rtype: EventDetails
+        :param team_log.FileAddDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_add_details', val)
 
@@ -8053,8 +8112,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_copy_details`` tag
         with value ``val``.
 
-        :param FileCopyDetails val:
-        :rtype: EventDetails
+        :param team_log.FileCopyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_copy_details', val)
 
@@ -8064,8 +8123,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_delete_details`` tag
         with value ``val``.
 
-        :param FileDeleteDetails val:
-        :rtype: EventDetails
+        :param team_log.FileDeleteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_delete_details', val)
 
@@ -8075,8 +8134,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_download_details``
         tag with value ``val``.
 
-        :param FileDownloadDetails val:
-        :rtype: EventDetails
+        :param team_log.FileDownloadDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_download_details', val)
 
@@ -8086,8 +8145,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_edit_details`` tag
         with value ``val``.
 
-        :param FileEditDetails val:
-        :rtype: EventDetails
+        :param team_log.FileEditDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_edit_details', val)
 
@@ -8097,8 +8156,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_get_copy_reference_details`` tag with value ``val``.
 
-        :param FileGetCopyReferenceDetails val:
-        :rtype: EventDetails
+        :param team_log.FileGetCopyReferenceDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_get_copy_reference_details', val)
 
@@ -8108,8 +8167,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_move_details`` tag
         with value ``val``.
 
-        :param FileMoveDetails val:
-        :rtype: EventDetails
+        :param team_log.FileMoveDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_move_details', val)
 
@@ -8119,8 +8178,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_permanently_delete_details`` tag with value ``val``.
 
-        :param FilePermanentlyDeleteDetails val:
-        :rtype: EventDetails
+        :param team_log.FilePermanentlyDeleteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_permanently_delete_details', val)
 
@@ -8130,8 +8189,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_preview_details`` tag
         with value ``val``.
 
-        :param FilePreviewDetails val:
-        :rtype: EventDetails
+        :param team_log.FilePreviewDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_preview_details', val)
 
@@ -8141,8 +8200,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_rename_details`` tag
         with value ``val``.
 
-        :param FileRenameDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRenameDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_rename_details', val)
 
@@ -8152,8 +8211,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_restore_details`` tag
         with value ``val``.
 
-        :param FileRestoreDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRestoreDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_restore_details', val)
 
@@ -8163,8 +8222,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``file_revert_details`` tag
         with value ``val``.
 
-        :param FileRevertDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRevertDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_revert_details', val)
 
@@ -8174,8 +8233,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_rollback_changes_details`` tag with value ``val``.
 
-        :param FileRollbackChangesDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRollbackChangesDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_rollback_changes_details', val)
 
@@ -8185,8 +8244,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_save_copy_reference_details`` tag with value ``val``.
 
-        :param FileSaveCopyReferenceDetails val:
-        :rtype: EventDetails
+        :param team_log.FileSaveCopyReferenceDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_save_copy_reference_details', val)
 
@@ -8196,8 +8255,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_request_change_details`` tag with value ``val``.
 
-        :param FileRequestChangeDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRequestChangeDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_request_change_details', val)
 
@@ -8207,8 +8266,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_request_close_details`` tag with value ``val``.
 
-        :param FileRequestCloseDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRequestCloseDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_request_close_details', val)
 
@@ -8218,8 +8277,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_request_create_details`` tag with value ``val``.
 
-        :param FileRequestCreateDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRequestCreateDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_request_create_details', val)
 
@@ -8229,8 +8288,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_request_receive_file_details`` tag with value ``val``.
 
-        :param FileRequestReceiveFileDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRequestReceiveFileDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_request_receive_file_details', val)
 
@@ -8240,8 +8299,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_add_external_id_details`` tag with value ``val``.
 
-        :param GroupAddExternalIdDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupAddExternalIdDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_add_external_id_details', val)
 
@@ -8251,8 +8310,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``group_add_member_details``
         tag with value ``val``.
 
-        :param GroupAddMemberDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupAddMemberDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_add_member_details', val)
 
@@ -8262,8 +8321,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_change_external_id_details`` tag with value ``val``.
 
-        :param GroupChangeExternalIdDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupChangeExternalIdDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_change_external_id_details', val)
 
@@ -8273,8 +8332,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_change_management_type_details`` tag with value ``val``.
 
-        :param GroupChangeManagementTypeDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupChangeManagementTypeDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_change_management_type_details', val)
 
@@ -8284,8 +8343,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_change_member_role_details`` tag with value ``val``.
 
-        :param GroupChangeMemberRoleDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupChangeMemberRoleDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_change_member_role_details', val)
 
@@ -8295,8 +8354,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``group_create_details`` tag
         with value ``val``.
 
-        :param GroupCreateDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupCreateDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_create_details', val)
 
@@ -8306,8 +8365,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``group_delete_details`` tag
         with value ``val``.
 
-        :param GroupDeleteDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupDeleteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_delete_details', val)
 
@@ -8317,8 +8376,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_description_updated_details`` tag with value ``val``.
 
-        :param GroupDescriptionUpdatedDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupDescriptionUpdatedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_description_updated_details', val)
 
@@ -8328,8 +8387,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_join_policy_updated_details`` tag with value ``val``.
 
-        :param GroupJoinPolicyUpdatedDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupJoinPolicyUpdatedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_join_policy_updated_details', val)
 
@@ -8339,8 +8398,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``group_moved_details`` tag
         with value ``val``.
 
-        :param GroupMovedDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupMovedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_moved_details', val)
 
@@ -8350,8 +8409,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_remove_external_id_details`` tag with value ``val``.
 
-        :param GroupRemoveExternalIdDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupRemoveExternalIdDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_remove_external_id_details', val)
 
@@ -8361,8 +8420,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_remove_member_details`` tag with value ``val``.
 
-        :param GroupRemoveMemberDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupRemoveMemberDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_remove_member_details', val)
 
@@ -8372,8 +8431,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``group_rename_details`` tag
         with value ``val``.
 
-        :param GroupRenameDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupRenameDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_rename_details', val)
 
@@ -8383,8 +8442,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``emm_error_details`` tag
         with value ``val``.
 
-        :param EmmErrorDetails val:
-        :rtype: EventDetails
+        :param team_log.EmmErrorDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('emm_error_details', val)
 
@@ -8394,8 +8453,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``login_fail_details`` tag
         with value ``val``.
 
-        :param LoginFailDetails val:
-        :rtype: EventDetails
+        :param team_log.LoginFailDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('login_fail_details', val)
 
@@ -8405,8 +8464,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``login_success_details``
         tag with value ``val``.
 
-        :param LoginSuccessDetails val:
-        :rtype: EventDetails
+        :param team_log.LoginSuccessDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('login_success_details', val)
 
@@ -8416,8 +8475,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``logout_details`` tag with
         value ``val``.
 
-        :param LogoutDetails val:
-        :rtype: EventDetails
+        :param team_log.LogoutDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('logout_details', val)
 
@@ -8427,8 +8486,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``reseller_support_session_end_details`` tag with value ``val``.
 
-        :param ResellerSupportSessionEndDetails val:
-        :rtype: EventDetails
+        :param team_log.ResellerSupportSessionEndDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('reseller_support_session_end_details', val)
 
@@ -8438,8 +8497,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``reseller_support_session_start_details`` tag with value ``val``.
 
-        :param ResellerSupportSessionStartDetails val:
-        :rtype: EventDetails
+        :param team_log.ResellerSupportSessionStartDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('reseller_support_session_start_details', val)
 
@@ -8449,8 +8508,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sign_in_as_session_end_details`` tag with value ``val``.
 
-        :param SignInAsSessionEndDetails val:
-        :rtype: EventDetails
+        :param team_log.SignInAsSessionEndDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sign_in_as_session_end_details', val)
 
@@ -8460,8 +8519,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sign_in_as_session_start_details`` tag with value ``val``.
 
-        :param SignInAsSessionStartDetails val:
-        :rtype: EventDetails
+        :param team_log.SignInAsSessionStartDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sign_in_as_session_start_details', val)
 
@@ -8471,8 +8530,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sso_error_details`` tag
         with value ``val``.
 
-        :param SsoErrorDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoErrorDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_error_details', val)
 
@@ -8482,8 +8541,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``member_add_name_details``
         tag with value ``val``.
 
-        :param MemberAddNameDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberAddNameDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_add_name_details', val)
 
@@ -8493,8 +8552,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_change_admin_role_details`` tag with value ``val``.
 
-        :param MemberChangeAdminRoleDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberChangeAdminRoleDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_change_admin_role_details', val)
 
@@ -8504,8 +8563,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_change_email_details`` tag with value ``val``.
 
-        :param MemberChangeEmailDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberChangeEmailDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_change_email_details', val)
 
@@ -8515,8 +8574,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_change_membership_type_details`` tag with value ``val``.
 
-        :param MemberChangeMembershipTypeDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberChangeMembershipTypeDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_change_membership_type_details', val)
 
@@ -8526,8 +8585,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_change_name_details`` tag with value ``val``.
 
-        :param MemberChangeNameDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberChangeNameDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_change_name_details', val)
 
@@ -8537,8 +8596,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_change_status_details`` tag with value ``val``.
 
-        :param MemberChangeStatusDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberChangeStatusDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_change_status_details', val)
 
@@ -8548,8 +8607,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_delete_manual_contacts_details`` tag with value ``val``.
 
-        :param MemberDeleteManualContactsDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberDeleteManualContactsDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_delete_manual_contacts_details', val)
 
@@ -8560,8 +8619,8 @@ class EventDetails(bb.Union):
         ``member_permanently_delete_account_contents_details`` tag with value
         ``val``.
 
-        :param MemberPermanentlyDeleteAccountContentsDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberPermanentlyDeleteAccountContentsDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_permanently_delete_account_contents_details', val)
 
@@ -8571,8 +8630,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_add_custom_quota_details`` tag with value ``val``.
 
-        :param MemberSpaceLimitsAddCustomQuotaDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSpaceLimitsAddCustomQuotaDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_space_limits_add_custom_quota_details', val)
 
@@ -8583,8 +8642,8 @@ class EventDetails(bb.Union):
         ``member_space_limits_change_custom_quota_details`` tag with value
         ``val``.
 
-        :param MemberSpaceLimitsChangeCustomQuotaDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSpaceLimitsChangeCustomQuotaDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_space_limits_change_custom_quota_details', val)
 
@@ -8594,8 +8653,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_change_status_details`` tag with value ``val``.
 
-        :param MemberSpaceLimitsChangeStatusDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSpaceLimitsChangeStatusDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_space_limits_change_status_details', val)
 
@@ -8606,8 +8665,8 @@ class EventDetails(bb.Union):
         ``member_space_limits_remove_custom_quota_details`` tag with value
         ``val``.
 
-        :param MemberSpaceLimitsRemoveCustomQuotaDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSpaceLimitsRemoveCustomQuotaDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_space_limits_remove_custom_quota_details', val)
 
@@ -8617,8 +8676,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``member_suggest_details``
         tag with value ``val``.
 
-        :param MemberSuggestDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSuggestDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_suggest_details', val)
 
@@ -8628,8 +8687,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_transfer_account_contents_details`` tag with value ``val``.
 
-        :param MemberTransferAccountContentsDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberTransferAccountContentsDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_transfer_account_contents_details', val)
 
@@ -8639,8 +8698,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``secondary_mails_policy_changed_details`` tag with value ``val``.
 
-        :param SecondaryMailsPolicyChangedDetails val:
-        :rtype: EventDetails
+        :param team_log.SecondaryMailsPolicyChangedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('secondary_mails_policy_changed_details', val)
 
@@ -8650,8 +8709,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_add_member_details`` tag with value ``val``.
 
-        :param PaperContentAddMemberDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentAddMemberDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_add_member_details', val)
 
@@ -8661,8 +8720,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_add_to_folder_details`` tag with value ``val``.
 
-        :param PaperContentAddToFolderDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentAddToFolderDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_add_to_folder_details', val)
 
@@ -8672,8 +8731,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_archive_details`` tag with value ``val``.
 
-        :param PaperContentArchiveDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentArchiveDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_archive_details', val)
 
@@ -8683,8 +8742,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_create_details`` tag with value ``val``.
 
-        :param PaperContentCreateDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentCreateDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_create_details', val)
 
@@ -8694,8 +8753,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_permanently_delete_details`` tag with value ``val``.
 
-        :param PaperContentPermanentlyDeleteDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentPermanentlyDeleteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_permanently_delete_details', val)
 
@@ -8705,8 +8764,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_remove_from_folder_details`` tag with value ``val``.
 
-        :param PaperContentRemoveFromFolderDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentRemoveFromFolderDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_remove_from_folder_details', val)
 
@@ -8716,8 +8775,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_remove_member_details`` tag with value ``val``.
 
-        :param PaperContentRemoveMemberDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentRemoveMemberDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_remove_member_details', val)
 
@@ -8727,8 +8786,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_rename_details`` tag with value ``val``.
 
-        :param PaperContentRenameDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentRenameDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_rename_details', val)
 
@@ -8738,8 +8797,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_content_restore_details`` tag with value ``val``.
 
-        :param PaperContentRestoreDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperContentRestoreDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_content_restore_details', val)
 
@@ -8749,8 +8808,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_add_comment_details`` tag with value ``val``.
 
-        :param PaperDocAddCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocAddCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_add_comment_details', val)
 
@@ -8760,8 +8819,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_change_member_role_details`` tag with value ``val``.
 
-        :param PaperDocChangeMemberRoleDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocChangeMemberRoleDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_change_member_role_details', val)
 
@@ -8771,8 +8830,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_change_sharing_policy_details`` tag with value ``val``.
 
-        :param PaperDocChangeSharingPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocChangeSharingPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_change_sharing_policy_details', val)
 
@@ -8782,8 +8841,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_change_subscription_details`` tag with value ``val``.
 
-        :param PaperDocChangeSubscriptionDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocChangeSubscriptionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_change_subscription_details', val)
 
@@ -8793,8 +8852,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_deleted_details`` tag with value ``val``.
 
-        :param PaperDocDeletedDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocDeletedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_deleted_details', val)
 
@@ -8804,8 +8863,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_delete_comment_details`` tag with value ``val``.
 
-        :param PaperDocDeleteCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocDeleteCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_delete_comment_details', val)
 
@@ -8815,8 +8874,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_download_details`` tag with value ``val``.
 
-        :param PaperDocDownloadDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocDownloadDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_download_details', val)
 
@@ -8826,8 +8885,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``paper_doc_edit_details``
         tag with value ``val``.
 
-        :param PaperDocEditDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocEditDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_edit_details', val)
 
@@ -8837,8 +8896,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_edit_comment_details`` tag with value ``val``.
 
-        :param PaperDocEditCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocEditCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_edit_comment_details', val)
 
@@ -8848,8 +8907,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_followed_details`` tag with value ``val``.
 
-        :param PaperDocFollowedDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocFollowedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_followed_details', val)
 
@@ -8859,8 +8918,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_mention_details`` tag with value ``val``.
 
-        :param PaperDocMentionDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocMentionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_mention_details', val)
 
@@ -8870,8 +8929,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_ownership_changed_details`` tag with value ``val``.
 
-        :param PaperDocOwnershipChangedDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocOwnershipChangedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_ownership_changed_details', val)
 
@@ -8881,8 +8940,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_request_access_details`` tag with value ``val``.
 
-        :param PaperDocRequestAccessDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocRequestAccessDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_request_access_details', val)
 
@@ -8892,8 +8951,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_resolve_comment_details`` tag with value ``val``.
 
-        :param PaperDocResolveCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocResolveCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_resolve_comment_details', val)
 
@@ -8903,8 +8962,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``paper_doc_revert_details``
         tag with value ``val``.
 
-        :param PaperDocRevertDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocRevertDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_revert_details', val)
 
@@ -8914,8 +8973,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_slack_share_details`` tag with value ``val``.
 
-        :param PaperDocSlackShareDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocSlackShareDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_slack_share_details', val)
 
@@ -8925,8 +8984,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_team_invite_details`` tag with value ``val``.
 
-        :param PaperDocTeamInviteDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocTeamInviteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_team_invite_details', val)
 
@@ -8936,8 +8995,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_trashed_details`` tag with value ``val``.
 
-        :param PaperDocTrashedDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocTrashedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_trashed_details', val)
 
@@ -8947,8 +9006,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_unresolve_comment_details`` tag with value ``val``.
 
-        :param PaperDocUnresolveCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocUnresolveCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_unresolve_comment_details', val)
 
@@ -8958,8 +9017,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_untrashed_details`` tag with value ``val``.
 
-        :param PaperDocUntrashedDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocUntrashedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_untrashed_details', val)
 
@@ -8969,8 +9028,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``paper_doc_view_details``
         tag with value ``val``.
 
-        :param PaperDocViewDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperDocViewDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_doc_view_details', val)
 
@@ -8980,8 +9039,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_external_view_allow_details`` tag with value ``val``.
 
-        :param PaperExternalViewAllowDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperExternalViewAllowDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_external_view_allow_details', val)
 
@@ -8991,8 +9050,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_external_view_default_team_details`` tag with value ``val``.
 
-        :param PaperExternalViewDefaultTeamDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperExternalViewDefaultTeamDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_external_view_default_team_details', val)
 
@@ -9002,8 +9061,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_external_view_forbid_details`` tag with value ``val``.
 
-        :param PaperExternalViewForbidDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperExternalViewForbidDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_external_view_forbid_details', val)
 
@@ -9013,8 +9072,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_folder_change_subscription_details`` tag with value ``val``.
 
-        :param PaperFolderChangeSubscriptionDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperFolderChangeSubscriptionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_folder_change_subscription_details', val)
 
@@ -9024,8 +9083,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_folder_deleted_details`` tag with value ``val``.
 
-        :param PaperFolderDeletedDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperFolderDeletedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_folder_deleted_details', val)
 
@@ -9035,8 +9094,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_folder_followed_details`` tag with value ``val``.
 
-        :param PaperFolderFollowedDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperFolderFollowedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_folder_followed_details', val)
 
@@ -9046,8 +9105,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_folder_team_invite_details`` tag with value ``val``.
 
-        :param PaperFolderTeamInviteDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperFolderTeamInviteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_folder_team_invite_details', val)
 
@@ -9057,8 +9116,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``password_change_details``
         tag with value ``val``.
 
-        :param PasswordChangeDetails val:
-        :rtype: EventDetails
+        :param team_log.PasswordChangeDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('password_change_details', val)
 
@@ -9068,8 +9127,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``password_reset_details``
         tag with value ``val``.
 
-        :param PasswordResetDetails val:
-        :rtype: EventDetails
+        :param team_log.PasswordResetDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('password_reset_details', val)
 
@@ -9079,8 +9138,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``password_reset_all_details`` tag with value ``val``.
 
-        :param PasswordResetAllDetails val:
-        :rtype: EventDetails
+        :param team_log.PasswordResetAllDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('password_reset_all_details', val)
 
@@ -9090,8 +9149,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``emm_create_exceptions_report_details`` tag with value ``val``.
 
-        :param EmmCreateExceptionsReportDetails val:
-        :rtype: EventDetails
+        :param team_log.EmmCreateExceptionsReportDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('emm_create_exceptions_report_details', val)
 
@@ -9101,8 +9160,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``emm_create_usage_report_details`` tag with value ``val``.
 
-        :param EmmCreateUsageReportDetails val:
-        :rtype: EventDetails
+        :param team_log.EmmCreateUsageReportDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('emm_create_usage_report_details', val)
 
@@ -9112,8 +9171,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``export_members_report_details`` tag with value ``val``.
 
-        :param ExportMembersReportDetails val:
-        :rtype: EventDetails
+        :param team_log.ExportMembersReportDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('export_members_report_details', val)
 
@@ -9123,8 +9182,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_admin_export_start_details`` tag with value ``val``.
 
-        :param PaperAdminExportStartDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperAdminExportStartDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_admin_export_start_details', val)
 
@@ -9135,8 +9194,8 @@ class EventDetails(bb.Union):
         ``smart_sync_create_admin_privilege_report_details`` tag with value
         ``val``.
 
-        :param SmartSyncCreateAdminPrivilegeReportDetails val:
-        :rtype: EventDetails
+        :param team_log.SmartSyncCreateAdminPrivilegeReportDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('smart_sync_create_admin_privilege_report_details', val)
 
@@ -9146,8 +9205,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_activity_create_report_details`` tag with value ``val``.
 
-        :param TeamActivityCreateReportDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamActivityCreateReportDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_activity_create_report_details', val)
 
@@ -9157,8 +9216,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``collection_share_details``
         tag with value ``val``.
 
-        :param CollectionShareDetails val:
-        :rtype: EventDetails
+        :param team_log.CollectionShareDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('collection_share_details', val)
 
@@ -9168,8 +9227,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``note_acl_invite_only_details`` tag with value ``val``.
 
-        :param NoteAclInviteOnlyDetails val:
-        :rtype: EventDetails
+        :param team_log.NoteAclInviteOnlyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('note_acl_invite_only_details', val)
 
@@ -9179,8 +9238,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``note_acl_link_details``
         tag with value ``val``.
 
-        :param NoteAclLinkDetails val:
-        :rtype: EventDetails
+        :param team_log.NoteAclLinkDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('note_acl_link_details', val)
 
@@ -9190,8 +9249,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``note_acl_team_link_details`` tag with value ``val``.
 
-        :param NoteAclTeamLinkDetails val:
-        :rtype: EventDetails
+        :param team_log.NoteAclTeamLinkDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('note_acl_team_link_details', val)
 
@@ -9201,8 +9260,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``note_shared_details`` tag
         with value ``val``.
 
-        :param NoteSharedDetails val:
-        :rtype: EventDetails
+        :param team_log.NoteSharedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('note_shared_details', val)
 
@@ -9212,8 +9271,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``note_share_receive_details`` tag with value ``val``.
 
-        :param NoteShareReceiveDetails val:
-        :rtype: EventDetails
+        :param team_log.NoteShareReceiveDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('note_share_receive_details', val)
 
@@ -9223,8 +9282,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``open_note_shared_details``
         tag with value ``val``.
 
-        :param OpenNoteSharedDetails val:
-        :rtype: EventDetails
+        :param team_log.OpenNoteSharedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('open_note_shared_details', val)
 
@@ -9234,8 +9293,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sf_add_group_details`` tag
         with value ``val``.
 
-        :param SfAddGroupDetails val:
-        :rtype: EventDetails
+        :param team_log.SfAddGroupDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_add_group_details', val)
 
@@ -9246,8 +9305,8 @@ class EventDetails(bb.Union):
         ``sf_allow_non_members_to_view_shared_links_details`` tag with value
         ``val``.
 
-        :param SfAllowNonMembersToViewSharedLinksDetails val:
-        :rtype: EventDetails
+        :param team_log.SfAllowNonMembersToViewSharedLinksDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_allow_non_members_to_view_shared_links_details', val)
 
@@ -9257,8 +9316,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sf_external_invite_warn_details`` tag with value ``val``.
 
-        :param SfExternalInviteWarnDetails val:
-        :rtype: EventDetails
+        :param team_log.SfExternalInviteWarnDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_external_invite_warn_details', val)
 
@@ -9268,8 +9327,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sf_fb_invite_details`` tag
         with value ``val``.
 
-        :param SfFbInviteDetails val:
-        :rtype: EventDetails
+        :param team_log.SfFbInviteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_fb_invite_details', val)
 
@@ -9279,8 +9338,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sf_fb_invite_change_role_details`` tag with value ``val``.
 
-        :param SfFbInviteChangeRoleDetails val:
-        :rtype: EventDetails
+        :param team_log.SfFbInviteChangeRoleDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_fb_invite_change_role_details', val)
 
@@ -9290,8 +9349,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sf_fb_uninvite_details``
         tag with value ``val``.
 
-        :param SfFbUninviteDetails val:
-        :rtype: EventDetails
+        :param team_log.SfFbUninviteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_fb_uninvite_details', val)
 
@@ -9301,8 +9360,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sf_invite_group_details``
         tag with value ``val``.
 
-        :param SfInviteGroupDetails val:
-        :rtype: EventDetails
+        :param team_log.SfInviteGroupDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_invite_group_details', val)
 
@@ -9312,8 +9371,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sf_team_grant_access_details`` tag with value ``val``.
 
-        :param SfTeamGrantAccessDetails val:
-        :rtype: EventDetails
+        :param team_log.SfTeamGrantAccessDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_team_grant_access_details', val)
 
@@ -9323,8 +9382,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sf_team_invite_details``
         tag with value ``val``.
 
-        :param SfTeamInviteDetails val:
-        :rtype: EventDetails
+        :param team_log.SfTeamInviteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_team_invite_details', val)
 
@@ -9334,8 +9393,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sf_team_invite_change_role_details`` tag with value ``val``.
 
-        :param SfTeamInviteChangeRoleDetails val:
-        :rtype: EventDetails
+        :param team_log.SfTeamInviteChangeRoleDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_team_invite_change_role_details', val)
 
@@ -9345,8 +9404,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sf_team_join_details`` tag
         with value ``val``.
 
-        :param SfTeamJoinDetails val:
-        :rtype: EventDetails
+        :param team_log.SfTeamJoinDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_team_join_details', val)
 
@@ -9356,8 +9415,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sf_team_join_from_oob_link_details`` tag with value ``val``.
 
-        :param SfTeamJoinFromOobLinkDetails val:
-        :rtype: EventDetails
+        :param team_log.SfTeamJoinFromOobLinkDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_team_join_from_oob_link_details', val)
 
@@ -9367,8 +9426,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sf_team_uninvite_details``
         tag with value ``val``.
 
-        :param SfTeamUninviteDetails val:
-        :rtype: EventDetails
+        :param team_log.SfTeamUninviteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sf_team_uninvite_details', val)
 
@@ -9378,8 +9437,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_add_invitees_details`` tag with value ``val``.
 
-        :param SharedContentAddInviteesDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentAddInviteesDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_add_invitees_details', val)
 
@@ -9389,8 +9448,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_add_link_expiry_details`` tag with value ``val``.
 
-        :param SharedContentAddLinkExpiryDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentAddLinkExpiryDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_add_link_expiry_details', val)
 
@@ -9400,8 +9459,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_add_link_password_details`` tag with value ``val``.
 
-        :param SharedContentAddLinkPasswordDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentAddLinkPasswordDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_add_link_password_details', val)
 
@@ -9411,8 +9470,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_add_member_details`` tag with value ``val``.
 
-        :param SharedContentAddMemberDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentAddMemberDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_add_member_details', val)
 
@@ -9423,8 +9482,8 @@ class EventDetails(bb.Union):
         ``shared_content_change_downloads_policy_details`` tag with value
         ``val``.
 
-        :param SharedContentChangeDownloadsPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentChangeDownloadsPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_change_downloads_policy_details', val)
 
@@ -9434,8 +9493,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_invitee_role_details`` tag with value ``val``.
 
-        :param SharedContentChangeInviteeRoleDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentChangeInviteeRoleDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_change_invitee_role_details', val)
 
@@ -9445,8 +9504,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_link_audience_details`` tag with value ``val``.
 
-        :param SharedContentChangeLinkAudienceDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentChangeLinkAudienceDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_change_link_audience_details', val)
 
@@ -9456,8 +9515,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_link_expiry_details`` tag with value ``val``.
 
-        :param SharedContentChangeLinkExpiryDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentChangeLinkExpiryDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_change_link_expiry_details', val)
 
@@ -9467,8 +9526,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_link_password_details`` tag with value ``val``.
 
-        :param SharedContentChangeLinkPasswordDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentChangeLinkPasswordDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_change_link_password_details', val)
 
@@ -9478,8 +9537,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_member_role_details`` tag with value ``val``.
 
-        :param SharedContentChangeMemberRoleDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentChangeMemberRoleDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_change_member_role_details', val)
 
@@ -9490,8 +9549,8 @@ class EventDetails(bb.Union):
         ``shared_content_change_viewer_info_policy_details`` tag with value
         ``val``.
 
-        :param SharedContentChangeViewerInfoPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentChangeViewerInfoPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_change_viewer_info_policy_details', val)
 
@@ -9501,8 +9560,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_claim_invitation_details`` tag with value ``val``.
 
-        :param SharedContentClaimInvitationDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentClaimInvitationDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_claim_invitation_details', val)
 
@@ -9512,8 +9571,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_copy_details`` tag with value ``val``.
 
-        :param SharedContentCopyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentCopyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_copy_details', val)
 
@@ -9523,8 +9582,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_download_details`` tag with value ``val``.
 
-        :param SharedContentDownloadDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentDownloadDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_download_details', val)
 
@@ -9534,8 +9593,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_relinquish_membership_details`` tag with value ``val``.
 
-        :param SharedContentRelinquishMembershipDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentRelinquishMembershipDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_relinquish_membership_details', val)
 
@@ -9545,8 +9604,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_remove_invitees_details`` tag with value ``val``.
 
-        :param SharedContentRemoveInviteesDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentRemoveInviteesDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_remove_invitees_details', val)
 
@@ -9556,8 +9615,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_remove_link_expiry_details`` tag with value ``val``.
 
-        :param SharedContentRemoveLinkExpiryDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentRemoveLinkExpiryDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_remove_link_expiry_details', val)
 
@@ -9567,8 +9626,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_remove_link_password_details`` tag with value ``val``.
 
-        :param SharedContentRemoveLinkPasswordDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentRemoveLinkPasswordDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_remove_link_password_details', val)
 
@@ -9578,8 +9637,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_remove_member_details`` tag with value ``val``.
 
-        :param SharedContentRemoveMemberDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentRemoveMemberDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_remove_member_details', val)
 
@@ -9589,8 +9648,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_request_access_details`` tag with value ``val``.
 
-        :param SharedContentRequestAccessDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentRequestAccessDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_request_access_details', val)
 
@@ -9600,8 +9659,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_unshare_details`` tag with value ``val``.
 
-        :param SharedContentUnshareDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentUnshareDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_unshare_details', val)
 
@@ -9611,8 +9670,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_content_view_details`` tag with value ``val``.
 
-        :param SharedContentViewDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedContentViewDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_content_view_details', val)
 
@@ -9622,8 +9681,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_change_link_policy_details`` tag with value ``val``.
 
-        :param SharedFolderChangeLinkPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderChangeLinkPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_change_link_policy_details', val)
 
@@ -9634,8 +9693,8 @@ class EventDetails(bb.Union):
         ``shared_folder_change_members_inheritance_policy_details`` tag with
         value ``val``.
 
-        :param SharedFolderChangeMembersInheritancePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderChangeMembersInheritancePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_change_members_inheritance_policy_details', val)
 
@@ -9646,8 +9705,8 @@ class EventDetails(bb.Union):
         ``shared_folder_change_members_management_policy_details`` tag with
         value ``val``.
 
-        :param SharedFolderChangeMembersManagementPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderChangeMembersManagementPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_change_members_management_policy_details', val)
 
@@ -9657,8 +9716,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_change_members_policy_details`` tag with value ``val``.
 
-        :param SharedFolderChangeMembersPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderChangeMembersPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_change_members_policy_details', val)
 
@@ -9668,8 +9727,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_create_details`` tag with value ``val``.
 
-        :param SharedFolderCreateDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderCreateDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_create_details', val)
 
@@ -9679,8 +9738,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_decline_invitation_details`` tag with value ``val``.
 
-        :param SharedFolderDeclineInvitationDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderDeclineInvitationDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_decline_invitation_details', val)
 
@@ -9690,8 +9749,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_mount_details`` tag with value ``val``.
 
-        :param SharedFolderMountDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderMountDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_mount_details', val)
 
@@ -9701,8 +9760,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_nest_details`` tag with value ``val``.
 
-        :param SharedFolderNestDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderNestDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_nest_details', val)
 
@@ -9712,8 +9771,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_transfer_ownership_details`` tag with value ``val``.
 
-        :param SharedFolderTransferOwnershipDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderTransferOwnershipDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_transfer_ownership_details', val)
 
@@ -9723,8 +9782,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_unmount_details`` tag with value ``val``.
 
-        :param SharedFolderUnmountDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedFolderUnmountDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_folder_unmount_details', val)
 
@@ -9734,8 +9793,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_link_add_expiry_details`` tag with value ``val``.
 
-        :param SharedLinkAddExpiryDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkAddExpiryDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_add_expiry_details', val)
 
@@ -9745,8 +9804,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_link_change_expiry_details`` tag with value ``val``.
 
-        :param SharedLinkChangeExpiryDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkChangeExpiryDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_change_expiry_details', val)
 
@@ -9756,8 +9815,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_link_change_visibility_details`` tag with value ``val``.
 
-        :param SharedLinkChangeVisibilityDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkChangeVisibilityDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_change_visibility_details', val)
 
@@ -9767,8 +9826,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``shared_link_copy_details``
         tag with value ``val``.
 
-        :param SharedLinkCopyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkCopyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_copy_details', val)
 
@@ -9778,8 +9837,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_link_create_details`` tag with value ``val``.
 
-        :param SharedLinkCreateDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkCreateDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_create_details', val)
 
@@ -9789,8 +9848,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_link_disable_details`` tag with value ``val``.
 
-        :param SharedLinkDisableDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkDisableDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_disable_details', val)
 
@@ -9800,8 +9859,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_link_download_details`` tag with value ``val``.
 
-        :param SharedLinkDownloadDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkDownloadDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_download_details', val)
 
@@ -9811,8 +9870,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_link_remove_expiry_details`` tag with value ``val``.
 
-        :param SharedLinkRemoveExpiryDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkRemoveExpiryDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_remove_expiry_details', val)
 
@@ -9822,8 +9881,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_link_share_details`` tag with value ``val``.
 
-        :param SharedLinkShareDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkShareDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_share_details', val)
 
@@ -9833,8 +9892,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``shared_link_view_details``
         tag with value ``val``.
 
-        :param SharedLinkViewDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedLinkViewDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_link_view_details', val)
 
@@ -9844,8 +9903,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shared_note_opened_details`` tag with value ``val``.
 
-        :param SharedNoteOpenedDetails val:
-        :rtype: EventDetails
+        :param team_log.SharedNoteOpenedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shared_note_opened_details', val)
 
@@ -9855,8 +9914,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``shmodel_group_share_details`` tag with value ``val``.
 
-        :param ShmodelGroupShareDetails val:
-        :rtype: EventDetails
+        :param team_log.ShmodelGroupShareDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('shmodel_group_share_details', val)
 
@@ -9866,8 +9925,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_access_granted_details`` tag with value ``val``.
 
-        :param ShowcaseAccessGrantedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseAccessGrantedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_access_granted_details', val)
 
@@ -9877,8 +9936,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_add_member_details`` tag with value ``val``.
 
-        :param ShowcaseAddMemberDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseAddMemberDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_add_member_details', val)
 
@@ -9888,8 +9947,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_archived_details`` tag with value ``val``.
 
-        :param ShowcaseArchivedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseArchivedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_archived_details', val)
 
@@ -9899,8 +9958,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``showcase_created_details``
         tag with value ``val``.
 
-        :param ShowcaseCreatedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseCreatedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_created_details', val)
 
@@ -9910,8 +9969,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_delete_comment_details`` tag with value ``val``.
 
-        :param ShowcaseDeleteCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseDeleteCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_delete_comment_details', val)
 
@@ -9921,8 +9980,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``showcase_edited_details``
         tag with value ``val``.
 
-        :param ShowcaseEditedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseEditedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_edited_details', val)
 
@@ -9932,8 +9991,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_edit_comment_details`` tag with value ``val``.
 
-        :param ShowcaseEditCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseEditCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_edit_comment_details', val)
 
@@ -9943,8 +10002,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_file_added_details`` tag with value ``val``.
 
-        :param ShowcaseFileAddedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseFileAddedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_file_added_details', val)
 
@@ -9954,8 +10013,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_file_download_details`` tag with value ``val``.
 
-        :param ShowcaseFileDownloadDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseFileDownloadDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_file_download_details', val)
 
@@ -9965,8 +10024,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_file_removed_details`` tag with value ``val``.
 
-        :param ShowcaseFileRemovedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseFileRemovedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_file_removed_details', val)
 
@@ -9976,8 +10035,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_file_view_details`` tag with value ``val``.
 
-        :param ShowcaseFileViewDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseFileViewDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_file_view_details', val)
 
@@ -9987,8 +10046,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_permanently_deleted_details`` tag with value ``val``.
 
-        :param ShowcasePermanentlyDeletedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcasePermanentlyDeletedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_permanently_deleted_details', val)
 
@@ -9998,8 +10057,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_post_comment_details`` tag with value ``val``.
 
-        :param ShowcasePostCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcasePostCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_post_comment_details', val)
 
@@ -10009,8 +10068,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_remove_member_details`` tag with value ``val``.
 
-        :param ShowcaseRemoveMemberDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseRemoveMemberDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_remove_member_details', val)
 
@@ -10020,8 +10079,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``showcase_renamed_details``
         tag with value ``val``.
 
-        :param ShowcaseRenamedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseRenamedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_renamed_details', val)
 
@@ -10031,8 +10090,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_request_access_details`` tag with value ``val``.
 
-        :param ShowcaseRequestAccessDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseRequestAccessDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_request_access_details', val)
 
@@ -10042,8 +10101,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_resolve_comment_details`` tag with value ``val``.
 
-        :param ShowcaseResolveCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseResolveCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_resolve_comment_details', val)
 
@@ -10053,8 +10112,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_restored_details`` tag with value ``val``.
 
-        :param ShowcaseRestoredDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseRestoredDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_restored_details', val)
 
@@ -10064,8 +10123,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``showcase_trashed_details``
         tag with value ``val``.
 
-        :param ShowcaseTrashedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseTrashedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_trashed_details', val)
 
@@ -10075,8 +10134,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_trashed_deprecated_details`` tag with value ``val``.
 
-        :param ShowcaseTrashedDeprecatedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseTrashedDeprecatedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_trashed_deprecated_details', val)
 
@@ -10086,8 +10145,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_unresolve_comment_details`` tag with value ``val``.
 
-        :param ShowcaseUnresolveCommentDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseUnresolveCommentDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_unresolve_comment_details', val)
 
@@ -10097,8 +10156,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_untrashed_details`` tag with value ``val``.
 
-        :param ShowcaseUntrashedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseUntrashedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_untrashed_details', val)
 
@@ -10108,8 +10167,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_untrashed_deprecated_details`` tag with value ``val``.
 
-        :param ShowcaseUntrashedDeprecatedDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseUntrashedDeprecatedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_untrashed_deprecated_details', val)
 
@@ -10119,8 +10178,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``showcase_view_details``
         tag with value ``val``.
 
-        :param ShowcaseViewDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseViewDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_view_details', val)
 
@@ -10130,8 +10189,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sso_add_cert_details`` tag
         with value ``val``.
 
-        :param SsoAddCertDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoAddCertDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_add_cert_details', val)
 
@@ -10141,8 +10200,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sso_add_login_url_details`` tag with value ``val``.
 
-        :param SsoAddLoginUrlDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoAddLoginUrlDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_add_login_url_details', val)
 
@@ -10152,8 +10211,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sso_add_logout_url_details`` tag with value ``val``.
 
-        :param SsoAddLogoutUrlDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoAddLogoutUrlDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_add_logout_url_details', val)
 
@@ -10163,8 +10222,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sso_change_cert_details``
         tag with value ``val``.
 
-        :param SsoChangeCertDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoChangeCertDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_change_cert_details', val)
 
@@ -10174,8 +10233,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sso_change_login_url_details`` tag with value ``val``.
 
-        :param SsoChangeLoginUrlDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoChangeLoginUrlDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_change_login_url_details', val)
 
@@ -10185,8 +10244,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sso_change_logout_url_details`` tag with value ``val``.
 
-        :param SsoChangeLogoutUrlDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoChangeLogoutUrlDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_change_logout_url_details', val)
 
@@ -10196,8 +10255,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sso_change_saml_identity_mode_details`` tag with value ``val``.
 
-        :param SsoChangeSamlIdentityModeDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoChangeSamlIdentityModeDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_change_saml_identity_mode_details', val)
 
@@ -10207,8 +10266,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``sso_remove_cert_details``
         tag with value ``val``.
 
-        :param SsoRemoveCertDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoRemoveCertDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_remove_cert_details', val)
 
@@ -10218,8 +10277,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sso_remove_login_url_details`` tag with value ``val``.
 
-        :param SsoRemoveLoginUrlDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoRemoveLoginUrlDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_remove_login_url_details', val)
 
@@ -10229,8 +10288,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sso_remove_logout_url_details`` tag with value ``val``.
 
-        :param SsoRemoveLogoutUrlDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoRemoveLogoutUrlDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_remove_logout_url_details', val)
 
@@ -10240,8 +10299,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_folder_change_status_details`` tag with value ``val``.
 
-        :param TeamFolderChangeStatusDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamFolderChangeStatusDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_folder_change_status_details', val)
 
@@ -10251,8 +10310,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_folder_create_details`` tag with value ``val``.
 
-        :param TeamFolderCreateDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamFolderCreateDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_folder_create_details', val)
 
@@ -10262,8 +10321,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_folder_downgrade_details`` tag with value ``val``.
 
-        :param TeamFolderDowngradeDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamFolderDowngradeDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_folder_downgrade_details', val)
 
@@ -10273,8 +10332,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_folder_permanently_delete_details`` tag with value ``val``.
 
-        :param TeamFolderPermanentlyDeleteDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamFolderPermanentlyDeleteDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_folder_permanently_delete_details', val)
 
@@ -10284,8 +10343,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_folder_rename_details`` tag with value ``val``.
 
-        :param TeamFolderRenameDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamFolderRenameDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_folder_rename_details', val)
 
@@ -10295,8 +10354,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_selective_sync_settings_changed_details`` tag with value ``val``.
 
-        :param TeamSelectiveSyncSettingsChangedDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamSelectiveSyncSettingsChangedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_selective_sync_settings_changed_details', val)
 
@@ -10306,8 +10365,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``account_capture_change_policy_details`` tag with value ``val``.
 
-        :param AccountCaptureChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.AccountCaptureChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('account_capture_change_policy_details', val)
 
@@ -10317,8 +10376,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``allow_download_disabled_details`` tag with value ``val``.
 
-        :param AllowDownloadDisabledDetails val:
-        :rtype: EventDetails
+        :param team_log.AllowDownloadDisabledDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('allow_download_disabled_details', val)
 
@@ -10328,8 +10387,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``allow_download_enabled_details`` tag with value ``val``.
 
-        :param AllowDownloadEnabledDetails val:
-        :rtype: EventDetails
+        :param team_log.AllowDownloadEnabledDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('allow_download_enabled_details', val)
 
@@ -10339,8 +10398,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``camera_uploads_policy_changed_details`` tag with value ``val``.
 
-        :param CameraUploadsPolicyChangedDetails val:
-        :rtype: EventDetails
+        :param team_log.CameraUploadsPolicyChangedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('camera_uploads_policy_changed_details', val)
 
@@ -10351,8 +10410,8 @@ class EventDetails(bb.Union):
         ``data_placement_restriction_change_policy_details`` tag with value
         ``val``.
 
-        :param DataPlacementRestrictionChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.DataPlacementRestrictionChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('data_placement_restriction_change_policy_details', val)
 
@@ -10363,8 +10422,8 @@ class EventDetails(bb.Union):
         ``data_placement_restriction_satisfy_policy_details`` tag with value
         ``val``.
 
-        :param DataPlacementRestrictionSatisfyPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.DataPlacementRestrictionSatisfyPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('data_placement_restriction_satisfy_policy_details', val)
 
@@ -10375,8 +10434,8 @@ class EventDetails(bb.Union):
         ``device_approvals_change_desktop_policy_details`` tag with value
         ``val``.
 
-        :param DeviceApprovalsChangeDesktopPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceApprovalsChangeDesktopPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_approvals_change_desktop_policy_details', val)
 
@@ -10387,8 +10446,8 @@ class EventDetails(bb.Union):
         ``device_approvals_change_mobile_policy_details`` tag with value
         ``val``.
 
-        :param DeviceApprovalsChangeMobilePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceApprovalsChangeMobilePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_approvals_change_mobile_policy_details', val)
 
@@ -10399,8 +10458,8 @@ class EventDetails(bb.Union):
         ``device_approvals_change_overage_action_details`` tag with value
         ``val``.
 
-        :param DeviceApprovalsChangeOverageActionDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceApprovalsChangeOverageActionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_approvals_change_overage_action_details', val)
 
@@ -10411,8 +10470,8 @@ class EventDetails(bb.Union):
         ``device_approvals_change_unlink_action_details`` tag with value
         ``val``.
 
-        :param DeviceApprovalsChangeUnlinkActionDetails val:
-        :rtype: EventDetails
+        :param team_log.DeviceApprovalsChangeUnlinkActionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('device_approvals_change_unlink_action_details', val)
 
@@ -10422,8 +10481,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``directory_restrictions_add_members_details`` tag with value ``val``.
 
-        :param DirectoryRestrictionsAddMembersDetails val:
-        :rtype: EventDetails
+        :param team_log.DirectoryRestrictionsAddMembersDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('directory_restrictions_add_members_details', val)
 
@@ -10434,8 +10493,8 @@ class EventDetails(bb.Union):
         ``directory_restrictions_remove_members_details`` tag with value
         ``val``.
 
-        :param DirectoryRestrictionsRemoveMembersDetails val:
-        :rtype: EventDetails
+        :param team_log.DirectoryRestrictionsRemoveMembersDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('directory_restrictions_remove_members_details', val)
 
@@ -10445,8 +10504,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``emm_add_exception_details`` tag with value ``val``.
 
-        :param EmmAddExceptionDetails val:
-        :rtype: EventDetails
+        :param team_log.EmmAddExceptionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('emm_add_exception_details', val)
 
@@ -10456,8 +10515,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``emm_change_policy_details`` tag with value ``val``.
 
-        :param EmmChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.EmmChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('emm_change_policy_details', val)
 
@@ -10467,8 +10526,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``emm_remove_exception_details`` tag with value ``val``.
 
-        :param EmmRemoveExceptionDetails val:
-        :rtype: EventDetails
+        :param team_log.EmmRemoveExceptionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('emm_remove_exception_details', val)
 
@@ -10479,8 +10538,8 @@ class EventDetails(bb.Union):
         ``extended_version_history_change_policy_details`` tag with value
         ``val``.
 
-        :param ExtendedVersionHistoryChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.ExtendedVersionHistoryChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('extended_version_history_change_policy_details', val)
 
@@ -10490,8 +10549,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_comments_change_policy_details`` tag with value ``val``.
 
-        :param FileCommentsChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.FileCommentsChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_comments_change_policy_details', val)
 
@@ -10501,8 +10560,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_requests_change_policy_details`` tag with value ``val``.
 
-        :param FileRequestsChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRequestsChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_requests_change_policy_details', val)
 
@@ -10512,8 +10571,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``file_requests_emails_enabled_details`` tag with value ``val``.
 
-        :param FileRequestsEmailsEnabledDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRequestsEmailsEnabledDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_requests_emails_enabled_details', val)
 
@@ -10524,8 +10583,8 @@ class EventDetails(bb.Union):
         ``file_requests_emails_restricted_to_team_only_details`` tag with value
         ``val``.
 
-        :param FileRequestsEmailsRestrictedToTeamOnlyDetails val:
-        :rtype: EventDetails
+        :param team_log.FileRequestsEmailsRestrictedToTeamOnlyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('file_requests_emails_restricted_to_team_only_details', val)
 
@@ -10535,8 +10594,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``google_sso_change_policy_details`` tag with value ``val``.
 
-        :param GoogleSsoChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.GoogleSsoChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('google_sso_change_policy_details', val)
 
@@ -10546,8 +10605,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``group_user_management_change_policy_details`` tag with value ``val``.
 
-        :param GroupUserManagementChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.GroupUserManagementChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('group_user_management_change_policy_details', val)
 
@@ -10557,8 +10616,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_requests_change_policy_details`` tag with value ``val``.
 
-        :param MemberRequestsChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberRequestsChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_requests_change_policy_details', val)
 
@@ -10568,8 +10627,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_add_exception_details`` tag with value ``val``.
 
-        :param MemberSpaceLimitsAddExceptionDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSpaceLimitsAddExceptionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_space_limits_add_exception_details', val)
 
@@ -10580,8 +10639,8 @@ class EventDetails(bb.Union):
         ``member_space_limits_change_caps_type_policy_details`` tag with value
         ``val``.
 
-        :param MemberSpaceLimitsChangeCapsTypePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSpaceLimitsChangeCapsTypePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_space_limits_change_caps_type_policy_details', val)
 
@@ -10591,8 +10650,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_change_policy_details`` tag with value ``val``.
 
-        :param MemberSpaceLimitsChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSpaceLimitsChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_space_limits_change_policy_details', val)
 
@@ -10602,8 +10661,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_remove_exception_details`` tag with value ``val``.
 
-        :param MemberSpaceLimitsRemoveExceptionDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSpaceLimitsRemoveExceptionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_space_limits_remove_exception_details', val)
 
@@ -10613,8 +10672,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``member_suggestions_change_policy_details`` tag with value ``val``.
 
-        :param MemberSuggestionsChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.MemberSuggestionsChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('member_suggestions_change_policy_details', val)
 
@@ -10624,8 +10683,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``microsoft_office_addin_change_policy_details`` tag with value ``val``.
 
-        :param MicrosoftOfficeAddinChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.MicrosoftOfficeAddinChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('microsoft_office_addin_change_policy_details', val)
 
@@ -10635,8 +10694,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``network_control_change_policy_details`` tag with value ``val``.
 
-        :param NetworkControlChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.NetworkControlChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('network_control_change_policy_details', val)
 
@@ -10646,8 +10705,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_change_deployment_policy_details`` tag with value ``val``.
 
-        :param PaperChangeDeploymentPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperChangeDeploymentPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_change_deployment_policy_details', val)
 
@@ -10657,8 +10716,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_change_member_link_policy_details`` tag with value ``val``.
 
-        :param PaperChangeMemberLinkPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperChangeMemberLinkPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_change_member_link_policy_details', val)
 
@@ -10668,8 +10727,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_change_member_policy_details`` tag with value ``val``.
 
-        :param PaperChangeMemberPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperChangeMemberPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_change_member_policy_details', val)
 
@@ -10679,8 +10738,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_change_policy_details`` tag with value ``val``.
 
-        :param PaperChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_change_policy_details', val)
 
@@ -10690,8 +10749,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_enabled_users_group_addition_details`` tag with value ``val``.
 
-        :param PaperEnabledUsersGroupAdditionDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperEnabledUsersGroupAdditionDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_enabled_users_group_addition_details', val)
 
@@ -10701,8 +10760,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``paper_enabled_users_group_removal_details`` tag with value ``val``.
 
-        :param PaperEnabledUsersGroupRemovalDetails val:
-        :rtype: EventDetails
+        :param team_log.PaperEnabledUsersGroupRemovalDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('paper_enabled_users_group_removal_details', val)
 
@@ -10712,8 +10771,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``permanent_delete_change_policy_details`` tag with value ``val``.
 
-        :param PermanentDeleteChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.PermanentDeleteChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('permanent_delete_change_policy_details', val)
 
@@ -10723,8 +10782,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sharing_change_folder_join_policy_details`` tag with value ``val``.
 
-        :param SharingChangeFolderJoinPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharingChangeFolderJoinPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sharing_change_folder_join_policy_details', val)
 
@@ -10734,8 +10793,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sharing_change_link_policy_details`` tag with value ``val``.
 
-        :param SharingChangeLinkPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharingChangeLinkPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sharing_change_link_policy_details', val)
 
@@ -10745,8 +10804,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sharing_change_member_policy_details`` tag with value ``val``.
 
-        :param SharingChangeMemberPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SharingChangeMemberPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sharing_change_member_policy_details', val)
 
@@ -10756,8 +10815,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_change_download_policy_details`` tag with value ``val``.
 
-        :param ShowcaseChangeDownloadPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseChangeDownloadPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_change_download_policy_details', val)
 
@@ -10767,8 +10826,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``showcase_change_enabled_policy_details`` tag with value ``val``.
 
-        :param ShowcaseChangeEnabledPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseChangeEnabledPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_change_enabled_policy_details', val)
 
@@ -10779,8 +10838,8 @@ class EventDetails(bb.Union):
         ``showcase_change_external_sharing_policy_details`` tag with value
         ``val``.
 
-        :param ShowcaseChangeExternalSharingPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.ShowcaseChangeExternalSharingPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('showcase_change_external_sharing_policy_details', val)
 
@@ -10790,8 +10849,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``smart_sync_change_policy_details`` tag with value ``val``.
 
-        :param SmartSyncChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SmartSyncChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('smart_sync_change_policy_details', val)
 
@@ -10801,8 +10860,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``smart_sync_not_opt_out_details`` tag with value ``val``.
 
-        :param SmartSyncNotOptOutDetails val:
-        :rtype: EventDetails
+        :param team_log.SmartSyncNotOptOutDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('smart_sync_not_opt_out_details', val)
 
@@ -10812,8 +10871,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``smart_sync_opt_out_details`` tag with value ``val``.
 
-        :param SmartSyncOptOutDetails val:
-        :rtype: EventDetails
+        :param team_log.SmartSyncOptOutDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('smart_sync_opt_out_details', val)
 
@@ -10823,8 +10882,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``sso_change_policy_details`` tag with value ``val``.
 
-        :param SsoChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.SsoChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('sso_change_policy_details', val)
 
@@ -10834,8 +10893,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_selective_sync_policy_changed_details`` tag with value ``val``.
 
-        :param TeamSelectiveSyncPolicyChangedDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamSelectiveSyncPolicyChangedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_selective_sync_policy_changed_details', val)
 
@@ -10845,8 +10904,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``tfa_change_policy_details`` tag with value ``val``.
 
-        :param TfaChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.TfaChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('tfa_change_policy_details', val)
 
@@ -10856,8 +10915,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``two_account_change_policy_details`` tag with value ``val``.
 
-        :param TwoAccountChangePolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.TwoAccountChangePolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('two_account_change_policy_details', val)
 
@@ -10867,8 +10926,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``viewer_info_policy_changed_details`` tag with value ``val``.
 
-        :param ViewerInfoPolicyChangedDetails val:
-        :rtype: EventDetails
+        :param team_log.ViewerInfoPolicyChangedDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('viewer_info_policy_changed_details', val)
 
@@ -10879,8 +10938,8 @@ class EventDetails(bb.Union):
         ``web_sessions_change_fixed_length_policy_details`` tag with value
         ``val``.
 
-        :param WebSessionsChangeFixedLengthPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.WebSessionsChangeFixedLengthPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('web_sessions_change_fixed_length_policy_details', val)
 
@@ -10891,8 +10950,8 @@ class EventDetails(bb.Union):
         ``web_sessions_change_idle_length_policy_details`` tag with value
         ``val``.
 
-        :param WebSessionsChangeIdleLengthPolicyDetails val:
-        :rtype: EventDetails
+        :param team_log.WebSessionsChangeIdleLengthPolicyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('web_sessions_change_idle_length_policy_details', val)
 
@@ -10902,8 +10961,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``team_merge_from_details``
         tag with value ``val``.
 
-        :param TeamMergeFromDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamMergeFromDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_merge_from_details', val)
 
@@ -10913,8 +10972,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``team_merge_to_details``
         tag with value ``val``.
 
-        :param TeamMergeToDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamMergeToDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_merge_to_details', val)
 
@@ -10924,8 +10983,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_profile_add_logo_details`` tag with value ``val``.
 
-        :param TeamProfileAddLogoDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamProfileAddLogoDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_profile_add_logo_details', val)
 
@@ -10935,8 +10994,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_profile_change_default_language_details`` tag with value ``val``.
 
-        :param TeamProfileChangeDefaultLanguageDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamProfileChangeDefaultLanguageDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_profile_change_default_language_details', val)
 
@@ -10946,8 +11005,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_profile_change_logo_details`` tag with value ``val``.
 
-        :param TeamProfileChangeLogoDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamProfileChangeLogoDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_profile_change_logo_details', val)
 
@@ -10957,8 +11016,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_profile_change_name_details`` tag with value ``val``.
 
-        :param TeamProfileChangeNameDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamProfileChangeNameDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_profile_change_name_details', val)
 
@@ -10968,8 +11027,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``team_profile_remove_logo_details`` tag with value ``val``.
 
-        :param TeamProfileRemoveLogoDetails val:
-        :rtype: EventDetails
+        :param team_log.TeamProfileRemoveLogoDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('team_profile_remove_logo_details', val)
 
@@ -10979,8 +11038,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``tfa_add_backup_phone_details`` tag with value ``val``.
 
-        :param TfaAddBackupPhoneDetails val:
-        :rtype: EventDetails
+        :param team_log.TfaAddBackupPhoneDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('tfa_add_backup_phone_details', val)
 
@@ -10990,8 +11049,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``tfa_add_security_key_details`` tag with value ``val``.
 
-        :param TfaAddSecurityKeyDetails val:
-        :rtype: EventDetails
+        :param team_log.TfaAddSecurityKeyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('tfa_add_security_key_details', val)
 
@@ -11001,8 +11060,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``tfa_change_backup_phone_details`` tag with value ``val``.
 
-        :param TfaChangeBackupPhoneDetails val:
-        :rtype: EventDetails
+        :param team_log.TfaChangeBackupPhoneDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('tfa_change_backup_phone_details', val)
 
@@ -11012,8 +11071,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``tfa_change_status_details`` tag with value ``val``.
 
-        :param TfaChangeStatusDetails val:
-        :rtype: EventDetails
+        :param team_log.TfaChangeStatusDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('tfa_change_status_details', val)
 
@@ -11023,8 +11082,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``tfa_remove_backup_phone_details`` tag with value ``val``.
 
-        :param TfaRemoveBackupPhoneDetails val:
-        :rtype: EventDetails
+        :param team_log.TfaRemoveBackupPhoneDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('tfa_remove_backup_phone_details', val)
 
@@ -11034,8 +11093,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the
         ``tfa_remove_security_key_details`` tag with value ``val``.
 
-        :param TfaRemoveSecurityKeyDetails val:
-        :rtype: EventDetails
+        :param team_log.TfaRemoveSecurityKeyDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('tfa_remove_security_key_details', val)
 
@@ -11045,8 +11104,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``tfa_reset_details`` tag
         with value ``val``.
 
-        :param TfaResetDetails val:
-        :rtype: EventDetails
+        :param team_log.TfaResetDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('tfa_reset_details', val)
 
@@ -11056,8 +11115,8 @@ class EventDetails(bb.Union):
         Create an instance of this class set to the ``missing_details`` tag with
         value ``val``.
 
-        :param MissingDetails val:
-        :rtype: EventDetails
+        :param team_log.MissingDetails val:
+        :rtype: team_log.EventDetails
         """
         return cls('missing_details', val)
 
@@ -13569,7 +13628,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_app_link_team_details` is true.
 
-        :rtype: AppLinkTeamDetails
+        :rtype: team_log.AppLinkTeamDetails
         """
         if not self.is_app_link_team_details():
             raise AttributeError("tag 'app_link_team_details' not set")
@@ -13579,7 +13638,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_app_link_user_details` is true.
 
-        :rtype: AppLinkUserDetails
+        :rtype: team_log.AppLinkUserDetails
         """
         if not self.is_app_link_user_details():
             raise AttributeError("tag 'app_link_user_details' not set")
@@ -13589,7 +13648,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_app_unlink_team_details` is true.
 
-        :rtype: AppUnlinkTeamDetails
+        :rtype: team_log.AppUnlinkTeamDetails
         """
         if not self.is_app_unlink_team_details():
             raise AttributeError("tag 'app_unlink_team_details' not set")
@@ -13599,7 +13658,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_app_unlink_user_details` is true.
 
-        :rtype: AppUnlinkUserDetails
+        :rtype: team_log.AppUnlinkUserDetails
         """
         if not self.is_app_unlink_user_details():
             raise AttributeError("tag 'app_unlink_user_details' not set")
@@ -13609,7 +13668,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_add_comment_details` is true.
 
-        :rtype: FileAddCommentDetails
+        :rtype: team_log.FileAddCommentDetails
         """
         if not self.is_file_add_comment_details():
             raise AttributeError("tag 'file_add_comment_details' not set")
@@ -13619,7 +13678,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_change_comment_subscription_details` is true.
 
-        :rtype: FileChangeCommentSubscriptionDetails
+        :rtype: team_log.FileChangeCommentSubscriptionDetails
         """
         if not self.is_file_change_comment_subscription_details():
             raise AttributeError("tag 'file_change_comment_subscription_details' not set")
@@ -13629,7 +13688,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_delete_comment_details` is true.
 
-        :rtype: FileDeleteCommentDetails
+        :rtype: team_log.FileDeleteCommentDetails
         """
         if not self.is_file_delete_comment_details():
             raise AttributeError("tag 'file_delete_comment_details' not set")
@@ -13639,7 +13698,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_edit_comment_details` is true.
 
-        :rtype: FileEditCommentDetails
+        :rtype: team_log.FileEditCommentDetails
         """
         if not self.is_file_edit_comment_details():
             raise AttributeError("tag 'file_edit_comment_details' not set")
@@ -13649,7 +13708,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_like_comment_details` is true.
 
-        :rtype: FileLikeCommentDetails
+        :rtype: team_log.FileLikeCommentDetails
         """
         if not self.is_file_like_comment_details():
             raise AttributeError("tag 'file_like_comment_details' not set")
@@ -13659,7 +13718,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_resolve_comment_details` is true.
 
-        :rtype: FileResolveCommentDetails
+        :rtype: team_log.FileResolveCommentDetails
         """
         if not self.is_file_resolve_comment_details():
             raise AttributeError("tag 'file_resolve_comment_details' not set")
@@ -13669,7 +13728,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_unlike_comment_details` is true.
 
-        :rtype: FileUnlikeCommentDetails
+        :rtype: team_log.FileUnlikeCommentDetails
         """
         if not self.is_file_unlike_comment_details():
             raise AttributeError("tag 'file_unlike_comment_details' not set")
@@ -13679,7 +13738,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_unresolve_comment_details` is true.
 
-        :rtype: FileUnresolveCommentDetails
+        :rtype: team_log.FileUnresolveCommentDetails
         """
         if not self.is_file_unresolve_comment_details():
             raise AttributeError("tag 'file_unresolve_comment_details' not set")
@@ -13689,7 +13748,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_change_ip_desktop_details` is true.
 
-        :rtype: DeviceChangeIpDesktopDetails
+        :rtype: team_log.DeviceChangeIpDesktopDetails
         """
         if not self.is_device_change_ip_desktop_details():
             raise AttributeError("tag 'device_change_ip_desktop_details' not set")
@@ -13699,7 +13758,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_change_ip_mobile_details` is true.
 
-        :rtype: DeviceChangeIpMobileDetails
+        :rtype: team_log.DeviceChangeIpMobileDetails
         """
         if not self.is_device_change_ip_mobile_details():
             raise AttributeError("tag 'device_change_ip_mobile_details' not set")
@@ -13709,7 +13768,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_change_ip_web_details` is true.
 
-        :rtype: DeviceChangeIpWebDetails
+        :rtype: team_log.DeviceChangeIpWebDetails
         """
         if not self.is_device_change_ip_web_details():
             raise AttributeError("tag 'device_change_ip_web_details' not set")
@@ -13719,7 +13778,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_delete_on_unlink_fail_details` is true.
 
-        :rtype: DeviceDeleteOnUnlinkFailDetails
+        :rtype: team_log.DeviceDeleteOnUnlinkFailDetails
         """
         if not self.is_device_delete_on_unlink_fail_details():
             raise AttributeError("tag 'device_delete_on_unlink_fail_details' not set")
@@ -13729,7 +13788,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_delete_on_unlink_success_details` is true.
 
-        :rtype: DeviceDeleteOnUnlinkSuccessDetails
+        :rtype: team_log.DeviceDeleteOnUnlinkSuccessDetails
         """
         if not self.is_device_delete_on_unlink_success_details():
             raise AttributeError("tag 'device_delete_on_unlink_success_details' not set")
@@ -13739,7 +13798,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_link_fail_details` is true.
 
-        :rtype: DeviceLinkFailDetails
+        :rtype: team_log.DeviceLinkFailDetails
         """
         if not self.is_device_link_fail_details():
             raise AttributeError("tag 'device_link_fail_details' not set")
@@ -13749,7 +13808,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_link_success_details` is true.
 
-        :rtype: DeviceLinkSuccessDetails
+        :rtype: team_log.DeviceLinkSuccessDetails
         """
         if not self.is_device_link_success_details():
             raise AttributeError("tag 'device_link_success_details' not set")
@@ -13759,7 +13818,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_management_disabled_details` is true.
 
-        :rtype: DeviceManagementDisabledDetails
+        :rtype: team_log.DeviceManagementDisabledDetails
         """
         if not self.is_device_management_disabled_details():
             raise AttributeError("tag 'device_management_disabled_details' not set")
@@ -13769,7 +13828,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_management_enabled_details` is true.
 
-        :rtype: DeviceManagementEnabledDetails
+        :rtype: team_log.DeviceManagementEnabledDetails
         """
         if not self.is_device_management_enabled_details():
             raise AttributeError("tag 'device_management_enabled_details' not set")
@@ -13779,7 +13838,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_unlink_details` is true.
 
-        :rtype: DeviceUnlinkDetails
+        :rtype: team_log.DeviceUnlinkDetails
         """
         if not self.is_device_unlink_details():
             raise AttributeError("tag 'device_unlink_details' not set")
@@ -13789,7 +13848,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_emm_refresh_auth_token_details` is true.
 
-        :rtype: EmmRefreshAuthTokenDetails
+        :rtype: team_log.EmmRefreshAuthTokenDetails
         """
         if not self.is_emm_refresh_auth_token_details():
             raise AttributeError("tag 'emm_refresh_auth_token_details' not set")
@@ -13799,7 +13858,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_account_capture_change_availability_details` is true.
 
-        :rtype: AccountCaptureChangeAvailabilityDetails
+        :rtype: team_log.AccountCaptureChangeAvailabilityDetails
         """
         if not self.is_account_capture_change_availability_details():
             raise AttributeError("tag 'account_capture_change_availability_details' not set")
@@ -13809,7 +13868,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_account_capture_migrate_account_details` is true.
 
-        :rtype: AccountCaptureMigrateAccountDetails
+        :rtype: team_log.AccountCaptureMigrateAccountDetails
         """
         if not self.is_account_capture_migrate_account_details():
             raise AttributeError("tag 'account_capture_migrate_account_details' not set")
@@ -13819,7 +13878,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_account_capture_notification_emails_sent_details` is true.
 
-        :rtype: AccountCaptureNotificationEmailsSentDetails
+        :rtype: team_log.AccountCaptureNotificationEmailsSentDetails
         """
         if not self.is_account_capture_notification_emails_sent_details():
             raise AttributeError("tag 'account_capture_notification_emails_sent_details' not set")
@@ -13829,7 +13888,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_account_capture_relinquish_account_details` is true.
 
-        :rtype: AccountCaptureRelinquishAccountDetails
+        :rtype: team_log.AccountCaptureRelinquishAccountDetails
         """
         if not self.is_account_capture_relinquish_account_details():
             raise AttributeError("tag 'account_capture_relinquish_account_details' not set")
@@ -13839,7 +13898,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_disabled_domain_invites_details` is true.
 
-        :rtype: DisabledDomainInvitesDetails
+        :rtype: team_log.DisabledDomainInvitesDetails
         """
         if not self.is_disabled_domain_invites_details():
             raise AttributeError("tag 'disabled_domain_invites_details' not set")
@@ -13849,7 +13908,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_invites_approve_request_to_join_team_details` is true.
 
-        :rtype: DomainInvitesApproveRequestToJoinTeamDetails
+        :rtype: team_log.DomainInvitesApproveRequestToJoinTeamDetails
         """
         if not self.is_domain_invites_approve_request_to_join_team_details():
             raise AttributeError("tag 'domain_invites_approve_request_to_join_team_details' not set")
@@ -13859,7 +13918,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_invites_decline_request_to_join_team_details` is true.
 
-        :rtype: DomainInvitesDeclineRequestToJoinTeamDetails
+        :rtype: team_log.DomainInvitesDeclineRequestToJoinTeamDetails
         """
         if not self.is_domain_invites_decline_request_to_join_team_details():
             raise AttributeError("tag 'domain_invites_decline_request_to_join_team_details' not set")
@@ -13869,7 +13928,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_invites_email_existing_users_details` is true.
 
-        :rtype: DomainInvitesEmailExistingUsersDetails
+        :rtype: team_log.DomainInvitesEmailExistingUsersDetails
         """
         if not self.is_domain_invites_email_existing_users_details():
             raise AttributeError("tag 'domain_invites_email_existing_users_details' not set")
@@ -13879,7 +13938,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_invites_request_to_join_team_details` is true.
 
-        :rtype: DomainInvitesRequestToJoinTeamDetails
+        :rtype: team_log.DomainInvitesRequestToJoinTeamDetails
         """
         if not self.is_domain_invites_request_to_join_team_details():
             raise AttributeError("tag 'domain_invites_request_to_join_team_details' not set")
@@ -13889,7 +13948,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_invites_set_invite_new_user_pref_to_no_details` is true.
 
-        :rtype: DomainInvitesSetInviteNewUserPrefToNoDetails
+        :rtype: team_log.DomainInvitesSetInviteNewUserPrefToNoDetails
         """
         if not self.is_domain_invites_set_invite_new_user_pref_to_no_details():
             raise AttributeError("tag 'domain_invites_set_invite_new_user_pref_to_no_details' not set")
@@ -13899,7 +13958,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_invites_set_invite_new_user_pref_to_yes_details` is true.
 
-        :rtype: DomainInvitesSetInviteNewUserPrefToYesDetails
+        :rtype: team_log.DomainInvitesSetInviteNewUserPrefToYesDetails
         """
         if not self.is_domain_invites_set_invite_new_user_pref_to_yes_details():
             raise AttributeError("tag 'domain_invites_set_invite_new_user_pref_to_yes_details' not set")
@@ -13909,7 +13968,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_verification_add_domain_fail_details` is true.
 
-        :rtype: DomainVerificationAddDomainFailDetails
+        :rtype: team_log.DomainVerificationAddDomainFailDetails
         """
         if not self.is_domain_verification_add_domain_fail_details():
             raise AttributeError("tag 'domain_verification_add_domain_fail_details' not set")
@@ -13919,7 +13978,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_verification_add_domain_success_details` is true.
 
-        :rtype: DomainVerificationAddDomainSuccessDetails
+        :rtype: team_log.DomainVerificationAddDomainSuccessDetails
         """
         if not self.is_domain_verification_add_domain_success_details():
             raise AttributeError("tag 'domain_verification_add_domain_success_details' not set")
@@ -13929,7 +13988,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_domain_verification_remove_domain_details` is true.
 
-        :rtype: DomainVerificationRemoveDomainDetails
+        :rtype: team_log.DomainVerificationRemoveDomainDetails
         """
         if not self.is_domain_verification_remove_domain_details():
             raise AttributeError("tag 'domain_verification_remove_domain_details' not set")
@@ -13939,7 +13998,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_enabled_domain_invites_details` is true.
 
-        :rtype: EnabledDomainInvitesDetails
+        :rtype: team_log.EnabledDomainInvitesDetails
         """
         if not self.is_enabled_domain_invites_details():
             raise AttributeError("tag 'enabled_domain_invites_details' not set")
@@ -13949,7 +14008,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_create_folder_details` is true.
 
-        :rtype: CreateFolderDetails
+        :rtype: team_log.CreateFolderDetails
         """
         if not self.is_create_folder_details():
             raise AttributeError("tag 'create_folder_details' not set")
@@ -13959,7 +14018,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_add_details` is true.
 
-        :rtype: FileAddDetails
+        :rtype: team_log.FileAddDetails
         """
         if not self.is_file_add_details():
             raise AttributeError("tag 'file_add_details' not set")
@@ -13969,7 +14028,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_copy_details` is true.
 
-        :rtype: FileCopyDetails
+        :rtype: team_log.FileCopyDetails
         """
         if not self.is_file_copy_details():
             raise AttributeError("tag 'file_copy_details' not set")
@@ -13979,7 +14038,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_delete_details` is true.
 
-        :rtype: FileDeleteDetails
+        :rtype: team_log.FileDeleteDetails
         """
         if not self.is_file_delete_details():
             raise AttributeError("tag 'file_delete_details' not set")
@@ -13989,7 +14048,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_download_details` is true.
 
-        :rtype: FileDownloadDetails
+        :rtype: team_log.FileDownloadDetails
         """
         if not self.is_file_download_details():
             raise AttributeError("tag 'file_download_details' not set")
@@ -13999,7 +14058,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_edit_details` is true.
 
-        :rtype: FileEditDetails
+        :rtype: team_log.FileEditDetails
         """
         if not self.is_file_edit_details():
             raise AttributeError("tag 'file_edit_details' not set")
@@ -14009,7 +14068,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_get_copy_reference_details` is true.
 
-        :rtype: FileGetCopyReferenceDetails
+        :rtype: team_log.FileGetCopyReferenceDetails
         """
         if not self.is_file_get_copy_reference_details():
             raise AttributeError("tag 'file_get_copy_reference_details' not set")
@@ -14019,7 +14078,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_move_details` is true.
 
-        :rtype: FileMoveDetails
+        :rtype: team_log.FileMoveDetails
         """
         if not self.is_file_move_details():
             raise AttributeError("tag 'file_move_details' not set")
@@ -14029,7 +14088,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_permanently_delete_details` is true.
 
-        :rtype: FilePermanentlyDeleteDetails
+        :rtype: team_log.FilePermanentlyDeleteDetails
         """
         if not self.is_file_permanently_delete_details():
             raise AttributeError("tag 'file_permanently_delete_details' not set")
@@ -14039,7 +14098,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_preview_details` is true.
 
-        :rtype: FilePreviewDetails
+        :rtype: team_log.FilePreviewDetails
         """
         if not self.is_file_preview_details():
             raise AttributeError("tag 'file_preview_details' not set")
@@ -14049,7 +14108,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_rename_details` is true.
 
-        :rtype: FileRenameDetails
+        :rtype: team_log.FileRenameDetails
         """
         if not self.is_file_rename_details():
             raise AttributeError("tag 'file_rename_details' not set")
@@ -14059,7 +14118,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_restore_details` is true.
 
-        :rtype: FileRestoreDetails
+        :rtype: team_log.FileRestoreDetails
         """
         if not self.is_file_restore_details():
             raise AttributeError("tag 'file_restore_details' not set")
@@ -14069,7 +14128,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_revert_details` is true.
 
-        :rtype: FileRevertDetails
+        :rtype: team_log.FileRevertDetails
         """
         if not self.is_file_revert_details():
             raise AttributeError("tag 'file_revert_details' not set")
@@ -14079,7 +14138,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_rollback_changes_details` is true.
 
-        :rtype: FileRollbackChangesDetails
+        :rtype: team_log.FileRollbackChangesDetails
         """
         if not self.is_file_rollback_changes_details():
             raise AttributeError("tag 'file_rollback_changes_details' not set")
@@ -14089,7 +14148,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_save_copy_reference_details` is true.
 
-        :rtype: FileSaveCopyReferenceDetails
+        :rtype: team_log.FileSaveCopyReferenceDetails
         """
         if not self.is_file_save_copy_reference_details():
             raise AttributeError("tag 'file_save_copy_reference_details' not set")
@@ -14099,7 +14158,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_request_change_details` is true.
 
-        :rtype: FileRequestChangeDetails
+        :rtype: team_log.FileRequestChangeDetails
         """
         if not self.is_file_request_change_details():
             raise AttributeError("tag 'file_request_change_details' not set")
@@ -14109,7 +14168,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_request_close_details` is true.
 
-        :rtype: FileRequestCloseDetails
+        :rtype: team_log.FileRequestCloseDetails
         """
         if not self.is_file_request_close_details():
             raise AttributeError("tag 'file_request_close_details' not set")
@@ -14119,7 +14178,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_request_create_details` is true.
 
-        :rtype: FileRequestCreateDetails
+        :rtype: team_log.FileRequestCreateDetails
         """
         if not self.is_file_request_create_details():
             raise AttributeError("tag 'file_request_create_details' not set")
@@ -14129,7 +14188,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_request_receive_file_details` is true.
 
-        :rtype: FileRequestReceiveFileDetails
+        :rtype: team_log.FileRequestReceiveFileDetails
         """
         if not self.is_file_request_receive_file_details():
             raise AttributeError("tag 'file_request_receive_file_details' not set")
@@ -14139,7 +14198,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_add_external_id_details` is true.
 
-        :rtype: GroupAddExternalIdDetails
+        :rtype: team_log.GroupAddExternalIdDetails
         """
         if not self.is_group_add_external_id_details():
             raise AttributeError("tag 'group_add_external_id_details' not set")
@@ -14149,7 +14208,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_add_member_details` is true.
 
-        :rtype: GroupAddMemberDetails
+        :rtype: team_log.GroupAddMemberDetails
         """
         if not self.is_group_add_member_details():
             raise AttributeError("tag 'group_add_member_details' not set")
@@ -14159,7 +14218,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_change_external_id_details` is true.
 
-        :rtype: GroupChangeExternalIdDetails
+        :rtype: team_log.GroupChangeExternalIdDetails
         """
         if not self.is_group_change_external_id_details():
             raise AttributeError("tag 'group_change_external_id_details' not set")
@@ -14169,7 +14228,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_change_management_type_details` is true.
 
-        :rtype: GroupChangeManagementTypeDetails
+        :rtype: team_log.GroupChangeManagementTypeDetails
         """
         if not self.is_group_change_management_type_details():
             raise AttributeError("tag 'group_change_management_type_details' not set")
@@ -14179,7 +14238,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_change_member_role_details` is true.
 
-        :rtype: GroupChangeMemberRoleDetails
+        :rtype: team_log.GroupChangeMemberRoleDetails
         """
         if not self.is_group_change_member_role_details():
             raise AttributeError("tag 'group_change_member_role_details' not set")
@@ -14189,7 +14248,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_create_details` is true.
 
-        :rtype: GroupCreateDetails
+        :rtype: team_log.GroupCreateDetails
         """
         if not self.is_group_create_details():
             raise AttributeError("tag 'group_create_details' not set")
@@ -14199,7 +14258,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_delete_details` is true.
 
-        :rtype: GroupDeleteDetails
+        :rtype: team_log.GroupDeleteDetails
         """
         if not self.is_group_delete_details():
             raise AttributeError("tag 'group_delete_details' not set")
@@ -14209,7 +14268,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_description_updated_details` is true.
 
-        :rtype: GroupDescriptionUpdatedDetails
+        :rtype: team_log.GroupDescriptionUpdatedDetails
         """
         if not self.is_group_description_updated_details():
             raise AttributeError("tag 'group_description_updated_details' not set")
@@ -14219,7 +14278,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_join_policy_updated_details` is true.
 
-        :rtype: GroupJoinPolicyUpdatedDetails
+        :rtype: team_log.GroupJoinPolicyUpdatedDetails
         """
         if not self.is_group_join_policy_updated_details():
             raise AttributeError("tag 'group_join_policy_updated_details' not set")
@@ -14229,7 +14288,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_moved_details` is true.
 
-        :rtype: GroupMovedDetails
+        :rtype: team_log.GroupMovedDetails
         """
         if not self.is_group_moved_details():
             raise AttributeError("tag 'group_moved_details' not set")
@@ -14239,7 +14298,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_remove_external_id_details` is true.
 
-        :rtype: GroupRemoveExternalIdDetails
+        :rtype: team_log.GroupRemoveExternalIdDetails
         """
         if not self.is_group_remove_external_id_details():
             raise AttributeError("tag 'group_remove_external_id_details' not set")
@@ -14249,7 +14308,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_remove_member_details` is true.
 
-        :rtype: GroupRemoveMemberDetails
+        :rtype: team_log.GroupRemoveMemberDetails
         """
         if not self.is_group_remove_member_details():
             raise AttributeError("tag 'group_remove_member_details' not set")
@@ -14259,7 +14318,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_rename_details` is true.
 
-        :rtype: GroupRenameDetails
+        :rtype: team_log.GroupRenameDetails
         """
         if not self.is_group_rename_details():
             raise AttributeError("tag 'group_rename_details' not set")
@@ -14269,7 +14328,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_emm_error_details` is true.
 
-        :rtype: EmmErrorDetails
+        :rtype: team_log.EmmErrorDetails
         """
         if not self.is_emm_error_details():
             raise AttributeError("tag 'emm_error_details' not set")
@@ -14279,7 +14338,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_login_fail_details` is true.
 
-        :rtype: LoginFailDetails
+        :rtype: team_log.LoginFailDetails
         """
         if not self.is_login_fail_details():
             raise AttributeError("tag 'login_fail_details' not set")
@@ -14289,7 +14348,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_login_success_details` is true.
 
-        :rtype: LoginSuccessDetails
+        :rtype: team_log.LoginSuccessDetails
         """
         if not self.is_login_success_details():
             raise AttributeError("tag 'login_success_details' not set")
@@ -14299,7 +14358,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_logout_details` is true.
 
-        :rtype: LogoutDetails
+        :rtype: team_log.LogoutDetails
         """
         if not self.is_logout_details():
             raise AttributeError("tag 'logout_details' not set")
@@ -14309,7 +14368,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_reseller_support_session_end_details` is true.
 
-        :rtype: ResellerSupportSessionEndDetails
+        :rtype: team_log.ResellerSupportSessionEndDetails
         """
         if not self.is_reseller_support_session_end_details():
             raise AttributeError("tag 'reseller_support_session_end_details' not set")
@@ -14319,7 +14378,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_reseller_support_session_start_details` is true.
 
-        :rtype: ResellerSupportSessionStartDetails
+        :rtype: team_log.ResellerSupportSessionStartDetails
         """
         if not self.is_reseller_support_session_start_details():
             raise AttributeError("tag 'reseller_support_session_start_details' not set")
@@ -14329,7 +14388,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sign_in_as_session_end_details` is true.
 
-        :rtype: SignInAsSessionEndDetails
+        :rtype: team_log.SignInAsSessionEndDetails
         """
         if not self.is_sign_in_as_session_end_details():
             raise AttributeError("tag 'sign_in_as_session_end_details' not set")
@@ -14339,7 +14398,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sign_in_as_session_start_details` is true.
 
-        :rtype: SignInAsSessionStartDetails
+        :rtype: team_log.SignInAsSessionStartDetails
         """
         if not self.is_sign_in_as_session_start_details():
             raise AttributeError("tag 'sign_in_as_session_start_details' not set")
@@ -14349,7 +14408,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_error_details` is true.
 
-        :rtype: SsoErrorDetails
+        :rtype: team_log.SsoErrorDetails
         """
         if not self.is_sso_error_details():
             raise AttributeError("tag 'sso_error_details' not set")
@@ -14359,7 +14418,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_add_name_details` is true.
 
-        :rtype: MemberAddNameDetails
+        :rtype: team_log.MemberAddNameDetails
         """
         if not self.is_member_add_name_details():
             raise AttributeError("tag 'member_add_name_details' not set")
@@ -14369,7 +14428,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_change_admin_role_details` is true.
 
-        :rtype: MemberChangeAdminRoleDetails
+        :rtype: team_log.MemberChangeAdminRoleDetails
         """
         if not self.is_member_change_admin_role_details():
             raise AttributeError("tag 'member_change_admin_role_details' not set")
@@ -14379,7 +14438,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_change_email_details` is true.
 
-        :rtype: MemberChangeEmailDetails
+        :rtype: team_log.MemberChangeEmailDetails
         """
         if not self.is_member_change_email_details():
             raise AttributeError("tag 'member_change_email_details' not set")
@@ -14389,7 +14448,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_change_membership_type_details` is true.
 
-        :rtype: MemberChangeMembershipTypeDetails
+        :rtype: team_log.MemberChangeMembershipTypeDetails
         """
         if not self.is_member_change_membership_type_details():
             raise AttributeError("tag 'member_change_membership_type_details' not set")
@@ -14399,7 +14458,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_change_name_details` is true.
 
-        :rtype: MemberChangeNameDetails
+        :rtype: team_log.MemberChangeNameDetails
         """
         if not self.is_member_change_name_details():
             raise AttributeError("tag 'member_change_name_details' not set")
@@ -14409,7 +14468,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_change_status_details` is true.
 
-        :rtype: MemberChangeStatusDetails
+        :rtype: team_log.MemberChangeStatusDetails
         """
         if not self.is_member_change_status_details():
             raise AttributeError("tag 'member_change_status_details' not set")
@@ -14419,7 +14478,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_delete_manual_contacts_details` is true.
 
-        :rtype: MemberDeleteManualContactsDetails
+        :rtype: team_log.MemberDeleteManualContactsDetails
         """
         if not self.is_member_delete_manual_contacts_details():
             raise AttributeError("tag 'member_delete_manual_contacts_details' not set")
@@ -14429,7 +14488,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_permanently_delete_account_contents_details` is true.
 
-        :rtype: MemberPermanentlyDeleteAccountContentsDetails
+        :rtype: team_log.MemberPermanentlyDeleteAccountContentsDetails
         """
         if not self.is_member_permanently_delete_account_contents_details():
             raise AttributeError("tag 'member_permanently_delete_account_contents_details' not set")
@@ -14439,7 +14498,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_space_limits_add_custom_quota_details` is true.
 
-        :rtype: MemberSpaceLimitsAddCustomQuotaDetails
+        :rtype: team_log.MemberSpaceLimitsAddCustomQuotaDetails
         """
         if not self.is_member_space_limits_add_custom_quota_details():
             raise AttributeError("tag 'member_space_limits_add_custom_quota_details' not set")
@@ -14449,7 +14508,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_space_limits_change_custom_quota_details` is true.
 
-        :rtype: MemberSpaceLimitsChangeCustomQuotaDetails
+        :rtype: team_log.MemberSpaceLimitsChangeCustomQuotaDetails
         """
         if not self.is_member_space_limits_change_custom_quota_details():
             raise AttributeError("tag 'member_space_limits_change_custom_quota_details' not set")
@@ -14459,7 +14518,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_space_limits_change_status_details` is true.
 
-        :rtype: MemberSpaceLimitsChangeStatusDetails
+        :rtype: team_log.MemberSpaceLimitsChangeStatusDetails
         """
         if not self.is_member_space_limits_change_status_details():
             raise AttributeError("tag 'member_space_limits_change_status_details' not set")
@@ -14469,7 +14528,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_space_limits_remove_custom_quota_details` is true.
 
-        :rtype: MemberSpaceLimitsRemoveCustomQuotaDetails
+        :rtype: team_log.MemberSpaceLimitsRemoveCustomQuotaDetails
         """
         if not self.is_member_space_limits_remove_custom_quota_details():
             raise AttributeError("tag 'member_space_limits_remove_custom_quota_details' not set")
@@ -14479,7 +14538,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_suggest_details` is true.
 
-        :rtype: MemberSuggestDetails
+        :rtype: team_log.MemberSuggestDetails
         """
         if not self.is_member_suggest_details():
             raise AttributeError("tag 'member_suggest_details' not set")
@@ -14489,7 +14548,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_transfer_account_contents_details` is true.
 
-        :rtype: MemberTransferAccountContentsDetails
+        :rtype: team_log.MemberTransferAccountContentsDetails
         """
         if not self.is_member_transfer_account_contents_details():
             raise AttributeError("tag 'member_transfer_account_contents_details' not set")
@@ -14499,7 +14558,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_secondary_mails_policy_changed_details` is true.
 
-        :rtype: SecondaryMailsPolicyChangedDetails
+        :rtype: team_log.SecondaryMailsPolicyChangedDetails
         """
         if not self.is_secondary_mails_policy_changed_details():
             raise AttributeError("tag 'secondary_mails_policy_changed_details' not set")
@@ -14509,7 +14568,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_add_member_details` is true.
 
-        :rtype: PaperContentAddMemberDetails
+        :rtype: team_log.PaperContentAddMemberDetails
         """
         if not self.is_paper_content_add_member_details():
             raise AttributeError("tag 'paper_content_add_member_details' not set")
@@ -14519,7 +14578,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_add_to_folder_details` is true.
 
-        :rtype: PaperContentAddToFolderDetails
+        :rtype: team_log.PaperContentAddToFolderDetails
         """
         if not self.is_paper_content_add_to_folder_details():
             raise AttributeError("tag 'paper_content_add_to_folder_details' not set")
@@ -14529,7 +14588,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_archive_details` is true.
 
-        :rtype: PaperContentArchiveDetails
+        :rtype: team_log.PaperContentArchiveDetails
         """
         if not self.is_paper_content_archive_details():
             raise AttributeError("tag 'paper_content_archive_details' not set")
@@ -14539,7 +14598,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_create_details` is true.
 
-        :rtype: PaperContentCreateDetails
+        :rtype: team_log.PaperContentCreateDetails
         """
         if not self.is_paper_content_create_details():
             raise AttributeError("tag 'paper_content_create_details' not set")
@@ -14549,7 +14608,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_permanently_delete_details` is true.
 
-        :rtype: PaperContentPermanentlyDeleteDetails
+        :rtype: team_log.PaperContentPermanentlyDeleteDetails
         """
         if not self.is_paper_content_permanently_delete_details():
             raise AttributeError("tag 'paper_content_permanently_delete_details' not set")
@@ -14559,7 +14618,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_remove_from_folder_details` is true.
 
-        :rtype: PaperContentRemoveFromFolderDetails
+        :rtype: team_log.PaperContentRemoveFromFolderDetails
         """
         if not self.is_paper_content_remove_from_folder_details():
             raise AttributeError("tag 'paper_content_remove_from_folder_details' not set")
@@ -14569,7 +14628,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_remove_member_details` is true.
 
-        :rtype: PaperContentRemoveMemberDetails
+        :rtype: team_log.PaperContentRemoveMemberDetails
         """
         if not self.is_paper_content_remove_member_details():
             raise AttributeError("tag 'paper_content_remove_member_details' not set")
@@ -14579,7 +14638,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_rename_details` is true.
 
-        :rtype: PaperContentRenameDetails
+        :rtype: team_log.PaperContentRenameDetails
         """
         if not self.is_paper_content_rename_details():
             raise AttributeError("tag 'paper_content_rename_details' not set")
@@ -14589,7 +14648,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_content_restore_details` is true.
 
-        :rtype: PaperContentRestoreDetails
+        :rtype: team_log.PaperContentRestoreDetails
         """
         if not self.is_paper_content_restore_details():
             raise AttributeError("tag 'paper_content_restore_details' not set")
@@ -14599,7 +14658,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_add_comment_details` is true.
 
-        :rtype: PaperDocAddCommentDetails
+        :rtype: team_log.PaperDocAddCommentDetails
         """
         if not self.is_paper_doc_add_comment_details():
             raise AttributeError("tag 'paper_doc_add_comment_details' not set")
@@ -14609,7 +14668,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_change_member_role_details` is true.
 
-        :rtype: PaperDocChangeMemberRoleDetails
+        :rtype: team_log.PaperDocChangeMemberRoleDetails
         """
         if not self.is_paper_doc_change_member_role_details():
             raise AttributeError("tag 'paper_doc_change_member_role_details' not set")
@@ -14619,7 +14678,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_change_sharing_policy_details` is true.
 
-        :rtype: PaperDocChangeSharingPolicyDetails
+        :rtype: team_log.PaperDocChangeSharingPolicyDetails
         """
         if not self.is_paper_doc_change_sharing_policy_details():
             raise AttributeError("tag 'paper_doc_change_sharing_policy_details' not set")
@@ -14629,7 +14688,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_change_subscription_details` is true.
 
-        :rtype: PaperDocChangeSubscriptionDetails
+        :rtype: team_log.PaperDocChangeSubscriptionDetails
         """
         if not self.is_paper_doc_change_subscription_details():
             raise AttributeError("tag 'paper_doc_change_subscription_details' not set")
@@ -14639,7 +14698,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_deleted_details` is true.
 
-        :rtype: PaperDocDeletedDetails
+        :rtype: team_log.PaperDocDeletedDetails
         """
         if not self.is_paper_doc_deleted_details():
             raise AttributeError("tag 'paper_doc_deleted_details' not set")
@@ -14649,7 +14708,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_delete_comment_details` is true.
 
-        :rtype: PaperDocDeleteCommentDetails
+        :rtype: team_log.PaperDocDeleteCommentDetails
         """
         if not self.is_paper_doc_delete_comment_details():
             raise AttributeError("tag 'paper_doc_delete_comment_details' not set")
@@ -14659,7 +14718,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_download_details` is true.
 
-        :rtype: PaperDocDownloadDetails
+        :rtype: team_log.PaperDocDownloadDetails
         """
         if not self.is_paper_doc_download_details():
             raise AttributeError("tag 'paper_doc_download_details' not set")
@@ -14669,7 +14728,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_edit_details` is true.
 
-        :rtype: PaperDocEditDetails
+        :rtype: team_log.PaperDocEditDetails
         """
         if not self.is_paper_doc_edit_details():
             raise AttributeError("tag 'paper_doc_edit_details' not set")
@@ -14679,7 +14738,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_edit_comment_details` is true.
 
-        :rtype: PaperDocEditCommentDetails
+        :rtype: team_log.PaperDocEditCommentDetails
         """
         if not self.is_paper_doc_edit_comment_details():
             raise AttributeError("tag 'paper_doc_edit_comment_details' not set")
@@ -14689,7 +14748,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_followed_details` is true.
 
-        :rtype: PaperDocFollowedDetails
+        :rtype: team_log.PaperDocFollowedDetails
         """
         if not self.is_paper_doc_followed_details():
             raise AttributeError("tag 'paper_doc_followed_details' not set")
@@ -14699,7 +14758,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_mention_details` is true.
 
-        :rtype: PaperDocMentionDetails
+        :rtype: team_log.PaperDocMentionDetails
         """
         if not self.is_paper_doc_mention_details():
             raise AttributeError("tag 'paper_doc_mention_details' not set")
@@ -14709,7 +14768,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_ownership_changed_details` is true.
 
-        :rtype: PaperDocOwnershipChangedDetails
+        :rtype: team_log.PaperDocOwnershipChangedDetails
         """
         if not self.is_paper_doc_ownership_changed_details():
             raise AttributeError("tag 'paper_doc_ownership_changed_details' not set")
@@ -14719,7 +14778,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_request_access_details` is true.
 
-        :rtype: PaperDocRequestAccessDetails
+        :rtype: team_log.PaperDocRequestAccessDetails
         """
         if not self.is_paper_doc_request_access_details():
             raise AttributeError("tag 'paper_doc_request_access_details' not set")
@@ -14729,7 +14788,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_resolve_comment_details` is true.
 
-        :rtype: PaperDocResolveCommentDetails
+        :rtype: team_log.PaperDocResolveCommentDetails
         """
         if not self.is_paper_doc_resolve_comment_details():
             raise AttributeError("tag 'paper_doc_resolve_comment_details' not set")
@@ -14739,7 +14798,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_revert_details` is true.
 
-        :rtype: PaperDocRevertDetails
+        :rtype: team_log.PaperDocRevertDetails
         """
         if not self.is_paper_doc_revert_details():
             raise AttributeError("tag 'paper_doc_revert_details' not set")
@@ -14749,7 +14808,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_slack_share_details` is true.
 
-        :rtype: PaperDocSlackShareDetails
+        :rtype: team_log.PaperDocSlackShareDetails
         """
         if not self.is_paper_doc_slack_share_details():
             raise AttributeError("tag 'paper_doc_slack_share_details' not set")
@@ -14759,7 +14818,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_team_invite_details` is true.
 
-        :rtype: PaperDocTeamInviteDetails
+        :rtype: team_log.PaperDocTeamInviteDetails
         """
         if not self.is_paper_doc_team_invite_details():
             raise AttributeError("tag 'paper_doc_team_invite_details' not set")
@@ -14769,7 +14828,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_trashed_details` is true.
 
-        :rtype: PaperDocTrashedDetails
+        :rtype: team_log.PaperDocTrashedDetails
         """
         if not self.is_paper_doc_trashed_details():
             raise AttributeError("tag 'paper_doc_trashed_details' not set")
@@ -14779,7 +14838,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_unresolve_comment_details` is true.
 
-        :rtype: PaperDocUnresolveCommentDetails
+        :rtype: team_log.PaperDocUnresolveCommentDetails
         """
         if not self.is_paper_doc_unresolve_comment_details():
             raise AttributeError("tag 'paper_doc_unresolve_comment_details' not set")
@@ -14789,7 +14848,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_untrashed_details` is true.
 
-        :rtype: PaperDocUntrashedDetails
+        :rtype: team_log.PaperDocUntrashedDetails
         """
         if not self.is_paper_doc_untrashed_details():
             raise AttributeError("tag 'paper_doc_untrashed_details' not set")
@@ -14799,7 +14858,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_doc_view_details` is true.
 
-        :rtype: PaperDocViewDetails
+        :rtype: team_log.PaperDocViewDetails
         """
         if not self.is_paper_doc_view_details():
             raise AttributeError("tag 'paper_doc_view_details' not set")
@@ -14809,7 +14868,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_external_view_allow_details` is true.
 
-        :rtype: PaperExternalViewAllowDetails
+        :rtype: team_log.PaperExternalViewAllowDetails
         """
         if not self.is_paper_external_view_allow_details():
             raise AttributeError("tag 'paper_external_view_allow_details' not set")
@@ -14819,7 +14878,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_external_view_default_team_details` is true.
 
-        :rtype: PaperExternalViewDefaultTeamDetails
+        :rtype: team_log.PaperExternalViewDefaultTeamDetails
         """
         if not self.is_paper_external_view_default_team_details():
             raise AttributeError("tag 'paper_external_view_default_team_details' not set")
@@ -14829,7 +14888,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_external_view_forbid_details` is true.
 
-        :rtype: PaperExternalViewForbidDetails
+        :rtype: team_log.PaperExternalViewForbidDetails
         """
         if not self.is_paper_external_view_forbid_details():
             raise AttributeError("tag 'paper_external_view_forbid_details' not set")
@@ -14839,7 +14898,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_folder_change_subscription_details` is true.
 
-        :rtype: PaperFolderChangeSubscriptionDetails
+        :rtype: team_log.PaperFolderChangeSubscriptionDetails
         """
         if not self.is_paper_folder_change_subscription_details():
             raise AttributeError("tag 'paper_folder_change_subscription_details' not set")
@@ -14849,7 +14908,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_folder_deleted_details` is true.
 
-        :rtype: PaperFolderDeletedDetails
+        :rtype: team_log.PaperFolderDeletedDetails
         """
         if not self.is_paper_folder_deleted_details():
             raise AttributeError("tag 'paper_folder_deleted_details' not set")
@@ -14859,7 +14918,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_folder_followed_details` is true.
 
-        :rtype: PaperFolderFollowedDetails
+        :rtype: team_log.PaperFolderFollowedDetails
         """
         if not self.is_paper_folder_followed_details():
             raise AttributeError("tag 'paper_folder_followed_details' not set")
@@ -14869,7 +14928,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_folder_team_invite_details` is true.
 
-        :rtype: PaperFolderTeamInviteDetails
+        :rtype: team_log.PaperFolderTeamInviteDetails
         """
         if not self.is_paper_folder_team_invite_details():
             raise AttributeError("tag 'paper_folder_team_invite_details' not set")
@@ -14879,7 +14938,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_password_change_details` is true.
 
-        :rtype: PasswordChangeDetails
+        :rtype: team_log.PasswordChangeDetails
         """
         if not self.is_password_change_details():
             raise AttributeError("tag 'password_change_details' not set")
@@ -14889,7 +14948,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_password_reset_details` is true.
 
-        :rtype: PasswordResetDetails
+        :rtype: team_log.PasswordResetDetails
         """
         if not self.is_password_reset_details():
             raise AttributeError("tag 'password_reset_details' not set")
@@ -14899,7 +14958,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_password_reset_all_details` is true.
 
-        :rtype: PasswordResetAllDetails
+        :rtype: team_log.PasswordResetAllDetails
         """
         if not self.is_password_reset_all_details():
             raise AttributeError("tag 'password_reset_all_details' not set")
@@ -14909,7 +14968,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_emm_create_exceptions_report_details` is true.
 
-        :rtype: EmmCreateExceptionsReportDetails
+        :rtype: team_log.EmmCreateExceptionsReportDetails
         """
         if not self.is_emm_create_exceptions_report_details():
             raise AttributeError("tag 'emm_create_exceptions_report_details' not set")
@@ -14919,7 +14978,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_emm_create_usage_report_details` is true.
 
-        :rtype: EmmCreateUsageReportDetails
+        :rtype: team_log.EmmCreateUsageReportDetails
         """
         if not self.is_emm_create_usage_report_details():
             raise AttributeError("tag 'emm_create_usage_report_details' not set")
@@ -14929,7 +14988,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_export_members_report_details` is true.
 
-        :rtype: ExportMembersReportDetails
+        :rtype: team_log.ExportMembersReportDetails
         """
         if not self.is_export_members_report_details():
             raise AttributeError("tag 'export_members_report_details' not set")
@@ -14939,7 +14998,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_admin_export_start_details` is true.
 
-        :rtype: PaperAdminExportStartDetails
+        :rtype: team_log.PaperAdminExportStartDetails
         """
         if not self.is_paper_admin_export_start_details():
             raise AttributeError("tag 'paper_admin_export_start_details' not set")
@@ -14949,7 +15008,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_smart_sync_create_admin_privilege_report_details` is true.
 
-        :rtype: SmartSyncCreateAdminPrivilegeReportDetails
+        :rtype: team_log.SmartSyncCreateAdminPrivilegeReportDetails
         """
         if not self.is_smart_sync_create_admin_privilege_report_details():
             raise AttributeError("tag 'smart_sync_create_admin_privilege_report_details' not set")
@@ -14959,7 +15018,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_activity_create_report_details` is true.
 
-        :rtype: TeamActivityCreateReportDetails
+        :rtype: team_log.TeamActivityCreateReportDetails
         """
         if not self.is_team_activity_create_report_details():
             raise AttributeError("tag 'team_activity_create_report_details' not set")
@@ -14969,7 +15028,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_collection_share_details` is true.
 
-        :rtype: CollectionShareDetails
+        :rtype: team_log.CollectionShareDetails
         """
         if not self.is_collection_share_details():
             raise AttributeError("tag 'collection_share_details' not set")
@@ -14979,7 +15038,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_note_acl_invite_only_details` is true.
 
-        :rtype: NoteAclInviteOnlyDetails
+        :rtype: team_log.NoteAclInviteOnlyDetails
         """
         if not self.is_note_acl_invite_only_details():
             raise AttributeError("tag 'note_acl_invite_only_details' not set")
@@ -14989,7 +15048,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_note_acl_link_details` is true.
 
-        :rtype: NoteAclLinkDetails
+        :rtype: team_log.NoteAclLinkDetails
         """
         if not self.is_note_acl_link_details():
             raise AttributeError("tag 'note_acl_link_details' not set")
@@ -14999,7 +15058,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_note_acl_team_link_details` is true.
 
-        :rtype: NoteAclTeamLinkDetails
+        :rtype: team_log.NoteAclTeamLinkDetails
         """
         if not self.is_note_acl_team_link_details():
             raise AttributeError("tag 'note_acl_team_link_details' not set")
@@ -15009,7 +15068,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_note_shared_details` is true.
 
-        :rtype: NoteSharedDetails
+        :rtype: team_log.NoteSharedDetails
         """
         if not self.is_note_shared_details():
             raise AttributeError("tag 'note_shared_details' not set")
@@ -15019,7 +15078,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_note_share_receive_details` is true.
 
-        :rtype: NoteShareReceiveDetails
+        :rtype: team_log.NoteShareReceiveDetails
         """
         if not self.is_note_share_receive_details():
             raise AttributeError("tag 'note_share_receive_details' not set")
@@ -15029,7 +15088,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_open_note_shared_details` is true.
 
-        :rtype: OpenNoteSharedDetails
+        :rtype: team_log.OpenNoteSharedDetails
         """
         if not self.is_open_note_shared_details():
             raise AttributeError("tag 'open_note_shared_details' not set")
@@ -15039,7 +15098,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_add_group_details` is true.
 
-        :rtype: SfAddGroupDetails
+        :rtype: team_log.SfAddGroupDetails
         """
         if not self.is_sf_add_group_details():
             raise AttributeError("tag 'sf_add_group_details' not set")
@@ -15049,7 +15108,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_allow_non_members_to_view_shared_links_details` is true.
 
-        :rtype: SfAllowNonMembersToViewSharedLinksDetails
+        :rtype: team_log.SfAllowNonMembersToViewSharedLinksDetails
         """
         if not self.is_sf_allow_non_members_to_view_shared_links_details():
             raise AttributeError("tag 'sf_allow_non_members_to_view_shared_links_details' not set")
@@ -15059,7 +15118,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_external_invite_warn_details` is true.
 
-        :rtype: SfExternalInviteWarnDetails
+        :rtype: team_log.SfExternalInviteWarnDetails
         """
         if not self.is_sf_external_invite_warn_details():
             raise AttributeError("tag 'sf_external_invite_warn_details' not set")
@@ -15069,7 +15128,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_fb_invite_details` is true.
 
-        :rtype: SfFbInviteDetails
+        :rtype: team_log.SfFbInviteDetails
         """
         if not self.is_sf_fb_invite_details():
             raise AttributeError("tag 'sf_fb_invite_details' not set")
@@ -15079,7 +15138,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_fb_invite_change_role_details` is true.
 
-        :rtype: SfFbInviteChangeRoleDetails
+        :rtype: team_log.SfFbInviteChangeRoleDetails
         """
         if not self.is_sf_fb_invite_change_role_details():
             raise AttributeError("tag 'sf_fb_invite_change_role_details' not set")
@@ -15089,7 +15148,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_fb_uninvite_details` is true.
 
-        :rtype: SfFbUninviteDetails
+        :rtype: team_log.SfFbUninviteDetails
         """
         if not self.is_sf_fb_uninvite_details():
             raise AttributeError("tag 'sf_fb_uninvite_details' not set")
@@ -15099,7 +15158,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_invite_group_details` is true.
 
-        :rtype: SfInviteGroupDetails
+        :rtype: team_log.SfInviteGroupDetails
         """
         if not self.is_sf_invite_group_details():
             raise AttributeError("tag 'sf_invite_group_details' not set")
@@ -15109,7 +15168,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_team_grant_access_details` is true.
 
-        :rtype: SfTeamGrantAccessDetails
+        :rtype: team_log.SfTeamGrantAccessDetails
         """
         if not self.is_sf_team_grant_access_details():
             raise AttributeError("tag 'sf_team_grant_access_details' not set")
@@ -15119,7 +15178,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_team_invite_details` is true.
 
-        :rtype: SfTeamInviteDetails
+        :rtype: team_log.SfTeamInviteDetails
         """
         if not self.is_sf_team_invite_details():
             raise AttributeError("tag 'sf_team_invite_details' not set")
@@ -15129,7 +15188,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_team_invite_change_role_details` is true.
 
-        :rtype: SfTeamInviteChangeRoleDetails
+        :rtype: team_log.SfTeamInviteChangeRoleDetails
         """
         if not self.is_sf_team_invite_change_role_details():
             raise AttributeError("tag 'sf_team_invite_change_role_details' not set")
@@ -15139,7 +15198,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_team_join_details` is true.
 
-        :rtype: SfTeamJoinDetails
+        :rtype: team_log.SfTeamJoinDetails
         """
         if not self.is_sf_team_join_details():
             raise AttributeError("tag 'sf_team_join_details' not set")
@@ -15149,7 +15208,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_team_join_from_oob_link_details` is true.
 
-        :rtype: SfTeamJoinFromOobLinkDetails
+        :rtype: team_log.SfTeamJoinFromOobLinkDetails
         """
         if not self.is_sf_team_join_from_oob_link_details():
             raise AttributeError("tag 'sf_team_join_from_oob_link_details' not set")
@@ -15159,7 +15218,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sf_team_uninvite_details` is true.
 
-        :rtype: SfTeamUninviteDetails
+        :rtype: team_log.SfTeamUninviteDetails
         """
         if not self.is_sf_team_uninvite_details():
             raise AttributeError("tag 'sf_team_uninvite_details' not set")
@@ -15169,7 +15228,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_add_invitees_details` is true.
 
-        :rtype: SharedContentAddInviteesDetails
+        :rtype: team_log.SharedContentAddInviteesDetails
         """
         if not self.is_shared_content_add_invitees_details():
             raise AttributeError("tag 'shared_content_add_invitees_details' not set")
@@ -15179,7 +15238,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_add_link_expiry_details` is true.
 
-        :rtype: SharedContentAddLinkExpiryDetails
+        :rtype: team_log.SharedContentAddLinkExpiryDetails
         """
         if not self.is_shared_content_add_link_expiry_details():
             raise AttributeError("tag 'shared_content_add_link_expiry_details' not set")
@@ -15189,7 +15248,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_add_link_password_details` is true.
 
-        :rtype: SharedContentAddLinkPasswordDetails
+        :rtype: team_log.SharedContentAddLinkPasswordDetails
         """
         if not self.is_shared_content_add_link_password_details():
             raise AttributeError("tag 'shared_content_add_link_password_details' not set")
@@ -15199,7 +15258,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_add_member_details` is true.
 
-        :rtype: SharedContentAddMemberDetails
+        :rtype: team_log.SharedContentAddMemberDetails
         """
         if not self.is_shared_content_add_member_details():
             raise AttributeError("tag 'shared_content_add_member_details' not set")
@@ -15209,7 +15268,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_change_downloads_policy_details` is true.
 
-        :rtype: SharedContentChangeDownloadsPolicyDetails
+        :rtype: team_log.SharedContentChangeDownloadsPolicyDetails
         """
         if not self.is_shared_content_change_downloads_policy_details():
             raise AttributeError("tag 'shared_content_change_downloads_policy_details' not set")
@@ -15219,7 +15278,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_change_invitee_role_details` is true.
 
-        :rtype: SharedContentChangeInviteeRoleDetails
+        :rtype: team_log.SharedContentChangeInviteeRoleDetails
         """
         if not self.is_shared_content_change_invitee_role_details():
             raise AttributeError("tag 'shared_content_change_invitee_role_details' not set")
@@ -15229,7 +15288,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_change_link_audience_details` is true.
 
-        :rtype: SharedContentChangeLinkAudienceDetails
+        :rtype: team_log.SharedContentChangeLinkAudienceDetails
         """
         if not self.is_shared_content_change_link_audience_details():
             raise AttributeError("tag 'shared_content_change_link_audience_details' not set")
@@ -15239,7 +15298,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_change_link_expiry_details` is true.
 
-        :rtype: SharedContentChangeLinkExpiryDetails
+        :rtype: team_log.SharedContentChangeLinkExpiryDetails
         """
         if not self.is_shared_content_change_link_expiry_details():
             raise AttributeError("tag 'shared_content_change_link_expiry_details' not set")
@@ -15249,7 +15308,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_change_link_password_details` is true.
 
-        :rtype: SharedContentChangeLinkPasswordDetails
+        :rtype: team_log.SharedContentChangeLinkPasswordDetails
         """
         if not self.is_shared_content_change_link_password_details():
             raise AttributeError("tag 'shared_content_change_link_password_details' not set")
@@ -15259,7 +15318,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_change_member_role_details` is true.
 
-        :rtype: SharedContentChangeMemberRoleDetails
+        :rtype: team_log.SharedContentChangeMemberRoleDetails
         """
         if not self.is_shared_content_change_member_role_details():
             raise AttributeError("tag 'shared_content_change_member_role_details' not set")
@@ -15269,7 +15328,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_change_viewer_info_policy_details` is true.
 
-        :rtype: SharedContentChangeViewerInfoPolicyDetails
+        :rtype: team_log.SharedContentChangeViewerInfoPolicyDetails
         """
         if not self.is_shared_content_change_viewer_info_policy_details():
             raise AttributeError("tag 'shared_content_change_viewer_info_policy_details' not set")
@@ -15279,7 +15338,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_claim_invitation_details` is true.
 
-        :rtype: SharedContentClaimInvitationDetails
+        :rtype: team_log.SharedContentClaimInvitationDetails
         """
         if not self.is_shared_content_claim_invitation_details():
             raise AttributeError("tag 'shared_content_claim_invitation_details' not set")
@@ -15289,7 +15348,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_copy_details` is true.
 
-        :rtype: SharedContentCopyDetails
+        :rtype: team_log.SharedContentCopyDetails
         """
         if not self.is_shared_content_copy_details():
             raise AttributeError("tag 'shared_content_copy_details' not set")
@@ -15299,7 +15358,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_download_details` is true.
 
-        :rtype: SharedContentDownloadDetails
+        :rtype: team_log.SharedContentDownloadDetails
         """
         if not self.is_shared_content_download_details():
             raise AttributeError("tag 'shared_content_download_details' not set")
@@ -15309,7 +15368,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_relinquish_membership_details` is true.
 
-        :rtype: SharedContentRelinquishMembershipDetails
+        :rtype: team_log.SharedContentRelinquishMembershipDetails
         """
         if not self.is_shared_content_relinquish_membership_details():
             raise AttributeError("tag 'shared_content_relinquish_membership_details' not set")
@@ -15319,7 +15378,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_remove_invitees_details` is true.
 
-        :rtype: SharedContentRemoveInviteesDetails
+        :rtype: team_log.SharedContentRemoveInviteesDetails
         """
         if not self.is_shared_content_remove_invitees_details():
             raise AttributeError("tag 'shared_content_remove_invitees_details' not set")
@@ -15329,7 +15388,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_remove_link_expiry_details` is true.
 
-        :rtype: SharedContentRemoveLinkExpiryDetails
+        :rtype: team_log.SharedContentRemoveLinkExpiryDetails
         """
         if not self.is_shared_content_remove_link_expiry_details():
             raise AttributeError("tag 'shared_content_remove_link_expiry_details' not set")
@@ -15339,7 +15398,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_remove_link_password_details` is true.
 
-        :rtype: SharedContentRemoveLinkPasswordDetails
+        :rtype: team_log.SharedContentRemoveLinkPasswordDetails
         """
         if not self.is_shared_content_remove_link_password_details():
             raise AttributeError("tag 'shared_content_remove_link_password_details' not set")
@@ -15349,7 +15408,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_remove_member_details` is true.
 
-        :rtype: SharedContentRemoveMemberDetails
+        :rtype: team_log.SharedContentRemoveMemberDetails
         """
         if not self.is_shared_content_remove_member_details():
             raise AttributeError("tag 'shared_content_remove_member_details' not set")
@@ -15359,7 +15418,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_request_access_details` is true.
 
-        :rtype: SharedContentRequestAccessDetails
+        :rtype: team_log.SharedContentRequestAccessDetails
         """
         if not self.is_shared_content_request_access_details():
             raise AttributeError("tag 'shared_content_request_access_details' not set")
@@ -15369,7 +15428,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_unshare_details` is true.
 
-        :rtype: SharedContentUnshareDetails
+        :rtype: team_log.SharedContentUnshareDetails
         """
         if not self.is_shared_content_unshare_details():
             raise AttributeError("tag 'shared_content_unshare_details' not set")
@@ -15379,7 +15438,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_content_view_details` is true.
 
-        :rtype: SharedContentViewDetails
+        :rtype: team_log.SharedContentViewDetails
         """
         if not self.is_shared_content_view_details():
             raise AttributeError("tag 'shared_content_view_details' not set")
@@ -15389,7 +15448,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_change_link_policy_details` is true.
 
-        :rtype: SharedFolderChangeLinkPolicyDetails
+        :rtype: team_log.SharedFolderChangeLinkPolicyDetails
         """
         if not self.is_shared_folder_change_link_policy_details():
             raise AttributeError("tag 'shared_folder_change_link_policy_details' not set")
@@ -15399,7 +15458,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_change_members_inheritance_policy_details` is true.
 
-        :rtype: SharedFolderChangeMembersInheritancePolicyDetails
+        :rtype: team_log.SharedFolderChangeMembersInheritancePolicyDetails
         """
         if not self.is_shared_folder_change_members_inheritance_policy_details():
             raise AttributeError("tag 'shared_folder_change_members_inheritance_policy_details' not set")
@@ -15409,7 +15468,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_change_members_management_policy_details` is true.
 
-        :rtype: SharedFolderChangeMembersManagementPolicyDetails
+        :rtype: team_log.SharedFolderChangeMembersManagementPolicyDetails
         """
         if not self.is_shared_folder_change_members_management_policy_details():
             raise AttributeError("tag 'shared_folder_change_members_management_policy_details' not set")
@@ -15419,7 +15478,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_change_members_policy_details` is true.
 
-        :rtype: SharedFolderChangeMembersPolicyDetails
+        :rtype: team_log.SharedFolderChangeMembersPolicyDetails
         """
         if not self.is_shared_folder_change_members_policy_details():
             raise AttributeError("tag 'shared_folder_change_members_policy_details' not set")
@@ -15429,7 +15488,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_create_details` is true.
 
-        :rtype: SharedFolderCreateDetails
+        :rtype: team_log.SharedFolderCreateDetails
         """
         if not self.is_shared_folder_create_details():
             raise AttributeError("tag 'shared_folder_create_details' not set")
@@ -15439,7 +15498,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_decline_invitation_details` is true.
 
-        :rtype: SharedFolderDeclineInvitationDetails
+        :rtype: team_log.SharedFolderDeclineInvitationDetails
         """
         if not self.is_shared_folder_decline_invitation_details():
             raise AttributeError("tag 'shared_folder_decline_invitation_details' not set")
@@ -15449,7 +15508,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_mount_details` is true.
 
-        :rtype: SharedFolderMountDetails
+        :rtype: team_log.SharedFolderMountDetails
         """
         if not self.is_shared_folder_mount_details():
             raise AttributeError("tag 'shared_folder_mount_details' not set")
@@ -15459,7 +15518,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_nest_details` is true.
 
-        :rtype: SharedFolderNestDetails
+        :rtype: team_log.SharedFolderNestDetails
         """
         if not self.is_shared_folder_nest_details():
             raise AttributeError("tag 'shared_folder_nest_details' not set")
@@ -15469,7 +15528,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_transfer_ownership_details` is true.
 
-        :rtype: SharedFolderTransferOwnershipDetails
+        :rtype: team_log.SharedFolderTransferOwnershipDetails
         """
         if not self.is_shared_folder_transfer_ownership_details():
             raise AttributeError("tag 'shared_folder_transfer_ownership_details' not set")
@@ -15479,7 +15538,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_folder_unmount_details` is true.
 
-        :rtype: SharedFolderUnmountDetails
+        :rtype: team_log.SharedFolderUnmountDetails
         """
         if not self.is_shared_folder_unmount_details():
             raise AttributeError("tag 'shared_folder_unmount_details' not set")
@@ -15489,7 +15548,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_add_expiry_details` is true.
 
-        :rtype: SharedLinkAddExpiryDetails
+        :rtype: team_log.SharedLinkAddExpiryDetails
         """
         if not self.is_shared_link_add_expiry_details():
             raise AttributeError("tag 'shared_link_add_expiry_details' not set")
@@ -15499,7 +15558,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_change_expiry_details` is true.
 
-        :rtype: SharedLinkChangeExpiryDetails
+        :rtype: team_log.SharedLinkChangeExpiryDetails
         """
         if not self.is_shared_link_change_expiry_details():
             raise AttributeError("tag 'shared_link_change_expiry_details' not set")
@@ -15509,7 +15568,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_change_visibility_details` is true.
 
-        :rtype: SharedLinkChangeVisibilityDetails
+        :rtype: team_log.SharedLinkChangeVisibilityDetails
         """
         if not self.is_shared_link_change_visibility_details():
             raise AttributeError("tag 'shared_link_change_visibility_details' not set")
@@ -15519,7 +15578,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_copy_details` is true.
 
-        :rtype: SharedLinkCopyDetails
+        :rtype: team_log.SharedLinkCopyDetails
         """
         if not self.is_shared_link_copy_details():
             raise AttributeError("tag 'shared_link_copy_details' not set")
@@ -15529,7 +15588,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_create_details` is true.
 
-        :rtype: SharedLinkCreateDetails
+        :rtype: team_log.SharedLinkCreateDetails
         """
         if not self.is_shared_link_create_details():
             raise AttributeError("tag 'shared_link_create_details' not set")
@@ -15539,7 +15598,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_disable_details` is true.
 
-        :rtype: SharedLinkDisableDetails
+        :rtype: team_log.SharedLinkDisableDetails
         """
         if not self.is_shared_link_disable_details():
             raise AttributeError("tag 'shared_link_disable_details' not set")
@@ -15549,7 +15608,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_download_details` is true.
 
-        :rtype: SharedLinkDownloadDetails
+        :rtype: team_log.SharedLinkDownloadDetails
         """
         if not self.is_shared_link_download_details():
             raise AttributeError("tag 'shared_link_download_details' not set")
@@ -15559,7 +15618,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_remove_expiry_details` is true.
 
-        :rtype: SharedLinkRemoveExpiryDetails
+        :rtype: team_log.SharedLinkRemoveExpiryDetails
         """
         if not self.is_shared_link_remove_expiry_details():
             raise AttributeError("tag 'shared_link_remove_expiry_details' not set")
@@ -15569,7 +15628,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_share_details` is true.
 
-        :rtype: SharedLinkShareDetails
+        :rtype: team_log.SharedLinkShareDetails
         """
         if not self.is_shared_link_share_details():
             raise AttributeError("tag 'shared_link_share_details' not set")
@@ -15579,7 +15638,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_link_view_details` is true.
 
-        :rtype: SharedLinkViewDetails
+        :rtype: team_log.SharedLinkViewDetails
         """
         if not self.is_shared_link_view_details():
             raise AttributeError("tag 'shared_link_view_details' not set")
@@ -15589,7 +15648,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shared_note_opened_details` is true.
 
-        :rtype: SharedNoteOpenedDetails
+        :rtype: team_log.SharedNoteOpenedDetails
         """
         if not self.is_shared_note_opened_details():
             raise AttributeError("tag 'shared_note_opened_details' not set")
@@ -15599,7 +15658,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_shmodel_group_share_details` is true.
 
-        :rtype: ShmodelGroupShareDetails
+        :rtype: team_log.ShmodelGroupShareDetails
         """
         if not self.is_shmodel_group_share_details():
             raise AttributeError("tag 'shmodel_group_share_details' not set")
@@ -15609,7 +15668,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_access_granted_details` is true.
 
-        :rtype: ShowcaseAccessGrantedDetails
+        :rtype: team_log.ShowcaseAccessGrantedDetails
         """
         if not self.is_showcase_access_granted_details():
             raise AttributeError("tag 'showcase_access_granted_details' not set")
@@ -15619,7 +15678,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_add_member_details` is true.
 
-        :rtype: ShowcaseAddMemberDetails
+        :rtype: team_log.ShowcaseAddMemberDetails
         """
         if not self.is_showcase_add_member_details():
             raise AttributeError("tag 'showcase_add_member_details' not set")
@@ -15629,7 +15688,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_archived_details` is true.
 
-        :rtype: ShowcaseArchivedDetails
+        :rtype: team_log.ShowcaseArchivedDetails
         """
         if not self.is_showcase_archived_details():
             raise AttributeError("tag 'showcase_archived_details' not set")
@@ -15639,7 +15698,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_created_details` is true.
 
-        :rtype: ShowcaseCreatedDetails
+        :rtype: team_log.ShowcaseCreatedDetails
         """
         if not self.is_showcase_created_details():
             raise AttributeError("tag 'showcase_created_details' not set")
@@ -15649,7 +15708,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_delete_comment_details` is true.
 
-        :rtype: ShowcaseDeleteCommentDetails
+        :rtype: team_log.ShowcaseDeleteCommentDetails
         """
         if not self.is_showcase_delete_comment_details():
             raise AttributeError("tag 'showcase_delete_comment_details' not set")
@@ -15659,7 +15718,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_edited_details` is true.
 
-        :rtype: ShowcaseEditedDetails
+        :rtype: team_log.ShowcaseEditedDetails
         """
         if not self.is_showcase_edited_details():
             raise AttributeError("tag 'showcase_edited_details' not set")
@@ -15669,7 +15728,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_edit_comment_details` is true.
 
-        :rtype: ShowcaseEditCommentDetails
+        :rtype: team_log.ShowcaseEditCommentDetails
         """
         if not self.is_showcase_edit_comment_details():
             raise AttributeError("tag 'showcase_edit_comment_details' not set")
@@ -15679,7 +15738,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_file_added_details` is true.
 
-        :rtype: ShowcaseFileAddedDetails
+        :rtype: team_log.ShowcaseFileAddedDetails
         """
         if not self.is_showcase_file_added_details():
             raise AttributeError("tag 'showcase_file_added_details' not set")
@@ -15689,7 +15748,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_file_download_details` is true.
 
-        :rtype: ShowcaseFileDownloadDetails
+        :rtype: team_log.ShowcaseFileDownloadDetails
         """
         if not self.is_showcase_file_download_details():
             raise AttributeError("tag 'showcase_file_download_details' not set")
@@ -15699,7 +15758,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_file_removed_details` is true.
 
-        :rtype: ShowcaseFileRemovedDetails
+        :rtype: team_log.ShowcaseFileRemovedDetails
         """
         if not self.is_showcase_file_removed_details():
             raise AttributeError("tag 'showcase_file_removed_details' not set")
@@ -15709,7 +15768,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_file_view_details` is true.
 
-        :rtype: ShowcaseFileViewDetails
+        :rtype: team_log.ShowcaseFileViewDetails
         """
         if not self.is_showcase_file_view_details():
             raise AttributeError("tag 'showcase_file_view_details' not set")
@@ -15719,7 +15778,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_permanently_deleted_details` is true.
 
-        :rtype: ShowcasePermanentlyDeletedDetails
+        :rtype: team_log.ShowcasePermanentlyDeletedDetails
         """
         if not self.is_showcase_permanently_deleted_details():
             raise AttributeError("tag 'showcase_permanently_deleted_details' not set")
@@ -15729,7 +15788,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_post_comment_details` is true.
 
-        :rtype: ShowcasePostCommentDetails
+        :rtype: team_log.ShowcasePostCommentDetails
         """
         if not self.is_showcase_post_comment_details():
             raise AttributeError("tag 'showcase_post_comment_details' not set")
@@ -15739,7 +15798,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_remove_member_details` is true.
 
-        :rtype: ShowcaseRemoveMemberDetails
+        :rtype: team_log.ShowcaseRemoveMemberDetails
         """
         if not self.is_showcase_remove_member_details():
             raise AttributeError("tag 'showcase_remove_member_details' not set")
@@ -15749,7 +15808,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_renamed_details` is true.
 
-        :rtype: ShowcaseRenamedDetails
+        :rtype: team_log.ShowcaseRenamedDetails
         """
         if not self.is_showcase_renamed_details():
             raise AttributeError("tag 'showcase_renamed_details' not set")
@@ -15759,7 +15818,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_request_access_details` is true.
 
-        :rtype: ShowcaseRequestAccessDetails
+        :rtype: team_log.ShowcaseRequestAccessDetails
         """
         if not self.is_showcase_request_access_details():
             raise AttributeError("tag 'showcase_request_access_details' not set")
@@ -15769,7 +15828,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_resolve_comment_details` is true.
 
-        :rtype: ShowcaseResolveCommentDetails
+        :rtype: team_log.ShowcaseResolveCommentDetails
         """
         if not self.is_showcase_resolve_comment_details():
             raise AttributeError("tag 'showcase_resolve_comment_details' not set")
@@ -15779,7 +15838,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_restored_details` is true.
 
-        :rtype: ShowcaseRestoredDetails
+        :rtype: team_log.ShowcaseRestoredDetails
         """
         if not self.is_showcase_restored_details():
             raise AttributeError("tag 'showcase_restored_details' not set")
@@ -15789,7 +15848,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_trashed_details` is true.
 
-        :rtype: ShowcaseTrashedDetails
+        :rtype: team_log.ShowcaseTrashedDetails
         """
         if not self.is_showcase_trashed_details():
             raise AttributeError("tag 'showcase_trashed_details' not set")
@@ -15799,7 +15858,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_trashed_deprecated_details` is true.
 
-        :rtype: ShowcaseTrashedDeprecatedDetails
+        :rtype: team_log.ShowcaseTrashedDeprecatedDetails
         """
         if not self.is_showcase_trashed_deprecated_details():
             raise AttributeError("tag 'showcase_trashed_deprecated_details' not set")
@@ -15809,7 +15868,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_unresolve_comment_details` is true.
 
-        :rtype: ShowcaseUnresolveCommentDetails
+        :rtype: team_log.ShowcaseUnresolveCommentDetails
         """
         if not self.is_showcase_unresolve_comment_details():
             raise AttributeError("tag 'showcase_unresolve_comment_details' not set")
@@ -15819,7 +15878,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_untrashed_details` is true.
 
-        :rtype: ShowcaseUntrashedDetails
+        :rtype: team_log.ShowcaseUntrashedDetails
         """
         if not self.is_showcase_untrashed_details():
             raise AttributeError("tag 'showcase_untrashed_details' not set")
@@ -15829,7 +15888,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_untrashed_deprecated_details` is true.
 
-        :rtype: ShowcaseUntrashedDeprecatedDetails
+        :rtype: team_log.ShowcaseUntrashedDeprecatedDetails
         """
         if not self.is_showcase_untrashed_deprecated_details():
             raise AttributeError("tag 'showcase_untrashed_deprecated_details' not set")
@@ -15839,7 +15898,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_view_details` is true.
 
-        :rtype: ShowcaseViewDetails
+        :rtype: team_log.ShowcaseViewDetails
         """
         if not self.is_showcase_view_details():
             raise AttributeError("tag 'showcase_view_details' not set")
@@ -15849,7 +15908,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_add_cert_details` is true.
 
-        :rtype: SsoAddCertDetails
+        :rtype: team_log.SsoAddCertDetails
         """
         if not self.is_sso_add_cert_details():
             raise AttributeError("tag 'sso_add_cert_details' not set")
@@ -15859,7 +15918,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_add_login_url_details` is true.
 
-        :rtype: SsoAddLoginUrlDetails
+        :rtype: team_log.SsoAddLoginUrlDetails
         """
         if not self.is_sso_add_login_url_details():
             raise AttributeError("tag 'sso_add_login_url_details' not set")
@@ -15869,7 +15928,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_add_logout_url_details` is true.
 
-        :rtype: SsoAddLogoutUrlDetails
+        :rtype: team_log.SsoAddLogoutUrlDetails
         """
         if not self.is_sso_add_logout_url_details():
             raise AttributeError("tag 'sso_add_logout_url_details' not set")
@@ -15879,7 +15938,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_change_cert_details` is true.
 
-        :rtype: SsoChangeCertDetails
+        :rtype: team_log.SsoChangeCertDetails
         """
         if not self.is_sso_change_cert_details():
             raise AttributeError("tag 'sso_change_cert_details' not set")
@@ -15889,7 +15948,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_change_login_url_details` is true.
 
-        :rtype: SsoChangeLoginUrlDetails
+        :rtype: team_log.SsoChangeLoginUrlDetails
         """
         if not self.is_sso_change_login_url_details():
             raise AttributeError("tag 'sso_change_login_url_details' not set")
@@ -15899,7 +15958,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_change_logout_url_details` is true.
 
-        :rtype: SsoChangeLogoutUrlDetails
+        :rtype: team_log.SsoChangeLogoutUrlDetails
         """
         if not self.is_sso_change_logout_url_details():
             raise AttributeError("tag 'sso_change_logout_url_details' not set")
@@ -15909,7 +15968,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_change_saml_identity_mode_details` is true.
 
-        :rtype: SsoChangeSamlIdentityModeDetails
+        :rtype: team_log.SsoChangeSamlIdentityModeDetails
         """
         if not self.is_sso_change_saml_identity_mode_details():
             raise AttributeError("tag 'sso_change_saml_identity_mode_details' not set")
@@ -15919,7 +15978,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_remove_cert_details` is true.
 
-        :rtype: SsoRemoveCertDetails
+        :rtype: team_log.SsoRemoveCertDetails
         """
         if not self.is_sso_remove_cert_details():
             raise AttributeError("tag 'sso_remove_cert_details' not set")
@@ -15929,7 +15988,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_remove_login_url_details` is true.
 
-        :rtype: SsoRemoveLoginUrlDetails
+        :rtype: team_log.SsoRemoveLoginUrlDetails
         """
         if not self.is_sso_remove_login_url_details():
             raise AttributeError("tag 'sso_remove_login_url_details' not set")
@@ -15939,7 +15998,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_remove_logout_url_details` is true.
 
-        :rtype: SsoRemoveLogoutUrlDetails
+        :rtype: team_log.SsoRemoveLogoutUrlDetails
         """
         if not self.is_sso_remove_logout_url_details():
             raise AttributeError("tag 'sso_remove_logout_url_details' not set")
@@ -15949,7 +16008,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_folder_change_status_details` is true.
 
-        :rtype: TeamFolderChangeStatusDetails
+        :rtype: team_log.TeamFolderChangeStatusDetails
         """
         if not self.is_team_folder_change_status_details():
             raise AttributeError("tag 'team_folder_change_status_details' not set")
@@ -15959,7 +16018,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_folder_create_details` is true.
 
-        :rtype: TeamFolderCreateDetails
+        :rtype: team_log.TeamFolderCreateDetails
         """
         if not self.is_team_folder_create_details():
             raise AttributeError("tag 'team_folder_create_details' not set")
@@ -15969,7 +16028,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_folder_downgrade_details` is true.
 
-        :rtype: TeamFolderDowngradeDetails
+        :rtype: team_log.TeamFolderDowngradeDetails
         """
         if not self.is_team_folder_downgrade_details():
             raise AttributeError("tag 'team_folder_downgrade_details' not set")
@@ -15979,7 +16038,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_folder_permanently_delete_details` is true.
 
-        :rtype: TeamFolderPermanentlyDeleteDetails
+        :rtype: team_log.TeamFolderPermanentlyDeleteDetails
         """
         if not self.is_team_folder_permanently_delete_details():
             raise AttributeError("tag 'team_folder_permanently_delete_details' not set")
@@ -15989,7 +16048,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_folder_rename_details` is true.
 
-        :rtype: TeamFolderRenameDetails
+        :rtype: team_log.TeamFolderRenameDetails
         """
         if not self.is_team_folder_rename_details():
             raise AttributeError("tag 'team_folder_rename_details' not set")
@@ -15999,7 +16058,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_selective_sync_settings_changed_details` is true.
 
-        :rtype: TeamSelectiveSyncSettingsChangedDetails
+        :rtype: team_log.TeamSelectiveSyncSettingsChangedDetails
         """
         if not self.is_team_selective_sync_settings_changed_details():
             raise AttributeError("tag 'team_selective_sync_settings_changed_details' not set")
@@ -16009,7 +16068,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_account_capture_change_policy_details` is true.
 
-        :rtype: AccountCaptureChangePolicyDetails
+        :rtype: team_log.AccountCaptureChangePolicyDetails
         """
         if not self.is_account_capture_change_policy_details():
             raise AttributeError("tag 'account_capture_change_policy_details' not set")
@@ -16019,7 +16078,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_allow_download_disabled_details` is true.
 
-        :rtype: AllowDownloadDisabledDetails
+        :rtype: team_log.AllowDownloadDisabledDetails
         """
         if not self.is_allow_download_disabled_details():
             raise AttributeError("tag 'allow_download_disabled_details' not set")
@@ -16029,7 +16088,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_allow_download_enabled_details` is true.
 
-        :rtype: AllowDownloadEnabledDetails
+        :rtype: team_log.AllowDownloadEnabledDetails
         """
         if not self.is_allow_download_enabled_details():
             raise AttributeError("tag 'allow_download_enabled_details' not set")
@@ -16039,7 +16098,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_camera_uploads_policy_changed_details` is true.
 
-        :rtype: CameraUploadsPolicyChangedDetails
+        :rtype: team_log.CameraUploadsPolicyChangedDetails
         """
         if not self.is_camera_uploads_policy_changed_details():
             raise AttributeError("tag 'camera_uploads_policy_changed_details' not set")
@@ -16049,7 +16108,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_data_placement_restriction_change_policy_details` is true.
 
-        :rtype: DataPlacementRestrictionChangePolicyDetails
+        :rtype: team_log.DataPlacementRestrictionChangePolicyDetails
         """
         if not self.is_data_placement_restriction_change_policy_details():
             raise AttributeError("tag 'data_placement_restriction_change_policy_details' not set")
@@ -16059,7 +16118,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_data_placement_restriction_satisfy_policy_details` is true.
 
-        :rtype: DataPlacementRestrictionSatisfyPolicyDetails
+        :rtype: team_log.DataPlacementRestrictionSatisfyPolicyDetails
         """
         if not self.is_data_placement_restriction_satisfy_policy_details():
             raise AttributeError("tag 'data_placement_restriction_satisfy_policy_details' not set")
@@ -16069,7 +16128,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_approvals_change_desktop_policy_details` is true.
 
-        :rtype: DeviceApprovalsChangeDesktopPolicyDetails
+        :rtype: team_log.DeviceApprovalsChangeDesktopPolicyDetails
         """
         if not self.is_device_approvals_change_desktop_policy_details():
             raise AttributeError("tag 'device_approvals_change_desktop_policy_details' not set")
@@ -16079,7 +16138,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_approvals_change_mobile_policy_details` is true.
 
-        :rtype: DeviceApprovalsChangeMobilePolicyDetails
+        :rtype: team_log.DeviceApprovalsChangeMobilePolicyDetails
         """
         if not self.is_device_approvals_change_mobile_policy_details():
             raise AttributeError("tag 'device_approvals_change_mobile_policy_details' not set")
@@ -16089,7 +16148,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_approvals_change_overage_action_details` is true.
 
-        :rtype: DeviceApprovalsChangeOverageActionDetails
+        :rtype: team_log.DeviceApprovalsChangeOverageActionDetails
         """
         if not self.is_device_approvals_change_overage_action_details():
             raise AttributeError("tag 'device_approvals_change_overage_action_details' not set")
@@ -16099,7 +16158,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_device_approvals_change_unlink_action_details` is true.
 
-        :rtype: DeviceApprovalsChangeUnlinkActionDetails
+        :rtype: team_log.DeviceApprovalsChangeUnlinkActionDetails
         """
         if not self.is_device_approvals_change_unlink_action_details():
             raise AttributeError("tag 'device_approvals_change_unlink_action_details' not set")
@@ -16109,7 +16168,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_directory_restrictions_add_members_details` is true.
 
-        :rtype: DirectoryRestrictionsAddMembersDetails
+        :rtype: team_log.DirectoryRestrictionsAddMembersDetails
         """
         if not self.is_directory_restrictions_add_members_details():
             raise AttributeError("tag 'directory_restrictions_add_members_details' not set")
@@ -16119,7 +16178,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_directory_restrictions_remove_members_details` is true.
 
-        :rtype: DirectoryRestrictionsRemoveMembersDetails
+        :rtype: team_log.DirectoryRestrictionsRemoveMembersDetails
         """
         if not self.is_directory_restrictions_remove_members_details():
             raise AttributeError("tag 'directory_restrictions_remove_members_details' not set")
@@ -16129,7 +16188,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_emm_add_exception_details` is true.
 
-        :rtype: EmmAddExceptionDetails
+        :rtype: team_log.EmmAddExceptionDetails
         """
         if not self.is_emm_add_exception_details():
             raise AttributeError("tag 'emm_add_exception_details' not set")
@@ -16139,7 +16198,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_emm_change_policy_details` is true.
 
-        :rtype: EmmChangePolicyDetails
+        :rtype: team_log.EmmChangePolicyDetails
         """
         if not self.is_emm_change_policy_details():
             raise AttributeError("tag 'emm_change_policy_details' not set")
@@ -16149,7 +16208,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_emm_remove_exception_details` is true.
 
-        :rtype: EmmRemoveExceptionDetails
+        :rtype: team_log.EmmRemoveExceptionDetails
         """
         if not self.is_emm_remove_exception_details():
             raise AttributeError("tag 'emm_remove_exception_details' not set")
@@ -16159,7 +16218,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_extended_version_history_change_policy_details` is true.
 
-        :rtype: ExtendedVersionHistoryChangePolicyDetails
+        :rtype: team_log.ExtendedVersionHistoryChangePolicyDetails
         """
         if not self.is_extended_version_history_change_policy_details():
             raise AttributeError("tag 'extended_version_history_change_policy_details' not set")
@@ -16169,7 +16228,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_comments_change_policy_details` is true.
 
-        :rtype: FileCommentsChangePolicyDetails
+        :rtype: team_log.FileCommentsChangePolicyDetails
         """
         if not self.is_file_comments_change_policy_details():
             raise AttributeError("tag 'file_comments_change_policy_details' not set")
@@ -16179,7 +16238,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_requests_change_policy_details` is true.
 
-        :rtype: FileRequestsChangePolicyDetails
+        :rtype: team_log.FileRequestsChangePolicyDetails
         """
         if not self.is_file_requests_change_policy_details():
             raise AttributeError("tag 'file_requests_change_policy_details' not set")
@@ -16189,7 +16248,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_requests_emails_enabled_details` is true.
 
-        :rtype: FileRequestsEmailsEnabledDetails
+        :rtype: team_log.FileRequestsEmailsEnabledDetails
         """
         if not self.is_file_requests_emails_enabled_details():
             raise AttributeError("tag 'file_requests_emails_enabled_details' not set")
@@ -16199,7 +16258,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_file_requests_emails_restricted_to_team_only_details` is true.
 
-        :rtype: FileRequestsEmailsRestrictedToTeamOnlyDetails
+        :rtype: team_log.FileRequestsEmailsRestrictedToTeamOnlyDetails
         """
         if not self.is_file_requests_emails_restricted_to_team_only_details():
             raise AttributeError("tag 'file_requests_emails_restricted_to_team_only_details' not set")
@@ -16209,7 +16268,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_google_sso_change_policy_details` is true.
 
-        :rtype: GoogleSsoChangePolicyDetails
+        :rtype: team_log.GoogleSsoChangePolicyDetails
         """
         if not self.is_google_sso_change_policy_details():
             raise AttributeError("tag 'google_sso_change_policy_details' not set")
@@ -16219,7 +16278,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_group_user_management_change_policy_details` is true.
 
-        :rtype: GroupUserManagementChangePolicyDetails
+        :rtype: team_log.GroupUserManagementChangePolicyDetails
         """
         if not self.is_group_user_management_change_policy_details():
             raise AttributeError("tag 'group_user_management_change_policy_details' not set")
@@ -16229,7 +16288,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_requests_change_policy_details` is true.
 
-        :rtype: MemberRequestsChangePolicyDetails
+        :rtype: team_log.MemberRequestsChangePolicyDetails
         """
         if not self.is_member_requests_change_policy_details():
             raise AttributeError("tag 'member_requests_change_policy_details' not set")
@@ -16239,7 +16298,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_space_limits_add_exception_details` is true.
 
-        :rtype: MemberSpaceLimitsAddExceptionDetails
+        :rtype: team_log.MemberSpaceLimitsAddExceptionDetails
         """
         if not self.is_member_space_limits_add_exception_details():
             raise AttributeError("tag 'member_space_limits_add_exception_details' not set")
@@ -16249,7 +16308,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_space_limits_change_caps_type_policy_details` is true.
 
-        :rtype: MemberSpaceLimitsChangeCapsTypePolicyDetails
+        :rtype: team_log.MemberSpaceLimitsChangeCapsTypePolicyDetails
         """
         if not self.is_member_space_limits_change_caps_type_policy_details():
             raise AttributeError("tag 'member_space_limits_change_caps_type_policy_details' not set")
@@ -16259,7 +16318,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_space_limits_change_policy_details` is true.
 
-        :rtype: MemberSpaceLimitsChangePolicyDetails
+        :rtype: team_log.MemberSpaceLimitsChangePolicyDetails
         """
         if not self.is_member_space_limits_change_policy_details():
             raise AttributeError("tag 'member_space_limits_change_policy_details' not set")
@@ -16269,7 +16328,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_space_limits_remove_exception_details` is true.
 
-        :rtype: MemberSpaceLimitsRemoveExceptionDetails
+        :rtype: team_log.MemberSpaceLimitsRemoveExceptionDetails
         """
         if not self.is_member_space_limits_remove_exception_details():
             raise AttributeError("tag 'member_space_limits_remove_exception_details' not set")
@@ -16279,7 +16338,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_member_suggestions_change_policy_details` is true.
 
-        :rtype: MemberSuggestionsChangePolicyDetails
+        :rtype: team_log.MemberSuggestionsChangePolicyDetails
         """
         if not self.is_member_suggestions_change_policy_details():
             raise AttributeError("tag 'member_suggestions_change_policy_details' not set")
@@ -16289,7 +16348,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_microsoft_office_addin_change_policy_details` is true.
 
-        :rtype: MicrosoftOfficeAddinChangePolicyDetails
+        :rtype: team_log.MicrosoftOfficeAddinChangePolicyDetails
         """
         if not self.is_microsoft_office_addin_change_policy_details():
             raise AttributeError("tag 'microsoft_office_addin_change_policy_details' not set")
@@ -16299,7 +16358,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_network_control_change_policy_details` is true.
 
-        :rtype: NetworkControlChangePolicyDetails
+        :rtype: team_log.NetworkControlChangePolicyDetails
         """
         if not self.is_network_control_change_policy_details():
             raise AttributeError("tag 'network_control_change_policy_details' not set")
@@ -16309,7 +16368,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_change_deployment_policy_details` is true.
 
-        :rtype: PaperChangeDeploymentPolicyDetails
+        :rtype: team_log.PaperChangeDeploymentPolicyDetails
         """
         if not self.is_paper_change_deployment_policy_details():
             raise AttributeError("tag 'paper_change_deployment_policy_details' not set")
@@ -16319,7 +16378,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_change_member_link_policy_details` is true.
 
-        :rtype: PaperChangeMemberLinkPolicyDetails
+        :rtype: team_log.PaperChangeMemberLinkPolicyDetails
         """
         if not self.is_paper_change_member_link_policy_details():
             raise AttributeError("tag 'paper_change_member_link_policy_details' not set")
@@ -16329,7 +16388,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_change_member_policy_details` is true.
 
-        :rtype: PaperChangeMemberPolicyDetails
+        :rtype: team_log.PaperChangeMemberPolicyDetails
         """
         if not self.is_paper_change_member_policy_details():
             raise AttributeError("tag 'paper_change_member_policy_details' not set")
@@ -16339,7 +16398,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_change_policy_details` is true.
 
-        :rtype: PaperChangePolicyDetails
+        :rtype: team_log.PaperChangePolicyDetails
         """
         if not self.is_paper_change_policy_details():
             raise AttributeError("tag 'paper_change_policy_details' not set")
@@ -16349,7 +16408,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_enabled_users_group_addition_details` is true.
 
-        :rtype: PaperEnabledUsersGroupAdditionDetails
+        :rtype: team_log.PaperEnabledUsersGroupAdditionDetails
         """
         if not self.is_paper_enabled_users_group_addition_details():
             raise AttributeError("tag 'paper_enabled_users_group_addition_details' not set")
@@ -16359,7 +16418,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_paper_enabled_users_group_removal_details` is true.
 
-        :rtype: PaperEnabledUsersGroupRemovalDetails
+        :rtype: team_log.PaperEnabledUsersGroupRemovalDetails
         """
         if not self.is_paper_enabled_users_group_removal_details():
             raise AttributeError("tag 'paper_enabled_users_group_removal_details' not set")
@@ -16369,7 +16428,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_permanent_delete_change_policy_details` is true.
 
-        :rtype: PermanentDeleteChangePolicyDetails
+        :rtype: team_log.PermanentDeleteChangePolicyDetails
         """
         if not self.is_permanent_delete_change_policy_details():
             raise AttributeError("tag 'permanent_delete_change_policy_details' not set")
@@ -16379,7 +16438,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sharing_change_folder_join_policy_details` is true.
 
-        :rtype: SharingChangeFolderJoinPolicyDetails
+        :rtype: team_log.SharingChangeFolderJoinPolicyDetails
         """
         if not self.is_sharing_change_folder_join_policy_details():
             raise AttributeError("tag 'sharing_change_folder_join_policy_details' not set")
@@ -16389,7 +16448,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sharing_change_link_policy_details` is true.
 
-        :rtype: SharingChangeLinkPolicyDetails
+        :rtype: team_log.SharingChangeLinkPolicyDetails
         """
         if not self.is_sharing_change_link_policy_details():
             raise AttributeError("tag 'sharing_change_link_policy_details' not set")
@@ -16399,7 +16458,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sharing_change_member_policy_details` is true.
 
-        :rtype: SharingChangeMemberPolicyDetails
+        :rtype: team_log.SharingChangeMemberPolicyDetails
         """
         if not self.is_sharing_change_member_policy_details():
             raise AttributeError("tag 'sharing_change_member_policy_details' not set")
@@ -16409,7 +16468,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_change_download_policy_details` is true.
 
-        :rtype: ShowcaseChangeDownloadPolicyDetails
+        :rtype: team_log.ShowcaseChangeDownloadPolicyDetails
         """
         if not self.is_showcase_change_download_policy_details():
             raise AttributeError("tag 'showcase_change_download_policy_details' not set")
@@ -16419,7 +16478,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_change_enabled_policy_details` is true.
 
-        :rtype: ShowcaseChangeEnabledPolicyDetails
+        :rtype: team_log.ShowcaseChangeEnabledPolicyDetails
         """
         if not self.is_showcase_change_enabled_policy_details():
             raise AttributeError("tag 'showcase_change_enabled_policy_details' not set")
@@ -16429,7 +16488,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_showcase_change_external_sharing_policy_details` is true.
 
-        :rtype: ShowcaseChangeExternalSharingPolicyDetails
+        :rtype: team_log.ShowcaseChangeExternalSharingPolicyDetails
         """
         if not self.is_showcase_change_external_sharing_policy_details():
             raise AttributeError("tag 'showcase_change_external_sharing_policy_details' not set")
@@ -16439,7 +16498,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_smart_sync_change_policy_details` is true.
 
-        :rtype: SmartSyncChangePolicyDetails
+        :rtype: team_log.SmartSyncChangePolicyDetails
         """
         if not self.is_smart_sync_change_policy_details():
             raise AttributeError("tag 'smart_sync_change_policy_details' not set")
@@ -16449,7 +16508,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_smart_sync_not_opt_out_details` is true.
 
-        :rtype: SmartSyncNotOptOutDetails
+        :rtype: team_log.SmartSyncNotOptOutDetails
         """
         if not self.is_smart_sync_not_opt_out_details():
             raise AttributeError("tag 'smart_sync_not_opt_out_details' not set")
@@ -16459,7 +16518,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_smart_sync_opt_out_details` is true.
 
-        :rtype: SmartSyncOptOutDetails
+        :rtype: team_log.SmartSyncOptOutDetails
         """
         if not self.is_smart_sync_opt_out_details():
             raise AttributeError("tag 'smart_sync_opt_out_details' not set")
@@ -16469,7 +16528,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_sso_change_policy_details` is true.
 
-        :rtype: SsoChangePolicyDetails
+        :rtype: team_log.SsoChangePolicyDetails
         """
         if not self.is_sso_change_policy_details():
             raise AttributeError("tag 'sso_change_policy_details' not set")
@@ -16479,7 +16538,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_selective_sync_policy_changed_details` is true.
 
-        :rtype: TeamSelectiveSyncPolicyChangedDetails
+        :rtype: team_log.TeamSelectiveSyncPolicyChangedDetails
         """
         if not self.is_team_selective_sync_policy_changed_details():
             raise AttributeError("tag 'team_selective_sync_policy_changed_details' not set")
@@ -16489,7 +16548,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_tfa_change_policy_details` is true.
 
-        :rtype: TfaChangePolicyDetails
+        :rtype: team_log.TfaChangePolicyDetails
         """
         if not self.is_tfa_change_policy_details():
             raise AttributeError("tag 'tfa_change_policy_details' not set")
@@ -16499,7 +16558,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_two_account_change_policy_details` is true.
 
-        :rtype: TwoAccountChangePolicyDetails
+        :rtype: team_log.TwoAccountChangePolicyDetails
         """
         if not self.is_two_account_change_policy_details():
             raise AttributeError("tag 'two_account_change_policy_details' not set")
@@ -16509,7 +16568,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_viewer_info_policy_changed_details` is true.
 
-        :rtype: ViewerInfoPolicyChangedDetails
+        :rtype: team_log.ViewerInfoPolicyChangedDetails
         """
         if not self.is_viewer_info_policy_changed_details():
             raise AttributeError("tag 'viewer_info_policy_changed_details' not set")
@@ -16519,7 +16578,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_web_sessions_change_fixed_length_policy_details` is true.
 
-        :rtype: WebSessionsChangeFixedLengthPolicyDetails
+        :rtype: team_log.WebSessionsChangeFixedLengthPolicyDetails
         """
         if not self.is_web_sessions_change_fixed_length_policy_details():
             raise AttributeError("tag 'web_sessions_change_fixed_length_policy_details' not set")
@@ -16529,7 +16588,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_web_sessions_change_idle_length_policy_details` is true.
 
-        :rtype: WebSessionsChangeIdleLengthPolicyDetails
+        :rtype: team_log.WebSessionsChangeIdleLengthPolicyDetails
         """
         if not self.is_web_sessions_change_idle_length_policy_details():
             raise AttributeError("tag 'web_sessions_change_idle_length_policy_details' not set")
@@ -16539,7 +16598,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_merge_from_details` is true.
 
-        :rtype: TeamMergeFromDetails
+        :rtype: team_log.TeamMergeFromDetails
         """
         if not self.is_team_merge_from_details():
             raise AttributeError("tag 'team_merge_from_details' not set")
@@ -16549,7 +16608,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_merge_to_details` is true.
 
-        :rtype: TeamMergeToDetails
+        :rtype: team_log.TeamMergeToDetails
         """
         if not self.is_team_merge_to_details():
             raise AttributeError("tag 'team_merge_to_details' not set")
@@ -16559,7 +16618,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_profile_add_logo_details` is true.
 
-        :rtype: TeamProfileAddLogoDetails
+        :rtype: team_log.TeamProfileAddLogoDetails
         """
         if not self.is_team_profile_add_logo_details():
             raise AttributeError("tag 'team_profile_add_logo_details' not set")
@@ -16569,7 +16628,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_profile_change_default_language_details` is true.
 
-        :rtype: TeamProfileChangeDefaultLanguageDetails
+        :rtype: team_log.TeamProfileChangeDefaultLanguageDetails
         """
         if not self.is_team_profile_change_default_language_details():
             raise AttributeError("tag 'team_profile_change_default_language_details' not set")
@@ -16579,7 +16638,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_profile_change_logo_details` is true.
 
-        :rtype: TeamProfileChangeLogoDetails
+        :rtype: team_log.TeamProfileChangeLogoDetails
         """
         if not self.is_team_profile_change_logo_details():
             raise AttributeError("tag 'team_profile_change_logo_details' not set")
@@ -16589,7 +16648,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_profile_change_name_details` is true.
 
-        :rtype: TeamProfileChangeNameDetails
+        :rtype: team_log.TeamProfileChangeNameDetails
         """
         if not self.is_team_profile_change_name_details():
             raise AttributeError("tag 'team_profile_change_name_details' not set")
@@ -16599,7 +16658,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_team_profile_remove_logo_details` is true.
 
-        :rtype: TeamProfileRemoveLogoDetails
+        :rtype: team_log.TeamProfileRemoveLogoDetails
         """
         if not self.is_team_profile_remove_logo_details():
             raise AttributeError("tag 'team_profile_remove_logo_details' not set")
@@ -16609,7 +16668,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_tfa_add_backup_phone_details` is true.
 
-        :rtype: TfaAddBackupPhoneDetails
+        :rtype: team_log.TfaAddBackupPhoneDetails
         """
         if not self.is_tfa_add_backup_phone_details():
             raise AttributeError("tag 'tfa_add_backup_phone_details' not set")
@@ -16619,7 +16678,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_tfa_add_security_key_details` is true.
 
-        :rtype: TfaAddSecurityKeyDetails
+        :rtype: team_log.TfaAddSecurityKeyDetails
         """
         if not self.is_tfa_add_security_key_details():
             raise AttributeError("tag 'tfa_add_security_key_details' not set")
@@ -16629,7 +16688,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_tfa_change_backup_phone_details` is true.
 
-        :rtype: TfaChangeBackupPhoneDetails
+        :rtype: team_log.TfaChangeBackupPhoneDetails
         """
         if not self.is_tfa_change_backup_phone_details():
             raise AttributeError("tag 'tfa_change_backup_phone_details' not set")
@@ -16639,7 +16698,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_tfa_change_status_details` is true.
 
-        :rtype: TfaChangeStatusDetails
+        :rtype: team_log.TfaChangeStatusDetails
         """
         if not self.is_tfa_change_status_details():
             raise AttributeError("tag 'tfa_change_status_details' not set")
@@ -16649,7 +16708,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_tfa_remove_backup_phone_details` is true.
 
-        :rtype: TfaRemoveBackupPhoneDetails
+        :rtype: team_log.TfaRemoveBackupPhoneDetails
         """
         if not self.is_tfa_remove_backup_phone_details():
             raise AttributeError("tag 'tfa_remove_backup_phone_details' not set")
@@ -16659,7 +16718,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_tfa_remove_security_key_details` is true.
 
-        :rtype: TfaRemoveSecurityKeyDetails
+        :rtype: team_log.TfaRemoveSecurityKeyDetails
         """
         if not self.is_tfa_remove_security_key_details():
             raise AttributeError("tag 'tfa_remove_security_key_details' not set")
@@ -16669,7 +16728,7 @@ class EventDetails(bb.Union):
         """
         Only call this if :meth:`is_tfa_reset_details` is true.
 
-        :rtype: TfaResetDetails
+        :rtype: team_log.TfaResetDetails
         """
         if not self.is_tfa_reset_details():
             raise AttributeError("tag 'tfa_reset_details' not set")
@@ -16682,7 +16741,7 @@ class EventDetails(bb.Union):
 
         Only call this if :meth:`is_missing_details` is true.
 
-        :rtype: MissingDetails
+        :rtype: team_log.MissingDetails
         """
         if not self.is_missing_details():
             raise AttributeError("tag 'missing_details' not set")
@@ -16704,657 +16763,791 @@ class EventType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar AppLinkTeamType app_link_team: (apps) Linked app for team
-    :ivar AppLinkUserType app_link_user: (apps) Linked app for member
-    :ivar AppUnlinkTeamType app_unlink_team: (apps) Unlinked app for team
-    :ivar AppUnlinkUserType app_unlink_user: (apps) Unlinked app for member
-    :ivar FileAddCommentType file_add_comment: (comments) Added file comment
-    :ivar FileChangeCommentSubscriptionType file_change_comment_subscription:
-        (comments) Subscribed to or unsubscribed from comment notifications for
-        file
-    :ivar FileDeleteCommentType file_delete_comment: (comments) Deleted file
-        comment
-    :ivar FileEditCommentType file_edit_comment: (comments) Edited file comment
-    :ivar FileLikeCommentType file_like_comment: (comments) Liked file comment
-        (deprecated, no longer logged)
-    :ivar FileResolveCommentType file_resolve_comment: (comments) Resolved file
-        comment
-    :ivar FileUnlikeCommentType file_unlike_comment: (comments) Unliked file
-        comment (deprecated, no longer logged)
-    :ivar FileUnresolveCommentType file_unresolve_comment: (comments) Unresolved
-        file comment
-    :ivar DeviceChangeIpDesktopType device_change_ip_desktop: (devices) Changed
-        IP address associated with active desktop session
-    :ivar DeviceChangeIpMobileType device_change_ip_mobile: (devices) Changed IP
-        address associated with active mobile session
-    :ivar DeviceChangeIpWebType device_change_ip_web: (devices) Changed IP
-        address associated with active web session
-    :ivar DeviceDeleteOnUnlinkFailType device_delete_on_unlink_fail: (devices)
-        Failed to delete all files from unlinked device
-    :ivar DeviceDeleteOnUnlinkSuccessType device_delete_on_unlink_success:
-        (devices) Deleted all files from unlinked device
-    :ivar DeviceLinkFailType device_link_fail: (devices) Failed to link device
-    :ivar DeviceLinkSuccessType device_link_success: (devices) Linked device
-    :ivar DeviceManagementDisabledType device_management_disabled: (devices)
-        Disabled device management (deprecated, no longer logged)
-    :ivar DeviceManagementEnabledType device_management_enabled: (devices)
-        Enabled device management (deprecated, no longer logged)
-    :ivar DeviceUnlinkType device_unlink: (devices) Disconnected device
-    :ivar EmmRefreshAuthTokenType emm_refresh_auth_token: (devices) Refreshed
-        auth token used for setting up enterprise mobility management
-    :ivar AccountCaptureChangeAvailabilityType
-        account_capture_change_availability: (domains) Granted/revoked option to
-        enable account capture on team domains
-    :ivar AccountCaptureMigrateAccountType account_capture_migrate_account:
-        (domains) Account-captured user migrated account to team
-    :ivar AccountCaptureNotificationEmailsSentType
-        account_capture_notification_emails_sent: (domains) Sent proactive
-        account capture email to all unmanaged members
-    :ivar AccountCaptureRelinquishAccountType
-        account_capture_relinquish_account: (domains) Account-captured user
-        changed account email to personal email
-    :ivar DisabledDomainInvitesType disabled_domain_invites: (domains) Disabled
-        domain invites (deprecated, no longer logged)
-    :ivar DomainInvitesApproveRequestToJoinTeamType
-        domain_invites_approve_request_to_join_team: (domains) Approved user's
-        request to join team
-    :ivar DomainInvitesDeclineRequestToJoinTeamType
-        domain_invites_decline_request_to_join_team: (domains) Declined user's
-        request to join team
-    :ivar DomainInvitesEmailExistingUsersType
-        domain_invites_email_existing_users: (domains) Sent domain invites to
-        existing domain accounts (deprecated, no longer logged)
-    :ivar DomainInvitesRequestToJoinTeamType
-        domain_invites_request_to_join_team: (domains) Requested to join team
-    :ivar DomainInvitesSetInviteNewUserPrefToNoType
-        domain_invites_set_invite_new_user_pref_to_no: (domains) Disabled
-        "Automatically invite new users" (deprecated, no longer logged)
-    :ivar DomainInvitesSetInviteNewUserPrefToYesType
-        domain_invites_set_invite_new_user_pref_to_yes: (domains) Enabled
-        "Automatically invite new users" (deprecated, no longer logged)
-    :ivar DomainVerificationAddDomainFailType
-        domain_verification_add_domain_fail: (domains) Failed to verify team
-        domain
-    :ivar DomainVerificationAddDomainSuccessType
-        domain_verification_add_domain_success: (domains) Verified team domain
-    :ivar DomainVerificationRemoveDomainType domain_verification_remove_domain:
-        (domains) Removed domain from list of verified team domains
-    :ivar EnabledDomainInvitesType enabled_domain_invites: (domains) Enabled
-        domain invites (deprecated, no longer logged)
-    :ivar CreateFolderType create_folder: (file_operations) Created folders
-        (deprecated, no longer logged)
-    :ivar FileAddType file_add: (file_operations) Added files and/or folders
-    :ivar FileCopyType file_copy: (file_operations) Copied files and/or folders
-    :ivar FileDeleteType file_delete: (file_operations) Deleted files and/or
-        folders
-    :ivar FileDownloadType file_download: (file_operations) Downloaded files
-        and/or folders
-    :ivar FileEditType file_edit: (file_operations) Edited files
-    :ivar FileGetCopyReferenceType file_get_copy_reference: (file_operations)
-        Created copy reference to file/folder
-    :ivar FileMoveType file_move: (file_operations) Moved files and/or folders
-    :ivar FilePermanentlyDeleteType file_permanently_delete: (file_operations)
-        Permanently deleted files and/or folders
-    :ivar FilePreviewType file_preview: (file_operations) Previewed files and/or
-        folders
-    :ivar FileRenameType file_rename: (file_operations) Renamed files and/or
-        folders
-    :ivar FileRestoreType file_restore: (file_operations) Restored deleted files
-        and/or folders
-    :ivar FileRevertType file_revert: (file_operations) Reverted files to
-        previous version
-    :ivar FileRollbackChangesType file_rollback_changes: (file_operations)
-        Rolled back file actions
-    :ivar FileSaveCopyReferenceType file_save_copy_reference: (file_operations)
-        Saved file/folder using copy reference
-    :ivar FileRequestChangeType file_request_change: (file_requests) Changed
-        file request
-    :ivar FileRequestCloseType file_request_close: (file_requests) Closed file
-        request
-    :ivar FileRequestCreateType file_request_create: (file_requests) Created
-        file request
-    :ivar FileRequestReceiveFileType file_request_receive_file: (file_requests)
-        Received files for file request
-    :ivar GroupAddExternalIdType group_add_external_id: (groups) Added external
-        ID for group
-    :ivar GroupAddMemberType group_add_member: (groups) Added team members to
-        group
-    :ivar GroupChangeExternalIdType group_change_external_id: (groups) Changed
-        external ID for group
-    :ivar GroupChangeManagementTypeType group_change_management_type: (groups)
-        Changed group management type
-    :ivar GroupChangeMemberRoleType group_change_member_role: (groups) Changed
-        manager permissions of group member
-    :ivar GroupCreateType group_create: (groups) Created group
-    :ivar GroupDeleteType group_delete: (groups) Deleted group
-    :ivar GroupDescriptionUpdatedType group_description_updated: (groups)
-        Updated group (deprecated, no longer logged)
-    :ivar GroupJoinPolicyUpdatedType group_join_policy_updated: (groups) Updated
-        group join policy (deprecated, no longer logged)
-    :ivar GroupMovedType group_moved: (groups) Moved group (deprecated, no
-        longer logged)
-    :ivar GroupRemoveExternalIdType group_remove_external_id: (groups) Removed
-        external ID for group
-    :ivar GroupRemoveMemberType group_remove_member: (groups) Removed team
-        members from group
-    :ivar GroupRenameType group_rename: (groups) Renamed group
-    :ivar EmmErrorType emm_error: (logins) Failed to sign in via EMM
-        (deprecated, replaced by 'Failed to sign in')
-    :ivar LoginFailType login_fail: (logins) Failed to sign in
-    :ivar LoginSuccessType login_success: (logins) Signed in
-    :ivar LogoutType logout: (logins) Signed out
-    :ivar ResellerSupportSessionEndType reseller_support_session_end: (logins)
-        Ended reseller support session
-    :ivar ResellerSupportSessionStartType reseller_support_session_start:
-        (logins) Started reseller support session
-    :ivar SignInAsSessionEndType sign_in_as_session_end: (logins) Ended admin
-        sign-in-as session
-    :ivar SignInAsSessionStartType sign_in_as_session_start: (logins) Started
-        admin sign-in-as session
-    :ivar SsoErrorType sso_error: (logins) Failed to sign in via SSO
-        (deprecated, replaced by 'Failed to sign in')
-    :ivar MemberAddNameType member_add_name: (members) Added team member name
-    :ivar MemberChangeAdminRoleType member_change_admin_role: (members) Changed
-        team member admin role
-    :ivar MemberChangeEmailType member_change_email: (members) Changed team
-        member email
-    :ivar MemberChangeMembershipTypeType member_change_membership_type:
-        (members) Changed membership type (limited/full) of member (deprecated,
-        no longer logged)
-    :ivar MemberChangeNameType member_change_name: (members) Changed team member
-        name
-    :ivar MemberChangeStatusType member_change_status: (members) Changed member
-        status (invited, joined, suspended, etc.)
-    :ivar MemberDeleteManualContactsType member_delete_manual_contacts:
-        (members) Cleared manually added contacts
-    :ivar MemberPermanentlyDeleteAccountContentsType
-        member_permanently_delete_account_contents: (members) Permanently
-        deleted contents of deleted team member account
-    :ivar MemberSpaceLimitsAddCustomQuotaType
-        member_space_limits_add_custom_quota: (members) Set custom member space
-        limit
-    :ivar MemberSpaceLimitsChangeCustomQuotaType
-        member_space_limits_change_custom_quota: (members) Changed custom member
-        space limit
-    :ivar MemberSpaceLimitsChangeStatusType member_space_limits_change_status:
-        (members) Changed space limit status
-    :ivar MemberSpaceLimitsRemoveCustomQuotaType
-        member_space_limits_remove_custom_quota: (members) Removed custom member
-        space limit
-    :ivar MemberSuggestType member_suggest: (members) Suggested person to add to
-        team
-    :ivar MemberTransferAccountContentsType member_transfer_account_contents:
-        (members) Transferred contents of deleted member account to another
-        member
-    :ivar SecondaryMailsPolicyChangedType secondary_mails_policy_changed:
-        (members) Secondary mails policy changed
-    :ivar PaperContentAddMemberType paper_content_add_member: (paper) Added team
-        member to Paper doc/folder
-    :ivar PaperContentAddToFolderType paper_content_add_to_folder: (paper) Added
-        Paper doc/folder to folder
-    :ivar PaperContentArchiveType paper_content_archive: (paper) Archived Paper
-        doc/folder
-    :ivar PaperContentCreateType paper_content_create: (paper) Created Paper
-        doc/folder
-    :ivar PaperContentPermanentlyDeleteType paper_content_permanently_delete:
-        (paper) Permanently deleted Paper doc/folder
-    :ivar PaperContentRemoveFromFolderType paper_content_remove_from_folder:
-        (paper) Removed Paper doc/folder from folder
-    :ivar PaperContentRemoveMemberType paper_content_remove_member: (paper)
-        Removed team member from Paper doc/folder
-    :ivar PaperContentRenameType paper_content_rename: (paper) Renamed Paper
-        doc/folder
-    :ivar PaperContentRestoreType paper_content_restore: (paper) Restored
-        archived Paper doc/folder
-    :ivar PaperDocAddCommentType paper_doc_add_comment: (paper) Added Paper doc
-        comment
-    :ivar PaperDocChangeMemberRoleType paper_doc_change_member_role: (paper)
-        Changed team member permissions for Paper doc
-    :ivar PaperDocChangeSharingPolicyType paper_doc_change_sharing_policy:
-        (paper) Changed sharing setting for Paper doc
-    :ivar PaperDocChangeSubscriptionType paper_doc_change_subscription: (paper)
-        Followed/unfollowed Paper doc
-    :ivar PaperDocDeletedType paper_doc_deleted: (paper) Archived Paper doc
-        (deprecated, no longer logged)
-    :ivar PaperDocDeleteCommentType paper_doc_delete_comment: (paper) Deleted
-        Paper doc comment
-    :ivar PaperDocDownloadType paper_doc_download: (paper) Downloaded Paper doc
-        in specific format
-    :ivar PaperDocEditType paper_doc_edit: (paper) Edited Paper doc
-    :ivar PaperDocEditCommentType paper_doc_edit_comment: (paper) Edited Paper
-        doc comment
-    :ivar PaperDocFollowedType paper_doc_followed: (paper) Followed Paper doc
-        (deprecated, replaced by 'Followed/unfollowed Paper doc')
-    :ivar PaperDocMentionType paper_doc_mention: (paper) Mentioned team member
-        in Paper doc
-    :ivar PaperDocOwnershipChangedType paper_doc_ownership_changed: (paper)
-        Transferred ownership of Paper doc
-    :ivar PaperDocRequestAccessType paper_doc_request_access: (paper) Requested
-        access to Paper doc
-    :ivar PaperDocResolveCommentType paper_doc_resolve_comment: (paper) Resolved
-        Paper doc comment
-    :ivar PaperDocRevertType paper_doc_revert: (paper) Restored Paper doc to
-        previous version
-    :ivar PaperDocSlackShareType paper_doc_slack_share: (paper) Shared Paper doc
-        via Slack
-    :ivar PaperDocTeamInviteType paper_doc_team_invite: (paper) Shared Paper doc
-        with team member (deprecated, no longer logged)
-    :ivar PaperDocTrashedType paper_doc_trashed: (paper) Deleted Paper doc
-    :ivar PaperDocUnresolveCommentType paper_doc_unresolve_comment: (paper)
-        Unresolved Paper doc comment
-    :ivar PaperDocUntrashedType paper_doc_untrashed: (paper) Restored Paper doc
-    :ivar PaperDocViewType paper_doc_view: (paper) Viewed Paper doc
-    :ivar PaperExternalViewAllowType paper_external_view_allow: (paper) Changed
-        Paper external sharing setting to anyone (deprecated, no longer logged)
-    :ivar PaperExternalViewDefaultTeamType paper_external_view_default_team:
-        (paper) Changed Paper external sharing setting to default team
-        (deprecated, no longer logged)
-    :ivar PaperExternalViewForbidType paper_external_view_forbid: (paper)
-        Changed Paper external sharing setting to team-only (deprecated, no
-        longer logged)
-    :ivar PaperFolderChangeSubscriptionType paper_folder_change_subscription:
-        (paper) Followed/unfollowed Paper folder
-    :ivar PaperFolderDeletedType paper_folder_deleted: (paper) Archived Paper
-        folder (deprecated, no longer logged)
-    :ivar PaperFolderFollowedType paper_folder_followed: (paper) Followed Paper
-        folder (deprecated, replaced by 'Followed/unfollowed Paper folder')
-    :ivar PaperFolderTeamInviteType paper_folder_team_invite: (paper) Shared
-        Paper folder with member (deprecated, no longer logged)
-    :ivar PasswordChangeType password_change: (passwords) Changed password
-    :ivar PasswordResetType password_reset: (passwords) Reset password
-    :ivar PasswordResetAllType password_reset_all: (passwords) Reset all team
-        member passwords
-    :ivar EmmCreateExceptionsReportType emm_create_exceptions_report: (reports)
-        Created EMM-excluded users report
-    :ivar EmmCreateUsageReportType emm_create_usage_report: (reports) Created
-        EMM mobile app usage report
-    :ivar ExportMembersReportType export_members_report: (reports) Created
-        member data report
-    :ivar PaperAdminExportStartType paper_admin_export_start: (reports) Exported
-        all team Paper docs
-    :ivar SmartSyncCreateAdminPrivilegeReportType
-        smart_sync_create_admin_privilege_report: (reports) Created Smart Sync
-        non-admin devices report
-    :ivar TeamActivityCreateReportType team_activity_create_report: (reports)
-        Created team activity report
-    :ivar CollectionShareType collection_share: (sharing) Shared album
-    :ivar NoteAclInviteOnlyType note_acl_invite_only: (sharing) Changed Paper
-        doc to invite-only (deprecated, no longer logged)
-    :ivar NoteAclLinkType note_acl_link: (sharing) Changed Paper doc to
-        link-accessible (deprecated, no longer logged)
-    :ivar NoteAclTeamLinkType note_acl_team_link: (sharing) Changed Paper doc to
-        link-accessible for team (deprecated, no longer logged)
-    :ivar NoteSharedType note_shared: (sharing) Shared Paper doc (deprecated, no
-        longer logged)
-    :ivar NoteShareReceiveType note_share_receive: (sharing) Shared received
-        Paper doc (deprecated, no longer logged)
-    :ivar OpenNoteSharedType open_note_shared: (sharing) Opened shared Paper doc
-        (deprecated, no longer logged)
-    :ivar SfAddGroupType sf_add_group: (sharing) Added team to shared folder
-        (deprecated, no longer logged)
-    :ivar SfAllowNonMembersToViewSharedLinksType
-        sf_allow_non_members_to_view_shared_links: (sharing) Allowed
-        non-collaborators to view links to files in shared folder (deprecated,
-        no longer logged)
-    :ivar SfExternalInviteWarnType sf_external_invite_warn: (sharing) Set team
-        members to see warning before sharing folders outside team (deprecated,
-        no longer logged)
-    :ivar SfFbInviteType sf_fb_invite: (sharing) Invited Facebook users to
-        shared folder (deprecated, no longer logged)
-    :ivar SfFbInviteChangeRoleType sf_fb_invite_change_role: (sharing) Changed
-        Facebook user's role in shared folder (deprecated, no longer logged)
-    :ivar SfFbUninviteType sf_fb_uninvite: (sharing) Uninvited Facebook user
-        from shared folder (deprecated, no longer logged)
-    :ivar SfInviteGroupType sf_invite_group: (sharing) Invited group to shared
-        folder (deprecated, no longer logged)
-    :ivar SfTeamGrantAccessType sf_team_grant_access: (sharing) Granted access
-        to shared folder (deprecated, no longer logged)
-    :ivar SfTeamInviteType sf_team_invite: (sharing) Invited team members to
-        shared folder (deprecated, replaced by 'Invited user to Dropbox and
-        added them to shared file/folder')
-    :ivar SfTeamInviteChangeRoleType sf_team_invite_change_role: (sharing)
-        Changed team member's role in shared folder (deprecated, no longer
-        logged)
-    :ivar SfTeamJoinType sf_team_join: (sharing) Joined team member's shared
-        folder (deprecated, no longer logged)
-    :ivar SfTeamJoinFromOobLinkType sf_team_join_from_oob_link: (sharing) Joined
-        team member's shared folder from link (deprecated, no longer logged)
-    :ivar SfTeamUninviteType sf_team_uninvite: (sharing) Unshared folder with
-        team member (deprecated, replaced by 'Removed invitee from shared
-        file/folder before invite was accepted')
-    :ivar SharedContentAddInviteesType shared_content_add_invitees: (sharing)
-        Invited user to Dropbox and added them to shared file/folder
-    :ivar SharedContentAddLinkExpiryType shared_content_add_link_expiry:
-        (sharing) Added expiration date to link for shared file/folder
-    :ivar SharedContentAddLinkPasswordType shared_content_add_link_password:
-        (sharing) Added password to link for shared file/folder
-    :ivar SharedContentAddMemberType shared_content_add_member: (sharing) Added
-        users and/or groups to shared file/folder
-    :ivar SharedContentChangeDownloadsPolicyType
-        shared_content_change_downloads_policy: (sharing) Changed whether
-        members can download shared file/folder
-    :ivar SharedContentChangeInviteeRoleType shared_content_change_invitee_role:
-        (sharing) Changed access type of invitee to shared file/folder before
-        invite was accepted
-    :ivar SharedContentChangeLinkAudienceType
-        shared_content_change_link_audience: (sharing) Changed link audience of
-        shared file/folder
-    :ivar SharedContentChangeLinkExpiryType shared_content_change_link_expiry:
-        (sharing) Changed link expiration of shared file/folder
-    :ivar SharedContentChangeLinkPasswordType
-        shared_content_change_link_password: (sharing) Changed link password of
-        shared file/folder
-    :ivar SharedContentChangeMemberRoleType shared_content_change_member_role:
-        (sharing) Changed access type of shared file/folder member
-    :ivar SharedContentChangeViewerInfoPolicyType
-        shared_content_change_viewer_info_policy: (sharing) Changed whether
-        members can see who viewed shared file/folder
-    :ivar SharedContentClaimInvitationType shared_content_claim_invitation:
-        (sharing) Acquired membership of shared file/folder by accepting invite
-    :ivar SharedContentCopyType shared_content_copy: (sharing) Copied shared
-        file/folder to own Dropbox
-    :ivar SharedContentDownloadType shared_content_download: (sharing)
-        Downloaded shared file/folder
-    :ivar SharedContentRelinquishMembershipType
-        shared_content_relinquish_membership: (sharing) Left shared file/folder
-    :ivar SharedContentRemoveInviteesType shared_content_remove_invitees:
-        (sharing) Removed invitee from shared file/folder before invite was
-        accepted
-    :ivar SharedContentRemoveLinkExpiryType shared_content_remove_link_expiry:
-        (sharing) Removed link expiration date of shared file/folder
-    :ivar SharedContentRemoveLinkPasswordType
-        shared_content_remove_link_password: (sharing) Removed link password of
-        shared file/folder
-    :ivar SharedContentRemoveMemberType shared_content_remove_member: (sharing)
-        Removed user/group from shared file/folder
-    :ivar SharedContentRequestAccessType shared_content_request_access:
-        (sharing) Requested access to shared file/folder
-    :ivar SharedContentUnshareType shared_content_unshare: (sharing) Unshared
-        file/folder by clearing membership and turning off link
-    :ivar SharedContentViewType shared_content_view: (sharing) Previewed shared
-        file/folder
-    :ivar SharedFolderChangeLinkPolicyType shared_folder_change_link_policy:
-        (sharing) Changed who can access shared folder via link
-    :ivar SharedFolderChangeMembersInheritancePolicyType
-        shared_folder_change_members_inheritance_policy: (sharing) Changed
-        whether shared folder inherits members from parent folder
-    :ivar SharedFolderChangeMembersManagementPolicyType
-        shared_folder_change_members_management_policy: (sharing) Changed who
-        can add/remove members of shared folder
-    :ivar SharedFolderChangeMembersPolicyType
-        shared_folder_change_members_policy: (sharing) Changed who can become
-        member of shared folder
-    :ivar SharedFolderCreateType shared_folder_create: (sharing) Created shared
-        folder
-    :ivar SharedFolderDeclineInvitationType shared_folder_decline_invitation:
-        (sharing) Declined team member's invite to shared folder
-    :ivar SharedFolderMountType shared_folder_mount: (sharing) Added shared
-        folder to own Dropbox
-    :ivar SharedFolderNestType shared_folder_nest: (sharing) Changed parent of
-        shared folder
-    :ivar SharedFolderTransferOwnershipType shared_folder_transfer_ownership:
-        (sharing) Transferred ownership of shared folder to another member
-    :ivar SharedFolderUnmountType shared_folder_unmount: (sharing) Deleted
-        shared folder from Dropbox
-    :ivar SharedLinkAddExpiryType shared_link_add_expiry: (sharing) Added shared
-        link expiration date
-    :ivar SharedLinkChangeExpiryType shared_link_change_expiry: (sharing)
-        Changed shared link expiration date
-    :ivar SharedLinkChangeVisibilityType shared_link_change_visibility:
-        (sharing) Changed visibility of shared link
-    :ivar SharedLinkCopyType shared_link_copy: (sharing) Added file/folder to
-        Dropbox from shared link
-    :ivar SharedLinkCreateType shared_link_create: (sharing) Created shared link
-    :ivar SharedLinkDisableType shared_link_disable: (sharing) Removed shared
-        link
-    :ivar SharedLinkDownloadType shared_link_download: (sharing) Downloaded
-        file/folder from shared link
-    :ivar SharedLinkRemoveExpiryType shared_link_remove_expiry: (sharing)
-        Removed shared link expiration date
-    :ivar SharedLinkShareType shared_link_share: (sharing) Added members as
-        audience of shared link
-    :ivar SharedLinkViewType shared_link_view: (sharing) Opened shared link
-    :ivar SharedNoteOpenedType shared_note_opened: (sharing) Opened shared Paper
-        doc (deprecated, no longer logged)
-    :ivar ShmodelGroupShareType shmodel_group_share: (sharing) Shared link with
-        group (deprecated, no longer logged)
-    :ivar ShowcaseAccessGrantedType showcase_access_granted: (showcase) Granted
-        access to showcase
-    :ivar ShowcaseAddMemberType showcase_add_member: (showcase) Added member to
-        showcase
-    :ivar ShowcaseArchivedType showcase_archived: (showcase) Archived showcase
-    :ivar ShowcaseCreatedType showcase_created: (showcase) Created showcase
-    :ivar ShowcaseDeleteCommentType showcase_delete_comment: (showcase) Deleted
-        showcase comment
-    :ivar ShowcaseEditedType showcase_edited: (showcase) Edited showcase
-    :ivar ShowcaseEditCommentType showcase_edit_comment: (showcase) Edited
-        showcase comment
-    :ivar ShowcaseFileAddedType showcase_file_added: (showcase) Added file to
-        showcase
-    :ivar ShowcaseFileDownloadType showcase_file_download: (showcase) Downloaded
-        file from showcase
-    :ivar ShowcaseFileRemovedType showcase_file_removed: (showcase) Removed file
-        from showcase
-    :ivar ShowcaseFileViewType showcase_file_view: (showcase) Viewed file in
-        showcase
-    :ivar ShowcasePermanentlyDeletedType showcase_permanently_deleted:
-        (showcase) Permanently deleted showcase
-    :ivar ShowcasePostCommentType showcase_post_comment: (showcase) Added
-        showcase comment
-    :ivar ShowcaseRemoveMemberType showcase_remove_member: (showcase) Removed
-        member from showcase
-    :ivar ShowcaseRenamedType showcase_renamed: (showcase) Renamed showcase
-    :ivar ShowcaseRequestAccessType showcase_request_access: (showcase)
-        Requested access to showcase
-    :ivar ShowcaseResolveCommentType showcase_resolve_comment: (showcase)
-        Resolved showcase comment
-    :ivar ShowcaseRestoredType showcase_restored: (showcase) Unarchived showcase
-    :ivar ShowcaseTrashedType showcase_trashed: (showcase) Deleted showcase
-    :ivar ShowcaseTrashedDeprecatedType showcase_trashed_deprecated: (showcase)
-        Deleted showcase (old version) (deprecated, replaced by 'Deleted
-        showcase')
-    :ivar ShowcaseUnresolveCommentType showcase_unresolve_comment: (showcase)
-        Unresolved showcase comment
-    :ivar ShowcaseUntrashedType showcase_untrashed: (showcase) Restored showcase
-    :ivar ShowcaseUntrashedDeprecatedType showcase_untrashed_deprecated:
-        (showcase) Restored showcase (old version) (deprecated, replaced by
-        'Restored showcase')
-    :ivar ShowcaseViewType showcase_view: (showcase) Viewed showcase
-    :ivar SsoAddCertType sso_add_cert: (sso) Added X.509 certificate for SSO
-    :ivar SsoAddLoginUrlType sso_add_login_url: (sso) Added sign-in URL for SSO
-    :ivar SsoAddLogoutUrlType sso_add_logout_url: (sso) Added sign-out URL for
-        SSO
-    :ivar SsoChangeCertType sso_change_cert: (sso) Changed X.509 certificate for
-        SSO
-    :ivar SsoChangeLoginUrlType sso_change_login_url: (sso) Changed sign-in URL
-        for SSO
-    :ivar SsoChangeLogoutUrlType sso_change_logout_url: (sso) Changed sign-out
-        URL for SSO
-    :ivar SsoChangeSamlIdentityModeType sso_change_saml_identity_mode: (sso)
-        Changed SAML identity mode for SSO
-    :ivar SsoRemoveCertType sso_remove_cert: (sso) Removed X.509 certificate for
-        SSO
-    :ivar SsoRemoveLoginUrlType sso_remove_login_url: (sso) Removed sign-in URL
-        for SSO
-    :ivar SsoRemoveLogoutUrlType sso_remove_logout_url: (sso) Removed sign-out
-        URL for SSO
-    :ivar TeamFolderChangeStatusType team_folder_change_status: (team_folders)
-        Changed archival status of team folder
-    :ivar TeamFolderCreateType team_folder_create: (team_folders) Created team
-        folder in active status
-    :ivar TeamFolderDowngradeType team_folder_downgrade: (team_folders)
-        Downgraded team folder to regular shared folder
-    :ivar TeamFolderPermanentlyDeleteType team_folder_permanently_delete:
-        (team_folders) Permanently deleted archived team folder
-    :ivar TeamFolderRenameType team_folder_rename: (team_folders) Renamed
-        active/archived team folder
-    :ivar TeamSelectiveSyncSettingsChangedType
-        team_selective_sync_settings_changed: (team_folders) Changed sync
-        default
-    :ivar AccountCaptureChangePolicyType account_capture_change_policy:
-        (team_policies) Changed account capture setting on team domain
-    :ivar AllowDownloadDisabledType allow_download_disabled: (team_policies)
-        Disabled downloads (deprecated, no longer logged)
-    :ivar AllowDownloadEnabledType allow_download_enabled: (team_policies)
-        Enabled downloads (deprecated, no longer logged)
-    :ivar CameraUploadsPolicyChangedType camera_uploads_policy_changed:
-        (team_policies) Changed camera uploads setting for team
-    :ivar DataPlacementRestrictionChangePolicyType
-        data_placement_restriction_change_policy: (team_policies) Set
-        restrictions on data center locations where team data resides
-    :ivar DataPlacementRestrictionSatisfyPolicyType
-        data_placement_restriction_satisfy_policy: (team_policies) Completed
-        restrictions on data center locations where team data resides
-    :ivar DeviceApprovalsChangeDesktopPolicyType
-        device_approvals_change_desktop_policy: (team_policies) Set/removed
-        limit on number of computers member can link to team Dropbox account
-    :ivar DeviceApprovalsChangeMobilePolicyType
-        device_approvals_change_mobile_policy: (team_policies) Set/removed limit
-        on number of mobile devices member can link to team Dropbox account
-    :ivar DeviceApprovalsChangeOverageActionType
-        device_approvals_change_overage_action: (team_policies) Changed device
-        approvals setting when member is over limit
-    :ivar DeviceApprovalsChangeUnlinkActionType
-        device_approvals_change_unlink_action: (team_policies) Changed device
-        approvals setting when member unlinks approved device
-    :ivar DirectoryRestrictionsAddMembersType
-        directory_restrictions_add_members: (team_policies) Added members to
-        directory restrictions list
-    :ivar DirectoryRestrictionsRemoveMembersType
-        directory_restrictions_remove_members: (team_policies) Removed members
-        from directory restrictions list
-    :ivar EmmAddExceptionType emm_add_exception: (team_policies) Added members
-        to EMM exception list
-    :ivar EmmChangePolicyType emm_change_policy: (team_policies)
-        Enabled/disabled enterprise mobility management for members
-    :ivar EmmRemoveExceptionType emm_remove_exception: (team_policies) Removed
-        members from EMM exception list
-    :ivar ExtendedVersionHistoryChangePolicyType
-        extended_version_history_change_policy: (team_policies) Accepted/opted
-        out of extended version history
-    :ivar FileCommentsChangePolicyType file_comments_change_policy:
-        (team_policies) Enabled/disabled commenting on team files
-    :ivar FileRequestsChangePolicyType file_requests_change_policy:
-        (team_policies) Enabled/disabled file requests
-    :ivar FileRequestsEmailsEnabledType file_requests_emails_enabled:
-        (team_policies) Enabled file request emails for everyone (deprecated, no
-        longer logged)
-    :ivar FileRequestsEmailsRestrictedToTeamOnlyType
-        file_requests_emails_restricted_to_team_only: (team_policies) Enabled
-        file request emails for team (deprecated, no longer logged)
-    :ivar GoogleSsoChangePolicyType google_sso_change_policy: (team_policies)
-        Enabled/disabled Google single sign-on for team
-    :ivar GroupUserManagementChangePolicyType
-        group_user_management_change_policy: (team_policies) Changed who can
-        create groups
-    :ivar MemberRequestsChangePolicyType member_requests_change_policy:
-        (team_policies) Changed whether users can find team when not invited
-    :ivar MemberSpaceLimitsAddExceptionType member_space_limits_add_exception:
-        (team_policies) Added members to member space limit exception list
-    :ivar MemberSpaceLimitsChangeCapsTypePolicyType
-        member_space_limits_change_caps_type_policy: (team_policies) Changed
-        member space limit type for team
-    :ivar MemberSpaceLimitsChangePolicyType member_space_limits_change_policy:
-        (team_policies) Changed team default member space limit
-    :ivar MemberSpaceLimitsRemoveExceptionType
-        member_space_limits_remove_exception: (team_policies) Removed members
-        from member space limit exception list
-    :ivar MemberSuggestionsChangePolicyType member_suggestions_change_policy:
-        (team_policies) Enabled/disabled option for team members to suggest
-        people to add to team
-    :ivar MicrosoftOfficeAddinChangePolicyType
-        microsoft_office_addin_change_policy: (team_policies) Enabled/disabled
-        Microsoft Office add-in
-    :ivar NetworkControlChangePolicyType network_control_change_policy:
-        (team_policies) Enabled/disabled network control
-    :ivar PaperChangeDeploymentPolicyType paper_change_deployment_policy:
-        (team_policies) Changed whether Dropbox Paper, when enabled, is deployed
-        to all members or to specific members
-    :ivar PaperChangeMemberLinkPolicyType paper_change_member_link_policy:
-        (team_policies) Changed whether non-members can view Paper docs with
-        link (deprecated, no longer logged)
-    :ivar PaperChangeMemberPolicyType paper_change_member_policy:
-        (team_policies) Changed whether members can share Paper docs outside
-        team, and if docs are accessible only by team members or anyone by
-        default
-    :ivar PaperChangePolicyType paper_change_policy: (team_policies)
-        Enabled/disabled Dropbox Paper for team
-    :ivar PaperEnabledUsersGroupAdditionType paper_enabled_users_group_addition:
-        (team_policies) Added users to Paper-enabled users list
-    :ivar PaperEnabledUsersGroupRemovalType paper_enabled_users_group_removal:
-        (team_policies) Removed users from Paper-enabled users list
-    :ivar PermanentDeleteChangePolicyType permanent_delete_change_policy:
-        (team_policies) Enabled/disabled ability of team members to permanently
-        delete content
-    :ivar SharingChangeFolderJoinPolicyType sharing_change_folder_join_policy:
-        (team_policies) Changed whether team members can join shared folders
-        owned outside team
-    :ivar SharingChangeLinkPolicyType sharing_change_link_policy:
-        (team_policies) Changed whether members can share links outside team,
-        and if links are accessible only by team members or anyone by default
-    :ivar SharingChangeMemberPolicyType sharing_change_member_policy:
-        (team_policies) Changed whether members can share files/folders outside
-        team
-    :ivar ShowcaseChangeDownloadPolicyType showcase_change_download_policy:
-        (team_policies) Enabled/disabled downloading files from Dropbox Showcase
+    :ivar AppLinkTeamType team_log.EventType.app_link_team: (apps) Linked app
         for team
-    :ivar ShowcaseChangeEnabledPolicyType showcase_change_enabled_policy:
-        (team_policies) Enabled/disabled Dropbox Showcase for team
+    :ivar AppLinkUserType team_log.EventType.app_link_user: (apps) Linked app
+        for member
+    :ivar AppUnlinkTeamType team_log.EventType.app_unlink_team: (apps) Unlinked
+        app for team
+    :ivar AppUnlinkUserType team_log.EventType.app_unlink_user: (apps) Unlinked
+        app for member
+    :ivar FileAddCommentType team_log.EventType.file_add_comment: (comments)
+        Added file comment
+    :ivar FileChangeCommentSubscriptionType
+        team_log.EventType.file_change_comment_subscription: (comments)
+        Subscribed to or unsubscribed from comment notifications for file
+    :ivar FileDeleteCommentType team_log.EventType.file_delete_comment:
+        (comments) Deleted file comment
+    :ivar FileEditCommentType team_log.EventType.file_edit_comment: (comments)
+        Edited file comment
+    :ivar FileLikeCommentType team_log.EventType.file_like_comment: (comments)
+        Liked file comment (deprecated, no longer logged)
+    :ivar FileResolveCommentType team_log.EventType.file_resolve_comment:
+        (comments) Resolved file comment
+    :ivar FileUnlikeCommentType team_log.EventType.file_unlike_comment:
+        (comments) Unliked file comment (deprecated, no longer logged)
+    :ivar FileUnresolveCommentType team_log.EventType.file_unresolve_comment:
+        (comments) Unresolved file comment
+    :ivar DeviceChangeIpDesktopType team_log.EventType.device_change_ip_desktop:
+        (devices) Changed IP address associated with active desktop session
+    :ivar DeviceChangeIpMobileType team_log.EventType.device_change_ip_mobile:
+        (devices) Changed IP address associated with active mobile session
+    :ivar DeviceChangeIpWebType team_log.EventType.device_change_ip_web:
+        (devices) Changed IP address associated with active web session
+    :ivar DeviceDeleteOnUnlinkFailType
+        team_log.EventType.device_delete_on_unlink_fail: (devices) Failed to
+        delete all files from unlinked device
+    :ivar DeviceDeleteOnUnlinkSuccessType
+        team_log.EventType.device_delete_on_unlink_success: (devices) Deleted
+        all files from unlinked device
+    :ivar DeviceLinkFailType team_log.EventType.device_link_fail: (devices)
+        Failed to link device
+    :ivar DeviceLinkSuccessType team_log.EventType.device_link_success:
+        (devices) Linked device
+    :ivar DeviceManagementDisabledType
+        team_log.EventType.device_management_disabled: (devices) Disabled device
+        management (deprecated, no longer logged)
+    :ivar DeviceManagementEnabledType
+        team_log.EventType.device_management_enabled: (devices) Enabled device
+        management (deprecated, no longer logged)
+    :ivar DeviceUnlinkType team_log.EventType.device_unlink: (devices)
+        Disconnected device
+    :ivar EmmRefreshAuthTokenType team_log.EventType.emm_refresh_auth_token:
+        (devices) Refreshed auth token used for setting up enterprise mobility
+        management
+    :ivar AccountCaptureChangeAvailabilityType
+        team_log.EventType.account_capture_change_availability: (domains)
+        Granted/revoked option to enable account capture on team domains
+    :ivar AccountCaptureMigrateAccountType
+        team_log.EventType.account_capture_migrate_account: (domains)
+        Account-captured user migrated account to team
+    :ivar AccountCaptureNotificationEmailsSentType
+        team_log.EventType.account_capture_notification_emails_sent: (domains)
+        Sent proactive account capture email to all unmanaged members
+    :ivar AccountCaptureRelinquishAccountType
+        team_log.EventType.account_capture_relinquish_account: (domains)
+        Account-captured user changed account email to personal email
+    :ivar DisabledDomainInvitesType team_log.EventType.disabled_domain_invites:
+        (domains) Disabled domain invites (deprecated, no longer logged)
+    :ivar DomainInvitesApproveRequestToJoinTeamType
+        team_log.EventType.domain_invites_approve_request_to_join_team:
+        (domains) Approved user's request to join team
+    :ivar DomainInvitesDeclineRequestToJoinTeamType
+        team_log.EventType.domain_invites_decline_request_to_join_team:
+        (domains) Declined user's request to join team
+    :ivar DomainInvitesEmailExistingUsersType
+        team_log.EventType.domain_invites_email_existing_users: (domains) Sent
+        domain invites to existing domain accounts (deprecated, no longer
+        logged)
+    :ivar DomainInvitesRequestToJoinTeamType
+        team_log.EventType.domain_invites_request_to_join_team: (domains)
+        Requested to join team
+    :ivar DomainInvitesSetInviteNewUserPrefToNoType
+        team_log.EventType.domain_invites_set_invite_new_user_pref_to_no:
+        (domains) Disabled "Automatically invite new users" (deprecated, no
+        longer logged)
+    :ivar DomainInvitesSetInviteNewUserPrefToYesType
+        team_log.EventType.domain_invites_set_invite_new_user_pref_to_yes:
+        (domains) Enabled "Automatically invite new users" (deprecated, no
+        longer logged)
+    :ivar DomainVerificationAddDomainFailType
+        team_log.EventType.domain_verification_add_domain_fail: (domains) Failed
+        to verify team domain
+    :ivar DomainVerificationAddDomainSuccessType
+        team_log.EventType.domain_verification_add_domain_success: (domains)
+        Verified team domain
+    :ivar DomainVerificationRemoveDomainType
+        team_log.EventType.domain_verification_remove_domain: (domains) Removed
+        domain from list of verified team domains
+    :ivar EnabledDomainInvitesType team_log.EventType.enabled_domain_invites:
+        (domains) Enabled domain invites (deprecated, no longer logged)
+    :ivar CreateFolderType team_log.EventType.create_folder: (file_operations)
+        Created folders (deprecated, no longer logged)
+    :ivar FileAddType team_log.EventType.file_add: (file_operations) Added files
+        and/or folders
+    :ivar FileCopyType team_log.EventType.file_copy: (file_operations) Copied
+        files and/or folders
+    :ivar FileDeleteType team_log.EventType.file_delete: (file_operations)
+        Deleted files and/or folders
+    :ivar FileDownloadType team_log.EventType.file_download: (file_operations)
+        Downloaded files and/or folders
+    :ivar FileEditType team_log.EventType.file_edit: (file_operations) Edited
+        files
+    :ivar FileGetCopyReferenceType team_log.EventType.file_get_copy_reference:
+        (file_operations) Created copy reference to file/folder
+    :ivar FileMoveType team_log.EventType.file_move: (file_operations) Moved
+        files and/or folders
+    :ivar FilePermanentlyDeleteType team_log.EventType.file_permanently_delete:
+        (file_operations) Permanently deleted files and/or folders
+    :ivar FilePreviewType team_log.EventType.file_preview: (file_operations)
+        Previewed files and/or folders
+    :ivar FileRenameType team_log.EventType.file_rename: (file_operations)
+        Renamed files and/or folders
+    :ivar FileRestoreType team_log.EventType.file_restore: (file_operations)
+        Restored deleted files and/or folders
+    :ivar FileRevertType team_log.EventType.file_revert: (file_operations)
+        Reverted files to previous version
+    :ivar FileRollbackChangesType team_log.EventType.file_rollback_changes:
+        (file_operations) Rolled back file actions
+    :ivar FileSaveCopyReferenceType team_log.EventType.file_save_copy_reference:
+        (file_operations) Saved file/folder using copy reference
+    :ivar FileRequestChangeType team_log.EventType.file_request_change:
+        (file_requests) Changed file request
+    :ivar FileRequestCloseType team_log.EventType.file_request_close:
+        (file_requests) Closed file request
+    :ivar FileRequestCreateType team_log.EventType.file_request_create:
+        (file_requests) Created file request
+    :ivar FileRequestReceiveFileType
+        team_log.EventType.file_request_receive_file: (file_requests) Received
+        files for file request
+    :ivar GroupAddExternalIdType team_log.EventType.group_add_external_id:
+        (groups) Added external ID for group
+    :ivar GroupAddMemberType team_log.EventType.group_add_member: (groups) Added
+        team members to group
+    :ivar GroupChangeExternalIdType team_log.EventType.group_change_external_id:
+        (groups) Changed external ID for group
+    :ivar GroupChangeManagementTypeType
+        team_log.EventType.group_change_management_type: (groups) Changed group
+        management type
+    :ivar GroupChangeMemberRoleType team_log.EventType.group_change_member_role:
+        (groups) Changed manager permissions of group member
+    :ivar GroupCreateType team_log.EventType.group_create: (groups) Created
+        group
+    :ivar GroupDeleteType team_log.EventType.group_delete: (groups) Deleted
+        group
+    :ivar GroupDescriptionUpdatedType
+        team_log.EventType.group_description_updated: (groups) Updated group
+        (deprecated, no longer logged)
+    :ivar GroupJoinPolicyUpdatedType
+        team_log.EventType.group_join_policy_updated: (groups) Updated group
+        join policy (deprecated, no longer logged)
+    :ivar GroupMovedType team_log.EventType.group_moved: (groups) Moved group
+        (deprecated, no longer logged)
+    :ivar GroupRemoveExternalIdType team_log.EventType.group_remove_external_id:
+        (groups) Removed external ID for group
+    :ivar GroupRemoveMemberType team_log.EventType.group_remove_member: (groups)
+        Removed team members from group
+    :ivar GroupRenameType team_log.EventType.group_rename: (groups) Renamed
+        group
+    :ivar EmmErrorType team_log.EventType.emm_error: (logins) Failed to sign in
+        via EMM (deprecated, replaced by 'Failed to sign in')
+    :ivar LoginFailType team_log.EventType.login_fail: (logins) Failed to sign
+        in
+    :ivar LoginSuccessType team_log.EventType.login_success: (logins) Signed in
+    :ivar LogoutType team_log.EventType.logout: (logins) Signed out
+    :ivar ResellerSupportSessionEndType
+        team_log.EventType.reseller_support_session_end: (logins) Ended reseller
+        support session
+    :ivar ResellerSupportSessionStartType
+        team_log.EventType.reseller_support_session_start: (logins) Started
+        reseller support session
+    :ivar SignInAsSessionEndType team_log.EventType.sign_in_as_session_end:
+        (logins) Ended admin sign-in-as session
+    :ivar SignInAsSessionStartType team_log.EventType.sign_in_as_session_start:
+        (logins) Started admin sign-in-as session
+    :ivar SsoErrorType team_log.EventType.sso_error: (logins) Failed to sign in
+        via SSO (deprecated, replaced by 'Failed to sign in')
+    :ivar MemberAddNameType team_log.EventType.member_add_name: (members) Added
+        team member name
+    :ivar MemberChangeAdminRoleType team_log.EventType.member_change_admin_role:
+        (members) Changed team member admin role
+    :ivar MemberChangeEmailType team_log.EventType.member_change_email:
+        (members) Changed team member email
+    :ivar MemberChangeMembershipTypeType
+        team_log.EventType.member_change_membership_type: (members) Changed
+        membership type (limited/full) of member (deprecated, no longer logged)
+    :ivar MemberChangeNameType team_log.EventType.member_change_name: (members)
+        Changed team member name
+    :ivar MemberChangeStatusType team_log.EventType.member_change_status:
+        (members) Changed member status (invited, joined, suspended, etc.)
+    :ivar MemberDeleteManualContactsType
+        team_log.EventType.member_delete_manual_contacts: (members) Cleared
+        manually added contacts
+    :ivar MemberPermanentlyDeleteAccountContentsType
+        team_log.EventType.member_permanently_delete_account_contents: (members)
+        Permanently deleted contents of deleted team member account
+    :ivar MemberSpaceLimitsAddCustomQuotaType
+        team_log.EventType.member_space_limits_add_custom_quota: (members) Set
+        custom member space limit
+    :ivar MemberSpaceLimitsChangeCustomQuotaType
+        team_log.EventType.member_space_limits_change_custom_quota: (members)
+        Changed custom member space limit
+    :ivar MemberSpaceLimitsChangeStatusType
+        team_log.EventType.member_space_limits_change_status: (members) Changed
+        space limit status
+    :ivar MemberSpaceLimitsRemoveCustomQuotaType
+        team_log.EventType.member_space_limits_remove_custom_quota: (members)
+        Removed custom member space limit
+    :ivar MemberSuggestType team_log.EventType.member_suggest: (members)
+        Suggested person to add to team
+    :ivar MemberTransferAccountContentsType
+        team_log.EventType.member_transfer_account_contents: (members)
+        Transferred contents of deleted member account to another member
+    :ivar SecondaryMailsPolicyChangedType
+        team_log.EventType.secondary_mails_policy_changed: (members) Secondary
+        mails policy changed
+    :ivar PaperContentAddMemberType team_log.EventType.paper_content_add_member:
+        (paper) Added team member to Paper doc/folder
+    :ivar PaperContentAddToFolderType
+        team_log.EventType.paper_content_add_to_folder: (paper) Added Paper
+        doc/folder to folder
+    :ivar PaperContentArchiveType team_log.EventType.paper_content_archive:
+        (paper) Archived Paper doc/folder
+    :ivar PaperContentCreateType team_log.EventType.paper_content_create:
+        (paper) Created Paper doc/folder
+    :ivar PaperContentPermanentlyDeleteType
+        team_log.EventType.paper_content_permanently_delete: (paper) Permanently
+        deleted Paper doc/folder
+    :ivar PaperContentRemoveFromFolderType
+        team_log.EventType.paper_content_remove_from_folder: (paper) Removed
+        Paper doc/folder from folder
+    :ivar PaperContentRemoveMemberType
+        team_log.EventType.paper_content_remove_member: (paper) Removed team
+        member from Paper doc/folder
+    :ivar PaperContentRenameType team_log.EventType.paper_content_rename:
+        (paper) Renamed Paper doc/folder
+    :ivar PaperContentRestoreType team_log.EventType.paper_content_restore:
+        (paper) Restored archived Paper doc/folder
+    :ivar PaperDocAddCommentType team_log.EventType.paper_doc_add_comment:
+        (paper) Added Paper doc comment
+    :ivar PaperDocChangeMemberRoleType
+        team_log.EventType.paper_doc_change_member_role: (paper) Changed team
+        member permissions for Paper doc
+    :ivar PaperDocChangeSharingPolicyType
+        team_log.EventType.paper_doc_change_sharing_policy: (paper) Changed
+        sharing setting for Paper doc
+    :ivar PaperDocChangeSubscriptionType
+        team_log.EventType.paper_doc_change_subscription: (paper)
+        Followed/unfollowed Paper doc
+    :ivar PaperDocDeletedType team_log.EventType.paper_doc_deleted: (paper)
+        Archived Paper doc (deprecated, no longer logged)
+    :ivar PaperDocDeleteCommentType team_log.EventType.paper_doc_delete_comment:
+        (paper) Deleted Paper doc comment
+    :ivar PaperDocDownloadType team_log.EventType.paper_doc_download: (paper)
+        Downloaded Paper doc in specific format
+    :ivar PaperDocEditType team_log.EventType.paper_doc_edit: (paper) Edited
+        Paper doc
+    :ivar PaperDocEditCommentType team_log.EventType.paper_doc_edit_comment:
+        (paper) Edited Paper doc comment
+    :ivar PaperDocFollowedType team_log.EventType.paper_doc_followed: (paper)
+        Followed Paper doc (deprecated, replaced by 'Followed/unfollowed Paper
+        doc')
+    :ivar PaperDocMentionType team_log.EventType.paper_doc_mention: (paper)
+        Mentioned team member in Paper doc
+    :ivar PaperDocOwnershipChangedType
+        team_log.EventType.paper_doc_ownership_changed: (paper) Transferred
+        ownership of Paper doc
+    :ivar PaperDocRequestAccessType team_log.EventType.paper_doc_request_access:
+        (paper) Requested access to Paper doc
+    :ivar PaperDocResolveCommentType
+        team_log.EventType.paper_doc_resolve_comment: (paper) Resolved Paper doc
+        comment
+    :ivar PaperDocRevertType team_log.EventType.paper_doc_revert: (paper)
+        Restored Paper doc to previous version
+    :ivar PaperDocSlackShareType team_log.EventType.paper_doc_slack_share:
+        (paper) Shared Paper doc via Slack
+    :ivar PaperDocTeamInviteType team_log.EventType.paper_doc_team_invite:
+        (paper) Shared Paper doc with team member (deprecated, no longer logged)
+    :ivar PaperDocTrashedType team_log.EventType.paper_doc_trashed: (paper)
+        Deleted Paper doc
+    :ivar PaperDocUnresolveCommentType
+        team_log.EventType.paper_doc_unresolve_comment: (paper) Unresolved Paper
+        doc comment
+    :ivar PaperDocUntrashedType team_log.EventType.paper_doc_untrashed: (paper)
+        Restored Paper doc
+    :ivar PaperDocViewType team_log.EventType.paper_doc_view: (paper) Viewed
+        Paper doc
+    :ivar PaperExternalViewAllowType
+        team_log.EventType.paper_external_view_allow: (paper) Changed Paper
+        external sharing setting to anyone (deprecated, no longer logged)
+    :ivar PaperExternalViewDefaultTeamType
+        team_log.EventType.paper_external_view_default_team: (paper) Changed
+        Paper external sharing setting to default team (deprecated, no longer
+        logged)
+    :ivar PaperExternalViewForbidType
+        team_log.EventType.paper_external_view_forbid: (paper) Changed Paper
+        external sharing setting to team-only (deprecated, no longer logged)
+    :ivar PaperFolderChangeSubscriptionType
+        team_log.EventType.paper_folder_change_subscription: (paper)
+        Followed/unfollowed Paper folder
+    :ivar PaperFolderDeletedType team_log.EventType.paper_folder_deleted:
+        (paper) Archived Paper folder (deprecated, no longer logged)
+    :ivar PaperFolderFollowedType team_log.EventType.paper_folder_followed:
+        (paper) Followed Paper folder (deprecated, replaced by
+        'Followed/unfollowed Paper folder')
+    :ivar PaperFolderTeamInviteType team_log.EventType.paper_folder_team_invite:
+        (paper) Shared Paper folder with member (deprecated, no longer logged)
+    :ivar PasswordChangeType team_log.EventType.password_change: (passwords)
+        Changed password
+    :ivar PasswordResetType team_log.EventType.password_reset: (passwords) Reset
+        password
+    :ivar PasswordResetAllType team_log.EventType.password_reset_all:
+        (passwords) Reset all team member passwords
+    :ivar EmmCreateExceptionsReportType
+        team_log.EventType.emm_create_exceptions_report: (reports) Created
+        EMM-excluded users report
+    :ivar EmmCreateUsageReportType team_log.EventType.emm_create_usage_report:
+        (reports) Created EMM mobile app usage report
+    :ivar ExportMembersReportType team_log.EventType.export_members_report:
+        (reports) Created member data report
+    :ivar PaperAdminExportStartType team_log.EventType.paper_admin_export_start:
+        (reports) Exported all team Paper docs
+    :ivar SmartSyncCreateAdminPrivilegeReportType
+        team_log.EventType.smart_sync_create_admin_privilege_report: (reports)
+        Created Smart Sync non-admin devices report
+    :ivar TeamActivityCreateReportType
+        team_log.EventType.team_activity_create_report: (reports) Created team
+        activity report
+    :ivar CollectionShareType team_log.EventType.collection_share: (sharing)
+        Shared album
+    :ivar NoteAclInviteOnlyType team_log.EventType.note_acl_invite_only:
+        (sharing) Changed Paper doc to invite-only (deprecated, no longer
+        logged)
+    :ivar NoteAclLinkType team_log.EventType.note_acl_link: (sharing) Changed
+        Paper doc to link-accessible (deprecated, no longer logged)
+    :ivar NoteAclTeamLinkType team_log.EventType.note_acl_team_link: (sharing)
+        Changed Paper doc to link-accessible for team (deprecated, no longer
+        logged)
+    :ivar NoteSharedType team_log.EventType.note_shared: (sharing) Shared Paper
+        doc (deprecated, no longer logged)
+    :ivar NoteShareReceiveType team_log.EventType.note_share_receive: (sharing)
+        Shared received Paper doc (deprecated, no longer logged)
+    :ivar OpenNoteSharedType team_log.EventType.open_note_shared: (sharing)
+        Opened shared Paper doc (deprecated, no longer logged)
+    :ivar SfAddGroupType team_log.EventType.sf_add_group: (sharing) Added team
+        to shared folder (deprecated, no longer logged)
+    :ivar SfAllowNonMembersToViewSharedLinksType
+        team_log.EventType.sf_allow_non_members_to_view_shared_links: (sharing)
+        Allowed non-collaborators to view links to files in shared folder
+        (deprecated, no longer logged)
+    :ivar SfExternalInviteWarnType team_log.EventType.sf_external_invite_warn:
+        (sharing) Set team members to see warning before sharing folders outside
+        team (deprecated, no longer logged)
+    :ivar SfFbInviteType team_log.EventType.sf_fb_invite: (sharing) Invited
+        Facebook users to shared folder (deprecated, no longer logged)
+    :ivar SfFbInviteChangeRoleType team_log.EventType.sf_fb_invite_change_role:
+        (sharing) Changed Facebook user's role in shared folder (deprecated, no
+        longer logged)
+    :ivar SfFbUninviteType team_log.EventType.sf_fb_uninvite: (sharing)
+        Uninvited Facebook user from shared folder (deprecated, no longer
+        logged)
+    :ivar SfInviteGroupType team_log.EventType.sf_invite_group: (sharing)
+        Invited group to shared folder (deprecated, no longer logged)
+    :ivar SfTeamGrantAccessType team_log.EventType.sf_team_grant_access:
+        (sharing) Granted access to shared folder (deprecated, no longer logged)
+    :ivar SfTeamInviteType team_log.EventType.sf_team_invite: (sharing) Invited
+        team members to shared folder (deprecated, replaced by 'Invited user to
+        Dropbox and added them to shared file/folder')
+    :ivar SfTeamInviteChangeRoleType
+        team_log.EventType.sf_team_invite_change_role: (sharing) Changed team
+        member's role in shared folder (deprecated, no longer logged)
+    :ivar SfTeamJoinType team_log.EventType.sf_team_join: (sharing) Joined team
+        member's shared folder (deprecated, no longer logged)
+    :ivar SfTeamJoinFromOobLinkType
+        team_log.EventType.sf_team_join_from_oob_link: (sharing) Joined team
+        member's shared folder from link (deprecated, no longer logged)
+    :ivar SfTeamUninviteType team_log.EventType.sf_team_uninvite: (sharing)
+        Unshared folder with team member (deprecated, replaced by 'Removed
+        invitee from shared file/folder before invite was accepted')
+    :ivar SharedContentAddInviteesType
+        team_log.EventType.shared_content_add_invitees: (sharing) Invited user
+        to Dropbox and added them to shared file/folder
+    :ivar SharedContentAddLinkExpiryType
+        team_log.EventType.shared_content_add_link_expiry: (sharing) Added
+        expiration date to link for shared file/folder
+    :ivar SharedContentAddLinkPasswordType
+        team_log.EventType.shared_content_add_link_password: (sharing) Added
+        password to link for shared file/folder
+    :ivar SharedContentAddMemberType
+        team_log.EventType.shared_content_add_member: (sharing) Added users
+        and/or groups to shared file/folder
+    :ivar SharedContentChangeDownloadsPolicyType
+        team_log.EventType.shared_content_change_downloads_policy: (sharing)
+        Changed whether members can download shared file/folder
+    :ivar SharedContentChangeInviteeRoleType
+        team_log.EventType.shared_content_change_invitee_role: (sharing) Changed
+        access type of invitee to shared file/folder before invite was accepted
+    :ivar SharedContentChangeLinkAudienceType
+        team_log.EventType.shared_content_change_link_audience: (sharing)
+        Changed link audience of shared file/folder
+    :ivar SharedContentChangeLinkExpiryType
+        team_log.EventType.shared_content_change_link_expiry: (sharing) Changed
+        link expiration of shared file/folder
+    :ivar SharedContentChangeLinkPasswordType
+        team_log.EventType.shared_content_change_link_password: (sharing)
+        Changed link password of shared file/folder
+    :ivar SharedContentChangeMemberRoleType
+        team_log.EventType.shared_content_change_member_role: (sharing) Changed
+        access type of shared file/folder member
+    :ivar SharedContentChangeViewerInfoPolicyType
+        team_log.EventType.shared_content_change_viewer_info_policy: (sharing)
+        Changed whether members can see who viewed shared file/folder
+    :ivar SharedContentClaimInvitationType
+        team_log.EventType.shared_content_claim_invitation: (sharing) Acquired
+        membership of shared file/folder by accepting invite
+    :ivar SharedContentCopyType team_log.EventType.shared_content_copy:
+        (sharing) Copied shared file/folder to own Dropbox
+    :ivar SharedContentDownloadType team_log.EventType.shared_content_download:
+        (sharing) Downloaded shared file/folder
+    :ivar SharedContentRelinquishMembershipType
+        team_log.EventType.shared_content_relinquish_membership: (sharing) Left
+        shared file/folder
+    :ivar SharedContentRemoveInviteesType
+        team_log.EventType.shared_content_remove_invitees: (sharing) Removed
+        invitee from shared file/folder before invite was accepted
+    :ivar SharedContentRemoveLinkExpiryType
+        team_log.EventType.shared_content_remove_link_expiry: (sharing) Removed
+        link expiration date of shared file/folder
+    :ivar SharedContentRemoveLinkPasswordType
+        team_log.EventType.shared_content_remove_link_password: (sharing)
+        Removed link password of shared file/folder
+    :ivar SharedContentRemoveMemberType
+        team_log.EventType.shared_content_remove_member: (sharing) Removed
+        user/group from shared file/folder
+    :ivar SharedContentRequestAccessType
+        team_log.EventType.shared_content_request_access: (sharing) Requested
+        access to shared file/folder
+    :ivar SharedContentUnshareType team_log.EventType.shared_content_unshare:
+        (sharing) Unshared file/folder by clearing membership and turning off
+        link
+    :ivar SharedContentViewType team_log.EventType.shared_content_view:
+        (sharing) Previewed shared file/folder
+    :ivar SharedFolderChangeLinkPolicyType
+        team_log.EventType.shared_folder_change_link_policy: (sharing) Changed
+        who can access shared folder via link
+    :ivar SharedFolderChangeMembersInheritancePolicyType
+        team_log.EventType.shared_folder_change_members_inheritance_policy:
+        (sharing) Changed whether shared folder inherits members from parent
+        folder
+    :ivar SharedFolderChangeMembersManagementPolicyType
+        team_log.EventType.shared_folder_change_members_management_policy:
+        (sharing) Changed who can add/remove members of shared folder
+    :ivar SharedFolderChangeMembersPolicyType
+        team_log.EventType.shared_folder_change_members_policy: (sharing)
+        Changed who can become member of shared folder
+    :ivar SharedFolderCreateType team_log.EventType.shared_folder_create:
+        (sharing) Created shared folder
+    :ivar SharedFolderDeclineInvitationType
+        team_log.EventType.shared_folder_decline_invitation: (sharing) Declined
+        team member's invite to shared folder
+    :ivar SharedFolderMountType team_log.EventType.shared_folder_mount:
+        (sharing) Added shared folder to own Dropbox
+    :ivar SharedFolderNestType team_log.EventType.shared_folder_nest: (sharing)
+        Changed parent of shared folder
+    :ivar SharedFolderTransferOwnershipType
+        team_log.EventType.shared_folder_transfer_ownership: (sharing)
+        Transferred ownership of shared folder to another member
+    :ivar SharedFolderUnmountType team_log.EventType.shared_folder_unmount:
+        (sharing) Deleted shared folder from Dropbox
+    :ivar SharedLinkAddExpiryType team_log.EventType.shared_link_add_expiry:
+        (sharing) Added shared link expiration date
+    :ivar SharedLinkChangeExpiryType
+        team_log.EventType.shared_link_change_expiry: (sharing) Changed shared
+        link expiration date
+    :ivar SharedLinkChangeVisibilityType
+        team_log.EventType.shared_link_change_visibility: (sharing) Changed
+        visibility of shared link
+    :ivar SharedLinkCopyType team_log.EventType.shared_link_copy: (sharing)
+        Added file/folder to Dropbox from shared link
+    :ivar SharedLinkCreateType team_log.EventType.shared_link_create: (sharing)
+        Created shared link
+    :ivar SharedLinkDisableType team_log.EventType.shared_link_disable:
+        (sharing) Removed shared link
+    :ivar SharedLinkDownloadType team_log.EventType.shared_link_download:
+        (sharing) Downloaded file/folder from shared link
+    :ivar SharedLinkRemoveExpiryType
+        team_log.EventType.shared_link_remove_expiry: (sharing) Removed shared
+        link expiration date
+    :ivar SharedLinkShareType team_log.EventType.shared_link_share: (sharing)
+        Added members as audience of shared link
+    :ivar SharedLinkViewType team_log.EventType.shared_link_view: (sharing)
+        Opened shared link
+    :ivar SharedNoteOpenedType team_log.EventType.shared_note_opened: (sharing)
+        Opened shared Paper doc (deprecated, no longer logged)
+    :ivar ShmodelGroupShareType team_log.EventType.shmodel_group_share:
+        (sharing) Shared link with group (deprecated, no longer logged)
+    :ivar ShowcaseAccessGrantedType team_log.EventType.showcase_access_granted:
+        (showcase) Granted access to showcase
+    :ivar ShowcaseAddMemberType team_log.EventType.showcase_add_member:
+        (showcase) Added member to showcase
+    :ivar ShowcaseArchivedType team_log.EventType.showcase_archived: (showcase)
+        Archived showcase
+    :ivar ShowcaseCreatedType team_log.EventType.showcase_created: (showcase)
+        Created showcase
+    :ivar ShowcaseDeleteCommentType team_log.EventType.showcase_delete_comment:
+        (showcase) Deleted showcase comment
+    :ivar ShowcaseEditedType team_log.EventType.showcase_edited: (showcase)
+        Edited showcase
+    :ivar ShowcaseEditCommentType team_log.EventType.showcase_edit_comment:
+        (showcase) Edited showcase comment
+    :ivar ShowcaseFileAddedType team_log.EventType.showcase_file_added:
+        (showcase) Added file to showcase
+    :ivar ShowcaseFileDownloadType team_log.EventType.showcase_file_download:
+        (showcase) Downloaded file from showcase
+    :ivar ShowcaseFileRemovedType team_log.EventType.showcase_file_removed:
+        (showcase) Removed file from showcase
+    :ivar ShowcaseFileViewType team_log.EventType.showcase_file_view: (showcase)
+        Viewed file in showcase
+    :ivar ShowcasePermanentlyDeletedType
+        team_log.EventType.showcase_permanently_deleted: (showcase) Permanently
+        deleted showcase
+    :ivar ShowcasePostCommentType team_log.EventType.showcase_post_comment:
+        (showcase) Added showcase comment
+    :ivar ShowcaseRemoveMemberType team_log.EventType.showcase_remove_member:
+        (showcase) Removed member from showcase
+    :ivar ShowcaseRenamedType team_log.EventType.showcase_renamed: (showcase)
+        Renamed showcase
+    :ivar ShowcaseRequestAccessType team_log.EventType.showcase_request_access:
+        (showcase) Requested access to showcase
+    :ivar ShowcaseResolveCommentType
+        team_log.EventType.showcase_resolve_comment: (showcase) Resolved
+        showcase comment
+    :ivar ShowcaseRestoredType team_log.EventType.showcase_restored: (showcase)
+        Unarchived showcase
+    :ivar ShowcaseTrashedType team_log.EventType.showcase_trashed: (showcase)
+        Deleted showcase
+    :ivar ShowcaseTrashedDeprecatedType
+        team_log.EventType.showcase_trashed_deprecated: (showcase) Deleted
+        showcase (old version) (deprecated, replaced by 'Deleted showcase')
+    :ivar ShowcaseUnresolveCommentType
+        team_log.EventType.showcase_unresolve_comment: (showcase) Unresolved
+        showcase comment
+    :ivar ShowcaseUntrashedType team_log.EventType.showcase_untrashed:
+        (showcase) Restored showcase
+    :ivar ShowcaseUntrashedDeprecatedType
+        team_log.EventType.showcase_untrashed_deprecated: (showcase) Restored
+        showcase (old version) (deprecated, replaced by 'Restored showcase')
+    :ivar ShowcaseViewType team_log.EventType.showcase_view: (showcase) Viewed
+        showcase
+    :ivar SsoAddCertType team_log.EventType.sso_add_cert: (sso) Added X.509
+        certificate for SSO
+    :ivar SsoAddLoginUrlType team_log.EventType.sso_add_login_url: (sso) Added
+        sign-in URL for SSO
+    :ivar SsoAddLogoutUrlType team_log.EventType.sso_add_logout_url: (sso) Added
+        sign-out URL for SSO
+    :ivar SsoChangeCertType team_log.EventType.sso_change_cert: (sso) Changed
+        X.509 certificate for SSO
+    :ivar SsoChangeLoginUrlType team_log.EventType.sso_change_login_url: (sso)
+        Changed sign-in URL for SSO
+    :ivar SsoChangeLogoutUrlType team_log.EventType.sso_change_logout_url: (sso)
+        Changed sign-out URL for SSO
+    :ivar SsoChangeSamlIdentityModeType
+        team_log.EventType.sso_change_saml_identity_mode: (sso) Changed SAML
+        identity mode for SSO
+    :ivar SsoRemoveCertType team_log.EventType.sso_remove_cert: (sso) Removed
+        X.509 certificate for SSO
+    :ivar SsoRemoveLoginUrlType team_log.EventType.sso_remove_login_url: (sso)
+        Removed sign-in URL for SSO
+    :ivar SsoRemoveLogoutUrlType team_log.EventType.sso_remove_logout_url: (sso)
+        Removed sign-out URL for SSO
+    :ivar TeamFolderChangeStatusType
+        team_log.EventType.team_folder_change_status: (team_folders) Changed
+        archival status of team folder
+    :ivar TeamFolderCreateType team_log.EventType.team_folder_create:
+        (team_folders) Created team folder in active status
+    :ivar TeamFolderDowngradeType team_log.EventType.team_folder_downgrade:
+        (team_folders) Downgraded team folder to regular shared folder
+    :ivar TeamFolderPermanentlyDeleteType
+        team_log.EventType.team_folder_permanently_delete: (team_folders)
+        Permanently deleted archived team folder
+    :ivar TeamFolderRenameType team_log.EventType.team_folder_rename:
+        (team_folders) Renamed active/archived team folder
+    :ivar TeamSelectiveSyncSettingsChangedType
+        team_log.EventType.team_selective_sync_settings_changed: (team_folders)
+        Changed sync default
+    :ivar AccountCaptureChangePolicyType
+        team_log.EventType.account_capture_change_policy: (team_policies)
+        Changed account capture setting on team domain
+    :ivar AllowDownloadDisabledType team_log.EventType.allow_download_disabled:
+        (team_policies) Disabled downloads (deprecated, no longer logged)
+    :ivar AllowDownloadEnabledType team_log.EventType.allow_download_enabled:
+        (team_policies) Enabled downloads (deprecated, no longer logged)
+    :ivar CameraUploadsPolicyChangedType
+        team_log.EventType.camera_uploads_policy_changed: (team_policies)
+        Changed camera uploads setting for team
+    :ivar DataPlacementRestrictionChangePolicyType
+        team_log.EventType.data_placement_restriction_change_policy:
+        (team_policies) Set restrictions on data center locations where team
+        data resides
+    :ivar DataPlacementRestrictionSatisfyPolicyType
+        team_log.EventType.data_placement_restriction_satisfy_policy:
+        (team_policies) Completed restrictions on data center locations where
+        team data resides
+    :ivar DeviceApprovalsChangeDesktopPolicyType
+        team_log.EventType.device_approvals_change_desktop_policy:
+        (team_policies) Set/removed limit on number of computers member can link
+        to team Dropbox account
+    :ivar DeviceApprovalsChangeMobilePolicyType
+        team_log.EventType.device_approvals_change_mobile_policy:
+        (team_policies) Set/removed limit on number of mobile devices member can
+        link to team Dropbox account
+    :ivar DeviceApprovalsChangeOverageActionType
+        team_log.EventType.device_approvals_change_overage_action:
+        (team_policies) Changed device approvals setting when member is over
+        limit
+    :ivar DeviceApprovalsChangeUnlinkActionType
+        team_log.EventType.device_approvals_change_unlink_action:
+        (team_policies) Changed device approvals setting when member unlinks
+        approved device
+    :ivar DirectoryRestrictionsAddMembersType
+        team_log.EventType.directory_restrictions_add_members: (team_policies)
+        Added members to directory restrictions list
+    :ivar DirectoryRestrictionsRemoveMembersType
+        team_log.EventType.directory_restrictions_remove_members:
+        (team_policies) Removed members from directory restrictions list
+    :ivar EmmAddExceptionType team_log.EventType.emm_add_exception:
+        (team_policies) Added members to EMM exception list
+    :ivar EmmChangePolicyType team_log.EventType.emm_change_policy:
+        (team_policies) Enabled/disabled enterprise mobility management for
+        members
+    :ivar EmmRemoveExceptionType team_log.EventType.emm_remove_exception:
+        (team_policies) Removed members from EMM exception list
+    :ivar ExtendedVersionHistoryChangePolicyType
+        team_log.EventType.extended_version_history_change_policy:
+        (team_policies) Accepted/opted out of extended version history
+    :ivar FileCommentsChangePolicyType
+        team_log.EventType.file_comments_change_policy: (team_policies)
+        Enabled/disabled commenting on team files
+    :ivar FileRequestsChangePolicyType
+        team_log.EventType.file_requests_change_policy: (team_policies)
+        Enabled/disabled file requests
+    :ivar FileRequestsEmailsEnabledType
+        team_log.EventType.file_requests_emails_enabled: (team_policies) Enabled
+        file request emails for everyone (deprecated, no longer logged)
+    :ivar FileRequestsEmailsRestrictedToTeamOnlyType
+        team_log.EventType.file_requests_emails_restricted_to_team_only:
+        (team_policies) Enabled file request emails for team (deprecated, no
+        longer logged)
+    :ivar GoogleSsoChangePolicyType team_log.EventType.google_sso_change_policy:
+        (team_policies) Enabled/disabled Google single sign-on for team
+    :ivar GroupUserManagementChangePolicyType
+        team_log.EventType.group_user_management_change_policy: (team_policies)
+        Changed who can create groups
+    :ivar MemberRequestsChangePolicyType
+        team_log.EventType.member_requests_change_policy: (team_policies)
+        Changed whether users can find team when not invited
+    :ivar MemberSpaceLimitsAddExceptionType
+        team_log.EventType.member_space_limits_add_exception: (team_policies)
+        Added members to member space limit exception list
+    :ivar MemberSpaceLimitsChangeCapsTypePolicyType
+        team_log.EventType.member_space_limits_change_caps_type_policy:
+        (team_policies) Changed member space limit type for team
+    :ivar MemberSpaceLimitsChangePolicyType
+        team_log.EventType.member_space_limits_change_policy: (team_policies)
+        Changed team default member space limit
+    :ivar MemberSpaceLimitsRemoveExceptionType
+        team_log.EventType.member_space_limits_remove_exception: (team_policies)
+        Removed members from member space limit exception list
+    :ivar MemberSuggestionsChangePolicyType
+        team_log.EventType.member_suggestions_change_policy: (team_policies)
+        Enabled/disabled option for team members to suggest people to add to
+        team
+    :ivar MicrosoftOfficeAddinChangePolicyType
+        team_log.EventType.microsoft_office_addin_change_policy: (team_policies)
+        Enabled/disabled Microsoft Office add-in
+    :ivar NetworkControlChangePolicyType
+        team_log.EventType.network_control_change_policy: (team_policies)
+        Enabled/disabled network control
+    :ivar PaperChangeDeploymentPolicyType
+        team_log.EventType.paper_change_deployment_policy: (team_policies)
+        Changed whether Dropbox Paper, when enabled, is deployed to all members
+        or to specific members
+    :ivar PaperChangeMemberLinkPolicyType
+        team_log.EventType.paper_change_member_link_policy: (team_policies)
+        Changed whether non-members can view Paper docs with link (deprecated,
+        no longer logged)
+    :ivar PaperChangeMemberPolicyType
+        team_log.EventType.paper_change_member_policy: (team_policies) Changed
+        whether members can share Paper docs outside team, and if docs are
+        accessible only by team members or anyone by default
+    :ivar PaperChangePolicyType team_log.EventType.paper_change_policy:
+        (team_policies) Enabled/disabled Dropbox Paper for team
+    :ivar PaperEnabledUsersGroupAdditionType
+        team_log.EventType.paper_enabled_users_group_addition: (team_policies)
+        Added users to Paper-enabled users list
+    :ivar PaperEnabledUsersGroupRemovalType
+        team_log.EventType.paper_enabled_users_group_removal: (team_policies)
+        Removed users from Paper-enabled users list
+    :ivar PermanentDeleteChangePolicyType
+        team_log.EventType.permanent_delete_change_policy: (team_policies)
+        Enabled/disabled ability of team members to permanently delete content
+    :ivar SharingChangeFolderJoinPolicyType
+        team_log.EventType.sharing_change_folder_join_policy: (team_policies)
+        Changed whether team members can join shared folders owned outside team
+    :ivar SharingChangeLinkPolicyType
+        team_log.EventType.sharing_change_link_policy: (team_policies) Changed
+        whether members can share links outside team, and if links are
+        accessible only by team members or anyone by default
+    :ivar SharingChangeMemberPolicyType
+        team_log.EventType.sharing_change_member_policy: (team_policies) Changed
+        whether members can share files/folders outside team
+    :ivar ShowcaseChangeDownloadPolicyType
+        team_log.EventType.showcase_change_download_policy: (team_policies)
+        Enabled/disabled downloading files from Dropbox Showcase for team
+    :ivar ShowcaseChangeEnabledPolicyType
+        team_log.EventType.showcase_change_enabled_policy: (team_policies)
+        Enabled/disabled Dropbox Showcase for team
     :ivar ShowcaseChangeExternalSharingPolicyType
-        showcase_change_external_sharing_policy: (team_policies)
-        Enabled/disabled sharing Dropbox Showcase externally for team
-    :ivar SmartSyncChangePolicyType smart_sync_change_policy: (team_policies)
-        Changed default Smart Sync setting for team members
-    :ivar SmartSyncNotOptOutType smart_sync_not_opt_out: (team_policies) Opted
-        team into Smart Sync
-    :ivar SmartSyncOptOutType smart_sync_opt_out: (team_policies) Opted team out
-        of Smart Sync
-    :ivar SsoChangePolicyType sso_change_policy: (team_policies) Changed single
-        sign-on setting for team
-    :ivar TeamSelectiveSyncPolicyChangedType team_selective_sync_policy_changed:
-        (team_policies) Enabled/disabled Team Selective Sync for team
-    :ivar TfaChangePolicyType tfa_change_policy: (team_policies) Changed
-        two-step verification setting for team
-    :ivar TwoAccountChangePolicyType two_account_change_policy: (team_policies)
+        team_log.EventType.showcase_change_external_sharing_policy:
+        (team_policies) Enabled/disabled sharing Dropbox Showcase externally for
+        team
+    :ivar SmartSyncChangePolicyType team_log.EventType.smart_sync_change_policy:
+        (team_policies) Changed default Smart Sync setting for team members
+    :ivar SmartSyncNotOptOutType team_log.EventType.smart_sync_not_opt_out:
+        (team_policies) Opted team into Smart Sync
+    :ivar SmartSyncOptOutType team_log.EventType.smart_sync_opt_out:
+        (team_policies) Opted team out of Smart Sync
+    :ivar SsoChangePolicyType team_log.EventType.sso_change_policy:
+        (team_policies) Changed single sign-on setting for team
+    :ivar TeamSelectiveSyncPolicyChangedType
+        team_log.EventType.team_selective_sync_policy_changed: (team_policies)
+        Enabled/disabled Team Selective Sync for team
+    :ivar TfaChangePolicyType team_log.EventType.tfa_change_policy:
+        (team_policies) Changed two-step verification setting for team
+    :ivar TwoAccountChangePolicyType
+        team_log.EventType.two_account_change_policy: (team_policies)
         Enabled/disabled option for members to link personal Dropbox account and
         team account to same computer
-    :ivar ViewerInfoPolicyChangedType viewer_info_policy_changed:
-        (team_policies) Changed team policy for viewer info
+    :ivar ViewerInfoPolicyChangedType
+        team_log.EventType.viewer_info_policy_changed: (team_policies) Changed
+        team policy for viewer info
     :ivar WebSessionsChangeFixedLengthPolicyType
-        web_sessions_change_fixed_length_policy: (team_policies) Changed how
-        long members can stay signed in to Dropbox.com
+        team_log.EventType.web_sessions_change_fixed_length_policy:
+        (team_policies) Changed how long members can stay signed in to
+        Dropbox.com
     :ivar WebSessionsChangeIdleLengthPolicyType
-        web_sessions_change_idle_length_policy: (team_policies) Changed how long
-        team members can be idle while signed in to Dropbox.com
-    :ivar TeamMergeFromType team_merge_from: (team_profile) Merged another team
-        into this team
-    :ivar TeamMergeToType team_merge_to: (team_profile) Merged this team into
-        another team
-    :ivar TeamProfileAddLogoType team_profile_add_logo: (team_profile) Added
-        team logo to display on shared link headers
+        team_log.EventType.web_sessions_change_idle_length_policy:
+        (team_policies) Changed how long team members can be idle while signed
+        in to Dropbox.com
+    :ivar TeamMergeFromType team_log.EventType.team_merge_from: (team_profile)
+        Merged another team into this team
+    :ivar TeamMergeToType team_log.EventType.team_merge_to: (team_profile)
+        Merged this team into another team
+    :ivar TeamProfileAddLogoType team_log.EventType.team_profile_add_logo:
+        (team_profile) Added team logo to display on shared link headers
     :ivar TeamProfileChangeDefaultLanguageType
-        team_profile_change_default_language: (team_profile) Changed default
-        language for team
-    :ivar TeamProfileChangeLogoType team_profile_change_logo: (team_profile)
-        Changed team logo displayed on shared link headers
-    :ivar TeamProfileChangeNameType team_profile_change_name: (team_profile)
-        Changed team name
-    :ivar TeamProfileRemoveLogoType team_profile_remove_logo: (team_profile)
-        Removed team logo displayed on shared link headers
-    :ivar TfaAddBackupPhoneType tfa_add_backup_phone: (tfa) Added backup phone
-        for two-step verification
-    :ivar TfaAddSecurityKeyType tfa_add_security_key: (tfa) Added security key
-        for two-step verification
-    :ivar TfaChangeBackupPhoneType tfa_change_backup_phone: (tfa) Changed backup
-        phone for two-step verification
-    :ivar TfaChangeStatusType tfa_change_status: (tfa) Enabled/disabled/changed
-        two-step verification setting
-    :ivar TfaRemoveBackupPhoneType tfa_remove_backup_phone: (tfa) Removed backup
-        phone for two-step verification
-    :ivar TfaRemoveSecurityKeyType tfa_remove_security_key: (tfa) Removed
-        security key for two-step verification
-    :ivar TfaResetType tfa_reset: (tfa) Reset two-step verification for team
-        member
+        team_log.EventType.team_profile_change_default_language: (team_profile)
+        Changed default language for team
+    :ivar TeamProfileChangeLogoType team_log.EventType.team_profile_change_logo:
+        (team_profile) Changed team logo displayed on shared link headers
+    :ivar TeamProfileChangeNameType team_log.EventType.team_profile_change_name:
+        (team_profile) Changed team name
+    :ivar TeamProfileRemoveLogoType team_log.EventType.team_profile_remove_logo:
+        (team_profile) Removed team logo displayed on shared link headers
+    :ivar TfaAddBackupPhoneType team_log.EventType.tfa_add_backup_phone: (tfa)
+        Added backup phone for two-step verification
+    :ivar TfaAddSecurityKeyType team_log.EventType.tfa_add_security_key: (tfa)
+        Added security key for two-step verification
+    :ivar TfaChangeBackupPhoneType team_log.EventType.tfa_change_backup_phone:
+        (tfa) Changed backup phone for two-step verification
+    :ivar TfaChangeStatusType team_log.EventType.tfa_change_status: (tfa)
+        Enabled/disabled/changed two-step verification setting
+    :ivar TfaRemoveBackupPhoneType team_log.EventType.tfa_remove_backup_phone:
+        (tfa) Removed backup phone for two-step verification
+    :ivar TfaRemoveSecurityKeyType team_log.EventType.tfa_remove_security_key:
+        (tfa) Removed security key for two-step verification
+    :ivar TfaResetType team_log.EventType.tfa_reset: (tfa) Reset two-step
+        verification for team member
     """
 
     _catch_all = 'other'
@@ -17367,8 +17560,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``app_link_team`` tag with
         value ``val``.
 
-        :param AppLinkTeamType val:
-        :rtype: EventType
+        :param team_log.AppLinkTeamType val:
+        :rtype: team_log.EventType
         """
         return cls('app_link_team', val)
 
@@ -17378,8 +17571,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``app_link_user`` tag with
         value ``val``.
 
-        :param AppLinkUserType val:
-        :rtype: EventType
+        :param team_log.AppLinkUserType val:
+        :rtype: team_log.EventType
         """
         return cls('app_link_user', val)
 
@@ -17389,8 +17582,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``app_unlink_team`` tag with
         value ``val``.
 
-        :param AppUnlinkTeamType val:
-        :rtype: EventType
+        :param team_log.AppUnlinkTeamType val:
+        :rtype: team_log.EventType
         """
         return cls('app_unlink_team', val)
 
@@ -17400,8 +17593,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``app_unlink_user`` tag with
         value ``val``.
 
-        :param AppUnlinkUserType val:
-        :rtype: EventType
+        :param team_log.AppUnlinkUserType val:
+        :rtype: team_log.EventType
         """
         return cls('app_unlink_user', val)
 
@@ -17411,8 +17604,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_add_comment`` tag
         with value ``val``.
 
-        :param FileAddCommentType val:
-        :rtype: EventType
+        :param team_log.FileAddCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('file_add_comment', val)
 
@@ -17422,8 +17615,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``file_change_comment_subscription`` tag with value ``val``.
 
-        :param FileChangeCommentSubscriptionType val:
-        :rtype: EventType
+        :param team_log.FileChangeCommentSubscriptionType val:
+        :rtype: team_log.EventType
         """
         return cls('file_change_comment_subscription', val)
 
@@ -17433,8 +17626,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_delete_comment`` tag
         with value ``val``.
 
-        :param FileDeleteCommentType val:
-        :rtype: EventType
+        :param team_log.FileDeleteCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('file_delete_comment', val)
 
@@ -17444,8 +17637,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_edit_comment`` tag
         with value ``val``.
 
-        :param FileEditCommentType val:
-        :rtype: EventType
+        :param team_log.FileEditCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('file_edit_comment', val)
 
@@ -17455,8 +17648,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_like_comment`` tag
         with value ``val``.
 
-        :param FileLikeCommentType val:
-        :rtype: EventType
+        :param team_log.FileLikeCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('file_like_comment', val)
 
@@ -17466,8 +17659,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_resolve_comment`` tag
         with value ``val``.
 
-        :param FileResolveCommentType val:
-        :rtype: EventType
+        :param team_log.FileResolveCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('file_resolve_comment', val)
 
@@ -17477,8 +17670,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_unlike_comment`` tag
         with value ``val``.
 
-        :param FileUnlikeCommentType val:
-        :rtype: EventType
+        :param team_log.FileUnlikeCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('file_unlike_comment', val)
 
@@ -17488,8 +17681,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_unresolve_comment``
         tag with value ``val``.
 
-        :param FileUnresolveCommentType val:
-        :rtype: EventType
+        :param team_log.FileUnresolveCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('file_unresolve_comment', val)
 
@@ -17499,8 +17692,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``device_change_ip_desktop``
         tag with value ``val``.
 
-        :param DeviceChangeIpDesktopType val:
-        :rtype: EventType
+        :param team_log.DeviceChangeIpDesktopType val:
+        :rtype: team_log.EventType
         """
         return cls('device_change_ip_desktop', val)
 
@@ -17510,8 +17703,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``device_change_ip_mobile``
         tag with value ``val``.
 
-        :param DeviceChangeIpMobileType val:
-        :rtype: EventType
+        :param team_log.DeviceChangeIpMobileType val:
+        :rtype: team_log.EventType
         """
         return cls('device_change_ip_mobile', val)
 
@@ -17521,8 +17714,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``device_change_ip_web`` tag
         with value ``val``.
 
-        :param DeviceChangeIpWebType val:
-        :rtype: EventType
+        :param team_log.DeviceChangeIpWebType val:
+        :rtype: team_log.EventType
         """
         return cls('device_change_ip_web', val)
 
@@ -17532,8 +17725,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``device_delete_on_unlink_fail`` tag with value ``val``.
 
-        :param DeviceDeleteOnUnlinkFailType val:
-        :rtype: EventType
+        :param team_log.DeviceDeleteOnUnlinkFailType val:
+        :rtype: team_log.EventType
         """
         return cls('device_delete_on_unlink_fail', val)
 
@@ -17543,8 +17736,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``device_delete_on_unlink_success`` tag with value ``val``.
 
-        :param DeviceDeleteOnUnlinkSuccessType val:
-        :rtype: EventType
+        :param team_log.DeviceDeleteOnUnlinkSuccessType val:
+        :rtype: team_log.EventType
         """
         return cls('device_delete_on_unlink_success', val)
 
@@ -17554,8 +17747,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``device_link_fail`` tag
         with value ``val``.
 
-        :param DeviceLinkFailType val:
-        :rtype: EventType
+        :param team_log.DeviceLinkFailType val:
+        :rtype: team_log.EventType
         """
         return cls('device_link_fail', val)
 
@@ -17565,8 +17758,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``device_link_success`` tag
         with value ``val``.
 
-        :param DeviceLinkSuccessType val:
-        :rtype: EventType
+        :param team_log.DeviceLinkSuccessType val:
+        :rtype: team_log.EventType
         """
         return cls('device_link_success', val)
 
@@ -17576,8 +17769,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``device_management_disabled`` tag with value ``val``.
 
-        :param DeviceManagementDisabledType val:
-        :rtype: EventType
+        :param team_log.DeviceManagementDisabledType val:
+        :rtype: team_log.EventType
         """
         return cls('device_management_disabled', val)
 
@@ -17587,8 +17780,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``device_management_enabled`` tag with value ``val``.
 
-        :param DeviceManagementEnabledType val:
-        :rtype: EventType
+        :param team_log.DeviceManagementEnabledType val:
+        :rtype: team_log.EventType
         """
         return cls('device_management_enabled', val)
 
@@ -17598,8 +17791,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``device_unlink`` tag with
         value ``val``.
 
-        :param DeviceUnlinkType val:
-        :rtype: EventType
+        :param team_log.DeviceUnlinkType val:
+        :rtype: team_log.EventType
         """
         return cls('device_unlink', val)
 
@@ -17609,8 +17802,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``emm_refresh_auth_token``
         tag with value ``val``.
 
-        :param EmmRefreshAuthTokenType val:
-        :rtype: EventType
+        :param team_log.EmmRefreshAuthTokenType val:
+        :rtype: team_log.EventType
         """
         return cls('emm_refresh_auth_token', val)
 
@@ -17620,8 +17813,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``account_capture_change_availability`` tag with value ``val``.
 
-        :param AccountCaptureChangeAvailabilityType val:
-        :rtype: EventType
+        :param team_log.AccountCaptureChangeAvailabilityType val:
+        :rtype: team_log.EventType
         """
         return cls('account_capture_change_availability', val)
 
@@ -17631,8 +17824,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``account_capture_migrate_account`` tag with value ``val``.
 
-        :param AccountCaptureMigrateAccountType val:
-        :rtype: EventType
+        :param team_log.AccountCaptureMigrateAccountType val:
+        :rtype: team_log.EventType
         """
         return cls('account_capture_migrate_account', val)
 
@@ -17642,8 +17835,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``account_capture_notification_emails_sent`` tag with value ``val``.
 
-        :param AccountCaptureNotificationEmailsSentType val:
-        :rtype: EventType
+        :param team_log.AccountCaptureNotificationEmailsSentType val:
+        :rtype: team_log.EventType
         """
         return cls('account_capture_notification_emails_sent', val)
 
@@ -17653,8 +17846,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``account_capture_relinquish_account`` tag with value ``val``.
 
-        :param AccountCaptureRelinquishAccountType val:
-        :rtype: EventType
+        :param team_log.AccountCaptureRelinquishAccountType val:
+        :rtype: team_log.EventType
         """
         return cls('account_capture_relinquish_account', val)
 
@@ -17664,8 +17857,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``disabled_domain_invites``
         tag with value ``val``.
 
-        :param DisabledDomainInvitesType val:
-        :rtype: EventType
+        :param team_log.DisabledDomainInvitesType val:
+        :rtype: team_log.EventType
         """
         return cls('disabled_domain_invites', val)
 
@@ -17675,8 +17868,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``domain_invites_approve_request_to_join_team`` tag with value ``val``.
 
-        :param DomainInvitesApproveRequestToJoinTeamType val:
-        :rtype: EventType
+        :param team_log.DomainInvitesApproveRequestToJoinTeamType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_invites_approve_request_to_join_team', val)
 
@@ -17686,8 +17879,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``domain_invites_decline_request_to_join_team`` tag with value ``val``.
 
-        :param DomainInvitesDeclineRequestToJoinTeamType val:
-        :rtype: EventType
+        :param team_log.DomainInvitesDeclineRequestToJoinTeamType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_invites_decline_request_to_join_team', val)
 
@@ -17697,8 +17890,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``domain_invites_email_existing_users`` tag with value ``val``.
 
-        :param DomainInvitesEmailExistingUsersType val:
-        :rtype: EventType
+        :param team_log.DomainInvitesEmailExistingUsersType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_invites_email_existing_users', val)
 
@@ -17708,8 +17901,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``domain_invites_request_to_join_team`` tag with value ``val``.
 
-        :param DomainInvitesRequestToJoinTeamType val:
-        :rtype: EventType
+        :param team_log.DomainInvitesRequestToJoinTeamType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_invites_request_to_join_team', val)
 
@@ -17720,8 +17913,8 @@ class EventType(bb.Union):
         ``domain_invites_set_invite_new_user_pref_to_no`` tag with value
         ``val``.
 
-        :param DomainInvitesSetInviteNewUserPrefToNoType val:
-        :rtype: EventType
+        :param team_log.DomainInvitesSetInviteNewUserPrefToNoType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_invites_set_invite_new_user_pref_to_no', val)
 
@@ -17732,8 +17925,8 @@ class EventType(bb.Union):
         ``domain_invites_set_invite_new_user_pref_to_yes`` tag with value
         ``val``.
 
-        :param DomainInvitesSetInviteNewUserPrefToYesType val:
-        :rtype: EventType
+        :param team_log.DomainInvitesSetInviteNewUserPrefToYesType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_invites_set_invite_new_user_pref_to_yes', val)
 
@@ -17743,8 +17936,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``domain_verification_add_domain_fail`` tag with value ``val``.
 
-        :param DomainVerificationAddDomainFailType val:
-        :rtype: EventType
+        :param team_log.DomainVerificationAddDomainFailType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_verification_add_domain_fail', val)
 
@@ -17754,8 +17947,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``domain_verification_add_domain_success`` tag with value ``val``.
 
-        :param DomainVerificationAddDomainSuccessType val:
-        :rtype: EventType
+        :param team_log.DomainVerificationAddDomainSuccessType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_verification_add_domain_success', val)
 
@@ -17765,8 +17958,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``domain_verification_remove_domain`` tag with value ``val``.
 
-        :param DomainVerificationRemoveDomainType val:
-        :rtype: EventType
+        :param team_log.DomainVerificationRemoveDomainType val:
+        :rtype: team_log.EventType
         """
         return cls('domain_verification_remove_domain', val)
 
@@ -17776,8 +17969,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``enabled_domain_invites``
         tag with value ``val``.
 
-        :param EnabledDomainInvitesType val:
-        :rtype: EventType
+        :param team_log.EnabledDomainInvitesType val:
+        :rtype: team_log.EventType
         """
         return cls('enabled_domain_invites', val)
 
@@ -17787,8 +17980,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``create_folder`` tag with
         value ``val``.
 
-        :param CreateFolderType val:
-        :rtype: EventType
+        :param team_log.CreateFolderType val:
+        :rtype: team_log.EventType
         """
         return cls('create_folder', val)
 
@@ -17798,8 +17991,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_add`` tag with value
         ``val``.
 
-        :param FileAddType val:
-        :rtype: EventType
+        :param team_log.FileAddType val:
+        :rtype: team_log.EventType
         """
         return cls('file_add', val)
 
@@ -17809,8 +18002,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_copy`` tag with value
         ``val``.
 
-        :param FileCopyType val:
-        :rtype: EventType
+        :param team_log.FileCopyType val:
+        :rtype: team_log.EventType
         """
         return cls('file_copy', val)
 
@@ -17820,8 +18013,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_delete`` tag with
         value ``val``.
 
-        :param FileDeleteType val:
-        :rtype: EventType
+        :param team_log.FileDeleteType val:
+        :rtype: team_log.EventType
         """
         return cls('file_delete', val)
 
@@ -17831,8 +18024,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_download`` tag with
         value ``val``.
 
-        :param FileDownloadType val:
-        :rtype: EventType
+        :param team_log.FileDownloadType val:
+        :rtype: team_log.EventType
         """
         return cls('file_download', val)
 
@@ -17842,8 +18035,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_edit`` tag with value
         ``val``.
 
-        :param FileEditType val:
-        :rtype: EventType
+        :param team_log.FileEditType val:
+        :rtype: team_log.EventType
         """
         return cls('file_edit', val)
 
@@ -17853,8 +18046,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_get_copy_reference``
         tag with value ``val``.
 
-        :param FileGetCopyReferenceType val:
-        :rtype: EventType
+        :param team_log.FileGetCopyReferenceType val:
+        :rtype: team_log.EventType
         """
         return cls('file_get_copy_reference', val)
 
@@ -17864,8 +18057,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_move`` tag with value
         ``val``.
 
-        :param FileMoveType val:
-        :rtype: EventType
+        :param team_log.FileMoveType val:
+        :rtype: team_log.EventType
         """
         return cls('file_move', val)
 
@@ -17875,8 +18068,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_permanently_delete``
         tag with value ``val``.
 
-        :param FilePermanentlyDeleteType val:
-        :rtype: EventType
+        :param team_log.FilePermanentlyDeleteType val:
+        :rtype: team_log.EventType
         """
         return cls('file_permanently_delete', val)
 
@@ -17886,8 +18079,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_preview`` tag with
         value ``val``.
 
-        :param FilePreviewType val:
-        :rtype: EventType
+        :param team_log.FilePreviewType val:
+        :rtype: team_log.EventType
         """
         return cls('file_preview', val)
 
@@ -17897,8 +18090,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_rename`` tag with
         value ``val``.
 
-        :param FileRenameType val:
-        :rtype: EventType
+        :param team_log.FileRenameType val:
+        :rtype: team_log.EventType
         """
         return cls('file_rename', val)
 
@@ -17908,8 +18101,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_restore`` tag with
         value ``val``.
 
-        :param FileRestoreType val:
-        :rtype: EventType
+        :param team_log.FileRestoreType val:
+        :rtype: team_log.EventType
         """
         return cls('file_restore', val)
 
@@ -17919,8 +18112,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_revert`` tag with
         value ``val``.
 
-        :param FileRevertType val:
-        :rtype: EventType
+        :param team_log.FileRevertType val:
+        :rtype: team_log.EventType
         """
         return cls('file_revert', val)
 
@@ -17930,8 +18123,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_rollback_changes``
         tag with value ``val``.
 
-        :param FileRollbackChangesType val:
-        :rtype: EventType
+        :param team_log.FileRollbackChangesType val:
+        :rtype: team_log.EventType
         """
         return cls('file_rollback_changes', val)
 
@@ -17941,8 +18134,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_save_copy_reference``
         tag with value ``val``.
 
-        :param FileSaveCopyReferenceType val:
-        :rtype: EventType
+        :param team_log.FileSaveCopyReferenceType val:
+        :rtype: team_log.EventType
         """
         return cls('file_save_copy_reference', val)
 
@@ -17952,8 +18145,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_request_change`` tag
         with value ``val``.
 
-        :param FileRequestChangeType val:
-        :rtype: EventType
+        :param team_log.FileRequestChangeType val:
+        :rtype: team_log.EventType
         """
         return cls('file_request_change', val)
 
@@ -17963,8 +18156,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_request_close`` tag
         with value ``val``.
 
-        :param FileRequestCloseType val:
-        :rtype: EventType
+        :param team_log.FileRequestCloseType val:
+        :rtype: team_log.EventType
         """
         return cls('file_request_close', val)
 
@@ -17974,8 +18167,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``file_request_create`` tag
         with value ``val``.
 
-        :param FileRequestCreateType val:
-        :rtype: EventType
+        :param team_log.FileRequestCreateType val:
+        :rtype: team_log.EventType
         """
         return cls('file_request_create', val)
 
@@ -17985,8 +18178,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``file_request_receive_file`` tag with value ``val``.
 
-        :param FileRequestReceiveFileType val:
-        :rtype: EventType
+        :param team_log.FileRequestReceiveFileType val:
+        :rtype: team_log.EventType
         """
         return cls('file_request_receive_file', val)
 
@@ -17996,8 +18189,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_add_external_id``
         tag with value ``val``.
 
-        :param GroupAddExternalIdType val:
-        :rtype: EventType
+        :param team_log.GroupAddExternalIdType val:
+        :rtype: team_log.EventType
         """
         return cls('group_add_external_id', val)
 
@@ -18007,8 +18200,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_add_member`` tag
         with value ``val``.
 
-        :param GroupAddMemberType val:
-        :rtype: EventType
+        :param team_log.GroupAddMemberType val:
+        :rtype: team_log.EventType
         """
         return cls('group_add_member', val)
 
@@ -18018,8 +18211,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_change_external_id``
         tag with value ``val``.
 
-        :param GroupChangeExternalIdType val:
-        :rtype: EventType
+        :param team_log.GroupChangeExternalIdType val:
+        :rtype: team_log.EventType
         """
         return cls('group_change_external_id', val)
 
@@ -18029,8 +18222,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``group_change_management_type`` tag with value ``val``.
 
-        :param GroupChangeManagementTypeType val:
-        :rtype: EventType
+        :param team_log.GroupChangeManagementTypeType val:
+        :rtype: team_log.EventType
         """
         return cls('group_change_management_type', val)
 
@@ -18040,8 +18233,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_change_member_role``
         tag with value ``val``.
 
-        :param GroupChangeMemberRoleType val:
-        :rtype: EventType
+        :param team_log.GroupChangeMemberRoleType val:
+        :rtype: team_log.EventType
         """
         return cls('group_change_member_role', val)
 
@@ -18051,8 +18244,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_create`` tag with
         value ``val``.
 
-        :param GroupCreateType val:
-        :rtype: EventType
+        :param team_log.GroupCreateType val:
+        :rtype: team_log.EventType
         """
         return cls('group_create', val)
 
@@ -18062,8 +18255,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_delete`` tag with
         value ``val``.
 
-        :param GroupDeleteType val:
-        :rtype: EventType
+        :param team_log.GroupDeleteType val:
+        :rtype: team_log.EventType
         """
         return cls('group_delete', val)
 
@@ -18073,8 +18266,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``group_description_updated`` tag with value ``val``.
 
-        :param GroupDescriptionUpdatedType val:
-        :rtype: EventType
+        :param team_log.GroupDescriptionUpdatedType val:
+        :rtype: team_log.EventType
         """
         return cls('group_description_updated', val)
 
@@ -18084,8 +18277,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``group_join_policy_updated`` tag with value ``val``.
 
-        :param GroupJoinPolicyUpdatedType val:
-        :rtype: EventType
+        :param team_log.GroupJoinPolicyUpdatedType val:
+        :rtype: team_log.EventType
         """
         return cls('group_join_policy_updated', val)
 
@@ -18095,8 +18288,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_moved`` tag with
         value ``val``.
 
-        :param GroupMovedType val:
-        :rtype: EventType
+        :param team_log.GroupMovedType val:
+        :rtype: team_log.EventType
         """
         return cls('group_moved', val)
 
@@ -18106,8 +18299,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_remove_external_id``
         tag with value ``val``.
 
-        :param GroupRemoveExternalIdType val:
-        :rtype: EventType
+        :param team_log.GroupRemoveExternalIdType val:
+        :rtype: team_log.EventType
         """
         return cls('group_remove_external_id', val)
 
@@ -18117,8 +18310,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_remove_member`` tag
         with value ``val``.
 
-        :param GroupRemoveMemberType val:
-        :rtype: EventType
+        :param team_log.GroupRemoveMemberType val:
+        :rtype: team_log.EventType
         """
         return cls('group_remove_member', val)
 
@@ -18128,8 +18321,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``group_rename`` tag with
         value ``val``.
 
-        :param GroupRenameType val:
-        :rtype: EventType
+        :param team_log.GroupRenameType val:
+        :rtype: team_log.EventType
         """
         return cls('group_rename', val)
 
@@ -18139,8 +18332,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``emm_error`` tag with value
         ``val``.
 
-        :param EmmErrorType val:
-        :rtype: EventType
+        :param team_log.EmmErrorType val:
+        :rtype: team_log.EventType
         """
         return cls('emm_error', val)
 
@@ -18150,8 +18343,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``login_fail`` tag with
         value ``val``.
 
-        :param LoginFailType val:
-        :rtype: EventType
+        :param team_log.LoginFailType val:
+        :rtype: team_log.EventType
         """
         return cls('login_fail', val)
 
@@ -18161,8 +18354,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``login_success`` tag with
         value ``val``.
 
-        :param LoginSuccessType val:
-        :rtype: EventType
+        :param team_log.LoginSuccessType val:
+        :rtype: team_log.EventType
         """
         return cls('login_success', val)
 
@@ -18172,8 +18365,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``logout`` tag with value
         ``val``.
 
-        :param LogoutType val:
-        :rtype: EventType
+        :param team_log.LogoutType val:
+        :rtype: team_log.EventType
         """
         return cls('logout', val)
 
@@ -18183,8 +18376,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``reseller_support_session_end`` tag with value ``val``.
 
-        :param ResellerSupportSessionEndType val:
-        :rtype: EventType
+        :param team_log.ResellerSupportSessionEndType val:
+        :rtype: team_log.EventType
         """
         return cls('reseller_support_session_end', val)
 
@@ -18194,8 +18387,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``reseller_support_session_start`` tag with value ``val``.
 
-        :param ResellerSupportSessionStartType val:
-        :rtype: EventType
+        :param team_log.ResellerSupportSessionStartType val:
+        :rtype: team_log.EventType
         """
         return cls('reseller_support_session_start', val)
 
@@ -18205,8 +18398,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sign_in_as_session_end``
         tag with value ``val``.
 
-        :param SignInAsSessionEndType val:
-        :rtype: EventType
+        :param team_log.SignInAsSessionEndType val:
+        :rtype: team_log.EventType
         """
         return cls('sign_in_as_session_end', val)
 
@@ -18216,8 +18409,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sign_in_as_session_start``
         tag with value ``val``.
 
-        :param SignInAsSessionStartType val:
-        :rtype: EventType
+        :param team_log.SignInAsSessionStartType val:
+        :rtype: team_log.EventType
         """
         return cls('sign_in_as_session_start', val)
 
@@ -18227,8 +18420,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_error`` tag with value
         ``val``.
 
-        :param SsoErrorType val:
-        :rtype: EventType
+        :param team_log.SsoErrorType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_error', val)
 
@@ -18238,8 +18431,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``member_add_name`` tag with
         value ``val``.
 
-        :param MemberAddNameType val:
-        :rtype: EventType
+        :param team_log.MemberAddNameType val:
+        :rtype: team_log.EventType
         """
         return cls('member_add_name', val)
 
@@ -18249,8 +18442,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``member_change_admin_role``
         tag with value ``val``.
 
-        :param MemberChangeAdminRoleType val:
-        :rtype: EventType
+        :param team_log.MemberChangeAdminRoleType val:
+        :rtype: team_log.EventType
         """
         return cls('member_change_admin_role', val)
 
@@ -18260,8 +18453,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``member_change_email`` tag
         with value ``val``.
 
-        :param MemberChangeEmailType val:
-        :rtype: EventType
+        :param team_log.MemberChangeEmailType val:
+        :rtype: team_log.EventType
         """
         return cls('member_change_email', val)
 
@@ -18271,8 +18464,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_change_membership_type`` tag with value ``val``.
 
-        :param MemberChangeMembershipTypeType val:
-        :rtype: EventType
+        :param team_log.MemberChangeMembershipTypeType val:
+        :rtype: team_log.EventType
         """
         return cls('member_change_membership_type', val)
 
@@ -18282,8 +18475,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``member_change_name`` tag
         with value ``val``.
 
-        :param MemberChangeNameType val:
-        :rtype: EventType
+        :param team_log.MemberChangeNameType val:
+        :rtype: team_log.EventType
         """
         return cls('member_change_name', val)
 
@@ -18293,8 +18486,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``member_change_status`` tag
         with value ``val``.
 
-        :param MemberChangeStatusType val:
-        :rtype: EventType
+        :param team_log.MemberChangeStatusType val:
+        :rtype: team_log.EventType
         """
         return cls('member_change_status', val)
 
@@ -18304,8 +18497,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_delete_manual_contacts`` tag with value ``val``.
 
-        :param MemberDeleteManualContactsType val:
-        :rtype: EventType
+        :param team_log.MemberDeleteManualContactsType val:
+        :rtype: team_log.EventType
         """
         return cls('member_delete_manual_contacts', val)
 
@@ -18315,8 +18508,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_permanently_delete_account_contents`` tag with value ``val``.
 
-        :param MemberPermanentlyDeleteAccountContentsType val:
-        :rtype: EventType
+        :param team_log.MemberPermanentlyDeleteAccountContentsType val:
+        :rtype: team_log.EventType
         """
         return cls('member_permanently_delete_account_contents', val)
 
@@ -18326,8 +18519,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_add_custom_quota`` tag with value ``val``.
 
-        :param MemberSpaceLimitsAddCustomQuotaType val:
-        :rtype: EventType
+        :param team_log.MemberSpaceLimitsAddCustomQuotaType val:
+        :rtype: team_log.EventType
         """
         return cls('member_space_limits_add_custom_quota', val)
 
@@ -18337,8 +18530,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_change_custom_quota`` tag with value ``val``.
 
-        :param MemberSpaceLimitsChangeCustomQuotaType val:
-        :rtype: EventType
+        :param team_log.MemberSpaceLimitsChangeCustomQuotaType val:
+        :rtype: team_log.EventType
         """
         return cls('member_space_limits_change_custom_quota', val)
 
@@ -18348,8 +18541,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_change_status`` tag with value ``val``.
 
-        :param MemberSpaceLimitsChangeStatusType val:
-        :rtype: EventType
+        :param team_log.MemberSpaceLimitsChangeStatusType val:
+        :rtype: team_log.EventType
         """
         return cls('member_space_limits_change_status', val)
 
@@ -18359,8 +18552,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_remove_custom_quota`` tag with value ``val``.
 
-        :param MemberSpaceLimitsRemoveCustomQuotaType val:
-        :rtype: EventType
+        :param team_log.MemberSpaceLimitsRemoveCustomQuotaType val:
+        :rtype: team_log.EventType
         """
         return cls('member_space_limits_remove_custom_quota', val)
 
@@ -18370,8 +18563,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``member_suggest`` tag with
         value ``val``.
 
-        :param MemberSuggestType val:
-        :rtype: EventType
+        :param team_log.MemberSuggestType val:
+        :rtype: team_log.EventType
         """
         return cls('member_suggest', val)
 
@@ -18381,8 +18574,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_transfer_account_contents`` tag with value ``val``.
 
-        :param MemberTransferAccountContentsType val:
-        :rtype: EventType
+        :param team_log.MemberTransferAccountContentsType val:
+        :rtype: team_log.EventType
         """
         return cls('member_transfer_account_contents', val)
 
@@ -18392,8 +18585,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``secondary_mails_policy_changed`` tag with value ``val``.
 
-        :param SecondaryMailsPolicyChangedType val:
-        :rtype: EventType
+        :param team_log.SecondaryMailsPolicyChangedType val:
+        :rtype: team_log.EventType
         """
         return cls('secondary_mails_policy_changed', val)
 
@@ -18403,8 +18596,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_content_add_member``
         tag with value ``val``.
 
-        :param PaperContentAddMemberType val:
-        :rtype: EventType
+        :param team_log.PaperContentAddMemberType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_add_member', val)
 
@@ -18414,8 +18607,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_content_add_to_folder`` tag with value ``val``.
 
-        :param PaperContentAddToFolderType val:
-        :rtype: EventType
+        :param team_log.PaperContentAddToFolderType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_add_to_folder', val)
 
@@ -18425,8 +18618,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_content_archive``
         tag with value ``val``.
 
-        :param PaperContentArchiveType val:
-        :rtype: EventType
+        :param team_log.PaperContentArchiveType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_archive', val)
 
@@ -18436,8 +18629,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_content_create`` tag
         with value ``val``.
 
-        :param PaperContentCreateType val:
-        :rtype: EventType
+        :param team_log.PaperContentCreateType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_create', val)
 
@@ -18447,8 +18640,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_content_permanently_delete`` tag with value ``val``.
 
-        :param PaperContentPermanentlyDeleteType val:
-        :rtype: EventType
+        :param team_log.PaperContentPermanentlyDeleteType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_permanently_delete', val)
 
@@ -18458,8 +18651,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_content_remove_from_folder`` tag with value ``val``.
 
-        :param PaperContentRemoveFromFolderType val:
-        :rtype: EventType
+        :param team_log.PaperContentRemoveFromFolderType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_remove_from_folder', val)
 
@@ -18469,8 +18662,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_content_remove_member`` tag with value ``val``.
 
-        :param PaperContentRemoveMemberType val:
-        :rtype: EventType
+        :param team_log.PaperContentRemoveMemberType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_remove_member', val)
 
@@ -18480,8 +18673,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_content_rename`` tag
         with value ``val``.
 
-        :param PaperContentRenameType val:
-        :rtype: EventType
+        :param team_log.PaperContentRenameType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_rename', val)
 
@@ -18491,8 +18684,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_content_restore``
         tag with value ``val``.
 
-        :param PaperContentRestoreType val:
-        :rtype: EventType
+        :param team_log.PaperContentRestoreType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_content_restore', val)
 
@@ -18502,8 +18695,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_add_comment``
         tag with value ``val``.
 
-        :param PaperDocAddCommentType val:
-        :rtype: EventType
+        :param team_log.PaperDocAddCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_add_comment', val)
 
@@ -18513,8 +18706,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_change_member_role`` tag with value ``val``.
 
-        :param PaperDocChangeMemberRoleType val:
-        :rtype: EventType
+        :param team_log.PaperDocChangeMemberRoleType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_change_member_role', val)
 
@@ -18524,8 +18717,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_change_sharing_policy`` tag with value ``val``.
 
-        :param PaperDocChangeSharingPolicyType val:
-        :rtype: EventType
+        :param team_log.PaperDocChangeSharingPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_change_sharing_policy', val)
 
@@ -18535,8 +18728,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_change_subscription`` tag with value ``val``.
 
-        :param PaperDocChangeSubscriptionType val:
-        :rtype: EventType
+        :param team_log.PaperDocChangeSubscriptionType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_change_subscription', val)
 
@@ -18546,8 +18739,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_deleted`` tag
         with value ``val``.
 
-        :param PaperDocDeletedType val:
-        :rtype: EventType
+        :param team_log.PaperDocDeletedType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_deleted', val)
 
@@ -18557,8 +18750,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_delete_comment``
         tag with value ``val``.
 
-        :param PaperDocDeleteCommentType val:
-        :rtype: EventType
+        :param team_log.PaperDocDeleteCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_delete_comment', val)
 
@@ -18568,8 +18761,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_download`` tag
         with value ``val``.
 
-        :param PaperDocDownloadType val:
-        :rtype: EventType
+        :param team_log.PaperDocDownloadType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_download', val)
 
@@ -18579,8 +18772,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_edit`` tag with
         value ``val``.
 
-        :param PaperDocEditType val:
-        :rtype: EventType
+        :param team_log.PaperDocEditType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_edit', val)
 
@@ -18590,8 +18783,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_edit_comment``
         tag with value ``val``.
 
-        :param PaperDocEditCommentType val:
-        :rtype: EventType
+        :param team_log.PaperDocEditCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_edit_comment', val)
 
@@ -18601,8 +18794,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_followed`` tag
         with value ``val``.
 
-        :param PaperDocFollowedType val:
-        :rtype: EventType
+        :param team_log.PaperDocFollowedType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_followed', val)
 
@@ -18612,8 +18805,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_mention`` tag
         with value ``val``.
 
-        :param PaperDocMentionType val:
-        :rtype: EventType
+        :param team_log.PaperDocMentionType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_mention', val)
 
@@ -18623,8 +18816,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_ownership_changed`` tag with value ``val``.
 
-        :param PaperDocOwnershipChangedType val:
-        :rtype: EventType
+        :param team_log.PaperDocOwnershipChangedType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_ownership_changed', val)
 
@@ -18634,8 +18827,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_request_access``
         tag with value ``val``.
 
-        :param PaperDocRequestAccessType val:
-        :rtype: EventType
+        :param team_log.PaperDocRequestAccessType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_request_access', val)
 
@@ -18645,8 +18838,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_resolve_comment`` tag with value ``val``.
 
-        :param PaperDocResolveCommentType val:
-        :rtype: EventType
+        :param team_log.PaperDocResolveCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_resolve_comment', val)
 
@@ -18656,8 +18849,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_revert`` tag
         with value ``val``.
 
-        :param PaperDocRevertType val:
-        :rtype: EventType
+        :param team_log.PaperDocRevertType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_revert', val)
 
@@ -18667,8 +18860,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_slack_share``
         tag with value ``val``.
 
-        :param PaperDocSlackShareType val:
-        :rtype: EventType
+        :param team_log.PaperDocSlackShareType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_slack_share', val)
 
@@ -18678,8 +18871,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_team_invite``
         tag with value ``val``.
 
-        :param PaperDocTeamInviteType val:
-        :rtype: EventType
+        :param team_log.PaperDocTeamInviteType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_team_invite', val)
 
@@ -18689,8 +18882,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_trashed`` tag
         with value ``val``.
 
-        :param PaperDocTrashedType val:
-        :rtype: EventType
+        :param team_log.PaperDocTrashedType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_trashed', val)
 
@@ -18700,8 +18893,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_doc_unresolve_comment`` tag with value ``val``.
 
-        :param PaperDocUnresolveCommentType val:
-        :rtype: EventType
+        :param team_log.PaperDocUnresolveCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_unresolve_comment', val)
 
@@ -18711,8 +18904,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_untrashed`` tag
         with value ``val``.
 
-        :param PaperDocUntrashedType val:
-        :rtype: EventType
+        :param team_log.PaperDocUntrashedType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_untrashed', val)
 
@@ -18722,8 +18915,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_doc_view`` tag with
         value ``val``.
 
-        :param PaperDocViewType val:
-        :rtype: EventType
+        :param team_log.PaperDocViewType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_doc_view', val)
 
@@ -18733,8 +18926,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_external_view_allow`` tag with value ``val``.
 
-        :param PaperExternalViewAllowType val:
-        :rtype: EventType
+        :param team_log.PaperExternalViewAllowType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_external_view_allow', val)
 
@@ -18744,8 +18937,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_external_view_default_team`` tag with value ``val``.
 
-        :param PaperExternalViewDefaultTeamType val:
-        :rtype: EventType
+        :param team_log.PaperExternalViewDefaultTeamType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_external_view_default_team', val)
 
@@ -18755,8 +18948,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_external_view_forbid`` tag with value ``val``.
 
-        :param PaperExternalViewForbidType val:
-        :rtype: EventType
+        :param team_log.PaperExternalViewForbidType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_external_view_forbid', val)
 
@@ -18766,8 +18959,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_folder_change_subscription`` tag with value ``val``.
 
-        :param PaperFolderChangeSubscriptionType val:
-        :rtype: EventType
+        :param team_log.PaperFolderChangeSubscriptionType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_folder_change_subscription', val)
 
@@ -18777,8 +18970,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_folder_deleted`` tag
         with value ``val``.
 
-        :param PaperFolderDeletedType val:
-        :rtype: EventType
+        :param team_log.PaperFolderDeletedType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_folder_deleted', val)
 
@@ -18788,8 +18981,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_folder_followed``
         tag with value ``val``.
 
-        :param PaperFolderFollowedType val:
-        :rtype: EventType
+        :param team_log.PaperFolderFollowedType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_folder_followed', val)
 
@@ -18799,8 +18992,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_folder_team_invite``
         tag with value ``val``.
 
-        :param PaperFolderTeamInviteType val:
-        :rtype: EventType
+        :param team_log.PaperFolderTeamInviteType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_folder_team_invite', val)
 
@@ -18810,8 +19003,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``password_change`` tag with
         value ``val``.
 
-        :param PasswordChangeType val:
-        :rtype: EventType
+        :param team_log.PasswordChangeType val:
+        :rtype: team_log.EventType
         """
         return cls('password_change', val)
 
@@ -18821,8 +19014,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``password_reset`` tag with
         value ``val``.
 
-        :param PasswordResetType val:
-        :rtype: EventType
+        :param team_log.PasswordResetType val:
+        :rtype: team_log.EventType
         """
         return cls('password_reset', val)
 
@@ -18832,8 +19025,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``password_reset_all`` tag
         with value ``val``.
 
-        :param PasswordResetAllType val:
-        :rtype: EventType
+        :param team_log.PasswordResetAllType val:
+        :rtype: team_log.EventType
         """
         return cls('password_reset_all', val)
 
@@ -18843,8 +19036,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``emm_create_exceptions_report`` tag with value ``val``.
 
-        :param EmmCreateExceptionsReportType val:
-        :rtype: EventType
+        :param team_log.EmmCreateExceptionsReportType val:
+        :rtype: team_log.EventType
         """
         return cls('emm_create_exceptions_report', val)
 
@@ -18854,8 +19047,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``emm_create_usage_report``
         tag with value ``val``.
 
-        :param EmmCreateUsageReportType val:
-        :rtype: EventType
+        :param team_log.EmmCreateUsageReportType val:
+        :rtype: team_log.EventType
         """
         return cls('emm_create_usage_report', val)
 
@@ -18865,8 +19058,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``export_members_report``
         tag with value ``val``.
 
-        :param ExportMembersReportType val:
-        :rtype: EventType
+        :param team_log.ExportMembersReportType val:
+        :rtype: team_log.EventType
         """
         return cls('export_members_report', val)
 
@@ -18876,8 +19069,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_admin_export_start``
         tag with value ``val``.
 
-        :param PaperAdminExportStartType val:
-        :rtype: EventType
+        :param team_log.PaperAdminExportStartType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_admin_export_start', val)
 
@@ -18887,8 +19080,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``smart_sync_create_admin_privilege_report`` tag with value ``val``.
 
-        :param SmartSyncCreateAdminPrivilegeReportType val:
-        :rtype: EventType
+        :param team_log.SmartSyncCreateAdminPrivilegeReportType val:
+        :rtype: team_log.EventType
         """
         return cls('smart_sync_create_admin_privilege_report', val)
 
@@ -18898,8 +19091,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``team_activity_create_report`` tag with value ``val``.
 
-        :param TeamActivityCreateReportType val:
-        :rtype: EventType
+        :param team_log.TeamActivityCreateReportType val:
+        :rtype: team_log.EventType
         """
         return cls('team_activity_create_report', val)
 
@@ -18909,8 +19102,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``collection_share`` tag
         with value ``val``.
 
-        :param CollectionShareType val:
-        :rtype: EventType
+        :param team_log.CollectionShareType val:
+        :rtype: team_log.EventType
         """
         return cls('collection_share', val)
 
@@ -18920,8 +19113,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``note_acl_invite_only`` tag
         with value ``val``.
 
-        :param NoteAclInviteOnlyType val:
-        :rtype: EventType
+        :param team_log.NoteAclInviteOnlyType val:
+        :rtype: team_log.EventType
         """
         return cls('note_acl_invite_only', val)
 
@@ -18931,8 +19124,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``note_acl_link`` tag with
         value ``val``.
 
-        :param NoteAclLinkType val:
-        :rtype: EventType
+        :param team_log.NoteAclLinkType val:
+        :rtype: team_log.EventType
         """
         return cls('note_acl_link', val)
 
@@ -18942,8 +19135,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``note_acl_team_link`` tag
         with value ``val``.
 
-        :param NoteAclTeamLinkType val:
-        :rtype: EventType
+        :param team_log.NoteAclTeamLinkType val:
+        :rtype: team_log.EventType
         """
         return cls('note_acl_team_link', val)
 
@@ -18953,8 +19146,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``note_shared`` tag with
         value ``val``.
 
-        :param NoteSharedType val:
-        :rtype: EventType
+        :param team_log.NoteSharedType val:
+        :rtype: team_log.EventType
         """
         return cls('note_shared', val)
 
@@ -18964,8 +19157,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``note_share_receive`` tag
         with value ``val``.
 
-        :param NoteShareReceiveType val:
-        :rtype: EventType
+        :param team_log.NoteShareReceiveType val:
+        :rtype: team_log.EventType
         """
         return cls('note_share_receive', val)
 
@@ -18975,8 +19168,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``open_note_shared`` tag
         with value ``val``.
 
-        :param OpenNoteSharedType val:
-        :rtype: EventType
+        :param team_log.OpenNoteSharedType val:
+        :rtype: team_log.EventType
         """
         return cls('open_note_shared', val)
 
@@ -18986,8 +19179,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_add_group`` tag with
         value ``val``.
 
-        :param SfAddGroupType val:
-        :rtype: EventType
+        :param team_log.SfAddGroupType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_add_group', val)
 
@@ -18997,8 +19190,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``sf_allow_non_members_to_view_shared_links`` tag with value ``val``.
 
-        :param SfAllowNonMembersToViewSharedLinksType val:
-        :rtype: EventType
+        :param team_log.SfAllowNonMembersToViewSharedLinksType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_allow_non_members_to_view_shared_links', val)
 
@@ -19008,8 +19201,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_external_invite_warn``
         tag with value ``val``.
 
-        :param SfExternalInviteWarnType val:
-        :rtype: EventType
+        :param team_log.SfExternalInviteWarnType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_external_invite_warn', val)
 
@@ -19019,8 +19212,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_fb_invite`` tag with
         value ``val``.
 
-        :param SfFbInviteType val:
-        :rtype: EventType
+        :param team_log.SfFbInviteType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_fb_invite', val)
 
@@ -19030,8 +19223,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_fb_invite_change_role``
         tag with value ``val``.
 
-        :param SfFbInviteChangeRoleType val:
-        :rtype: EventType
+        :param team_log.SfFbInviteChangeRoleType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_fb_invite_change_role', val)
 
@@ -19041,8 +19234,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_fb_uninvite`` tag with
         value ``val``.
 
-        :param SfFbUninviteType val:
-        :rtype: EventType
+        :param team_log.SfFbUninviteType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_fb_uninvite', val)
 
@@ -19052,8 +19245,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_invite_group`` tag with
         value ``val``.
 
-        :param SfInviteGroupType val:
-        :rtype: EventType
+        :param team_log.SfInviteGroupType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_invite_group', val)
 
@@ -19063,8 +19256,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_team_grant_access`` tag
         with value ``val``.
 
-        :param SfTeamGrantAccessType val:
-        :rtype: EventType
+        :param team_log.SfTeamGrantAccessType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_team_grant_access', val)
 
@@ -19074,8 +19267,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_team_invite`` tag with
         value ``val``.
 
-        :param SfTeamInviteType val:
-        :rtype: EventType
+        :param team_log.SfTeamInviteType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_team_invite', val)
 
@@ -19085,8 +19278,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``sf_team_invite_change_role`` tag with value ``val``.
 
-        :param SfTeamInviteChangeRoleType val:
-        :rtype: EventType
+        :param team_log.SfTeamInviteChangeRoleType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_team_invite_change_role', val)
 
@@ -19096,8 +19289,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_team_join`` tag with
         value ``val``.
 
-        :param SfTeamJoinType val:
-        :rtype: EventType
+        :param team_log.SfTeamJoinType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_team_join', val)
 
@@ -19107,8 +19300,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``sf_team_join_from_oob_link`` tag with value ``val``.
 
-        :param SfTeamJoinFromOobLinkType val:
-        :rtype: EventType
+        :param team_log.SfTeamJoinFromOobLinkType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_team_join_from_oob_link', val)
 
@@ -19118,8 +19311,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sf_team_uninvite`` tag
         with value ``val``.
 
-        :param SfTeamUninviteType val:
-        :rtype: EventType
+        :param team_log.SfTeamUninviteType val:
+        :rtype: team_log.EventType
         """
         return cls('sf_team_uninvite', val)
 
@@ -19129,8 +19322,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_add_invitees`` tag with value ``val``.
 
-        :param SharedContentAddInviteesType val:
-        :rtype: EventType
+        :param team_log.SharedContentAddInviteesType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_add_invitees', val)
 
@@ -19140,8 +19333,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_add_link_expiry`` tag with value ``val``.
 
-        :param SharedContentAddLinkExpiryType val:
-        :rtype: EventType
+        :param team_log.SharedContentAddLinkExpiryType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_add_link_expiry', val)
 
@@ -19151,8 +19344,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_add_link_password`` tag with value ``val``.
 
-        :param SharedContentAddLinkPasswordType val:
-        :rtype: EventType
+        :param team_log.SharedContentAddLinkPasswordType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_add_link_password', val)
 
@@ -19162,8 +19355,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_add_member`` tag with value ``val``.
 
-        :param SharedContentAddMemberType val:
-        :rtype: EventType
+        :param team_log.SharedContentAddMemberType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_add_member', val)
 
@@ -19173,8 +19366,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_downloads_policy`` tag with value ``val``.
 
-        :param SharedContentChangeDownloadsPolicyType val:
-        :rtype: EventType
+        :param team_log.SharedContentChangeDownloadsPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_change_downloads_policy', val)
 
@@ -19184,8 +19377,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_invitee_role`` tag with value ``val``.
 
-        :param SharedContentChangeInviteeRoleType val:
-        :rtype: EventType
+        :param team_log.SharedContentChangeInviteeRoleType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_change_invitee_role', val)
 
@@ -19195,8 +19388,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_link_audience`` tag with value ``val``.
 
-        :param SharedContentChangeLinkAudienceType val:
-        :rtype: EventType
+        :param team_log.SharedContentChangeLinkAudienceType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_change_link_audience', val)
 
@@ -19206,8 +19399,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_link_expiry`` tag with value ``val``.
 
-        :param SharedContentChangeLinkExpiryType val:
-        :rtype: EventType
+        :param team_log.SharedContentChangeLinkExpiryType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_change_link_expiry', val)
 
@@ -19217,8 +19410,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_link_password`` tag with value ``val``.
 
-        :param SharedContentChangeLinkPasswordType val:
-        :rtype: EventType
+        :param team_log.SharedContentChangeLinkPasswordType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_change_link_password', val)
 
@@ -19228,8 +19421,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_member_role`` tag with value ``val``.
 
-        :param SharedContentChangeMemberRoleType val:
-        :rtype: EventType
+        :param team_log.SharedContentChangeMemberRoleType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_change_member_role', val)
 
@@ -19239,8 +19432,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_change_viewer_info_policy`` tag with value ``val``.
 
-        :param SharedContentChangeViewerInfoPolicyType val:
-        :rtype: EventType
+        :param team_log.SharedContentChangeViewerInfoPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_change_viewer_info_policy', val)
 
@@ -19250,8 +19443,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_claim_invitation`` tag with value ``val``.
 
-        :param SharedContentClaimInvitationType val:
-        :rtype: EventType
+        :param team_log.SharedContentClaimInvitationType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_claim_invitation', val)
 
@@ -19261,8 +19454,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_content_copy`` tag
         with value ``val``.
 
-        :param SharedContentCopyType val:
-        :rtype: EventType
+        :param team_log.SharedContentCopyType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_copy', val)
 
@@ -19272,8 +19465,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_content_download``
         tag with value ``val``.
 
-        :param SharedContentDownloadType val:
-        :rtype: EventType
+        :param team_log.SharedContentDownloadType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_download', val)
 
@@ -19283,8 +19476,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_relinquish_membership`` tag with value ``val``.
 
-        :param SharedContentRelinquishMembershipType val:
-        :rtype: EventType
+        :param team_log.SharedContentRelinquishMembershipType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_relinquish_membership', val)
 
@@ -19294,8 +19487,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_remove_invitees`` tag with value ``val``.
 
-        :param SharedContentRemoveInviteesType val:
-        :rtype: EventType
+        :param team_log.SharedContentRemoveInviteesType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_remove_invitees', val)
 
@@ -19305,8 +19498,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_remove_link_expiry`` tag with value ``val``.
 
-        :param SharedContentRemoveLinkExpiryType val:
-        :rtype: EventType
+        :param team_log.SharedContentRemoveLinkExpiryType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_remove_link_expiry', val)
 
@@ -19316,8 +19509,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_remove_link_password`` tag with value ``val``.
 
-        :param SharedContentRemoveLinkPasswordType val:
-        :rtype: EventType
+        :param team_log.SharedContentRemoveLinkPasswordType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_remove_link_password', val)
 
@@ -19327,8 +19520,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_remove_member`` tag with value ``val``.
 
-        :param SharedContentRemoveMemberType val:
-        :rtype: EventType
+        :param team_log.SharedContentRemoveMemberType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_remove_member', val)
 
@@ -19338,8 +19531,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_content_request_access`` tag with value ``val``.
 
-        :param SharedContentRequestAccessType val:
-        :rtype: EventType
+        :param team_log.SharedContentRequestAccessType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_request_access', val)
 
@@ -19349,8 +19542,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_content_unshare``
         tag with value ``val``.
 
-        :param SharedContentUnshareType val:
-        :rtype: EventType
+        :param team_log.SharedContentUnshareType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_unshare', val)
 
@@ -19360,8 +19553,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_content_view`` tag
         with value ``val``.
 
-        :param SharedContentViewType val:
-        :rtype: EventType
+        :param team_log.SharedContentViewType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_content_view', val)
 
@@ -19371,8 +19564,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_change_link_policy`` tag with value ``val``.
 
-        :param SharedFolderChangeLinkPolicyType val:
-        :rtype: EventType
+        :param team_log.SharedFolderChangeLinkPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_change_link_policy', val)
 
@@ -19383,8 +19576,8 @@ class EventType(bb.Union):
         ``shared_folder_change_members_inheritance_policy`` tag with value
         ``val``.
 
-        :param SharedFolderChangeMembersInheritancePolicyType val:
-        :rtype: EventType
+        :param team_log.SharedFolderChangeMembersInheritancePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_change_members_inheritance_policy', val)
 
@@ -19395,8 +19588,8 @@ class EventType(bb.Union):
         ``shared_folder_change_members_management_policy`` tag with value
         ``val``.
 
-        :param SharedFolderChangeMembersManagementPolicyType val:
-        :rtype: EventType
+        :param team_log.SharedFolderChangeMembersManagementPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_change_members_management_policy', val)
 
@@ -19406,8 +19599,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_change_members_policy`` tag with value ``val``.
 
-        :param SharedFolderChangeMembersPolicyType val:
-        :rtype: EventType
+        :param team_log.SharedFolderChangeMembersPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_change_members_policy', val)
 
@@ -19417,8 +19610,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_folder_create`` tag
         with value ``val``.
 
-        :param SharedFolderCreateType val:
-        :rtype: EventType
+        :param team_log.SharedFolderCreateType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_create', val)
 
@@ -19428,8 +19621,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_decline_invitation`` tag with value ``val``.
 
-        :param SharedFolderDeclineInvitationType val:
-        :rtype: EventType
+        :param team_log.SharedFolderDeclineInvitationType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_decline_invitation', val)
 
@@ -19439,8 +19632,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_folder_mount`` tag
         with value ``val``.
 
-        :param SharedFolderMountType val:
-        :rtype: EventType
+        :param team_log.SharedFolderMountType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_mount', val)
 
@@ -19450,8 +19643,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_folder_nest`` tag
         with value ``val``.
 
-        :param SharedFolderNestType val:
-        :rtype: EventType
+        :param team_log.SharedFolderNestType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_nest', val)
 
@@ -19461,8 +19654,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_folder_transfer_ownership`` tag with value ``val``.
 
-        :param SharedFolderTransferOwnershipType val:
-        :rtype: EventType
+        :param team_log.SharedFolderTransferOwnershipType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_transfer_ownership', val)
 
@@ -19472,8 +19665,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_folder_unmount``
         tag with value ``val``.
 
-        :param SharedFolderUnmountType val:
-        :rtype: EventType
+        :param team_log.SharedFolderUnmountType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_folder_unmount', val)
 
@@ -19483,8 +19676,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_link_add_expiry``
         tag with value ``val``.
 
-        :param SharedLinkAddExpiryType val:
-        :rtype: EventType
+        :param team_log.SharedLinkAddExpiryType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_add_expiry', val)
 
@@ -19494,8 +19687,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_link_change_expiry`` tag with value ``val``.
 
-        :param SharedLinkChangeExpiryType val:
-        :rtype: EventType
+        :param team_log.SharedLinkChangeExpiryType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_change_expiry', val)
 
@@ -19505,8 +19698,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_link_change_visibility`` tag with value ``val``.
 
-        :param SharedLinkChangeVisibilityType val:
-        :rtype: EventType
+        :param team_log.SharedLinkChangeVisibilityType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_change_visibility', val)
 
@@ -19516,8 +19709,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_link_copy`` tag
         with value ``val``.
 
-        :param SharedLinkCopyType val:
-        :rtype: EventType
+        :param team_log.SharedLinkCopyType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_copy', val)
 
@@ -19527,8 +19720,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_link_create`` tag
         with value ``val``.
 
-        :param SharedLinkCreateType val:
-        :rtype: EventType
+        :param team_log.SharedLinkCreateType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_create', val)
 
@@ -19538,8 +19731,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_link_disable`` tag
         with value ``val``.
 
-        :param SharedLinkDisableType val:
-        :rtype: EventType
+        :param team_log.SharedLinkDisableType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_disable', val)
 
@@ -19549,8 +19742,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_link_download`` tag
         with value ``val``.
 
-        :param SharedLinkDownloadType val:
-        :rtype: EventType
+        :param team_log.SharedLinkDownloadType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_download', val)
 
@@ -19560,8 +19753,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``shared_link_remove_expiry`` tag with value ``val``.
 
-        :param SharedLinkRemoveExpiryType val:
-        :rtype: EventType
+        :param team_log.SharedLinkRemoveExpiryType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_remove_expiry', val)
 
@@ -19571,8 +19764,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_link_share`` tag
         with value ``val``.
 
-        :param SharedLinkShareType val:
-        :rtype: EventType
+        :param team_log.SharedLinkShareType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_share', val)
 
@@ -19582,8 +19775,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_link_view`` tag
         with value ``val``.
 
-        :param SharedLinkViewType val:
-        :rtype: EventType
+        :param team_log.SharedLinkViewType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_link_view', val)
 
@@ -19593,8 +19786,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shared_note_opened`` tag
         with value ``val``.
 
-        :param SharedNoteOpenedType val:
-        :rtype: EventType
+        :param team_log.SharedNoteOpenedType val:
+        :rtype: team_log.EventType
         """
         return cls('shared_note_opened', val)
 
@@ -19604,8 +19797,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``shmodel_group_share`` tag
         with value ``val``.
 
-        :param ShmodelGroupShareType val:
-        :rtype: EventType
+        :param team_log.ShmodelGroupShareType val:
+        :rtype: team_log.EventType
         """
         return cls('shmodel_group_share', val)
 
@@ -19615,8 +19808,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_access_granted``
         tag with value ``val``.
 
-        :param ShowcaseAccessGrantedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseAccessGrantedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_access_granted', val)
 
@@ -19626,8 +19819,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_add_member`` tag
         with value ``val``.
 
-        :param ShowcaseAddMemberType val:
-        :rtype: EventType
+        :param team_log.ShowcaseAddMemberType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_add_member', val)
 
@@ -19637,8 +19830,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_archived`` tag
         with value ``val``.
 
-        :param ShowcaseArchivedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseArchivedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_archived', val)
 
@@ -19648,8 +19841,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_created`` tag
         with value ``val``.
 
-        :param ShowcaseCreatedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseCreatedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_created', val)
 
@@ -19659,8 +19852,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_delete_comment``
         tag with value ``val``.
 
-        :param ShowcaseDeleteCommentType val:
-        :rtype: EventType
+        :param team_log.ShowcaseDeleteCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_delete_comment', val)
 
@@ -19670,8 +19863,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_edited`` tag with
         value ``val``.
 
-        :param ShowcaseEditedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseEditedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_edited', val)
 
@@ -19681,8 +19874,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_edit_comment``
         tag with value ``val``.
 
-        :param ShowcaseEditCommentType val:
-        :rtype: EventType
+        :param team_log.ShowcaseEditCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_edit_comment', val)
 
@@ -19692,8 +19885,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_file_added`` tag
         with value ``val``.
 
-        :param ShowcaseFileAddedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseFileAddedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_file_added', val)
 
@@ -19703,8 +19896,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_file_download``
         tag with value ``val``.
 
-        :param ShowcaseFileDownloadType val:
-        :rtype: EventType
+        :param team_log.ShowcaseFileDownloadType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_file_download', val)
 
@@ -19714,8 +19907,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_file_removed``
         tag with value ``val``.
 
-        :param ShowcaseFileRemovedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseFileRemovedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_file_removed', val)
 
@@ -19725,8 +19918,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_file_view`` tag
         with value ``val``.
 
-        :param ShowcaseFileViewType val:
-        :rtype: EventType
+        :param team_log.ShowcaseFileViewType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_file_view', val)
 
@@ -19736,8 +19929,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``showcase_permanently_deleted`` tag with value ``val``.
 
-        :param ShowcasePermanentlyDeletedType val:
-        :rtype: EventType
+        :param team_log.ShowcasePermanentlyDeletedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_permanently_deleted', val)
 
@@ -19747,8 +19940,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_post_comment``
         tag with value ``val``.
 
-        :param ShowcasePostCommentType val:
-        :rtype: EventType
+        :param team_log.ShowcasePostCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_post_comment', val)
 
@@ -19758,8 +19951,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_remove_member``
         tag with value ``val``.
 
-        :param ShowcaseRemoveMemberType val:
-        :rtype: EventType
+        :param team_log.ShowcaseRemoveMemberType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_remove_member', val)
 
@@ -19769,8 +19962,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_renamed`` tag
         with value ``val``.
 
-        :param ShowcaseRenamedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseRenamedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_renamed', val)
 
@@ -19780,8 +19973,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_request_access``
         tag with value ``val``.
 
-        :param ShowcaseRequestAccessType val:
-        :rtype: EventType
+        :param team_log.ShowcaseRequestAccessType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_request_access', val)
 
@@ -19791,8 +19984,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_resolve_comment``
         tag with value ``val``.
 
-        :param ShowcaseResolveCommentType val:
-        :rtype: EventType
+        :param team_log.ShowcaseResolveCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_resolve_comment', val)
 
@@ -19802,8 +19995,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_restored`` tag
         with value ``val``.
 
-        :param ShowcaseRestoredType val:
-        :rtype: EventType
+        :param team_log.ShowcaseRestoredType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_restored', val)
 
@@ -19813,8 +20006,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_trashed`` tag
         with value ``val``.
 
-        :param ShowcaseTrashedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseTrashedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_trashed', val)
 
@@ -19824,8 +20017,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``showcase_trashed_deprecated`` tag with value ``val``.
 
-        :param ShowcaseTrashedDeprecatedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseTrashedDeprecatedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_trashed_deprecated', val)
 
@@ -19835,8 +20028,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``showcase_unresolve_comment`` tag with value ``val``.
 
-        :param ShowcaseUnresolveCommentType val:
-        :rtype: EventType
+        :param team_log.ShowcaseUnresolveCommentType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_unresolve_comment', val)
 
@@ -19846,8 +20039,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_untrashed`` tag
         with value ``val``.
 
-        :param ShowcaseUntrashedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseUntrashedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_untrashed', val)
 
@@ -19857,8 +20050,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``showcase_untrashed_deprecated`` tag with value ``val``.
 
-        :param ShowcaseUntrashedDeprecatedType val:
-        :rtype: EventType
+        :param team_log.ShowcaseUntrashedDeprecatedType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_untrashed_deprecated', val)
 
@@ -19868,8 +20061,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``showcase_view`` tag with
         value ``val``.
 
-        :param ShowcaseViewType val:
-        :rtype: EventType
+        :param team_log.ShowcaseViewType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_view', val)
 
@@ -19879,8 +20072,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_add_cert`` tag with
         value ``val``.
 
-        :param SsoAddCertType val:
-        :rtype: EventType
+        :param team_log.SsoAddCertType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_add_cert', val)
 
@@ -19890,8 +20083,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_add_login_url`` tag
         with value ``val``.
 
-        :param SsoAddLoginUrlType val:
-        :rtype: EventType
+        :param team_log.SsoAddLoginUrlType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_add_login_url', val)
 
@@ -19901,8 +20094,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_add_logout_url`` tag
         with value ``val``.
 
-        :param SsoAddLogoutUrlType val:
-        :rtype: EventType
+        :param team_log.SsoAddLogoutUrlType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_add_logout_url', val)
 
@@ -19912,8 +20105,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_change_cert`` tag with
         value ``val``.
 
-        :param SsoChangeCertType val:
-        :rtype: EventType
+        :param team_log.SsoChangeCertType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_change_cert', val)
 
@@ -19923,8 +20116,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_change_login_url`` tag
         with value ``val``.
 
-        :param SsoChangeLoginUrlType val:
-        :rtype: EventType
+        :param team_log.SsoChangeLoginUrlType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_change_login_url', val)
 
@@ -19934,8 +20127,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_change_logout_url``
         tag with value ``val``.
 
-        :param SsoChangeLogoutUrlType val:
-        :rtype: EventType
+        :param team_log.SsoChangeLogoutUrlType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_change_logout_url', val)
 
@@ -19945,8 +20138,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``sso_change_saml_identity_mode`` tag with value ``val``.
 
-        :param SsoChangeSamlIdentityModeType val:
-        :rtype: EventType
+        :param team_log.SsoChangeSamlIdentityModeType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_change_saml_identity_mode', val)
 
@@ -19956,8 +20149,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_remove_cert`` tag with
         value ``val``.
 
-        :param SsoRemoveCertType val:
-        :rtype: EventType
+        :param team_log.SsoRemoveCertType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_remove_cert', val)
 
@@ -19967,8 +20160,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_remove_login_url`` tag
         with value ``val``.
 
-        :param SsoRemoveLoginUrlType val:
-        :rtype: EventType
+        :param team_log.SsoRemoveLoginUrlType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_remove_login_url', val)
 
@@ -19978,8 +20171,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_remove_logout_url``
         tag with value ``val``.
 
-        :param SsoRemoveLogoutUrlType val:
-        :rtype: EventType
+        :param team_log.SsoRemoveLogoutUrlType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_remove_logout_url', val)
 
@@ -19989,8 +20182,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``team_folder_change_status`` tag with value ``val``.
 
-        :param TeamFolderChangeStatusType val:
-        :rtype: EventType
+        :param team_log.TeamFolderChangeStatusType val:
+        :rtype: team_log.EventType
         """
         return cls('team_folder_change_status', val)
 
@@ -20000,8 +20193,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_folder_create`` tag
         with value ``val``.
 
-        :param TeamFolderCreateType val:
-        :rtype: EventType
+        :param team_log.TeamFolderCreateType val:
+        :rtype: team_log.EventType
         """
         return cls('team_folder_create', val)
 
@@ -20011,8 +20204,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_folder_downgrade``
         tag with value ``val``.
 
-        :param TeamFolderDowngradeType val:
-        :rtype: EventType
+        :param team_log.TeamFolderDowngradeType val:
+        :rtype: team_log.EventType
         """
         return cls('team_folder_downgrade', val)
 
@@ -20022,8 +20215,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``team_folder_permanently_delete`` tag with value ``val``.
 
-        :param TeamFolderPermanentlyDeleteType val:
-        :rtype: EventType
+        :param team_log.TeamFolderPermanentlyDeleteType val:
+        :rtype: team_log.EventType
         """
         return cls('team_folder_permanently_delete', val)
 
@@ -20033,8 +20226,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_folder_rename`` tag
         with value ``val``.
 
-        :param TeamFolderRenameType val:
-        :rtype: EventType
+        :param team_log.TeamFolderRenameType val:
+        :rtype: team_log.EventType
         """
         return cls('team_folder_rename', val)
 
@@ -20044,8 +20237,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``team_selective_sync_settings_changed`` tag with value ``val``.
 
-        :param TeamSelectiveSyncSettingsChangedType val:
-        :rtype: EventType
+        :param team_log.TeamSelectiveSyncSettingsChangedType val:
+        :rtype: team_log.EventType
         """
         return cls('team_selective_sync_settings_changed', val)
 
@@ -20055,8 +20248,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``account_capture_change_policy`` tag with value ``val``.
 
-        :param AccountCaptureChangePolicyType val:
-        :rtype: EventType
+        :param team_log.AccountCaptureChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('account_capture_change_policy', val)
 
@@ -20066,8 +20259,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``allow_download_disabled``
         tag with value ``val``.
 
-        :param AllowDownloadDisabledType val:
-        :rtype: EventType
+        :param team_log.AllowDownloadDisabledType val:
+        :rtype: team_log.EventType
         """
         return cls('allow_download_disabled', val)
 
@@ -20077,8 +20270,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``allow_download_enabled``
         tag with value ``val``.
 
-        :param AllowDownloadEnabledType val:
-        :rtype: EventType
+        :param team_log.AllowDownloadEnabledType val:
+        :rtype: team_log.EventType
         """
         return cls('allow_download_enabled', val)
 
@@ -20088,8 +20281,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``camera_uploads_policy_changed`` tag with value ``val``.
 
-        :param CameraUploadsPolicyChangedType val:
-        :rtype: EventType
+        :param team_log.CameraUploadsPolicyChangedType val:
+        :rtype: team_log.EventType
         """
         return cls('camera_uploads_policy_changed', val)
 
@@ -20099,8 +20292,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``data_placement_restriction_change_policy`` tag with value ``val``.
 
-        :param DataPlacementRestrictionChangePolicyType val:
-        :rtype: EventType
+        :param team_log.DataPlacementRestrictionChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('data_placement_restriction_change_policy', val)
 
@@ -20110,8 +20303,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``data_placement_restriction_satisfy_policy`` tag with value ``val``.
 
-        :param DataPlacementRestrictionSatisfyPolicyType val:
-        :rtype: EventType
+        :param team_log.DataPlacementRestrictionSatisfyPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('data_placement_restriction_satisfy_policy', val)
 
@@ -20121,8 +20314,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``device_approvals_change_desktop_policy`` tag with value ``val``.
 
-        :param DeviceApprovalsChangeDesktopPolicyType val:
-        :rtype: EventType
+        :param team_log.DeviceApprovalsChangeDesktopPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('device_approvals_change_desktop_policy', val)
 
@@ -20132,8 +20325,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``device_approvals_change_mobile_policy`` tag with value ``val``.
 
-        :param DeviceApprovalsChangeMobilePolicyType val:
-        :rtype: EventType
+        :param team_log.DeviceApprovalsChangeMobilePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('device_approvals_change_mobile_policy', val)
 
@@ -20143,8 +20336,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``device_approvals_change_overage_action`` tag with value ``val``.
 
-        :param DeviceApprovalsChangeOverageActionType val:
-        :rtype: EventType
+        :param team_log.DeviceApprovalsChangeOverageActionType val:
+        :rtype: team_log.EventType
         """
         return cls('device_approvals_change_overage_action', val)
 
@@ -20154,8 +20347,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``device_approvals_change_unlink_action`` tag with value ``val``.
 
-        :param DeviceApprovalsChangeUnlinkActionType val:
-        :rtype: EventType
+        :param team_log.DeviceApprovalsChangeUnlinkActionType val:
+        :rtype: team_log.EventType
         """
         return cls('device_approvals_change_unlink_action', val)
 
@@ -20165,8 +20358,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``directory_restrictions_add_members`` tag with value ``val``.
 
-        :param DirectoryRestrictionsAddMembersType val:
-        :rtype: EventType
+        :param team_log.DirectoryRestrictionsAddMembersType val:
+        :rtype: team_log.EventType
         """
         return cls('directory_restrictions_add_members', val)
 
@@ -20176,8 +20369,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``directory_restrictions_remove_members`` tag with value ``val``.
 
-        :param DirectoryRestrictionsRemoveMembersType val:
-        :rtype: EventType
+        :param team_log.DirectoryRestrictionsRemoveMembersType val:
+        :rtype: team_log.EventType
         """
         return cls('directory_restrictions_remove_members', val)
 
@@ -20187,8 +20380,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``emm_add_exception`` tag
         with value ``val``.
 
-        :param EmmAddExceptionType val:
-        :rtype: EventType
+        :param team_log.EmmAddExceptionType val:
+        :rtype: team_log.EventType
         """
         return cls('emm_add_exception', val)
 
@@ -20198,8 +20391,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``emm_change_policy`` tag
         with value ``val``.
 
-        :param EmmChangePolicyType val:
-        :rtype: EventType
+        :param team_log.EmmChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('emm_change_policy', val)
 
@@ -20209,8 +20402,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``emm_remove_exception`` tag
         with value ``val``.
 
-        :param EmmRemoveExceptionType val:
-        :rtype: EventType
+        :param team_log.EmmRemoveExceptionType val:
+        :rtype: team_log.EventType
         """
         return cls('emm_remove_exception', val)
 
@@ -20220,8 +20413,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``extended_version_history_change_policy`` tag with value ``val``.
 
-        :param ExtendedVersionHistoryChangePolicyType val:
-        :rtype: EventType
+        :param team_log.ExtendedVersionHistoryChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('extended_version_history_change_policy', val)
 
@@ -20231,8 +20424,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``file_comments_change_policy`` tag with value ``val``.
 
-        :param FileCommentsChangePolicyType val:
-        :rtype: EventType
+        :param team_log.FileCommentsChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('file_comments_change_policy', val)
 
@@ -20242,8 +20435,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``file_requests_change_policy`` tag with value ``val``.
 
-        :param FileRequestsChangePolicyType val:
-        :rtype: EventType
+        :param team_log.FileRequestsChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('file_requests_change_policy', val)
 
@@ -20253,8 +20446,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``file_requests_emails_enabled`` tag with value ``val``.
 
-        :param FileRequestsEmailsEnabledType val:
-        :rtype: EventType
+        :param team_log.FileRequestsEmailsEnabledType val:
+        :rtype: team_log.EventType
         """
         return cls('file_requests_emails_enabled', val)
 
@@ -20264,8 +20457,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``file_requests_emails_restricted_to_team_only`` tag with value ``val``.
 
-        :param FileRequestsEmailsRestrictedToTeamOnlyType val:
-        :rtype: EventType
+        :param team_log.FileRequestsEmailsRestrictedToTeamOnlyType val:
+        :rtype: team_log.EventType
         """
         return cls('file_requests_emails_restricted_to_team_only', val)
 
@@ -20275,8 +20468,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``google_sso_change_policy``
         tag with value ``val``.
 
-        :param GoogleSsoChangePolicyType val:
-        :rtype: EventType
+        :param team_log.GoogleSsoChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('google_sso_change_policy', val)
 
@@ -20286,8 +20479,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``group_user_management_change_policy`` tag with value ``val``.
 
-        :param GroupUserManagementChangePolicyType val:
-        :rtype: EventType
+        :param team_log.GroupUserManagementChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('group_user_management_change_policy', val)
 
@@ -20297,8 +20490,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_requests_change_policy`` tag with value ``val``.
 
-        :param MemberRequestsChangePolicyType val:
-        :rtype: EventType
+        :param team_log.MemberRequestsChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('member_requests_change_policy', val)
 
@@ -20308,8 +20501,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_add_exception`` tag with value ``val``.
 
-        :param MemberSpaceLimitsAddExceptionType val:
-        :rtype: EventType
+        :param team_log.MemberSpaceLimitsAddExceptionType val:
+        :rtype: team_log.EventType
         """
         return cls('member_space_limits_add_exception', val)
 
@@ -20319,8 +20512,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_change_caps_type_policy`` tag with value ``val``.
 
-        :param MemberSpaceLimitsChangeCapsTypePolicyType val:
-        :rtype: EventType
+        :param team_log.MemberSpaceLimitsChangeCapsTypePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('member_space_limits_change_caps_type_policy', val)
 
@@ -20330,8 +20523,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_change_policy`` tag with value ``val``.
 
-        :param MemberSpaceLimitsChangePolicyType val:
-        :rtype: EventType
+        :param team_log.MemberSpaceLimitsChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('member_space_limits_change_policy', val)
 
@@ -20341,8 +20534,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_space_limits_remove_exception`` tag with value ``val``.
 
-        :param MemberSpaceLimitsRemoveExceptionType val:
-        :rtype: EventType
+        :param team_log.MemberSpaceLimitsRemoveExceptionType val:
+        :rtype: team_log.EventType
         """
         return cls('member_space_limits_remove_exception', val)
 
@@ -20352,8 +20545,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``member_suggestions_change_policy`` tag with value ``val``.
 
-        :param MemberSuggestionsChangePolicyType val:
-        :rtype: EventType
+        :param team_log.MemberSuggestionsChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('member_suggestions_change_policy', val)
 
@@ -20363,8 +20556,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``microsoft_office_addin_change_policy`` tag with value ``val``.
 
-        :param MicrosoftOfficeAddinChangePolicyType val:
-        :rtype: EventType
+        :param team_log.MicrosoftOfficeAddinChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('microsoft_office_addin_change_policy', val)
 
@@ -20374,8 +20567,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``network_control_change_policy`` tag with value ``val``.
 
-        :param NetworkControlChangePolicyType val:
-        :rtype: EventType
+        :param team_log.NetworkControlChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('network_control_change_policy', val)
 
@@ -20385,8 +20578,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_change_deployment_policy`` tag with value ``val``.
 
-        :param PaperChangeDeploymentPolicyType val:
-        :rtype: EventType
+        :param team_log.PaperChangeDeploymentPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_change_deployment_policy', val)
 
@@ -20396,8 +20589,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_change_member_link_policy`` tag with value ``val``.
 
-        :param PaperChangeMemberLinkPolicyType val:
-        :rtype: EventType
+        :param team_log.PaperChangeMemberLinkPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_change_member_link_policy', val)
 
@@ -20407,8 +20600,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_change_member_policy`` tag with value ``val``.
 
-        :param PaperChangeMemberPolicyType val:
-        :rtype: EventType
+        :param team_log.PaperChangeMemberPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_change_member_policy', val)
 
@@ -20418,8 +20611,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``paper_change_policy`` tag
         with value ``val``.
 
-        :param PaperChangePolicyType val:
-        :rtype: EventType
+        :param team_log.PaperChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_change_policy', val)
 
@@ -20429,8 +20622,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_enabled_users_group_addition`` tag with value ``val``.
 
-        :param PaperEnabledUsersGroupAdditionType val:
-        :rtype: EventType
+        :param team_log.PaperEnabledUsersGroupAdditionType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_enabled_users_group_addition', val)
 
@@ -20440,8 +20633,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``paper_enabled_users_group_removal`` tag with value ``val``.
 
-        :param PaperEnabledUsersGroupRemovalType val:
-        :rtype: EventType
+        :param team_log.PaperEnabledUsersGroupRemovalType val:
+        :rtype: team_log.EventType
         """
         return cls('paper_enabled_users_group_removal', val)
 
@@ -20451,8 +20644,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``permanent_delete_change_policy`` tag with value ``val``.
 
-        :param PermanentDeleteChangePolicyType val:
-        :rtype: EventType
+        :param team_log.PermanentDeleteChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('permanent_delete_change_policy', val)
 
@@ -20462,8 +20655,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``sharing_change_folder_join_policy`` tag with value ``val``.
 
-        :param SharingChangeFolderJoinPolicyType val:
-        :rtype: EventType
+        :param team_log.SharingChangeFolderJoinPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('sharing_change_folder_join_policy', val)
 
@@ -20473,8 +20666,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``sharing_change_link_policy`` tag with value ``val``.
 
-        :param SharingChangeLinkPolicyType val:
-        :rtype: EventType
+        :param team_log.SharingChangeLinkPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('sharing_change_link_policy', val)
 
@@ -20484,8 +20677,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``sharing_change_member_policy`` tag with value ``val``.
 
-        :param SharingChangeMemberPolicyType val:
-        :rtype: EventType
+        :param team_log.SharingChangeMemberPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('sharing_change_member_policy', val)
 
@@ -20495,8 +20688,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``showcase_change_download_policy`` tag with value ``val``.
 
-        :param ShowcaseChangeDownloadPolicyType val:
-        :rtype: EventType
+        :param team_log.ShowcaseChangeDownloadPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_change_download_policy', val)
 
@@ -20506,8 +20699,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``showcase_change_enabled_policy`` tag with value ``val``.
 
-        :param ShowcaseChangeEnabledPolicyType val:
-        :rtype: EventType
+        :param team_log.ShowcaseChangeEnabledPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_change_enabled_policy', val)
 
@@ -20517,8 +20710,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``showcase_change_external_sharing_policy`` tag with value ``val``.
 
-        :param ShowcaseChangeExternalSharingPolicyType val:
-        :rtype: EventType
+        :param team_log.ShowcaseChangeExternalSharingPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('showcase_change_external_sharing_policy', val)
 
@@ -20528,8 +20721,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``smart_sync_change_policy``
         tag with value ``val``.
 
-        :param SmartSyncChangePolicyType val:
-        :rtype: EventType
+        :param team_log.SmartSyncChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('smart_sync_change_policy', val)
 
@@ -20539,8 +20732,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``smart_sync_not_opt_out``
         tag with value ``val``.
 
-        :param SmartSyncNotOptOutType val:
-        :rtype: EventType
+        :param team_log.SmartSyncNotOptOutType val:
+        :rtype: team_log.EventType
         """
         return cls('smart_sync_not_opt_out', val)
 
@@ -20550,8 +20743,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``smart_sync_opt_out`` tag
         with value ``val``.
 
-        :param SmartSyncOptOutType val:
-        :rtype: EventType
+        :param team_log.SmartSyncOptOutType val:
+        :rtype: team_log.EventType
         """
         return cls('smart_sync_opt_out', val)
 
@@ -20561,8 +20754,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``sso_change_policy`` tag
         with value ``val``.
 
-        :param SsoChangePolicyType val:
-        :rtype: EventType
+        :param team_log.SsoChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('sso_change_policy', val)
 
@@ -20572,8 +20765,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``team_selective_sync_policy_changed`` tag with value ``val``.
 
-        :param TeamSelectiveSyncPolicyChangedType val:
-        :rtype: EventType
+        :param team_log.TeamSelectiveSyncPolicyChangedType val:
+        :rtype: team_log.EventType
         """
         return cls('team_selective_sync_policy_changed', val)
 
@@ -20583,8 +20776,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``tfa_change_policy`` tag
         with value ``val``.
 
-        :param TfaChangePolicyType val:
-        :rtype: EventType
+        :param team_log.TfaChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('tfa_change_policy', val)
 
@@ -20594,8 +20787,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``two_account_change_policy`` tag with value ``val``.
 
-        :param TwoAccountChangePolicyType val:
-        :rtype: EventType
+        :param team_log.TwoAccountChangePolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('two_account_change_policy', val)
 
@@ -20605,8 +20798,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``viewer_info_policy_changed`` tag with value ``val``.
 
-        :param ViewerInfoPolicyChangedType val:
-        :rtype: EventType
+        :param team_log.ViewerInfoPolicyChangedType val:
+        :rtype: team_log.EventType
         """
         return cls('viewer_info_policy_changed', val)
 
@@ -20616,8 +20809,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``web_sessions_change_fixed_length_policy`` tag with value ``val``.
 
-        :param WebSessionsChangeFixedLengthPolicyType val:
-        :rtype: EventType
+        :param team_log.WebSessionsChangeFixedLengthPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('web_sessions_change_fixed_length_policy', val)
 
@@ -20627,8 +20820,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``web_sessions_change_idle_length_policy`` tag with value ``val``.
 
-        :param WebSessionsChangeIdleLengthPolicyType val:
-        :rtype: EventType
+        :param team_log.WebSessionsChangeIdleLengthPolicyType val:
+        :rtype: team_log.EventType
         """
         return cls('web_sessions_change_idle_length_policy', val)
 
@@ -20638,8 +20831,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_merge_from`` tag with
         value ``val``.
 
-        :param TeamMergeFromType val:
-        :rtype: EventType
+        :param team_log.TeamMergeFromType val:
+        :rtype: team_log.EventType
         """
         return cls('team_merge_from', val)
 
@@ -20649,8 +20842,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_merge_to`` tag with
         value ``val``.
 
-        :param TeamMergeToType val:
-        :rtype: EventType
+        :param team_log.TeamMergeToType val:
+        :rtype: team_log.EventType
         """
         return cls('team_merge_to', val)
 
@@ -20660,8 +20853,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_profile_add_logo``
         tag with value ``val``.
 
-        :param TeamProfileAddLogoType val:
-        :rtype: EventType
+        :param team_log.TeamProfileAddLogoType val:
+        :rtype: team_log.EventType
         """
         return cls('team_profile_add_logo', val)
 
@@ -20671,8 +20864,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the
         ``team_profile_change_default_language`` tag with value ``val``.
 
-        :param TeamProfileChangeDefaultLanguageType val:
-        :rtype: EventType
+        :param team_log.TeamProfileChangeDefaultLanguageType val:
+        :rtype: team_log.EventType
         """
         return cls('team_profile_change_default_language', val)
 
@@ -20682,8 +20875,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_profile_change_logo``
         tag with value ``val``.
 
-        :param TeamProfileChangeLogoType val:
-        :rtype: EventType
+        :param team_log.TeamProfileChangeLogoType val:
+        :rtype: team_log.EventType
         """
         return cls('team_profile_change_logo', val)
 
@@ -20693,8 +20886,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_profile_change_name``
         tag with value ``val``.
 
-        :param TeamProfileChangeNameType val:
-        :rtype: EventType
+        :param team_log.TeamProfileChangeNameType val:
+        :rtype: team_log.EventType
         """
         return cls('team_profile_change_name', val)
 
@@ -20704,8 +20897,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``team_profile_remove_logo``
         tag with value ``val``.
 
-        :param TeamProfileRemoveLogoType val:
-        :rtype: EventType
+        :param team_log.TeamProfileRemoveLogoType val:
+        :rtype: team_log.EventType
         """
         return cls('team_profile_remove_logo', val)
 
@@ -20715,8 +20908,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``tfa_add_backup_phone`` tag
         with value ``val``.
 
-        :param TfaAddBackupPhoneType val:
-        :rtype: EventType
+        :param team_log.TfaAddBackupPhoneType val:
+        :rtype: team_log.EventType
         """
         return cls('tfa_add_backup_phone', val)
 
@@ -20726,8 +20919,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``tfa_add_security_key`` tag
         with value ``val``.
 
-        :param TfaAddSecurityKeyType val:
-        :rtype: EventType
+        :param team_log.TfaAddSecurityKeyType val:
+        :rtype: team_log.EventType
         """
         return cls('tfa_add_security_key', val)
 
@@ -20737,8 +20930,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``tfa_change_backup_phone``
         tag with value ``val``.
 
-        :param TfaChangeBackupPhoneType val:
-        :rtype: EventType
+        :param team_log.TfaChangeBackupPhoneType val:
+        :rtype: team_log.EventType
         """
         return cls('tfa_change_backup_phone', val)
 
@@ -20748,8 +20941,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``tfa_change_status`` tag
         with value ``val``.
 
-        :param TfaChangeStatusType val:
-        :rtype: EventType
+        :param team_log.TfaChangeStatusType val:
+        :rtype: team_log.EventType
         """
         return cls('tfa_change_status', val)
 
@@ -20759,8 +20952,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``tfa_remove_backup_phone``
         tag with value ``val``.
 
-        :param TfaRemoveBackupPhoneType val:
-        :rtype: EventType
+        :param team_log.TfaRemoveBackupPhoneType val:
+        :rtype: team_log.EventType
         """
         return cls('tfa_remove_backup_phone', val)
 
@@ -20770,8 +20963,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``tfa_remove_security_key``
         tag with value ``val``.
 
-        :param TfaRemoveSecurityKeyType val:
-        :rtype: EventType
+        :param team_log.TfaRemoveSecurityKeyType val:
+        :rtype: team_log.EventType
         """
         return cls('tfa_remove_security_key', val)
 
@@ -20781,8 +20974,8 @@ class EventType(bb.Union):
         Create an instance of this class set to the ``tfa_reset`` tag with value
         ``val``.
 
-        :param TfaResetType val:
-        :rtype: EventType
+        :param team_log.TfaResetType val:
+        :rtype: team_log.EventType
         """
         return cls('tfa_reset', val)
 
@@ -23288,7 +23481,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_app_link_team` is true.
 
-        :rtype: AppLinkTeamType
+        :rtype: team_log.AppLinkTeamType
         """
         if not self.is_app_link_team():
             raise AttributeError("tag 'app_link_team' not set")
@@ -23300,7 +23493,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_app_link_user` is true.
 
-        :rtype: AppLinkUserType
+        :rtype: team_log.AppLinkUserType
         """
         if not self.is_app_link_user():
             raise AttributeError("tag 'app_link_user' not set")
@@ -23312,7 +23505,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_app_unlink_team` is true.
 
-        :rtype: AppUnlinkTeamType
+        :rtype: team_log.AppUnlinkTeamType
         """
         if not self.is_app_unlink_team():
             raise AttributeError("tag 'app_unlink_team' not set")
@@ -23324,7 +23517,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_app_unlink_user` is true.
 
-        :rtype: AppUnlinkUserType
+        :rtype: team_log.AppUnlinkUserType
         """
         if not self.is_app_unlink_user():
             raise AttributeError("tag 'app_unlink_user' not set")
@@ -23336,7 +23529,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_add_comment` is true.
 
-        :rtype: FileAddCommentType
+        :rtype: team_log.FileAddCommentType
         """
         if not self.is_file_add_comment():
             raise AttributeError("tag 'file_add_comment' not set")
@@ -23349,7 +23542,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_change_comment_subscription` is true.
 
-        :rtype: FileChangeCommentSubscriptionType
+        :rtype: team_log.FileChangeCommentSubscriptionType
         """
         if not self.is_file_change_comment_subscription():
             raise AttributeError("tag 'file_change_comment_subscription' not set")
@@ -23361,7 +23554,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_delete_comment` is true.
 
-        :rtype: FileDeleteCommentType
+        :rtype: team_log.FileDeleteCommentType
         """
         if not self.is_file_delete_comment():
             raise AttributeError("tag 'file_delete_comment' not set")
@@ -23373,7 +23566,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_edit_comment` is true.
 
-        :rtype: FileEditCommentType
+        :rtype: team_log.FileEditCommentType
         """
         if not self.is_file_edit_comment():
             raise AttributeError("tag 'file_edit_comment' not set")
@@ -23385,7 +23578,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_like_comment` is true.
 
-        :rtype: FileLikeCommentType
+        :rtype: team_log.FileLikeCommentType
         """
         if not self.is_file_like_comment():
             raise AttributeError("tag 'file_like_comment' not set")
@@ -23397,7 +23590,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_resolve_comment` is true.
 
-        :rtype: FileResolveCommentType
+        :rtype: team_log.FileResolveCommentType
         """
         if not self.is_file_resolve_comment():
             raise AttributeError("tag 'file_resolve_comment' not set")
@@ -23409,7 +23602,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_unlike_comment` is true.
 
-        :rtype: FileUnlikeCommentType
+        :rtype: team_log.FileUnlikeCommentType
         """
         if not self.is_file_unlike_comment():
             raise AttributeError("tag 'file_unlike_comment' not set")
@@ -23421,7 +23614,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_unresolve_comment` is true.
 
-        :rtype: FileUnresolveCommentType
+        :rtype: team_log.FileUnresolveCommentType
         """
         if not self.is_file_unresolve_comment():
             raise AttributeError("tag 'file_unresolve_comment' not set")
@@ -23433,7 +23626,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_change_ip_desktop` is true.
 
-        :rtype: DeviceChangeIpDesktopType
+        :rtype: team_log.DeviceChangeIpDesktopType
         """
         if not self.is_device_change_ip_desktop():
             raise AttributeError("tag 'device_change_ip_desktop' not set")
@@ -23445,7 +23638,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_change_ip_mobile` is true.
 
-        :rtype: DeviceChangeIpMobileType
+        :rtype: team_log.DeviceChangeIpMobileType
         """
         if not self.is_device_change_ip_mobile():
             raise AttributeError("tag 'device_change_ip_mobile' not set")
@@ -23457,7 +23650,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_change_ip_web` is true.
 
-        :rtype: DeviceChangeIpWebType
+        :rtype: team_log.DeviceChangeIpWebType
         """
         if not self.is_device_change_ip_web():
             raise AttributeError("tag 'device_change_ip_web' not set")
@@ -23469,7 +23662,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_delete_on_unlink_fail` is true.
 
-        :rtype: DeviceDeleteOnUnlinkFailType
+        :rtype: team_log.DeviceDeleteOnUnlinkFailType
         """
         if not self.is_device_delete_on_unlink_fail():
             raise AttributeError("tag 'device_delete_on_unlink_fail' not set")
@@ -23481,7 +23674,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_delete_on_unlink_success` is true.
 
-        :rtype: DeviceDeleteOnUnlinkSuccessType
+        :rtype: team_log.DeviceDeleteOnUnlinkSuccessType
         """
         if not self.is_device_delete_on_unlink_success():
             raise AttributeError("tag 'device_delete_on_unlink_success' not set")
@@ -23493,7 +23686,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_link_fail` is true.
 
-        :rtype: DeviceLinkFailType
+        :rtype: team_log.DeviceLinkFailType
         """
         if not self.is_device_link_fail():
             raise AttributeError("tag 'device_link_fail' not set")
@@ -23505,7 +23698,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_link_success` is true.
 
-        :rtype: DeviceLinkSuccessType
+        :rtype: team_log.DeviceLinkSuccessType
         """
         if not self.is_device_link_success():
             raise AttributeError("tag 'device_link_success' not set")
@@ -23517,7 +23710,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_management_disabled` is true.
 
-        :rtype: DeviceManagementDisabledType
+        :rtype: team_log.DeviceManagementDisabledType
         """
         if not self.is_device_management_disabled():
             raise AttributeError("tag 'device_management_disabled' not set")
@@ -23529,7 +23722,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_management_enabled` is true.
 
-        :rtype: DeviceManagementEnabledType
+        :rtype: team_log.DeviceManagementEnabledType
         """
         if not self.is_device_management_enabled():
             raise AttributeError("tag 'device_management_enabled' not set")
@@ -23541,7 +23734,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_unlink` is true.
 
-        :rtype: DeviceUnlinkType
+        :rtype: team_log.DeviceUnlinkType
         """
         if not self.is_device_unlink():
             raise AttributeError("tag 'device_unlink' not set")
@@ -23554,7 +23747,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_emm_refresh_auth_token` is true.
 
-        :rtype: EmmRefreshAuthTokenType
+        :rtype: team_log.EmmRefreshAuthTokenType
         """
         if not self.is_emm_refresh_auth_token():
             raise AttributeError("tag 'emm_refresh_auth_token' not set")
@@ -23567,7 +23760,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_account_capture_change_availability` is true.
 
-        :rtype: AccountCaptureChangeAvailabilityType
+        :rtype: team_log.AccountCaptureChangeAvailabilityType
         """
         if not self.is_account_capture_change_availability():
             raise AttributeError("tag 'account_capture_change_availability' not set")
@@ -23579,7 +23772,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_account_capture_migrate_account` is true.
 
-        :rtype: AccountCaptureMigrateAccountType
+        :rtype: team_log.AccountCaptureMigrateAccountType
         """
         if not self.is_account_capture_migrate_account():
             raise AttributeError("tag 'account_capture_migrate_account' not set")
@@ -23591,7 +23784,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_account_capture_notification_emails_sent` is true.
 
-        :rtype: AccountCaptureNotificationEmailsSentType
+        :rtype: team_log.AccountCaptureNotificationEmailsSentType
         """
         if not self.is_account_capture_notification_emails_sent():
             raise AttributeError("tag 'account_capture_notification_emails_sent' not set")
@@ -23603,7 +23796,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_account_capture_relinquish_account` is true.
 
-        :rtype: AccountCaptureRelinquishAccountType
+        :rtype: team_log.AccountCaptureRelinquishAccountType
         """
         if not self.is_account_capture_relinquish_account():
             raise AttributeError("tag 'account_capture_relinquish_account' not set")
@@ -23615,7 +23808,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_disabled_domain_invites` is true.
 
-        :rtype: DisabledDomainInvitesType
+        :rtype: team_log.DisabledDomainInvitesType
         """
         if not self.is_disabled_domain_invites():
             raise AttributeError("tag 'disabled_domain_invites' not set")
@@ -23627,7 +23820,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_invites_approve_request_to_join_team` is true.
 
-        :rtype: DomainInvitesApproveRequestToJoinTeamType
+        :rtype: team_log.DomainInvitesApproveRequestToJoinTeamType
         """
         if not self.is_domain_invites_approve_request_to_join_team():
             raise AttributeError("tag 'domain_invites_approve_request_to_join_team' not set")
@@ -23639,7 +23832,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_invites_decline_request_to_join_team` is true.
 
-        :rtype: DomainInvitesDeclineRequestToJoinTeamType
+        :rtype: team_log.DomainInvitesDeclineRequestToJoinTeamType
         """
         if not self.is_domain_invites_decline_request_to_join_team():
             raise AttributeError("tag 'domain_invites_decline_request_to_join_team' not set")
@@ -23652,7 +23845,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_invites_email_existing_users` is true.
 
-        :rtype: DomainInvitesEmailExistingUsersType
+        :rtype: team_log.DomainInvitesEmailExistingUsersType
         """
         if not self.is_domain_invites_email_existing_users():
             raise AttributeError("tag 'domain_invites_email_existing_users' not set")
@@ -23664,7 +23857,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_invites_request_to_join_team` is true.
 
-        :rtype: DomainInvitesRequestToJoinTeamType
+        :rtype: team_log.DomainInvitesRequestToJoinTeamType
         """
         if not self.is_domain_invites_request_to_join_team():
             raise AttributeError("tag 'domain_invites_request_to_join_team' not set")
@@ -23677,7 +23870,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_invites_set_invite_new_user_pref_to_no` is true.
 
-        :rtype: DomainInvitesSetInviteNewUserPrefToNoType
+        :rtype: team_log.DomainInvitesSetInviteNewUserPrefToNoType
         """
         if not self.is_domain_invites_set_invite_new_user_pref_to_no():
             raise AttributeError("tag 'domain_invites_set_invite_new_user_pref_to_no' not set")
@@ -23690,7 +23883,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_invites_set_invite_new_user_pref_to_yes` is true.
 
-        :rtype: DomainInvitesSetInviteNewUserPrefToYesType
+        :rtype: team_log.DomainInvitesSetInviteNewUserPrefToYesType
         """
         if not self.is_domain_invites_set_invite_new_user_pref_to_yes():
             raise AttributeError("tag 'domain_invites_set_invite_new_user_pref_to_yes' not set")
@@ -23702,7 +23895,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_verification_add_domain_fail` is true.
 
-        :rtype: DomainVerificationAddDomainFailType
+        :rtype: team_log.DomainVerificationAddDomainFailType
         """
         if not self.is_domain_verification_add_domain_fail():
             raise AttributeError("tag 'domain_verification_add_domain_fail' not set")
@@ -23714,7 +23907,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_verification_add_domain_success` is true.
 
-        :rtype: DomainVerificationAddDomainSuccessType
+        :rtype: team_log.DomainVerificationAddDomainSuccessType
         """
         if not self.is_domain_verification_add_domain_success():
             raise AttributeError("tag 'domain_verification_add_domain_success' not set")
@@ -23726,7 +23919,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_domain_verification_remove_domain` is true.
 
-        :rtype: DomainVerificationRemoveDomainType
+        :rtype: team_log.DomainVerificationRemoveDomainType
         """
         if not self.is_domain_verification_remove_domain():
             raise AttributeError("tag 'domain_verification_remove_domain' not set")
@@ -23738,7 +23931,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_enabled_domain_invites` is true.
 
-        :rtype: EnabledDomainInvitesType
+        :rtype: team_log.EnabledDomainInvitesType
         """
         if not self.is_enabled_domain_invites():
             raise AttributeError("tag 'enabled_domain_invites' not set")
@@ -23750,7 +23943,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_create_folder` is true.
 
-        :rtype: CreateFolderType
+        :rtype: team_log.CreateFolderType
         """
         if not self.is_create_folder():
             raise AttributeError("tag 'create_folder' not set")
@@ -23762,7 +23955,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_add` is true.
 
-        :rtype: FileAddType
+        :rtype: team_log.FileAddType
         """
         if not self.is_file_add():
             raise AttributeError("tag 'file_add' not set")
@@ -23774,7 +23967,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_copy` is true.
 
-        :rtype: FileCopyType
+        :rtype: team_log.FileCopyType
         """
         if not self.is_file_copy():
             raise AttributeError("tag 'file_copy' not set")
@@ -23786,7 +23979,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_delete` is true.
 
-        :rtype: FileDeleteType
+        :rtype: team_log.FileDeleteType
         """
         if not self.is_file_delete():
             raise AttributeError("tag 'file_delete' not set")
@@ -23798,7 +23991,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_download` is true.
 
-        :rtype: FileDownloadType
+        :rtype: team_log.FileDownloadType
         """
         if not self.is_file_download():
             raise AttributeError("tag 'file_download' not set")
@@ -23810,7 +24003,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_edit` is true.
 
-        :rtype: FileEditType
+        :rtype: team_log.FileEditType
         """
         if not self.is_file_edit():
             raise AttributeError("tag 'file_edit' not set")
@@ -23822,7 +24015,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_get_copy_reference` is true.
 
-        :rtype: FileGetCopyReferenceType
+        :rtype: team_log.FileGetCopyReferenceType
         """
         if not self.is_file_get_copy_reference():
             raise AttributeError("tag 'file_get_copy_reference' not set")
@@ -23834,7 +24027,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_move` is true.
 
-        :rtype: FileMoveType
+        :rtype: team_log.FileMoveType
         """
         if not self.is_file_move():
             raise AttributeError("tag 'file_move' not set")
@@ -23846,7 +24039,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_permanently_delete` is true.
 
-        :rtype: FilePermanentlyDeleteType
+        :rtype: team_log.FilePermanentlyDeleteType
         """
         if not self.is_file_permanently_delete():
             raise AttributeError("tag 'file_permanently_delete' not set")
@@ -23858,7 +24051,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_preview` is true.
 
-        :rtype: FilePreviewType
+        :rtype: team_log.FilePreviewType
         """
         if not self.is_file_preview():
             raise AttributeError("tag 'file_preview' not set")
@@ -23870,7 +24063,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_rename` is true.
 
-        :rtype: FileRenameType
+        :rtype: team_log.FileRenameType
         """
         if not self.is_file_rename():
             raise AttributeError("tag 'file_rename' not set")
@@ -23882,7 +24075,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_restore` is true.
 
-        :rtype: FileRestoreType
+        :rtype: team_log.FileRestoreType
         """
         if not self.is_file_restore():
             raise AttributeError("tag 'file_restore' not set")
@@ -23894,7 +24087,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_revert` is true.
 
-        :rtype: FileRevertType
+        :rtype: team_log.FileRevertType
         """
         if not self.is_file_revert():
             raise AttributeError("tag 'file_revert' not set")
@@ -23906,7 +24099,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_rollback_changes` is true.
 
-        :rtype: FileRollbackChangesType
+        :rtype: team_log.FileRollbackChangesType
         """
         if not self.is_file_rollback_changes():
             raise AttributeError("tag 'file_rollback_changes' not set")
@@ -23918,7 +24111,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_save_copy_reference` is true.
 
-        :rtype: FileSaveCopyReferenceType
+        :rtype: team_log.FileSaveCopyReferenceType
         """
         if not self.is_file_save_copy_reference():
             raise AttributeError("tag 'file_save_copy_reference' not set")
@@ -23930,7 +24123,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_request_change` is true.
 
-        :rtype: FileRequestChangeType
+        :rtype: team_log.FileRequestChangeType
         """
         if not self.is_file_request_change():
             raise AttributeError("tag 'file_request_change' not set")
@@ -23942,7 +24135,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_request_close` is true.
 
-        :rtype: FileRequestCloseType
+        :rtype: team_log.FileRequestCloseType
         """
         if not self.is_file_request_close():
             raise AttributeError("tag 'file_request_close' not set")
@@ -23954,7 +24147,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_request_create` is true.
 
-        :rtype: FileRequestCreateType
+        :rtype: team_log.FileRequestCreateType
         """
         if not self.is_file_request_create():
             raise AttributeError("tag 'file_request_create' not set")
@@ -23966,7 +24159,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_request_receive_file` is true.
 
-        :rtype: FileRequestReceiveFileType
+        :rtype: team_log.FileRequestReceiveFileType
         """
         if not self.is_file_request_receive_file():
             raise AttributeError("tag 'file_request_receive_file' not set")
@@ -23978,7 +24171,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_add_external_id` is true.
 
-        :rtype: GroupAddExternalIdType
+        :rtype: team_log.GroupAddExternalIdType
         """
         if not self.is_group_add_external_id():
             raise AttributeError("tag 'group_add_external_id' not set")
@@ -23990,7 +24183,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_add_member` is true.
 
-        :rtype: GroupAddMemberType
+        :rtype: team_log.GroupAddMemberType
         """
         if not self.is_group_add_member():
             raise AttributeError("tag 'group_add_member' not set")
@@ -24002,7 +24195,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_change_external_id` is true.
 
-        :rtype: GroupChangeExternalIdType
+        :rtype: team_log.GroupChangeExternalIdType
         """
         if not self.is_group_change_external_id():
             raise AttributeError("tag 'group_change_external_id' not set")
@@ -24014,7 +24207,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_change_management_type` is true.
 
-        :rtype: GroupChangeManagementTypeType
+        :rtype: team_log.GroupChangeManagementTypeType
         """
         if not self.is_group_change_management_type():
             raise AttributeError("tag 'group_change_management_type' not set")
@@ -24026,7 +24219,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_change_member_role` is true.
 
-        :rtype: GroupChangeMemberRoleType
+        :rtype: team_log.GroupChangeMemberRoleType
         """
         if not self.is_group_change_member_role():
             raise AttributeError("tag 'group_change_member_role' not set")
@@ -24038,7 +24231,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_create` is true.
 
-        :rtype: GroupCreateType
+        :rtype: team_log.GroupCreateType
         """
         if not self.is_group_create():
             raise AttributeError("tag 'group_create' not set")
@@ -24050,7 +24243,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_delete` is true.
 
-        :rtype: GroupDeleteType
+        :rtype: team_log.GroupDeleteType
         """
         if not self.is_group_delete():
             raise AttributeError("tag 'group_delete' not set")
@@ -24062,7 +24255,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_description_updated` is true.
 
-        :rtype: GroupDescriptionUpdatedType
+        :rtype: team_log.GroupDescriptionUpdatedType
         """
         if not self.is_group_description_updated():
             raise AttributeError("tag 'group_description_updated' not set")
@@ -24074,7 +24267,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_join_policy_updated` is true.
 
-        :rtype: GroupJoinPolicyUpdatedType
+        :rtype: team_log.GroupJoinPolicyUpdatedType
         """
         if not self.is_group_join_policy_updated():
             raise AttributeError("tag 'group_join_policy_updated' not set")
@@ -24086,7 +24279,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_moved` is true.
 
-        :rtype: GroupMovedType
+        :rtype: team_log.GroupMovedType
         """
         if not self.is_group_moved():
             raise AttributeError("tag 'group_moved' not set")
@@ -24098,7 +24291,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_remove_external_id` is true.
 
-        :rtype: GroupRemoveExternalIdType
+        :rtype: team_log.GroupRemoveExternalIdType
         """
         if not self.is_group_remove_external_id():
             raise AttributeError("tag 'group_remove_external_id' not set")
@@ -24110,7 +24303,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_remove_member` is true.
 
-        :rtype: GroupRemoveMemberType
+        :rtype: team_log.GroupRemoveMemberType
         """
         if not self.is_group_remove_member():
             raise AttributeError("tag 'group_remove_member' not set")
@@ -24122,7 +24315,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_rename` is true.
 
-        :rtype: GroupRenameType
+        :rtype: team_log.GroupRenameType
         """
         if not self.is_group_rename():
             raise AttributeError("tag 'group_rename' not set")
@@ -24135,7 +24328,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_emm_error` is true.
 
-        :rtype: EmmErrorType
+        :rtype: team_log.EmmErrorType
         """
         if not self.is_emm_error():
             raise AttributeError("tag 'emm_error' not set")
@@ -24147,7 +24340,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_login_fail` is true.
 
-        :rtype: LoginFailType
+        :rtype: team_log.LoginFailType
         """
         if not self.is_login_fail():
             raise AttributeError("tag 'login_fail' not set")
@@ -24159,7 +24352,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_login_success` is true.
 
-        :rtype: LoginSuccessType
+        :rtype: team_log.LoginSuccessType
         """
         if not self.is_login_success():
             raise AttributeError("tag 'login_success' not set")
@@ -24171,7 +24364,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_logout` is true.
 
-        :rtype: LogoutType
+        :rtype: team_log.LogoutType
         """
         if not self.is_logout():
             raise AttributeError("tag 'logout' not set")
@@ -24183,7 +24376,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_reseller_support_session_end` is true.
 
-        :rtype: ResellerSupportSessionEndType
+        :rtype: team_log.ResellerSupportSessionEndType
         """
         if not self.is_reseller_support_session_end():
             raise AttributeError("tag 'reseller_support_session_end' not set")
@@ -24195,7 +24388,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_reseller_support_session_start` is true.
 
-        :rtype: ResellerSupportSessionStartType
+        :rtype: team_log.ResellerSupportSessionStartType
         """
         if not self.is_reseller_support_session_start():
             raise AttributeError("tag 'reseller_support_session_start' not set")
@@ -24207,7 +24400,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sign_in_as_session_end` is true.
 
-        :rtype: SignInAsSessionEndType
+        :rtype: team_log.SignInAsSessionEndType
         """
         if not self.is_sign_in_as_session_end():
             raise AttributeError("tag 'sign_in_as_session_end' not set")
@@ -24219,7 +24412,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sign_in_as_session_start` is true.
 
-        :rtype: SignInAsSessionStartType
+        :rtype: team_log.SignInAsSessionStartType
         """
         if not self.is_sign_in_as_session_start():
             raise AttributeError("tag 'sign_in_as_session_start' not set")
@@ -24232,7 +24425,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_error` is true.
 
-        :rtype: SsoErrorType
+        :rtype: team_log.SsoErrorType
         """
         if not self.is_sso_error():
             raise AttributeError("tag 'sso_error' not set")
@@ -24244,7 +24437,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_add_name` is true.
 
-        :rtype: MemberAddNameType
+        :rtype: team_log.MemberAddNameType
         """
         if not self.is_member_add_name():
             raise AttributeError("tag 'member_add_name' not set")
@@ -24256,7 +24449,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_change_admin_role` is true.
 
-        :rtype: MemberChangeAdminRoleType
+        :rtype: team_log.MemberChangeAdminRoleType
         """
         if not self.is_member_change_admin_role():
             raise AttributeError("tag 'member_change_admin_role' not set")
@@ -24268,7 +24461,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_change_email` is true.
 
-        :rtype: MemberChangeEmailType
+        :rtype: team_log.MemberChangeEmailType
         """
         if not self.is_member_change_email():
             raise AttributeError("tag 'member_change_email' not set")
@@ -24281,7 +24474,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_change_membership_type` is true.
 
-        :rtype: MemberChangeMembershipTypeType
+        :rtype: team_log.MemberChangeMembershipTypeType
         """
         if not self.is_member_change_membership_type():
             raise AttributeError("tag 'member_change_membership_type' not set")
@@ -24293,7 +24486,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_change_name` is true.
 
-        :rtype: MemberChangeNameType
+        :rtype: team_log.MemberChangeNameType
         """
         if not self.is_member_change_name():
             raise AttributeError("tag 'member_change_name' not set")
@@ -24305,7 +24498,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_change_status` is true.
 
-        :rtype: MemberChangeStatusType
+        :rtype: team_log.MemberChangeStatusType
         """
         if not self.is_member_change_status():
             raise AttributeError("tag 'member_change_status' not set")
@@ -24317,7 +24510,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_delete_manual_contacts` is true.
 
-        :rtype: MemberDeleteManualContactsType
+        :rtype: team_log.MemberDeleteManualContactsType
         """
         if not self.is_member_delete_manual_contacts():
             raise AttributeError("tag 'member_delete_manual_contacts' not set")
@@ -24329,7 +24522,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_permanently_delete_account_contents` is true.
 
-        :rtype: MemberPermanentlyDeleteAccountContentsType
+        :rtype: team_log.MemberPermanentlyDeleteAccountContentsType
         """
         if not self.is_member_permanently_delete_account_contents():
             raise AttributeError("tag 'member_permanently_delete_account_contents' not set")
@@ -24341,7 +24534,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_space_limits_add_custom_quota` is true.
 
-        :rtype: MemberSpaceLimitsAddCustomQuotaType
+        :rtype: team_log.MemberSpaceLimitsAddCustomQuotaType
         """
         if not self.is_member_space_limits_add_custom_quota():
             raise AttributeError("tag 'member_space_limits_add_custom_quota' not set")
@@ -24353,7 +24546,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_space_limits_change_custom_quota` is true.
 
-        :rtype: MemberSpaceLimitsChangeCustomQuotaType
+        :rtype: team_log.MemberSpaceLimitsChangeCustomQuotaType
         """
         if not self.is_member_space_limits_change_custom_quota():
             raise AttributeError("tag 'member_space_limits_change_custom_quota' not set")
@@ -24365,7 +24558,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_space_limits_change_status` is true.
 
-        :rtype: MemberSpaceLimitsChangeStatusType
+        :rtype: team_log.MemberSpaceLimitsChangeStatusType
         """
         if not self.is_member_space_limits_change_status():
             raise AttributeError("tag 'member_space_limits_change_status' not set")
@@ -24377,7 +24570,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_space_limits_remove_custom_quota` is true.
 
-        :rtype: MemberSpaceLimitsRemoveCustomQuotaType
+        :rtype: team_log.MemberSpaceLimitsRemoveCustomQuotaType
         """
         if not self.is_member_space_limits_remove_custom_quota():
             raise AttributeError("tag 'member_space_limits_remove_custom_quota' not set")
@@ -24389,7 +24582,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_suggest` is true.
 
-        :rtype: MemberSuggestType
+        :rtype: team_log.MemberSuggestType
         """
         if not self.is_member_suggest():
             raise AttributeError("tag 'member_suggest' not set")
@@ -24402,7 +24595,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_transfer_account_contents` is true.
 
-        :rtype: MemberTransferAccountContentsType
+        :rtype: team_log.MemberTransferAccountContentsType
         """
         if not self.is_member_transfer_account_contents():
             raise AttributeError("tag 'member_transfer_account_contents' not set")
@@ -24414,7 +24607,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_secondary_mails_policy_changed` is true.
 
-        :rtype: SecondaryMailsPolicyChangedType
+        :rtype: team_log.SecondaryMailsPolicyChangedType
         """
         if not self.is_secondary_mails_policy_changed():
             raise AttributeError("tag 'secondary_mails_policy_changed' not set")
@@ -24426,7 +24619,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_add_member` is true.
 
-        :rtype: PaperContentAddMemberType
+        :rtype: team_log.PaperContentAddMemberType
         """
         if not self.is_paper_content_add_member():
             raise AttributeError("tag 'paper_content_add_member' not set")
@@ -24438,7 +24631,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_add_to_folder` is true.
 
-        :rtype: PaperContentAddToFolderType
+        :rtype: team_log.PaperContentAddToFolderType
         """
         if not self.is_paper_content_add_to_folder():
             raise AttributeError("tag 'paper_content_add_to_folder' not set")
@@ -24450,7 +24643,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_archive` is true.
 
-        :rtype: PaperContentArchiveType
+        :rtype: team_log.PaperContentArchiveType
         """
         if not self.is_paper_content_archive():
             raise AttributeError("tag 'paper_content_archive' not set")
@@ -24462,7 +24655,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_create` is true.
 
-        :rtype: PaperContentCreateType
+        :rtype: team_log.PaperContentCreateType
         """
         if not self.is_paper_content_create():
             raise AttributeError("tag 'paper_content_create' not set")
@@ -24474,7 +24667,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_permanently_delete` is true.
 
-        :rtype: PaperContentPermanentlyDeleteType
+        :rtype: team_log.PaperContentPermanentlyDeleteType
         """
         if not self.is_paper_content_permanently_delete():
             raise AttributeError("tag 'paper_content_permanently_delete' not set")
@@ -24486,7 +24679,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_remove_from_folder` is true.
 
-        :rtype: PaperContentRemoveFromFolderType
+        :rtype: team_log.PaperContentRemoveFromFolderType
         """
         if not self.is_paper_content_remove_from_folder():
             raise AttributeError("tag 'paper_content_remove_from_folder' not set")
@@ -24498,7 +24691,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_remove_member` is true.
 
-        :rtype: PaperContentRemoveMemberType
+        :rtype: team_log.PaperContentRemoveMemberType
         """
         if not self.is_paper_content_remove_member():
             raise AttributeError("tag 'paper_content_remove_member' not set")
@@ -24510,7 +24703,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_rename` is true.
 
-        :rtype: PaperContentRenameType
+        :rtype: team_log.PaperContentRenameType
         """
         if not self.is_paper_content_rename():
             raise AttributeError("tag 'paper_content_rename' not set")
@@ -24522,7 +24715,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_content_restore` is true.
 
-        :rtype: PaperContentRestoreType
+        :rtype: team_log.PaperContentRestoreType
         """
         if not self.is_paper_content_restore():
             raise AttributeError("tag 'paper_content_restore' not set")
@@ -24534,7 +24727,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_add_comment` is true.
 
-        :rtype: PaperDocAddCommentType
+        :rtype: team_log.PaperDocAddCommentType
         """
         if not self.is_paper_doc_add_comment():
             raise AttributeError("tag 'paper_doc_add_comment' not set")
@@ -24546,7 +24739,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_change_member_role` is true.
 
-        :rtype: PaperDocChangeMemberRoleType
+        :rtype: team_log.PaperDocChangeMemberRoleType
         """
         if not self.is_paper_doc_change_member_role():
             raise AttributeError("tag 'paper_doc_change_member_role' not set")
@@ -24558,7 +24751,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_change_sharing_policy` is true.
 
-        :rtype: PaperDocChangeSharingPolicyType
+        :rtype: team_log.PaperDocChangeSharingPolicyType
         """
         if not self.is_paper_doc_change_sharing_policy():
             raise AttributeError("tag 'paper_doc_change_sharing_policy' not set")
@@ -24570,7 +24763,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_change_subscription` is true.
 
-        :rtype: PaperDocChangeSubscriptionType
+        :rtype: team_log.PaperDocChangeSubscriptionType
         """
         if not self.is_paper_doc_change_subscription():
             raise AttributeError("tag 'paper_doc_change_subscription' not set")
@@ -24582,7 +24775,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_deleted` is true.
 
-        :rtype: PaperDocDeletedType
+        :rtype: team_log.PaperDocDeletedType
         """
         if not self.is_paper_doc_deleted():
             raise AttributeError("tag 'paper_doc_deleted' not set")
@@ -24594,7 +24787,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_delete_comment` is true.
 
-        :rtype: PaperDocDeleteCommentType
+        :rtype: team_log.PaperDocDeleteCommentType
         """
         if not self.is_paper_doc_delete_comment():
             raise AttributeError("tag 'paper_doc_delete_comment' not set")
@@ -24606,7 +24799,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_download` is true.
 
-        :rtype: PaperDocDownloadType
+        :rtype: team_log.PaperDocDownloadType
         """
         if not self.is_paper_doc_download():
             raise AttributeError("tag 'paper_doc_download' not set")
@@ -24618,7 +24811,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_edit` is true.
 
-        :rtype: PaperDocEditType
+        :rtype: team_log.PaperDocEditType
         """
         if not self.is_paper_doc_edit():
             raise AttributeError("tag 'paper_doc_edit' not set")
@@ -24630,7 +24823,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_edit_comment` is true.
 
-        :rtype: PaperDocEditCommentType
+        :rtype: team_log.PaperDocEditCommentType
         """
         if not self.is_paper_doc_edit_comment():
             raise AttributeError("tag 'paper_doc_edit_comment' not set")
@@ -24643,7 +24836,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_followed` is true.
 
-        :rtype: PaperDocFollowedType
+        :rtype: team_log.PaperDocFollowedType
         """
         if not self.is_paper_doc_followed():
             raise AttributeError("tag 'paper_doc_followed' not set")
@@ -24655,7 +24848,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_mention` is true.
 
-        :rtype: PaperDocMentionType
+        :rtype: team_log.PaperDocMentionType
         """
         if not self.is_paper_doc_mention():
             raise AttributeError("tag 'paper_doc_mention' not set")
@@ -24667,7 +24860,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_ownership_changed` is true.
 
-        :rtype: PaperDocOwnershipChangedType
+        :rtype: team_log.PaperDocOwnershipChangedType
         """
         if not self.is_paper_doc_ownership_changed():
             raise AttributeError("tag 'paper_doc_ownership_changed' not set")
@@ -24679,7 +24872,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_request_access` is true.
 
-        :rtype: PaperDocRequestAccessType
+        :rtype: team_log.PaperDocRequestAccessType
         """
         if not self.is_paper_doc_request_access():
             raise AttributeError("tag 'paper_doc_request_access' not set")
@@ -24691,7 +24884,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_resolve_comment` is true.
 
-        :rtype: PaperDocResolveCommentType
+        :rtype: team_log.PaperDocResolveCommentType
         """
         if not self.is_paper_doc_resolve_comment():
             raise AttributeError("tag 'paper_doc_resolve_comment' not set")
@@ -24703,7 +24896,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_revert` is true.
 
-        :rtype: PaperDocRevertType
+        :rtype: team_log.PaperDocRevertType
         """
         if not self.is_paper_doc_revert():
             raise AttributeError("tag 'paper_doc_revert' not set")
@@ -24715,7 +24908,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_slack_share` is true.
 
-        :rtype: PaperDocSlackShareType
+        :rtype: team_log.PaperDocSlackShareType
         """
         if not self.is_paper_doc_slack_share():
             raise AttributeError("tag 'paper_doc_slack_share' not set")
@@ -24727,7 +24920,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_team_invite` is true.
 
-        :rtype: PaperDocTeamInviteType
+        :rtype: team_log.PaperDocTeamInviteType
         """
         if not self.is_paper_doc_team_invite():
             raise AttributeError("tag 'paper_doc_team_invite' not set")
@@ -24739,7 +24932,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_trashed` is true.
 
-        :rtype: PaperDocTrashedType
+        :rtype: team_log.PaperDocTrashedType
         """
         if not self.is_paper_doc_trashed():
             raise AttributeError("tag 'paper_doc_trashed' not set")
@@ -24751,7 +24944,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_unresolve_comment` is true.
 
-        :rtype: PaperDocUnresolveCommentType
+        :rtype: team_log.PaperDocUnresolveCommentType
         """
         if not self.is_paper_doc_unresolve_comment():
             raise AttributeError("tag 'paper_doc_unresolve_comment' not set")
@@ -24763,7 +24956,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_untrashed` is true.
 
-        :rtype: PaperDocUntrashedType
+        :rtype: team_log.PaperDocUntrashedType
         """
         if not self.is_paper_doc_untrashed():
             raise AttributeError("tag 'paper_doc_untrashed' not set")
@@ -24775,7 +24968,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_doc_view` is true.
 
-        :rtype: PaperDocViewType
+        :rtype: team_log.PaperDocViewType
         """
         if not self.is_paper_doc_view():
             raise AttributeError("tag 'paper_doc_view' not set")
@@ -24788,7 +24981,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_external_view_allow` is true.
 
-        :rtype: PaperExternalViewAllowType
+        :rtype: team_log.PaperExternalViewAllowType
         """
         if not self.is_paper_external_view_allow():
             raise AttributeError("tag 'paper_external_view_allow' not set")
@@ -24801,7 +24994,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_external_view_default_team` is true.
 
-        :rtype: PaperExternalViewDefaultTeamType
+        :rtype: team_log.PaperExternalViewDefaultTeamType
         """
         if not self.is_paper_external_view_default_team():
             raise AttributeError("tag 'paper_external_view_default_team' not set")
@@ -24814,7 +25007,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_external_view_forbid` is true.
 
-        :rtype: PaperExternalViewForbidType
+        :rtype: team_log.PaperExternalViewForbidType
         """
         if not self.is_paper_external_view_forbid():
             raise AttributeError("tag 'paper_external_view_forbid' not set")
@@ -24826,7 +25019,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_folder_change_subscription` is true.
 
-        :rtype: PaperFolderChangeSubscriptionType
+        :rtype: team_log.PaperFolderChangeSubscriptionType
         """
         if not self.is_paper_folder_change_subscription():
             raise AttributeError("tag 'paper_folder_change_subscription' not set")
@@ -24838,7 +25031,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_folder_deleted` is true.
 
-        :rtype: PaperFolderDeletedType
+        :rtype: team_log.PaperFolderDeletedType
         """
         if not self.is_paper_folder_deleted():
             raise AttributeError("tag 'paper_folder_deleted' not set")
@@ -24851,7 +25044,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_folder_followed` is true.
 
-        :rtype: PaperFolderFollowedType
+        :rtype: team_log.PaperFolderFollowedType
         """
         if not self.is_paper_folder_followed():
             raise AttributeError("tag 'paper_folder_followed' not set")
@@ -24863,7 +25056,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_folder_team_invite` is true.
 
-        :rtype: PaperFolderTeamInviteType
+        :rtype: team_log.PaperFolderTeamInviteType
         """
         if not self.is_paper_folder_team_invite():
             raise AttributeError("tag 'paper_folder_team_invite' not set")
@@ -24875,7 +25068,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_password_change` is true.
 
-        :rtype: PasswordChangeType
+        :rtype: team_log.PasswordChangeType
         """
         if not self.is_password_change():
             raise AttributeError("tag 'password_change' not set")
@@ -24887,7 +25080,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_password_reset` is true.
 
-        :rtype: PasswordResetType
+        :rtype: team_log.PasswordResetType
         """
         if not self.is_password_reset():
             raise AttributeError("tag 'password_reset' not set")
@@ -24899,7 +25092,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_password_reset_all` is true.
 
-        :rtype: PasswordResetAllType
+        :rtype: team_log.PasswordResetAllType
         """
         if not self.is_password_reset_all():
             raise AttributeError("tag 'password_reset_all' not set")
@@ -24911,7 +25104,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_emm_create_exceptions_report` is true.
 
-        :rtype: EmmCreateExceptionsReportType
+        :rtype: team_log.EmmCreateExceptionsReportType
         """
         if not self.is_emm_create_exceptions_report():
             raise AttributeError("tag 'emm_create_exceptions_report' not set")
@@ -24923,7 +25116,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_emm_create_usage_report` is true.
 
-        :rtype: EmmCreateUsageReportType
+        :rtype: team_log.EmmCreateUsageReportType
         """
         if not self.is_emm_create_usage_report():
             raise AttributeError("tag 'emm_create_usage_report' not set")
@@ -24935,7 +25128,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_export_members_report` is true.
 
-        :rtype: ExportMembersReportType
+        :rtype: team_log.ExportMembersReportType
         """
         if not self.is_export_members_report():
             raise AttributeError("tag 'export_members_report' not set")
@@ -24947,7 +25140,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_admin_export_start` is true.
 
-        :rtype: PaperAdminExportStartType
+        :rtype: team_log.PaperAdminExportStartType
         """
         if not self.is_paper_admin_export_start():
             raise AttributeError("tag 'paper_admin_export_start' not set")
@@ -24959,7 +25152,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_smart_sync_create_admin_privilege_report` is true.
 
-        :rtype: SmartSyncCreateAdminPrivilegeReportType
+        :rtype: team_log.SmartSyncCreateAdminPrivilegeReportType
         """
         if not self.is_smart_sync_create_admin_privilege_report():
             raise AttributeError("tag 'smart_sync_create_admin_privilege_report' not set")
@@ -24971,7 +25164,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_activity_create_report` is true.
 
-        :rtype: TeamActivityCreateReportType
+        :rtype: team_log.TeamActivityCreateReportType
         """
         if not self.is_team_activity_create_report():
             raise AttributeError("tag 'team_activity_create_report' not set")
@@ -24983,7 +25176,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_collection_share` is true.
 
-        :rtype: CollectionShareType
+        :rtype: team_log.CollectionShareType
         """
         if not self.is_collection_share():
             raise AttributeError("tag 'collection_share' not set")
@@ -24996,7 +25189,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_note_acl_invite_only` is true.
 
-        :rtype: NoteAclInviteOnlyType
+        :rtype: team_log.NoteAclInviteOnlyType
         """
         if not self.is_note_acl_invite_only():
             raise AttributeError("tag 'note_acl_invite_only' not set")
@@ -25009,7 +25202,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_note_acl_link` is true.
 
-        :rtype: NoteAclLinkType
+        :rtype: team_log.NoteAclLinkType
         """
         if not self.is_note_acl_link():
             raise AttributeError("tag 'note_acl_link' not set")
@@ -25022,7 +25215,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_note_acl_team_link` is true.
 
-        :rtype: NoteAclTeamLinkType
+        :rtype: team_log.NoteAclTeamLinkType
         """
         if not self.is_note_acl_team_link():
             raise AttributeError("tag 'note_acl_team_link' not set")
@@ -25034,7 +25227,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_note_shared` is true.
 
-        :rtype: NoteSharedType
+        :rtype: team_log.NoteSharedType
         """
         if not self.is_note_shared():
             raise AttributeError("tag 'note_shared' not set")
@@ -25046,7 +25239,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_note_share_receive` is true.
 
-        :rtype: NoteShareReceiveType
+        :rtype: team_log.NoteShareReceiveType
         """
         if not self.is_note_share_receive():
             raise AttributeError("tag 'note_share_receive' not set")
@@ -25058,7 +25251,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_open_note_shared` is true.
 
-        :rtype: OpenNoteSharedType
+        :rtype: team_log.OpenNoteSharedType
         """
         if not self.is_open_note_shared():
             raise AttributeError("tag 'open_note_shared' not set")
@@ -25070,7 +25263,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_add_group` is true.
 
-        :rtype: SfAddGroupType
+        :rtype: team_log.SfAddGroupType
         """
         if not self.is_sf_add_group():
             raise AttributeError("tag 'sf_add_group' not set")
@@ -25083,7 +25276,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_allow_non_members_to_view_shared_links` is true.
 
-        :rtype: SfAllowNonMembersToViewSharedLinksType
+        :rtype: team_log.SfAllowNonMembersToViewSharedLinksType
         """
         if not self.is_sf_allow_non_members_to_view_shared_links():
             raise AttributeError("tag 'sf_allow_non_members_to_view_shared_links' not set")
@@ -25096,7 +25289,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_external_invite_warn` is true.
 
-        :rtype: SfExternalInviteWarnType
+        :rtype: team_log.SfExternalInviteWarnType
         """
         if not self.is_sf_external_invite_warn():
             raise AttributeError("tag 'sf_external_invite_warn' not set")
@@ -25109,7 +25302,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_fb_invite` is true.
 
-        :rtype: SfFbInviteType
+        :rtype: team_log.SfFbInviteType
         """
         if not self.is_sf_fb_invite():
             raise AttributeError("tag 'sf_fb_invite' not set")
@@ -25122,7 +25315,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_fb_invite_change_role` is true.
 
-        :rtype: SfFbInviteChangeRoleType
+        :rtype: team_log.SfFbInviteChangeRoleType
         """
         if not self.is_sf_fb_invite_change_role():
             raise AttributeError("tag 'sf_fb_invite_change_role' not set")
@@ -25135,7 +25328,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_fb_uninvite` is true.
 
-        :rtype: SfFbUninviteType
+        :rtype: team_log.SfFbUninviteType
         """
         if not self.is_sf_fb_uninvite():
             raise AttributeError("tag 'sf_fb_uninvite' not set")
@@ -25147,7 +25340,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_invite_group` is true.
 
-        :rtype: SfInviteGroupType
+        :rtype: team_log.SfInviteGroupType
         """
         if not self.is_sf_invite_group():
             raise AttributeError("tag 'sf_invite_group' not set")
@@ -25159,7 +25352,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_team_grant_access` is true.
 
-        :rtype: SfTeamGrantAccessType
+        :rtype: team_log.SfTeamGrantAccessType
         """
         if not self.is_sf_team_grant_access():
             raise AttributeError("tag 'sf_team_grant_access' not set")
@@ -25172,7 +25365,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_team_invite` is true.
 
-        :rtype: SfTeamInviteType
+        :rtype: team_log.SfTeamInviteType
         """
         if not self.is_sf_team_invite():
             raise AttributeError("tag 'sf_team_invite' not set")
@@ -25185,7 +25378,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_team_invite_change_role` is true.
 
-        :rtype: SfTeamInviteChangeRoleType
+        :rtype: team_log.SfTeamInviteChangeRoleType
         """
         if not self.is_sf_team_invite_change_role():
             raise AttributeError("tag 'sf_team_invite_change_role' not set")
@@ -25198,7 +25391,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_team_join` is true.
 
-        :rtype: SfTeamJoinType
+        :rtype: team_log.SfTeamJoinType
         """
         if not self.is_sf_team_join():
             raise AttributeError("tag 'sf_team_join' not set")
@@ -25211,7 +25404,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_team_join_from_oob_link` is true.
 
-        :rtype: SfTeamJoinFromOobLinkType
+        :rtype: team_log.SfTeamJoinFromOobLinkType
         """
         if not self.is_sf_team_join_from_oob_link():
             raise AttributeError("tag 'sf_team_join_from_oob_link' not set")
@@ -25224,7 +25417,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sf_team_uninvite` is true.
 
-        :rtype: SfTeamUninviteType
+        :rtype: team_log.SfTeamUninviteType
         """
         if not self.is_sf_team_uninvite():
             raise AttributeError("tag 'sf_team_uninvite' not set")
@@ -25236,7 +25429,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_add_invitees` is true.
 
-        :rtype: SharedContentAddInviteesType
+        :rtype: team_log.SharedContentAddInviteesType
         """
         if not self.is_shared_content_add_invitees():
             raise AttributeError("tag 'shared_content_add_invitees' not set")
@@ -25248,7 +25441,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_add_link_expiry` is true.
 
-        :rtype: SharedContentAddLinkExpiryType
+        :rtype: team_log.SharedContentAddLinkExpiryType
         """
         if not self.is_shared_content_add_link_expiry():
             raise AttributeError("tag 'shared_content_add_link_expiry' not set")
@@ -25260,7 +25453,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_add_link_password` is true.
 
-        :rtype: SharedContentAddLinkPasswordType
+        :rtype: team_log.SharedContentAddLinkPasswordType
         """
         if not self.is_shared_content_add_link_password():
             raise AttributeError("tag 'shared_content_add_link_password' not set")
@@ -25272,7 +25465,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_add_member` is true.
 
-        :rtype: SharedContentAddMemberType
+        :rtype: team_log.SharedContentAddMemberType
         """
         if not self.is_shared_content_add_member():
             raise AttributeError("tag 'shared_content_add_member' not set")
@@ -25284,7 +25477,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_change_downloads_policy` is true.
 
-        :rtype: SharedContentChangeDownloadsPolicyType
+        :rtype: team_log.SharedContentChangeDownloadsPolicyType
         """
         if not self.is_shared_content_change_downloads_policy():
             raise AttributeError("tag 'shared_content_change_downloads_policy' not set")
@@ -25297,7 +25490,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_change_invitee_role` is true.
 
-        :rtype: SharedContentChangeInviteeRoleType
+        :rtype: team_log.SharedContentChangeInviteeRoleType
         """
         if not self.is_shared_content_change_invitee_role():
             raise AttributeError("tag 'shared_content_change_invitee_role' not set")
@@ -25309,7 +25502,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_change_link_audience` is true.
 
-        :rtype: SharedContentChangeLinkAudienceType
+        :rtype: team_log.SharedContentChangeLinkAudienceType
         """
         if not self.is_shared_content_change_link_audience():
             raise AttributeError("tag 'shared_content_change_link_audience' not set")
@@ -25321,7 +25514,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_change_link_expiry` is true.
 
-        :rtype: SharedContentChangeLinkExpiryType
+        :rtype: team_log.SharedContentChangeLinkExpiryType
         """
         if not self.is_shared_content_change_link_expiry():
             raise AttributeError("tag 'shared_content_change_link_expiry' not set")
@@ -25333,7 +25526,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_change_link_password` is true.
 
-        :rtype: SharedContentChangeLinkPasswordType
+        :rtype: team_log.SharedContentChangeLinkPasswordType
         """
         if not self.is_shared_content_change_link_password():
             raise AttributeError("tag 'shared_content_change_link_password' not set")
@@ -25345,7 +25538,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_change_member_role` is true.
 
-        :rtype: SharedContentChangeMemberRoleType
+        :rtype: team_log.SharedContentChangeMemberRoleType
         """
         if not self.is_shared_content_change_member_role():
             raise AttributeError("tag 'shared_content_change_member_role' not set")
@@ -25357,7 +25550,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_change_viewer_info_policy` is true.
 
-        :rtype: SharedContentChangeViewerInfoPolicyType
+        :rtype: team_log.SharedContentChangeViewerInfoPolicyType
         """
         if not self.is_shared_content_change_viewer_info_policy():
             raise AttributeError("tag 'shared_content_change_viewer_info_policy' not set")
@@ -25369,7 +25562,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_claim_invitation` is true.
 
-        :rtype: SharedContentClaimInvitationType
+        :rtype: team_log.SharedContentClaimInvitationType
         """
         if not self.is_shared_content_claim_invitation():
             raise AttributeError("tag 'shared_content_claim_invitation' not set")
@@ -25381,7 +25574,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_copy` is true.
 
-        :rtype: SharedContentCopyType
+        :rtype: team_log.SharedContentCopyType
         """
         if not self.is_shared_content_copy():
             raise AttributeError("tag 'shared_content_copy' not set")
@@ -25393,7 +25586,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_download` is true.
 
-        :rtype: SharedContentDownloadType
+        :rtype: team_log.SharedContentDownloadType
         """
         if not self.is_shared_content_download():
             raise AttributeError("tag 'shared_content_download' not set")
@@ -25405,7 +25598,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_relinquish_membership` is true.
 
-        :rtype: SharedContentRelinquishMembershipType
+        :rtype: team_log.SharedContentRelinquishMembershipType
         """
         if not self.is_shared_content_relinquish_membership():
             raise AttributeError("tag 'shared_content_relinquish_membership' not set")
@@ -25418,7 +25611,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_remove_invitees` is true.
 
-        :rtype: SharedContentRemoveInviteesType
+        :rtype: team_log.SharedContentRemoveInviteesType
         """
         if not self.is_shared_content_remove_invitees():
             raise AttributeError("tag 'shared_content_remove_invitees' not set")
@@ -25430,7 +25623,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_remove_link_expiry` is true.
 
-        :rtype: SharedContentRemoveLinkExpiryType
+        :rtype: team_log.SharedContentRemoveLinkExpiryType
         """
         if not self.is_shared_content_remove_link_expiry():
             raise AttributeError("tag 'shared_content_remove_link_expiry' not set")
@@ -25442,7 +25635,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_remove_link_password` is true.
 
-        :rtype: SharedContentRemoveLinkPasswordType
+        :rtype: team_log.SharedContentRemoveLinkPasswordType
         """
         if not self.is_shared_content_remove_link_password():
             raise AttributeError("tag 'shared_content_remove_link_password' not set")
@@ -25454,7 +25647,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_remove_member` is true.
 
-        :rtype: SharedContentRemoveMemberType
+        :rtype: team_log.SharedContentRemoveMemberType
         """
         if not self.is_shared_content_remove_member():
             raise AttributeError("tag 'shared_content_remove_member' not set")
@@ -25466,7 +25659,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_request_access` is true.
 
-        :rtype: SharedContentRequestAccessType
+        :rtype: team_log.SharedContentRequestAccessType
         """
         if not self.is_shared_content_request_access():
             raise AttributeError("tag 'shared_content_request_access' not set")
@@ -25479,7 +25672,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_unshare` is true.
 
-        :rtype: SharedContentUnshareType
+        :rtype: team_log.SharedContentUnshareType
         """
         if not self.is_shared_content_unshare():
             raise AttributeError("tag 'shared_content_unshare' not set")
@@ -25491,7 +25684,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_content_view` is true.
 
-        :rtype: SharedContentViewType
+        :rtype: team_log.SharedContentViewType
         """
         if not self.is_shared_content_view():
             raise AttributeError("tag 'shared_content_view' not set")
@@ -25503,7 +25696,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_change_link_policy` is true.
 
-        :rtype: SharedFolderChangeLinkPolicyType
+        :rtype: team_log.SharedFolderChangeLinkPolicyType
         """
         if not self.is_shared_folder_change_link_policy():
             raise AttributeError("tag 'shared_folder_change_link_policy' not set")
@@ -25516,7 +25709,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_change_members_inheritance_policy` is true.
 
-        :rtype: SharedFolderChangeMembersInheritancePolicyType
+        :rtype: team_log.SharedFolderChangeMembersInheritancePolicyType
         """
         if not self.is_shared_folder_change_members_inheritance_policy():
             raise AttributeError("tag 'shared_folder_change_members_inheritance_policy' not set")
@@ -25528,7 +25721,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_change_members_management_policy` is true.
 
-        :rtype: SharedFolderChangeMembersManagementPolicyType
+        :rtype: team_log.SharedFolderChangeMembersManagementPolicyType
         """
         if not self.is_shared_folder_change_members_management_policy():
             raise AttributeError("tag 'shared_folder_change_members_management_policy' not set")
@@ -25540,7 +25733,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_change_members_policy` is true.
 
-        :rtype: SharedFolderChangeMembersPolicyType
+        :rtype: team_log.SharedFolderChangeMembersPolicyType
         """
         if not self.is_shared_folder_change_members_policy():
             raise AttributeError("tag 'shared_folder_change_members_policy' not set")
@@ -25552,7 +25745,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_create` is true.
 
-        :rtype: SharedFolderCreateType
+        :rtype: team_log.SharedFolderCreateType
         """
         if not self.is_shared_folder_create():
             raise AttributeError("tag 'shared_folder_create' not set")
@@ -25564,7 +25757,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_decline_invitation` is true.
 
-        :rtype: SharedFolderDeclineInvitationType
+        :rtype: team_log.SharedFolderDeclineInvitationType
         """
         if not self.is_shared_folder_decline_invitation():
             raise AttributeError("tag 'shared_folder_decline_invitation' not set")
@@ -25576,7 +25769,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_mount` is true.
 
-        :rtype: SharedFolderMountType
+        :rtype: team_log.SharedFolderMountType
         """
         if not self.is_shared_folder_mount():
             raise AttributeError("tag 'shared_folder_mount' not set")
@@ -25588,7 +25781,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_nest` is true.
 
-        :rtype: SharedFolderNestType
+        :rtype: team_log.SharedFolderNestType
         """
         if not self.is_shared_folder_nest():
             raise AttributeError("tag 'shared_folder_nest' not set")
@@ -25600,7 +25793,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_transfer_ownership` is true.
 
-        :rtype: SharedFolderTransferOwnershipType
+        :rtype: team_log.SharedFolderTransferOwnershipType
         """
         if not self.is_shared_folder_transfer_ownership():
             raise AttributeError("tag 'shared_folder_transfer_ownership' not set")
@@ -25612,7 +25805,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_folder_unmount` is true.
 
-        :rtype: SharedFolderUnmountType
+        :rtype: team_log.SharedFolderUnmountType
         """
         if not self.is_shared_folder_unmount():
             raise AttributeError("tag 'shared_folder_unmount' not set")
@@ -25624,7 +25817,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_add_expiry` is true.
 
-        :rtype: SharedLinkAddExpiryType
+        :rtype: team_log.SharedLinkAddExpiryType
         """
         if not self.is_shared_link_add_expiry():
             raise AttributeError("tag 'shared_link_add_expiry' not set")
@@ -25636,7 +25829,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_change_expiry` is true.
 
-        :rtype: SharedLinkChangeExpiryType
+        :rtype: team_log.SharedLinkChangeExpiryType
         """
         if not self.is_shared_link_change_expiry():
             raise AttributeError("tag 'shared_link_change_expiry' not set")
@@ -25648,7 +25841,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_change_visibility` is true.
 
-        :rtype: SharedLinkChangeVisibilityType
+        :rtype: team_log.SharedLinkChangeVisibilityType
         """
         if not self.is_shared_link_change_visibility():
             raise AttributeError("tag 'shared_link_change_visibility' not set")
@@ -25660,7 +25853,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_copy` is true.
 
-        :rtype: SharedLinkCopyType
+        :rtype: team_log.SharedLinkCopyType
         """
         if not self.is_shared_link_copy():
             raise AttributeError("tag 'shared_link_copy' not set")
@@ -25672,7 +25865,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_create` is true.
 
-        :rtype: SharedLinkCreateType
+        :rtype: team_log.SharedLinkCreateType
         """
         if not self.is_shared_link_create():
             raise AttributeError("tag 'shared_link_create' not set")
@@ -25684,7 +25877,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_disable` is true.
 
-        :rtype: SharedLinkDisableType
+        :rtype: team_log.SharedLinkDisableType
         """
         if not self.is_shared_link_disable():
             raise AttributeError("tag 'shared_link_disable' not set")
@@ -25696,7 +25889,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_download` is true.
 
-        :rtype: SharedLinkDownloadType
+        :rtype: team_log.SharedLinkDownloadType
         """
         if not self.is_shared_link_download():
             raise AttributeError("tag 'shared_link_download' not set")
@@ -25708,7 +25901,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_remove_expiry` is true.
 
-        :rtype: SharedLinkRemoveExpiryType
+        :rtype: team_log.SharedLinkRemoveExpiryType
         """
         if not self.is_shared_link_remove_expiry():
             raise AttributeError("tag 'shared_link_remove_expiry' not set")
@@ -25720,7 +25913,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_share` is true.
 
-        :rtype: SharedLinkShareType
+        :rtype: team_log.SharedLinkShareType
         """
         if not self.is_shared_link_share():
             raise AttributeError("tag 'shared_link_share' not set")
@@ -25732,7 +25925,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_link_view` is true.
 
-        :rtype: SharedLinkViewType
+        :rtype: team_log.SharedLinkViewType
         """
         if not self.is_shared_link_view():
             raise AttributeError("tag 'shared_link_view' not set")
@@ -25744,7 +25937,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shared_note_opened` is true.
 
-        :rtype: SharedNoteOpenedType
+        :rtype: team_log.SharedNoteOpenedType
         """
         if not self.is_shared_note_opened():
             raise AttributeError("tag 'shared_note_opened' not set")
@@ -25756,7 +25949,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_shmodel_group_share` is true.
 
-        :rtype: ShmodelGroupShareType
+        :rtype: team_log.ShmodelGroupShareType
         """
         if not self.is_shmodel_group_share():
             raise AttributeError("tag 'shmodel_group_share' not set")
@@ -25768,7 +25961,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_access_granted` is true.
 
-        :rtype: ShowcaseAccessGrantedType
+        :rtype: team_log.ShowcaseAccessGrantedType
         """
         if not self.is_showcase_access_granted():
             raise AttributeError("tag 'showcase_access_granted' not set")
@@ -25780,7 +25973,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_add_member` is true.
 
-        :rtype: ShowcaseAddMemberType
+        :rtype: team_log.ShowcaseAddMemberType
         """
         if not self.is_showcase_add_member():
             raise AttributeError("tag 'showcase_add_member' not set")
@@ -25792,7 +25985,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_archived` is true.
 
-        :rtype: ShowcaseArchivedType
+        :rtype: team_log.ShowcaseArchivedType
         """
         if not self.is_showcase_archived():
             raise AttributeError("tag 'showcase_archived' not set")
@@ -25804,7 +25997,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_created` is true.
 
-        :rtype: ShowcaseCreatedType
+        :rtype: team_log.ShowcaseCreatedType
         """
         if not self.is_showcase_created():
             raise AttributeError("tag 'showcase_created' not set")
@@ -25816,7 +26009,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_delete_comment` is true.
 
-        :rtype: ShowcaseDeleteCommentType
+        :rtype: team_log.ShowcaseDeleteCommentType
         """
         if not self.is_showcase_delete_comment():
             raise AttributeError("tag 'showcase_delete_comment' not set")
@@ -25828,7 +26021,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_edited` is true.
 
-        :rtype: ShowcaseEditedType
+        :rtype: team_log.ShowcaseEditedType
         """
         if not self.is_showcase_edited():
             raise AttributeError("tag 'showcase_edited' not set")
@@ -25840,7 +26033,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_edit_comment` is true.
 
-        :rtype: ShowcaseEditCommentType
+        :rtype: team_log.ShowcaseEditCommentType
         """
         if not self.is_showcase_edit_comment():
             raise AttributeError("tag 'showcase_edit_comment' not set")
@@ -25852,7 +26045,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_file_added` is true.
 
-        :rtype: ShowcaseFileAddedType
+        :rtype: team_log.ShowcaseFileAddedType
         """
         if not self.is_showcase_file_added():
             raise AttributeError("tag 'showcase_file_added' not set")
@@ -25864,7 +26057,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_file_download` is true.
 
-        :rtype: ShowcaseFileDownloadType
+        :rtype: team_log.ShowcaseFileDownloadType
         """
         if not self.is_showcase_file_download():
             raise AttributeError("tag 'showcase_file_download' not set")
@@ -25876,7 +26069,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_file_removed` is true.
 
-        :rtype: ShowcaseFileRemovedType
+        :rtype: team_log.ShowcaseFileRemovedType
         """
         if not self.is_showcase_file_removed():
             raise AttributeError("tag 'showcase_file_removed' not set")
@@ -25888,7 +26081,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_file_view` is true.
 
-        :rtype: ShowcaseFileViewType
+        :rtype: team_log.ShowcaseFileViewType
         """
         if not self.is_showcase_file_view():
             raise AttributeError("tag 'showcase_file_view' not set")
@@ -25900,7 +26093,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_permanently_deleted` is true.
 
-        :rtype: ShowcasePermanentlyDeletedType
+        :rtype: team_log.ShowcasePermanentlyDeletedType
         """
         if not self.is_showcase_permanently_deleted():
             raise AttributeError("tag 'showcase_permanently_deleted' not set")
@@ -25912,7 +26105,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_post_comment` is true.
 
-        :rtype: ShowcasePostCommentType
+        :rtype: team_log.ShowcasePostCommentType
         """
         if not self.is_showcase_post_comment():
             raise AttributeError("tag 'showcase_post_comment' not set")
@@ -25924,7 +26117,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_remove_member` is true.
 
-        :rtype: ShowcaseRemoveMemberType
+        :rtype: team_log.ShowcaseRemoveMemberType
         """
         if not self.is_showcase_remove_member():
             raise AttributeError("tag 'showcase_remove_member' not set")
@@ -25936,7 +26129,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_renamed` is true.
 
-        :rtype: ShowcaseRenamedType
+        :rtype: team_log.ShowcaseRenamedType
         """
         if not self.is_showcase_renamed():
             raise AttributeError("tag 'showcase_renamed' not set")
@@ -25948,7 +26141,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_request_access` is true.
 
-        :rtype: ShowcaseRequestAccessType
+        :rtype: team_log.ShowcaseRequestAccessType
         """
         if not self.is_showcase_request_access():
             raise AttributeError("tag 'showcase_request_access' not set")
@@ -25960,7 +26153,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_resolve_comment` is true.
 
-        :rtype: ShowcaseResolveCommentType
+        :rtype: team_log.ShowcaseResolveCommentType
         """
         if not self.is_showcase_resolve_comment():
             raise AttributeError("tag 'showcase_resolve_comment' not set")
@@ -25972,7 +26165,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_restored` is true.
 
-        :rtype: ShowcaseRestoredType
+        :rtype: team_log.ShowcaseRestoredType
         """
         if not self.is_showcase_restored():
             raise AttributeError("tag 'showcase_restored' not set")
@@ -25984,7 +26177,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_trashed` is true.
 
-        :rtype: ShowcaseTrashedType
+        :rtype: team_log.ShowcaseTrashedType
         """
         if not self.is_showcase_trashed():
             raise AttributeError("tag 'showcase_trashed' not set")
@@ -25997,7 +26190,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_trashed_deprecated` is true.
 
-        :rtype: ShowcaseTrashedDeprecatedType
+        :rtype: team_log.ShowcaseTrashedDeprecatedType
         """
         if not self.is_showcase_trashed_deprecated():
             raise AttributeError("tag 'showcase_trashed_deprecated' not set")
@@ -26009,7 +26202,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_unresolve_comment` is true.
 
-        :rtype: ShowcaseUnresolveCommentType
+        :rtype: team_log.ShowcaseUnresolveCommentType
         """
         if not self.is_showcase_unresolve_comment():
             raise AttributeError("tag 'showcase_unresolve_comment' not set")
@@ -26021,7 +26214,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_untrashed` is true.
 
-        :rtype: ShowcaseUntrashedType
+        :rtype: team_log.ShowcaseUntrashedType
         """
         if not self.is_showcase_untrashed():
             raise AttributeError("tag 'showcase_untrashed' not set")
@@ -26034,7 +26227,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_untrashed_deprecated` is true.
 
-        :rtype: ShowcaseUntrashedDeprecatedType
+        :rtype: team_log.ShowcaseUntrashedDeprecatedType
         """
         if not self.is_showcase_untrashed_deprecated():
             raise AttributeError("tag 'showcase_untrashed_deprecated' not set")
@@ -26046,7 +26239,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_view` is true.
 
-        :rtype: ShowcaseViewType
+        :rtype: team_log.ShowcaseViewType
         """
         if not self.is_showcase_view():
             raise AttributeError("tag 'showcase_view' not set")
@@ -26058,7 +26251,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_add_cert` is true.
 
-        :rtype: SsoAddCertType
+        :rtype: team_log.SsoAddCertType
         """
         if not self.is_sso_add_cert():
             raise AttributeError("tag 'sso_add_cert' not set")
@@ -26070,7 +26263,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_add_login_url` is true.
 
-        :rtype: SsoAddLoginUrlType
+        :rtype: team_log.SsoAddLoginUrlType
         """
         if not self.is_sso_add_login_url():
             raise AttributeError("tag 'sso_add_login_url' not set")
@@ -26082,7 +26275,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_add_logout_url` is true.
 
-        :rtype: SsoAddLogoutUrlType
+        :rtype: team_log.SsoAddLogoutUrlType
         """
         if not self.is_sso_add_logout_url():
             raise AttributeError("tag 'sso_add_logout_url' not set")
@@ -26094,7 +26287,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_change_cert` is true.
 
-        :rtype: SsoChangeCertType
+        :rtype: team_log.SsoChangeCertType
         """
         if not self.is_sso_change_cert():
             raise AttributeError("tag 'sso_change_cert' not set")
@@ -26106,7 +26299,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_change_login_url` is true.
 
-        :rtype: SsoChangeLoginUrlType
+        :rtype: team_log.SsoChangeLoginUrlType
         """
         if not self.is_sso_change_login_url():
             raise AttributeError("tag 'sso_change_login_url' not set")
@@ -26118,7 +26311,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_change_logout_url` is true.
 
-        :rtype: SsoChangeLogoutUrlType
+        :rtype: team_log.SsoChangeLogoutUrlType
         """
         if not self.is_sso_change_logout_url():
             raise AttributeError("tag 'sso_change_logout_url' not set")
@@ -26130,7 +26323,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_change_saml_identity_mode` is true.
 
-        :rtype: SsoChangeSamlIdentityModeType
+        :rtype: team_log.SsoChangeSamlIdentityModeType
         """
         if not self.is_sso_change_saml_identity_mode():
             raise AttributeError("tag 'sso_change_saml_identity_mode' not set")
@@ -26142,7 +26335,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_remove_cert` is true.
 
-        :rtype: SsoRemoveCertType
+        :rtype: team_log.SsoRemoveCertType
         """
         if not self.is_sso_remove_cert():
             raise AttributeError("tag 'sso_remove_cert' not set")
@@ -26154,7 +26347,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_remove_login_url` is true.
 
-        :rtype: SsoRemoveLoginUrlType
+        :rtype: team_log.SsoRemoveLoginUrlType
         """
         if not self.is_sso_remove_login_url():
             raise AttributeError("tag 'sso_remove_login_url' not set")
@@ -26166,7 +26359,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_remove_logout_url` is true.
 
-        :rtype: SsoRemoveLogoutUrlType
+        :rtype: team_log.SsoRemoveLogoutUrlType
         """
         if not self.is_sso_remove_logout_url():
             raise AttributeError("tag 'sso_remove_logout_url' not set")
@@ -26178,7 +26371,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_folder_change_status` is true.
 
-        :rtype: TeamFolderChangeStatusType
+        :rtype: team_log.TeamFolderChangeStatusType
         """
         if not self.is_team_folder_change_status():
             raise AttributeError("tag 'team_folder_change_status' not set")
@@ -26190,7 +26383,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_folder_create` is true.
 
-        :rtype: TeamFolderCreateType
+        :rtype: team_log.TeamFolderCreateType
         """
         if not self.is_team_folder_create():
             raise AttributeError("tag 'team_folder_create' not set")
@@ -26202,7 +26395,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_folder_downgrade` is true.
 
-        :rtype: TeamFolderDowngradeType
+        :rtype: team_log.TeamFolderDowngradeType
         """
         if not self.is_team_folder_downgrade():
             raise AttributeError("tag 'team_folder_downgrade' not set")
@@ -26214,7 +26407,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_folder_permanently_delete` is true.
 
-        :rtype: TeamFolderPermanentlyDeleteType
+        :rtype: team_log.TeamFolderPermanentlyDeleteType
         """
         if not self.is_team_folder_permanently_delete():
             raise AttributeError("tag 'team_folder_permanently_delete' not set")
@@ -26226,7 +26419,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_folder_rename` is true.
 
-        :rtype: TeamFolderRenameType
+        :rtype: team_log.TeamFolderRenameType
         """
         if not self.is_team_folder_rename():
             raise AttributeError("tag 'team_folder_rename' not set")
@@ -26238,7 +26431,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_selective_sync_settings_changed` is true.
 
-        :rtype: TeamSelectiveSyncSettingsChangedType
+        :rtype: team_log.TeamSelectiveSyncSettingsChangedType
         """
         if not self.is_team_selective_sync_settings_changed():
             raise AttributeError("tag 'team_selective_sync_settings_changed' not set")
@@ -26250,7 +26443,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_account_capture_change_policy` is true.
 
-        :rtype: AccountCaptureChangePolicyType
+        :rtype: team_log.AccountCaptureChangePolicyType
         """
         if not self.is_account_capture_change_policy():
             raise AttributeError("tag 'account_capture_change_policy' not set")
@@ -26262,7 +26455,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_allow_download_disabled` is true.
 
-        :rtype: AllowDownloadDisabledType
+        :rtype: team_log.AllowDownloadDisabledType
         """
         if not self.is_allow_download_disabled():
             raise AttributeError("tag 'allow_download_disabled' not set")
@@ -26274,7 +26467,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_allow_download_enabled` is true.
 
-        :rtype: AllowDownloadEnabledType
+        :rtype: team_log.AllowDownloadEnabledType
         """
         if not self.is_allow_download_enabled():
             raise AttributeError("tag 'allow_download_enabled' not set")
@@ -26286,7 +26479,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_camera_uploads_policy_changed` is true.
 
-        :rtype: CameraUploadsPolicyChangedType
+        :rtype: team_log.CameraUploadsPolicyChangedType
         """
         if not self.is_camera_uploads_policy_changed():
             raise AttributeError("tag 'camera_uploads_policy_changed' not set")
@@ -26299,7 +26492,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_data_placement_restriction_change_policy` is true.
 
-        :rtype: DataPlacementRestrictionChangePolicyType
+        :rtype: team_log.DataPlacementRestrictionChangePolicyType
         """
         if not self.is_data_placement_restriction_change_policy():
             raise AttributeError("tag 'data_placement_restriction_change_policy' not set")
@@ -26312,7 +26505,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_data_placement_restriction_satisfy_policy` is true.
 
-        :rtype: DataPlacementRestrictionSatisfyPolicyType
+        :rtype: team_log.DataPlacementRestrictionSatisfyPolicyType
         """
         if not self.is_data_placement_restriction_satisfy_policy():
             raise AttributeError("tag 'data_placement_restriction_satisfy_policy' not set")
@@ -26325,7 +26518,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_approvals_change_desktop_policy` is true.
 
-        :rtype: DeviceApprovalsChangeDesktopPolicyType
+        :rtype: team_log.DeviceApprovalsChangeDesktopPolicyType
         """
         if not self.is_device_approvals_change_desktop_policy():
             raise AttributeError("tag 'device_approvals_change_desktop_policy' not set")
@@ -26338,7 +26531,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_approvals_change_mobile_policy` is true.
 
-        :rtype: DeviceApprovalsChangeMobilePolicyType
+        :rtype: team_log.DeviceApprovalsChangeMobilePolicyType
         """
         if not self.is_device_approvals_change_mobile_policy():
             raise AttributeError("tag 'device_approvals_change_mobile_policy' not set")
@@ -26351,7 +26544,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_approvals_change_overage_action` is true.
 
-        :rtype: DeviceApprovalsChangeOverageActionType
+        :rtype: team_log.DeviceApprovalsChangeOverageActionType
         """
         if not self.is_device_approvals_change_overage_action():
             raise AttributeError("tag 'device_approvals_change_overage_action' not set")
@@ -26364,7 +26557,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_device_approvals_change_unlink_action` is true.
 
-        :rtype: DeviceApprovalsChangeUnlinkActionType
+        :rtype: team_log.DeviceApprovalsChangeUnlinkActionType
         """
         if not self.is_device_approvals_change_unlink_action():
             raise AttributeError("tag 'device_approvals_change_unlink_action' not set")
@@ -26376,7 +26569,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_directory_restrictions_add_members` is true.
 
-        :rtype: DirectoryRestrictionsAddMembersType
+        :rtype: team_log.DirectoryRestrictionsAddMembersType
         """
         if not self.is_directory_restrictions_add_members():
             raise AttributeError("tag 'directory_restrictions_add_members' not set")
@@ -26388,7 +26581,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_directory_restrictions_remove_members` is true.
 
-        :rtype: DirectoryRestrictionsRemoveMembersType
+        :rtype: team_log.DirectoryRestrictionsRemoveMembersType
         """
         if not self.is_directory_restrictions_remove_members():
             raise AttributeError("tag 'directory_restrictions_remove_members' not set")
@@ -26400,7 +26593,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_emm_add_exception` is true.
 
-        :rtype: EmmAddExceptionType
+        :rtype: team_log.EmmAddExceptionType
         """
         if not self.is_emm_add_exception():
             raise AttributeError("tag 'emm_add_exception' not set")
@@ -26413,7 +26606,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_emm_change_policy` is true.
 
-        :rtype: EmmChangePolicyType
+        :rtype: team_log.EmmChangePolicyType
         """
         if not self.is_emm_change_policy():
             raise AttributeError("tag 'emm_change_policy' not set")
@@ -26425,7 +26618,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_emm_remove_exception` is true.
 
-        :rtype: EmmRemoveExceptionType
+        :rtype: team_log.EmmRemoveExceptionType
         """
         if not self.is_emm_remove_exception():
             raise AttributeError("tag 'emm_remove_exception' not set")
@@ -26437,7 +26630,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_extended_version_history_change_policy` is true.
 
-        :rtype: ExtendedVersionHistoryChangePolicyType
+        :rtype: team_log.ExtendedVersionHistoryChangePolicyType
         """
         if not self.is_extended_version_history_change_policy():
             raise AttributeError("tag 'extended_version_history_change_policy' not set")
@@ -26449,7 +26642,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_comments_change_policy` is true.
 
-        :rtype: FileCommentsChangePolicyType
+        :rtype: team_log.FileCommentsChangePolicyType
         """
         if not self.is_file_comments_change_policy():
             raise AttributeError("tag 'file_comments_change_policy' not set")
@@ -26461,7 +26654,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_requests_change_policy` is true.
 
-        :rtype: FileRequestsChangePolicyType
+        :rtype: team_log.FileRequestsChangePolicyType
         """
         if not self.is_file_requests_change_policy():
             raise AttributeError("tag 'file_requests_change_policy' not set")
@@ -26474,7 +26667,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_requests_emails_enabled` is true.
 
-        :rtype: FileRequestsEmailsEnabledType
+        :rtype: team_log.FileRequestsEmailsEnabledType
         """
         if not self.is_file_requests_emails_enabled():
             raise AttributeError("tag 'file_requests_emails_enabled' not set")
@@ -26487,7 +26680,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_file_requests_emails_restricted_to_team_only` is true.
 
-        :rtype: FileRequestsEmailsRestrictedToTeamOnlyType
+        :rtype: team_log.FileRequestsEmailsRestrictedToTeamOnlyType
         """
         if not self.is_file_requests_emails_restricted_to_team_only():
             raise AttributeError("tag 'file_requests_emails_restricted_to_team_only' not set")
@@ -26499,7 +26692,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_google_sso_change_policy` is true.
 
-        :rtype: GoogleSsoChangePolicyType
+        :rtype: team_log.GoogleSsoChangePolicyType
         """
         if not self.is_google_sso_change_policy():
             raise AttributeError("tag 'google_sso_change_policy' not set")
@@ -26511,7 +26704,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_group_user_management_change_policy` is true.
 
-        :rtype: GroupUserManagementChangePolicyType
+        :rtype: team_log.GroupUserManagementChangePolicyType
         """
         if not self.is_group_user_management_change_policy():
             raise AttributeError("tag 'group_user_management_change_policy' not set")
@@ -26523,7 +26716,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_requests_change_policy` is true.
 
-        :rtype: MemberRequestsChangePolicyType
+        :rtype: team_log.MemberRequestsChangePolicyType
         """
         if not self.is_member_requests_change_policy():
             raise AttributeError("tag 'member_requests_change_policy' not set")
@@ -26535,7 +26728,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_space_limits_add_exception` is true.
 
-        :rtype: MemberSpaceLimitsAddExceptionType
+        :rtype: team_log.MemberSpaceLimitsAddExceptionType
         """
         if not self.is_member_space_limits_add_exception():
             raise AttributeError("tag 'member_space_limits_add_exception' not set")
@@ -26547,7 +26740,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_space_limits_change_caps_type_policy` is true.
 
-        :rtype: MemberSpaceLimitsChangeCapsTypePolicyType
+        :rtype: team_log.MemberSpaceLimitsChangeCapsTypePolicyType
         """
         if not self.is_member_space_limits_change_caps_type_policy():
             raise AttributeError("tag 'member_space_limits_change_caps_type_policy' not set")
@@ -26559,7 +26752,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_space_limits_change_policy` is true.
 
-        :rtype: MemberSpaceLimitsChangePolicyType
+        :rtype: team_log.MemberSpaceLimitsChangePolicyType
         """
         if not self.is_member_space_limits_change_policy():
             raise AttributeError("tag 'member_space_limits_change_policy' not set")
@@ -26571,7 +26764,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_space_limits_remove_exception` is true.
 
-        :rtype: MemberSpaceLimitsRemoveExceptionType
+        :rtype: team_log.MemberSpaceLimitsRemoveExceptionType
         """
         if not self.is_member_space_limits_remove_exception():
             raise AttributeError("tag 'member_space_limits_remove_exception' not set")
@@ -26584,7 +26777,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_member_suggestions_change_policy` is true.
 
-        :rtype: MemberSuggestionsChangePolicyType
+        :rtype: team_log.MemberSuggestionsChangePolicyType
         """
         if not self.is_member_suggestions_change_policy():
             raise AttributeError("tag 'member_suggestions_change_policy' not set")
@@ -26596,7 +26789,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_microsoft_office_addin_change_policy` is true.
 
-        :rtype: MicrosoftOfficeAddinChangePolicyType
+        :rtype: team_log.MicrosoftOfficeAddinChangePolicyType
         """
         if not self.is_microsoft_office_addin_change_policy():
             raise AttributeError("tag 'microsoft_office_addin_change_policy' not set")
@@ -26608,7 +26801,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_network_control_change_policy` is true.
 
-        :rtype: NetworkControlChangePolicyType
+        :rtype: team_log.NetworkControlChangePolicyType
         """
         if not self.is_network_control_change_policy():
             raise AttributeError("tag 'network_control_change_policy' not set")
@@ -26621,7 +26814,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_change_deployment_policy` is true.
 
-        :rtype: PaperChangeDeploymentPolicyType
+        :rtype: team_log.PaperChangeDeploymentPolicyType
         """
         if not self.is_paper_change_deployment_policy():
             raise AttributeError("tag 'paper_change_deployment_policy' not set")
@@ -26634,7 +26827,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_change_member_link_policy` is true.
 
-        :rtype: PaperChangeMemberLinkPolicyType
+        :rtype: team_log.PaperChangeMemberLinkPolicyType
         """
         if not self.is_paper_change_member_link_policy():
             raise AttributeError("tag 'paper_change_member_link_policy' not set")
@@ -26648,7 +26841,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_change_member_policy` is true.
 
-        :rtype: PaperChangeMemberPolicyType
+        :rtype: team_log.PaperChangeMemberPolicyType
         """
         if not self.is_paper_change_member_policy():
             raise AttributeError("tag 'paper_change_member_policy' not set")
@@ -26660,7 +26853,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_change_policy` is true.
 
-        :rtype: PaperChangePolicyType
+        :rtype: team_log.PaperChangePolicyType
         """
         if not self.is_paper_change_policy():
             raise AttributeError("tag 'paper_change_policy' not set")
@@ -26672,7 +26865,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_enabled_users_group_addition` is true.
 
-        :rtype: PaperEnabledUsersGroupAdditionType
+        :rtype: team_log.PaperEnabledUsersGroupAdditionType
         """
         if not self.is_paper_enabled_users_group_addition():
             raise AttributeError("tag 'paper_enabled_users_group_addition' not set")
@@ -26684,7 +26877,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_paper_enabled_users_group_removal` is true.
 
-        :rtype: PaperEnabledUsersGroupRemovalType
+        :rtype: team_log.PaperEnabledUsersGroupRemovalType
         """
         if not self.is_paper_enabled_users_group_removal():
             raise AttributeError("tag 'paper_enabled_users_group_removal' not set")
@@ -26697,7 +26890,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_permanent_delete_change_policy` is true.
 
-        :rtype: PermanentDeleteChangePolicyType
+        :rtype: team_log.PermanentDeleteChangePolicyType
         """
         if not self.is_permanent_delete_change_policy():
             raise AttributeError("tag 'permanent_delete_change_policy' not set")
@@ -26710,7 +26903,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sharing_change_folder_join_policy` is true.
 
-        :rtype: SharingChangeFolderJoinPolicyType
+        :rtype: team_log.SharingChangeFolderJoinPolicyType
         """
         if not self.is_sharing_change_folder_join_policy():
             raise AttributeError("tag 'sharing_change_folder_join_policy' not set")
@@ -26723,7 +26916,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sharing_change_link_policy` is true.
 
-        :rtype: SharingChangeLinkPolicyType
+        :rtype: team_log.SharingChangeLinkPolicyType
         """
         if not self.is_sharing_change_link_policy():
             raise AttributeError("tag 'sharing_change_link_policy' not set")
@@ -26736,7 +26929,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sharing_change_member_policy` is true.
 
-        :rtype: SharingChangeMemberPolicyType
+        :rtype: team_log.SharingChangeMemberPolicyType
         """
         if not self.is_sharing_change_member_policy():
             raise AttributeError("tag 'sharing_change_member_policy' not set")
@@ -26749,7 +26942,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_change_download_policy` is true.
 
-        :rtype: ShowcaseChangeDownloadPolicyType
+        :rtype: team_log.ShowcaseChangeDownloadPolicyType
         """
         if not self.is_showcase_change_download_policy():
             raise AttributeError("tag 'showcase_change_download_policy' not set")
@@ -26761,7 +26954,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_change_enabled_policy` is true.
 
-        :rtype: ShowcaseChangeEnabledPolicyType
+        :rtype: team_log.ShowcaseChangeEnabledPolicyType
         """
         if not self.is_showcase_change_enabled_policy():
             raise AttributeError("tag 'showcase_change_enabled_policy' not set")
@@ -26774,7 +26967,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_showcase_change_external_sharing_policy` is true.
 
-        :rtype: ShowcaseChangeExternalSharingPolicyType
+        :rtype: team_log.ShowcaseChangeExternalSharingPolicyType
         """
         if not self.is_showcase_change_external_sharing_policy():
             raise AttributeError("tag 'showcase_change_external_sharing_policy' not set")
@@ -26786,7 +26979,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_smart_sync_change_policy` is true.
 
-        :rtype: SmartSyncChangePolicyType
+        :rtype: team_log.SmartSyncChangePolicyType
         """
         if not self.is_smart_sync_change_policy():
             raise AttributeError("tag 'smart_sync_change_policy' not set")
@@ -26798,7 +26991,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_smart_sync_not_opt_out` is true.
 
-        :rtype: SmartSyncNotOptOutType
+        :rtype: team_log.SmartSyncNotOptOutType
         """
         if not self.is_smart_sync_not_opt_out():
             raise AttributeError("tag 'smart_sync_not_opt_out' not set")
@@ -26810,7 +27003,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_smart_sync_opt_out` is true.
 
-        :rtype: SmartSyncOptOutType
+        :rtype: team_log.SmartSyncOptOutType
         """
         if not self.is_smart_sync_opt_out():
             raise AttributeError("tag 'smart_sync_opt_out' not set")
@@ -26822,7 +27015,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_sso_change_policy` is true.
 
-        :rtype: SsoChangePolicyType
+        :rtype: team_log.SsoChangePolicyType
         """
         if not self.is_sso_change_policy():
             raise AttributeError("tag 'sso_change_policy' not set")
@@ -26834,7 +27027,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_selective_sync_policy_changed` is true.
 
-        :rtype: TeamSelectiveSyncPolicyChangedType
+        :rtype: team_log.TeamSelectiveSyncPolicyChangedType
         """
         if not self.is_team_selective_sync_policy_changed():
             raise AttributeError("tag 'team_selective_sync_policy_changed' not set")
@@ -26846,7 +27039,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_tfa_change_policy` is true.
 
-        :rtype: TfaChangePolicyType
+        :rtype: team_log.TfaChangePolicyType
         """
         if not self.is_tfa_change_policy():
             raise AttributeError("tag 'tfa_change_policy' not set")
@@ -26859,7 +27052,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_two_account_change_policy` is true.
 
-        :rtype: TwoAccountChangePolicyType
+        :rtype: team_log.TwoAccountChangePolicyType
         """
         if not self.is_two_account_change_policy():
             raise AttributeError("tag 'two_account_change_policy' not set")
@@ -26871,7 +27064,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_viewer_info_policy_changed` is true.
 
-        :rtype: ViewerInfoPolicyChangedType
+        :rtype: team_log.ViewerInfoPolicyChangedType
         """
         if not self.is_viewer_info_policy_changed():
             raise AttributeError("tag 'viewer_info_policy_changed' not set")
@@ -26884,7 +27077,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_web_sessions_change_fixed_length_policy` is true.
 
-        :rtype: WebSessionsChangeFixedLengthPolicyType
+        :rtype: team_log.WebSessionsChangeFixedLengthPolicyType
         """
         if not self.is_web_sessions_change_fixed_length_policy():
             raise AttributeError("tag 'web_sessions_change_fixed_length_policy' not set")
@@ -26897,7 +27090,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_web_sessions_change_idle_length_policy` is true.
 
-        :rtype: WebSessionsChangeIdleLengthPolicyType
+        :rtype: team_log.WebSessionsChangeIdleLengthPolicyType
         """
         if not self.is_web_sessions_change_idle_length_policy():
             raise AttributeError("tag 'web_sessions_change_idle_length_policy' not set")
@@ -26909,7 +27102,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_merge_from` is true.
 
-        :rtype: TeamMergeFromType
+        :rtype: team_log.TeamMergeFromType
         """
         if not self.is_team_merge_from():
             raise AttributeError("tag 'team_merge_from' not set")
@@ -26921,7 +27114,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_merge_to` is true.
 
-        :rtype: TeamMergeToType
+        :rtype: team_log.TeamMergeToType
         """
         if not self.is_team_merge_to():
             raise AttributeError("tag 'team_merge_to' not set")
@@ -26933,7 +27126,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_profile_add_logo` is true.
 
-        :rtype: TeamProfileAddLogoType
+        :rtype: team_log.TeamProfileAddLogoType
         """
         if not self.is_team_profile_add_logo():
             raise AttributeError("tag 'team_profile_add_logo' not set")
@@ -26945,7 +27138,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_profile_change_default_language` is true.
 
-        :rtype: TeamProfileChangeDefaultLanguageType
+        :rtype: team_log.TeamProfileChangeDefaultLanguageType
         """
         if not self.is_team_profile_change_default_language():
             raise AttributeError("tag 'team_profile_change_default_language' not set")
@@ -26957,7 +27150,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_profile_change_logo` is true.
 
-        :rtype: TeamProfileChangeLogoType
+        :rtype: team_log.TeamProfileChangeLogoType
         """
         if not self.is_team_profile_change_logo():
             raise AttributeError("tag 'team_profile_change_logo' not set")
@@ -26969,7 +27162,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_profile_change_name` is true.
 
-        :rtype: TeamProfileChangeNameType
+        :rtype: team_log.TeamProfileChangeNameType
         """
         if not self.is_team_profile_change_name():
             raise AttributeError("tag 'team_profile_change_name' not set")
@@ -26981,7 +27174,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_team_profile_remove_logo` is true.
 
-        :rtype: TeamProfileRemoveLogoType
+        :rtype: team_log.TeamProfileRemoveLogoType
         """
         if not self.is_team_profile_remove_logo():
             raise AttributeError("tag 'team_profile_remove_logo' not set")
@@ -26993,7 +27186,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_tfa_add_backup_phone` is true.
 
-        :rtype: TfaAddBackupPhoneType
+        :rtype: team_log.TfaAddBackupPhoneType
         """
         if not self.is_tfa_add_backup_phone():
             raise AttributeError("tag 'tfa_add_backup_phone' not set")
@@ -27005,7 +27198,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_tfa_add_security_key` is true.
 
-        :rtype: TfaAddSecurityKeyType
+        :rtype: team_log.TfaAddSecurityKeyType
         """
         if not self.is_tfa_add_security_key():
             raise AttributeError("tag 'tfa_add_security_key' not set")
@@ -27017,7 +27210,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_tfa_change_backup_phone` is true.
 
-        :rtype: TfaChangeBackupPhoneType
+        :rtype: team_log.TfaChangeBackupPhoneType
         """
         if not self.is_tfa_change_backup_phone():
             raise AttributeError("tag 'tfa_change_backup_phone' not set")
@@ -27029,7 +27222,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_tfa_change_status` is true.
 
-        :rtype: TfaChangeStatusType
+        :rtype: team_log.TfaChangeStatusType
         """
         if not self.is_tfa_change_status():
             raise AttributeError("tag 'tfa_change_status' not set")
@@ -27041,7 +27234,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_tfa_remove_backup_phone` is true.
 
-        :rtype: TfaRemoveBackupPhoneType
+        :rtype: team_log.TfaRemoveBackupPhoneType
         """
         if not self.is_tfa_remove_backup_phone():
             raise AttributeError("tag 'tfa_remove_backup_phone' not set")
@@ -27053,7 +27246,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_tfa_remove_security_key` is true.
 
-        :rtype: TfaRemoveSecurityKeyType
+        :rtype: team_log.TfaRemoveSecurityKeyType
         """
         if not self.is_tfa_remove_security_key():
             raise AttributeError("tag 'tfa_remove_security_key' not set")
@@ -27065,7 +27258,7 @@ class EventType(bb.Union):
 
         Only call this if :meth:`is_tfa_reset` is true.
 
-        :rtype: TfaResetType
+        :rtype: team_log.TfaResetType
         """
         if not self.is_tfa_reset():
             raise AttributeError("tag 'tfa_reset' not set")
@@ -27151,9 +27344,11 @@ class ExtendedVersionHistoryChangePolicyDetails(bb.Struct):
     """
     Accepted/opted out of extended version history.
 
-    :ivar new_value: New extended version history policy.
-    :ivar previous_value: Previous extended version history policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.ExtendedVersionHistoryChangePolicyDetails.new_value: New
+        extended version history policy.
+    :ivar team_log.ExtendedVersionHistoryChangePolicyDetails.previous_value:
+        Previous extended version history policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -27182,7 +27377,7 @@ class ExtendedVersionHistoryChangePolicyDetails(bb.Struct):
         """
         New extended version history policy.
 
-        :rtype: ExtendedVersionHistoryPolicy
+        :rtype: team_log.ExtendedVersionHistoryPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -27206,7 +27401,7 @@ class ExtendedVersionHistoryChangePolicyDetails(bb.Struct):
         Previous extended version history policy. Might be missing due to
         historical data gap.
 
-        :rtype: ExtendedVersionHistoryPolicy
+        :rtype: team_log.ExtendedVersionHistoryPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -27356,8 +27551,9 @@ class ExternalUserLogInfo(bb.Struct):
     """
     A user without a Dropbox account.
 
-    :ivar user_identifier: An external user identifier.
-    :ivar identifier_type: Identifier type.
+    :ivar team_log.ExternalUserLogInfo.user_identifier: An external user
+        identifier.
+    :ivar team_log.ExternalUserLogInfo.identifier_type: Identifier type.
     """
 
     __slots__ = [
@@ -27409,7 +27605,7 @@ class ExternalUserLogInfo(bb.Struct):
         """
         Identifier type.
 
-        :rtype: IdentifierType
+        :rtype: team_log.IdentifierType
         """
         if self._identifier_type_present:
             return self._identifier_type_value
@@ -27442,10 +27638,10 @@ class FailureDetailsLogInfo(bb.Struct):
     """
     Provides details about a failure
 
-    :ivar user_friendly_message: A user friendly explanation of the error. Might
-        be missing due to historical data gap.
-    :ivar technical_error_message: A technical explanation of the error. This is
-        relevant for some errors.
+    :ivar team_log.FailureDetailsLogInfo.user_friendly_message: A user friendly
+        explanation of the error. Might be missing due to historical data gap.
+    :ivar team_log.FailureDetailsLogInfo.technical_error_message: A technical
+        explanation of the error. This is relevant for some errors.
     """
 
     __slots__ = [
@@ -27537,8 +27733,8 @@ class FileAddCommentDetails(bb.Struct):
     """
     Added file comment.
 
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.FileAddCommentDetails.comment_text: Comment text. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
@@ -27710,9 +27906,10 @@ class FileChangeCommentSubscriptionDetails(bb.Struct):
     """
     Subscribed to or unsubscribed from comment notifications for file.
 
-    :ivar new_value: New file comment subscription.
-    :ivar previous_value: Previous file comment subscription. Might be missing
-        due to historical data gap.
+    :ivar team_log.FileChangeCommentSubscriptionDetails.new_value: New file
+        comment subscription.
+    :ivar team_log.FileChangeCommentSubscriptionDetails.previous_value: Previous
+        file comment subscription. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -27741,7 +27938,7 @@ class FileChangeCommentSubscriptionDetails(bb.Struct):
         """
         New file comment subscription.
 
-        :rtype: FileCommentNotificationPolicy
+        :rtype: team_log.FileCommentNotificationPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -27765,7 +27962,7 @@ class FileChangeCommentSubscriptionDetails(bb.Struct):
         Previous file comment subscription. Might be missing due to historical
         data gap.
 
-        :rtype: FileCommentNotificationPolicy
+        :rtype: team_log.FileCommentNotificationPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -27897,9 +28094,11 @@ class FileCommentsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled commenting on team files.
 
-    :ivar new_value: New commenting on team files policy.
-    :ivar previous_value: Previous commenting on team files policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.FileCommentsChangePolicyDetails.new_value: New commenting on
+        team files policy.
+    :ivar team_log.FileCommentsChangePolicyDetails.previous_value: Previous
+        commenting on team files policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -27928,7 +28127,7 @@ class FileCommentsChangePolicyDetails(bb.Struct):
         """
         New commenting on team files policy.
 
-        :rtype: FileCommentsPolicy
+        :rtype: team_log.FileCommentsPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -27952,7 +28151,7 @@ class FileCommentsChangePolicyDetails(bb.Struct):
         Previous commenting on team files policy. Might be missing due to
         historical data gap.
 
-        :rtype: FileCommentsPolicy
+        :rtype: team_log.FileCommentsPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -28084,7 +28283,8 @@ class FileCopyDetails(bb.Struct):
     """
     Copied files and/or folders.
 
-    :ivar relocate_action_details: Relocate action details.
+    :ivar team_log.FileCopyDetails.relocate_action_details: Relocate action
+        details.
     """
 
     __slots__ = [
@@ -28106,7 +28306,7 @@ class FileCopyDetails(bb.Struct):
         """
         Relocate action details.
 
-        :rtype: list of [RelocateAssetReferencesLogInfo]
+        :rtype: list of [team_log.RelocateAssetReferencesLogInfo]
         """
         if self._relocate_action_details_present:
             return self._relocate_action_details_value
@@ -28185,8 +28385,8 @@ class FileDeleteCommentDetails(bb.Struct):
     """
     Deleted file comment.
 
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.FileDeleteCommentDetails.comment_text: Comment text. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
@@ -28426,9 +28626,10 @@ class FileEditCommentDetails(bb.Struct):
     """
     Edited file comment.
 
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
-    :ivar previous_comment_text: Previous comment text.
+    :ivar team_log.FileEditCommentDetails.comment_text: Comment text. Might be
+        missing due to historical data gap.
+    :ivar team_log.FileEditCommentDetails.previous_comment_text: Previous
+        comment text.
     """
 
     __slots__ = [
@@ -28699,8 +28900,8 @@ class FileLikeCommentDetails(bb.Struct):
     """
     Liked file comment.
 
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.FileLikeCommentDetails.comment_text: Comment text. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
@@ -28804,10 +29005,11 @@ class FileOrFolderLogInfo(bb.Struct):
     """
     Generic information relevant both for files and folders
 
-    :ivar path: Path relative to event context.
-    :ivar display_name: Display name. Might be missing due to historical data
-        gap.
-    :ivar file_id: Unique ID. Might be missing due to historical data gap.
+    :ivar team_log.FileOrFolderLogInfo.path: Path relative to event context.
+    :ivar team_log.FileOrFolderLogInfo.display_name: Display name. Might be
+        missing due to historical data gap.
+    :ivar team_log.FileOrFolderLogInfo.file_id: Unique ID. Might be missing due
+        to historical data gap.
     """
 
     __slots__ = [
@@ -28843,7 +29045,7 @@ class FileOrFolderLogInfo(bb.Struct):
         """
         Path relative to event context.
 
-        :rtype: PathLogInfo
+        :rtype: team_log.PathLogInfo
         """
         if self._path_present:
             return self._path_value
@@ -28959,7 +29161,8 @@ class FileMoveDetails(bb.Struct):
     """
     Moved files and/or folders.
 
-    :ivar relocate_action_details: Relocate action details.
+    :ivar team_log.FileMoveDetails.relocate_action_details: Relocate action
+        details.
     """
 
     __slots__ = [
@@ -28981,7 +29184,7 @@ class FileMoveDetails(bb.Struct):
         """
         Relocate action details.
 
-        :rtype: list of [RelocateAssetReferencesLogInfo]
+        :rtype: list of [team_log.RelocateAssetReferencesLogInfo]
         """
         if self._relocate_action_details_present:
             return self._relocate_action_details_value
@@ -29196,7 +29399,8 @@ class FileRenameDetails(bb.Struct):
     """
     Renamed files and/or folders.
 
-    :ivar relocate_action_details: Relocate action details.
+    :ivar team_log.FileRenameDetails.relocate_action_details: Relocate action
+        details.
     """
 
     __slots__ = [
@@ -29218,7 +29422,7 @@ class FileRenameDetails(bb.Struct):
         """
         Relocate action details.
 
-        :rtype: list of [RelocateAssetReferencesLogInfo]
+        :rtype: list of [team_log.RelocateAssetReferencesLogInfo]
         """
         if self._relocate_action_details_present:
             return self._relocate_action_details_value
@@ -29297,11 +29501,12 @@ class FileRequestChangeDetails(bb.Struct):
     """
     Changed file request.
 
-    :ivar file_request_id: File request id. Might be missing due to historical
-        data gap.
-    :ivar previous_details: Previous file request details. Might be missing due
-        to historical data gap.
-    :ivar new_details: New file request details.
+    :ivar team_log.FileRequestChangeDetails.file_request_id: File request id.
+        Might be missing due to historical data gap.
+    :ivar team_log.FileRequestChangeDetails.previous_details: Previous file
+        request details. Might be missing due to historical data gap.
+    :ivar team_log.FileRequestChangeDetails.new_details: New file request
+        details.
     """
 
     __slots__ = [
@@ -29364,7 +29569,7 @@ class FileRequestChangeDetails(bb.Struct):
         Previous file request details. Might be missing due to historical data
         gap.
 
-        :rtype: FileRequestDetails
+        :rtype: team_log.FileRequestDetails
         """
         if self._previous_details_present:
             return self._previous_details_value
@@ -29390,7 +29595,7 @@ class FileRequestChangeDetails(bb.Struct):
         """
         New file request details.
 
-        :rtype: FileRequestDetails
+        :rtype: team_log.FileRequestDetails
         """
         if self._new_details_present:
             return self._new_details_value
@@ -29471,10 +29676,10 @@ class FileRequestCloseDetails(bb.Struct):
     """
     Closed file request.
 
-    :ivar file_request_id: File request id. Might be missing due to historical
-        data gap.
-    :ivar previous_details: Previous file request details. Might be missing due
-        to historical data gap.
+    :ivar team_log.FileRequestCloseDetails.file_request_id: File request id.
+        Might be missing due to historical data gap.
+    :ivar team_log.FileRequestCloseDetails.previous_details: Previous file
+        request details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -29530,7 +29735,7 @@ class FileRequestCloseDetails(bb.Struct):
         Previous file request details. Might be missing due to historical data
         gap.
 
-        :rtype: FileRequestDetails
+        :rtype: team_log.FileRequestDetails
         """
         if self._previous_details_present:
             return self._previous_details_value
@@ -29613,10 +29818,10 @@ class FileRequestCreateDetails(bb.Struct):
     """
     Created file request.
 
-    :ivar file_request_id: File request id. Might be missing due to historical
-        data gap.
-    :ivar request_details: File request details. Might be missing due to
-        historical data gap.
+    :ivar team_log.FileRequestCreateDetails.file_request_id: File request id.
+        Might be missing due to historical data gap.
+    :ivar team_log.FileRequestCreateDetails.request_details: File request
+        details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -29671,7 +29876,7 @@ class FileRequestCreateDetails(bb.Struct):
         """
         File request details. Might be missing due to historical data gap.
 
-        :rtype: FileRequestDetails
+        :rtype: team_log.FileRequestDetails
         """
         if self._request_details_present:
             return self._request_details_value
@@ -29754,10 +29959,11 @@ class FileRequestDeadline(bb.Struct):
     """
     File request deadline
 
-    :ivar deadline: The deadline for this file request. Might be missing due to
-        historical data gap.
-    :ivar allow_late_uploads: If set, allow uploads after the deadline has
-        passed. Might be missing due to historical data gap.
+    :ivar team_log.FileRequestDeadline.deadline: The deadline for this file
+        request. Might be missing due to historical data gap.
+    :ivar team_log.FileRequestDeadline.allow_late_uploads: If set, allow uploads
+        after the deadline has passed. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -29850,9 +30056,10 @@ class FileRequestDetails(bb.Struct):
     """
     File request details
 
-    :ivar asset_index: Asset position in the Assets list.
-    :ivar deadline: File request deadline. Might be missing due to historical
-        data gap.
+    :ivar team_log.FileRequestDetails.asset_index: Asset position in the Assets
+        list.
+    :ivar team_log.FileRequestDetails.deadline: File request deadline. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
@@ -29904,7 +30111,7 @@ class FileRequestDetails(bb.Struct):
         """
         File request deadline. Might be missing due to historical data gap.
 
-        :rtype: FileRequestDeadline
+        :rtype: team_log.FileRequestDeadline
         """
         if self._deadline_present:
             return self._deadline_value
@@ -29940,15 +30147,16 @@ class FileRequestReceiveFileDetails(bb.Struct):
     """
     Received files for file request.
 
-    :ivar file_request_id: File request id. Might be missing due to historical
-        data gap.
-    :ivar file_request_details: File request details. Might be missing due to
-        historical data gap.
-    :ivar submitted_file_names: Submitted file names.
-    :ivar submitter_name: The name as provided by the submitter. Might be
-        missing due to historical data gap.
-    :ivar submitter_email: The email as provided by the submitter. Might be
-        missing due to historical data gap.
+    :ivar team_log.FileRequestReceiveFileDetails.file_request_id: File request
+        id. Might be missing due to historical data gap.
+    :ivar team_log.FileRequestReceiveFileDetails.file_request_details: File
+        request details. Might be missing due to historical data gap.
+    :ivar team_log.FileRequestReceiveFileDetails.submitted_file_names: Submitted
+        file names.
+    :ivar team_log.FileRequestReceiveFileDetails.submitter_name: The name as
+        provided by the submitter. Might be missing due to historical data gap.
+    :ivar team_log.FileRequestReceiveFileDetails.submitter_email: The email as
+        provided by the submitter. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -30024,7 +30232,7 @@ class FileRequestReceiveFileDetails(bb.Struct):
         """
         File request details. Might be missing due to historical data gap.
 
-        :rtype: FileRequestDetails
+        :rtype: team_log.FileRequestDetails
         """
         if self._file_request_details_present:
             return self._file_request_details_value
@@ -30187,9 +30395,10 @@ class FileRequestsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled file requests.
 
-    :ivar new_value: New file requests policy.
-    :ivar previous_value: Previous file requests policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.FileRequestsChangePolicyDetails.new_value: New file requests
+        policy.
+    :ivar team_log.FileRequestsChangePolicyDetails.previous_value: Previous file
+        requests policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -30218,7 +30427,7 @@ class FileRequestsChangePolicyDetails(bb.Struct):
         """
         New file requests policy.
 
-        :rtype: FileRequestsPolicy
+        :rtype: team_log.FileRequestsPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -30242,7 +30451,7 @@ class FileRequestsChangePolicyDetails(bb.Struct):
         Previous file requests policy. Might be missing due to historical data
         gap.
 
-        :rtype: FileRequestsPolicy
+        :rtype: team_log.FileRequestsPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -30510,8 +30719,8 @@ class FileResolveCommentDetails(bb.Struct):
     """
     Resolved file comment.
 
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.FileResolveCommentDetails.comment_text: Comment text. Might
+        be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -30819,7 +31028,8 @@ class FileSaveCopyReferenceDetails(bb.Struct):
     """
     Saved file/folder using copy reference.
 
-    :ivar relocate_action_details: Relocate action details.
+    :ivar team_log.FileSaveCopyReferenceDetails.relocate_action_details:
+        Relocate action details.
     """
 
     __slots__ = [
@@ -30841,7 +31051,7 @@ class FileSaveCopyReferenceDetails(bb.Struct):
         """
         Relocate action details.
 
-        :rtype: list of [RelocateAssetReferencesLogInfo]
+        :rtype: list of [team_log.RelocateAssetReferencesLogInfo]
         """
         if self._relocate_action_details_present:
             return self._relocate_action_details_value
@@ -30920,8 +31130,8 @@ class FileUnlikeCommentDetails(bb.Struct):
     """
     Unliked file comment.
 
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.FileUnlikeCommentDetails.comment_text: Comment text. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
@@ -31025,8 +31235,8 @@ class FileUnresolveCommentDetails(bb.Struct):
     """
     Unresolved file comment.
 
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.FileUnresolveCommentDetails.comment_text: Comment text. Might
+        be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -31160,10 +31370,10 @@ class GeoLocationLogInfo(bb.Struct):
     """
     Geographic location details.
 
-    :ivar city: City name.
-    :ivar region: Region name.
-    :ivar country: Country code.
-    :ivar ip_address: IP address.
+    :ivar team_log.GeoLocationLogInfo.city: City name.
+    :ivar team_log.GeoLocationLogInfo.region: Region name.
+    :ivar team_log.GeoLocationLogInfo.country: Country code.
+    :ivar team_log.GeoLocationLogInfo.ip_address: IP address.
     """
 
     __slots__ = [
@@ -31317,15 +31527,17 @@ GeoLocationLogInfo_validator = bv.Struct(GeoLocationLogInfo)
 
 class GetTeamEventsArg(bb.Struct):
     """
-    :ivar limit: The maximal number of results to return per call. Note that
-        some calls may not return ``limit`` number of events, and may even
-        return no events, even with `has_more` set to true. In this case,
-        callers should fetch again using
+    :ivar team_log.GetTeamEventsArg.limit: The maximal number of results to
+        return per call. Note that some calls may not return ``limit`` number of
+        events, and may even return no events, even with `has_more` set to true.
+        In this case, callers should fetch again using
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue`.
-    :ivar account_id: Filter the events by account ID. Return ony events with
-        this account_id as either Actor, Context, or Participants.
-    :ivar time: Filter by time range.
-    :ivar category: Filter the returned events to a single category.
+    :ivar team_log.GetTeamEventsArg.account_id: Filter the events by account ID.
+        Return ony events with this account_id as either Actor, Context, or
+        Participants.
+    :ivar team_log.GetTeamEventsArg.time: Filter by time range.
+    :ivar team_log.GetTeamEventsArg.category: Filter the returned events to a
+        single category.
     """
 
     __slots__ = [
@@ -31448,7 +31660,7 @@ class GetTeamEventsArg(bb.Struct):
         """
         Filter the returned events to a single category.
 
-        :rtype: EventCategory
+        :rtype: team_log.EventCategory
         """
         if self._category_present:
             return self._category_value
@@ -31484,7 +31696,8 @@ GetTeamEventsArg_validator = bv.Struct(GetTeamEventsArg)
 
 class GetTeamEventsContinueArg(bb.Struct):
     """
-    :ivar cursor: Indicates from what point to get the next set of events.
+    :ivar team_log.GetTeamEventsContinueArg.cursor: Indicates from what point to
+        get the next set of events.
     """
 
     __slots__ = [
@@ -31543,14 +31756,15 @@ class GetTeamEventsContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bad_cursor: Bad cursor.
-    :ivar datetime.datetime reset: Cursors are intended to be used quickly.
-        Individual cursor values are normally valid for days, but in rare cases
-        may be reset sooner. Cursor reset errors should be handled by fetching a
-        new cursor from :route:`get_events`. The associated value is the
-        approximate timestamp of the most recent event returned by the cursor.
-        This should be used as a resumption point when calling
-        :route:`get_events` to obtain a new cursor.
+    :ivar team_log.GetTeamEventsContinueError.bad_cursor: Bad cursor.
+    :ivar datetime.datetime team_log.GetTeamEventsContinueError.reset: Cursors
+        are intended to be used quickly. Individual cursor values are normally
+        valid for days, but in rare cases may be reset sooner. Cursor reset
+        errors should be handled by fetching a new cursor from
+        :route:`get_events`. The associated value is the approximate timestamp
+        of the most recent event returned by the cursor. This should be used as
+        a resumption point when calling :route:`get_events` to obtain a new
+        cursor.
     """
 
     _catch_all = 'other'
@@ -31566,7 +31780,7 @@ class GetTeamEventsContinueError(bb.Union):
         ``val``.
 
         :param datetime.datetime val:
-        :rtype: GetTeamEventsContinueError
+        :rtype: team_log.GetTeamEventsContinueError
         """
         return cls('reset', val)
 
@@ -31630,8 +31844,9 @@ class GetTeamEventsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar account_id_not_found: No user found matching the provided account_id.
-    :ivar invalid_time_range: Invalid time range.
+    :ivar team_log.GetTeamEventsError.account_id_not_found: No user found
+        matching the provided account_id.
+    :ivar team_log.GetTeamEventsError.invalid_time_range: Invalid time range.
     """
 
     _catch_all = 'other'
@@ -31676,9 +31891,9 @@ GetTeamEventsError_validator = bv.Union(GetTeamEventsError)
 
 class GetTeamEventsResult(bb.Struct):
     """
-    :ivar events: List of events. Note that events are not guaranteed to be
-        sorted by their timestamp value.
-    :ivar cursor: Pass the cursor into
+    :ivar team_log.GetTeamEventsResult.events: List of events. Note that events
+        are not guaranteed to be sorted by their timestamp value.
+    :ivar team_log.GetTeamEventsResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue` to obtain
         additional events. The value of ``cursor`` may change for each response
         from :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue`,
@@ -31687,8 +31902,8 @@ class GetTeamEventsResult(bb.Struct):
         on the latest value of ``cursor`` after each call, and poll regularly if
         they wish to poll for new events. Callers should handle reset exceptions
         for expired cursors.
-    :ivar has_more: Is true if there may be additional events that have not been
-        returned yet. An additional call to
+    :ivar team_log.GetTeamEventsResult.has_more: Is true if there may be
+        additional events that have not been returned yet. An additional call to
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue` can
         retrieve them. Note that ``has_more`` may be ``True``, even if
         ``events`` is empty.
@@ -31728,7 +31943,7 @@ class GetTeamEventsResult(bb.Struct):
         List of events. Note that events are not guaranteed to be sorted by
         their timestamp value.
 
-        :rtype: list of [TeamEvent]
+        :rtype: list of [team_log.TeamEvent]
         """
         if self._events_present:
             return self._events_value
@@ -31820,9 +32035,10 @@ class GoogleSsoChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Google single sign-on for team.
 
-    :ivar new_value: New Google single sign-on policy.
-    :ivar previous_value: Previous Google single sign-on policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.GoogleSsoChangePolicyDetails.new_value: New Google single
+        sign-on policy.
+    :ivar team_log.GoogleSsoChangePolicyDetails.previous_value: Previous Google
+        single sign-on policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -31851,7 +32067,7 @@ class GoogleSsoChangePolicyDetails(bb.Struct):
         """
         New Google single sign-on policy.
 
-        :rtype: GoogleSsoPolicy
+        :rtype: team_log.GoogleSsoPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -31875,7 +32091,7 @@ class GoogleSsoChangePolicyDetails(bb.Struct):
         Previous Google single sign-on policy. Might be missing due to
         historical data gap.
 
-        :rtype: GoogleSsoPolicy
+        :rtype: team_log.GoogleSsoPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -32007,7 +32223,7 @@ class GroupAddExternalIdDetails(bb.Struct):
     """
     Added external ID for group.
 
-    :ivar new_value: Current external id.
+    :ivar team_log.GroupAddExternalIdDetails.new_value: Current external id.
     """
 
     __slots__ = [
@@ -32108,7 +32324,7 @@ class GroupAddMemberDetails(bb.Struct):
     """
     Added team members to group.
 
-    :ivar is_group_owner: Is group owner.
+    :ivar team_log.GroupAddMemberDetails.is_group_owner: Is group owner.
     """
 
     __slots__ = [
@@ -32209,8 +32425,8 @@ class GroupChangeExternalIdDetails(bb.Struct):
     """
     Changed external ID for group.
 
-    :ivar new_value: Current external id.
-    :ivar previous_value: Old external id.
+    :ivar team_log.GroupChangeExternalIdDetails.new_value: Current external id.
+    :ivar team_log.GroupChangeExternalIdDetails.previous_value: Old external id.
     """
 
     __slots__ = [
@@ -32342,9 +32558,10 @@ class GroupChangeManagementTypeDetails(bb.Struct):
     """
     Changed group management type.
 
-    :ivar new_value: New group management type.
-    :ivar previous_value: Previous group management type. Might be missing due
-        to historical data gap.
+    :ivar team_log.GroupChangeManagementTypeDetails.new_value: New group
+        management type.
+    :ivar team_log.GroupChangeManagementTypeDetails.previous_value: Previous
+        group management type. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -32480,7 +32697,7 @@ class GroupChangeMemberRoleDetails(bb.Struct):
     """
     Changed manager permissions of group member.
 
-    :ivar is_group_owner: Is group owner.
+    :ivar team_log.GroupChangeMemberRoleDetails.is_group_owner: Is group owner.
     """
 
     __slots__ = [
@@ -32581,9 +32798,9 @@ class GroupCreateDetails(bb.Struct):
     """
     Created group.
 
-    :ivar is_company_managed: Is company managed group. Might be missing due to
-        historical data gap.
-    :ivar join_policy: Group join policy.
+    :ivar team_log.GroupCreateDetails.is_company_managed: Is company managed
+        group. Might be missing due to historical data gap.
+    :ivar team_log.GroupCreateDetails.join_policy: Group join policy.
     """
 
     __slots__ = [
@@ -32638,7 +32855,7 @@ class GroupCreateDetails(bb.Struct):
         """
         Group join policy.
 
-        :rtype: GroupJoinPolicy
+        :rtype: team_log.GroupJoinPolicy
         """
         if self._join_policy_present:
             return self._join_policy_value
@@ -32721,8 +32938,8 @@ class GroupDeleteDetails(bb.Struct):
     """
     Deleted group.
 
-    :ivar is_company_managed: Is company managed group. Might be missing due to
-        historical data gap.
+    :ivar team_log.GroupDeleteDetails.is_company_managed: Is company managed
+        group. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -32941,9 +33158,9 @@ class GroupJoinPolicyUpdatedDetails(bb.Struct):
     """
     Updated group join policy.
 
-    :ivar is_company_managed: Is company managed group. Might be missing due to
-        historical data gap.
-    :ivar join_policy: Group join policy.
+    :ivar team_log.GroupJoinPolicyUpdatedDetails.is_company_managed: Is company
+        managed group. Might be missing due to historical data gap.
+    :ivar team_log.GroupJoinPolicyUpdatedDetails.join_policy: Group join policy.
     """
 
     __slots__ = [
@@ -32998,7 +33215,7 @@ class GroupJoinPolicyUpdatedDetails(bb.Struct):
         """
         Group join policy.
 
-        :rtype: GroupJoinPolicy
+        :rtype: team_log.GroupJoinPolicy
         """
         if self._join_policy_present:
             return self._join_policy_value
@@ -33081,11 +33298,11 @@ class GroupLogInfo(bb.Struct):
     """
     Group's logged information.
 
-    :ivar group_id: The unique id of this group. Might be missing due to
-        historical data gap.
-    :ivar display_name: The name of this group.
-    :ivar external_id: External group ID. Might be missing due to historical
-        data gap.
+    :ivar team_log.GroupLogInfo.group_id: The unique id of this group. Might be
+        missing due to historical data gap.
+    :ivar team_log.GroupLogInfo.display_name: The name of this group.
+    :ivar team_log.GroupLogInfo.external_id: External group ID. Might be missing
+        due to historical data gap.
     """
 
     __slots__ = [
@@ -33276,7 +33493,7 @@ class GroupRemoveExternalIdDetails(bb.Struct):
     """
     Removed external ID for group.
 
-    :ivar previous_value: Old external id.
+    :ivar team_log.GroupRemoveExternalIdDetails.previous_value: Old external id.
     """
 
     __slots__ = [
@@ -33445,8 +33662,8 @@ class GroupRenameDetails(bb.Struct):
     """
     Renamed group.
 
-    :ivar previous_value: Previous display name.
-    :ivar new_value: New display name.
+    :ivar team_log.GroupRenameDetails.previous_value: Previous display name.
+    :ivar team_log.GroupRenameDetails.new_value: New display name.
     """
 
     __slots__ = [
@@ -33578,9 +33795,11 @@ class GroupUserManagementChangePolicyDetails(bb.Struct):
     """
     Changed who can create groups.
 
-    :ivar new_value: New group users management policy.
-    :ivar previous_value: Previous group users management policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.GroupUserManagementChangePolicyDetails.new_value: New group
+        users management policy.
+    :ivar team_log.GroupUserManagementChangePolicyDetails.previous_value:
+        Previous group users management policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -33763,9 +33982,9 @@ class JoinTeamDetails(bb.Struct):
     """
     Additional information relevant when a new member joins the team.
 
-    :ivar linked_apps: Linked applications.
-    :ivar linked_devices: Linked devices.
-    :ivar linked_shared_folders: Linked shared folders.
+    :ivar team_log.JoinTeamDetails.linked_apps: Linked applications.
+    :ivar team_log.JoinTeamDetails.linked_devices: Linked devices.
+    :ivar team_log.JoinTeamDetails.linked_shared_folders: Linked shared folders.
     """
 
     __slots__ = [
@@ -33801,7 +34020,7 @@ class JoinTeamDetails(bb.Struct):
         """
         Linked applications.
 
-        :rtype: list of [UserLinkedAppLogInfo]
+        :rtype: list of [team_log.UserLinkedAppLogInfo]
         """
         if self._linked_apps_present:
             return self._linked_apps_value
@@ -33824,7 +34043,7 @@ class JoinTeamDetails(bb.Struct):
         """
         Linked devices.
 
-        :rtype: list of [LinkedDeviceLogInfo]
+        :rtype: list of [team_log.LinkedDeviceLogInfo]
         """
         if self._linked_devices_present:
             return self._linked_devices_value
@@ -33847,7 +34066,7 @@ class JoinTeamDetails(bb.Struct):
         """
         Linked shared folders.
 
-        :rtype: list of [FolderLogInfo]
+        :rtype: list of [team_log.FolderLogInfo]
         """
         if self._linked_shared_folders_present:
             return self._linked_shared_folders_value
@@ -33881,24 +34100,26 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information on sessions, in legacy format
 
-    :ivar session_info: Session unique id. Might be missing due to historical
-        data gap.
-    :ivar display_name: The device name. Might be missing due to historical data
-        gap.
-    :ivar is_emm_managed: Is device managed by emm. Might be missing due to
-        historical data gap.
-    :ivar platform: Information on the hosting platform. Might be missing due to
-        historical data gap.
-    :ivar mac_address: The mac address of the last activity from this session.
+    :ivar team_log.LegacyDeviceSessionLogInfo.session_info: Session unique id.
         Might be missing due to historical data gap.
-    :ivar os_version: The hosting OS version. Might be missing due to historical
+    :ivar team_log.LegacyDeviceSessionLogInfo.display_name: The device name.
+        Might be missing due to historical data gap.
+    :ivar team_log.LegacyDeviceSessionLogInfo.is_emm_managed: Is device managed
+        by emm. Might be missing due to historical data gap.
+    :ivar team_log.LegacyDeviceSessionLogInfo.platform: Information on the
+        hosting platform. Might be missing due to historical data gap.
+    :ivar team_log.LegacyDeviceSessionLogInfo.mac_address: The mac address of
+        the last activity from this session. Might be missing due to historical
         data gap.
-    :ivar device_type: Information on the hosting device type. Might be missing
-        due to historical data gap.
-    :ivar client_version: The Dropbox client version. Might be missing due to
+    :ivar team_log.LegacyDeviceSessionLogInfo.os_version: The hosting OS
+        version. Might be missing due to historical data gap.
+    :ivar team_log.LegacyDeviceSessionLogInfo.device_type: Information on the
+        hosting device type. Might be missing due to historical data gap.
+    :ivar team_log.LegacyDeviceSessionLogInfo.client_version: The Dropbox client
+        version. Might be missing due to historical data gap.
+    :ivar team_log.LegacyDeviceSessionLogInfo.legacy_uniq_id: Alternative unique
+        device session id, instead of session id field. Might be missing due to
         historical data gap.
-    :ivar legacy_uniq_id: Alternative unique device session id, instead of
-        session id field. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -33982,7 +34203,7 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
         """
         Session unique id. Might be missing due to historical data gap.
 
-        :rtype: SessionLogInfo
+        :rtype: team_log.SessionLogInfo
         """
         if self._session_info_present:
             return self._session_info_value
@@ -34244,13 +34465,17 @@ class LinkedDeviceLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar MobileDeviceSessionLogInfo mobile_device_session: mobile device
+    :ivar MobileDeviceSessionLogInfo
+        team_log.LinkedDeviceLogInfo.mobile_device_session: mobile device
         session's details.
-    :ivar DesktopDeviceSessionLogInfo desktop_device_session: desktop device
+    :ivar DesktopDeviceSessionLogInfo
+        team_log.LinkedDeviceLogInfo.desktop_device_session: desktop device
         session's details.
-    :ivar WebDeviceSessionLogInfo web_device_session: web device session's
+    :ivar WebDeviceSessionLogInfo
+        team_log.LinkedDeviceLogInfo.web_device_session: web device session's
         details.
-    :ivar LegacyDeviceSessionLogInfo legacy_device_session: legacy device
+    :ivar LegacyDeviceSessionLogInfo
+        team_log.LinkedDeviceLogInfo.legacy_device_session: legacy device
         session's details.
     """
 
@@ -34264,8 +34489,8 @@ class LinkedDeviceLogInfo(bb.Union):
         Create an instance of this class set to the ``mobile_device_session``
         tag with value ``val``.
 
-        :param MobileDeviceSessionLogInfo val:
-        :rtype: LinkedDeviceLogInfo
+        :param team_log.MobileDeviceSessionLogInfo val:
+        :rtype: team_log.LinkedDeviceLogInfo
         """
         return cls('mobile_device_session', val)
 
@@ -34275,8 +34500,8 @@ class LinkedDeviceLogInfo(bb.Union):
         Create an instance of this class set to the ``desktop_device_session``
         tag with value ``val``.
 
-        :param DesktopDeviceSessionLogInfo val:
-        :rtype: LinkedDeviceLogInfo
+        :param team_log.DesktopDeviceSessionLogInfo val:
+        :rtype: team_log.LinkedDeviceLogInfo
         """
         return cls('desktop_device_session', val)
 
@@ -34286,8 +34511,8 @@ class LinkedDeviceLogInfo(bb.Union):
         Create an instance of this class set to the ``web_device_session`` tag
         with value ``val``.
 
-        :param WebDeviceSessionLogInfo val:
-        :rtype: LinkedDeviceLogInfo
+        :param team_log.WebDeviceSessionLogInfo val:
+        :rtype: team_log.LinkedDeviceLogInfo
         """
         return cls('web_device_session', val)
 
@@ -34297,8 +34522,8 @@ class LinkedDeviceLogInfo(bb.Union):
         Create an instance of this class set to the ``legacy_device_session``
         tag with value ``val``.
 
-        :param LegacyDeviceSessionLogInfo val:
-        :rtype: LinkedDeviceLogInfo
+        :param team_log.LegacyDeviceSessionLogInfo val:
+        :rtype: team_log.LinkedDeviceLogInfo
         """
         return cls('legacy_device_session', val)
 
@@ -34348,7 +34573,7 @@ class LinkedDeviceLogInfo(bb.Union):
 
         Only call this if :meth:`is_mobile_device_session` is true.
 
-        :rtype: MobileDeviceSessionLogInfo
+        :rtype: team_log.MobileDeviceSessionLogInfo
         """
         if not self.is_mobile_device_session():
             raise AttributeError("tag 'mobile_device_session' not set")
@@ -34360,7 +34585,7 @@ class LinkedDeviceLogInfo(bb.Union):
 
         Only call this if :meth:`is_desktop_device_session` is true.
 
-        :rtype: DesktopDeviceSessionLogInfo
+        :rtype: team_log.DesktopDeviceSessionLogInfo
         """
         if not self.is_desktop_device_session():
             raise AttributeError("tag 'desktop_device_session' not set")
@@ -34372,7 +34597,7 @@ class LinkedDeviceLogInfo(bb.Union):
 
         Only call this if :meth:`is_web_device_session` is true.
 
-        :rtype: WebDeviceSessionLogInfo
+        :rtype: team_log.WebDeviceSessionLogInfo
         """
         if not self.is_web_device_session():
             raise AttributeError("tag 'web_device_session' not set")
@@ -34384,7 +34609,7 @@ class LinkedDeviceLogInfo(bb.Union):
 
         Only call this if :meth:`is_legacy_device_session` is true.
 
-        :rtype: LegacyDeviceSessionLogInfo
+        :rtype: team_log.LegacyDeviceSessionLogInfo
         """
         if not self.is_legacy_device_session():
             raise AttributeError("tag 'legacy_device_session' not set")
@@ -34402,10 +34627,10 @@ class LoginFailDetails(bb.Struct):
     """
     Failed to sign in.
 
-    :ivar is_emm_managed: Tells if the login device is EMM managed. Might be
-        missing due to historical data gap.
-    :ivar login_method: Login method.
-    :ivar error_details: Error details.
+    :ivar team_log.LoginFailDetails.is_emm_managed: Tells if the login device is
+        EMM managed. Might be missing due to historical data gap.
+    :ivar team_log.LoginFailDetails.login_method: Login method.
+    :ivar team_log.LoginFailDetails.error_details: Error details.
     """
 
     __slots__ = [
@@ -34468,7 +34693,7 @@ class LoginFailDetails(bb.Struct):
         """
         Login method.
 
-        :rtype: LoginMethod
+        :rtype: team_log.LoginMethod
         """
         if self._login_method_present:
             return self._login_method_value
@@ -34491,7 +34716,7 @@ class LoginFailDetails(bb.Struct):
         """
         Error details.
 
-        :rtype: FailureDetailsLogInfo
+        :rtype: team_log.FailureDetailsLogInfo
         """
         if self._error_details_present:
             return self._error_details_value
@@ -34629,9 +34854,9 @@ class LoginSuccessDetails(bb.Struct):
     """
     Signed in.
 
-    :ivar is_emm_managed: Tells if the login device is EMM managed. Might be
-        missing due to historical data gap.
-    :ivar login_method: Login method.
+    :ivar team_log.LoginSuccessDetails.is_emm_managed: Tells if the login device
+        is EMM managed. Might be missing due to historical data gap.
+    :ivar team_log.LoginSuccessDetails.login_method: Login method.
     """
 
     __slots__ = [
@@ -34687,7 +34912,7 @@ class LoginSuccessDetails(bb.Struct):
         """
         Login method.
 
-        :rtype: LoginMethod
+        :rtype: team_log.LoginMethod
         """
         if self._login_method_present:
             return self._login_method_value
@@ -34835,7 +35060,7 @@ class MemberAddNameDetails(bb.Struct):
     """
     Added team member name.
 
-    :ivar new_value: New user's name.
+    :ivar team_log.MemberAddNameDetails.new_value: New user's name.
     """
 
     __slots__ = [
@@ -34857,7 +35082,7 @@ class MemberAddNameDetails(bb.Struct):
         """
         New user's name.
 
-        :rtype: UserNameLogInfo
+        :rtype: team_log.UserNameLogInfo
         """
         if self._new_value_present:
             return self._new_value_value
@@ -34936,11 +35161,12 @@ class MemberChangeAdminRoleDetails(bb.Struct):
     """
     Changed team member admin role.
 
-    :ivar new_value: New admin role. This field is relevant when the admin role
-        is changed or whenthe user role changes from no admin rights to with
-        admin rights.
-    :ivar previous_value: Previous admin role. This field is relevant when the
-        admin role is changed or when the admin role is removed.
+    :ivar team_log.MemberChangeAdminRoleDetails.new_value: New admin role. This
+        field is relevant when the admin role is changed or whenthe user role
+        changes from no admin rights to with admin rights.
+    :ivar team_log.MemberChangeAdminRoleDetails.previous_value: Previous admin
+        role. This field is relevant when the admin role is changed or when the
+        admin role is removed.
     """
 
     __slots__ = [
@@ -34970,7 +35196,7 @@ class MemberChangeAdminRoleDetails(bb.Struct):
         New admin role. This field is relevant when the admin role is changed or
         whenthe user role changes from no admin rights to with admin rights.
 
-        :rtype: AdminRole
+        :rtype: team_log.AdminRole
         """
         if self._new_value_present:
             return self._new_value_value
@@ -34997,7 +35223,7 @@ class MemberChangeAdminRoleDetails(bb.Struct):
         Previous admin role. This field is relevant when the admin role is
         changed or when the admin role is removed.
 
-        :rtype: AdminRole
+        :rtype: team_log.AdminRole
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -35080,9 +35306,9 @@ class MemberChangeEmailDetails(bb.Struct):
     """
     Changed team member email.
 
-    :ivar new_value: New email.
-    :ivar previous_value: Previous email. Might be missing due to historical
-        data gap.
+    :ivar team_log.MemberChangeEmailDetails.new_value: New email.
+    :ivar team_log.MemberChangeEmailDetails.previous_value: Previous email.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -35217,8 +35443,10 @@ class MemberChangeMembershipTypeDetails(bb.Struct):
     """
     Changed membership type (limited/full) of member.
 
-    :ivar prev_value: Previous membership type.
-    :ivar new_value: New membership type.
+    :ivar team_log.MemberChangeMembershipTypeDetails.prev_value: Previous
+        membership type.
+    :ivar team_log.MemberChangeMembershipTypeDetails.new_value: New membership
+        type.
     """
 
     __slots__ = [
@@ -35247,7 +35475,7 @@ class MemberChangeMembershipTypeDetails(bb.Struct):
         """
         Previous membership type.
 
-        :rtype: TeamMembershipType
+        :rtype: team_log.TeamMembershipType
         """
         if self._prev_value_present:
             return self._prev_value_value
@@ -35270,7 +35498,7 @@ class MemberChangeMembershipTypeDetails(bb.Struct):
         """
         New membership type.
 
-        :rtype: TeamMembershipType
+        :rtype: team_log.TeamMembershipType
         """
         if self._new_value_present:
             return self._new_value_value
@@ -35350,9 +35578,9 @@ class MemberChangeNameDetails(bb.Struct):
     """
     Changed team member name.
 
-    :ivar new_value: New user's name.
-    :ivar previous_value: Previous user's name. Might be missing due to
-        historical data gap.
+    :ivar team_log.MemberChangeNameDetails.new_value: New user's name.
+    :ivar team_log.MemberChangeNameDetails.previous_value: Previous user's name.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -35381,7 +35609,7 @@ class MemberChangeNameDetails(bb.Struct):
         """
         New user's name.
 
-        :rtype: UserNameLogInfo
+        :rtype: team_log.UserNameLogInfo
         """
         if self._new_value_present:
             return self._new_value_value
@@ -35404,7 +35632,7 @@ class MemberChangeNameDetails(bb.Struct):
         """
         Previous user's name. Might be missing due to historical data gap.
 
-        :rtype: UserNameLogInfo
+        :rtype: team_log.UserNameLogInfo
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -35487,11 +35715,11 @@ class MemberChangeStatusDetails(bb.Struct):
     """
     Changed member status (invited, joined, suspended, etc.).
 
-    :ivar previous_value: Previous member status. Might be missing due to
-        historical data gap.
-    :ivar new_value: New member status.
-    :ivar action: Additional information indicating the action taken that caused
-        status change.
+    :ivar team_log.MemberChangeStatusDetails.previous_value: Previous member
+        status. Might be missing due to historical data gap.
+    :ivar team_log.MemberChangeStatusDetails.new_value: New member status.
+    :ivar team_log.MemberChangeStatusDetails.action: Additional information
+        indicating the action taken that caused status change.
     """
 
     __slots__ = [
@@ -35527,7 +35755,7 @@ class MemberChangeStatusDetails(bb.Struct):
         """
         Previous member status. Might be missing due to historical data gap.
 
-        :rtype: MemberStatus
+        :rtype: team_log.MemberStatus
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -35553,7 +35781,7 @@ class MemberChangeStatusDetails(bb.Struct):
         """
         New member status.
 
-        :rtype: MemberStatus
+        :rtype: team_log.MemberStatus
         """
         if self._new_value_present:
             return self._new_value_value
@@ -35577,7 +35805,7 @@ class MemberChangeStatusDetails(bb.Struct):
         Additional information indicating the action taken that caused status
         change.
 
-        :rtype: ActionDetails
+        :rtype: team_log.ActionDetails
         """
         if self._action_present:
             return self._action_value
@@ -35854,9 +36082,11 @@ class MemberRequestsChangePolicyDetails(bb.Struct):
     """
     Changed whether users can find team when not invited.
 
-    :ivar new_value: New member change requests policy.
-    :ivar previous_value: Previous member change requests policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.MemberRequestsChangePolicyDetails.new_value: New member
+        change requests policy.
+    :ivar team_log.MemberRequestsChangePolicyDetails.previous_value: Previous
+        member change requests policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -35885,7 +36115,7 @@ class MemberRequestsChangePolicyDetails(bb.Struct):
         """
         New member change requests policy.
 
-        :rtype: MemberRequestsPolicy
+        :rtype: team_log.MemberRequestsPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -35909,7 +36139,7 @@ class MemberRequestsChangePolicyDetails(bb.Struct):
         Previous member change requests policy. Might be missing due to
         historical data gap.
 
-        :rtype: MemberRequestsPolicy
+        :rtype: team_log.MemberRequestsPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -36049,7 +36279,8 @@ class MemberSpaceLimitsAddCustomQuotaDetails(bb.Struct):
     """
     Set custom member space limit.
 
-    :ivar new_value: New custom quota value in bytes.
+    :ivar team_log.MemberSpaceLimitsAddCustomQuotaDetails.new_value: New custom
+        quota value in bytes.
     """
 
     __slots__ = [
@@ -36218,8 +36449,10 @@ class MemberSpaceLimitsChangeCapsTypePolicyDetails(bb.Struct):
     """
     Changed member space limit type for team.
 
-    :ivar previous_value: Previous space limit type.
-    :ivar new_value: New space limit type.
+    :ivar team_log.MemberSpaceLimitsChangeCapsTypePolicyDetails.previous_value:
+        Previous space limit type.
+    :ivar team_log.MemberSpaceLimitsChangeCapsTypePolicyDetails.new_value: New
+        space limit type.
     """
 
     __slots__ = [
@@ -36248,7 +36481,7 @@ class MemberSpaceLimitsChangeCapsTypePolicyDetails(bb.Struct):
         """
         Previous space limit type.
 
-        :rtype: SpaceCapsType
+        :rtype: team_log.SpaceCapsType
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -36271,7 +36504,7 @@ class MemberSpaceLimitsChangeCapsTypePolicyDetails(bb.Struct):
         """
         New space limit type.
 
-        :rtype: SpaceCapsType
+        :rtype: team_log.SpaceCapsType
         """
         if self._new_value_present:
             return self._new_value_value
@@ -36351,8 +36584,10 @@ class MemberSpaceLimitsChangeCustomQuotaDetails(bb.Struct):
     """
     Changed custom member space limit.
 
-    :ivar previous_value: Previous custom quota value in bytes.
-    :ivar new_value: New custom quota value in bytes.
+    :ivar team_log.MemberSpaceLimitsChangeCustomQuotaDetails.previous_value:
+        Previous custom quota value in bytes.
+    :ivar team_log.MemberSpaceLimitsChangeCustomQuotaDetails.new_value: New
+        custom quota value in bytes.
     """
 
     __slots__ = [
@@ -36484,10 +36719,12 @@ class MemberSpaceLimitsChangePolicyDetails(bb.Struct):
     """
     Changed team default member space limit.
 
-    :ivar previous_value: Previous team default limit value in bytes. Might be
-        missing due to historical data gap.
-    :ivar new_value: New team default limit value in bytes. Might be missing due
-        to historical data gap.
+    :ivar team_log.MemberSpaceLimitsChangePolicyDetails.previous_value: Previous
+        team default limit value in bytes. Might be missing due to historical
+        data gap.
+    :ivar team_log.MemberSpaceLimitsChangePolicyDetails.new_value: New team
+        default limit value in bytes. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -36627,8 +36864,10 @@ class MemberSpaceLimitsChangeStatusDetails(bb.Struct):
     """
     Changed space limit status.
 
-    :ivar previous_value: Previous storage quota status.
-    :ivar new_value: New storage quota status.
+    :ivar team_log.MemberSpaceLimitsChangeStatusDetails.previous_value: Previous
+        storage quota status.
+    :ivar team_log.MemberSpaceLimitsChangeStatusDetails.new_value: New storage
+        quota status.
     """
 
     __slots__ = [
@@ -36657,7 +36896,7 @@ class MemberSpaceLimitsChangeStatusDetails(bb.Struct):
         """
         Previous storage quota status.
 
-        :rtype: SpaceLimitsStatus
+        :rtype: team_log.SpaceLimitsStatus
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -36680,7 +36919,7 @@ class MemberSpaceLimitsChangeStatusDetails(bb.Struct):
         """
         New storage quota status.
 
-        :rtype: SpaceLimitsStatus
+        :rtype: team_log.SpaceLimitsStatus
         """
         if self._new_value_present:
             return self._new_value_value
@@ -36973,7 +37212,8 @@ class MemberSuggestDetails(bb.Struct):
     """
     Suggested person to add to team.
 
-    :ivar suggested_members: suggested users emails.
+    :ivar team_log.MemberSuggestDetails.suggested_members: suggested users
+        emails.
     """
 
     __slots__ = [
@@ -37074,9 +37314,11 @@ class MemberSuggestionsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled option for team members to suggest people to add to team.
 
-    :ivar new_value: New team member suggestions policy.
-    :ivar previous_value: Previous team member suggestions policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.MemberSuggestionsChangePolicyDetails.new_value: New team
+        member suggestions policy.
+    :ivar team_log.MemberSuggestionsChangePolicyDetails.previous_value: Previous
+        team member suggestions policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -37105,7 +37347,7 @@ class MemberSuggestionsChangePolicyDetails(bb.Struct):
         """
         New team member suggestions policy.
 
-        :rtype: MemberSuggestionsPolicy
+        :rtype: team_log.MemberSuggestionsPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -37129,7 +37371,7 @@ class MemberSuggestionsChangePolicyDetails(bb.Struct):
         Previous team member suggestions policy. Might be missing due to
         historical data gap.
 
-        :rtype: MemberSuggestionsPolicy
+        :rtype: team_log.MemberSuggestionsPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -37329,9 +37571,11 @@ class MicrosoftOfficeAddinChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Microsoft Office add-in.
 
-    :ivar new_value: New Microsoft Office addin policy.
-    :ivar previous_value: Previous Microsoft Office addin policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.MicrosoftOfficeAddinChangePolicyDetails.new_value: New
+        Microsoft Office addin policy.
+    :ivar team_log.MicrosoftOfficeAddinChangePolicyDetails.previous_value:
+        Previous Microsoft Office addin policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -37360,7 +37604,7 @@ class MicrosoftOfficeAddinChangePolicyDetails(bb.Struct):
         """
         New Microsoft Office addin policy.
 
-        :rtype: MicrosoftOfficeAddinPolicy
+        :rtype: team_log.MicrosoftOfficeAddinPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -37384,7 +37628,7 @@ class MicrosoftOfficeAddinChangePolicyDetails(bb.Struct):
         Previous Microsoft Office addin policy. Might be missing due to
         historical data gap.
 
-        :rtype: MicrosoftOfficeAddinPolicy
+        :rtype: team_log.MicrosoftOfficeAddinPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -37517,8 +37761,8 @@ class MissingDetails(bb.Struct):
     An indication that an error occurred while retrieving the event. Some
     attributes of the event may be omitted as a result.
 
-    :ivar source_event_fields: All the data that could be retrieved and
-        converted from the source event.
+    :ivar team_log.MissingDetails.source_event_fields: All the data that could
+        be retrieved and converted from the source event.
     """
 
     __slots__ = [
@@ -37576,13 +37820,17 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information about linked Dropbox mobile client sessions
 
-    :ivar session_info: Mobile session unique id. Might be missing due to
-        historical data gap.
-    :ivar device_name: The device name.
-    :ivar client_type: The mobile application type.
-    :ivar client_version: The Dropbox client version.
-    :ivar os_version: The hosting OS version.
-    :ivar last_carrier: last carrier used by the device.
+    :ivar team_log.MobileDeviceSessionLogInfo.session_info: Mobile session
+        unique id. Might be missing due to historical data gap.
+    :ivar team_log.MobileDeviceSessionLogInfo.device_name: The device name.
+    :ivar team_log.MobileDeviceSessionLogInfo.client_type: The mobile
+        application type.
+    :ivar team_log.MobileDeviceSessionLogInfo.client_version: The Dropbox client
+        version.
+    :ivar team_log.MobileDeviceSessionLogInfo.os_version: The hosting OS
+        version.
+    :ivar team_log.MobileDeviceSessionLogInfo.last_carrier: last carrier used by
+        the device.
     """
 
     __slots__ = [
@@ -37645,7 +37893,7 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
         """
         Mobile session unique id. Might be missing due to historical data gap.
 
-        :rtype: MobileSessionLogInfo
+        :rtype: team_log.MobileSessionLogInfo
         """
         if self._session_info_present:
             return self._session_info_value
@@ -37836,9 +38084,11 @@ class NamespaceRelativePathLogInfo(bb.Struct):
     """
     Namespace relative path details.
 
-    :ivar ns_id: Namespace ID. Might be missing due to historical data gap.
-    :ivar relative_path: A path relative to the specified namespace ID. Might be
+    :ivar team_log.NamespaceRelativePathLogInfo.ns_id: Namespace ID. Might be
         missing due to historical data gap.
+    :ivar team_log.NamespaceRelativePathLogInfo.relative_path: A path relative
+        to the specified namespace ID. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -37930,9 +38180,10 @@ class NetworkControlChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled network control.
 
-    :ivar new_value: New network control policy.
-    :ivar previous_value: Previous network control policy. Might be missing due
-        to historical data gap.
+    :ivar team_log.NetworkControlChangePolicyDetails.new_value: New network
+        control policy.
+    :ivar team_log.NetworkControlChangePolicyDetails.previous_value: Previous
+        network control policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -37961,7 +38212,7 @@ class NetworkControlChangePolicyDetails(bb.Struct):
         """
         New network control policy.
 
-        :rtype: NetworkControlPolicy
+        :rtype: team_log.NetworkControlPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -37985,7 +38236,7 @@ class NetworkControlChangePolicyDetails(bb.Struct):
         Previous network control policy. Might be missing due to historical data
         gap.
 
-        :rtype: NetworkControlPolicy
+        :rtype: team_log.NetworkControlPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -38117,12 +38368,12 @@ class UserLogInfo(bb.Struct):
     """
     User's logged information.
 
-    :ivar account_id: User unique ID. Might be missing due to historical data
-        gap.
-    :ivar display_name: User display name. Might be missing due to historical
-        data gap.
-    :ivar email: User email address. Might be missing due to historical data
-        gap.
+    :ivar team_log.UserLogInfo.account_id: User unique ID. Might be missing due
+        to historical data gap.
+    :ivar team_log.UserLogInfo.display_name: User display name. Might be missing
+        due to historical data gap.
+    :ivar team_log.UserLogInfo.email: User email address. Might be missing due
+        to historical data gap.
     """
 
     __slots__ = [
@@ -38685,8 +38936,9 @@ class OriginLogInfo(bb.Struct):
     """
     The origin from which the actor performed the action.
 
-    :ivar geo_location: Geographic location details.
-    :ivar access_method: The method that was used to perform the action.
+    :ivar team_log.OriginLogInfo.geo_location: Geographic location details.
+    :ivar team_log.OriginLogInfo.access_method: The method that was used to
+        perform the action.
     """
 
     __slots__ = [
@@ -38715,7 +38967,7 @@ class OriginLogInfo(bb.Struct):
         """
         Geographic location details.
 
-        :rtype: GeoLocationLogInfo
+        :rtype: team_log.GeoLocationLogInfo
         """
         if self._geo_location_present:
             return self._geo_location_value
@@ -38741,7 +38993,7 @@ class OriginLogInfo(bb.Struct):
         """
         The method that was used to perform the action.
 
-        :rtype: AccessMethodLogInfo
+        :rtype: team_log.AccessMethodLogInfo
         """
         if self._access_method_present:
             return self._access_method_value
@@ -38900,9 +39152,11 @@ class PaperChangeDeploymentPolicyDetails(bb.Struct):
     Changed whether Dropbox Paper, when enabled, is deployed to all members or
     to specific members.
 
-    :ivar new_value: New Dropbox Paper deployment policy.
-    :ivar previous_value: Previous Dropbox Paper deployment policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.PaperChangeDeploymentPolicyDetails.new_value: New Dropbox
+        Paper deployment policy.
+    :ivar team_log.PaperChangeDeploymentPolicyDetails.previous_value: Previous
+        Dropbox Paper deployment policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -39038,7 +39292,8 @@ class PaperChangeMemberLinkPolicyDetails(bb.Struct):
     """
     Changed whether non-members can view Paper docs with link.
 
-    :ivar new_value: New paper external link accessibility policy.
+    :ivar team_log.PaperChangeMemberLinkPolicyDetails.new_value: New paper
+        external link accessibility policy.
     """
 
     __slots__ = [
@@ -39060,7 +39315,7 @@ class PaperChangeMemberLinkPolicyDetails(bb.Struct):
         """
         New paper external link accessibility policy.
 
-        :rtype: PaperMemberPolicy
+        :rtype: team_log.PaperMemberPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -39140,9 +39395,11 @@ class PaperChangeMemberPolicyDetails(bb.Struct):
     Changed whether members can share Paper docs outside team, and if docs are
     accessible only by team members or anyone by default.
 
-    :ivar new_value: New paper external accessibility policy.
-    :ivar previous_value: Previous paper external accessibility policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.PaperChangeMemberPolicyDetails.new_value: New paper external
+        accessibility policy.
+    :ivar team_log.PaperChangeMemberPolicyDetails.previous_value: Previous paper
+        external accessibility policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -39171,7 +39428,7 @@ class PaperChangeMemberPolicyDetails(bb.Struct):
         """
         New paper external accessibility policy.
 
-        :rtype: PaperMemberPolicy
+        :rtype: team_log.PaperMemberPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -39195,7 +39452,7 @@ class PaperChangeMemberPolicyDetails(bb.Struct):
         Previous paper external accessibility policy. Might be missing due to
         historical data gap.
 
-        :rtype: PaperMemberPolicy
+        :rtype: team_log.PaperMemberPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -39278,9 +39535,9 @@ class PaperChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Dropbox Paper for team.
 
-    :ivar new_value: New Dropbox Paper policy.
-    :ivar previous_value: Previous Dropbox Paper policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.PaperChangePolicyDetails.new_value: New Dropbox Paper policy.
+    :ivar team_log.PaperChangePolicyDetails.previous_value: Previous Dropbox
+        Paper policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -39416,7 +39673,8 @@ class PaperContentAddMemberDetails(bb.Struct):
     """
     Added team member to Paper doc/folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperContentAddMemberDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -39517,9 +39775,12 @@ class PaperContentAddToFolderDetails(bb.Struct):
     """
     Added Paper doc/folder to folder.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar parent_asset_index: Parent asset position in the Assets list.
+    :ivar team_log.PaperContentAddToFolderDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperContentAddToFolderDetails.target_asset_index: Target
+        asset position in the Assets list.
+    :ivar team_log.PaperContentAddToFolderDetails.parent_asset_index: Parent
+        asset position in the Assets list.
     """
 
     __slots__ = [
@@ -39682,7 +39943,8 @@ class PaperContentArchiveDetails(bb.Struct):
     """
     Archived Paper doc/folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperContentArchiveDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -39783,7 +40045,8 @@ class PaperContentCreateDetails(bb.Struct):
     """
     Created Paper doc/folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperContentCreateDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -39884,7 +40147,8 @@ class PaperContentPermanentlyDeleteDetails(bb.Struct):
     """
     Permanently deleted Paper doc/folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperContentPermanentlyDeleteDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -39985,9 +40249,12 @@ class PaperContentRemoveFromFolderDetails(bb.Struct):
     """
     Removed Paper doc/folder from folder.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar parent_asset_index: Parent asset position in the Assets list.
+    :ivar team_log.PaperContentRemoveFromFolderDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperContentRemoveFromFolderDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar team_log.PaperContentRemoveFromFolderDetails.parent_asset_index:
+        Parent asset position in the Assets list.
     """
 
     __slots__ = [
@@ -40150,7 +40417,8 @@ class PaperContentRemoveMemberDetails(bb.Struct):
     """
     Removed team member from Paper doc/folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperContentRemoveMemberDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -40251,7 +40519,8 @@ class PaperContentRenameDetails(bb.Struct):
     """
     Renamed Paper doc/folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperContentRenameDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -40352,7 +40621,8 @@ class PaperContentRestoreDetails(bb.Struct):
     """
     Restored archived Paper doc/folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperContentRestoreDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -40453,9 +40723,10 @@ class PaperDocAddCommentDetails(bb.Struct):
     """
     Added Paper doc comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.PaperDocAddCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocAddCommentDetails.comment_text: Comment text. Might
+        be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -40590,8 +40861,10 @@ class PaperDocChangeMemberRoleDetails(bb.Struct):
     """
     Changed team member permissions for Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar access_type: Paper doc access type.
+    :ivar team_log.PaperDocChangeMemberRoleDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocChangeMemberRoleDetails.access_type: Paper doc access
+        type.
     """
 
     __slots__ = [
@@ -40643,7 +40916,7 @@ class PaperDocChangeMemberRoleDetails(bb.Struct):
         """
         Paper doc access type.
 
-        :rtype: PaperAccessType
+        :rtype: team_log.PaperAccessType
         """
         if self._access_type_present:
             return self._access_type_value
@@ -40723,11 +40996,13 @@ class PaperDocChangeSharingPolicyDetails(bb.Struct):
     """
     Changed sharing setting for Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar public_sharing_policy: Sharing policy with external users. Might be
-        missing due to historical data gap.
-    :ivar team_sharing_policy: Sharing policy with team. Might be missing due to
-        historical data gap.
+    :ivar team_log.PaperDocChangeSharingPolicyDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocChangeSharingPolicyDetails.public_sharing_policy:
+        Sharing policy with external users. Might be missing due to historical
+        data gap.
+    :ivar team_log.PaperDocChangeSharingPolicyDetails.team_sharing_policy:
+        Sharing policy with team. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -40897,10 +41172,14 @@ class PaperDocChangeSubscriptionDetails(bb.Struct):
     """
     Followed/unfollowed Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar new_subscription_level: New doc subscription level.
-    :ivar previous_subscription_level: Previous doc subscription level. Might be
-        missing due to historical data gap.
+    :ivar team_log.PaperDocChangeSubscriptionDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocChangeSubscriptionDetails.new_subscription_level: New
+        doc subscription level.
+    :ivar
+        team_log.PaperDocChangeSubscriptionDetails.previous_subscription_level:
+        Previous doc subscription level. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -41067,9 +41346,10 @@ class PaperDocDeleteCommentDetails(bb.Struct):
     """
     Deleted Paper doc comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.PaperDocDeleteCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocDeleteCommentDetails.comment_text: Comment text.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -41204,7 +41484,7 @@ class PaperDocDeletedDetails(bb.Struct):
     """
     Archived Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocDeletedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -41305,8 +41585,9 @@ class PaperDocDownloadDetails(bb.Struct):
     """
     Downloaded Paper doc in specific format.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar export_file_format: Export file format.
+    :ivar team_log.PaperDocDownloadDetails.event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocDownloadDetails.export_file_format: Export file
+        format.
     """
 
     __slots__ = [
@@ -41358,7 +41639,7 @@ class PaperDocDownloadDetails(bb.Struct):
         """
         Export file format.
 
-        :rtype: PaperDownloadFormat
+        :rtype: team_log.PaperDownloadFormat
         """
         if self._export_file_format_present:
             return self._export_file_format_value
@@ -41438,9 +41719,10 @@ class PaperDocEditCommentDetails(bb.Struct):
     """
     Edited Paper doc comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.PaperDocEditCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocEditCommentDetails.comment_text: Comment text. Might
+        be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -41575,7 +41857,7 @@ class PaperDocEditDetails(bb.Struct):
     """
     Edited Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocEditDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -41676,7 +41958,7 @@ class PaperDocFollowedDetails(bb.Struct):
     """
     Followed Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocFollowedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -41777,7 +42059,7 @@ class PaperDocMentionDetails(bb.Struct):
     """
     Mentioned team member in Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocMentionDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -41878,9 +42160,11 @@ class PaperDocOwnershipChangedDetails(bb.Struct):
     """
     Transferred ownership of Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar old_owner_user_id: Previous owner.
-    :ivar new_owner_user_id: New owner.
+    :ivar team_log.PaperDocOwnershipChangedDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocOwnershipChangedDetails.old_owner_user_id: Previous
+        owner.
+    :ivar team_log.PaperDocOwnershipChangedDetails.new_owner_user_id: New owner.
     """
 
     __slots__ = [
@@ -42046,7 +42330,8 @@ class PaperDocRequestAccessDetails(bb.Struct):
     """
     Requested access to Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocRequestAccessDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -42147,9 +42432,10 @@ class PaperDocResolveCommentDetails(bb.Struct):
     """
     Resolved Paper doc comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.PaperDocResolveCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocResolveCommentDetails.comment_text: Comment text.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -42284,7 +42570,7 @@ class PaperDocRevertDetails(bb.Struct):
     """
     Restored Paper doc to previous version.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocRevertDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -42385,7 +42671,8 @@ class PaperDocSlackShareDetails(bb.Struct):
     """
     Shared Paper doc via Slack.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocSlackShareDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -42486,7 +42773,8 @@ class PaperDocTeamInviteDetails(bb.Struct):
     """
     Shared Paper doc with team member.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocTeamInviteDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -42587,7 +42875,7 @@ class PaperDocTrashedDetails(bb.Struct):
     """
     Deleted Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocTrashedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -42688,9 +42976,10 @@ class PaperDocUnresolveCommentDetails(bb.Struct):
     """
     Unresolved Paper doc comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text. Might be missing due to historical data
-        gap.
+    :ivar team_log.PaperDocUnresolveCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperDocUnresolveCommentDetails.comment_text: Comment text.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -42825,7 +43114,7 @@ class PaperDocUntrashedDetails(bb.Struct):
     """
     Restored Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocUntrashedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -42926,7 +43215,7 @@ class PaperDocViewDetails(bb.Struct):
     """
     Viewed Paper doc.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperDocViewDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -43027,8 +43316,8 @@ class PaperDocumentLogInfo(bb.Struct):
     """
     Paper document's logged information.
 
-    :ivar doc_id: Papers document Id.
-    :ivar doc_title: Paper document title.
+    :ivar team_log.PaperDocumentLogInfo.doc_id: Papers document Id.
+    :ivar team_log.PaperDocumentLogInfo.doc_title: Paper document title.
     """
 
     __slots__ = [
@@ -43316,7 +43605,8 @@ class PaperExternalViewAllowDetails(bb.Struct):
     """
     Changed Paper external sharing setting to anyone.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperExternalViewAllowDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -43417,7 +43707,8 @@ class PaperExternalViewDefaultTeamDetails(bb.Struct):
     """
     Changed Paper external sharing setting to default team.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperExternalViewDefaultTeamDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -43518,7 +43809,8 @@ class PaperExternalViewForbidDetails(bb.Struct):
     """
     Changed Paper external sharing setting to team-only.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperExternalViewForbidDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -43619,10 +43911,14 @@ class PaperFolderChangeSubscriptionDetails(bb.Struct):
     """
     Followed/unfollowed Paper folder.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar new_subscription_level: New folder subscription level.
-    :ivar previous_subscription_level: Previous folder subscription level. Might
-        be missing due to historical data gap.
+    :ivar team_log.PaperFolderChangeSubscriptionDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.PaperFolderChangeSubscriptionDetails.new_subscription_level:
+        New folder subscription level.
+    :ivar
+        team_log.PaperFolderChangeSubscriptionDetails.previous_subscription_level:
+        Previous folder subscription level. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -43789,7 +44085,8 @@ class PaperFolderDeletedDetails(bb.Struct):
     """
     Archived Paper folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperFolderDeletedDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -43890,7 +44187,8 @@ class PaperFolderFollowedDetails(bb.Struct):
     """
     Followed Paper folder.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperFolderFollowedDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -43991,8 +44289,8 @@ class PaperFolderLogInfo(bb.Struct):
     """
     Paper folder's logged information.
 
-    :ivar folder_id: Papers folder Id.
-    :ivar folder_name: Paper folder name.
+    :ivar team_log.PaperFolderLogInfo.folder_id: Papers folder Id.
+    :ivar team_log.PaperFolderLogInfo.folder_name: Paper folder name.
     """
 
     __slots__ = [
@@ -44077,7 +44375,8 @@ class PaperFolderTeamInviteDetails(bb.Struct):
     """
     Shared Paper folder with member.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.PaperFolderTeamInviteDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -44241,8 +44540,9 @@ class ParticipantLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserLogInfo user: A user with a Dropbox account.
-    :ivar GroupLogInfo group: Group details.
+    :ivar UserLogInfo team_log.ParticipantLogInfo.user: A user with a Dropbox
+        account.
+    :ivar GroupLogInfo team_log.ParticipantLogInfo.group: Group details.
     """
 
     _catch_all = 'other'
@@ -44255,8 +44555,8 @@ class ParticipantLogInfo(bb.Union):
         Create an instance of this class set to the ``user`` tag with value
         ``val``.
 
-        :param UserLogInfo val:
-        :rtype: ParticipantLogInfo
+        :param team_log.UserLogInfo val:
+        :rtype: team_log.ParticipantLogInfo
         """
         return cls('user', val)
 
@@ -44266,8 +44566,8 @@ class ParticipantLogInfo(bb.Union):
         Create an instance of this class set to the ``group`` tag with value
         ``val``.
 
-        :param GroupLogInfo val:
-        :rtype: ParticipantLogInfo
+        :param team_log.GroupLogInfo val:
+        :rtype: team_log.ParticipantLogInfo
         """
         return cls('group', val)
 
@@ -44301,7 +44601,7 @@ class ParticipantLogInfo(bb.Union):
 
         Only call this if :meth:`is_user` is true.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if not self.is_user():
             raise AttributeError("tag 'user' not set")
@@ -44313,7 +44613,7 @@ class ParticipantLogInfo(bb.Union):
 
         Only call this if :meth:`is_group` is true.
 
-        :rtype: GroupLogInfo
+        :rtype: team_log.GroupLogInfo
         """
         if not self.is_group():
             raise AttributeError("tag 'group' not set")
@@ -44592,10 +44892,10 @@ class PathLogInfo(bb.Struct):
     """
     Path's details.
 
-    :ivar contextual: Fully qualified path relative to event's context. Might be
-        missing due to historical data gap.
-    :ivar namespace_relative: Path relative to the namespace containing the
-        content.
+    :ivar team_log.PathLogInfo.contextual: Fully qualified path relative to
+        event's context. Might be missing due to historical data gap.
+    :ivar team_log.PathLogInfo.namespace_relative: Path relative to the
+        namespace containing the content.
     """
 
     __slots__ = [
@@ -44651,7 +44951,7 @@ class PathLogInfo(bb.Struct):
         """
         Path relative to the namespace containing the content.
 
-        :rtype: NamespaceRelativePathLogInfo
+        :rtype: team_log.NamespaceRelativePathLogInfo
         """
         if self._namespace_relative_present:
             return self._namespace_relative_value
@@ -44684,9 +44984,11 @@ class PermanentDeleteChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled ability of team members to permanently delete content.
 
-    :ivar new_value: New permanent delete content policy.
-    :ivar previous_value: Previous permanent delete content policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.PermanentDeleteChangePolicyDetails.new_value: New permanent
+        delete content policy.
+    :ivar team_log.PermanentDeleteChangePolicyDetails.previous_value: Previous
+        permanent delete content policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -44715,7 +45017,7 @@ class PermanentDeleteChangePolicyDetails(bb.Struct):
         """
         New permanent delete content policy.
 
-        :rtype: ContentPermanentDeletePolicy
+        :rtype: team_log.ContentPermanentDeletePolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -44739,7 +45041,7 @@ class PermanentDeleteChangePolicyDetails(bb.Struct):
         Previous permanent delete content policy. Might be missing due to
         historical data gap.
 
-        :rtype: ContentPermanentDeletePolicy
+        :rtype: team_log.ContentPermanentDeletePolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -44909,8 +45211,10 @@ class RelocateAssetReferencesLogInfo(bb.Struct):
     Provides the indices of the source asset and the destination asset for a
     relocate action.
 
-    :ivar src_asset_index: Source asset position in the Assets list.
-    :ivar dest_asset_index: Destination asset position in the Assets list.
+    :ivar team_log.RelocateAssetReferencesLogInfo.src_asset_index: Source asset
+        position in the Assets list.
+    :ivar team_log.RelocateAssetReferencesLogInfo.dest_asset_index: Destination
+        asset position in the Assets list.
     """
 
     __slots__ = [
@@ -44995,8 +45299,8 @@ class ResellerLogInfo(bb.Struct):
     """
     Reseller information.
 
-    :ivar reseller_name: Reseller name.
-    :ivar reseller_email: Reseller email.
+    :ivar team_log.ResellerLogInfo.reseller_name: Reseller name.
+    :ivar team_log.ResellerLogInfo.reseller_email: Reseller email.
     """
 
     __slots__ = [
@@ -45264,8 +45568,10 @@ class SecondaryMailsPolicyChangedDetails(bb.Struct):
     """
     Secondary mails policy changed.
 
-    :ivar previous_value: Previous secondary mails policy.
-    :ivar new_value: New secondary mails policy.
+    :ivar team_log.SecondaryMailsPolicyChangedDetails.previous_value: Previous
+        secondary mails policy.
+    :ivar team_log.SecondaryMailsPolicyChangedDetails.new_value: New secondary
+        mails policy.
     """
 
     __slots__ = [
@@ -45294,7 +45600,7 @@ class SecondaryMailsPolicyChangedDetails(bb.Struct):
         """
         Previous secondary mails policy.
 
-        :rtype: SecondaryMailsPolicy
+        :rtype: team_log.SecondaryMailsPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -45317,7 +45623,7 @@ class SecondaryMailsPolicyChangedDetails(bb.Struct):
         """
         New secondary mails policy.
 
-        :rtype: SecondaryMailsPolicy
+        :rtype: team_log.SecondaryMailsPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -45397,11 +45703,13 @@ class SfAddGroupDetails(bb.Struct):
     """
     Added team to shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
-    :ivar team_name: Team name.
+    :ivar team_log.SfAddGroupDetails.target_asset_index: Target asset position
+        in the Assets list.
+    :ivar team_log.SfAddGroupDetails.original_folder_name: Original shared
+        folder name.
+    :ivar team_log.SfAddGroupDetails.sharing_permission: Sharing permission.
+        Might be missing due to historical data gap.
+    :ivar team_log.SfAddGroupDetails.team_name: Team name.
     """
 
     __slots__ = [
@@ -45598,10 +45906,13 @@ class SfAllowNonMembersToViewSharedLinksDetails(bb.Struct):
     """
     Allowed non-collaborators to view links to files in shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar shared_folder_type: Shared folder type. Might be missing due to
-        historical data gap.
+    :ivar team_log.SfAllowNonMembersToViewSharedLinksDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar
+        team_log.SfAllowNonMembersToViewSharedLinksDetails.original_folder_name:
+        Original shared folder name.
+    :ivar team_log.SfAllowNonMembersToViewSharedLinksDetails.shared_folder_type:
+        Shared folder type. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -45767,12 +46078,15 @@ class SfExternalInviteWarnDetails(bb.Struct):
     """
     Set team members to see warning before sharing folders outside team.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar new_sharing_permission: New sharing permission. Might be missing due
-        to historical data gap.
-    :ivar previous_sharing_permission: Previous sharing permission. Might be
-        missing due to historical data gap.
+    :ivar team_log.SfExternalInviteWarnDetails.target_asset_index: Target asset
+        position in the Assets list.
+    :ivar team_log.SfExternalInviteWarnDetails.original_folder_name: Original
+        shared folder name.
+    :ivar team_log.SfExternalInviteWarnDetails.new_sharing_permission: New
+        sharing permission. Might be missing due to historical data gap.
+    :ivar team_log.SfExternalInviteWarnDetails.previous_sharing_permission:
+        Previous sharing permission. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -45973,12 +46287,15 @@ class SfFbInviteChangeRoleDetails(bb.Struct):
     """
     Changed Facebook user's role in shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar previous_sharing_permission: Previous sharing permission. Might be
-        missing due to historical data gap.
-    :ivar new_sharing_permission: New sharing permission. Might be missing due
-        to historical data gap.
+    :ivar team_log.SfFbInviteChangeRoleDetails.target_asset_index: Target asset
+        position in the Assets list.
+    :ivar team_log.SfFbInviteChangeRoleDetails.original_folder_name: Original
+        shared folder name.
+    :ivar team_log.SfFbInviteChangeRoleDetails.previous_sharing_permission:
+        Previous sharing permission. Might be missing due to historical data
+        gap.
+    :ivar team_log.SfFbInviteChangeRoleDetails.new_sharing_permission: New
+        sharing permission. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -46179,10 +46496,12 @@ class SfFbInviteDetails(bb.Struct):
     """
     Invited Facebook users to shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
+    :ivar team_log.SfFbInviteDetails.target_asset_index: Target asset position
+        in the Assets list.
+    :ivar team_log.SfFbInviteDetails.original_folder_name: Original shared
+        folder name.
+    :ivar team_log.SfFbInviteDetails.sharing_permission: Sharing permission.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -46348,8 +46667,10 @@ class SfFbUninviteDetails(bb.Struct):
     """
     Uninvited Facebook user from shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
+    :ivar team_log.SfFbUninviteDetails.target_asset_index: Target asset position
+        in the Assets list.
+    :ivar team_log.SfFbUninviteDetails.original_folder_name: Original shared
+        folder name.
     """
 
     __slots__ = [
@@ -46481,7 +46802,8 @@ class SfInviteGroupDetails(bb.Struct):
     """
     Invited group to shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
+    :ivar team_log.SfInviteGroupDetails.target_asset_index: Target asset
+        position in the Assets list.
     """
 
     __slots__ = [
@@ -46582,8 +46904,10 @@ class SfTeamGrantAccessDetails(bb.Struct):
     """
     Granted access to shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
+    :ivar team_log.SfTeamGrantAccessDetails.target_asset_index: Target asset
+        position in the Assets list.
+    :ivar team_log.SfTeamGrantAccessDetails.original_folder_name: Original
+        shared folder name.
     """
 
     __slots__ = [
@@ -46715,12 +47039,15 @@ class SfTeamInviteChangeRoleDetails(bb.Struct):
     """
     Changed team member's role in shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar new_sharing_permission: New sharing permission. Might be missing due
-        to historical data gap.
-    :ivar previous_sharing_permission: Previous sharing permission. Might be
-        missing due to historical data gap.
+    :ivar team_log.SfTeamInviteChangeRoleDetails.target_asset_index: Target
+        asset position in the Assets list.
+    :ivar team_log.SfTeamInviteChangeRoleDetails.original_folder_name: Original
+        shared folder name.
+    :ivar team_log.SfTeamInviteChangeRoleDetails.new_sharing_permission: New
+        sharing permission. Might be missing due to historical data gap.
+    :ivar team_log.SfTeamInviteChangeRoleDetails.previous_sharing_permission:
+        Previous sharing permission. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -46921,10 +47248,12 @@ class SfTeamInviteDetails(bb.Struct):
     """
     Invited team members to shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
+    :ivar team_log.SfTeamInviteDetails.target_asset_index: Target asset position
+        in the Assets list.
+    :ivar team_log.SfTeamInviteDetails.original_folder_name: Original shared
+        folder name.
+    :ivar team_log.SfTeamInviteDetails.sharing_permission: Sharing permission.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -47090,8 +47419,10 @@ class SfTeamJoinDetails(bb.Struct):
     """
     Joined team member's shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
+    :ivar team_log.SfTeamJoinDetails.target_asset_index: Target asset position
+        in the Assets list.
+    :ivar team_log.SfTeamJoinDetails.original_folder_name: Original shared
+        folder name.
     """
 
     __slots__ = [
@@ -47176,11 +47507,14 @@ class SfTeamJoinFromOobLinkDetails(bb.Struct):
     """
     Joined team member's shared folder from link.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
-    :ivar token_key: Shared link token key.
-    :ivar sharing_permission: Sharing permission. Might be missing due to
-        historical data gap.
+    :ivar team_log.SfTeamJoinFromOobLinkDetails.target_asset_index: Target asset
+        position in the Assets list.
+    :ivar team_log.SfTeamJoinFromOobLinkDetails.original_folder_name: Original
+        shared folder name.
+    :ivar team_log.SfTeamJoinFromOobLinkDetails.token_key: Shared link token
+        key.
+    :ivar team_log.SfTeamJoinFromOobLinkDetails.sharing_permission: Sharing
+        permission. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -47427,8 +47761,10 @@ class SfTeamUninviteDetails(bb.Struct):
     """
     Unshared folder with team member.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
-    :ivar original_folder_name: Original shared folder name.
+    :ivar team_log.SfTeamUninviteDetails.target_asset_index: Target asset
+        position in the Assets list.
+    :ivar team_log.SfTeamUninviteDetails.original_folder_name: Original shared
+        folder name.
     """
 
     __slots__ = [
@@ -47560,8 +47896,9 @@ class SharedContentAddInviteesDetails(bb.Struct):
     """
     Invited user to Dropbox and added them to shared file/folder.
 
-    :ivar shared_content_access_level: Shared content access level.
-    :ivar invitees: A list of invitees.
+    :ivar team_log.SharedContentAddInviteesDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar team_log.SharedContentAddInviteesDetails.invitees: A list of invitees.
     """
 
     __slots__ = [
@@ -47693,8 +48030,9 @@ class SharedContentAddLinkExpiryDetails(bb.Struct):
     """
     Added expiration date to link for shared file/folder.
 
-    :ivar new_value: New shared content link expiration date. Might be missing
-        due to historical data gap.
+    :ivar team_log.SharedContentAddLinkExpiryDetails.new_value: New shared
+        content link expiration date. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -47867,7 +48205,8 @@ class SharedContentAddMemberDetails(bb.Struct):
     """
     Added users and/or groups to shared file/folder.
 
-    :ivar shared_content_access_level: Shared content access level.
+    :ivar team_log.SharedContentAddMemberDetails.shared_content_access_level:
+        Shared content access level.
     """
 
     __slots__ = [
@@ -47968,9 +48307,10 @@ class SharedContentChangeDownloadsPolicyDetails(bb.Struct):
     """
     Changed whether members can download shared file/folder.
 
-    :ivar new_value: New downloads policy.
-    :ivar previous_value: Previous downloads policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.SharedContentChangeDownloadsPolicyDetails.new_value: New
+        downloads policy.
+    :ivar team_log.SharedContentChangeDownloadsPolicyDetails.previous_value:
+        Previous downloads policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -47999,7 +48339,7 @@ class SharedContentChangeDownloadsPolicyDetails(bb.Struct):
         """
         New downloads policy.
 
-        :rtype: DownloadPolicyType
+        :rtype: team_log.DownloadPolicyType
         """
         if self._new_value_present:
             return self._new_value_value
@@ -48022,7 +48362,7 @@ class SharedContentChangeDownloadsPolicyDetails(bb.Struct):
         """
         Previous downloads policy. Might be missing due to historical data gap.
 
-        :rtype: DownloadPolicyType
+        :rtype: team_log.DownloadPolicyType
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -48106,10 +48446,12 @@ class SharedContentChangeInviteeRoleDetails(bb.Struct):
     Changed access type of invitee to shared file/folder before invite was
     accepted.
 
-    :ivar previous_access_level: Previous access level. Might be missing due to
-        historical data gap.
-    :ivar new_access_level: New access level.
-    :ivar invitee: The invitee whose role was changed.
+    :ivar team_log.SharedContentChangeInviteeRoleDetails.previous_access_level:
+        Previous access level. Might be missing due to historical data gap.
+    :ivar team_log.SharedContentChangeInviteeRoleDetails.new_access_level: New
+        access level.
+    :ivar team_log.SharedContentChangeInviteeRoleDetails.invitee: The invitee
+        whose role was changed.
     """
 
     __slots__ = [
@@ -48275,8 +48617,10 @@ class SharedContentChangeLinkAudienceDetails(bb.Struct):
     """
     Changed link audience of shared file/folder.
 
-    :ivar new_value: New link audience value.
-    :ivar previous_value: Previous link audience value.
+    :ivar team_log.SharedContentChangeLinkAudienceDetails.new_value: New link
+        audience value.
+    :ivar team_log.SharedContentChangeLinkAudienceDetails.previous_value:
+        Previous link audience value.
     """
 
     __slots__ = [
@@ -48411,10 +48755,12 @@ class SharedContentChangeLinkExpiryDetails(bb.Struct):
     """
     Changed link expiration of shared file/folder.
 
-    :ivar new_value: New shared content link expiration date. Might be missing
-        due to historical data gap.
-    :ivar previous_value: Previous shared content link expiration date. Might be
-        missing due to historical data gap.
+    :ivar team_log.SharedContentChangeLinkExpiryDetails.new_value: New shared
+        content link expiration date. Might be missing due to historical data
+        gap.
+    :ivar team_log.SharedContentChangeLinkExpiryDetails.previous_value: Previous
+        shared content link expiration date. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -48622,9 +48968,10 @@ class SharedContentChangeMemberRoleDetails(bb.Struct):
     """
     Changed access type of shared file/folder member.
 
-    :ivar previous_access_level: Previous access level. Might be missing due to
-        historical data gap.
-    :ivar new_access_level: New access level.
+    :ivar team_log.SharedContentChangeMemberRoleDetails.previous_access_level:
+        Previous access level. Might be missing due to historical data gap.
+    :ivar team_log.SharedContentChangeMemberRoleDetails.new_access_level: New
+        access level.
     """
 
     __slots__ = [
@@ -48759,9 +49106,10 @@ class SharedContentChangeViewerInfoPolicyDetails(bb.Struct):
     """
     Changed whether members can see who viewed shared file/folder.
 
-    :ivar new_value: New viewer info policy.
-    :ivar previous_value: Previous view info policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.SharedContentChangeViewerInfoPolicyDetails.new_value: New
+        viewer info policy.
+    :ivar team_log.SharedContentChangeViewerInfoPolicyDetails.previous_value:
+        Previous view info policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -48896,7 +49244,8 @@ class SharedContentClaimInvitationDetails(bb.Struct):
     """
     Acquired membership of shared file/folder by accepting invite.
 
-    :ivar shared_content_link: Shared content link.
+    :ivar team_log.SharedContentClaimInvitationDetails.shared_content_link:
+        Shared content link.
     """
 
     __slots__ = [
@@ -49000,10 +49349,14 @@ class SharedContentCopyDetails(bb.Struct):
     """
     Copied shared file/folder to own Dropbox.
 
-    :ivar shared_content_link: Shared content link.
-    :ivar shared_content_owner: The shared content owner.
-    :ivar shared_content_access_level: Shared content access level.
-    :ivar destination_path: The path where the member saved the content.
+    :ivar team_log.SharedContentCopyDetails.shared_content_link: Shared content
+        link.
+    :ivar team_log.SharedContentCopyDetails.shared_content_owner: The shared
+        content owner.
+    :ivar team_log.SharedContentCopyDetails.shared_content_access_level: Shared
+        content access level.
+    :ivar team_log.SharedContentCopyDetails.destination_path: The path where the
+        member saved the content.
     """
 
     __slots__ = [
@@ -49069,7 +49422,7 @@ class SharedContentCopyDetails(bb.Struct):
         """
         The shared content owner.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if self._shared_content_owner_present:
             return self._shared_content_owner_value
@@ -49200,9 +49553,12 @@ class SharedContentDownloadDetails(bb.Struct):
     """
     Downloaded shared file/folder.
 
-    :ivar shared_content_link: Shared content link.
-    :ivar shared_content_owner: The shared content owner.
-    :ivar shared_content_access_level: Shared content access level.
+    :ivar team_log.SharedContentDownloadDetails.shared_content_link: Shared
+        content link.
+    :ivar team_log.SharedContentDownloadDetails.shared_content_owner: The shared
+        content owner.
+    :ivar team_log.SharedContentDownloadDetails.shared_content_access_level:
+        Shared content access level.
     """
 
     __slots__ = [
@@ -49261,7 +49617,7 @@ class SharedContentDownloadDetails(bb.Struct):
         """
         The shared content owner.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if self._shared_content_owner_present:
             return self._shared_content_owner_value
@@ -49436,7 +49792,8 @@ class SharedContentRemoveInviteesDetails(bb.Struct):
     """
     Removed invitee from shared file/folder before invite was accepted.
 
-    :ivar invitees: A list of invitees.
+    :ivar team_log.SharedContentRemoveInviteesDetails.invitees: A list of
+        invitees.
     """
 
     __slots__ = [
@@ -49537,8 +49894,9 @@ class SharedContentRemoveLinkExpiryDetails(bb.Struct):
     """
     Removed link expiration date of shared file/folder.
 
-    :ivar previous_value: Previous shared content link expiration date. Might be
-        missing due to historical data gap.
+    :ivar team_log.SharedContentRemoveLinkExpiryDetails.previous_value: Previous
+        shared content link expiration date. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -49711,7 +50069,8 @@ class SharedContentRemoveMemberDetails(bb.Struct):
     """
     Removed user/group from shared file/folder.
 
-    :ivar shared_content_access_level: Shared content access level.
+    :ivar team_log.SharedContentRemoveMemberDetails.shared_content_access_level:
+        Shared content access level.
     """
 
     __slots__ = [
@@ -49815,7 +50174,8 @@ class SharedContentRequestAccessDetails(bb.Struct):
     """
     Requested access to shared file/folder.
 
-    :ivar shared_content_link: Shared content link.
+    :ivar team_log.SharedContentRequestAccessDetails.shared_content_link: Shared
+        content link.
     """
 
     __slots__ = [
@@ -49987,9 +50347,12 @@ class SharedContentViewDetails(bb.Struct):
     """
     Previewed shared file/folder.
 
-    :ivar shared_content_link: Shared content link.
-    :ivar shared_content_owner: The shared content owner.
-    :ivar shared_content_access_level: Shared content access level.
+    :ivar team_log.SharedContentViewDetails.shared_content_link: Shared content
+        link.
+    :ivar team_log.SharedContentViewDetails.shared_content_owner: The shared
+        content owner.
+    :ivar team_log.SharedContentViewDetails.shared_content_access_level: Shared
+        content access level.
     """
 
     __slots__ = [
@@ -50048,7 +50411,7 @@ class SharedContentViewDetails(bb.Struct):
         """
         The shared content owner.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if self._shared_content_owner_present:
             return self._shared_content_owner_value
@@ -50155,9 +50518,10 @@ class SharedFolderChangeLinkPolicyDetails(bb.Struct):
     """
     Changed who can access shared folder via link.
 
-    :ivar new_value: New shared folder link policy.
-    :ivar previous_value: Previous shared folder link policy. Might be missing
-        due to historical data gap.
+    :ivar team_log.SharedFolderChangeLinkPolicyDetails.new_value: New shared
+        folder link policy.
+    :ivar team_log.SharedFolderChangeLinkPolicyDetails.previous_value: Previous
+        shared folder link policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -50293,9 +50657,12 @@ class SharedFolderChangeMembersInheritancePolicyDetails(bb.Struct):
     """
     Changed whether shared folder inherits members from parent folder.
 
-    :ivar new_value: New member inheritance policy.
-    :ivar previous_value: Previous member inheritance policy. Might be missing
-        due to historical data gap.
+    :ivar team_log.SharedFolderChangeMembersInheritancePolicyDetails.new_value:
+        New member inheritance policy.
+    :ivar
+        team_log.SharedFolderChangeMembersInheritancePolicyDetails.previous_value:
+        Previous member inheritance policy. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -50324,7 +50691,7 @@ class SharedFolderChangeMembersInheritancePolicyDetails(bb.Struct):
         """
         New member inheritance policy.
 
-        :rtype: SharedFolderMembersInheritancePolicy
+        :rtype: team_log.SharedFolderMembersInheritancePolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -50348,7 +50715,7 @@ class SharedFolderChangeMembersInheritancePolicyDetails(bb.Struct):
         Previous member inheritance policy. Might be missing due to historical
         data gap.
 
-        :rtype: SharedFolderMembersInheritancePolicy
+        :rtype: team_log.SharedFolderMembersInheritancePolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -50431,9 +50798,12 @@ class SharedFolderChangeMembersManagementPolicyDetails(bb.Struct):
     """
     Changed who can add/remove members of shared folder.
 
-    :ivar new_value: New members management policy.
-    :ivar previous_value: Previous members management policy. Might be missing
-        due to historical data gap.
+    :ivar team_log.SharedFolderChangeMembersManagementPolicyDetails.new_value:
+        New members management policy.
+    :ivar
+        team_log.SharedFolderChangeMembersManagementPolicyDetails.previous_value:
+        Previous members management policy. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -50569,9 +50939,11 @@ class SharedFolderChangeMembersPolicyDetails(bb.Struct):
     """
     Changed who can become member of shared folder.
 
-    :ivar new_value: New external invite policy.
-    :ivar previous_value: Previous external invite policy. Might be missing due
-        to historical data gap.
+    :ivar team_log.SharedFolderChangeMembersPolicyDetails.new_value: New
+        external invite policy.
+    :ivar team_log.SharedFolderChangeMembersPolicyDetails.previous_value:
+        Previous external invite policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -50707,8 +51079,8 @@ class SharedFolderCreateDetails(bb.Struct):
     """
     Created shared folder.
 
-    :ivar target_ns_id: Target namespace ID. Might be missing due to historical
-        data gap.
+    :ivar team_log.SharedFolderCreateDetails.target_ns_id: Target namespace ID.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -50997,14 +51369,14 @@ class SharedFolderNestDetails(bb.Struct):
     """
     Changed parent of shared folder.
 
-    :ivar previous_parent_ns_id: Previous parent namespace ID. Might be missing
-        due to historical data gap.
-    :ivar new_parent_ns_id: New parent namespace ID. Might be missing due to
-        historical data gap.
-    :ivar previous_ns_path: Previous namespace path. Might be missing due to
-        historical data gap.
-    :ivar new_ns_path: New namespace path. Might be missing due to historical
-        data gap.
+    :ivar team_log.SharedFolderNestDetails.previous_parent_ns_id: Previous
+        parent namespace ID. Might be missing due to historical data gap.
+    :ivar team_log.SharedFolderNestDetails.new_parent_ns_id: New parent
+        namespace ID. Might be missing due to historical data gap.
+    :ivar team_log.SharedFolderNestDetails.previous_ns_path: Previous namespace
+        path. Might be missing due to historical data gap.
+    :ivar team_log.SharedFolderNestDetails.new_ns_path: New namespace path.
+        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -51211,9 +51583,10 @@ class SharedFolderTransferOwnershipDetails(bb.Struct):
     """
     Transferred ownership of shared folder to another member.
 
-    :ivar previous_owner_email: The email address of the previous shared folder
-        owner.
-    :ivar new_owner_email: The email address of the new shared folder owner.
+    :ivar team_log.SharedFolderTransferOwnershipDetails.previous_owner_email:
+        The email address of the previous shared folder owner.
+    :ivar team_log.SharedFolderTransferOwnershipDetails.new_owner_email: The
+        email address of the new shared folder owner.
     """
 
     __slots__ = [
@@ -51475,7 +51848,8 @@ class SharedLinkAddExpiryDetails(bb.Struct):
     """
     Added shared link expiration date.
 
-    :ivar new_value: New shared link expiration date.
+    :ivar team_log.SharedLinkAddExpiryDetails.new_value: New shared link
+        expiration date.
     """
 
     __slots__ = [
@@ -51576,10 +51950,10 @@ class SharedLinkChangeExpiryDetails(bb.Struct):
     """
     Changed shared link expiration date.
 
-    :ivar new_value: New shared link expiration date. Might be missing due to
-        historical data gap.
-    :ivar previous_value: Previous shared link expiration date. Might be missing
-        due to historical data gap.
+    :ivar team_log.SharedLinkChangeExpiryDetails.new_value: New shared link
+        expiration date. Might be missing due to historical data gap.
+    :ivar team_log.SharedLinkChangeExpiryDetails.previous_value: Previous shared
+        link expiration date. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -51719,9 +52093,10 @@ class SharedLinkChangeVisibilityDetails(bb.Struct):
     """
     Changed visibility of shared link.
 
-    :ivar new_value: New shared link visibility.
-    :ivar previous_value: Previous shared link visibility. Might be missing due
-        to historical data gap.
+    :ivar team_log.SharedLinkChangeVisibilityDetails.new_value: New shared link
+        visibility.
+    :ivar team_log.SharedLinkChangeVisibilityDetails.previous_value: Previous
+        shared link visibility. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -51750,7 +52125,7 @@ class SharedLinkChangeVisibilityDetails(bb.Struct):
         """
         New shared link visibility.
 
-        :rtype: SharedLinkVisibility
+        :rtype: team_log.SharedLinkVisibility
         """
         if self._new_value_present:
             return self._new_value_value
@@ -51774,7 +52149,7 @@ class SharedLinkChangeVisibilityDetails(bb.Struct):
         Previous shared link visibility. Might be missing due to historical data
         gap.
 
-        :rtype: SharedLinkVisibility
+        :rtype: team_log.SharedLinkVisibility
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -51857,8 +52232,8 @@ class SharedLinkCopyDetails(bb.Struct):
     """
     Added file/folder to Dropbox from shared link.
 
-    :ivar shared_link_owner: Shared link owner details. Might be missing due to
-        historical data gap.
+    :ivar team_log.SharedLinkCopyDetails.shared_link_owner: Shared link owner
+        details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -51880,7 +52255,7 @@ class SharedLinkCopyDetails(bb.Struct):
         """
         Shared link owner details. Might be missing due to historical data gap.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if self._shared_link_owner_present:
             return self._shared_link_owner_value
@@ -51962,8 +52337,8 @@ class SharedLinkCreateDetails(bb.Struct):
     """
     Created shared link.
 
-    :ivar shared_link_access_level: Defines who can access the shared link.
-        Might be missing due to historical data gap.
+    :ivar team_log.SharedLinkCreateDetails.shared_link_access_level: Defines who
+        can access the shared link. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -51986,7 +52361,7 @@ class SharedLinkCreateDetails(bb.Struct):
         Defines who can access the shared link. Might be missing due to
         historical data gap.
 
-        :rtype: SharedLinkAccessLevel
+        :rtype: team_log.SharedLinkAccessLevel
         """
         if self._shared_link_access_level_present:
             return self._shared_link_access_level_value
@@ -52068,8 +52443,8 @@ class SharedLinkDisableDetails(bb.Struct):
     """
     Removed shared link.
 
-    :ivar shared_link_owner: Shared link owner details. Might be missing due to
-        historical data gap.
+    :ivar team_log.SharedLinkDisableDetails.shared_link_owner: Shared link owner
+        details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -52091,7 +52466,7 @@ class SharedLinkDisableDetails(bb.Struct):
         """
         Shared link owner details. Might be missing due to historical data gap.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if self._shared_link_owner_present:
             return self._shared_link_owner_value
@@ -52173,8 +52548,8 @@ class SharedLinkDownloadDetails(bb.Struct):
     """
     Downloaded file/folder from shared link.
 
-    :ivar shared_link_owner: Shared link owner details. Might be missing due to
-        historical data gap.
+    :ivar team_log.SharedLinkDownloadDetails.shared_link_owner: Shared link
+        owner details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -52196,7 +52571,7 @@ class SharedLinkDownloadDetails(bb.Struct):
         """
         Shared link owner details. Might be missing due to historical data gap.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if self._shared_link_owner_present:
             return self._shared_link_owner_value
@@ -52278,8 +52653,8 @@ class SharedLinkRemoveExpiryDetails(bb.Struct):
     """
     Removed shared link expiration date.
 
-    :ivar previous_value: Previous shared link expiration date. Might be missing
-        due to historical data gap.
+    :ivar team_log.SharedLinkRemoveExpiryDetails.previous_value: Previous shared
+        link expiration date. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -52384,10 +52759,10 @@ class SharedLinkShareDetails(bb.Struct):
     """
     Added members as audience of shared link.
 
-    :ivar shared_link_owner: Shared link owner details. Might be missing due to
-        historical data gap.
-    :ivar external_users: Users without a Dropbox account that were added as
-        shared link audience.
+    :ivar team_log.SharedLinkShareDetails.shared_link_owner: Shared link owner
+        details. Might be missing due to historical data gap.
+    :ivar team_log.SharedLinkShareDetails.external_users: Users without a
+        Dropbox account that were added as shared link audience.
     """
 
     __slots__ = [
@@ -52416,7 +52791,7 @@ class SharedLinkShareDetails(bb.Struct):
         """
         Shared link owner details. Might be missing due to historical data gap.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if self._shared_link_owner_present:
             return self._shared_link_owner_value
@@ -52442,7 +52817,7 @@ class SharedLinkShareDetails(bb.Struct):
         """
         Users without a Dropbox account that were added as shared link audience.
 
-        :rtype: list of [ExternalUserLogInfo]
+        :rtype: list of [team_log.ExternalUserLogInfo]
         """
         if self._external_users_present:
             return self._external_users_value
@@ -52525,8 +52900,8 @@ class SharedLinkViewDetails(bb.Struct):
     """
     Opened shared link.
 
-    :ivar shared_link_owner: Shared link owner details. Might be missing due to
-        historical data gap.
+    :ivar team_log.SharedLinkViewDetails.shared_link_owner: Shared link owner
+        details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -52548,7 +52923,7 @@ class SharedLinkViewDetails(bb.Struct):
         """
         Shared link owner details. Might be missing due to historical data gap.
 
-        :rtype: UserLogInfo
+        :rtype: team_log.UserLogInfo
         """
         if self._shared_link_owner_present:
             return self._shared_link_owner_value
@@ -52757,9 +53132,10 @@ class SharingChangeFolderJoinPolicyDetails(bb.Struct):
     """
     Changed whether team members can join shared folders owned outside team.
 
-    :ivar new_value: New external join policy.
-    :ivar previous_value: Previous external join policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.SharingChangeFolderJoinPolicyDetails.new_value: New external
+        join policy.
+    :ivar team_log.SharingChangeFolderJoinPolicyDetails.previous_value: Previous
+        external join policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -52788,7 +53164,7 @@ class SharingChangeFolderJoinPolicyDetails(bb.Struct):
         """
         New external join policy.
 
-        :rtype: SharingFolderJoinPolicy
+        :rtype: team_log.SharingFolderJoinPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -52812,7 +53188,7 @@ class SharingChangeFolderJoinPolicyDetails(bb.Struct):
         Previous external join policy. Might be missing due to historical data
         gap.
 
-        :rtype: SharingFolderJoinPolicy
+        :rtype: team_log.SharingFolderJoinPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -52896,9 +53272,11 @@ class SharingChangeLinkPolicyDetails(bb.Struct):
     Changed whether members can share links outside team, and if links are
     accessible only by team members or anyone by default.
 
-    :ivar new_value: New external link accessibility policy.
-    :ivar previous_value: Previous external link accessibility policy. Might be
-        missing due to historical data gap.
+    :ivar team_log.SharingChangeLinkPolicyDetails.new_value: New external link
+        accessibility policy.
+    :ivar team_log.SharingChangeLinkPolicyDetails.previous_value: Previous
+        external link accessibility policy. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -52927,7 +53305,7 @@ class SharingChangeLinkPolicyDetails(bb.Struct):
         """
         New external link accessibility policy.
 
-        :rtype: SharingLinkPolicy
+        :rtype: team_log.SharingLinkPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -52951,7 +53329,7 @@ class SharingChangeLinkPolicyDetails(bb.Struct):
         Previous external link accessibility policy. Might be missing due to
         historical data gap.
 
-        :rtype: SharingLinkPolicy
+        :rtype: team_log.SharingLinkPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -53034,9 +53412,10 @@ class SharingChangeMemberPolicyDetails(bb.Struct):
     """
     Changed whether members can share files/folders outside team.
 
-    :ivar new_value: New external invite policy.
-    :ivar previous_value: Previous external invite policy. Might be missing due
-        to historical data gap.
+    :ivar team_log.SharingChangeMemberPolicyDetails.new_value: New external
+        invite policy.
+    :ivar team_log.SharingChangeMemberPolicyDetails.previous_value: Previous
+        external invite policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -53065,7 +53444,7 @@ class SharingChangeMemberPolicyDetails(bb.Struct):
         """
         New external invite policy.
 
-        :rtype: SharingMemberPolicy
+        :rtype: team_log.SharingMemberPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -53089,7 +53468,7 @@ class SharingChangeMemberPolicyDetails(bb.Struct):
         Previous external invite policy. Might be missing due to historical data
         gap.
 
-        :rtype: SharingMemberPolicy
+        :rtype: team_log.SharingMemberPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -53398,7 +53777,8 @@ class ShowcaseAccessGrantedDetails(bb.Struct):
     """
     Granted access to showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseAccessGrantedDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -53499,7 +53879,7 @@ class ShowcaseAddMemberDetails(bb.Struct):
     """
     Added member to showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseAddMemberDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -53600,7 +53980,7 @@ class ShowcaseArchivedDetails(bb.Struct):
     """
     Archived showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseArchivedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -53701,8 +54081,10 @@ class ShowcaseChangeDownloadPolicyDetails(bb.Struct):
     """
     Enabled/disabled downloading files from Dropbox Showcase for team.
 
-    :ivar new_value: New Dropbox Showcase download policy.
-    :ivar previous_value: Previous Dropbox Showcase download policy.
+    :ivar team_log.ShowcaseChangeDownloadPolicyDetails.new_value: New Dropbox
+        Showcase download policy.
+    :ivar team_log.ShowcaseChangeDownloadPolicyDetails.previous_value: Previous
+        Dropbox Showcase download policy.
     """
 
     __slots__ = [
@@ -53731,7 +54113,7 @@ class ShowcaseChangeDownloadPolicyDetails(bb.Struct):
         """
         New Dropbox Showcase download policy.
 
-        :rtype: ShowcaseDownloadPolicy
+        :rtype: team_log.ShowcaseDownloadPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -53754,7 +54136,7 @@ class ShowcaseChangeDownloadPolicyDetails(bb.Struct):
         """
         Previous Dropbox Showcase download policy.
 
-        :rtype: ShowcaseDownloadPolicy
+        :rtype: team_log.ShowcaseDownloadPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -53834,8 +54216,10 @@ class ShowcaseChangeEnabledPolicyDetails(bb.Struct):
     """
     Enabled/disabled Dropbox Showcase for team.
 
-    :ivar new_value: New Dropbox Showcase policy.
-    :ivar previous_value: Previous Dropbox Showcase policy.
+    :ivar team_log.ShowcaseChangeEnabledPolicyDetails.new_value: New Dropbox
+        Showcase policy.
+    :ivar team_log.ShowcaseChangeEnabledPolicyDetails.previous_value: Previous
+        Dropbox Showcase policy.
     """
 
     __slots__ = [
@@ -53864,7 +54248,7 @@ class ShowcaseChangeEnabledPolicyDetails(bb.Struct):
         """
         New Dropbox Showcase policy.
 
-        :rtype: ShowcaseEnabledPolicy
+        :rtype: team_log.ShowcaseEnabledPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -53887,7 +54271,7 @@ class ShowcaseChangeEnabledPolicyDetails(bb.Struct):
         """
         Previous Dropbox Showcase policy.
 
-        :rtype: ShowcaseEnabledPolicy
+        :rtype: team_log.ShowcaseEnabledPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -53967,8 +54351,10 @@ class ShowcaseChangeExternalSharingPolicyDetails(bb.Struct):
     """
     Enabled/disabled sharing Dropbox Showcase externally for team.
 
-    :ivar new_value: New Dropbox Showcase external sharing policy.
-    :ivar previous_value: Previous Dropbox Showcase external sharing policy.
+    :ivar team_log.ShowcaseChangeExternalSharingPolicyDetails.new_value: New
+        Dropbox Showcase external sharing policy.
+    :ivar team_log.ShowcaseChangeExternalSharingPolicyDetails.previous_value:
+        Previous Dropbox Showcase external sharing policy.
     """
 
     __slots__ = [
@@ -53997,7 +54383,7 @@ class ShowcaseChangeExternalSharingPolicyDetails(bb.Struct):
         """
         New Dropbox Showcase external sharing policy.
 
-        :rtype: ShowcaseExternalSharingPolicy
+        :rtype: team_log.ShowcaseExternalSharingPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -54020,7 +54406,7 @@ class ShowcaseChangeExternalSharingPolicyDetails(bb.Struct):
         """
         Previous Dropbox Showcase external sharing policy.
 
-        :rtype: ShowcaseExternalSharingPolicy
+        :rtype: team_log.ShowcaseExternalSharingPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -54100,7 +54486,7 @@ class ShowcaseCreatedDetails(bb.Struct):
     """
     Created showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseCreatedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -54201,8 +54587,9 @@ class ShowcaseDeleteCommentDetails(bb.Struct):
     """
     Deleted showcase comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text.
+    :ivar team_log.ShowcaseDeleteCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.ShowcaseDeleteCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -54337,8 +54724,9 @@ class ShowcaseDocumentLogInfo(bb.Struct):
     """
     Showcase document's logged information.
 
-    :ivar showcase_id: Showcase document Id.
-    :ivar showcase_title: Showcase document title.
+    :ivar team_log.ShowcaseDocumentLogInfo.showcase_id: Showcase document Id.
+    :ivar team_log.ShowcaseDocumentLogInfo.showcase_title: Showcase document
+        title.
     """
 
     __slots__ = [
@@ -54473,8 +54861,9 @@ class ShowcaseEditCommentDetails(bb.Struct):
     """
     Edited showcase comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text.
+    :ivar team_log.ShowcaseEditCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.ShowcaseEditCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -54609,7 +54998,7 @@ class ShowcaseEditedDetails(bb.Struct):
     """
     Edited showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseEditedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -54808,7 +55197,7 @@ class ShowcaseFileAddedDetails(bb.Struct):
     """
     Added file to showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseFileAddedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -54909,8 +55298,10 @@ class ShowcaseFileDownloadDetails(bb.Struct):
     """
     Downloaded file from showcase.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar download_type: Showcase download type.
+    :ivar team_log.ShowcaseFileDownloadDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.ShowcaseFileDownloadDetails.download_type: Showcase download
+        type.
     """
 
     __slots__ = [
@@ -55042,7 +55433,8 @@ class ShowcaseFileRemovedDetails(bb.Struct):
     """
     Removed file from showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseFileRemovedDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -55143,7 +55535,7 @@ class ShowcaseFileViewDetails(bb.Struct):
     """
     Viewed file in showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseFileViewDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -55244,7 +55636,8 @@ class ShowcasePermanentlyDeletedDetails(bb.Struct):
     """
     Permanently deleted showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcasePermanentlyDeletedDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -55345,8 +55738,9 @@ class ShowcasePostCommentDetails(bb.Struct):
     """
     Added showcase comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text.
+    :ivar team_log.ShowcasePostCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.ShowcasePostCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -55481,7 +55875,8 @@ class ShowcaseRemoveMemberDetails(bb.Struct):
     """
     Removed member from showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseRemoveMemberDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -55582,7 +55977,7 @@ class ShowcaseRenamedDetails(bb.Struct):
     """
     Renamed showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseRenamedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -55683,7 +56078,8 @@ class ShowcaseRequestAccessDetails(bb.Struct):
     """
     Requested access to showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseRequestAccessDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -55784,8 +56180,9 @@ class ShowcaseResolveCommentDetails(bb.Struct):
     """
     Resolved showcase comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text.
+    :ivar team_log.ShowcaseResolveCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.ShowcaseResolveCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -55920,7 +56317,7 @@ class ShowcaseRestoredDetails(bb.Struct):
     """
     Unarchived showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseRestoredDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -56021,7 +56418,8 @@ class ShowcaseTrashedDeprecatedDetails(bb.Struct):
     """
     Deleted showcase (old version).
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseTrashedDeprecatedDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -56122,7 +56520,7 @@ class ShowcaseTrashedDetails(bb.Struct):
     """
     Deleted showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseTrashedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -56223,8 +56621,9 @@ class ShowcaseUnresolveCommentDetails(bb.Struct):
     """
     Unresolved showcase comment.
 
-    :ivar event_uuid: Event unique identifier.
-    :ivar comment_text: Comment text.
+    :ivar team_log.ShowcaseUnresolveCommentDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.ShowcaseUnresolveCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -56359,7 +56758,8 @@ class ShowcaseUntrashedDeprecatedDetails(bb.Struct):
     """
     Restored showcase (old version).
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseUntrashedDeprecatedDetails.event_uuid: Event unique
+        identifier.
     """
 
     __slots__ = [
@@ -56460,7 +56860,7 @@ class ShowcaseUntrashedDetails(bb.Struct):
     """
     Restored showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseUntrashedDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -56561,7 +56961,7 @@ class ShowcaseViewDetails(bb.Struct):
     """
     Viewed showcase.
 
-    :ivar event_uuid: Event unique identifier.
+    :ivar team_log.ShowcaseViewDetails.event_uuid: Event unique identifier.
     """
 
     __slots__ = [
@@ -56798,8 +57198,10 @@ class SmartSyncChangePolicyDetails(bb.Struct):
     """
     Changed default Smart Sync setting for team members.
 
-    :ivar new_value: New smart sync policy.
-    :ivar previous_value: Previous smart sync policy.
+    :ivar team_log.SmartSyncChangePolicyDetails.new_value: New smart sync
+        policy.
+    :ivar team_log.SmartSyncChangePolicyDetails.previous_value: Previous smart
+        sync policy.
     """
 
     __slots__ = [
@@ -57005,8 +57407,10 @@ class SmartSyncNotOptOutDetails(bb.Struct):
     """
     Opted team into Smart Sync.
 
-    :ivar previous_value: Previous Smart Sync opt out policy.
-    :ivar new_value: New Smart Sync opt out policy.
+    :ivar team_log.SmartSyncNotOptOutDetails.previous_value: Previous Smart Sync
+        opt out policy.
+    :ivar team_log.SmartSyncNotOptOutDetails.new_value: New Smart Sync opt out
+        policy.
     """
 
     __slots__ = [
@@ -57035,7 +57439,7 @@ class SmartSyncNotOptOutDetails(bb.Struct):
         """
         Previous Smart Sync opt out policy.
 
-        :rtype: SmartSyncOptOutPolicy
+        :rtype: team_log.SmartSyncOptOutPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -57058,7 +57462,7 @@ class SmartSyncNotOptOutDetails(bb.Struct):
         """
         New Smart Sync opt out policy.
 
-        :rtype: SmartSyncOptOutPolicy
+        :rtype: team_log.SmartSyncOptOutPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -57138,8 +57542,10 @@ class SmartSyncOptOutDetails(bb.Struct):
     """
     Opted team out of Smart Sync.
 
-    :ivar previous_value: Previous Smart Sync opt out policy.
-    :ivar new_value: New Smart Sync opt out policy.
+    :ivar team_log.SmartSyncOptOutDetails.previous_value: Previous Smart Sync
+        opt out policy.
+    :ivar team_log.SmartSyncOptOutDetails.new_value: New Smart Sync opt out
+        policy.
     """
 
     __slots__ = [
@@ -57168,7 +57574,7 @@ class SmartSyncOptOutDetails(bb.Struct):
         """
         Previous Smart Sync opt out policy.
 
-        :rtype: SmartSyncOptOutPolicy
+        :rtype: team_log.SmartSyncOptOutPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -57191,7 +57597,7 @@ class SmartSyncOptOutDetails(bb.Struct):
         """
         New Smart Sync opt out policy.
 
-        :rtype: SmartSyncOptOutPolicy
+        :rtype: team_log.SmartSyncOptOutPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -57434,7 +57840,8 @@ class SsoAddCertDetails(bb.Struct):
     """
     Added X.509 certificate for SSO.
 
-    :ivar certificate_details: SSO certificate details.
+    :ivar team_log.SsoAddCertDetails.certificate_details: SSO certificate
+        details.
     """
 
     __slots__ = [
@@ -57456,7 +57863,7 @@ class SsoAddCertDetails(bb.Struct):
         """
         SSO certificate details.
 
-        :rtype: Certificate
+        :rtype: team_log.Certificate
         """
         if self._certificate_details_present:
             return self._certificate_details_value
@@ -57535,7 +57942,8 @@ class SsoAddLoginUrlDetails(bb.Struct):
     """
     Added sign-in URL for SSO.
 
-    :ivar new_value: New single sign-on login URL.
+    :ivar team_log.SsoAddLoginUrlDetails.new_value: New single sign-on login
+        URL.
     """
 
     __slots__ = [
@@ -57636,8 +58044,8 @@ class SsoAddLogoutUrlDetails(bb.Struct):
     """
     Added sign-out URL for SSO.
 
-    :ivar new_value: New single sign-on logout URL. Might be missing due to
-        historical data gap.
+    :ivar team_log.SsoAddLogoutUrlDetails.new_value: New single sign-on logout
+        URL. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -57742,9 +58150,10 @@ class SsoChangeCertDetails(bb.Struct):
     """
     Changed X.509 certificate for SSO.
 
-    :ivar previous_certificate_details: Previous SSO certificate details. Might
-        be missing due to historical data gap.
-    :ivar new_certificate_details: New SSO certificate details.
+    :ivar team_log.SsoChangeCertDetails.previous_certificate_details: Previous
+        SSO certificate details. Might be missing due to historical data gap.
+    :ivar team_log.SsoChangeCertDetails.new_certificate_details: New SSO
+        certificate details.
     """
 
     __slots__ = [
@@ -57774,7 +58183,7 @@ class SsoChangeCertDetails(bb.Struct):
         Previous SSO certificate details. Might be missing due to historical
         data gap.
 
-        :rtype: Certificate
+        :rtype: team_log.Certificate
         """
         if self._previous_certificate_details_present:
             return self._previous_certificate_details_value
@@ -57800,7 +58209,7 @@ class SsoChangeCertDetails(bb.Struct):
         """
         New SSO certificate details.
 
-        :rtype: Certificate
+        :rtype: team_log.Certificate
         """
         if self._new_certificate_details_present:
             return self._new_certificate_details_value
@@ -57880,8 +58289,10 @@ class SsoChangeLoginUrlDetails(bb.Struct):
     """
     Changed sign-in URL for SSO.
 
-    :ivar previous_value: Previous single sign-on login URL.
-    :ivar new_value: New single sign-on login URL.
+    :ivar team_log.SsoChangeLoginUrlDetails.previous_value: Previous single
+        sign-on login URL.
+    :ivar team_log.SsoChangeLoginUrlDetails.new_value: New single sign-on login
+        URL.
     """
 
     __slots__ = [
@@ -58013,10 +58424,10 @@ class SsoChangeLogoutUrlDetails(bb.Struct):
     """
     Changed sign-out URL for SSO.
 
-    :ivar previous_value: Previous single sign-on logout URL. Might be missing
-        due to historical data gap.
-    :ivar new_value: New single sign-on logout URL. Might be missing due to
-        historical data gap.
+    :ivar team_log.SsoChangeLogoutUrlDetails.previous_value: Previous single
+        sign-on logout URL. Might be missing due to historical data gap.
+    :ivar team_log.SsoChangeLogoutUrlDetails.new_value: New single sign-on
+        logout URL. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -58156,9 +58567,9 @@ class SsoChangePolicyDetails(bb.Struct):
     """
     Changed single sign-on setting for team.
 
-    :ivar new_value: New single sign-on policy.
-    :ivar previous_value: Previous single sign-on policy. Might be missing due
-        to historical data gap.
+    :ivar team_log.SsoChangePolicyDetails.new_value: New single sign-on policy.
+    :ivar team_log.SsoChangePolicyDetails.previous_value: Previous single
+        sign-on policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -58294,8 +58705,10 @@ class SsoChangeSamlIdentityModeDetails(bb.Struct):
     """
     Changed SAML identity mode for SSO.
 
-    :ivar previous_value: Previous single sign-on identity mode.
-    :ivar new_value: New single sign-on identity mode.
+    :ivar team_log.SsoChangeSamlIdentityModeDetails.previous_value: Previous
+        single sign-on identity mode.
+    :ivar team_log.SsoChangeSamlIdentityModeDetails.new_value: New single
+        sign-on identity mode.
     """
 
     __slots__ = [
@@ -58427,7 +58840,7 @@ class SsoErrorDetails(bb.Struct):
     """
     Failed to sign in via SSO.
 
-    :ivar error_details: Error details.
+    :ivar team_log.SsoErrorDetails.error_details: Error details.
     """
 
     __slots__ = [
@@ -58449,7 +58862,7 @@ class SsoErrorDetails(bb.Struct):
         """
         Error details.
 
-        :rtype: FailureDetailsLogInfo
+        :rtype: team_log.FailureDetailsLogInfo
         """
         if self._error_details_present:
             return self._error_details_value
@@ -58596,7 +59009,8 @@ class SsoRemoveLoginUrlDetails(bb.Struct):
     """
     Removed sign-in URL for SSO.
 
-    :ivar previous_value: Previous single sign-on login URL.
+    :ivar team_log.SsoRemoveLoginUrlDetails.previous_value: Previous single
+        sign-on login URL.
     """
 
     __slots__ = [
@@ -58697,7 +59111,8 @@ class SsoRemoveLogoutUrlDetails(bb.Struct):
     """
     Removed sign-out URL for SSO.
 
-    :ivar previous_value: Previous single sign-on logout URL.
+    :ivar team_log.SsoRemoveLogoutUrlDetails.previous_value: Previous single
+        sign-on logout URL.
     """
 
     __slots__ = [
@@ -58798,8 +59213,9 @@ class TeamActivityCreateReportDetails(bb.Struct):
     """
     Created team activity report.
 
-    :ivar start_date: Report start date.
-    :ivar end_date: Report end date.
+    :ivar team_log.TeamActivityCreateReportDetails.start_date: Report start
+        date.
+    :ivar team_log.TeamActivityCreateReportDetails.end_date: Report end date.
     """
 
     __slots__ = [
@@ -58931,29 +59347,32 @@ class TeamEvent(bb.Struct):
     """
     An audit log event.
 
-    :ivar timestamp: The Dropbox timestamp representing when the action was
-        taken.
-    :ivar event_category: The category that this type of action belongs to.
-    :ivar actor: The entity who actually performed the action. Might be missing
-        due to historical data gap.
-    :ivar origin: The origin from which the actor performed the action including
-        information about host, ip address, location, session, etc. If the
-        action was performed programmatically via the API the origin represents
-        the API client.
-    :ivar involve_non_team_member: True if the action involved a non team member
-        either as the actor or as one of the affected users. Might be missing
-        due to historical data gap.
-    :ivar context: The user or team on whose behalf the actor performed the
+    :ivar team_log.TeamEvent.timestamp: The Dropbox timestamp representing when
+        the action was taken.
+    :ivar team_log.TeamEvent.event_category: The category that this type of
+        action belongs to.
+    :ivar team_log.TeamEvent.actor: The entity who actually performed the
         action. Might be missing due to historical data gap.
-    :ivar participants: Zero or more users and/or groups that are affected by
-        the action. Note that this list doesn't include any actors or users in
-        context.
-    :ivar assets: Zero or more content assets involved in the action. Currently
-        these include Dropbox files and folders but in the future we might add
-        other asset types such as Paper documents, folders, projects, etc.
-    :ivar event_type: The particular type of action taken.
-    :ivar details: The variable event schema applicable to this type of action,
-        instantiated with respect to this particular action.
+    :ivar team_log.TeamEvent.origin: The origin from which the actor performed
+        the action including information about host, ip address, location,
+        session, etc. If the action was performed programmatically via the API
+        the origin represents the API client.
+    :ivar team_log.TeamEvent.involve_non_team_member: True if the action
+        involved a non team member either as the actor or as one of the affected
+        users. Might be missing due to historical data gap.
+    :ivar team_log.TeamEvent.context: The user or team on whose behalf the actor
+        performed the action. Might be missing due to historical data gap.
+    :ivar team_log.TeamEvent.participants: Zero or more users and/or groups that
+        are affected by the action. Note that this list doesn't include any
+        actors or users in context.
+    :ivar team_log.TeamEvent.assets: Zero or more content assets involved in the
+        action. Currently these include Dropbox files and folders but in the
+        future we might add other asset types such as Paper documents, folders,
+        projects, etc.
+    :ivar team_log.TeamEvent.event_type: The particular type of action taken.
+    :ivar team_log.TeamEvent.details: The variable event schema applicable to
+        this type of action, instantiated with respect to this particular
+        action.
     """
 
     __slots__ = [
@@ -59061,7 +59480,7 @@ class TeamEvent(bb.Struct):
         """
         The category that this type of action belongs to.
 
-        :rtype: EventCategory
+        :rtype: team_log.EventCategory
         """
         if self._event_category_present:
             return self._event_category_value
@@ -59085,7 +59504,7 @@ class TeamEvent(bb.Struct):
         The entity who actually performed the action. Might be missing due to
         historical data gap.
 
-        :rtype: ActorLogInfo
+        :rtype: team_log.ActorLogInfo
         """
         if self._actor_present:
             return self._actor_value
@@ -59114,7 +59533,7 @@ class TeamEvent(bb.Struct):
         action was performed programmatically via the API the origin represents
         the API client.
 
-        :rtype: OriginLogInfo
+        :rtype: team_log.OriginLogInfo
         """
         if self._origin_present:
             return self._origin_value
@@ -59168,7 +59587,7 @@ class TeamEvent(bb.Struct):
         The user or team on whose behalf the actor performed the action. Might
         be missing due to historical data gap.
 
-        :rtype: ContextLogInfo
+        :rtype: team_log.ContextLogInfo
         """
         if self._context_present:
             return self._context_value
@@ -59195,7 +59614,7 @@ class TeamEvent(bb.Struct):
         Zero or more users and/or groups that are affected by the action. Note
         that this list doesn't include any actors or users in context.
 
-        :rtype: list of [ParticipantLogInfo]
+        :rtype: list of [team_log.ParticipantLogInfo]
         """
         if self._participants_present:
             return self._participants_value
@@ -59223,7 +59642,7 @@ class TeamEvent(bb.Struct):
         include Dropbox files and folders but in the future we might add other
         asset types such as Paper documents, folders, projects, etc.
 
-        :rtype: list of [AssetLogInfo]
+        :rtype: list of [team_log.AssetLogInfo]
         """
         if self._assets_present:
             return self._assets_value
@@ -59249,7 +59668,7 @@ class TeamEvent(bb.Struct):
         """
         The particular type of action taken.
 
-        :rtype: EventType
+        :rtype: team_log.EventType
         """
         if self._event_type_present:
             return self._event_type_value
@@ -59273,7 +59692,7 @@ class TeamEvent(bb.Struct):
         The variable event schema applicable to this type of action,
         instantiated with respect to this particular action.
 
-        :rtype: EventDetails
+        :rtype: team_log.EventDetails
         """
         if self._details_present:
             return self._details_value
@@ -59314,9 +59733,10 @@ class TeamFolderChangeStatusDetails(bb.Struct):
     """
     Changed archival status of team folder.
 
-    :ivar new_value: New team folder status.
-    :ivar previous_value: Previous team folder status. Might be missing due to
-        historical data gap.
+    :ivar team_log.TeamFolderChangeStatusDetails.new_value: New team folder
+        status.
+    :ivar team_log.TeamFolderChangeStatusDetails.previous_value: Previous team
+        folder status. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -59520,7 +59940,8 @@ class TeamFolderDowngradeDetails(bb.Struct):
     """
     Downgraded team folder to regular shared folder.
 
-    :ivar target_asset_index: Target asset position in the Assets list.
+    :ivar team_log.TeamFolderDowngradeDetails.target_asset_index: Target asset
+        position in the Assets list.
     """
 
     __slots__ = [
@@ -59689,8 +60110,9 @@ class TeamFolderRenameDetails(bb.Struct):
     """
     Renamed active/archived team folder.
 
-    :ivar previous_folder_name: Previous folder name.
-    :ivar new_folder_name: New folder name.
+    :ivar team_log.TeamFolderRenameDetails.previous_folder_name: Previous folder
+        name.
+    :ivar team_log.TeamFolderRenameDetails.new_folder_name: New folder name.
     """
 
     __slots__ = [
@@ -59849,9 +60271,10 @@ class TeamMemberLogInfo(UserLogInfo):
     """
     Team member's logged information.
 
-    :ivar team_member_id: Team member ID. Might be missing due to historical
-        data gap.
-    :ivar member_external_id: Team member external ID.
+    :ivar team_log.TeamMemberLogInfo.team_member_id: Team member ID. Might be
+        missing due to historical data gap.
+    :ivar team_log.TeamMemberLogInfo.member_external_id: Team member external
+        ID.
     """
 
     __slots__ = [
@@ -59998,7 +60421,8 @@ class TeamMergeFromDetails(bb.Struct):
     """
     Merged another team into this team.
 
-    :ivar team_name: The name of the team that was merged into this team.
+    :ivar team_log.TeamMergeFromDetails.team_name: The name of the team that was
+        merged into this team.
     """
 
     __slots__ = [
@@ -60099,7 +60523,8 @@ class TeamMergeToDetails(bb.Struct):
     """
     Merged this team into another team.
 
-    :ivar team_name: The name of the team that this team was merged into.
+    :ivar team_log.TeamMergeToDetails.team_name: The name of the team that this
+        team was merged into.
     """
 
     __slots__ = [
@@ -60200,8 +60625,8 @@ class TeamName(bb.Struct):
     """
     Team name details
 
-    :ivar team_display_name: Team's display name.
-    :ivar team_legal_name: Team's legal name.
+    :ivar team_log.TeamName.team_display_name: Team's display name.
+    :ivar team_log.TeamName.team_legal_name: Team's legal name.
     """
 
     __slots__ = [
@@ -60354,8 +60779,10 @@ class TeamProfileChangeDefaultLanguageDetails(bb.Struct):
     """
     Changed default language for team.
 
-    :ivar new_value: New team's default language.
-    :ivar previous_value: Previous team's default language.
+    :ivar team_log.TeamProfileChangeDefaultLanguageDetails.new_value: New team's
+        default language.
+    :ivar team_log.TeamProfileChangeDefaultLanguageDetails.previous_value:
+        Previous team's default language.
     """
 
     __slots__ = [
@@ -60555,9 +60982,9 @@ class TeamProfileChangeNameDetails(bb.Struct):
     """
     Changed team name.
 
-    :ivar previous_value: Previous teams name. Might be missing due to
-        historical data gap.
-    :ivar new_value: New team name.
+    :ivar team_log.TeamProfileChangeNameDetails.previous_value: Previous teams
+        name. Might be missing due to historical data gap.
+    :ivar team_log.TeamProfileChangeNameDetails.new_value: New team name.
     """
 
     __slots__ = [
@@ -60586,7 +61013,7 @@ class TeamProfileChangeNameDetails(bb.Struct):
         """
         Previous teams name. Might be missing due to historical data gap.
 
-        :rtype: TeamName
+        :rtype: team_log.TeamName
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -60612,7 +61039,7 @@ class TeamProfileChangeNameDetails(bb.Struct):
         """
         New team name.
 
-        :rtype: TeamName
+        :rtype: team_log.TeamName
         """
         if self._new_value_present:
             return self._new_value_value
@@ -60809,8 +61236,10 @@ class TeamSelectiveSyncPolicyChangedDetails(bb.Struct):
     """
     Enabled/disabled Team Selective Sync for team.
 
-    :ivar new_value: New Team Selective Sync policy.
-    :ivar previous_value: Previous Team Selective Sync policy.
+    :ivar team_log.TeamSelectiveSyncPolicyChangedDetails.new_value: New Team
+        Selective Sync policy.
+    :ivar team_log.TeamSelectiveSyncPolicyChangedDetails.previous_value:
+        Previous Team Selective Sync policy.
     """
 
     __slots__ = [
@@ -60839,7 +61268,7 @@ class TeamSelectiveSyncPolicyChangedDetails(bb.Struct):
         """
         New Team Selective Sync policy.
 
-        :rtype: TeamSelectiveSyncPolicy
+        :rtype: team_log.TeamSelectiveSyncPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -60862,7 +61291,7 @@ class TeamSelectiveSyncPolicyChangedDetails(bb.Struct):
         """
         Previous Team Selective Sync policy.
 
-        :rtype: TeamSelectiveSyncPolicy
+        :rtype: team_log.TeamSelectiveSyncPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -60942,8 +61371,9 @@ class TeamSelectiveSyncSettingsChangedDetails(bb.Struct):
     """
     Changed sync default.
 
-    :ivar previous_value: Previous value.
-    :ivar new_value: New value.
+    :ivar team_log.TeamSelectiveSyncSettingsChangedDetails.previous_value:
+        Previous value.
+    :ivar team_log.TeamSelectiveSyncSettingsChangedDetails.new_value: New value.
     """
 
     __slots__ = [
@@ -61279,9 +61709,9 @@ class TfaChangePolicyDetails(bb.Struct):
     """
     Changed two-step verification setting for team.
 
-    :ivar new_value: New change policy.
-    :ivar previous_value: Previous change policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.TfaChangePolicyDetails.new_value: New change policy.
+    :ivar team_log.TfaChangePolicyDetails.previous_value: Previous change
+        policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -61416,12 +61846,14 @@ class TfaChangeStatusDetails(bb.Struct):
     """
     Enabled/disabled/changed two-step verification setting.
 
-    :ivar new_value: The new two factor authentication configuration.
-    :ivar previous_value: The previous two factor authentication configuration.
-        Might be missing due to historical data gap.
-    :ivar used_rescue_code: Used two factor authentication rescue code. This
-        flag is relevant when the two factor authentication configuration is
-        disabled.
+    :ivar team_log.TfaChangeStatusDetails.new_value: The new two factor
+        authentication configuration.
+    :ivar team_log.TfaChangeStatusDetails.previous_value: The previous two
+        factor authentication configuration. Might be missing due to historical
+        data gap.
+    :ivar team_log.TfaChangeStatusDetails.used_rescue_code: Used two factor
+        authentication rescue code. This flag is relevant when the two factor
+        authentication configuration is disabled.
     """
 
     __slots__ = [
@@ -61457,7 +61889,7 @@ class TfaChangeStatusDetails(bb.Struct):
         """
         The new two factor authentication configuration.
 
-        :rtype: TfaConfiguration
+        :rtype: team_log.TfaConfiguration
         """
         if self._new_value_present:
             return self._new_value_value
@@ -61481,7 +61913,7 @@ class TfaChangeStatusDetails(bb.Struct):
         The previous two factor authentication configuration. Might be missing
         due to historical data gap.
 
-        :rtype: TfaConfiguration
+        :rtype: team_log.TfaConfiguration
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -61973,8 +62405,8 @@ class TrustedNonTeamMemberLogInfo(UserLogInfo):
     """
     User that is not a member of the team but considered trusted.
 
-    :ivar trusted_non_team_member_type: Indicates the type of the trusted non
-        team member user.
+    :ivar team_log.TrustedNonTeamMemberLogInfo.trusted_non_team_member_type:
+        Indicates the type of the trusted non team member user.
     """
 
     __slots__ = [
@@ -62002,7 +62434,7 @@ class TrustedNonTeamMemberLogInfo(UserLogInfo):
         """
         Indicates the type of the trusted non team member user.
 
-        :rtype: TrustedNonTeamMemberType
+        :rtype: team_log.TrustedNonTeamMemberType
         """
         if self._trusted_non_team_member_type_present:
             return self._trusted_non_team_member_type_value
@@ -62075,9 +62507,10 @@ class TwoAccountChangePolicyDetails(bb.Struct):
     Enabled/disabled option for members to link personal Dropbox account and
     team account to same computer.
 
-    :ivar new_value: New two account policy.
-    :ivar previous_value: Previous two account policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.TwoAccountChangePolicyDetails.new_value: New two account
+        policy.
+    :ivar team_log.TwoAccountChangePolicyDetails.previous_value: Previous two
+        account policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -62106,7 +62539,7 @@ class TwoAccountChangePolicyDetails(bb.Struct):
         """
         New two account policy.
 
-        :rtype: TwoAccountPolicy
+        :rtype: team_log.TwoAccountPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -62130,7 +62563,7 @@ class TwoAccountChangePolicyDetails(bb.Struct):
         Previous two account policy. Might be missing due to historical data
         gap.
 
-        :rtype: TwoAccountPolicy
+        :rtype: team_log.TwoAccountPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -62289,9 +62722,10 @@ class UserNameLogInfo(bb.Struct):
     """
     User's name logged information
 
-    :ivar given_name: Given name.
-    :ivar surname: Surname.
-    :ivar locale: Locale. Might be missing due to historical data gap.
+    :ivar team_log.UserNameLogInfo.given_name: Given name.
+    :ivar team_log.UserNameLogInfo.surname: Surname.
+    :ivar team_log.UserNameLogInfo.locale: Locale. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -62438,8 +62872,10 @@ class ViewerInfoPolicyChangedDetails(bb.Struct):
     """
     Changed team policy for viewer info.
 
-    :ivar previous_value: Previous Viewer Info policy.
-    :ivar new_value: New Viewer Info policy.
+    :ivar team_log.ViewerInfoPolicyChangedDetails.previous_value: Previous
+        Viewer Info policy.
+    :ivar team_log.ViewerInfoPolicyChangedDetails.new_value: New Viewer Info
+        policy.
     """
 
     __slots__ = [
@@ -62468,7 +62904,7 @@ class ViewerInfoPolicyChangedDetails(bb.Struct):
         """
         Previous Viewer Info policy.
 
-        :rtype: PassPolicy
+        :rtype: team_log.PassPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -62491,7 +62927,7 @@ class ViewerInfoPolicyChangedDetails(bb.Struct):
         """
         New Viewer Info policy.
 
-        :rtype: PassPolicy
+        :rtype: team_log.PassPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -62571,11 +63007,14 @@ class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information on active web sessions
 
-    :ivar session_info: Web session unique id. Might be missing due to
-        historical data gap.
-    :ivar user_agent: Information on the hosting device.
-    :ivar os: Information on the hosting operating system.
-    :ivar browser: Information on the browser used for this web session.
+    :ivar team_log.WebDeviceSessionLogInfo.session_info: Web session unique id.
+        Might be missing due to historical data gap.
+    :ivar team_log.WebDeviceSessionLogInfo.user_agent: Information on the
+        hosting device.
+    :ivar team_log.WebDeviceSessionLogInfo.os: Information on the hosting
+        operating system.
+    :ivar team_log.WebDeviceSessionLogInfo.browser: Information on the browser
+        used for this web session.
     """
 
     __slots__ = [
@@ -62624,7 +63063,7 @@ class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
         """
         Web session unique id. Might be missing due to historical data gap.
 
-        :rtype: WebSessionLogInfo
+        :rtype: team_log.WebSessionLogInfo
         """
         if self._session_info_present:
             return self._session_info_value
@@ -62758,10 +63197,11 @@ class WebSessionsChangeFixedLengthPolicyDetails(bb.Struct):
     """
     Changed how long members can stay signed in to Dropbox.com.
 
-    :ivar new_value: New session length policy. Might be missing due to
-        historical data gap.
-    :ivar previous_value: Previous session length policy. Might be missing due
-        to historical data gap.
+    :ivar team_log.WebSessionsChangeFixedLengthPolicyDetails.new_value: New
+        session length policy. Might be missing due to historical data gap.
+    :ivar team_log.WebSessionsChangeFixedLengthPolicyDetails.previous_value:
+        Previous session length policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -62790,7 +63230,7 @@ class WebSessionsChangeFixedLengthPolicyDetails(bb.Struct):
         """
         New session length policy. Might be missing due to historical data gap.
 
-        :rtype: WebSessionsFixedLengthPolicy
+        :rtype: team_log.WebSessionsFixedLengthPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -62817,7 +63257,7 @@ class WebSessionsChangeFixedLengthPolicyDetails(bb.Struct):
         Previous session length policy. Might be missing due to historical data
         gap.
 
-        :rtype: WebSessionsFixedLengthPolicy
+        :rtype: team_log.WebSessionsFixedLengthPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -62900,10 +63340,11 @@ class WebSessionsChangeIdleLengthPolicyDetails(bb.Struct):
     """
     Changed how long team members can be idle while signed in to Dropbox.com.
 
-    :ivar new_value: New idle length policy. Might be missing due to historical
-        data gap.
-    :ivar previous_value: Previous idle length policy. Might be missing due to
-        historical data gap.
+    :ivar team_log.WebSessionsChangeIdleLengthPolicyDetails.new_value: New idle
+        length policy. Might be missing due to historical data gap.
+    :ivar team_log.WebSessionsChangeIdleLengthPolicyDetails.previous_value:
+        Previous idle length policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -62932,7 +63373,7 @@ class WebSessionsChangeIdleLengthPolicyDetails(bb.Struct):
         """
         New idle length policy. Might be missing due to historical data gap.
 
-        :rtype: WebSessionsIdleLengthPolicy
+        :rtype: team_log.WebSessionsIdleLengthPolicy
         """
         if self._new_value_present:
             return self._new_value_value
@@ -62959,7 +63400,7 @@ class WebSessionsChangeIdleLengthPolicyDetails(bb.Struct):
         Previous idle length policy. Might be missing due to historical data
         gap.
 
-        :rtype: WebSessionsIdleLengthPolicy
+        :rtype: team_log.WebSessionsIdleLengthPolicy
         """
         if self._previous_value_present:
             return self._previous_value_value
@@ -63046,8 +63487,10 @@ class WebSessionsFixedLengthPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DurationLogInfo defined: Defined fixed session length.
-    :ivar undefined: Undefined fixed session length.
+    :ivar DurationLogInfo team_log.WebSessionsFixedLengthPolicy.defined: Defined
+        fixed session length.
+    :ivar team_log.WebSessionsFixedLengthPolicy.undefined: Undefined fixed
+        session length.
     """
 
     _catch_all = 'other'
@@ -63062,8 +63505,8 @@ class WebSessionsFixedLengthPolicy(bb.Union):
         Create an instance of this class set to the ``defined`` tag with value
         ``val``.
 
-        :param DurationLogInfo val:
-        :rtype: WebSessionsFixedLengthPolicy
+        :param team_log.DurationLogInfo val:
+        :rtype: team_log.WebSessionsFixedLengthPolicy
         """
         return cls('defined', val)
 
@@ -63097,7 +63540,7 @@ class WebSessionsFixedLengthPolicy(bb.Union):
 
         Only call this if :meth:`is_defined` is true.
 
-        :rtype: DurationLogInfo
+        :rtype: team_log.DurationLogInfo
         """
         if not self.is_defined():
             raise AttributeError("tag 'defined' not set")
@@ -63119,8 +63562,10 @@ class WebSessionsIdleLengthPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DurationLogInfo defined: Defined idle session length.
-    :ivar undefined: Undefined idle session length.
+    :ivar DurationLogInfo team_log.WebSessionsIdleLengthPolicy.defined: Defined
+        idle session length.
+    :ivar team_log.WebSessionsIdleLengthPolicy.undefined: Undefined idle session
+        length.
     """
 
     _catch_all = 'other'
@@ -63135,8 +63580,8 @@ class WebSessionsIdleLengthPolicy(bb.Union):
         Create an instance of this class set to the ``defined`` tag with value
         ``val``.
 
-        :param DurationLogInfo val:
-        :rtype: WebSessionsIdleLengthPolicy
+        :param team_log.DurationLogInfo val:
+        :rtype: team_log.WebSessionsIdleLengthPolicy
         """
         return cls('defined', val)
 
@@ -63170,7 +63615,7 @@ class WebSessionsIdleLengthPolicy(bb.Union):
 
         Only call this if :meth:`is_defined` is true.
 
-        :rtype: DurationLogInfo
+        :rtype: team_log.DurationLogInfo
         """
         if not self.is_defined():
             raise AttributeError("tag 'defined' not set")

@@ -35,12 +35,14 @@ except (ImportError, SystemError, ValueError):
 
 class DeviceSession(bb.Struct):
     """
-    :ivar session_id: The session id.
-    :ivar ip_address: The IP address of the last activity from this session.
-    :ivar country: The country from which the last activity from this session
-        was made.
-    :ivar created: The time this session was created.
-    :ivar updated: The time of the last activity from this session.
+    :ivar team.DeviceSession.session_id: The session id.
+    :ivar team.DeviceSession.ip_address: The IP address of the last activity
+        from this session.
+    :ivar team.DeviceSession.country: The country from which the last activity
+        from this session was made.
+    :ivar team.DeviceSession.created: The time this session was created.
+    :ivar team.DeviceSession.updated: The time of the last activity from this
+        session.
     """
 
     __slots__ = [
@@ -230,10 +232,11 @@ class ActiveWebSession(DeviceSession):
     """
     Information on active web sessions.
 
-    :ivar user_agent: Information on the hosting device.
-    :ivar os: Information on the hosting operating system.
-    :ivar browser: Information on the browser used for this web session.
-    :ivar expires: The time this session expires.
+    :ivar team.ActiveWebSession.user_agent: Information on the hosting device.
+    :ivar team.ActiveWebSession.os: Information on the hosting operating system.
+    :ivar team.ActiveWebSession.browser: Information on the browser used for
+        this web session.
+    :ivar team.ActiveWebSession.expires: The time this session expires.
     """
 
     __slots__ = [
@@ -402,13 +405,13 @@ class AdminTier(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_admin: User is an administrator of the team - has all
-        permissions.
-    :ivar user_management_admin: User can do most user provisioning,
-        de-provisioning and management.
-    :ivar support_admin: User can do a limited set of common support tasks for
-        existing users.
-    :ivar member_only: User is not an admin of the team.
+    :ivar team.AdminTier.team_admin: User is an administrator of the team - has
+        all permissions.
+    :ivar team.AdminTier.user_management_admin: User can do most user
+        provisioning, de-provisioning and management.
+    :ivar team.AdminTier.support_admin: User can do a limited set of common
+        support tasks for existing users.
+    :ivar team.AdminTier.member_only: User is not an admin of the team.
     """
 
     _catch_all = None
@@ -465,12 +468,13 @@ class ApiApp(bb.Struct):
     """
     Information on linked third party applications.
 
-    :ivar app_id: The application unique id.
-    :ivar app_name: The application name.
-    :ivar publisher: The application publisher name.
-    :ivar publisher_url: The publisher's URL.
-    :ivar linked: The time this application was linked.
-    :ivar is_app_folder: Whether the linked application uses a dedicated folder.
+    :ivar team.ApiApp.app_id: The application unique id.
+    :ivar team.ApiApp.app_name: The application name.
+    :ivar team.ApiApp.publisher: The application publisher name.
+    :ivar team.ApiApp.publisher_url: The publisher's URL.
+    :ivar team.ApiApp.linked: The time this application was linked.
+    :ivar team.ApiApp.is_app_folder: Whether the linked application uses a
+        dedicated folder.
     """
 
     __slots__ = [
@@ -688,7 +692,8 @@ class BaseDfbReport(bb.Struct):
     """
     Base report structure.
 
-    :ivar start_date: First date present in the results as 'YYYY-MM-DD' or None.
+    :ivar team.BaseDfbReport.start_date: First date present in the results as
+        'YYYY-MM-DD' or None.
     """
 
     __slots__ = [
@@ -757,8 +762,8 @@ class BaseTeamFolderError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param TeamFolderAccessError val:
-        :rtype: BaseTeamFolderError
+        :param team.TeamFolderAccessError val:
+        :rtype: team.BaseTeamFolderError
         """
         return cls('access_error', val)
 
@@ -768,8 +773,8 @@ class BaseTeamFolderError(bb.Union):
         Create an instance of this class set to the ``status_error`` tag with
         value ``val``.
 
-        :param TeamFolderInvalidStatusError val:
-        :rtype: BaseTeamFolderError
+        :param team.TeamFolderInvalidStatusError val:
+        :rtype: team.BaseTeamFolderError
         """
         return cls('status_error', val)
 
@@ -779,8 +784,8 @@ class BaseTeamFolderError(bb.Union):
         Create an instance of this class set to the
         ``team_shared_dropbox_error`` tag with value ``val``.
 
-        :param TeamFolderTeamSharedDropboxError val:
-        :rtype: BaseTeamFolderError
+        :param team.TeamFolderTeamSharedDropboxError val:
+        :rtype: team.BaseTeamFolderError
         """
         return cls('team_shared_dropbox_error', val)
 
@@ -820,7 +825,7 @@ class BaseTeamFolderError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: TeamFolderAccessError
+        :rtype: team.TeamFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -830,7 +835,7 @@ class BaseTeamFolderError(bb.Union):
         """
         Only call this if :meth:`is_status_error` is true.
 
-        :rtype: TeamFolderInvalidStatusError
+        :rtype: team.TeamFolderInvalidStatusError
         """
         if not self.is_status_error():
             raise AttributeError("tag 'status_error' not set")
@@ -840,7 +845,7 @@ class BaseTeamFolderError(bb.Union):
         """
         Only call this if :meth:`is_team_shared_dropbox_error` is true.
 
-        :rtype: TeamFolderTeamSharedDropboxError
+        :rtype: team.TeamFolderTeamSharedDropboxError
         """
         if not self.is_team_shared_dropbox_error():
             raise AttributeError("tag 'team_shared_dropbox_error' not set")
@@ -862,7 +867,8 @@ class CustomQuotaError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar too_many_users: A maximum of 1000 users can be set for a single call.
+    :ivar team.CustomQuotaError.too_many_users: A maximum of 1000 users can be
+        set for a single call.
     """
 
     _catch_all = 'other'
@@ -903,8 +909,10 @@ class CustomQuotaResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserCustomQuotaResult success: User's custom quota.
-    :ivar UserSelectorArg invalid_user: Invalid user (not in team).
+    :ivar UserCustomQuotaResult team.CustomQuotaResult.success: User's custom
+        quota.
+    :ivar UserSelectorArg team.CustomQuotaResult.invalid_user: Invalid user (not
+        in team).
     """
 
     _catch_all = 'other'
@@ -917,8 +925,8 @@ class CustomQuotaResult(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param UserCustomQuotaResult val:
-        :rtype: CustomQuotaResult
+        :param team.UserCustomQuotaResult val:
+        :rtype: team.CustomQuotaResult
         """
         return cls('success', val)
 
@@ -928,8 +936,8 @@ class CustomQuotaResult(bb.Union):
         Create an instance of this class set to the ``invalid_user`` tag with
         value ``val``.
 
-        :param UserSelectorArg val:
-        :rtype: CustomQuotaResult
+        :param team.UserSelectorArg val:
+        :rtype: team.CustomQuotaResult
         """
         return cls('invalid_user', val)
 
@@ -963,7 +971,7 @@ class CustomQuotaResult(bb.Union):
 
         Only call this if :meth:`is_success` is true.
 
-        :rtype: UserCustomQuotaResult
+        :rtype: team.UserCustomQuotaResult
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -975,7 +983,7 @@ class CustomQuotaResult(bb.Union):
 
         Only call this if :meth:`is_invalid_user` is true.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if not self.is_invalid_user():
             raise AttributeError("tag 'invalid_user' not set")
@@ -991,7 +999,7 @@ CustomQuotaResult_validator = bv.Union(CustomQuotaResult)
 
 class CustomQuotaUsersArg(bb.Struct):
     """
-    :ivar users: List of users.
+    :ivar team.CustomQuotaUsersArg.users: List of users.
     """
 
     __slots__ = [
@@ -1013,7 +1021,7 @@ class CustomQuotaUsersArg(bb.Struct):
         """
         List of users.
 
-        :rtype: list of [UserSelectorArg]
+        :rtype: list of [team.UserSelectorArg]
         """
         if self._users_present:
             return self._users_value
@@ -1045,8 +1053,8 @@ class DateRange(bb.Struct):
     """
     Input arguments that can be provided for most reports.
 
-    :ivar start_date: Optional starting date (inclusive).
-    :ivar end_date: Optional ending date (exclusive).
+    :ivar team.DateRange.start_date: Optional starting date (inclusive).
+    :ivar team.DateRange.end_date: Optional ending date (exclusive).
     """
 
     __slots__ = [
@@ -1166,12 +1174,14 @@ class DesktopClientSession(DeviceSession):
     """
     Information about linked Dropbox desktop client sessions.
 
-    :ivar host_name: Name of the hosting desktop.
-    :ivar client_type: The Dropbox desktop client type.
-    :ivar client_version: The Dropbox client version.
-    :ivar platform: Information on the hosting platform.
-    :ivar is_delete_on_unlink_supported: Whether it's possible to delete all of
-        the account files upon unlinking.
+    :ivar team.DesktopClientSession.host_name: Name of the hosting desktop.
+    :ivar team.DesktopClientSession.client_type: The Dropbox desktop client
+        type.
+    :ivar team.DesktopClientSession.client_version: The Dropbox client version.
+    :ivar team.DesktopClientSession.platform: Information on the hosting
+        platform.
+    :ivar team.DesktopClientSession.is_delete_on_unlink_supported: Whether it's
+        possible to delete all of the account files upon unlinking.
     """
 
     __slots__ = [
@@ -1254,7 +1264,7 @@ class DesktopClientSession(DeviceSession):
         """
         The Dropbox desktop client type.
 
-        :rtype: DesktopPlatform
+        :rtype: team.DesktopPlatform
         """
         if self._client_type_present:
             return self._client_type_value
@@ -1366,9 +1376,9 @@ class DesktopPlatform(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar windows: Official Windows Dropbox desktop client.
-    :ivar mac: Official Mac Dropbox desktop client.
-    :ivar linux: Official Linux Dropbox desktop client.
+    :ivar team.DesktopPlatform.windows: Official Windows Dropbox desktop client.
+    :ivar team.DesktopPlatform.mac: Official Mac Dropbox desktop client.
+    :ivar team.DesktopPlatform.linux: Official Linux Dropbox desktop client.
     """
 
     _catch_all = 'other'
@@ -1423,8 +1433,9 @@ DesktopPlatform_validator = bv.Union(DesktopPlatform)
 
 class DeviceSessionArg(bb.Struct):
     """
-    :ivar session_id: The session id.
-    :ivar team_member_id: The unique id of the member owning the device.
+    :ivar team.DeviceSessionArg.session_id: The session id.
+    :ivar team.DeviceSessionArg.team_member_id: The unique id of the member
+        owning the device.
     """
 
     __slots__ = [
@@ -1511,16 +1522,20 @@ class DevicesActive(bb.Struct):
     number of devices active within a time window, ending with that day. If
     there is no data for a day, then the value will be None.
 
-    :ivar windows: Array of number of linked windows (desktop) clients with
+    :ivar team.DevicesActive.windows: Array of number of linked windows
+        (desktop) clients with activity.
+    :ivar team.DevicesActive.macos: Array of number of linked mac (desktop)
+        clients with activity.
+    :ivar team.DevicesActive.linux: Array of number of linked linus (desktop)
+        clients with activity.
+    :ivar team.DevicesActive.ios: Array of number of linked ios devices with
         activity.
-    :ivar macos: Array of number of linked mac (desktop) clients with activity.
-    :ivar linux: Array of number of linked linus (desktop) clients with
+    :ivar team.DevicesActive.android: Array of number of linked android devices
+        with activity.
+    :ivar team.DevicesActive.other: Array of number of other linked devices
+        (blackberry, windows phone, etc)  with activity.
+    :ivar team.DevicesActive.total: Array of total number of linked clients with
         activity.
-    :ivar ios: Array of number of linked ios devices with activity.
-    :ivar android: Array of number of linked android devices with activity.
-    :ivar other: Array of number of other linked devices (blackberry, windows
-        phone, etc)  with activity.
-    :ivar total: Array of total number of linked clients with activity.
     """
 
     __slots__ = [
@@ -1761,7 +1776,7 @@ class ExcludedUsersListArg(bb.Struct):
     """
     Excluded users list argument.
 
-    :ivar limit: Number of results to return per call.
+    :ivar team.ExcludedUsersListArg.limit: Number of results to return per call.
     """
 
     __slots__ = [
@@ -1815,7 +1830,8 @@ class ExcludedUsersListContinueArg(bb.Struct):
     """
     Excluded users list continue argument.
 
-    :ivar cursor: Indicates from what point to get the next set of users.
+    :ivar team.ExcludedUsersListContinueArg.cursor: Indicates from what point to
+        get the next set of users.
     """
 
     __slots__ = [
@@ -1873,7 +1889,8 @@ class ExcludedUsersListContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: The cursor is invalid.
+    :ivar team.ExcludedUsersListContinueError.invalid_cursor: The cursor is
+        invalid.
     """
 
     _catch_all = 'other'
@@ -1914,7 +1931,7 @@ class ExcludedUsersListError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar list_error: An error occurred.
+    :ivar team.ExcludedUsersListError.list_error: An error occurred.
     """
 
     _catch_all = 'other'
@@ -1951,11 +1968,11 @@ class ExcludedUsersListResult(bb.Struct):
     """
     Excluded users list result.
 
-    :ivar cursor: Pass the cursor into
+    :ivar team.ExcludedUsersListResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_member_space_limits_excluded_users_list_continue`
         to obtain additional excluded users.
-    :ivar has_more: Is true if there are additional excluded users that have not
-        been returned yet. An additional call to
+    :ivar team.ExcludedUsersListResult.has_more: Is true if there are additional
+        excluded users that have not been returned yet. An additional call to
         :meth:`dropbox.dropbox.Dropbox.team_member_space_limits_excluded_users_list_continue`
         can retrieve them.
     """
@@ -1991,7 +2008,7 @@ class ExcludedUsersListResult(bb.Struct):
     @property
     def users(self):
         """
-        :rtype: list of [MemberProfile]
+        :rtype: list of [team.MemberProfile]
         """
         if self._users_present:
             return self._users_value
@@ -2081,7 +2098,7 @@ class ExcludedUsersUpdateArg(bb.Struct):
     to add/remove (according to endpoint), Maximum size of the list is 1000
     users.
 
-    :ivar users: List of users to be added/removed.
+    :ivar team.ExcludedUsersUpdateArg.users: List of users to be added/removed.
     """
 
     __slots__ = [
@@ -2103,7 +2120,7 @@ class ExcludedUsersUpdateArg(bb.Struct):
         """
         List of users to be added/removed.
 
-        :rtype: list of [UserSelectorArg]
+        :rtype: list of [team.UserSelectorArg]
         """
         if self._users_present:
             return self._users_value
@@ -2142,9 +2159,10 @@ class ExcludedUsersUpdateError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar users_not_in_team: At least one of the users is not part of your team.
-    :ivar too_many_users: A maximum of 1000 users for each of addition/removal
-        can be supplied.
+    :ivar team.ExcludedUsersUpdateError.users_not_in_team: At least one of the
+        users is not part of your team.
+    :ivar team.ExcludedUsersUpdateError.too_many_users: A maximum of 1000 users
+        for each of addition/removal can be supplied.
     """
 
     _catch_all = 'other'
@@ -2191,7 +2209,7 @@ class ExcludedUsersUpdateResult(bb.Struct):
     """
     Excluded users update result.
 
-    :ivar status: Update status.
+    :ivar team.ExcludedUsersUpdateResult.status: Update status.
     """
 
     __slots__ = [
@@ -2213,7 +2231,7 @@ class ExcludedUsersUpdateResult(bb.Struct):
         """
         Update status.
 
-        :rtype: ExcludedUsersUpdateStatus
+        :rtype: team.ExcludedUsersUpdateStatus
         """
         if self._status_present:
             return self._status_value
@@ -2249,7 +2267,7 @@ class ExcludedUsersUpdateStatus(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar success: Update successful.
+    :ivar team.ExcludedUsersUpdateStatus.success: Update successful.
     """
 
     _catch_all = 'other'
@@ -2290,12 +2308,13 @@ class Feature(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar upload_api_rate_limit: The number of upload API calls allowed per
-        month.
-    :ivar has_team_shared_dropbox: Does this team have a shared team root.
-    :ivar has_team_file_events: Does this team have file events.
-    :ivar has_team_selective_sync: Does this team have team selective sync
-        enabled.
+    :ivar team.Feature.upload_api_rate_limit: The number of upload API calls
+        allowed per month.
+    :ivar team.Feature.has_team_shared_dropbox: Does this team have a shared
+        team root.
+    :ivar team.Feature.has_team_file_events: Does this team have file events.
+    :ivar team.Feature.has_team_selective_sync: Does this team have team
+        selective sync enabled.
     """
 
     _catch_all = 'other'
@@ -2378,8 +2397,8 @@ class FeatureValue(bb.Union):
         Create an instance of this class set to the ``upload_api_rate_limit``
         tag with value ``val``.
 
-        :param UploadApiRateLimitValue val:
-        :rtype: FeatureValue
+        :param team.UploadApiRateLimitValue val:
+        :rtype: team.FeatureValue
         """
         return cls('upload_api_rate_limit', val)
 
@@ -2389,8 +2408,8 @@ class FeatureValue(bb.Union):
         Create an instance of this class set to the ``has_team_shared_dropbox``
         tag with value ``val``.
 
-        :param HasTeamSharedDropboxValue val:
-        :rtype: FeatureValue
+        :param team.HasTeamSharedDropboxValue val:
+        :rtype: team.FeatureValue
         """
         return cls('has_team_shared_dropbox', val)
 
@@ -2400,8 +2419,8 @@ class FeatureValue(bb.Union):
         Create an instance of this class set to the ``has_team_file_events`` tag
         with value ``val``.
 
-        :param HasTeamFileEventsValue val:
-        :rtype: FeatureValue
+        :param team.HasTeamFileEventsValue val:
+        :rtype: team.FeatureValue
         """
         return cls('has_team_file_events', val)
 
@@ -2411,8 +2430,8 @@ class FeatureValue(bb.Union):
         Create an instance of this class set to the ``has_team_selective_sync``
         tag with value ``val``.
 
-        :param HasTeamSelectiveSyncValue val:
-        :rtype: FeatureValue
+        :param team.HasTeamSelectiveSyncValue val:
+        :rtype: team.FeatureValue
         """
         return cls('has_team_selective_sync', val)
 
@@ -2460,7 +2479,7 @@ class FeatureValue(bb.Union):
         """
         Only call this if :meth:`is_upload_api_rate_limit` is true.
 
-        :rtype: UploadApiRateLimitValue
+        :rtype: team.UploadApiRateLimitValue
         """
         if not self.is_upload_api_rate_limit():
             raise AttributeError("tag 'upload_api_rate_limit' not set")
@@ -2470,7 +2489,7 @@ class FeatureValue(bb.Union):
         """
         Only call this if :meth:`is_has_team_shared_dropbox` is true.
 
-        :rtype: HasTeamSharedDropboxValue
+        :rtype: team.HasTeamSharedDropboxValue
         """
         if not self.is_has_team_shared_dropbox():
             raise AttributeError("tag 'has_team_shared_dropbox' not set")
@@ -2480,7 +2499,7 @@ class FeatureValue(bb.Union):
         """
         Only call this if :meth:`is_has_team_file_events` is true.
 
-        :rtype: HasTeamFileEventsValue
+        :rtype: team.HasTeamFileEventsValue
         """
         if not self.is_has_team_file_events():
             raise AttributeError("tag 'has_team_file_events' not set")
@@ -2490,7 +2509,7 @@ class FeatureValue(bb.Union):
         """
         Only call this if :meth:`is_has_team_selective_sync` is true.
 
-        :rtype: HasTeamSelectiveSyncValue
+        :rtype: team.HasTeamSelectiveSyncValue
         """
         if not self.is_has_team_selective_sync():
             raise AttributeError("tag 'has_team_selective_sync' not set")
@@ -2506,8 +2525,9 @@ FeatureValue_validator = bv.Union(FeatureValue)
 
 class FeaturesGetValuesBatchArg(bb.Struct):
     """
-    :ivar features: A list of features in :class:`Feature`. If the list is
-        empty, this route will return :class:`FeaturesGetValuesBatchError`.
+    :ivar team.FeaturesGetValuesBatchArg.features: A list of features in
+        :class:`Feature`. If the list is empty, this route will return
+        :class:`FeaturesGetValuesBatchError`.
     """
 
     __slots__ = [
@@ -2530,7 +2550,7 @@ class FeaturesGetValuesBatchArg(bb.Struct):
         A list of features in :class:`Feature`. If the list is empty, this route
         will return :class:`FeaturesGetValuesBatchError`.
 
-        :rtype: list of [Feature]
+        :rtype: list of [team.Feature]
         """
         if self._features_present:
             return self._features_value
@@ -2564,8 +2584,9 @@ class FeaturesGetValuesBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar empty_features_list: At least one :class:`Feature` must be included in
-        the :class:`FeaturesGetValuesBatchArg`.features list.
+    :ivar team.FeaturesGetValuesBatchError.empty_features_list: At least one
+        :class:`Feature` must be included in the
+        :class:`FeaturesGetValuesBatchArg`.features list.
     """
 
     _catch_all = 'other'
@@ -2617,7 +2638,7 @@ class FeaturesGetValuesBatchResult(bb.Struct):
     @property
     def values(self):
         """
-        :rtype: list of [FeatureValue]
+        :rtype: list of [team.FeatureValue]
         """
         if self._values_present:
             return self._values_value
@@ -2651,31 +2672,37 @@ class GetActivityReport(BaseDfbReport):
     of values, one value per day. If there is no data for a day, then the value
     will be None.
 
-    :ivar adds: Array of total number of adds by team members.
-    :ivar edits: Array of number of edits by team members. If the same user
-        edits the same file multiple times this is counted as a single edit.
-    :ivar deletes: Array of total number of deletes by team members.
-    :ivar active_users_28_day: Array of the number of users who have been active
-        in the last 28 days.
-    :ivar active_users_7_day: Array of the number of users who have been active
-        in the last week.
-    :ivar active_users_1_day: Array of the number of users who have been active
-        in the last day.
-    :ivar active_shared_folders_28_day: Array of the number of shared folders
-        with some activity in the last 28 days.
-    :ivar active_shared_folders_7_day: Array of the number of shared folders
-        with some activity in the last week.
-    :ivar active_shared_folders_1_day: Array of the number of shared folders
-        with some activity in the last day.
-    :ivar shared_links_created: Array of the number of shared links created.
-    :ivar shared_links_viewed_by_team: Array of the number of views by team
-        users to shared links created by the team.
-    :ivar shared_links_viewed_by_outside_user: Array of the number of views by
-        users outside of the team to shared links created by the team.
-    :ivar shared_links_viewed_by_not_logged_in: Array of the number of views by
-        non-logged-in users to shared links created by the team.
-    :ivar shared_links_viewed_total: Array of the total number of views to
-        shared links created by the team.
+    :ivar team.GetActivityReport.adds: Array of total number of adds by team
+        members.
+    :ivar team.GetActivityReport.edits: Array of number of edits by team
+        members. If the same user edits the same file multiple times this is
+        counted as a single edit.
+    :ivar team.GetActivityReport.deletes: Array of total number of deletes by
+        team members.
+    :ivar team.GetActivityReport.active_users_28_day: Array of the number of
+        users who have been active in the last 28 days.
+    :ivar team.GetActivityReport.active_users_7_day: Array of the number of
+        users who have been active in the last week.
+    :ivar team.GetActivityReport.active_users_1_day: Array of the number of
+        users who have been active in the last day.
+    :ivar team.GetActivityReport.active_shared_folders_28_day: Array of the
+        number of shared folders with some activity in the last 28 days.
+    :ivar team.GetActivityReport.active_shared_folders_7_day: Array of the
+        number of shared folders with some activity in the last week.
+    :ivar team.GetActivityReport.active_shared_folders_1_day: Array of the
+        number of shared folders with some activity in the last day.
+    :ivar team.GetActivityReport.shared_links_created: Array of the number of
+        shared links created.
+    :ivar team.GetActivityReport.shared_links_viewed_by_team: Array of the
+        number of views by team users to shared links created by the team.
+    :ivar team.GetActivityReport.shared_links_viewed_by_outside_user: Array of
+        the number of views by users outside of the team to shared links created
+        by the team.
+    :ivar team.GetActivityReport.shared_links_viewed_by_not_logged_in: Array of
+        the number of views by non-logged-in users to shared links created by
+        the team.
+    :ivar team.GetActivityReport.shared_links_viewed_total: Array of the total
+        number of views to shared links created by the team.
     """
 
     __slots__ = [
@@ -3145,11 +3172,12 @@ class GetDevicesReport(BaseDfbReport):
     array of values, one value per day. If there is no data for a day, then the
     value will be None.
 
-    :ivar active_1_day: Report of the number of devices active in the last day.
-    :ivar active_7_day: Report of the number of devices active in the last 7
-        days.
-    :ivar active_28_day: Report of the number of devices active in the last 28
-        days.
+    :ivar team.GetDevicesReport.active_1_day: Report of the number of devices
+        active in the last day.
+    :ivar team.GetDevicesReport.active_7_day: Report of the number of devices
+        active in the last 7 days.
+    :ivar team.GetDevicesReport.active_28_day: Report of the number of devices
+        active in the last 28 days.
     """
 
     __slots__ = [
@@ -3187,7 +3215,7 @@ class GetDevicesReport(BaseDfbReport):
         """
         Report of the number of devices active in the last day.
 
-        :rtype: DevicesActive
+        :rtype: team.DevicesActive
         """
         if self._active_1_day_present:
             return self._active_1_day_value
@@ -3210,7 +3238,7 @@ class GetDevicesReport(BaseDfbReport):
         """
         Report of the number of devices active in the last 7 days.
 
-        :rtype: DevicesActive
+        :rtype: team.DevicesActive
         """
         if self._active_7_day_present:
             return self._active_7_day_value
@@ -3233,7 +3261,7 @@ class GetDevicesReport(BaseDfbReport):
         """
         Report of the number of devices active in the last 28 days.
 
-        :rtype: DevicesActive
+        :rtype: team.DevicesActive
         """
         if self._active_28_day_present:
             return self._active_28_day_value
@@ -3270,13 +3298,15 @@ class GetMembershipReport(BaseDfbReport):
     array of values, one value per day. If there is no data for a day, then the
     value will be None.
 
-    :ivar team_size: Team size, for each day.
-    :ivar pending_invites: The number of pending invites to the team, for each
-        day.
-    :ivar members_joined: The number of members that joined the team, for each
-        day.
-    :ivar suspended_members: The number of suspended team members, for each day.
-    :ivar licenses: The total number of licenses the team has, for each day.
+    :ivar team.GetMembershipReport.team_size: Team size, for each day.
+    :ivar team.GetMembershipReport.pending_invites: The number of pending
+        invites to the team, for each day.
+    :ivar team.GetMembershipReport.members_joined: The number of members that
+        joined the team, for each day.
+    :ivar team.GetMembershipReport.suspended_members: The number of suspended
+        team members, for each day.
+    :ivar team.GetMembershipReport.licenses: The total number of licenses the
+        team has, for each day.
     """
 
     __slots__ = [
@@ -3459,20 +3489,20 @@ class GetStorageReport(BaseDfbReport):
     of values, one value per day. If there is no data for a day, then the value
     will be None.
 
-    :ivar total_usage: Sum of the shared, unshared, and datastore usages, for
-        each day.
-    :ivar shared_usage: Array of the combined size (bytes) of team members'
-        shared folders, for each day.
-    :ivar unshared_usage: Array of the combined size (bytes) of team members'
-        root namespaces, for each day.
-    :ivar shared_folders: Array of the number of shared folders owned by team
-        members, for each day.
-    :ivar member_storage_map: Array of storage summaries of team members'
-        account sizes. Each storage summary is an array of key, value pairs,
-        where each pair describes a storage bucket. The key indicates the upper
-        bound of the bucket and the value is the number of users in that bucket.
-        There is one such summary per day. If there is no data for a day, the
-        storage summary will be empty.
+    :ivar team.GetStorageReport.total_usage: Sum of the shared, unshared, and
+        datastore usages, for each day.
+    :ivar team.GetStorageReport.shared_usage: Array of the combined size (bytes)
+        of team members' shared folders, for each day.
+    :ivar team.GetStorageReport.unshared_usage: Array of the combined size
+        (bytes) of team members' root namespaces, for each day.
+    :ivar team.GetStorageReport.shared_folders: Array of the number of shared
+        folders owned by team members, for each day.
+    :ivar team.GetStorageReport.member_storage_map: Array of storage summaries
+        of team members' account sizes. Each storage summary is an array of key,
+        value pairs, where each pair describes a storage bucket. The key
+        indicates the upper bound of the bucket and the value is the number of
+        users in that bucket. There is one such summary per day. If there is no
+        data for a day, the storage summary will be empty.
     """
 
     __slots__ = [
@@ -3624,7 +3654,7 @@ class GetStorageReport(BaseDfbReport):
         per day. If there is no data for a day, the storage summary will be
         empty.
 
-        :rtype: list of [list of [StorageBucket]]
+        :rtype: list of [list of [team.StorageBucket]]
         """
         if self._member_storage_map_present:
             return self._member_storage_map_value
@@ -3665,8 +3695,10 @@ class GroupAccessType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar member: User is a member of the group, but has no special permissions.
-    :ivar owner: User can rename the group, and add/remove members.
+    :ivar team.GroupAccessType.member: User is a member of the group, but has no
+        special permissions.
+    :ivar team.GroupAccessType.owner: User can rename the group, and add/remove
+        members.
     """
 
     _catch_all = None
@@ -3701,11 +3733,11 @@ GroupAccessType_validator = bv.Union(GroupAccessType)
 
 class GroupCreateArg(bb.Struct):
     """
-    :ivar group_name: Group name.
-    :ivar group_external_id: The creator of a team can associate an arbitrary
-        external ID to the group.
-    :ivar group_management_type: Whether the team can be managed by selected
-        users, or only by team admins.
+    :ivar team.GroupCreateArg.group_name: Group name.
+    :ivar team.GroupCreateArg.group_external_id: The creator of a team can
+        associate an arbitrary external ID to the group.
+    :ivar team.GroupCreateArg.group_management_type: Whether the team can be
+        managed by selected users, or only by team admins.
     """
 
     __slots__ = [
@@ -3831,13 +3863,14 @@ class GroupCreateError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar group_name_already_used: The requested group name is already being
-        used by another group.
-    :ivar group_name_invalid: Group name is empty or has invalid characters.
-    :ivar external_id_already_in_use: The requested external ID is already being
-        used by another group.
-    :ivar system_managed_group_disallowed: System-managed group cannot be
-        manually created.
+    :ivar team.GroupCreateError.group_name_already_used: The requested group
+        name is already being used by another group.
+    :ivar team.GroupCreateError.group_name_invalid: Group name is empty or has
+        invalid characters.
+    :ivar team.GroupCreateError.external_id_already_in_use: The requested
+        external ID is already being used by another group.
+    :ivar team.GroupCreateError.system_managed_group_disallowed: System-managed
+        group cannot be manually created.
     """
 
     _catch_all = 'other'
@@ -3908,8 +3941,8 @@ class GroupSelectorError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar group_not_found: No matching group found. No groups match the
-        specified group ID.
+    :ivar team.GroupSelectorError.group_not_found: No matching group found. No
+        groups match the specified group ID.
     """
 
     _catch_all = 'other'
@@ -3951,8 +3984,8 @@ class GroupSelectorWithTeamGroupError(GroupSelectorError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar system_managed_group_disallowed: This operation is not supported on
-        system-managed groups.
+    :ivar team.GroupSelectorWithTeamGroupError.system_managed_group_disallowed:
+        This operation is not supported on system-managed groups.
     """
 
     # Attribute is overwritten below the class definition
@@ -3980,7 +4013,8 @@ class GroupDeleteError(GroupSelectorWithTeamGroupError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar group_already_deleted: This group has already been deleted.
+    :ivar team.GroupDeleteError.group_already_deleted: This group has already
+        been deleted.
     """
 
     # Attribute is overwritten below the class definition
@@ -4006,9 +4040,9 @@ class GroupFullInfo(team_common.GroupSummary):
     """
     Full description of a group.
 
-    :ivar members: List of group members.
-    :ivar created: The group creation time as a UTC timestamp in milliseconds
-        since the Unix epoch.
+    :ivar team.GroupFullInfo.members: List of group members.
+    :ivar team.GroupFullInfo.created: The group creation time as a UTC timestamp
+        in milliseconds since the Unix epoch.
     """
 
     __slots__ = [
@@ -4047,7 +4081,7 @@ class GroupFullInfo(team_common.GroupSummary):
         """
         List of group members.
 
-        :rtype: list of [GroupMemberInfo]
+        :rtype: list of [team.GroupMemberInfo]
         """
         if self._members_present:
             return self._members_value
@@ -4112,8 +4146,9 @@ class GroupMemberInfo(bb.Struct):
     """
     Profile of group member, and role in group.
 
-    :ivar profile: Profile of group member.
-    :ivar access_type: The role that the user has in the group.
+    :ivar team.GroupMemberInfo.profile: Profile of group member.
+    :ivar team.GroupMemberInfo.access_type: The role that the user has in the
+        group.
     """
 
     __slots__ = [
@@ -4142,7 +4177,7 @@ class GroupMemberInfo(bb.Struct):
         """
         Profile of group member.
 
-        :rtype: MemberProfile
+        :rtype: team.MemberProfile
         """
         if self._profile_present:
             return self._profile_value
@@ -4165,7 +4200,7 @@ class GroupMemberInfo(bb.Struct):
         """
         The role that the user has in the group.
 
-        :rtype: GroupAccessType
+        :rtype: team.GroupAccessType
         """
         if self._access_type_present:
             return self._access_type_value
@@ -4198,8 +4233,9 @@ class GroupMemberSelector(bb.Struct):
     """
     Argument for selecting a group and a single user.
 
-    :ivar group: Specify a group.
-    :ivar user: Identity of a user that is a member of ``group``.
+    :ivar team.GroupMemberSelector.group: Specify a group.
+    :ivar team.GroupMemberSelector.user: Identity of a user that is a member of
+        ``group``.
     """
 
     __slots__ = [
@@ -4228,7 +4264,7 @@ class GroupMemberSelector(bb.Struct):
         """
         Specify a group.
 
-        :rtype: GroupSelector
+        :rtype: team.GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -4251,7 +4287,7 @@ class GroupMemberSelector(bb.Struct):
         """
         Identity of a user that is a member of ``group``.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -4289,7 +4325,8 @@ class GroupMemberSelectorError(GroupSelectorWithTeamGroupError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar member_not_in_group: The specified user is not a member of this group.
+    :ivar team.GroupMemberSelectorError.member_not_in_group: The specified user
+        is not a member of this group.
     """
 
     # Attribute is overwritten below the class definition
@@ -4317,8 +4354,9 @@ class GroupMemberSetAccessTypeError(GroupMemberSelectorError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar user_cannot_be_manager_of_company_managed_group: A company managed
-        group cannot be managed by a user.
+    :ivar
+        team.GroupMemberSetAccessTypeError.user_cannot_be_manager_of_company_managed_group:
+        A company managed group cannot be managed by a user.
     """
 
     # Attribute is overwritten below the class definition
@@ -4342,9 +4380,10 @@ GroupMemberSetAccessTypeError_validator = bv.Union(GroupMemberSetAccessTypeError
 
 class IncludeMembersArg(bb.Struct):
     """
-    :ivar return_members: Whether to return the list of members in the group.
-        Note that the default value will cause all the group members  to be
-        returned in the response. This may take a long time for large groups.
+    :ivar team.IncludeMembersArg.return_members: Whether to return the list of
+        members in the group.  Note that the default value will cause all the
+        group members  to be returned in the response. This may take a long time
+        for large groups.
     """
 
     __slots__ = [
@@ -4398,8 +4437,9 @@ IncludeMembersArg_validator = bv.Struct(IncludeMembersArg)
 
 class GroupMembersAddArg(IncludeMembersArg):
     """
-    :ivar group: Group to which users will be added.
-    :ivar members: List of users to be added to the group.
+    :ivar team.GroupMembersAddArg.group: Group to which users will be added.
+    :ivar team.GroupMembersAddArg.members: List of users to be added to the
+        group.
     """
 
     __slots__ = [
@@ -4430,7 +4470,7 @@ class GroupMembersAddArg(IncludeMembersArg):
         """
         Group to which users will be added.
 
-        :rtype: GroupSelector
+        :rtype: team.GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -4453,7 +4493,7 @@ class GroupMembersAddArg(IncludeMembersArg):
         """
         List of users to be added to the group.
 
-        :rtype: list of [MemberAccess]
+        :rtype: list of [team.MemberAccess]
         """
         if self._members_present:
             return self._members_value
@@ -4489,20 +4529,23 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar duplicate_user: You cannot add duplicate users. One or more of the
-        members you are trying to add is already a member of the group.
-    :ivar group_not_in_team: Group is not in this team. You cannot add members
-        to a group that is outside of your team.
-    :ivar list of [str] members_not_in_team: These members are not part of your
-        team. Currently, you cannot add members to a group if they are not part
-        of your team, though this may change in a subsequent version. To add new
-        members to your Dropbox Business team, use the :route:`members/add`
-        endpoint.
-    :ivar list of [str] users_not_found: These users were not found in Dropbox.
-    :ivar user_must_be_active_to_be_owner: A suspended user cannot be added to a
-        group as ``GroupAccessType.owner``.
-    :ivar list of [str] user_cannot_be_manager_of_company_managed_group: A
-        company-managed group cannot be managed by a user.
+    :ivar team.GroupMembersAddError.duplicate_user: You cannot add duplicate
+        users. One or more of the members you are trying to add is already a
+        member of the group.
+    :ivar team.GroupMembersAddError.group_not_in_team: Group is not in this
+        team. You cannot add members to a group that is outside of your team.
+    :ivar list of [str] team.GroupMembersAddError.members_not_in_team: These
+        members are not part of your team. Currently, you cannot add members to
+        a group if they are not part of your team, though this may change in a
+        subsequent version. To add new members to your Dropbox Business team,
+        use the :route:`members/add` endpoint.
+    :ivar list of [str] team.GroupMembersAddError.users_not_found: These users
+        were not found in Dropbox.
+    :ivar team.GroupMembersAddError.user_must_be_active_to_be_owner: A suspended
+        user cannot be added to a group as ``GroupAccessType.owner``.
+    :ivar list of [str]
+        team.GroupMembersAddError.user_cannot_be_manager_of_company_managed_group:
+        A company-managed group cannot be managed by a user.
     """
 
     # Attribute is overwritten below the class definition
@@ -4519,7 +4562,7 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
         with value ``val``.
 
         :param list of [str] val:
-        :rtype: GroupMembersAddError
+        :rtype: team.GroupMembersAddError
         """
         return cls('members_not_in_team', val)
 
@@ -4530,7 +4573,7 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: GroupMembersAddError
+        :rtype: team.GroupMembersAddError
         """
         return cls('users_not_found', val)
 
@@ -4542,7 +4585,7 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
         ``val``.
 
         :param list of [str] val:
-        :rtype: GroupMembersAddError
+        :rtype: team.GroupMembersAddError
         """
         return cls('user_cannot_be_manager_of_company_managed_group', val)
 
@@ -4647,10 +4690,10 @@ class GroupMembersChangeResult(bb.Struct):
     Result returned by :meth:`dropbox.dropbox.Dropbox.team_groups_members_add`
     and :meth:`dropbox.dropbox.Dropbox.team_groups_members_remove`.
 
-    :ivar group_info: The group info after member change operation has been
-        performed.
-    :ivar async_job_id: An ID that can be used to obtain the status of
-        granting/revoking group-owned resources.
+    :ivar team.GroupMembersChangeResult.group_info: The group info after member
+        change operation has been performed.
+    :ivar team.GroupMembersChangeResult.async_job_id: An ID that can be used to
+        obtain the status of granting/revoking group-owned resources.
     """
 
     __slots__ = [
@@ -4679,7 +4722,7 @@ class GroupMembersChangeResult(bb.Struct):
         """
         The group info after member change operation has been performed.
 
-        :rtype: GroupFullInfo
+        :rtype: team.GroupFullInfo
         """
         if self._group_info_present:
             return self._group_info_value
@@ -4734,8 +4777,10 @@ GroupMembersChangeResult_validator = bv.Struct(GroupMembersChangeResult)
 
 class GroupMembersRemoveArg(IncludeMembersArg):
     """
-    :ivar group: Group from which users will be removed.
-    :ivar users: List of users to be removed from the group.
+    :ivar team.GroupMembersRemoveArg.group: Group from which users will be
+        removed.
+    :ivar team.GroupMembersRemoveArg.users: List of users to be removed from the
+        group.
     """
 
     __slots__ = [
@@ -4766,7 +4811,7 @@ class GroupMembersRemoveArg(IncludeMembersArg):
         """
         Group from which users will be removed.
 
-        :rtype: GroupSelector
+        :rtype: team.GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -4789,7 +4834,7 @@ class GroupMembersRemoveArg(IncludeMembersArg):
         """
         List of users to be removed from the group.
 
-        :rtype: list of [UserSelectorArg]
+        :rtype: list of [team.UserSelectorArg]
         """
         if self._users_present:
             return self._users_value
@@ -4828,8 +4873,8 @@ class GroupMembersSelectorError(GroupSelectorWithTeamGroupError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar member_not_in_group: At least one of the specified users is not a
-        member of the group.
+    :ivar team.GroupMembersSelectorError.member_not_in_group: At least one of
+        the specified users is not a member of the group.
     """
 
     # Attribute is overwritten below the class definition
@@ -4857,11 +4902,13 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar group_not_in_team: Group is not in this team. You cannot remove
-        members from a group that is outside of your team.
-    :ivar list of [str] members_not_in_team: These members are not part of your
+    :ivar team.GroupMembersRemoveError.group_not_in_team: Group is not in this
+        team. You cannot remove members from a group that is outside of your
         team.
-    :ivar list of [str] users_not_found: These users were not found in Dropbox.
+    :ivar list of [str] team.GroupMembersRemoveError.members_not_in_team: These
+        members are not part of your team.
+    :ivar list of [str] team.GroupMembersRemoveError.users_not_found: These
+        users were not found in Dropbox.
     """
 
     # Attribute is overwritten below the class definition
@@ -4874,7 +4921,7 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
         with value ``val``.
 
         :param list of [str] val:
-        :rtype: GroupMembersRemoveError
+        :rtype: team.GroupMembersRemoveError
         """
         return cls('members_not_in_team', val)
 
@@ -4885,7 +4932,7 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: GroupMembersRemoveError
+        :rtype: team.GroupMembersRemoveError
         """
         return cls('users_not_found', val)
 
@@ -4949,8 +4996,9 @@ class GroupMembersSelector(bb.Struct):
     """
     Argument for selecting a group and a list of users.
 
-    :ivar group: Specify a group.
-    :ivar users: A list of users that are members of ``group``.
+    :ivar team.GroupMembersSelector.group: Specify a group.
+    :ivar team.GroupMembersSelector.users: A list of users that are members of
+        ``group``.
     """
 
     __slots__ = [
@@ -4979,7 +5027,7 @@ class GroupMembersSelector(bb.Struct):
         """
         Specify a group.
 
-        :rtype: GroupSelector
+        :rtype: team.GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -5002,7 +5050,7 @@ class GroupMembersSelector(bb.Struct):
         """
         A list of users that are members of ``group``.
 
-        :rtype: UsersSelectorArg
+        :rtype: team.UsersSelectorArg
         """
         if self._users_present:
             return self._users_value
@@ -5033,10 +5081,12 @@ GroupMembersSelector_validator = bv.Struct(GroupMembersSelector)
 
 class GroupMembersSetAccessTypeArg(GroupMemberSelector):
     """
-    :ivar access_type: New group access type the user will have.
-    :ivar return_members: Whether to return the list of members in the group.
-        Note that the default value will cause all the group members  to be
-        returned in the response. This may take a long time for large groups.
+    :ivar team.GroupMembersSetAccessTypeArg.access_type: New group access type
+        the user will have.
+    :ivar team.GroupMembersSetAccessTypeArg.return_members: Whether to return
+        the list of members in the group.  Note that the default value will
+        cause all the group members  to be returned in the response. This may
+        take a long time for large groups.
     """
 
     __slots__ = [
@@ -5069,7 +5119,7 @@ class GroupMembersSetAccessTypeArg(GroupMemberSelector):
         """
         New group access type the user will have.
 
-        :rtype: GroupAccessType
+        :rtype: team.GroupAccessType
         """
         if self._access_type_present:
             return self._access_type_value
@@ -5134,8 +5184,8 @@ class GroupSelector(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str group_id: Group ID.
-    :ivar str group_external_id: External ID of the group.
+    :ivar str team.GroupSelector.group_id: Group ID.
+    :ivar str team.GroupSelector.group_external_id: External ID of the group.
     """
 
     _catch_all = None
@@ -5147,7 +5197,7 @@ class GroupSelector(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: GroupSelector
+        :rtype: team.GroupSelector
         """
         return cls('group_id', val)
 
@@ -5158,7 +5208,7 @@ class GroupSelector(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: GroupSelector
+        :rtype: team.GroupSelector
         """
         return cls('group_external_id', val)
 
@@ -5212,12 +5262,15 @@ GroupSelector_validator = bv.Union(GroupSelector)
 
 class GroupUpdateArgs(IncludeMembersArg):
     """
-    :ivar group: Specify a group.
-    :ivar new_group_name: Optional argument. Set group name to this if provided.
-    :ivar new_group_external_id: Optional argument. New group external ID. If
-        the argument is None, the group's external_id won't be updated. If the
-        argument is empty string, the group's external id will be cleared.
-    :ivar new_group_management_type: Set new group management type, if provided.
+    :ivar team.GroupUpdateArgs.group: Specify a group.
+    :ivar team.GroupUpdateArgs.new_group_name: Optional argument. Set group name
+        to this if provided.
+    :ivar team.GroupUpdateArgs.new_group_external_id: Optional argument. New
+        group external ID. If the argument is None, the group's external_id
+        won't be updated. If the argument is empty string, the group's external
+        id will be cleared.
+    :ivar team.GroupUpdateArgs.new_group_management_type: Set new group
+        management type, if provided.
     """
 
     __slots__ = [
@@ -5262,7 +5315,7 @@ class GroupUpdateArgs(IncludeMembersArg):
         """
         Specify a group.
 
-        :rtype: GroupSelector
+        :rtype: team.GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -5380,11 +5433,12 @@ class GroupUpdateError(GroupSelectorWithTeamGroupError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar group_name_already_used: The requested group name is already being
-        used by another group.
-    :ivar group_name_invalid: Group name is empty or has invalid characters.
-    :ivar external_id_already_in_use: The requested external ID is already being
-        used by another group.
+    :ivar team.GroupUpdateError.group_name_already_used: The requested group
+        name is already being used by another group.
+    :ivar team.GroupUpdateError.group_name_invalid: Group name is empty or has
+        invalid characters.
+    :ivar team.GroupUpdateError.external_id_already_in_use: The requested
+        external ID is already being used by another group.
     """
 
     # Attribute is overwritten below the class definition
@@ -5432,7 +5486,8 @@ class GroupsGetInfoError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar group_not_on_team: The group is not on your team.
+    :ivar team.GroupsGetInfoError.group_not_on_team: The group is not on your
+        team.
     """
 
     _catch_all = 'other'
@@ -5471,11 +5526,11 @@ class GroupsGetInfoItem(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str id_not_found: An ID that was provided as a parameter to
-        :route:`groups/get_info`, and did not match a corresponding group. The
-        ID can be a group ID, or an external ID, depending on how the method was
-        called.
-    :ivar GroupFullInfo group_info: Info about a group.
+    :ivar str team.GroupsGetInfoItem.id_not_found: An ID that was provided as a
+        parameter to :route:`groups/get_info`, and did not match a corresponding
+        group. The ID can be a group ID, or an external ID, depending on how the
+        method was called.
+    :ivar GroupFullInfo team.GroupsGetInfoItem.group_info: Info about a group.
     """
 
     _catch_all = None
@@ -5487,7 +5542,7 @@ class GroupsGetInfoItem(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: GroupsGetInfoItem
+        :rtype: team.GroupsGetInfoItem
         """
         return cls('id_not_found', val)
 
@@ -5497,8 +5552,8 @@ class GroupsGetInfoItem(bb.Union):
         Create an instance of this class set to the ``group_info`` tag with
         value ``val``.
 
-        :param GroupFullInfo val:
-        :rtype: GroupsGetInfoItem
+        :param team.GroupFullInfo val:
+        :rtype: team.GroupsGetInfoItem
         """
         return cls('group_info', val)
 
@@ -5539,7 +5594,7 @@ class GroupsGetInfoItem(bb.Union):
 
         Only call this if :meth:`is_group_info` is true.
 
-        :rtype: GroupFullInfo
+        :rtype: team.GroupFullInfo
         """
         if not self.is_group_info():
             raise AttributeError("tag 'group_info' not set")
@@ -5555,7 +5610,7 @@ GroupsGetInfoItem_validator = bv.Union(GroupsGetInfoItem)
 
 class GroupsListArg(bb.Struct):
     """
-    :ivar limit: Number of results to return per call.
+    :ivar team.GroupsListArg.limit: Number of results to return per call.
     """
 
     __slots__ = [
@@ -5607,7 +5662,8 @@ GroupsListArg_validator = bv.Struct(GroupsListArg)
 
 class GroupsListContinueArg(bb.Struct):
     """
-    :ivar cursor: Indicates from what point to get the next set of groups.
+    :ivar team.GroupsListContinueArg.cursor: Indicates from what point to get
+        the next set of groups.
     """
 
     __slots__ = [
@@ -5663,7 +5719,7 @@ class GroupsListContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: The cursor is invalid.
+    :ivar team.GroupsListContinueError.invalid_cursor: The cursor is invalid.
     """
 
     _catch_all = 'other'
@@ -5698,11 +5754,11 @@ GroupsListContinueError_validator = bv.Union(GroupsListContinueError)
 
 class GroupsListResult(bb.Struct):
     """
-    :ivar cursor: Pass the cursor into
+    :ivar team.GroupsListResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` to obtain the
         additional groups.
-    :ivar has_more: Is true if there are additional groups that have not been
-        returned yet. An additional call to
+    :ivar team.GroupsListResult.has_more: Is true if there are additional groups
+        that have not been returned yet. An additional call to
         :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` can retrieve
         them.
     """
@@ -5821,8 +5877,9 @@ GroupsListResult_validator = bv.Struct(GroupsListResult)
 
 class GroupsMembersListArg(bb.Struct):
     """
-    :ivar group: The group whose members are to be listed.
-    :ivar limit: Number of results to return per call.
+    :ivar team.GroupsMembersListArg.group: The group whose members are to be
+        listed.
+    :ivar team.GroupsMembersListArg.limit: Number of results to return per call.
     """
 
     __slots__ = [
@@ -5851,7 +5908,7 @@ class GroupsMembersListArg(bb.Struct):
         """
         The group whose members are to be listed.
 
-        :rtype: GroupSelector
+        :rtype: team.GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -5905,7 +5962,8 @@ GroupsMembersListArg_validator = bv.Struct(GroupsMembersListArg)
 
 class GroupsMembersListContinueArg(bb.Struct):
     """
-    :ivar cursor: Indicates from what point to get the next set of groups.
+    :ivar team.GroupsMembersListContinueArg.cursor: Indicates from what point to
+        get the next set of groups.
     """
 
     __slots__ = [
@@ -5961,7 +6019,8 @@ class GroupsMembersListContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: The cursor is invalid.
+    :ivar team.GroupsMembersListContinueError.invalid_cursor: The cursor is
+        invalid.
     """
 
     _catch_all = 'other'
@@ -5996,11 +6055,11 @@ GroupsMembersListContinueError_validator = bv.Union(GroupsMembersListContinueErr
 
 class GroupsMembersListResult(bb.Struct):
     """
-    :ivar cursor: Pass the cursor into
+    :ivar team.GroupsMembersListResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` to
         obtain additional group members.
-    :ivar has_more: Is true if there are additional group members that have not
-        been returned yet. An additional call to
+    :ivar team.GroupsMembersListResult.has_more: Is true if there are additional
+        group members that have not been returned yet. An additional call to
         :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` can
         retrieve them.
     """
@@ -6036,7 +6095,7 @@ class GroupsMembersListResult(bb.Struct):
     @property
     def members(self):
         """
-        :rtype: list of [GroupMemberInfo]
+        :rtype: list of [team.GroupMemberInfo]
         """
         if self._members_present:
             return self._members_value
@@ -6123,7 +6182,8 @@ class GroupsPollError(async_.PollError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar access_denied: You are not allowed to poll this job.
+    :ivar team.GroupsPollError.access_denied: You are not allowed to poll this
+        job.
     """
 
     # Attribute is overwritten below the class definition
@@ -6154,8 +6214,9 @@ class GroupsSelector(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar list of [str] group_ids: List of group IDs.
-    :ivar list of [str] group_external_ids: List of external IDs of groups.
+    :ivar list of [str] team.GroupsSelector.group_ids: List of group IDs.
+    :ivar list of [str] team.GroupsSelector.group_external_ids: List of external
+        IDs of groups.
     """
 
     _catch_all = None
@@ -6167,7 +6228,7 @@ class GroupsSelector(bb.Union):
         ``val``.
 
         :param list of [str] val:
-        :rtype: GroupsSelector
+        :rtype: team.GroupsSelector
         """
         return cls('group_ids', val)
 
@@ -6178,7 +6239,7 @@ class GroupsSelector(bb.Union):
         with value ``val``.
 
         :param list of [str] val:
-        :rtype: GroupsSelector
+        :rtype: team.GroupsSelector
         """
         return cls('group_external_ids', val)
 
@@ -6238,7 +6299,8 @@ class HasTeamFileEventsValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bool enabled: Does this team have file events.
+    :ivar bool team.HasTeamFileEventsValue.enabled: Does this team have file
+        events.
     """
 
     _catch_all = 'other'
@@ -6252,7 +6314,7 @@ class HasTeamFileEventsValue(bb.Union):
         ``val``.
 
         :param bool val:
-        :rtype: HasTeamFileEventsValue
+        :rtype: team.HasTeamFileEventsValue
         """
         return cls('enabled', val)
 
@@ -6300,8 +6362,8 @@ class HasTeamSelectiveSyncValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bool has_team_selective_sync: Does this team have team selective sync
-        enabled.
+    :ivar bool team.HasTeamSelectiveSyncValue.has_team_selective_sync: Does this
+        team have team selective sync enabled.
     """
 
     _catch_all = 'other'
@@ -6315,7 +6377,7 @@ class HasTeamSelectiveSyncValue(bb.Union):
         tag with value ``val``.
 
         :param bool val:
-        :rtype: HasTeamSelectiveSyncValue
+        :rtype: team.HasTeamSelectiveSyncValue
         """
         return cls('has_team_selective_sync', val)
 
@@ -6363,7 +6425,8 @@ class HasTeamSharedDropboxValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bool has_team_shared_dropbox: Does this team have a shared team root.
+    :ivar bool team.HasTeamSharedDropboxValue.has_team_shared_dropbox: Does this
+        team have a shared team root.
     """
 
     _catch_all = 'other'
@@ -6377,7 +6440,7 @@ class HasTeamSharedDropboxValue(bb.Union):
         tag with value ``val``.
 
         :param bool val:
-        :rtype: HasTeamSharedDropboxValue
+        :rtype: team.HasTeamSharedDropboxValue
         """
         return cls('has_team_shared_dropbox', val)
 
@@ -6419,7 +6482,7 @@ HasTeamSharedDropboxValue_validator = bv.Union(HasTeamSharedDropboxValue)
 
 class ListMemberAppsArg(bb.Struct):
     """
-    :ivar team_member_id: The team member id.
+    :ivar team.ListMemberAppsArg.team_member_id: The team member id.
     """
 
     __slots__ = [
@@ -6478,7 +6541,7 @@ class ListMemberAppsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar member_not_found: Member not found.
+    :ivar team.ListMemberAppsError.member_not_found: Member not found.
     """
 
     _catch_all = 'other'
@@ -6513,8 +6576,8 @@ ListMemberAppsError_validator = bv.Union(ListMemberAppsError)
 
 class ListMemberAppsResult(bb.Struct):
     """
-    :ivar linked_api_apps: List of third party applications linked by this team
-        member.
+    :ivar team.ListMemberAppsResult.linked_api_apps: List of third party
+        applications linked by this team member.
     """
 
     __slots__ = [
@@ -6536,7 +6599,7 @@ class ListMemberAppsResult(bb.Struct):
         """
         List of third party applications linked by this team member.
 
-        :rtype: list of [ApiApp]
+        :rtype: list of [team.ApiApp]
         """
         if self._linked_api_apps_present:
             return self._linked_api_apps_value
@@ -6566,13 +6629,13 @@ ListMemberAppsResult_validator = bv.Struct(ListMemberAppsResult)
 
 class ListMemberDevicesArg(bb.Struct):
     """
-    :ivar team_member_id: The team's member id.
-    :ivar include_web_sessions: Whether to list web sessions of the team's
-        member.
-    :ivar include_desktop_clients: Whether to list linked desktop devices of the
-        team's member.
-    :ivar include_mobile_clients: Whether to list linked mobile devices of the
-        team's member.
+    :ivar team.ListMemberDevicesArg.team_member_id: The team's member id.
+    :ivar team.ListMemberDevicesArg.include_web_sessions: Whether to list web
+        sessions of the team's member.
+    :ivar team.ListMemberDevicesArg.include_desktop_clients: Whether to list
+        linked desktop devices of the team's member.
+    :ivar team.ListMemberDevicesArg.include_mobile_clients: Whether to list
+        linked mobile devices of the team's member.
     """
 
     __slots__ = [
@@ -6721,7 +6784,7 @@ class ListMemberDevicesError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar member_not_found: Member not found.
+    :ivar team.ListMemberDevicesError.member_not_found: Member not found.
     """
 
     _catch_all = 'other'
@@ -6756,11 +6819,12 @@ ListMemberDevicesError_validator = bv.Union(ListMemberDevicesError)
 
 class ListMemberDevicesResult(bb.Struct):
     """
-    :ivar active_web_sessions: List of web sessions made by this team member.
-    :ivar desktop_client_sessions: List of desktop clients used by this team
-        member.
-    :ivar mobile_client_sessions: List of mobile client used by this team
-        member.
+    :ivar team.ListMemberDevicesResult.active_web_sessions: List of web sessions
+        made by this team member.
+    :ivar team.ListMemberDevicesResult.desktop_client_sessions: List of desktop
+        clients used by this team member.
+    :ivar team.ListMemberDevicesResult.mobile_client_sessions: List of mobile
+        client used by this team member.
     """
 
     __slots__ = [
@@ -6796,7 +6860,7 @@ class ListMemberDevicesResult(bb.Struct):
         """
         List of web sessions made by this team member.
 
-        :rtype: list of [ActiveWebSession]
+        :rtype: list of [team.ActiveWebSession]
         """
         if self._active_web_sessions_present:
             return self._active_web_sessions_value
@@ -6822,7 +6886,7 @@ class ListMemberDevicesResult(bb.Struct):
         """
         List of desktop clients used by this team member.
 
-        :rtype: list of [DesktopClientSession]
+        :rtype: list of [team.DesktopClientSession]
         """
         if self._desktop_client_sessions_present:
             return self._desktop_client_sessions_value
@@ -6848,7 +6912,7 @@ class ListMemberDevicesResult(bb.Struct):
         """
         List of mobile client used by this team member.
 
-        :rtype: list of [MobileClientSession]
+        :rtype: list of [team.MobileClientSession]
         """
         if self._mobile_client_sessions_present:
             return self._mobile_client_sessions_value
@@ -6886,7 +6950,7 @@ class ListMembersAppsArg(bb.Struct):
     Arguments for
     :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`.
 
-    :ivar cursor: At the first call to the
+    :ivar team.ListMembersAppsArg.cursor: At the first call to the
         :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
         the cursor shouldn't be passed. Then, if the result of the call includes
         a cursor, the following requests should include the received cursors in
@@ -6956,7 +7020,8 @@ class ListMembersAppsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar reset: Indicates that the cursor has been invalidated. Call
+    :ivar team.ListMembersAppsError.reset: Indicates that the cursor has been
+        invalidated. Call
         :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
         again with an empty cursor to obtain a new cursor.
     """
@@ -6996,12 +7061,13 @@ class ListMembersAppsResult(bb.Struct):
     Information returned by
     :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`.
 
-    :ivar apps: The linked applications of each member of the team.
-    :ivar has_more: If true, then there are more apps available. Pass the cursor
-        to
+    :ivar team.ListMembersAppsResult.apps: The linked applications of each
+        member of the team.
+    :ivar team.ListMembersAppsResult.has_more: If true, then there are more apps
+        available. Pass the cursor to
         :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
         to retrieve the rest.
-    :ivar cursor: Pass the cursor into
+    :ivar team.ListMembersAppsResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
         to receive the next sub list of team's applications.
     """
@@ -7039,7 +7105,7 @@ class ListMembersAppsResult(bb.Struct):
         """
         The linked applications of each member of the team.
 
-        :rtype: list of [MemberLinkedApps]
+        :rtype: list of [team.MemberLinkedApps]
         """
         if self._apps_present:
             return self._apps_value
@@ -7124,17 +7190,17 @@ ListMembersAppsResult_validator = bv.Struct(ListMembersAppsResult)
 
 class ListMembersDevicesArg(bb.Struct):
     """
-    :ivar cursor: At the first call to the
+    :ivar team.ListMembersDevicesArg.cursor: At the first call to the
         :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` the
         cursor shouldn't be passed. Then, if the result of the call includes a
         cursor, the following requests should include the received cursors in
         order to receive the next sub list of team devices.
-    :ivar include_web_sessions: Whether to list web sessions of the team
-        members.
-    :ivar include_desktop_clients: Whether to list desktop clients of the team
-        members.
-    :ivar include_mobile_clients: Whether to list mobile clients of the team
-        members.
+    :ivar team.ListMembersDevicesArg.include_web_sessions: Whether to list web
+        sessions of the team members.
+    :ivar team.ListMembersDevicesArg.include_desktop_clients: Whether to list
+        desktop clients of the team members.
+    :ivar team.ListMembersDevicesArg.include_mobile_clients: Whether to list
+        mobile clients of the team members.
     """
 
     __slots__ = [
@@ -7290,7 +7356,8 @@ class ListMembersDevicesError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar reset: Indicates that the cursor has been invalidated. Call
+    :ivar team.ListMembersDevicesError.reset: Indicates that the cursor has been
+        invalidated. Call
         :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` again
         with an empty cursor to obtain a new cursor.
     """
@@ -7327,12 +7394,13 @@ ListMembersDevicesError_validator = bv.Union(ListMembersDevicesError)
 
 class ListMembersDevicesResult(bb.Struct):
     """
-    :ivar devices: The devices of each member of the team.
-    :ivar has_more: If true, then there are more devices available. Pass the
-        cursor to
+    :ivar team.ListMembersDevicesResult.devices: The devices of each member of
+        the team.
+    :ivar team.ListMembersDevicesResult.has_more: If true, then there are more
+        devices available. Pass the cursor to
         :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
         retrieve the rest.
-    :ivar cursor: Pass the cursor into
+    :ivar team.ListMembersDevicesResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
         receive the next sub list of team's devices.
     """
@@ -7370,7 +7438,7 @@ class ListMembersDevicesResult(bb.Struct):
         """
         The devices of each member of the team.
 
-        :rtype: list of [MemberDevices]
+        :rtype: list of [team.MemberDevices]
         """
         if self._devices_present:
             return self._devices_value
@@ -7458,7 +7526,7 @@ class ListTeamAppsArg(bb.Struct):
     Arguments for
     :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`.
 
-    :ivar cursor: At the first call to the
+    :ivar team.ListTeamAppsArg.cursor: At the first call to the
         :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
         the cursor shouldn't be passed. Then, if the result of the call includes
         a cursor, the following requests should include the received cursors in
@@ -7528,7 +7596,8 @@ class ListTeamAppsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar reset: Indicates that the cursor has been invalidated. Call
+    :ivar team.ListTeamAppsError.reset: Indicates that the cursor has been
+        invalidated. Call
         :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
         again with an empty cursor to obtain a new cursor.
     """
@@ -7568,12 +7637,13 @@ class ListTeamAppsResult(bb.Struct):
     Information returned by
     :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`.
 
-    :ivar apps: The linked applications of each member of the team.
-    :ivar has_more: If true, then there are more apps available. Pass the cursor
-        to
+    :ivar team.ListTeamAppsResult.apps: The linked applications of each member
+        of the team.
+    :ivar team.ListTeamAppsResult.has_more: If true, then there are more apps
+        available. Pass the cursor to
         :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
         to retrieve the rest.
-    :ivar cursor: Pass the cursor into
+    :ivar team.ListTeamAppsResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
         to receive the next sub list of team's applications.
     """
@@ -7611,7 +7681,7 @@ class ListTeamAppsResult(bb.Struct):
         """
         The linked applications of each member of the team.
 
-        :rtype: list of [MemberLinkedApps]
+        :rtype: list of [team.MemberLinkedApps]
         """
         if self._apps_present:
             return self._apps_value
@@ -7696,17 +7766,17 @@ ListTeamAppsResult_validator = bv.Struct(ListTeamAppsResult)
 
 class ListTeamDevicesArg(bb.Struct):
     """
-    :ivar cursor: At the first call to the
+    :ivar team.ListTeamDevicesArg.cursor: At the first call to the
         :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` the
         cursor shouldn't be passed. Then, if the result of the call includes a
         cursor, the following requests should include the received cursors in
         order to receive the next sub list of team devices.
-    :ivar include_web_sessions: Whether to list web sessions of the team
-        members.
-    :ivar include_desktop_clients: Whether to list desktop clients of the team
-        members.
-    :ivar include_mobile_clients: Whether to list mobile clients of the team
-        members.
+    :ivar team.ListTeamDevicesArg.include_web_sessions: Whether to list web
+        sessions of the team members.
+    :ivar team.ListTeamDevicesArg.include_desktop_clients: Whether to list
+        desktop clients of the team members.
+    :ivar team.ListTeamDevicesArg.include_mobile_clients: Whether to list mobile
+        clients of the team members.
     """
 
     __slots__ = [
@@ -7862,7 +7932,8 @@ class ListTeamDevicesError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar reset: Indicates that the cursor has been invalidated. Call
+    :ivar team.ListTeamDevicesError.reset: Indicates that the cursor has been
+        invalidated. Call
         :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` again
         with an empty cursor to obtain a new cursor.
     """
@@ -7899,11 +7970,13 @@ ListTeamDevicesError_validator = bv.Union(ListTeamDevicesError)
 
 class ListTeamDevicesResult(bb.Struct):
     """
-    :ivar devices: The devices of each member of the team.
-    :ivar has_more: If true, then there are more devices available. Pass the
-        cursor to :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices`
-        to retrieve the rest.
-    :ivar cursor: Pass the cursor into
+    :ivar team.ListTeamDevicesResult.devices: The devices of each member of the
+        team.
+    :ivar team.ListTeamDevicesResult.has_more: If true, then there are more
+        devices available. Pass the cursor to
+        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
+        retrieve the rest.
+    :ivar team.ListTeamDevicesResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
         receive the next sub list of team's devices.
     """
@@ -7941,7 +8014,7 @@ class ListTeamDevicesResult(bb.Struct):
         """
         The devices of each member of the team.
 
-        :rtype: list of [MemberDevices]
+        :rtype: list of [team.MemberDevices]
         """
         if self._devices_present:
             return self._devices_value
@@ -8028,8 +8101,8 @@ class MemberAccess(bb.Struct):
     """
     Specify access type a member should have when joined to a group.
 
-    :ivar user: Identity of a user.
-    :ivar access_type: Access type.
+    :ivar team.MemberAccess.user: Identity of a user.
+    :ivar team.MemberAccess.access_type: Access type.
     """
 
     __slots__ = [
@@ -8058,7 +8131,7 @@ class MemberAccess(bb.Struct):
         """
         Identity of a user.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -8081,7 +8154,7 @@ class MemberAccess(bb.Struct):
         """
         Access type.
 
-        :rtype: GroupAccessType
+        :rtype: team.GroupAccessType
         """
         if self._access_type_present:
             return self._access_type_value
@@ -8112,16 +8185,17 @@ MemberAccess_validator = bv.Struct(MemberAccess)
 
 class MemberAddArg(bb.Struct):
     """
-    :ivar member_given_name: Member's first name.
-    :ivar member_surname: Member's last name.
-    :ivar member_external_id: External ID for member.
-    :ivar member_persistent_id: Persistent ID for member. This field is only
-        available to teams using persistent ID SAML configuration.
-    :ivar send_welcome_email: Whether to send a welcome email to the member. If
-        send_welcome_email is false, no email invitation will be sent to the
-        user. This may be useful for apps using single sign-on (SSO) flows for
-        onboarding that want to handle announcements themselves.
-    :ivar is_directory_restricted: Whether a user is directory restricted.
+    :ivar team.MemberAddArg.member_given_name: Member's first name.
+    :ivar team.MemberAddArg.member_surname: Member's last name.
+    :ivar team.MemberAddArg.member_external_id: External ID for member.
+    :ivar team.MemberAddArg.member_persistent_id: Persistent ID for member. This
+        field is only available to teams using persistent ID SAML configuration.
+    :ivar team.MemberAddArg.send_welcome_email: Whether to send a welcome email
+        to the member. If send_welcome_email is false, no email invitation will
+        be sent to the user. This may be useful for apps using single sign-on
+        (SSO) flows for onboarding that want to handle announcements themselves.
+    :ivar team.MemberAddArg.is_directory_restricted: Whether a user is directory
+        restricted.
     """
 
     __slots__ = [
@@ -8342,7 +8416,7 @@ class MemberAddArg(bb.Struct):
     @property
     def role(self):
         """
-        :rtype: AdminTier
+        :rtype: team.AdminTier
         """
         if self._role_present:
             return self._role_value
@@ -8414,28 +8488,33 @@ class MemberAddResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar TeamMemberInfo success: Describes a user that was successfully added
-        to the team.
-    :ivar str team_license_limit: Team is already full. The organization has no
-        available licenses.
-    :ivar str free_team_member_limit_reached: Team is already full. The free
-        team member limit has been reached.
-    :ivar str user_already_on_team: User is already on this team. The provided
-        email address is associated with a user who is already a member of
-        (including in recoverable state) or invited to the team.
-    :ivar str user_on_another_team: User is already on another team. The
-        provided email address is associated with a user that is already a
-        member or invited to another team.
-    :ivar str user_already_paired: User is already paired.
-    :ivar str user_migration_failed: User migration has failed.
-    :ivar str duplicate_external_member_id: A user with the given external
-        member ID already exists on the team (including in recoverable state).
-    :ivar str duplicate_member_persistent_id: A user with the given persistent
-        ID already exists on the team (including in recoverable state).
-    :ivar str persistent_id_disabled: Persistent ID is only available to teams
-        with persistent ID SAML configuration. Please contact Dropbox for more
-        information.
-    :ivar str user_creation_failed: User creation has failed.
+    :ivar TeamMemberInfo team.MemberAddResult.success: Describes a user that was
+        successfully added to the team.
+    :ivar str team.MemberAddResult.team_license_limit: Team is already full. The
+        organization has no available licenses.
+    :ivar str team.MemberAddResult.free_team_member_limit_reached: Team is
+        already full. The free team member limit has been reached.
+    :ivar str team.MemberAddResult.user_already_on_team: User is already on this
+        team. The provided email address is associated with a user who is
+        already a member of (including in recoverable state) or invited to the
+        team.
+    :ivar str team.MemberAddResult.user_on_another_team: User is already on
+        another team. The provided email address is associated with a user that
+        is already a member or invited to another team.
+    :ivar str team.MemberAddResult.user_already_paired: User is already paired.
+    :ivar str team.MemberAddResult.user_migration_failed: User migration has
+        failed.
+    :ivar str team.MemberAddResult.duplicate_external_member_id: A user with the
+        given external member ID already exists on the team (including in
+        recoverable state).
+    :ivar str team.MemberAddResult.duplicate_member_persistent_id: A user with
+        the given persistent ID already exists on the team (including in
+        recoverable state).
+    :ivar str team.MemberAddResult.persistent_id_disabled: Persistent ID is only
+        available to teams with persistent ID SAML configuration. Please contact
+        Dropbox for more information.
+    :ivar str team.MemberAddResult.user_creation_failed: User creation has
+        failed.
     """
 
     _catch_all = None
@@ -8446,8 +8525,8 @@ class MemberAddResult(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param TeamMemberInfo val:
-        :rtype: MemberAddResult
+        :param team.TeamMemberInfo val:
+        :rtype: team.MemberAddResult
         """
         return cls('success', val)
 
@@ -8458,7 +8537,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('team_license_limit', val)
 
@@ -8469,7 +8548,7 @@ class MemberAddResult(bb.Union):
         ``free_team_member_limit_reached`` tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('free_team_member_limit_reached', val)
 
@@ -8480,7 +8559,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('user_already_on_team', val)
 
@@ -8491,7 +8570,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('user_on_another_team', val)
 
@@ -8502,7 +8581,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('user_already_paired', val)
 
@@ -8513,7 +8592,7 @@ class MemberAddResult(bb.Union):
         tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('user_migration_failed', val)
 
@@ -8524,7 +8603,7 @@ class MemberAddResult(bb.Union):
         ``duplicate_external_member_id`` tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('duplicate_external_member_id', val)
 
@@ -8535,7 +8614,7 @@ class MemberAddResult(bb.Union):
         ``duplicate_member_persistent_id`` tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('duplicate_member_persistent_id', val)
 
@@ -8546,7 +8625,7 @@ class MemberAddResult(bb.Union):
         tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('persistent_id_disabled', val)
 
@@ -8557,7 +8636,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: team.MemberAddResult
         """
         return cls('user_creation_failed', val)
 
@@ -8655,7 +8734,7 @@ class MemberAddResult(bb.Union):
 
         Only call this if :meth:`is_success` is true.
 
-        :rtype: TeamMemberInfo
+        :rtype: team.TeamMemberInfo
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -8800,10 +8879,13 @@ class MemberDevices(bb.Struct):
     """
     Information on devices of a team's member.
 
-    :ivar team_member_id: The member unique Id.
-    :ivar web_sessions: List of web sessions made by this team member.
-    :ivar desktop_clients: List of desktop clients by this team member.
-    :ivar mobile_clients: List of mobile clients by this team member.
+    :ivar team.MemberDevices.team_member_id: The member unique Id.
+    :ivar team.MemberDevices.web_sessions: List of web sessions made by this
+        team member.
+    :ivar team.MemberDevices.desktop_clients: List of desktop clients by this
+        team member.
+    :ivar team.MemberDevices.mobile_clients: List of mobile clients by this team
+        member.
     """
 
     __slots__ = [
@@ -8869,7 +8951,7 @@ class MemberDevices(bb.Struct):
         """
         List of web sessions made by this team member.
 
-        :rtype: list of [ActiveWebSession]
+        :rtype: list of [team.ActiveWebSession]
         """
         if self._web_sessions_present:
             return self._web_sessions_value
@@ -8895,7 +8977,7 @@ class MemberDevices(bb.Struct):
         """
         List of desktop clients by this team member.
 
-        :rtype: list of [DesktopClientSession]
+        :rtype: list of [team.DesktopClientSession]
         """
         if self._desktop_clients_present:
             return self._desktop_clients_value
@@ -8921,7 +9003,7 @@ class MemberDevices(bb.Struct):
         """
         List of mobile clients by this team member.
 
-        :rtype: list of [MobileClientSession]
+        :rtype: list of [team.MobileClientSession]
         """
         if self._mobile_clients_present:
             return self._mobile_clients_value
@@ -8959,9 +9041,9 @@ class MemberLinkedApps(bb.Struct):
     """
     Information on linked applications of a team member.
 
-    :ivar team_member_id: The member unique Id.
-    :ivar linked_api_apps: List of third party applications linked by this team
-        member.
+    :ivar team.MemberLinkedApps.team_member_id: The member unique Id.
+    :ivar team.MemberLinkedApps.linked_api_apps: List of third party
+        applications linked by this team member.
     """
 
     __slots__ = [
@@ -9013,7 +9095,7 @@ class MemberLinkedApps(bb.Struct):
         """
         List of third party applications linked by this team member.
 
-        :rtype: list of [ApiApp]
+        :rtype: list of [team.ApiApp]
         """
         if self._linked_api_apps_present:
             return self._linked_api_apps_value
@@ -9046,25 +9128,27 @@ class MemberProfile(bb.Struct):
     """
     Basic member profile.
 
-    :ivar team_member_id: ID of user as a member of a team.
-    :ivar external_id: External ID that a team can attach to the user. An
-        application using the API may find it easier to use their own IDs
-        instead of Dropbox IDs like account_id or team_member_id.
-    :ivar account_id: A user's account identifier.
-    :ivar email: Email address of user.
-    :ivar email_verified: Is true if the user's email is verified to be owned by
-        the user.
-    :ivar status: The user's status as a member of a specific team.
-    :ivar name: Representations for a person's name.
-    :ivar membership_type: The user's membership type: full (normal team member)
-        vs limited (does not use a license; no access to the team's shared
-        quota).
-    :ivar joined_on: The date and time the user joined as a member of a specific
+    :ivar team.MemberProfile.team_member_id: ID of user as a member of a team.
+    :ivar team.MemberProfile.external_id: External ID that a team can attach to
+        the user. An application using the API may find it easier to use their
+        own IDs instead of Dropbox IDs like account_id or team_member_id.
+    :ivar team.MemberProfile.account_id: A user's account identifier.
+    :ivar team.MemberProfile.email: Email address of user.
+    :ivar team.MemberProfile.email_verified: Is true if the user's email is
+        verified to be owned by the user.
+    :ivar team.MemberProfile.status: The user's status as a member of a specific
         team.
-    :ivar persistent_id: Persistent ID that a team can attach to the user. The
-        persistent ID is unique ID to be used for SAML authentication.
-    :ivar is_directory_restricted: Whether the user is a directory restricted
-        user.
+    :ivar team.MemberProfile.name: Representations for a person's name.
+    :ivar team.MemberProfile.membership_type: The user's membership type: full
+        (normal team member) vs limited (does not use a license; no access to
+        the team's shared quota).
+    :ivar team.MemberProfile.joined_on: The date and time the user joined as a
+        member of a specific team.
+    :ivar team.MemberProfile.persistent_id: Persistent ID that a team can attach
+        to the user. The persistent ID is unique ID to be used for SAML
+        authentication.
+    :ivar team.MemberProfile.is_directory_restricted: Whether the user is a
+        directory restricted user.
     """
 
     __slots__ = [
@@ -9279,7 +9363,7 @@ class MemberProfile(bb.Struct):
         """
         The user's status as a member of a specific team.
 
-        :rtype: TeamMemberStatus
+        :rtype: team.TeamMemberStatus
         """
         if self._status_present:
             return self._status_value
@@ -9326,7 +9410,7 @@ class MemberProfile(bb.Struct):
         The user's membership type: full (normal team member) vs limited (does
         not use a license; no access to the team's shared quota).
 
-        :rtype: TeamMembershipType
+        :rtype: team.TeamMembershipType
         """
         if self._membership_type_present:
             return self._membership_type_value
@@ -9452,8 +9536,9 @@ class UserSelectorError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar user_not_found: No matching user found. The provided team_member_id,
-        email, or external_id does not exist on this team.
+    :ivar team.UserSelectorError.user_not_found: No matching user found. The
+        provided team_member_id, email, or external_id does not exist on this
+        team.
     """
 
     _catch_all = None
@@ -9482,7 +9567,8 @@ class MemberSelectorError(UserSelectorError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar user_not_in_team: The user is not a member of the team.
+    :ivar team.MemberSelectorError.user_not_in_team: The user is not a member of
+        the team.
     """
 
     # Attribute is overwritten below the class definition
@@ -9506,8 +9592,10 @@ MemberSelectorError_validator = bv.Union(MemberSelectorError)
 
 class MembersAddArg(bb.Struct):
     """
-    :ivar new_members: Details of new members to be added to the team.
-    :ivar force_async: Whether to force the add to happen asynchronously.
+    :ivar team.MembersAddArg.new_members: Details of new members to be added to
+        the team.
+    :ivar team.MembersAddArg.force_async: Whether to force the add to happen
+        asynchronously.
     """
 
     __slots__ = [
@@ -9536,7 +9624,7 @@ class MembersAddArg(bb.Struct):
         """
         Details of new members to be added to the team.
 
-        :rtype: list of [MemberAddArg]
+        :rtype: list of [team.MemberAddArg]
         """
         if self._new_members_present:
             return self._new_members_value
@@ -9594,12 +9682,12 @@ class MembersAddJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar list of [MemberAddResult] complete: The asynchronous job has finished.
-        For each member that was specified in the parameter
-        :type:`MembersAddArg` that was provided to :route:`members/add`, a
-        corresponding item is returned in this list.
-    :ivar str failed: The asynchronous job returned an error. The string
-        contains an error message.
+    :ivar list of [team.MemberAddResult] team.MembersAddJobStatus.complete: The
+        asynchronous job has finished. For each member that was specified in the
+        parameter :type:`MembersAddArg` that was provided to
+        :route:`members/add`, a corresponding item is returned in this list.
+    :ivar str team.MembersAddJobStatus.failed: The asynchronous job returned an
+        error. The string contains an error message.
     """
 
     @classmethod
@@ -9608,8 +9696,8 @@ class MembersAddJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param list of [MemberAddResult] val:
-        :rtype: MembersAddJobStatus
+        :param list of [team.MemberAddResult] val:
+        :rtype: team.MembersAddJobStatus
         """
         return cls('complete', val)
 
@@ -9620,7 +9708,7 @@ class MembersAddJobStatus(async_.PollResultBase):
         ``val``.
 
         :param str val:
-        :rtype: MembersAddJobStatus
+        :rtype: team.MembersAddJobStatus
         """
         return cls('failed', val)
 
@@ -9649,7 +9737,7 @@ class MembersAddJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: list of [MemberAddResult]
+        :rtype: list of [team.MemberAddResult]
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -9689,8 +9777,8 @@ class MembersAddLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param list of [MemberAddResult] val:
-        :rtype: MembersAddLaunch
+        :param list of [team.MemberAddResult] val:
+        :rtype: team.MembersAddLaunch
         """
         return cls('complete', val)
 
@@ -9706,7 +9794,7 @@ class MembersAddLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: list of [MemberAddResult]
+        :rtype: list of [team.MemberAddResult]
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -9725,7 +9813,8 @@ class MembersDeactivateBaseArg(bb.Struct):
     Exactly one of team_member_id, email, or external_id must be provided to
     identify the user account.
 
-    :ivar user: Identity of user to remove/suspend/have their files moved.
+    :ivar team.MembersDeactivateBaseArg.user: Identity of user to
+        remove/suspend/have their files moved.
     """
 
     __slots__ = [
@@ -9747,7 +9836,7 @@ class MembersDeactivateBaseArg(bb.Struct):
         """
         Identity of user to remove/suspend/have their files moved.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -9777,10 +9866,10 @@ MembersDeactivateBaseArg_validator = bv.Struct(MembersDeactivateBaseArg)
 
 class MembersDataTransferArg(MembersDeactivateBaseArg):
     """
-    :ivar transfer_dest_id: Files from the deleted member account will be
-        transferred to this user.
-    :ivar transfer_admin_id: Errors during the transfer process will be sent via
-        email to this user.
+    :ivar team.MembersDataTransferArg.transfer_dest_id: Files from the deleted
+        member account will be transferred to this user.
+    :ivar team.MembersDataTransferArg.transfer_admin_id: Errors during the
+        transfer process will be sent via email to this user.
     """
 
     __slots__ = [
@@ -9811,7 +9900,7 @@ class MembersDataTransferArg(MembersDeactivateBaseArg):
         """
         Files from the deleted member account will be transferred to this user.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._transfer_dest_id_present:
             return self._transfer_dest_id_value
@@ -9834,7 +9923,7 @@ class MembersDataTransferArg(MembersDeactivateBaseArg):
         """
         Errors during the transfer process will be sent via email to this user.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._transfer_admin_id_present:
             return self._transfer_admin_id_value
@@ -9866,8 +9955,8 @@ MembersDataTransferArg_validator = bv.Struct(MembersDataTransferArg)
 
 class MembersDeactivateArg(MembersDeactivateBaseArg):
     """
-    :ivar wipe_data: If provided, controls if the user's data will be deleted on
-        their linked devices.
+    :ivar team.MembersDeactivateArg.wipe_data: If provided, controls if the
+        user's data will be deleted on their linked devices.
     """
 
     __slots__ = [
@@ -9927,7 +10016,8 @@ class MembersDeactivateError(UserSelectorError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar user_not_in_team: The user is not a member of the team.
+    :ivar team.MembersDeactivateError.user_not_in_team: The user is not a member
+        of the team.
     """
 
     _catch_all = 'other'
@@ -9962,7 +10052,7 @@ MembersDeactivateError_validator = bv.Union(MembersDeactivateError)
 
 class MembersGetInfoArgs(bb.Struct):
     """
-    :ivar members: List of team members.
+    :ivar team.MembersGetInfoArgs.members: List of team members.
     """
 
     __slots__ = [
@@ -9984,7 +10074,7 @@ class MembersGetInfoArgs(bb.Struct):
         """
         List of team members.
 
-        :rtype: list of [UserSelectorArg]
+        :rtype: list of [team.UserSelectorArg]
         """
         if self._members_present:
             return self._members_value
@@ -10048,11 +10138,12 @@ class MembersGetInfoItem(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str id_not_found: An ID that was provided as a parameter to
-        :route:`members/get_info`, and did not match a corresponding user. This
-        might be a team_member_id, an email, or an external ID, depending on how
-        the method was called.
-    :ivar TeamMemberInfo member_info: Info about a team member.
+    :ivar str team.MembersGetInfoItem.id_not_found: An ID that was provided as a
+        parameter to :route:`members/get_info`, and did not match a
+        corresponding user. This might be a team_member_id, an email, or an
+        external ID, depending on how the method was called.
+    :ivar TeamMemberInfo team.MembersGetInfoItem.member_info: Info about a team
+        member.
     """
 
     _catch_all = None
@@ -10064,7 +10155,7 @@ class MembersGetInfoItem(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: MembersGetInfoItem
+        :rtype: team.MembersGetInfoItem
         """
         return cls('id_not_found', val)
 
@@ -10074,8 +10165,8 @@ class MembersGetInfoItem(bb.Union):
         Create an instance of this class set to the ``member_info`` tag with
         value ``val``.
 
-        :param TeamMemberInfo val:
-        :rtype: MembersGetInfoItem
+        :param team.TeamMemberInfo val:
+        :rtype: team.MembersGetInfoItem
         """
         return cls('member_info', val)
 
@@ -10116,7 +10207,7 @@ class MembersGetInfoItem(bb.Union):
 
         Only call this if :meth:`is_member_info` is true.
 
-        :rtype: TeamMemberInfo
+        :rtype: team.TeamMemberInfo
         """
         if not self.is_member_info():
             raise AttributeError("tag 'member_info' not set")
@@ -10132,8 +10223,9 @@ MembersGetInfoItem_validator = bv.Union(MembersGetInfoItem)
 
 class MembersListArg(bb.Struct):
     """
-    :ivar limit: Number of results to return per call.
-    :ivar include_removed: Whether to return removed members.
+    :ivar team.MembersListArg.limit: Number of results to return per call.
+    :ivar team.MembersListArg.include_removed: Whether to return removed
+        members.
     """
 
     __slots__ = [
@@ -10216,7 +10308,8 @@ MembersListArg_validator = bv.Struct(MembersListArg)
 
 class MembersListContinueArg(bb.Struct):
     """
-    :ivar cursor: Indicates from what point to get the next set of members.
+    :ivar team.MembersListContinueArg.cursor: Indicates from what point to get
+        the next set of members.
     """
 
     __slots__ = [
@@ -10272,7 +10365,7 @@ class MembersListContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: The cursor is invalid.
+    :ivar team.MembersListContinueError.invalid_cursor: The cursor is invalid.
     """
 
     _catch_all = 'other'
@@ -10334,12 +10427,12 @@ MembersListError_validator = bv.Union(MembersListError)
 
 class MembersListResult(bb.Struct):
     """
-    :ivar members: List of team members.
-    :ivar cursor: Pass the cursor into
+    :ivar team.MembersListResult.members: List of team members.
+    :ivar team.MembersListResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` to obtain the
         additional members.
-    :ivar has_more: Is true if there are additional team members that have not
-        been returned yet. An additional call to
+    :ivar team.MembersListResult.has_more: Is true if there are additional team
+        members that have not been returned yet. An additional call to
         :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` can retrieve
         them.
     """
@@ -10377,7 +10470,7 @@ class MembersListResult(bb.Struct):
         """
         List of team members.
 
-        :rtype: list of [TeamMemberInfo]
+        :rtype: list of [team.TeamMemberInfo]
         """
         if self._members_present:
             return self._members_value
@@ -10463,7 +10556,7 @@ class MembersRecoverArg(bb.Struct):
     Exactly one of team_member_id, email, or external_id must be provided to
     identify the user account.
 
-    :ivar user: Identity of user to recover.
+    :ivar team.MembersRecoverArg.user: Identity of user to recover.
     """
 
     __slots__ = [
@@ -10485,7 +10578,7 @@ class MembersRecoverArg(bb.Struct):
         """
         Identity of user to recover.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -10519,10 +10612,12 @@ class MembersRecoverError(UserSelectorError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar user_unrecoverable: The user is not recoverable.
-    :ivar user_not_in_team: The user is not a member of the team.
-    :ivar team_license_limit: Team is full. The organization has no available
-        licenses.
+    :ivar team.MembersRecoverError.user_unrecoverable: The user is not
+        recoverable.
+    :ivar team.MembersRecoverError.user_not_in_team: The user is not a member of
+        the team.
+    :ivar team.MembersRecoverError.team_license_limit: Team is full. The
+        organization has no available licenses.
     """
 
     _catch_all = 'other'
@@ -10577,15 +10672,17 @@ MembersRecoverError_validator = bv.Union(MembersRecoverError)
 
 class MembersRemoveArg(MembersDeactivateArg):
     """
-    :ivar transfer_dest_id: If provided, files from the deleted member account
-        will be transferred to this user.
-    :ivar transfer_admin_id: If provided, errors during the transfer process
-        will be sent via email to this user. If the transfer_dest_id argument
-        was provided, then this argument must be provided as well.
-    :ivar keep_account: Downgrade the member to a Basic account. The user will
-        retain the email address associated with their Dropbox  account and data
-        in their account that is not restricted to team members. In order to
-        keep the account the argument wipe_data should be set to False.
+    :ivar team.MembersRemoveArg.transfer_dest_id: If provided, files from the
+        deleted member account will be transferred to this user.
+    :ivar team.MembersRemoveArg.transfer_admin_id: If provided, errors during
+        the transfer process will be sent via email to this user. If the
+        transfer_dest_id argument was provided, then this argument must be
+        provided as well.
+    :ivar team.MembersRemoveArg.keep_account: Downgrade the member to a Basic
+        account. The user will retain the email address associated with their
+        Dropbox  account and data in their account that is not restricted to
+        team members. In order to keep the account the argument wipe_data should
+        be set to False.
     """
 
     __slots__ = [
@@ -10626,7 +10723,7 @@ class MembersRemoveArg(MembersDeactivateArg):
         If provided, files from the deleted member account will be transferred
         to this user.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._transfer_dest_id_present:
             return self._transfer_dest_id_value
@@ -10654,7 +10751,7 @@ class MembersRemoveArg(MembersDeactivateArg):
         to this user. If the transfer_dest_id argument was provided, then this
         argument must be provided as well.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._transfer_admin_id_present:
             return self._transfer_admin_id_value
@@ -10721,23 +10818,27 @@ class MembersTransferFilesError(MembersDeactivateError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar removed_and_transfer_dest_should_differ: Expected removed user and
-        transfer_dest user to be different.
-    :ivar removed_and_transfer_admin_should_differ: Expected removed user and
-        transfer_admin user to be different.
-    :ivar transfer_dest_user_not_found: No matching user found for the argument
-        transfer_dest_id.
-    :ivar transfer_dest_user_not_in_team: The provided transfer_dest_id does not
-        exist on this team.
-    :ivar transfer_admin_user_not_in_team: The provided transfer_admin_id does
-        not exist on this team.
-    :ivar transfer_admin_user_not_found: No matching user found for the argument
-        transfer_admin_id.
-    :ivar unspecified_transfer_admin_id: The transfer_admin_id argument must be
-        provided when file transfer is requested.
-    :ivar transfer_admin_is_not_admin: Specified transfer_admin user is not a
-        team admin.
-    :ivar recipient_not_verified: The recipient user's email is not verified.
+    :ivar
+        team.MembersTransferFilesError.removed_and_transfer_dest_should_differ:
+        Expected removed user and transfer_dest user to be different.
+    :ivar
+        team.MembersTransferFilesError.removed_and_transfer_admin_should_differ:
+        Expected removed user and transfer_admin user to be different.
+    :ivar team.MembersTransferFilesError.transfer_dest_user_not_found: No
+        matching user found for the argument transfer_dest_id.
+    :ivar team.MembersTransferFilesError.transfer_dest_user_not_in_team: The
+        provided transfer_dest_id does not exist on this team.
+    :ivar team.MembersTransferFilesError.transfer_admin_user_not_in_team: The
+        provided transfer_admin_id does not exist on this team.
+    :ivar team.MembersTransferFilesError.transfer_admin_user_not_found: No
+        matching user found for the argument transfer_admin_id.
+    :ivar team.MembersTransferFilesError.unspecified_transfer_admin_id: The
+        transfer_admin_id argument must be provided when file transfer is
+        requested.
+    :ivar team.MembersTransferFilesError.transfer_admin_is_not_admin: Specified
+        transfer_admin user is not a team admin.
+    :ivar team.MembersTransferFilesError.recipient_not_verified: The recipient
+        user's email is not verified.
     """
 
     # Attribute is overwritten below the class definition
@@ -10845,17 +10946,17 @@ class MembersRemoveError(MembersTransferFilesError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar remove_last_admin: The user is the last admin of the team, so it
-        cannot be removed from it.
-    :ivar cannot_keep_account_and_transfer: Cannot keep account and transfer the
-        data to another user at the same time.
-    :ivar cannot_keep_account_and_delete_data: Cannot keep account and delete
-        the data at the same time. To keep the account the argument wipe_data
-        should be set to False.
-    :ivar email_address_too_long_to_be_disabled: The email address of the user
-        is too long to be disabled.
-    :ivar cannot_keep_invited_user_account: Cannot keep account of an invited
-        user.
+    :ivar team.MembersRemoveError.remove_last_admin: The user is the last admin
+        of the team, so it cannot be removed from it.
+    :ivar team.MembersRemoveError.cannot_keep_account_and_transfer: Cannot keep
+        account and transfer the data to another user at the same time.
+    :ivar team.MembersRemoveError.cannot_keep_account_and_delete_data: Cannot
+        keep account and delete the data at the same time. To keep the account
+        the argument wipe_data should be set to False.
+    :ivar team.MembersRemoveError.email_address_too_long_to_be_disabled: The
+        email address of the user is too long to be disabled.
+    :ivar team.MembersRemoveError.cannot_keep_invited_user_account: Cannot keep
+        account of an invited user.
     """
 
     # Attribute is overwritten below the class definition
@@ -10949,8 +11050,9 @@ class MembersSetPermissionsArg(bb.Struct):
     Exactly one of team_member_id, email, or external_id must be provided to
     identify the user account.
 
-    :ivar user: Identity of user whose role will be set.
-    :ivar new_role: The new role of the member.
+    :ivar team.MembersSetPermissionsArg.user: Identity of user whose role will
+        be set.
+    :ivar team.MembersSetPermissionsArg.new_role: The new role of the member.
     """
 
     __slots__ = [
@@ -10979,7 +11081,7 @@ class MembersSetPermissionsArg(bb.Struct):
         """
         Identity of user whose role will be set.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -11002,7 +11104,7 @@ class MembersSetPermissionsArg(bb.Struct):
         """
         The new role of the member.
 
-        :rtype: AdminTier
+        :rtype: team.AdminTier
         """
         if self._new_role_present:
             return self._new_role_value
@@ -11037,11 +11139,14 @@ class MembersSetPermissionsError(UserSelectorError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar last_admin: Cannot remove the admin setting of the last admin.
-    :ivar user_not_in_team: The user is not a member of the team.
-    :ivar cannot_set_permissions: Cannot remove/grant permissions.
-    :ivar team_license_limit: Team is full. The organization has no available
-        licenses.
+    :ivar team.MembersSetPermissionsError.last_admin: Cannot remove the admin
+        setting of the last admin.
+    :ivar team.MembersSetPermissionsError.user_not_in_team: The user is not a
+        member of the team.
+    :ivar team.MembersSetPermissionsError.cannot_set_permissions: Cannot
+        remove/grant permissions.
+    :ivar team.MembersSetPermissionsError.team_license_limit: Team is full. The
+        organization has no available licenses.
     """
 
     _catch_all = 'other'
@@ -11106,9 +11211,9 @@ MembersSetPermissionsError_validator = bv.Union(MembersSetPermissionsError)
 
 class MembersSetPermissionsResult(bb.Struct):
     """
-    :ivar team_member_id: The member ID of the user to which the change was
-        applied.
-    :ivar role: The role after the change.
+    :ivar team.MembersSetPermissionsResult.team_member_id: The member ID of the
+        user to which the change was applied.
+    :ivar team.MembersSetPermissionsResult.role: The role after the change.
     """
 
     __slots__ = [
@@ -11160,7 +11265,7 @@ class MembersSetPermissionsResult(bb.Struct):
         """
         The role after the change.
 
-        :rtype: AdminTier
+        :rtype: team.AdminTier
         """
         if self._role_present:
             return self._role_value
@@ -11195,15 +11300,16 @@ class MembersSetProfileArg(bb.Struct):
     identify the user account. At least one of new_email, new_external_id,
     new_given_name, and/or new_surname must be provided.
 
-    :ivar user: Identity of user whose profile will be set.
-    :ivar new_email: New email for member.
-    :ivar new_external_id: New external ID for member.
-    :ivar new_given_name: New given name for member.
-    :ivar new_surname: New surname for member.
-    :ivar new_persistent_id: New persistent ID. This field only available to
-        teams using persistent ID SAML configuration.
-    :ivar new_is_directory_restricted: New value for whether the user is a
-        directory restricted user.
+    :ivar team.MembersSetProfileArg.user: Identity of user whose profile will be
+        set.
+    :ivar team.MembersSetProfileArg.new_email: New email for member.
+    :ivar team.MembersSetProfileArg.new_external_id: New external ID for member.
+    :ivar team.MembersSetProfileArg.new_given_name: New given name for member.
+    :ivar team.MembersSetProfileArg.new_surname: New surname for member.
+    :ivar team.MembersSetProfileArg.new_persistent_id: New persistent ID. This
+        field only available to teams using persistent ID SAML configuration.
+    :ivar team.MembersSetProfileArg.new_is_directory_restricted: New value for
+        whether the user is a directory restricted user.
     """
 
     __slots__ = [
@@ -11267,7 +11373,7 @@ class MembersSetProfileArg(bb.Struct):
         """
         Identity of user whose profile will be set.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -11464,23 +11570,25 @@ class MembersSetProfileError(MemberSelectorError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar external_id_and_new_external_id_unsafe: It is unsafe to use both
-        external_id and new_external_id.
-    :ivar no_new_data_specified: None of new_email, new_given_name, new_surname,
-        or new_external_id are specified.
-    :ivar email_reserved_for_other_user: Email is already reserved for another
-        user.
-    :ivar external_id_used_by_other_user: The external ID is already in use by
-        another team member.
-    :ivar set_profile_disallowed: Modifying deleted users is not allowed.
-    :ivar param_cannot_be_empty: Parameter new_email cannot be empty.
-    :ivar persistent_id_disabled: Persistent ID is only available to teams with
-        persistent ID SAML configuration. Please contact Dropbox for more
-        information.
-    :ivar persistent_id_used_by_other_user: The persistent ID is already in use
-        by another team member.
-    :ivar directory_restricted_off: Directory Restrictions option is not
-        available.
+    :ivar team.MembersSetProfileError.external_id_and_new_external_id_unsafe: It
+        is unsafe to use both external_id and new_external_id.
+    :ivar team.MembersSetProfileError.no_new_data_specified: None of new_email,
+        new_given_name, new_surname, or new_external_id are specified.
+    :ivar team.MembersSetProfileError.email_reserved_for_other_user: Email is
+        already reserved for another user.
+    :ivar team.MembersSetProfileError.external_id_used_by_other_user: The
+        external ID is already in use by another team member.
+    :ivar team.MembersSetProfileError.set_profile_disallowed: Modifying deleted
+        users is not allowed.
+    :ivar team.MembersSetProfileError.param_cannot_be_empty: Parameter new_email
+        cannot be empty.
+    :ivar team.MembersSetProfileError.persistent_id_disabled: Persistent ID is
+        only available to teams with persistent ID SAML configuration. Please
+        contact Dropbox for more information.
+    :ivar team.MembersSetProfileError.persistent_id_used_by_other_user: The
+        persistent ID is already in use by another team member.
+    :ivar team.MembersSetProfileError.directory_restricted_off: Directory
+        Restrictions option is not available.
     """
 
     _catch_all = 'other'
@@ -11599,12 +11707,12 @@ class MembersSuspendError(MembersDeactivateError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar suspend_inactive_user: The user is not active, so it cannot be
-        suspended.
-    :ivar suspend_last_admin: The user is the last admin of the team, so it
-        cannot be suspended.
-    :ivar team_license_limit: Team is full. The organization has no available
-        licenses.
+    :ivar team.MembersSuspendError.suspend_inactive_user: The user is not
+        active, so it cannot be suspended.
+    :ivar team.MembersSuspendError.suspend_last_admin: The user is the last
+        admin of the team, so it cannot be suspended.
+    :ivar team.MembersSuspendError.team_license_limit: Team is full. The
+        organization has no available licenses.
     """
 
     # Attribute is overwritten below the class definition
@@ -11652,14 +11760,18 @@ class MembersTransferFormerMembersFilesError(MembersTransferFilesError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar user_data_is_being_transferred: The user's data is being transferred.
-        Please wait some time before retrying.
-    :ivar user_not_removed: No matching removed user found for the argument
-        user.
-    :ivar user_data_cannot_be_transferred: User files aren't transferable
-        anymore.
-    :ivar user_data_already_transferred: User's data has already been
-        transferred to another user.
+    :ivar
+        team.MembersTransferFormerMembersFilesError.user_data_is_being_transferred:
+        The user's data is being transferred. Please wait some time before
+        retrying.
+    :ivar team.MembersTransferFormerMembersFilesError.user_not_removed: No
+        matching removed user found for the argument user.
+    :ivar
+        team.MembersTransferFormerMembersFilesError.user_data_cannot_be_transferred:
+        User files aren't transferable anymore.
+    :ivar
+        team.MembersTransferFormerMembersFilesError.user_data_already_transferred:
+        User's data has already been transferred to another user.
     """
 
     # Attribute is overwritten below the class definition
@@ -11716,7 +11828,7 @@ class MembersUnsuspendArg(bb.Struct):
     Exactly one of team_member_id, email, or external_id must be provided to
     identify the user account.
 
-    :ivar user: Identity of user to unsuspend.
+    :ivar team.MembersUnsuspendArg.user: Identity of user to unsuspend.
     """
 
     __slots__ = [
@@ -11738,7 +11850,7 @@ class MembersUnsuspendArg(bb.Struct):
         """
         Identity of user to unsuspend.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -11772,10 +11884,10 @@ class MembersUnsuspendError(MembersDeactivateError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar unsuspend_non_suspended_member: The user is unsuspended, so it cannot
-        be unsuspended again.
-    :ivar team_license_limit: Team is full. The organization has no available
-        licenses.
+    :ivar team.MembersUnsuspendError.unsuspend_non_suspended_member: The user is
+        unsuspended, so it cannot be unsuspended again.
+    :ivar team.MembersUnsuspendError.team_license_limit: Team is full. The
+        organization has no available licenses.
     """
 
     # Attribute is overwritten below the class definition
@@ -11813,11 +11925,13 @@ class MobileClientPlatform(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar iphone: Official Dropbox iPhone client.
-    :ivar ipad: Official Dropbox iPad client.
-    :ivar android: Official Dropbox Android client.
-    :ivar windows_phone: Official Dropbox Windows phone client.
-    :ivar blackberry: Official Dropbox Blackberry client.
+    :ivar team.MobileClientPlatform.iphone: Official Dropbox iPhone client.
+    :ivar team.MobileClientPlatform.ipad: Official Dropbox iPad client.
+    :ivar team.MobileClientPlatform.android: Official Dropbox Android client.
+    :ivar team.MobileClientPlatform.windows_phone: Official Dropbox Windows
+        phone client.
+    :ivar team.MobileClientPlatform.blackberry: Official Dropbox Blackberry
+        client.
     """
 
     _catch_all = 'other'
@@ -11894,11 +12008,12 @@ class MobileClientSession(DeviceSession):
     """
     Information about linked Dropbox mobile client sessions.
 
-    :ivar device_name: The device name.
-    :ivar client_type: The mobile application type.
-    :ivar client_version: The dropbox client version.
-    :ivar os_version: The hosting OS version.
-    :ivar last_carrier: last carrier used by the device.
+    :ivar team.MobileClientSession.device_name: The device name.
+    :ivar team.MobileClientSession.client_type: The mobile application type.
+    :ivar team.MobileClientSession.client_version: The dropbox client version.
+    :ivar team.MobileClientSession.os_version: The hosting OS version.
+    :ivar team.MobileClientSession.last_carrier: last carrier used by the
+        device.
     """
 
     __slots__ = [
@@ -11981,7 +12096,7 @@ class MobileClientSession(DeviceSession):
         """
         The mobile application type.
 
-        :rtype: MobileClientPlatform
+        :rtype: team.MobileClientPlatform
         """
         if self._client_type_present:
             return self._client_type_value
@@ -12100,11 +12215,12 @@ class NamespaceMetadata(bb.Struct):
     """
     Properties of a namespace.
 
-    :ivar name: The name of this namespace.
-    :ivar namespace_id: The ID of this namespace.
-    :ivar namespace_type: The type of this namespace.
-    :ivar team_member_id: If this is a team member or app folder, the ID of the
-        owning team member. Otherwise, this field is not present.
+    :ivar team.NamespaceMetadata.name: The name of this namespace.
+    :ivar team.NamespaceMetadata.namespace_id: The ID of this namespace.
+    :ivar team.NamespaceMetadata.namespace_type: The type of this namespace.
+    :ivar team.NamespaceMetadata.team_member_id: If this is a team member or app
+        folder, the ID of the owning team member. Otherwise, this field is not
+        present.
     """
 
     __slots__ = [
@@ -12193,7 +12309,7 @@ class NamespaceMetadata(bb.Struct):
         """
         The type of this namespace.
 
-        :rtype: NamespaceType
+        :rtype: team.NamespaceType
         """
         if self._namespace_type_present:
             return self._namespace_type_value
@@ -12257,10 +12373,10 @@ class NamespaceType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar app_folder: App sandbox folder.
-    :ivar shared_folder: Shared folder.
-    :ivar team_folder: Top-level team-owned folder.
-    :ivar team_member_folder: Team member's home folder.
+    :ivar team.NamespaceType.app_folder: App sandbox folder.
+    :ivar team.NamespaceType.shared_folder: Shared folder.
+    :ivar team.NamespaceType.team_folder: Top-level team-owned folder.
+    :ivar team.NamespaceType.team_member_folder: Team member's home folder.
     """
 
     _catch_all = 'other'
@@ -12331,8 +12447,10 @@ class RemoveCustomQuotaResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserSelectorArg success: Successfully removed user.
-    :ivar UserSelectorArg invalid_user: Invalid user (not in team).
+    :ivar UserSelectorArg team.RemoveCustomQuotaResult.success: Successfully
+        removed user.
+    :ivar UserSelectorArg team.RemoveCustomQuotaResult.invalid_user: Invalid
+        user (not in team).
     """
 
     _catch_all = 'other'
@@ -12345,8 +12463,8 @@ class RemoveCustomQuotaResult(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param UserSelectorArg val:
-        :rtype: RemoveCustomQuotaResult
+        :param team.UserSelectorArg val:
+        :rtype: team.RemoveCustomQuotaResult
         """
         return cls('success', val)
 
@@ -12356,8 +12474,8 @@ class RemoveCustomQuotaResult(bb.Union):
         Create an instance of this class set to the ``invalid_user`` tag with
         value ``val``.
 
-        :param UserSelectorArg val:
-        :rtype: RemoveCustomQuotaResult
+        :param team.UserSelectorArg val:
+        :rtype: team.RemoveCustomQuotaResult
         """
         return cls('invalid_user', val)
 
@@ -12391,7 +12509,7 @@ class RemoveCustomQuotaResult(bb.Union):
 
         Only call this if :meth:`is_success` is true.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -12403,7 +12521,7 @@ class RemoveCustomQuotaResult(bb.Union):
 
         Only call this if :meth:`is_invalid_user` is true.
 
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if not self.is_invalid_user():
             raise AttributeError("tag 'invalid_user' not set")
@@ -12419,9 +12537,10 @@ RemoveCustomQuotaResult_validator = bv.Union(RemoveCustomQuotaResult)
 
 class RemovedStatus(bb.Struct):
     """
-    :ivar is_recoverable: True if the removed team member is recoverable.
-    :ivar is_disconnected: True if the team member's account was converted to
-        individual account.
+    :ivar team.RemovedStatus.is_recoverable: True if the removed team member is
+        recoverable.
+    :ivar team.RemovedStatus.is_disconnected: True if the team member's account
+        was converted to individual account.
     """
 
     __slots__ = [
@@ -12504,9 +12623,9 @@ RemovedStatus_validator = bv.Struct(RemovedStatus)
 
 class RevokeDesktopClientArg(DeviceSessionArg):
     """
-    :ivar delete_on_unlink: Whether to delete all files of the account (this is
-        possible only if supported by the desktop client and  will be made the
-        next time the client access the account).
+    :ivar team.RevokeDesktopClientArg.delete_on_unlink: Whether to delete all
+        files of the account (this is possible only if supported by the desktop
+        client and  will be made the next time the client access the account).
     """
 
     __slots__ = [
@@ -12570,9 +12689,12 @@ class RevokeDeviceSessionArg(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DeviceSessionArg web_session: End an active session.
-    :ivar RevokeDesktopClientArg desktop_client: Unlink a linked desktop device.
-    :ivar DeviceSessionArg mobile_client: Unlink a linked mobile device.
+    :ivar DeviceSessionArg team.RevokeDeviceSessionArg.web_session: End an
+        active session.
+    :ivar RevokeDesktopClientArg team.RevokeDeviceSessionArg.desktop_client:
+        Unlink a linked desktop device.
+    :ivar DeviceSessionArg team.RevokeDeviceSessionArg.mobile_client: Unlink a
+        linked mobile device.
     """
 
     _catch_all = None
@@ -12583,8 +12705,8 @@ class RevokeDeviceSessionArg(bb.Union):
         Create an instance of this class set to the ``web_session`` tag with
         value ``val``.
 
-        :param DeviceSessionArg val:
-        :rtype: RevokeDeviceSessionArg
+        :param team.DeviceSessionArg val:
+        :rtype: team.RevokeDeviceSessionArg
         """
         return cls('web_session', val)
 
@@ -12594,8 +12716,8 @@ class RevokeDeviceSessionArg(bb.Union):
         Create an instance of this class set to the ``desktop_client`` tag with
         value ``val``.
 
-        :param RevokeDesktopClientArg val:
-        :rtype: RevokeDeviceSessionArg
+        :param team.RevokeDesktopClientArg val:
+        :rtype: team.RevokeDeviceSessionArg
         """
         return cls('desktop_client', val)
 
@@ -12605,8 +12727,8 @@ class RevokeDeviceSessionArg(bb.Union):
         Create an instance of this class set to the ``mobile_client`` tag with
         value ``val``.
 
-        :param DeviceSessionArg val:
-        :rtype: RevokeDeviceSessionArg
+        :param team.DeviceSessionArg val:
+        :rtype: team.RevokeDeviceSessionArg
         """
         return cls('mobile_client', val)
 
@@ -12640,7 +12762,7 @@ class RevokeDeviceSessionArg(bb.Union):
 
         Only call this if :meth:`is_web_session` is true.
 
-        :rtype: DeviceSessionArg
+        :rtype: team.DeviceSessionArg
         """
         if not self.is_web_session():
             raise AttributeError("tag 'web_session' not set")
@@ -12652,7 +12774,7 @@ class RevokeDeviceSessionArg(bb.Union):
 
         Only call this if :meth:`is_desktop_client` is true.
 
-        :rtype: RevokeDesktopClientArg
+        :rtype: team.RevokeDesktopClientArg
         """
         if not self.is_desktop_client():
             raise AttributeError("tag 'desktop_client' not set")
@@ -12664,7 +12786,7 @@ class RevokeDeviceSessionArg(bb.Union):
 
         Only call this if :meth:`is_mobile_client` is true.
 
-        :rtype: DeviceSessionArg
+        :rtype: team.DeviceSessionArg
         """
         if not self.is_mobile_client():
             raise AttributeError("tag 'mobile_client' not set")
@@ -12697,7 +12819,7 @@ class RevokeDeviceSessionBatchArg(bb.Struct):
     @property
     def revoke_devices(self):
         """
-        :rtype: list of [RevokeDeviceSessionArg]
+        :rtype: list of [team.RevokeDeviceSessionArg]
         """
         if self._revoke_devices_present:
             return self._revoke_devices_value
@@ -12771,7 +12893,7 @@ class RevokeDeviceSessionBatchResult(bb.Struct):
     @property
     def revoke_devices_status(self):
         """
-        :rtype: list of [RevokeDeviceSessionStatus]
+        :rtype: list of [team.RevokeDeviceSessionStatus]
         """
         if self._revoke_devices_status_present:
             return self._revoke_devices_status_value
@@ -12805,8 +12927,9 @@ class RevokeDeviceSessionError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar device_session_not_found: Device session not found.
-    :ivar member_not_found: Member not found.
+    :ivar team.RevokeDeviceSessionError.device_session_not_found: Device session
+        not found.
+    :ivar team.RevokeDeviceSessionError.member_not_found: Member not found.
     """
 
     _catch_all = 'other'
@@ -12851,8 +12974,10 @@ RevokeDeviceSessionError_validator = bv.Union(RevokeDeviceSessionError)
 
 class RevokeDeviceSessionStatus(bb.Struct):
     """
-    :ivar success: Result of the revoking request.
-    :ivar error_type: The error cause in case of a failure.
+    :ivar team.RevokeDeviceSessionStatus.success: Result of the revoking
+        request.
+    :ivar team.RevokeDeviceSessionStatus.error_type: The error cause in case of
+        a failure.
     """
 
     __slots__ = [
@@ -12904,7 +13029,7 @@ class RevokeDeviceSessionStatus(bb.Struct):
         """
         The error cause in case of a failure.
 
-        :rtype: RevokeDeviceSessionError
+        :rtype: team.RevokeDeviceSessionError
         """
         if self._error_type_present:
             return self._error_type_value
@@ -12938,10 +13063,11 @@ RevokeDeviceSessionStatus_validator = bv.Struct(RevokeDeviceSessionStatus)
 
 class RevokeLinkedApiAppArg(bb.Struct):
     """
-    :ivar app_id: The application's unique id.
-    :ivar team_member_id: The unique id of the member owning the device.
-    :ivar keep_app_folder: Whether to keep the application dedicated folder (in
-        case the application uses  one).
+    :ivar team.RevokeLinkedApiAppArg.app_id: The application's unique id.
+    :ivar team.RevokeLinkedApiAppArg.team_member_id: The unique id of the member
+        owning the device.
+    :ivar team.RevokeLinkedApiAppArg.keep_app_folder: Whether to keep the
+        application dedicated folder (in case the application uses  one).
     """
 
     __slots__ = [
@@ -13073,7 +13199,7 @@ class RevokeLinkedApiAppBatchArg(bb.Struct):
     @property
     def revoke_linked_app(self):
         """
-        :rtype: list of [RevokeLinkedApiAppArg]
+        :rtype: list of [team.RevokeLinkedApiAppArg]
         """
         if self._revoke_linked_app_present:
             return self._revoke_linked_app_value
@@ -13150,7 +13276,7 @@ class RevokeLinkedAppBatchResult(bb.Struct):
     @property
     def revoke_linked_app_status(self):
         """
-        :rtype: list of [RevokeLinkedAppStatus]
+        :rtype: list of [team.RevokeLinkedAppStatus]
         """
         if self._revoke_linked_app_status_present:
             return self._revoke_linked_app_status_value
@@ -13187,8 +13313,8 @@ class RevokeLinkedAppError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar app_not_found: Application not found.
-    :ivar member_not_found: Member not found.
+    :ivar team.RevokeLinkedAppError.app_not_found: Application not found.
+    :ivar team.RevokeLinkedAppError.member_not_found: Member not found.
     """
 
     _catch_all = 'other'
@@ -13233,8 +13359,9 @@ RevokeLinkedAppError_validator = bv.Union(RevokeLinkedAppError)
 
 class RevokeLinkedAppStatus(bb.Struct):
     """
-    :ivar success: Result of the revoking request.
-    :ivar error_type: The error cause in case of a failure.
+    :ivar team.RevokeLinkedAppStatus.success: Result of the revoking request.
+    :ivar team.RevokeLinkedAppStatus.error_type: The error cause in case of a
+        failure.
     """
 
     __slots__ = [
@@ -13286,7 +13413,7 @@ class RevokeLinkedAppStatus(bb.Struct):
         """
         The error cause in case of a failure.
 
-        :rtype: RevokeLinkedAppError
+        :rtype: team.RevokeLinkedAppError
         """
         if self._error_type_present:
             return self._error_type_value
@@ -13320,7 +13447,8 @@ RevokeLinkedAppStatus_validator = bv.Struct(RevokeLinkedAppStatus)
 
 class SetCustomQuotaArg(bb.Struct):
     """
-    :ivar users_and_quotas: List of users and their custom quotas.
+    :ivar team.SetCustomQuotaArg.users_and_quotas: List of users and their
+        custom quotas.
     """
 
     __slots__ = [
@@ -13342,7 +13470,7 @@ class SetCustomQuotaArg(bb.Struct):
         """
         List of users and their custom quotas.
 
-        :rtype: list of [UserCustomQuotaArg]
+        :rtype: list of [team.UserCustomQuotaArg]
         """
         if self._users_and_quotas_present:
             return self._users_and_quotas_value
@@ -13378,8 +13506,8 @@ class SetCustomQuotaError(CustomQuotaError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar some_users_are_excluded: Some of the users are on the excluded users
-        list and can't have custom quota set.
+    :ivar team.SetCustomQuotaError.some_users_are_excluded: Some of the users
+        are on the excluded users list and can't have custom quota set.
     """
 
     # Attribute is overwritten below the class definition
@@ -13405,10 +13533,10 @@ class StorageBucket(bb.Struct):
     """
     Describes the number of users in a specific storage bucket.
 
-    :ivar bucket: The name of the storage bucket. For example, '1G' is a bucket
-        of users with storage size up to 1 Giga.
-    :ivar users: The number of people whose storage is in the range of this
-        storage bucket.
+    :ivar team.StorageBucket.bucket: The name of the storage bucket. For
+        example, '1G' is a bucket of users with storage size up to 1 Giga.
+    :ivar team.StorageBucket.users: The number of people whose storage is in the
+        range of this storage bucket.
     """
 
     __slots__ = [
@@ -13497,9 +13625,10 @@ class TeamFolderAccessError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_team_folder_id: The team folder ID is invalid.
-    :ivar no_access: The authenticated app does not have permission to manage
-        that team folder.
+    :ivar team.TeamFolderAccessError.invalid_team_folder_id: The team folder ID
+        is invalid.
+    :ivar team.TeamFolderAccessError.no_access: The authenticated app does not
+        have permission to manage that team folder.
     """
 
     _catch_all = 'other'
@@ -13559,7 +13688,7 @@ TeamFolderActivateError_validator = bv.Union(TeamFolderActivateError)
 
 class TeamFolderIdArg(bb.Struct):
     """
-    :ivar team_folder_id: The ID of the team folder.
+    :ivar team.TeamFolderIdArg.team_folder_id: The ID of the team folder.
     """
 
     __slots__ = [
@@ -13611,7 +13740,8 @@ TeamFolderIdArg_validator = bv.Struct(TeamFolderIdArg)
 
 class TeamFolderArchiveArg(TeamFolderIdArg):
     """
-    :ivar force_async_off: Whether to force the archive to happen synchronously.
+    :ivar team.TeamFolderArchiveArg.force_async_off: Whether to force the
+        archive to happen synchronously.
     """
 
     __slots__ = [
@@ -13685,10 +13815,11 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar TeamFolderMetadata complete: The archive job has finished. The value
-        is the metadata for the resulting team folder.
-    :ivar TeamFolderArchiveError failed: Error occurred while performing an
-        asynchronous job from
+    :ivar TeamFolderMetadata team.TeamFolderArchiveJobStatus.complete: The
+        archive job has finished. The value is the metadata for the resulting
+        team folder.
+    :ivar TeamFolderArchiveError team.TeamFolderArchiveJobStatus.failed: Error
+        occurred while performing an asynchronous job from
         :meth:`dropbox.dropbox.Dropbox.team_team_folder_archive`.
     """
 
@@ -13698,8 +13829,8 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param TeamFolderMetadata val:
-        :rtype: TeamFolderArchiveJobStatus
+        :param team.TeamFolderMetadata val:
+        :rtype: team.TeamFolderArchiveJobStatus
         """
         return cls('complete', val)
 
@@ -13709,8 +13840,8 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param TeamFolderArchiveError val:
-        :rtype: TeamFolderArchiveJobStatus
+        :param team.TeamFolderArchiveError val:
+        :rtype: team.TeamFolderArchiveJobStatus
         """
         return cls('failed', val)
 
@@ -13737,7 +13868,7 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: TeamFolderMetadata
+        :rtype: team.TeamFolderMetadata
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -13750,7 +13881,7 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: TeamFolderArchiveError
+        :rtype: team.TeamFolderArchiveError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
@@ -13777,8 +13908,8 @@ class TeamFolderArchiveLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param TeamFolderMetadata val:
-        :rtype: TeamFolderArchiveLaunch
+        :param team.TeamFolderMetadata val:
+        :rtype: team.TeamFolderArchiveLaunch
         """
         return cls('complete', val)
 
@@ -13794,7 +13925,7 @@ class TeamFolderArchiveLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: TeamFolderMetadata
+        :rtype: team.TeamFolderMetadata
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -13810,9 +13941,10 @@ TeamFolderArchiveLaunch_validator = bv.Union(TeamFolderArchiveLaunch)
 
 class TeamFolderCreateArg(bb.Struct):
     """
-    :ivar name: Name for the new team folder.
-    :ivar sync_setting: The sync setting to apply to this team folder. Only
-        permitted if the team has team selective sync enabled.
+    :ivar team.TeamFolderCreateArg.name: Name for the new team folder.
+    :ivar team.TeamFolderCreateArg.sync_setting: The sync setting to apply to
+        this team folder. Only permitted if the team has team selective sync
+        enabled.
     """
 
     __slots__ = [
@@ -13903,13 +14035,14 @@ class TeamFolderCreateError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_folder_name: The provided name cannot be used.
-    :ivar folder_name_already_used: There is already a team folder with the
-        provided name.
-    :ivar folder_name_reserved: The provided name cannot be used because it is
-        reserved.
-    :ivar SyncSettingsError sync_settings_error: An error occurred setting the
-        sync settings.
+    :ivar team.TeamFolderCreateError.invalid_folder_name: The provided name
+        cannot be used.
+    :ivar team.TeamFolderCreateError.folder_name_already_used: There is already
+        a team folder with the provided name.
+    :ivar team.TeamFolderCreateError.folder_name_reserved: The provided name
+        cannot be used because it is reserved.
+    :ivar SyncSettingsError team.TeamFolderCreateError.sync_settings_error: An
+        error occurred setting the sync settings.
     """
 
     _catch_all = 'other'
@@ -13929,7 +14062,7 @@ class TeamFolderCreateError(bb.Union):
         with value ``val``.
 
         :param files.SyncSettingsError val:
-        :rtype: TeamFolderCreateError
+        :rtype: team.TeamFolderCreateError
         """
         return cls('sync_settings_error', val)
 
@@ -13999,10 +14132,11 @@ class TeamFolderGetInfoItem(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str id_not_found: An ID that was provided as a parameter to
-        :route:`team_folder/get_info` did not match any of the team's team
-        folders.
-    :ivar TeamFolderMetadata team_folder_metadata: Properties of a team folder.
+    :ivar str team.TeamFolderGetInfoItem.id_not_found: An ID that was provided
+        as a parameter to :route:`team_folder/get_info` did not match any of the
+        team's team folders.
+    :ivar TeamFolderMetadata team.TeamFolderGetInfoItem.team_folder_metadata:
+        Properties of a team folder.
     """
 
     _catch_all = None
@@ -14014,7 +14148,7 @@ class TeamFolderGetInfoItem(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: TeamFolderGetInfoItem
+        :rtype: team.TeamFolderGetInfoItem
         """
         return cls('id_not_found', val)
 
@@ -14024,8 +14158,8 @@ class TeamFolderGetInfoItem(bb.Union):
         Create an instance of this class set to the ``team_folder_metadata`` tag
         with value ``val``.
 
-        :param TeamFolderMetadata val:
-        :rtype: TeamFolderGetInfoItem
+        :param team.TeamFolderMetadata val:
+        :rtype: team.TeamFolderGetInfoItem
         """
         return cls('team_folder_metadata', val)
 
@@ -14065,7 +14199,7 @@ class TeamFolderGetInfoItem(bb.Union):
 
         Only call this if :meth:`is_team_folder_metadata` is true.
 
-        :rtype: TeamFolderMetadata
+        :rtype: team.TeamFolderMetadata
         """
         if not self.is_team_folder_metadata():
             raise AttributeError("tag 'team_folder_metadata' not set")
@@ -14081,7 +14215,7 @@ TeamFolderGetInfoItem_validator = bv.Union(TeamFolderGetInfoItem)
 
 class TeamFolderIdListArg(bb.Struct):
     """
-    :ivar team_folder_ids: The list of team folder IDs.
+    :ivar team.TeamFolderIdListArg.team_folder_ids: The list of team folder IDs.
     """
 
     __slots__ = [
@@ -14137,10 +14271,12 @@ class TeamFolderInvalidStatusError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar active: The folder is active and the operation did not succeed.
-    :ivar archived: The folder is archived and the operation did not succeed.
-    :ivar archive_in_progress: The folder is being archived and the operation
-        did not succeed.
+    :ivar team.TeamFolderInvalidStatusError.active: The folder is active and the
+        operation did not succeed.
+    :ivar team.TeamFolderInvalidStatusError.archived: The folder is archived and
+        the operation did not succeed.
+    :ivar team.TeamFolderInvalidStatusError.archive_in_progress: The folder is
+        being archived and the operation did not succeed.
     """
 
     _catch_all = 'other'
@@ -14195,7 +14331,8 @@ TeamFolderInvalidStatusError_validator = bv.Union(TeamFolderInvalidStatusError)
 
 class TeamFolderListArg(bb.Struct):
     """
-    :ivar limit: The maximum number of results to return per request.
+    :ivar team.TeamFolderListArg.limit: The maximum number of results to return
+        per request.
     """
 
     __slots__ = [
@@ -14247,7 +14384,8 @@ TeamFolderListArg_validator = bv.Struct(TeamFolderListArg)
 
 class TeamFolderListContinueArg(bb.Struct):
     """
-    :ivar cursor: Indicates from what point to get the next set of team folders.
+    :ivar team.TeamFolderListContinueArg.cursor: Indicates from what point to
+        get the next set of team folders.
     """
 
     __slots__ = [
@@ -14303,7 +14441,8 @@ class TeamFolderListContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: The cursor is invalid.
+    :ivar team.TeamFolderListContinueError.invalid_cursor: The cursor is
+        invalid.
     """
 
     _catch_all = 'other'
@@ -14355,7 +14494,7 @@ class TeamFolderListError(bb.Struct):
     @property
     def access_error(self):
         """
-        :rtype: TeamFolderAccessError
+        :rtype: team.TeamFolderAccessError
         """
         if self._access_error_present:
             return self._access_error_value
@@ -14388,12 +14527,13 @@ class TeamFolderListResult(bb.Struct):
     Result for :meth:`dropbox.dropbox.Dropbox.team_team_folder_list` and
     :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue`.
 
-    :ivar team_folders: List of all team folders in the authenticated team.
-    :ivar cursor: Pass the cursor into
+    :ivar team.TeamFolderListResult.team_folders: List of all team folders in
+        the authenticated team.
+    :ivar team.TeamFolderListResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` to obtain
         additional team folders.
-    :ivar has_more: Is true if there are additional team folders that have not
-        been returned yet. An additional call to
+    :ivar team.TeamFolderListResult.has_more: Is true if there are additional
+        team folders that have not been returned yet. An additional call to
         :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` can
         retrieve them.
     """
@@ -14431,7 +14571,7 @@ class TeamFolderListResult(bb.Struct):
         """
         List of all team folders in the authenticated team.
 
-        :rtype: list of [TeamFolderMetadata]
+        :rtype: list of [team.TeamFolderMetadata]
         """
         if self._team_folders_present:
             return self._team_folders_value
@@ -14516,14 +14656,15 @@ class TeamFolderMetadata(bb.Struct):
     """
     Properties of a team folder.
 
-    :ivar team_folder_id: The ID of the team folder.
-    :ivar name: The name of the team folder.
-    :ivar status: The status of the team folder.
-    :ivar is_team_shared_dropbox: True if this team folder is a shared team
-        root.
-    :ivar sync_setting: The sync setting applied to this team folder.
-    :ivar content_sync_settings: Sync settings applied to contents of this team
-        folder.
+    :ivar team.TeamFolderMetadata.team_folder_id: The ID of the team folder.
+    :ivar team.TeamFolderMetadata.name: The name of the team folder.
+    :ivar team.TeamFolderMetadata.status: The status of the team folder.
+    :ivar team.TeamFolderMetadata.is_team_shared_dropbox: True if this team
+        folder is a shared team root.
+    :ivar team.TeamFolderMetadata.sync_setting: The sync setting applied to this
+        team folder.
+    :ivar team.TeamFolderMetadata.content_sync_settings: Sync settings applied
+        to contents of this team folder.
     """
 
     __slots__ = [
@@ -14626,7 +14767,7 @@ class TeamFolderMetadata(bb.Struct):
         """
         The status of the team folder.
 
-        :rtype: TeamFolderStatus
+        :rtype: team.TeamFolderStatus
         """
         if self._status_present:
             return self._status_value
@@ -14745,7 +14886,7 @@ TeamFolderPermanentlyDeleteError_validator = bv.Union(TeamFolderPermanentlyDelet
 
 class TeamFolderRenameArg(TeamFolderIdArg):
     """
-    :ivar name: New team folder name.
+    :ivar team.TeamFolderRenameArg.name: New team folder name.
     """
 
     __slots__ = [
@@ -14804,11 +14945,12 @@ class TeamFolderRenameError(BaseTeamFolderError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_folder_name: The provided folder name cannot be used.
-    :ivar folder_name_already_used: There is already a team folder with the same
-        name.
-    :ivar folder_name_reserved: The provided name cannot be used because it is
-        reserved.
+    :ivar team.TeamFolderRenameError.invalid_folder_name: The provided folder
+        name cannot be used.
+    :ivar team.TeamFolderRenameError.folder_name_already_used: There is already
+        a team folder with the same name.
+    :ivar team.TeamFolderRenameError.folder_name_reserved: The provided name
+        cannot be used because it is reserved.
     """
 
     # Attribute is overwritten below the class definition
@@ -14856,11 +14998,12 @@ class TeamFolderStatus(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar active: The team folder and sub-folders are available to all members.
-    :ivar archived: The team folder is not accessible outside of the team folder
-        manager.
-    :ivar archive_in_progress: The team folder is not accessible outside of the
-        team folder manager.
+    :ivar team.TeamFolderStatus.active: The team folder and sub-folders are
+        available to all members.
+    :ivar team.TeamFolderStatus.archived: The team folder is not accessible
+        outside of the team folder manager.
+    :ivar team.TeamFolderStatus.archive_in_progress: The team folder is not
+        accessible outside of the team folder manager.
     """
 
     _catch_all = 'other'
@@ -14919,7 +15062,8 @@ class TeamFolderTeamSharedDropboxError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disallowed: This action is not allowed for a shared team root.
+    :ivar team.TeamFolderTeamSharedDropboxError.disallowed: This action is not
+        allowed for a shared team root.
     """
 
     _catch_all = 'other'
@@ -14954,10 +15098,11 @@ TeamFolderTeamSharedDropboxError_validator = bv.Union(TeamFolderTeamSharedDropbo
 
 class TeamFolderUpdateSyncSettingsArg(TeamFolderIdArg):
     """
-    :ivar sync_setting: Sync setting to apply to the team folder itself. Only
-        meaningful if the team folder is not a shared team root.
-    :ivar content_sync_settings: Sync settings to apply to contents of this team
-        folder.
+    :ivar team.TeamFolderUpdateSyncSettingsArg.sync_setting: Sync setting to
+        apply to the team folder itself. Only meaningful if the team folder is
+        not a shared team root.
+    :ivar team.TeamFolderUpdateSyncSettingsArg.content_sync_settings: Sync
+        settings to apply to contents of this team folder.
     """
 
     __slots__ = [
@@ -15054,8 +15199,9 @@ class TeamFolderUpdateSyncSettingsError(BaseTeamFolderError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SyncSettingsError sync_settings_error: An error occurred setting the
-        sync settings.
+    :ivar SyncSettingsError
+        team.TeamFolderUpdateSyncSettingsError.sync_settings_error: An error
+        occurred setting the sync settings.
     """
 
     @classmethod
@@ -15065,7 +15211,7 @@ class TeamFolderUpdateSyncSettingsError(BaseTeamFolderError):
         with value ``val``.
 
         :param files.SyncSettingsError val:
-        :rtype: TeamFolderUpdateSyncSettingsError
+        :rtype: team.TeamFolderUpdateSyncSettingsError
         """
         return cls('sync_settings_error', val)
 
@@ -15099,11 +15245,12 @@ TeamFolderUpdateSyncSettingsError_validator = bv.Union(TeamFolderUpdateSyncSetti
 
 class TeamGetInfoResult(bb.Struct):
     """
-    :ivar name: The name of the team.
-    :ivar team_id: The ID of the team.
-    :ivar num_licensed_users: The number of licenses available to the team.
-    :ivar num_provisioned_users: The number of accounts that have been invited
-        or are already active members of the team.
+    :ivar team.TeamGetInfoResult.name: The name of the team.
+    :ivar team.TeamGetInfoResult.team_id: The ID of the team.
+    :ivar team.TeamGetInfoResult.num_licensed_users: The number of licenses
+        available to the team.
+    :ivar team.TeamGetInfoResult.num_provisioned_users: The number of accounts
+        that have been invited or are already active members of the team.
     """
 
     __slots__ = [
@@ -15280,8 +15427,8 @@ class TeamMemberInfo(bb.Struct):
     """
     Information about a team member.
 
-    :ivar profile: Profile of a user as a member of a team.
-    :ivar role: The user's role in the team.
+    :ivar team.TeamMemberInfo.profile: Profile of a user as a member of a team.
+    :ivar team.TeamMemberInfo.role: The user's role in the team.
     """
 
     __slots__ = [
@@ -15310,7 +15457,7 @@ class TeamMemberInfo(bb.Struct):
         """
         Profile of a user as a member of a team.
 
-        :rtype: TeamMemberProfile
+        :rtype: team.TeamMemberProfile
         """
         if self._profile_present:
             return self._profile_value
@@ -15333,7 +15480,7 @@ class TeamMemberInfo(bb.Struct):
         """
         The user's role in the team.
 
-        :rtype: AdminTier
+        :rtype: team.AdminTier
         """
         if self._role_present:
             return self._role_value
@@ -15366,8 +15513,10 @@ class TeamMemberProfile(MemberProfile):
     """
     Profile of a user as a member of a team.
 
-    :ivar groups: List of group IDs of groups that the user belongs to.
-    :ivar member_folder_id: The namespace id of the user's root folder.
+    :ivar team.TeamMemberProfile.groups: List of group IDs of groups that the
+        user belongs to.
+    :ivar team.TeamMemberProfile.member_folder_id: The namespace id of the
+        user's root folder.
     """
 
     __slots__ = [
@@ -15489,13 +15638,15 @@ class TeamMemberStatus(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar active: User has successfully joined the team.
-    :ivar invited: User has been invited to a team, but has not joined the team
-        yet.
-    :ivar suspended: User is no longer a member of the team, but the account can
-        be un-suspended, re-establishing the user as a team member.
-    :ivar RemovedStatus removed: User is no longer a member of the team. Removed
-        users are only listed when include_removed is true in members/list.
+    :ivar team.TeamMemberStatus.active: User has successfully joined the team.
+    :ivar team.TeamMemberStatus.invited: User has been invited to a team, but
+        has not joined the team yet.
+    :ivar team.TeamMemberStatus.suspended: User is no longer a member of the
+        team, but the account can be un-suspended, re-establishing the user as a
+        team member.
+    :ivar RemovedStatus team.TeamMemberStatus.removed: User is no longer a
+        member of the team. Removed users are only listed when include_removed
+        is true in members/list.
     """
 
     _catch_all = None
@@ -15512,8 +15663,8 @@ class TeamMemberStatus(bb.Union):
         Create an instance of this class set to the ``removed`` tag with value
         ``val``.
 
-        :param RemovedStatus val:
-        :rtype: TeamMemberStatus
+        :param team.RemovedStatus val:
+        :rtype: team.TeamMemberStatus
         """
         return cls('removed', val)
 
@@ -15556,7 +15707,7 @@ class TeamMemberStatus(bb.Union):
 
         Only call this if :meth:`is_removed` is true.
 
-        :rtype: RemovedStatus
+        :rtype: team.RemovedStatus
         """
         if not self.is_removed():
             raise AttributeError("tag 'removed' not set")
@@ -15576,10 +15727,10 @@ class TeamMembershipType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar full: User uses a license and has full access to team resources like
-        the shared quota.
-    :ivar limited: User does not have access to the shared quota and team admins
-        have restricted administrative control.
+    :ivar team.TeamMembershipType.full: User uses a license and has full access
+        to team resources like the shared quota.
+    :ivar team.TeamMembershipType.limited: User does not have access to the
+        shared quota and team admins have restricted administrative control.
     """
 
     _catch_all = None
@@ -15614,7 +15765,8 @@ TeamMembershipType_validator = bv.Union(TeamMembershipType)
 
 class TeamNamespacesListArg(bb.Struct):
     """
-    :ivar limit: Specifying a value here has no effect.
+    :ivar team.TeamNamespacesListArg.limit: Specifying a value here has no
+        effect.
     """
 
     __slots__ = [
@@ -15666,8 +15818,8 @@ TeamNamespacesListArg_validator = bv.Struct(TeamNamespacesListArg)
 
 class TeamNamespacesListContinueArg(bb.Struct):
     """
-    :ivar cursor: Indicates from what point to get the next set of
-        team-accessible namespaces.
+    :ivar team.TeamNamespacesListContinueArg.cursor: Indicates from what point
+        to get the next set of team-accessible namespaces.
     """
 
     __slots__ = [
@@ -15724,7 +15876,8 @@ class TeamNamespacesListError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_arg: Argument passed in is invalid.
+    :ivar team.TeamNamespacesListError.invalid_arg: Argument passed in is
+        invalid.
     """
 
     _catch_all = 'other'
@@ -15763,7 +15916,8 @@ class TeamNamespacesListContinueError(TeamNamespacesListError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_cursor: The cursor is invalid.
+    :ivar team.TeamNamespacesListContinueError.invalid_cursor: The cursor is
+        invalid.
     """
 
     # Attribute is overwritten below the class definition
@@ -15789,12 +15943,13 @@ class TeamNamespacesListResult(bb.Struct):
     """
     Result for :meth:`dropbox.dropbox.Dropbox.team_namespaces_list`.
 
-    :ivar namespaces: List of all namespaces the team can access.
-    :ivar cursor: Pass the cursor into
+    :ivar team.TeamNamespacesListResult.namespaces: List of all namespaces the
+        team can access.
+    :ivar team.TeamNamespacesListResult.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.team_namespaces_list_continue` to obtain
         additional namespaces. Note that duplicate namespaces may be returned.
-    :ivar has_more: Is true if there are additional namespaces that have not
-        been returned yet.
+    :ivar team.TeamNamespacesListResult.has_more: Is true if there are
+        additional namespaces that have not been returned yet.
     """
 
     __slots__ = [
@@ -15830,7 +15985,7 @@ class TeamNamespacesListResult(bb.Struct):
         """
         List of all namespaces the team can access.
 
-        :rtype: list of [NamespaceMetadata]
+        :rtype: list of [team.NamespaceMetadata]
         """
         if self._namespaces_present:
             return self._namespaces_value
@@ -15918,12 +16073,13 @@ class TokenGetAuthenticatedAdminError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar mapping_not_found: The current token is not associated with a team
-        admin, because mappings were not recorded when the token was created.
-        Consider re-authorizing a new access token to record its authenticating
-        admin.
-    :ivar admin_not_active: Either the team admin that authorized this token is
-        no longer an active member of the team or no longer a team admin.
+    :ivar team.TokenGetAuthenticatedAdminError.mapping_not_found: The current
+        token is not associated with a team admin, because mappings were not
+        recorded when the token was created. Consider re-authorizing a new
+        access token to record its authenticating admin.
+    :ivar team.TokenGetAuthenticatedAdminError.admin_not_active: Either the team
+        admin that authorized this token is no longer an active member of the
+        team or no longer a team admin.
     """
 
     _catch_all = 'other'
@@ -15971,7 +16127,8 @@ class TokenGetAuthenticatedAdminResult(bb.Struct):
     Results for
     :meth:`dropbox.dropbox.Dropbox.team_token_get_authenticated_admin`.
 
-    :ivar admin_profile: The admin who authorized the token.
+    :ivar team.TokenGetAuthenticatedAdminResult.admin_profile: The admin who
+        authorized the token.
     """
 
     __slots__ = [
@@ -15993,7 +16150,7 @@ class TokenGetAuthenticatedAdminResult(bb.Struct):
         """
         The admin who authorized the token.
 
-        :rtype: TeamMemberProfile
+        :rtype: team.TeamMemberProfile
         """
         if self._admin_profile_present:
             return self._admin_profile_value
@@ -16029,10 +16186,11 @@ class UploadApiRateLimitValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar unlimited: This team has unlimited upload API quota. So far both
-        server version account and legacy  account type have unlimited monthly
-        upload api quota.
-    :ivar int limit: The number of upload API calls allowed per month.
+    :ivar team.UploadApiRateLimitValue.unlimited: This team has unlimited upload
+        API quota. So far both server version account and legacy  account type
+        have unlimited monthly upload api quota.
+    :ivar int team.UploadApiRateLimitValue.limit: The number of upload API calls
+        allowed per month.
     """
 
     _catch_all = 'other'
@@ -16048,7 +16206,7 @@ class UploadApiRateLimitValue(bb.Union):
         ``val``.
 
         :param int val:
-        :rtype: UploadApiRateLimitValue
+        :rtype: team.UploadApiRateLimitValue
         """
         return cls('limit', val)
 
@@ -16125,7 +16283,7 @@ class UserCustomQuotaArg(bb.Struct):
     @property
     def user(self):
         """
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -16205,7 +16363,7 @@ class UserCustomQuotaResult(bb.Struct):
     @property
     def user(self):
         """
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -16277,7 +16435,7 @@ class UserSelectorArg(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         return cls('team_member_id', val)
 
@@ -16288,7 +16446,7 @@ class UserSelectorArg(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         return cls('external_id', val)
 
@@ -16299,7 +16457,7 @@ class UserSelectorArg(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: UserSelectorArg
+        :rtype: team.UserSelectorArg
         """
         return cls('email', val)
 
@@ -16374,9 +16532,11 @@ class UsersSelectorArg(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar list of [str] team_member_ids: List of member IDs.
-    :ivar list of [str] external_ids: List of external user IDs.
-    :ivar list of [str] emails: List of email addresses.
+    :ivar list of [str] team.UsersSelectorArg.team_member_ids: List of member
+        IDs.
+    :ivar list of [str] team.UsersSelectorArg.external_ids: List of external
+        user IDs.
+    :ivar list of [str] team.UsersSelectorArg.emails: List of email addresses.
     """
 
     _catch_all = None
@@ -16388,7 +16548,7 @@ class UsersSelectorArg(bb.Union):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: UsersSelectorArg
+        :rtype: team.UsersSelectorArg
         """
         return cls('team_member_ids', val)
 
@@ -16399,7 +16559,7 @@ class UsersSelectorArg(bb.Union):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: UsersSelectorArg
+        :rtype: team.UsersSelectorArg
         """
         return cls('external_ids', val)
 
@@ -16410,7 +16570,7 @@ class UsersSelectorArg(bb.Union):
         ``val``.
 
         :param list of [str] val:
-        :rtype: UsersSelectorArg
+        :rtype: team.UsersSelectorArg
         """
         return cls('emails', val)
 

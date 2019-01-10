@@ -29,15 +29,17 @@ class CreateFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_create`.
 
-    :ivar title: The title of the file request. Must not be empty.
-    :ivar destination: The path of the folder in the Dropbox where uploaded
-        files will be sent. For apps with the app folder permission, this will
-        be relative to the app folder.
-    :ivar deadline: The deadline for the file request. Deadlines can only be set
-        by Professional and Business accounts.
-    :ivar open: Whether or not the file request should be open. If the file
-        request is closed, it will not accept any file submissions, but it can
-        be opened later.
+    :ivar file_requests.CreateFileRequestArgs.title: The title of the file
+        request. Must not be empty.
+    :ivar file_requests.CreateFileRequestArgs.destination: The path of the
+        folder in the Dropbox where uploaded files will be sent. For apps with
+        the app folder permission, this will be relative to the app folder.
+    :ivar file_requests.CreateFileRequestArgs.deadline: The deadline for the
+        file request. Deadlines can only be set by Professional and Business
+        accounts.
+    :ivar file_requests.CreateFileRequestArgs.open: Whether or not the file
+        request should be open. If the file request is closed, it will not
+        accept any file submissions, but it can be opened later.
     """
 
     __slots__ = [
@@ -129,7 +131,7 @@ class CreateFileRequestArgs(bb.Struct):
         The deadline for the file request. Deadlines can only be set by
         Professional and Business accounts.
 
-        :rtype: FileRequestDeadline
+        :rtype: file_requests.FileRequestDeadline
         """
         if self._deadline_present:
             return self._deadline_value
@@ -196,8 +198,8 @@ class GeneralFileRequestsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled_for_team: This user's Dropbox Business team doesn't allow
-        file requests.
+    :ivar file_requests.GeneralFileRequestsError.disabled_for_team: This user's
+        Dropbox Business team doesn't allow file requests.
     """
 
     _catch_all = 'other'
@@ -238,20 +240,22 @@ class FileRequestError(GeneralFileRequestsError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar not_found: This file request ID was not found.
-    :ivar not_a_folder: The specified path is not a folder.
-    :ivar app_lacks_access: This file request is not accessible to this app.
-        Apps with the app folder permission can only access file requests in
-        their app folder.
-    :ivar no_permission: This user doesn't have permission to access or modify
-        this file request.
-    :ivar email_unverified: This user's email address is not verified. File
-        requests are only available on accounts with a verified email address.
-        Users can verify their email address `here
-        <https://www.dropbox.com/help/317>`_.
-    :ivar validation_error: There was an error validating the request. For
-        example, the title was invalid, or there were disallowed characters in
-        the destination path.
+    :ivar file_requests.FileRequestError.not_found: This file request ID was not
+        found.
+    :ivar file_requests.FileRequestError.not_a_folder: The specified path is not
+        a folder.
+    :ivar file_requests.FileRequestError.app_lacks_access: This file request is
+        not accessible to this app. Apps with the app folder permission can only
+        access file requests in their app folder.
+    :ivar file_requests.FileRequestError.no_permission: This user doesn't have
+        permission to access or modify this file request.
+    :ivar file_requests.FileRequestError.email_unverified: This user's email
+        address is not verified. File requests are only available on accounts
+        with a verified email address. Users can verify their email address
+        `here <https://www.dropbox.com/help/317>`_.
+    :ivar file_requests.FileRequestError.validation_error: There was an error
+        validating the request. For example, the title was invalid, or there
+        were disallowed characters in the destination path.
     """
 
     # Attribute is overwritten below the class definition
@@ -331,10 +335,11 @@ class CreateFileRequestError(FileRequestError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_location: File requests are not available on the specified
-        folder.
-    :ivar rate_limit: The user has reached the rate limit for creating file
-        requests. The limit is currently 100 file requests per day.
+    :ivar file_requests.CreateFileRequestError.invalid_location: File requests
+        are not available on the specified folder.
+    :ivar file_requests.CreateFileRequestError.rate_limit: The user has reached
+        the rate limit for creating file requests. The limit is currently 100
+        file requests per day.
     """
 
     # Attribute is overwritten below the class definition
@@ -371,19 +376,21 @@ class FileRequest(bb.Struct):
     A `file request <https://www.dropbox.com/help/9090>`_ for receiving files
     into the user's Dropbox account.
 
-    :ivar id: The ID of the file request.
-    :ivar url: The URL of the file request.
-    :ivar title: The title of the file request.
-    :ivar destination: The path of the folder in the Dropbox where uploaded
-        files will be sent. This can be None if the destination was removed. For
-        apps with the app folder permission, this will be relative to the app
-        folder.
-    :ivar created: When this file request was created.
-    :ivar deadline: The deadline for this file request. Only set if the request
-        has a deadline.
-    :ivar is_open: Whether or not the file request is open. If the file request
-        is closed, it will not accept any more file submissions.
-    :ivar file_count: The number of files this file request has received.
+    :ivar file_requests.FileRequest.id: The ID of the file request.
+    :ivar file_requests.FileRequest.url: The URL of the file request.
+    :ivar file_requests.FileRequest.title: The title of the file request.
+    :ivar file_requests.FileRequest.destination: The path of the folder in the
+        Dropbox where uploaded files will be sent. This can be None if the
+        destination was removed. For apps with the app folder permission, this
+        will be relative to the app folder.
+    :ivar file_requests.FileRequest.created: When this file request was created.
+    :ivar file_requests.FileRequest.deadline: The deadline for this file
+        request. Only set if the request has a deadline.
+    :ivar file_requests.FileRequest.is_open: Whether or not the file request is
+        open. If the file request is closed, it will not accept any more file
+        submissions.
+    :ivar file_requests.FileRequest.file_count: The number of files this file
+        request has received.
     """
 
     __slots__ = [
@@ -575,7 +582,7 @@ class FileRequest(bb.Struct):
         The deadline for this file request. Only set if the request has a
         deadline.
 
-        :rtype: FileRequestDeadline
+        :rtype: file_requests.FileRequestDeadline
         """
         if self._deadline_present:
             return self._deadline_value
@@ -662,9 +669,11 @@ FileRequest_validator = bv.Struct(FileRequest)
 
 class FileRequestDeadline(bb.Struct):
     """
-    :ivar deadline: The deadline for this file request.
-    :ivar allow_late_uploads: If set, allow uploads after the deadline has
-        passed. These     uploads will be marked overdue.
+    :ivar file_requests.FileRequestDeadline.deadline: The deadline for this file
+        request.
+    :ivar file_requests.FileRequestDeadline.allow_late_uploads: If set, allow
+        uploads after the deadline has passed. These     uploads will be marked
+        overdue.
     """
 
     __slots__ = [
@@ -717,7 +726,7 @@ class FileRequestDeadline(bb.Struct):
         If set, allow uploads after the deadline has passed. These     uploads
         will be marked overdue.
 
-        :rtype: GracePeriod
+        :rtype: file_requests.GracePeriod
         """
         if self._allow_late_uploads_present:
             return self._allow_late_uploads_value
@@ -753,7 +762,8 @@ class GetFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_get`.
 
-    :ivar id: The ID of the file request to retrieve.
+    :ivar file_requests.GetFileRequestArgs.id: The ID of the file request to
+        retrieve.
     """
 
     __slots__ = [
@@ -918,8 +928,9 @@ class ListFileRequestsResult(bb.Struct):
     """
     Result for :meth:`dropbox.dropbox.Dropbox.file_requests_list`.
 
-    :ivar file_requests: The file requests owned by this user. Apps with the app
-        folder permission will only see file requests in their app folder.
+    :ivar file_requests.ListFileRequestsResult.file_requests: The file requests
+        owned by this user. Apps with the app folder permission will only see
+        file requests in their app folder.
     """
 
     __slots__ = [
@@ -942,7 +953,7 @@ class ListFileRequestsResult(bb.Struct):
         The file requests owned by this user. Apps with the app folder
         permission will only see file requests in their app folder.
 
-        :rtype: list of [FileRequest]
+        :rtype: list of [file_requests.FileRequest]
         """
         if self._file_requests_present:
             return self._file_requests_value
@@ -974,14 +985,18 @@ class UpdateFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_update`.
 
-    :ivar id: The ID of the file request to update.
-    :ivar title: The new title of the file request. Must not be empty.
-    :ivar destination: The new path of the folder in the Dropbox where uploaded
-        files will be sent. For apps with the app folder permission, this will
-        be relative to the app folder.
-    :ivar deadline: The new deadline for the file request. Deadlines can only be
-        set by Professional and Business accounts.
-    :ivar open: Whether to set this file request as open or closed.
+    :ivar file_requests.UpdateFileRequestArgs.id: The ID of the file request to
+        update.
+    :ivar file_requests.UpdateFileRequestArgs.title: The new title of the file
+        request. Must not be empty.
+    :ivar file_requests.UpdateFileRequestArgs.destination: The new path of the
+        folder in the Dropbox where uploaded files will be sent. For apps with
+        the app folder permission, this will be relative to the app folder.
+    :ivar file_requests.UpdateFileRequestArgs.deadline: The new deadline for the
+        file request. Deadlines can only be set by Professional and Business
+        accounts.
+    :ivar file_requests.UpdateFileRequestArgs.open: Whether to set this file
+        request as open or closed.
     """
 
     __slots__ = [
@@ -1109,7 +1124,7 @@ class UpdateFileRequestArgs(bb.Struct):
         The new deadline for the file request. Deadlines can only be set by
         Professional and Business accounts.
 
-        :rtype: UpdateFileRequestDeadline
+        :rtype: file_requests.UpdateFileRequestDeadline
         """
         if self._deadline_present:
             return self._deadline_value
@@ -1173,8 +1188,10 @@ class UpdateFileRequestDeadline(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar no_update: Do not change the file request's deadline.
-    :ivar Optional[FileRequestDeadline] update: If :val:`null`, the file
+    :ivar file_requests.UpdateFileRequestDeadline.no_update: Do not change the
+        file request's deadline.
+    :ivar Optional[file_requests.FileRequestDeadline]
+        file_requests.UpdateFileRequestDeadline.update: If :val:`null`, the file
         request's deadline is cleared.
     """
 
@@ -1190,8 +1207,8 @@ class UpdateFileRequestDeadline(bb.Union):
         Create an instance of this class set to the ``update`` tag with value
         ``val``.
 
-        :param FileRequestDeadline val:
-        :rtype: UpdateFileRequestDeadline
+        :param file_requests.FileRequestDeadline val:
+        :rtype: file_requests.UpdateFileRequestDeadline
         """
         return cls('update', val)
 
@@ -1225,7 +1242,7 @@ class UpdateFileRequestDeadline(bb.Union):
 
         Only call this if :meth:`is_update` is true.
 
-        :rtype: FileRequestDeadline
+        :rtype: file_requests.FileRequestDeadline
         """
         if not self.is_update():
             raise AttributeError("tag 'update' not set")

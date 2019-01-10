@@ -18,8 +18,10 @@ class CameraUploadsPolicyState(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Background camera uploads are disabled.
-    :ivar enabled: Background camera uploads are allowed.
+    :ivar team_policies.CameraUploadsPolicyState.disabled: Background camera
+        uploads are disabled.
+    :ivar team_policies.CameraUploadsPolicyState.enabled: Background camera
+        uploads are allowed.
     """
 
     _catch_all = 'other'
@@ -68,9 +70,9 @@ class EmmState(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Emm token is disabled.
-    :ivar optional: Emm token is optional.
-    :ivar required: Emm token is required.
+    :ivar team_policies.EmmState.disabled: Emm token is disabled.
+    :ivar team_policies.EmmState.optional: Emm token is optional.
+    :ivar team_policies.EmmState.required: Emm token is required.
     """
 
     _catch_all = 'other'
@@ -129,8 +131,10 @@ class GroupCreation(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar admins_and_members: Team admins and members can create groups.
-    :ivar admins_only: Only team admins can create groups.
+    :ivar team_policies.GroupCreation.admins_and_members: Team admins and
+        members can create groups.
+    :ivar team_policies.GroupCreation.admins_only: Only team admins can create
+        groups.
     """
 
     _catch_all = None
@@ -169,8 +173,8 @@ class OfficeAddInPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Office Add-In is disabled.
-    :ivar enabled: Office Add-In is enabled.
+    :ivar team_policies.OfficeAddInPolicy.disabled: Office Add-In is disabled.
+    :ivar team_policies.OfficeAddInPolicy.enabled: Office Add-In is enabled.
     """
 
     _catch_all = 'other'
@@ -219,9 +223,11 @@ class PaperDeploymentPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar full: All team members have access to Paper.
-    :ivar partial: Only whitelisted team members can access Paper. To see which
-        user is whitelisted, check 'is_paper_whitelisted' on 'account/info'.
+    :ivar team_policies.PaperDeploymentPolicy.full: All team members have access
+        to Paper.
+    :ivar team_policies.PaperDeploymentPolicy.partial: Only whitelisted team
+        members can access Paper. To see which user is whitelisted, check
+        'is_paper_whitelisted' on 'account/info'.
     """
 
     _catch_all = 'other'
@@ -270,9 +276,9 @@ class PaperEnabledPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Paper is disabled.
-    :ivar enabled: Paper is enabled.
-    :ivar unspecified: Unspecified policy.
+    :ivar team_policies.PaperEnabledPolicy.disabled: Paper is disabled.
+    :ivar team_policies.PaperEnabledPolicy.enabled: Paper is enabled.
+    :ivar team_policies.PaperEnabledPolicy.unspecified: Unspecified policy.
     """
 
     _catch_all = 'other'
@@ -331,12 +337,12 @@ class PasswordStrengthPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar minimal_requirements: User passwords will adhere to the minimal
-        password strength policy.
-    :ivar moderate_password: User passwords will adhere to the moderate password
-        strength policy.
-    :ivar strong_password: User passwords will adhere to the very strong
-        password strength policy.
+    :ivar team_policies.PasswordStrengthPolicy.minimal_requirements: User
+        passwords will adhere to the minimal password strength policy.
+    :ivar team_policies.PasswordStrengthPolicy.moderate_password: User passwords
+        will adhere to the moderate password strength policy.
+    :ivar team_policies.PasswordStrengthPolicy.strong_password: User passwords
+        will adhere to the very strong password strength policy.
     """
 
     _catch_all = 'other'
@@ -395,9 +401,11 @@ class RolloutMethod(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar unlink_all: Unlink all.
-    :ivar unlink_most_inactive: Unlink devices with the most inactivity.
-    :ivar add_member_to_exceptions: Add member to Exceptions.
+    :ivar team_policies.RolloutMethod.unlink_all: Unlink all.
+    :ivar team_policies.RolloutMethod.unlink_most_inactive: Unlink devices with
+        the most inactivity.
+    :ivar team_policies.RolloutMethod.add_member_to_exceptions: Add member to
+        Exceptions.
     """
 
     _catch_all = None
@@ -448,10 +456,11 @@ class SharedFolderJoinPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar from_team_only: Team members can only join folders shared by
-        teammates.
-    :ivar from_anyone: Team members can join any shared folder, including those
-        shared by users outside the team.
+    :ivar team_policies.SharedFolderJoinPolicy.from_team_only: Team members can
+        only join folders shared by teammates.
+    :ivar team_policies.SharedFolderJoinPolicy.from_anyone: Team members can
+        join any shared folder, including those shared by users outside the
+        team.
     """
 
     _catch_all = 'other'
@@ -502,9 +511,10 @@ class SharedFolderMemberPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team: Only a teammate can be a member of a folder shared by a team
-        member.
-    :ivar anyone: Anyone can be a member of a folder shared by a team member.
+    :ivar team_policies.SharedFolderMemberPolicy.team: Only a teammate can be a
+        member of a folder shared by a team member.
+    :ivar team_policies.SharedFolderMemberPolicy.anyone: Anyone can be a member
+        of a folder shared by a team member.
     """
 
     _catch_all = 'other'
@@ -556,14 +566,15 @@ class SharedLinkCreatePolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar default_public: By default, anyone can access newly created shared
-        links. No login will be required to access the shared links unless
-        overridden.
-    :ivar default_team_only: By default, only members of the same team can
-        access newly created shared links. Login will be required to access the
-        shared links unless overridden.
-    :ivar team_only: Only members of the same team can access all shared links.
-        Login will be required to access all shared links.
+    :ivar team_policies.SharedLinkCreatePolicy.default_public: By default,
+        anyone can access newly created shared links. No login will be required
+        to access the shared links unless overridden.
+    :ivar team_policies.SharedLinkCreatePolicy.default_team_only: By default,
+        only members of the same team can access newly created shared links.
+        Login will be required to access the shared links unless overridden.
+    :ivar team_policies.SharedLinkCreatePolicy.team_only: Only members of the
+        same team can access all shared links. Login will be required to access
+        all shared links.
     """
 
     _catch_all = 'other'
@@ -622,8 +633,10 @@ class ShowcaseDownloadPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Do not allow files to be downloaded from Showcases.
-    :ivar enabled: Allow files to be downloaded from Showcases.
+    :ivar team_policies.ShowcaseDownloadPolicy.disabled: Do not allow files to
+        be downloaded from Showcases.
+    :ivar team_policies.ShowcaseDownloadPolicy.enabled: Allow files to be
+        downloaded from Showcases.
     """
 
     _catch_all = 'other'
@@ -672,8 +685,8 @@ class ShowcaseEnabledPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Showcase is disabled.
-    :ivar enabled: Showcase is enabled.
+    :ivar team_policies.ShowcaseEnabledPolicy.disabled: Showcase is disabled.
+    :ivar team_policies.ShowcaseEnabledPolicy.enabled: Showcase is enabled.
     """
 
     _catch_all = 'other'
@@ -722,9 +735,10 @@ class ShowcaseExternalSharingPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Do not allow showcases to be shared with people not on the
-        team.
-    :ivar enabled: Allow showcases to be shared with people not on the team.
+    :ivar team_policies.ShowcaseExternalSharingPolicy.disabled: Do not allow
+        showcases to be shared with people not on the team.
+    :ivar team_policies.ShowcaseExternalSharingPolicy.enabled: Allow showcases
+        to be shared with people not on the team.
     """
 
     _catch_all = 'other'
@@ -773,9 +787,10 @@ class SmartSyncPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar local: The specified content will be synced as local files by default.
-    :ivar on_demand: The specified content will be synced as on-demand files by
-        default.
+    :ivar team_policies.SmartSyncPolicy.local: The specified content will be
+        synced as local files by default.
+    :ivar team_policies.SmartSyncPolicy.on_demand: The specified content will be
+        synced as on-demand files by default.
     """
 
     _catch_all = 'other'
@@ -824,12 +839,12 @@ class SsoPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Users will be able to sign in with their Dropbox
-        credentials.
-    :ivar optional: Users will be able to sign in with either their Dropbox or
-        single sign-on credentials.
-    :ivar required: Users will be required to sign in with their single sign-on
-        credentials.
+    :ivar team_policies.SsoPolicy.disabled: Users will be able to sign in with
+        their Dropbox credentials.
+    :ivar team_policies.SsoPolicy.optional: Users will be able to sign in with
+        either their Dropbox or single sign-on credentials.
+    :ivar team_policies.SsoPolicy.required: Users will be required to sign in
+        with their single sign-on credentials.
     """
 
     _catch_all = 'other'
@@ -886,15 +901,16 @@ class TeamMemberPolicies(bb.Struct):
     """
     Policies governing team members.
 
-    :ivar sharing: Policies governing sharing.
-    :ivar emm_state: This describes the Enterprise Mobility Management (EMM)
-        state for this team. This information can be used to understand if an
-        organization is integrating with a third-party EMM vendor to further
-        manage and apply restrictions upon the team's Dropbox usage on mobile
-        devices. This is a new feature and in the future we'll be adding more
-        new fields and additional documentation.
-    :ivar office_addin: The admin policy around the Dropbox Office Add-In for
-        this team.
+    :ivar team_policies.TeamMemberPolicies.sharing: Policies governing sharing.
+    :ivar team_policies.TeamMemberPolicies.emm_state: This describes the
+        Enterprise Mobility Management (EMM) state for this team. This
+        information can be used to understand if an organization is integrating
+        with a third-party EMM vendor to further manage and apply restrictions
+        upon the team's Dropbox usage on mobile devices. This is a new feature
+        and in the future we'll be adding more new fields and additional
+        documentation.
+    :ivar team_policies.TeamMemberPolicies.office_addin: The admin policy around
+        the Dropbox Office Add-In for this team.
     """
 
     __slots__ = [
@@ -930,7 +946,7 @@ class TeamMemberPolicies(bb.Struct):
         """
         Policies governing sharing.
 
-        :rtype: TeamSharingPolicies
+        :rtype: team_policies.TeamSharingPolicies
         """
         if self._sharing_present:
             return self._sharing_value
@@ -958,7 +974,7 @@ class TeamMemberPolicies(bb.Struct):
         new feature and in the future we'll be adding more new fields and
         additional documentation.
 
-        :rtype: EmmState
+        :rtype: team_policies.EmmState
         """
         if self._emm_state_present:
             return self._emm_state_value
@@ -981,7 +997,7 @@ class TeamMemberPolicies(bb.Struct):
         """
         The admin policy around the Dropbox Office Add-In for this team.
 
-        :rtype: OfficeAddInPolicy
+        :rtype: team_policies.OfficeAddInPolicy
         """
         if self._office_addin_present:
             return self._office_addin_value
@@ -1015,11 +1031,12 @@ class TeamSharingPolicies(bb.Struct):
     """
     Policies governing sharing within and outside of the team.
 
-    :ivar shared_folder_member_policy: Who can join folders shared by team
-        members.
-    :ivar shared_folder_join_policy: Which shared folders team members can join.
-    :ivar shared_link_create_policy: Who can view shared links owned by team
-        members.
+    :ivar team_policies.TeamSharingPolicies.shared_folder_member_policy: Who can
+        join folders shared by team members.
+    :ivar team_policies.TeamSharingPolicies.shared_folder_join_policy: Which
+        shared folders team members can join.
+    :ivar team_policies.TeamSharingPolicies.shared_link_create_policy: Who can
+        view shared links owned by team members.
     """
 
     __slots__ = [
@@ -1055,7 +1072,7 @@ class TeamSharingPolicies(bb.Struct):
         """
         Who can join folders shared by team members.
 
-        :rtype: SharedFolderMemberPolicy
+        :rtype: team_policies.SharedFolderMemberPolicy
         """
         if self._shared_folder_member_policy_present:
             return self._shared_folder_member_policy_value
@@ -1078,7 +1095,7 @@ class TeamSharingPolicies(bb.Struct):
         """
         Which shared folders team members can join.
 
-        :rtype: SharedFolderJoinPolicy
+        :rtype: team_policies.SharedFolderJoinPolicy
         """
         if self._shared_folder_join_policy_present:
             return self._shared_folder_join_policy_value
@@ -1101,7 +1118,7 @@ class TeamSharingPolicies(bb.Struct):
         """
         Who can view shared links owned by team members.
 
-        :rtype: SharedLinkCreatePolicy
+        :rtype: team_policies.SharedLinkCreatePolicy
         """
         if self._shared_link_create_policy_present:
             return self._shared_link_create_policy_value
@@ -1137,8 +1154,10 @@ class TwoStepVerificationPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar require_tfa_enable: Enabled require two factor authorization.
-    :ivar require_tfa_disable: Disabled require two factor authorization.
+    :ivar team_policies.TwoStepVerificationPolicy.require_tfa_enable: Enabled
+        require two factor authorization.
+    :ivar team_policies.TwoStepVerificationPolicy.require_tfa_disable: Disabled
+        require two factor authorization.
     """
 
     _catch_all = 'other'

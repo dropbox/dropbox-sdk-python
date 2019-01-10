@@ -21,7 +21,8 @@ except (ImportError, SystemError, ValueError):
 
 class DeleteManualContactsArg(bb.Struct):
     """
-    :ivar email_addresses: List of manually added contacts to be deleted.
+    :ivar contacts.DeleteManualContactsArg.email_addresses: List of manually
+        added contacts to be deleted.
     """
 
     __slots__ = [
@@ -77,9 +78,9 @@ class DeleteManualContactsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar list of [str] contacts_not_found: Can't delete contacts from this
-        list. Make sure the list only has manually added contacts. The deletion
-        was cancelled.
+    :ivar list of [str] contacts.DeleteManualContactsError.contacts_not_found:
+        Can't delete contacts from this list. Make sure the list only has
+        manually added contacts. The deletion was cancelled.
     """
 
     _catch_all = 'other'
@@ -93,7 +94,7 @@ class DeleteManualContactsError(bb.Union):
         with value ``val``.
 
         :param list of [str] val:
-        :rtype: DeleteManualContactsError
+        :rtype: contacts.DeleteManualContactsError
         """
         return cls('contacts_not_found', val)
 

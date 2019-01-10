@@ -21,10 +21,10 @@ class AccessError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar InvalidAccountTypeError invalid_account_type: Current account type
-        cannot access the resource.
-    :ivar PaperAccessError paper_access_denied: Current account cannot access
-        Paper.
+    :ivar InvalidAccountTypeError auth.AccessError.invalid_account_type: Current
+        account type cannot access the resource.
+    :ivar PaperAccessError auth.AccessError.paper_access_denied: Current account
+        cannot access Paper.
     """
 
     _catch_all = 'other'
@@ -37,8 +37,8 @@ class AccessError(bb.Union):
         Create an instance of this class set to the ``invalid_account_type`` tag
         with value ``val``.
 
-        :param InvalidAccountTypeError val:
-        :rtype: AccessError
+        :param auth.InvalidAccountTypeError val:
+        :rtype: auth.AccessError
         """
         return cls('invalid_account_type', val)
 
@@ -48,8 +48,8 @@ class AccessError(bb.Union):
         Create an instance of this class set to the ``paper_access_denied`` tag
         with value ``val``.
 
-        :param PaperAccessError val:
-        :rtype: AccessError
+        :param auth.PaperAccessError val:
+        :rtype: auth.AccessError
         """
         return cls('paper_access_denied', val)
 
@@ -83,7 +83,7 @@ class AccessError(bb.Union):
 
         Only call this if :meth:`is_invalid_account_type` is true.
 
-        :rtype: InvalidAccountTypeError
+        :rtype: auth.InvalidAccountTypeError
         """
         if not self.is_invalid_account_type():
             raise AttributeError("tag 'invalid_account_type' not set")
@@ -95,7 +95,7 @@ class AccessError(bb.Union):
 
         Only call this if :meth:`is_paper_access_denied` is true.
 
-        :rtype: PaperAccessError
+        :rtype: auth.PaperAccessError
         """
         if not self.is_paper_access_denied():
             raise AttributeError("tag 'paper_access_denied' not set")
@@ -117,13 +117,13 @@ class AuthError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_access_token: The access token is invalid.
-    :ivar invalid_select_user: The user specified in 'Dropbox-API-Select-User'
-        is no longer on the team.
-    :ivar invalid_select_admin: The user specified in 'Dropbox-API-Select-Admin'
-        is not a Dropbox Business team admin.
-    :ivar user_suspended: The user has been suspended.
-    :ivar expired_access_token: The access token has expired.
+    :ivar auth.AuthError.invalid_access_token: The access token is invalid.
+    :ivar auth.AuthError.invalid_select_user: The user specified in
+        'Dropbox-API-Select-User' is no longer on the team.
+    :ivar auth.AuthError.invalid_select_admin: The user specified in
+        'Dropbox-API-Select-Admin' is not a Dropbox Business team admin.
+    :ivar auth.AuthError.user_suspended: The user has been suspended.
+    :ivar auth.AuthError.expired_access_token: The access token has expired.
     """
 
     _catch_all = 'other'
@@ -202,10 +202,10 @@ class InvalidAccountTypeError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar endpoint: Current account type doesn't have permission to access this
-        route endpoint.
-    :ivar feature: Current account type doesn't have permission to access this
-        feature.
+    :ivar auth.InvalidAccountTypeError.endpoint: Current account type doesn't
+        have permission to access this route endpoint.
+    :ivar auth.InvalidAccountTypeError.feature: Current account type doesn't
+        have permission to access this feature.
     """
 
     _catch_all = 'other'
@@ -254,8 +254,9 @@ class PaperAccessError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar paper_disabled: Paper is disabled.
-    :ivar not_paper_user: The provided user has not used Paper yet.
+    :ivar auth.PaperAccessError.paper_disabled: Paper is disabled.
+    :ivar auth.PaperAccessError.not_paper_user: The provided user has not used
+        Paper yet.
     """
 
     _catch_all = 'other'
@@ -302,9 +303,10 @@ class RateLimitError(bb.Struct):
     """
     Error occurred because the app is being rate limited.
 
-    :ivar reason: The reason why the app is being rate limited.
-    :ivar retry_after: The number of seconds that the app should wait before
-        making another request.
+    :ivar auth.RateLimitError.reason: The reason why the app is being rate
+        limited.
+    :ivar auth.RateLimitError.retry_after: The number of seconds that the app
+        should wait before making another request.
     """
 
     __slots__ = [
@@ -333,7 +335,7 @@ class RateLimitError(bb.Struct):
         """
         The reason why the app is being rate limited.
 
-        :rtype: RateLimitReason
+        :rtype: auth.RateLimitReason
         """
         if self._reason_present:
             return self._reason_value
@@ -392,10 +394,10 @@ class RateLimitReason(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar too_many_requests: You are making too many requests in the past few
-        minutes.
-    :ivar too_many_write_operations: There are currently too many write
-        operations happening in the user's Dropbox.
+    :ivar auth.RateLimitReason.too_many_requests: You are making too many
+        requests in the past few minutes.
+    :ivar auth.RateLimitReason.too_many_write_operations: There are currently
+        too many write operations happening in the user's Dropbox.
     """
 
     _catch_all = 'other'
@@ -440,9 +442,10 @@ RateLimitReason_validator = bv.Union(RateLimitReason)
 
 class TokenFromOAuth1Arg(bb.Struct):
     """
-    :ivar oauth1_token: The supplied OAuth 1.0 access token.
-    :ivar oauth1_token_secret: The token secret associated with the supplied
-        access token.
+    :ivar auth.TokenFromOAuth1Arg.oauth1_token: The supplied OAuth 1.0 access
+        token.
+    :ivar auth.TokenFromOAuth1Arg.oauth1_token_secret: The token secret
+        associated with the supplied access token.
     """
 
     __slots__ = [
@@ -529,10 +532,10 @@ class TokenFromOAuth1Error(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar invalid_oauth1_token_info: Part or all of the OAuth 1.0 access token
-        info is invalid.
-    :ivar app_id_mismatch: The authorized app does not match the app associated
-        with the supplied access token.
+    :ivar auth.TokenFromOAuth1Error.invalid_oauth1_token_info: Part or all of
+        the OAuth 1.0 access token info is invalid.
+    :ivar auth.TokenFromOAuth1Error.app_id_mismatch: The authorized app does not
+        match the app associated with the supplied access token.
     """
 
     _catch_all = 'other'
@@ -577,8 +580,8 @@ TokenFromOAuth1Error_validator = bv.Union(TokenFromOAuth1Error)
 
 class TokenFromOAuth1Result(bb.Struct):
     """
-    :ivar oauth2_token: The OAuth 2.0 token generated from the supplied OAuth
-        1.0 token.
+    :ivar auth.TokenFromOAuth1Result.oauth2_token: The OAuth 2.0 token generated
+        from the supplied OAuth 1.0 token.
     """
 
     __slots__ = [

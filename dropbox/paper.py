@@ -27,9 +27,9 @@ except (ImportError, SystemError, ValueError):
 
 class AddMember(bb.Struct):
     """
-    :ivar permission_level: Permission for the user.
-    :ivar member: User which should be added to the Paper doc. Specify only
-        email address or Dropbox account ID.
+    :ivar paper.AddMember.permission_level: Permission for the user.
+    :ivar paper.AddMember.member: User which should be added to the Paper doc.
+        Specify only email address or Dropbox account ID.
     """
 
     __slots__ = [
@@ -58,7 +58,7 @@ class AddMember(bb.Struct):
         """
         Permission for the user.
 
-        :rtype: PaperDocPermissionLevel
+        :rtype: paper.PaperDocPermissionLevel
         """
         if self._permission_level_present:
             return self._permission_level_value
@@ -113,7 +113,7 @@ AddMember_validator = bv.Struct(AddMember)
 
 class RefPaperDoc(bb.Struct):
     """
-    :ivar doc_id: The Paper doc ID.
+    :ivar paper.RefPaperDoc.doc_id: The Paper doc ID.
     """
 
     __slots__ = [
@@ -165,12 +165,12 @@ RefPaperDoc_validator = bv.Struct(RefPaperDoc)
 
 class AddPaperDocUser(RefPaperDoc):
     """
-    :ivar members: User which should be added to the Paper doc. Specify only
-        email address or Dropbox account ID.
-    :ivar custom_message: A personal message that will be emailed to each
-        successfully added member.
-    :ivar quiet: Clients should set this to true if no email message shall be
-        sent to added users.
+    :ivar paper.AddPaperDocUser.members: User which should be added to the Paper
+        doc. Specify only email address or Dropbox account ID.
+    :ivar paper.AddPaperDocUser.custom_message: A personal message that will be
+        emailed to each successfully added member.
+    :ivar paper.AddPaperDocUser.quiet: Clients should set this to true if no
+        email message shall be sent to added users.
     """
 
     __slots__ = [
@@ -209,7 +209,7 @@ class AddPaperDocUser(RefPaperDoc):
         User which should be added to the Paper doc. Specify only email address
         or Dropbox account ID.
 
-        :rtype: list of [AddMember]
+        :rtype: list of [paper.AddMember]
         """
         if self._members_present:
             return self._members_value
@@ -295,8 +295,10 @@ class AddPaperDocUserMemberResult(bb.Struct):
     """
     Per-member result for :meth:`dropbox.dropbox.Dropbox.paper_docs_users_add`.
 
-    :ivar member: One of specified input members.
-    :ivar result: The outcome of the action on this member.
+    :ivar paper.AddPaperDocUserMemberResult.member: One of specified input
+        members.
+    :ivar paper.AddPaperDocUserMemberResult.result: The outcome of the action on
+        this member.
     """
 
     __slots__ = [
@@ -348,7 +350,7 @@ class AddPaperDocUserMemberResult(bb.Struct):
         """
         The outcome of the action on this member.
 
-        :rtype: AddPaperDocUserResult
+        :rtype: paper.AddPaperDocUserResult
         """
         if self._result_present:
             return self._result_value
@@ -383,18 +385,20 @@ class AddPaperDocUserResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar success: User was successfully added to the Paper doc.
-    :ivar unknown_error: Something unexpected happened when trying to add the
-        user to the Paper doc.
-    :ivar sharing_outside_team_disabled: The Paper doc can be shared only with
-        team members.
-    :ivar daily_limit_reached: The daily limit of how many users can be added to
-        the Paper doc was reached.
-    :ivar user_is_owner: Owner's permissions cannot be changed.
-    :ivar failed_user_data_retrieval: User data could not be retrieved. Clients
-        should retry.
-    :ivar permission_already_granted: This user already has the correct
-        permission to the Paper doc.
+    :ivar paper.AddPaperDocUserResult.success: User was successfully added to
+        the Paper doc.
+    :ivar paper.AddPaperDocUserResult.unknown_error: Something unexpected
+        happened when trying to add the user to the Paper doc.
+    :ivar paper.AddPaperDocUserResult.sharing_outside_team_disabled: The Paper
+        doc can be shared only with team members.
+    :ivar paper.AddPaperDocUserResult.daily_limit_reached: The daily limit of
+        how many users can be added to the Paper doc was reached.
+    :ivar paper.AddPaperDocUserResult.user_is_owner: Owner's permissions cannot
+        be changed.
+    :ivar paper.AddPaperDocUserResult.failed_user_data_retrieval: User data
+        could not be retrieved. Clients should retry.
+    :ivar paper.AddPaperDocUserResult.permission_already_granted: This user
+        already has the correct permission to the Paper doc.
     """
 
     _catch_all = 'other'
@@ -489,20 +493,20 @@ AddPaperDocUserResult_validator = bv.Union(AddPaperDocUserResult)
 
 class Cursor(bb.Struct):
     """
-    :ivar value: The actual cursor value.
-    :ivar expiration: Expiration time of ``value``. Some cursors might have
-        expiration time assigned. This is a UTC value after which the cursor is
-        no longer valid and the API starts returning an error. If cursor expires
-        a new one needs to be obtained and pagination needs to be restarted.
-        Some cursors might be short-lived some cursors might be long-lived. This
-        really depends on the sorting type and order, e.g.: 1. on one hand,
-        listing docs created by the user, sorted by the created time ascending
-        will have undefinite expiration because the results cannot change while
-        the iteration is happening. This cursor would be suitable for long term
-        polling. 2. on the other hand, listing docs sorted by the last modified
-        time will have a very short expiration as docs do get modified very
-        often and the modified time can be changed while the iteration is
-        happening thus altering the results.
+    :ivar paper.Cursor.value: The actual cursor value.
+    :ivar paper.Cursor.expiration: Expiration time of ``value``. Some cursors
+        might have expiration time assigned. This is a UTC value after which the
+        cursor is no longer valid and the API starts returning an error. If
+        cursor expires a new one needs to be obtained and pagination needs to be
+        restarted. Some cursors might be short-lived some cursors might be
+        long-lived. This really depends on the sorting type and order, e.g.: 1.
+        on one hand, listing docs created by the user, sorted by the created
+        time ascending will have undefinite expiration because the results
+        cannot change while the iteration is happening. This cursor would be
+        suitable for long term polling. 2. on the other hand, listing docs
+        sorted by the last modified time will have a very short expiration as
+        docs do get modified very often and the modified time can be changed
+        while the iteration is happening thus altering the results.
     """
 
     __slots__ = [
@@ -604,8 +608,8 @@ class PaperApiBaseError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar insufficient_permissions: Your account does not have permissions to
-        perform this action.
+    :ivar paper.PaperApiBaseError.insufficient_permissions: Your account does
+        not have permissions to perform this action.
     """
 
     _catch_all = 'other'
@@ -644,7 +648,7 @@ class DocLookupError(PaperApiBaseError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar doc_not_found: The required doc was not found.
+    :ivar paper.DocLookupError.doc_not_found: The required doc was not found.
     """
 
     # Attribute is overwritten below the class definition
@@ -674,13 +678,14 @@ class DocSubscriptionLevel(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar default: No change email messages unless you're the creator.
-    :ivar ignore: Ignored: Not shown in pad lists or activity and no email
-        message is sent.
-    :ivar every: Subscribed: Shown in pad lists and activity and change email
-        messages are sent.
-    :ivar no_email: Unsubscribed: Shown in pad lists, but not in activity and no
-        change email messages are sent.
+    :ivar paper.DocSubscriptionLevel.default: No change email messages unless
+        you're the creator.
+    :ivar paper.DocSubscriptionLevel.ignore: Ignored: Not shown in pad lists or
+        activity and no email message is sent.
+    :ivar paper.DocSubscriptionLevel.every: Subscribed: Shown in pad lists and
+        activity and change email messages are sent.
+    :ivar paper.DocSubscriptionLevel.no_email: Unsubscribed: Shown in pad lists,
+        but not in activity and no change email messages are sent.
     """
 
     _catch_all = None
@@ -741,8 +746,8 @@ class ExportFormat(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar html: The HTML export format.
-    :ivar markdown: The markdown export format.
+    :ivar paper.ExportFormat.html: The HTML export format.
+    :ivar paper.ExportFormat.markdown: The markdown export format.
     """
 
     _catch_all = 'other'
@@ -789,8 +794,9 @@ class Folder(bb.Struct):
     """
     Data structure representing a Paper folder.
 
-    :ivar id: Paper folder ID. This ID uniquely identifies the folder.
-    :ivar name: Paper folder name.
+    :ivar paper.Folder.id: Paper folder ID. This ID uniquely identifies the
+        folder.
+    :ivar paper.Folder.name: Paper folder name.
     """
 
     __slots__ = [
@@ -880,9 +886,10 @@ class FolderSharingPolicyType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team: Everyone in your team and anyone directly invited can access
-        this folder.
-    :ivar invite_only: Only people directly invited can access this folder.
+    :ivar paper.FolderSharingPolicyType.team: Everyone in your team and anyone
+        directly invited can access this folder.
+    :ivar paper.FolderSharingPolicyType.invite_only: Only people directly
+        invited can access this folder.
     """
 
     _catch_all = None
@@ -923,10 +930,14 @@ class FolderSubscriptionLevel(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar none: Not shown in activity, no email messages.
-    :ivar activity_only: Shown in activity, no email messages.
-    :ivar daily_emails: Shown in activity, daily email messages.
-    :ivar weekly_emails: Shown in activity, weekly email messages.
+    :ivar paper.FolderSubscriptionLevel.none: Not shown in activity, no email
+        messages.
+    :ivar paper.FolderSubscriptionLevel.activity_only: Shown in activity, no
+        email messages.
+    :ivar paper.FolderSubscriptionLevel.daily_emails: Shown in activity, daily
+        email messages.
+    :ivar paper.FolderSubscriptionLevel.weekly_emails: Shown in activity, weekly
+        email messages.
     """
 
     _catch_all = None
@@ -983,10 +994,10 @@ class FoldersContainingPaperDoc(bb.Struct):
     """
     Metadata about Paper folders containing the specififed Paper doc.
 
-    :ivar folder_sharing_policy_type: The sharing policy of the folder
-        containing the Paper doc.
-    :ivar folders: The folder path. If present the first folder is the root
-        folder.
+    :ivar paper.FoldersContainingPaperDoc.folder_sharing_policy_type: The
+        sharing policy of the folder containing the Paper doc.
+    :ivar paper.FoldersContainingPaperDoc.folders: The folder path. If present
+        the first folder is the root folder.
     """
 
     __slots__ = [
@@ -1015,7 +1026,7 @@ class FoldersContainingPaperDoc(bb.Struct):
         """
         The sharing policy of the folder containing the Paper doc.
 
-        :rtype: FolderSharingPolicyType
+        :rtype: paper.FolderSharingPolicyType
         """
         if self._folder_sharing_policy_type_present:
             return self._folder_sharing_policy_type_value
@@ -1041,7 +1052,7 @@ class FoldersContainingPaperDoc(bb.Struct):
         """
         The folder path. If present the first folder is the root folder.
 
-        :rtype: list of [Folder]
+        :rtype: list of [paper.Folder]
         """
         if self._folders_present:
             return self._folders_value
@@ -1081,11 +1092,14 @@ class ImportFormat(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar html: The provided data is interpreted as standard HTML.
-    :ivar markdown: The provided data is interpreted as markdown. Note: The
-        first line of the provided document will be used as the doc title.
-    :ivar plain_text: The provided data is interpreted as plain text. Note: The
-        first line of the provided document will be used as the doc title.
+    :ivar paper.ImportFormat.html: The provided data is interpreted as standard
+        HTML.
+    :ivar paper.ImportFormat.markdown: The provided data is interpreted as
+        markdown. Note: The first line of the provided document will be used as
+        the doc title.
+    :ivar paper.ImportFormat.plain_text: The provided data is interpreted as
+        plain text. Note: The first line of the provided document will be used
+        as the doc title.
     """
 
     _catch_all = 'other'
@@ -1140,8 +1154,10 @@ ImportFormat_validator = bv.Union(ImportFormat)
 
 class InviteeInfoWithPermissionLevel(bb.Struct):
     """
-    :ivar invitee: Email address invited to the Paper doc.
-    :ivar permission_level: Permission level for the invitee.
+    :ivar paper.InviteeInfoWithPermissionLevel.invitee: Email address invited to
+        the Paper doc.
+    :ivar paper.InviteeInfoWithPermissionLevel.permission_level: Permission
+        level for the invitee.
     """
 
     __slots__ = [
@@ -1193,7 +1209,7 @@ class InviteeInfoWithPermissionLevel(bb.Struct):
         """
         Permission level for the invitee.
 
-        :rtype: PaperDocPermissionLevel
+        :rtype: paper.PaperDocPermissionLevel
         """
         if self._permission_level_present:
             return self._permission_level_value
@@ -1239,8 +1255,8 @@ class ListDocsCursorError(bb.Union):
         Create an instance of this class set to the ``cursor_error`` tag with
         value ``val``.
 
-        :param PaperApiCursorError val:
-        :rtype: ListDocsCursorError
+        :param paper.PaperApiCursorError val:
+        :rtype: paper.ListDocsCursorError
         """
         return cls('cursor_error', val)
 
@@ -1264,7 +1280,7 @@ class ListDocsCursorError(bb.Union):
         """
         Only call this if :meth:`is_cursor_error` is true.
 
-        :rtype: PaperApiCursorError
+        :rtype: paper.PaperApiCursorError
         """
         if not self.is_cursor_error():
             raise AttributeError("tag 'cursor_error' not set")
@@ -1280,13 +1296,15 @@ ListDocsCursorError_validator = bv.Union(ListDocsCursorError)
 
 class ListPaperDocsArgs(bb.Struct):
     """
-    :ivar filter_by: Allows user to specify how the Paper docs should be
-        filtered.
-    :ivar sort_by: Allows user to specify how the Paper docs should be sorted.
-    :ivar sort_order: Allows user to specify the sort order of the result.
-    :ivar limit: Size limit per batch. The maximum number of docs that can be
-        retrieved per batch is 1000. Higher value results in invalid arguments
-        error.
+    :ivar paper.ListPaperDocsArgs.filter_by: Allows user to specify how the
+        Paper docs should be filtered.
+    :ivar paper.ListPaperDocsArgs.sort_by: Allows user to specify how the Paper
+        docs should be sorted.
+    :ivar paper.ListPaperDocsArgs.sort_order: Allows user to specify the sort
+        order of the result.
+    :ivar paper.ListPaperDocsArgs.limit: Size limit per batch. The maximum
+        number of docs that can be retrieved per batch is 1000. Higher value
+        results in invalid arguments error.
     """
 
     __slots__ = [
@@ -1329,7 +1347,7 @@ class ListPaperDocsArgs(bb.Struct):
         """
         Allows user to specify how the Paper docs should be filtered.
 
-        :rtype: ListPaperDocsFilterBy
+        :rtype: paper.ListPaperDocsFilterBy
         """
         if self._filter_by_present:
             return self._filter_by_value
@@ -1352,7 +1370,7 @@ class ListPaperDocsArgs(bb.Struct):
         """
         Allows user to specify how the Paper docs should be sorted.
 
-        :rtype: ListPaperDocsSortBy
+        :rtype: paper.ListPaperDocsSortBy
         """
         if self._sort_by_present:
             return self._sort_by_value
@@ -1375,7 +1393,7 @@ class ListPaperDocsArgs(bb.Struct):
         """
         Allows user to specify the sort order of the result.
 
-        :rtype: ListPaperDocsSortOrder
+        :rtype: paper.ListPaperDocsSortOrder
         """
         if self._sort_order_present:
             return self._sort_order_value
@@ -1432,7 +1450,7 @@ ListPaperDocsArgs_validator = bv.Struct(ListPaperDocsArgs)
 
 class ListPaperDocsContinueArgs(bb.Struct):
     """
-    :ivar cursor: The cursor obtained from
+    :ivar paper.ListPaperDocsContinueArgs.cursor: The cursor obtained from
         :meth:`dropbox.dropbox.Dropbox.paper_docs_list` or
         :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue`. Allows for
         pagination.
@@ -1493,10 +1511,10 @@ class ListPaperDocsFilterBy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar docs_accessed: Fetches all Paper doc IDs that the user has ever
-        accessed.
-    :ivar docs_created: Fetches only the Paper doc IDs that the user has
-        created.
+    :ivar paper.ListPaperDocsFilterBy.docs_accessed: Fetches all Paper doc IDs
+        that the user has ever accessed.
+    :ivar paper.ListPaperDocsFilterBy.docs_created: Fetches only the Paper doc
+        IDs that the user has created.
     """
 
     _catch_all = 'other'
@@ -1541,18 +1559,19 @@ ListPaperDocsFilterBy_validator = bv.Union(ListPaperDocsFilterBy)
 
 class ListPaperDocsResponse(bb.Struct):
     """
-    :ivar doc_ids: The list of Paper doc IDs that can be used to access the
-        given Paper docs or supplied to other API methods. The list is sorted in
-        the order specified by the initial call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
-    :ivar cursor: Pass the cursor into
+    :ivar paper.ListPaperDocsResponse.doc_ids: The list of Paper doc IDs that
+        can be used to access the given Paper docs or supplied to other API
+        methods. The list is sorted in the order specified by the initial call
+        to :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
+    :ivar paper.ListPaperDocsResponse.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue` to paginate
         through all files. The cursor preserves all properties as specified in
         the original call to :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
-    :ivar has_more: Will be set to True if a subsequent call with the provided
-        cursor to :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue`
-        returns immediately with some results. If set to False please allow some
-        delay before making another call to
+    :ivar paper.ListPaperDocsResponse.has_more: Will be set to True if a
+        subsequent call with the provided cursor to
+        :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue` returns
+        immediately with some results. If set to False please allow some delay
+        before making another call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue`.
     """
 
@@ -1618,7 +1637,7 @@ class ListPaperDocsResponse(bb.Struct):
         through all files. The cursor preserves all properties as specified in
         the original call to :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
 
-        :rtype: Cursor
+        :rtype: paper.Cursor
         """
         if self._cursor_present:
             return self._cursor_value
@@ -1681,9 +1700,12 @@ class ListPaperDocsSortBy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar accessed: Sorts the Paper docs by the time they were last accessed.
-    :ivar modified: Sorts the Paper docs by the time they were last modified.
-    :ivar created: Sorts the Paper docs by the creation time.
+    :ivar paper.ListPaperDocsSortBy.accessed: Sorts the Paper docs by the time
+        they were last accessed.
+    :ivar paper.ListPaperDocsSortBy.modified: Sorts the Paper docs by the time
+        they were last modified.
+    :ivar paper.ListPaperDocsSortBy.created: Sorts the Paper docs by the
+        creation time.
     """
 
     _catch_all = 'other'
@@ -1742,8 +1764,10 @@ class ListPaperDocsSortOrder(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar ascending: Sorts the search result in ascending order.
-    :ivar descending: Sorts the search result in descending order.
+    :ivar paper.ListPaperDocsSortOrder.ascending: Sorts the search result in
+        ascending order.
+    :ivar paper.ListPaperDocsSortOrder.descending: Sorts the search result in
+        descending order.
     """
 
     _catch_all = 'other'
@@ -1792,7 +1816,8 @@ class ListUsersCursorError(PaperApiBaseError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar doc_not_found: The required doc was not found.
+    :ivar paper.ListUsersCursorError.doc_not_found: The required doc was not
+        found.
     """
 
     # Attribute is overwritten below the class definition
@@ -1804,8 +1829,8 @@ class ListUsersCursorError(PaperApiBaseError):
         Create an instance of this class set to the ``cursor_error`` tag with
         value ``val``.
 
-        :param PaperApiCursorError val:
-        :rtype: ListUsersCursorError
+        :param paper.PaperApiCursorError val:
+        :rtype: paper.ListUsersCursorError
         """
         return cls('cursor_error', val)
 
@@ -1829,7 +1854,7 @@ class ListUsersCursorError(PaperApiBaseError):
         """
         Only call this if :meth:`is_cursor_error` is true.
 
-        :rtype: PaperApiCursorError
+        :rtype: paper.PaperApiCursorError
         """
         if not self.is_cursor_error():
             raise AttributeError("tag 'cursor_error' not set")
@@ -1845,9 +1870,9 @@ ListUsersCursorError_validator = bv.Union(ListUsersCursorError)
 
 class ListUsersOnFolderArgs(RefPaperDoc):
     """
-    :ivar limit: Size limit per batch. The maximum number of users that can be
-        retrieved per batch is 1000. Higher value results in invalid arguments
-        error.
+    :ivar paper.ListUsersOnFolderArgs.limit: Size limit per batch. The maximum
+        number of users that can be retrieved per batch is 1000. Higher value
+        results in invalid arguments error.
     """
 
     __slots__ = [
@@ -1903,7 +1928,7 @@ ListUsersOnFolderArgs_validator = bv.Struct(ListUsersOnFolderArgs)
 
 class ListUsersOnFolderContinueArgs(RefPaperDoc):
     """
-    :ivar cursor: The cursor obtained from
+    :ivar paper.ListUsersOnFolderContinueArgs.cursor: The cursor obtained from
         :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list` or
         :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue`.
         Allows for pagination.
@@ -1964,16 +1989,17 @@ ListUsersOnFolderContinueArgs_validator = bv.Struct(ListUsersOnFolderContinueArg
 
 class ListUsersOnFolderResponse(bb.Struct):
     """
-    :ivar invitees: List of email addresses that are invited on the Paper
-        folder.
-    :ivar users: List of users that are invited on the Paper folder.
-    :ivar cursor: Pass the cursor into
+    :ivar paper.ListUsersOnFolderResponse.invitees: List of email addresses that
+        are invited on the Paper folder.
+    :ivar paper.ListUsersOnFolderResponse.users: List of users that are invited
+        on the Paper folder.
+    :ivar paper.ListUsersOnFolderResponse.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue` to
         paginate through all users. The cursor preserves all properties as
         specified in the original call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list`.
-    :ivar has_more: Will be set to True if a subsequent call with the provided
-        cursor to
+    :ivar paper.ListUsersOnFolderResponse.has_more: Will be set to True if a
+        subsequent call with the provided cursor to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue`
         returns immediately with some results. If set to False please allow some
         delay before making another call to
@@ -2070,7 +2096,7 @@ class ListUsersOnFolderResponse(bb.Struct):
         specified in the original call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list`.
 
-        :rtype: Cursor
+        :rtype: paper.Cursor
         """
         if self._cursor_present:
             return self._cursor_value
@@ -2130,11 +2156,11 @@ ListUsersOnFolderResponse_validator = bv.Struct(ListUsersOnFolderResponse)
 
 class ListUsersOnPaperDocArgs(RefPaperDoc):
     """
-    :ivar limit: Size limit per batch. The maximum number of users that can be
-        retrieved per batch is 1000. Higher value results in invalid arguments
-        error.
-    :ivar filter_by: Specify this attribute if you want to obtain users that
-        have already accessed the Paper doc.
+    :ivar paper.ListUsersOnPaperDocArgs.limit: Size limit per batch. The maximum
+        number of users that can be retrieved per batch is 1000. Higher value
+        results in invalid arguments error.
+    :ivar paper.ListUsersOnPaperDocArgs.filter_by: Specify this attribute if you
+        want to obtain users that have already accessed the Paper doc.
     """
 
     __slots__ = [
@@ -2190,7 +2216,7 @@ class ListUsersOnPaperDocArgs(RefPaperDoc):
         Specify this attribute if you want to obtain users that have already
         accessed the Paper doc.
 
-        :rtype: UserOnPaperDocFilter
+        :rtype: paper.UserOnPaperDocFilter
         """
         if self._filter_by_present:
             return self._filter_by_value
@@ -2222,7 +2248,7 @@ ListUsersOnPaperDocArgs_validator = bv.Struct(ListUsersOnPaperDocArgs)
 
 class ListUsersOnPaperDocContinueArgs(RefPaperDoc):
     """
-    :ivar cursor: The cursor obtained from
+    :ivar paper.ListUsersOnPaperDocContinueArgs.cursor: The cursor obtained from
         :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list` or
         :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue`. Allows
         for pagination.
@@ -2283,21 +2309,23 @@ ListUsersOnPaperDocContinueArgs_validator = bv.Struct(ListUsersOnPaperDocContinu
 
 class ListUsersOnPaperDocResponse(bb.Struct):
     """
-    :ivar invitees: List of email addresses with their respective permission
-        levels that are invited on the Paper doc.
-    :ivar users: List of users with their respective permission levels that are
-        invited on the Paper folder.
-    :ivar doc_owner: The Paper doc owner. This field is populated on every
-        single response.
-    :ivar cursor: Pass the cursor into
+    :ivar paper.ListUsersOnPaperDocResponse.invitees: List of email addresses
+        with their respective permission levels that are invited on the Paper
+        doc.
+    :ivar paper.ListUsersOnPaperDocResponse.users: List of users with their
+        respective permission levels that are invited on the Paper folder.
+    :ivar paper.ListUsersOnPaperDocResponse.doc_owner: The Paper doc owner. This
+        field is populated on every single response.
+    :ivar paper.ListUsersOnPaperDocResponse.cursor: Pass the cursor into
         :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue` to
         paginate through all users. The cursor preserves all properties as
         specified in the original call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list`.
-    :ivar has_more: Will be set to True if a subsequent call with the provided
-        cursor to :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue`
-        returns immediately with some results. If set to False please allow some
-        delay before making another call to
+    :ivar paper.ListUsersOnPaperDocResponse.has_more: Will be set to True if a
+        subsequent call with the provided cursor to
+        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue` returns
+        immediately with some results. If set to False please allow some delay
+        before making another call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue`.
     """
 
@@ -2349,7 +2377,7 @@ class ListUsersOnPaperDocResponse(bb.Struct):
         List of email addresses with their respective permission levels that are
         invited on the Paper doc.
 
-        :rtype: list of [InviteeInfoWithPermissionLevel]
+        :rtype: list of [paper.InviteeInfoWithPermissionLevel]
         """
         if self._invitees_present:
             return self._invitees_value
@@ -2373,7 +2401,7 @@ class ListUsersOnPaperDocResponse(bb.Struct):
         List of users with their respective permission levels that are invited
         on the Paper folder.
 
-        :rtype: list of [UserInfoWithPermissionLevel]
+        :rtype: list of [paper.UserInfoWithPermissionLevel]
         """
         if self._users_present:
             return self._users_value
@@ -2423,7 +2451,7 @@ class ListUsersOnPaperDocResponse(bb.Struct):
         specified in the original call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list`.
 
-        :rtype: Cursor
+        :rtype: paper.Cursor
         """
         if self._cursor_present:
             return self._cursor_value
@@ -2488,11 +2516,15 @@ class PaperApiCursorError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar expired_cursor: The provided cursor is expired.
-    :ivar invalid_cursor: The provided cursor is invalid.
-    :ivar wrong_user_in_cursor: The provided cursor contains invalid user.
-    :ivar reset: Indicates that the cursor has been invalidated. Call the
-        corresponding non-continue endpoint to obtain a new cursor.
+    :ivar paper.PaperApiCursorError.expired_cursor: The provided cursor is
+        expired.
+    :ivar paper.PaperApiCursorError.invalid_cursor: The provided cursor is
+        invalid.
+    :ivar paper.PaperApiCursorError.wrong_user_in_cursor: The provided cursor
+        contains invalid user.
+    :ivar paper.PaperApiCursorError.reset: Indicates that the cursor has been
+        invalidated. Call the corresponding non-continue endpoint to obtain a
+        new cursor.
     """
 
     _catch_all = 'other'
@@ -2557,10 +2589,10 @@ PaperApiCursorError_validator = bv.Union(PaperApiCursorError)
 
 class PaperDocCreateArgs(bb.Struct):
     """
-    :ivar parent_folder_id: The Paper folder ID where the Paper document should
-        be created. The API user has to have write access to this folder or
-        error is thrown.
-    :ivar import_format: The format of provided data.
+    :ivar paper.PaperDocCreateArgs.parent_folder_id: The Paper folder ID where
+        the Paper document should be created. The API user has to have write
+        access to this folder or error is thrown.
+    :ivar paper.PaperDocCreateArgs.import_format: The format of provided data.
     """
 
     __slots__ = [
@@ -2616,7 +2648,7 @@ class PaperDocCreateArgs(bb.Struct):
         """
         The format of provided data.
 
-        :rtype: ImportFormat
+        :rtype: paper.ImportFormat
         """
         if self._import_format_present:
             return self._import_format_value
@@ -2651,14 +2683,15 @@ class PaperDocCreateError(PaperApiBaseError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar content_malformed: The provided content was malformed and cannot be
-        imported to Paper.
-    :ivar folder_not_found: The specified Paper folder is cannot be found.
-    :ivar doc_length_exceeded: The newly created Paper doc would be too large.
-        Please split the content into multiple docs.
-    :ivar image_size_exceeded: The imported document contains an image that is
-        too large. The current limit is 1MB. Note: This only applies to HTML
-        with data uri.
+    :ivar paper.PaperDocCreateError.content_malformed: The provided content was
+        malformed and cannot be imported to Paper.
+    :ivar paper.PaperDocCreateError.folder_not_found: The specified Paper folder
+        is cannot be found.
+    :ivar paper.PaperDocCreateError.doc_length_exceeded: The newly created Paper
+        doc would be too large. Please split the content into multiple docs.
+    :ivar paper.PaperDocCreateError.image_size_exceeded: The imported document
+        contains an image that is too large. The current limit is 1MB. Note:
+        This only applies to HTML with data uri.
     """
 
     # Attribute is overwritten below the class definition
@@ -2712,9 +2745,11 @@ PaperDocCreateError_validator = bv.Union(PaperDocCreateError)
 
 class PaperDocCreateUpdateResult(bb.Struct):
     """
-    :ivar doc_id: Doc ID of the newly created doc.
-    :ivar revision: The Paper doc revision. Simply an ever increasing number.
-    :ivar title: The Paper doc title.
+    :ivar paper.PaperDocCreateUpdateResult.doc_id: Doc ID of the newly created
+        doc.
+    :ivar paper.PaperDocCreateUpdateResult.revision: The Paper doc revision.
+        Simply an ever increasing number.
+    :ivar paper.PaperDocCreateUpdateResult.title: The Paper doc title.
     """
 
     __slots__ = [
@@ -2847,7 +2882,7 @@ class PaperDocExport(RefPaperDoc):
     @property
     def export_format(self):
         """
-        :rtype: ExportFormat
+        :rtype: paper.ExportFormat
         """
         if self._export_format_present:
             return self._export_format_value
@@ -2878,11 +2913,12 @@ PaperDocExport_validator = bv.Struct(PaperDocExport)
 
 class PaperDocExportResult(bb.Struct):
     """
-    :ivar owner: The Paper doc owner's email address.
-    :ivar title: The Paper doc title.
-    :ivar revision: The Paper doc revision. Simply an ever increasing number.
-    :ivar mime_type: MIME type of the export. This corresponds to
-        :class:`ExportFormat` specified in the request.
+    :ivar paper.PaperDocExportResult.owner: The Paper doc owner's email address.
+    :ivar paper.PaperDocExportResult.title: The Paper doc title.
+    :ivar paper.PaperDocExportResult.revision: The Paper doc revision. Simply an
+        ever increasing number.
+    :ivar paper.PaperDocExportResult.mime_type: MIME type of the export. This
+        corresponds to :class:`ExportFormat` specified in the request.
     """
 
     __slots__ = [
@@ -3032,8 +3068,10 @@ class PaperDocPermissionLevel(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar edit: User will be granted edit permissions.
-    :ivar view_and_comment: User will be granted view and comment permissions.
+    :ivar paper.PaperDocPermissionLevel.edit: User will be granted edit
+        permissions.
+    :ivar paper.PaperDocPermissionLevel.view_and_comment: User will be granted
+        view and comment permissions.
     """
 
     _catch_all = 'other'
@@ -3078,8 +3116,8 @@ PaperDocPermissionLevel_validator = bv.Union(PaperDocPermissionLevel)
 
 class PaperDocSharingPolicy(RefPaperDoc):
     """
-    :ivar sharing_policy: The default sharing policy to be set for the Paper
-        doc.
+    :ivar paper.PaperDocSharingPolicy.sharing_policy: The default sharing policy
+        to be set for the Paper doc.
     """
 
     __slots__ = [
@@ -3103,7 +3141,7 @@ class PaperDocSharingPolicy(RefPaperDoc):
         """
         The default sharing policy to be set for the Paper doc.
 
-        :rtype: SharingPolicy
+        :rtype: paper.SharingPolicy
         """
         if self._sharing_policy_present:
             return self._sharing_policy_value
@@ -3134,11 +3172,12 @@ PaperDocSharingPolicy_validator = bv.Struct(PaperDocSharingPolicy)
 
 class PaperDocUpdateArgs(RefPaperDoc):
     """
-    :ivar doc_update_policy: The policy used for the current update call.
-    :ivar revision: The latest doc revision. This value must match the head
-        revision or an error code will be returned. This is to prevent colliding
-        writes.
-    :ivar import_format: The format of provided data.
+    :ivar paper.PaperDocUpdateArgs.doc_update_policy: The policy used for the
+        current update call.
+    :ivar paper.PaperDocUpdateArgs.revision: The latest doc revision. This value
+        must match the head revision or an error code will be returned. This is
+        to prevent colliding writes.
+    :ivar paper.PaperDocUpdateArgs.import_format: The format of provided data.
     """
 
     __slots__ = [
@@ -3176,7 +3215,7 @@ class PaperDocUpdateArgs(RefPaperDoc):
         """
         The policy used for the current update call.
 
-        :rtype: PaperDocUpdatePolicy
+        :rtype: paper.PaperDocUpdatePolicy
         """
         if self._doc_update_policy_present:
             return self._doc_update_policy_value
@@ -3223,7 +3262,7 @@ class PaperDocUpdateArgs(RefPaperDoc):
         """
         The format of provided data.
 
-        :rtype: ImportFormat
+        :rtype: paper.ImportFormat
         """
         if self._import_format_present:
             return self._import_format_value
@@ -3260,17 +3299,19 @@ class PaperDocUpdateError(DocLookupError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar content_malformed: The provided content was malformed and cannot be
-        imported to Paper.
-    :ivar revision_mismatch: The provided revision does not match the document
-        head.
-    :ivar doc_length_exceeded: The newly created Paper doc would be too large,
-        split the content into multiple docs.
-    :ivar image_size_exceeded: The imported document contains an image that is
-        too large. The current limit is 1MB. Note: This only applies to HTML
-        with data uri.
-    :ivar doc_archived: This operation is not allowed on archived Paper docs.
-    :ivar doc_deleted: This operation is not allowed on deleted Paper docs.
+    :ivar paper.PaperDocUpdateError.content_malformed: The provided content was
+        malformed and cannot be imported to Paper.
+    :ivar paper.PaperDocUpdateError.revision_mismatch: The provided revision
+        does not match the document head.
+    :ivar paper.PaperDocUpdateError.doc_length_exceeded: The newly created Paper
+        doc would be too large, split the content into multiple docs.
+    :ivar paper.PaperDocUpdateError.image_size_exceeded: The imported document
+        contains an image that is too large. The current limit is 1MB. Note:
+        This only applies to HTML with data uri.
+    :ivar paper.PaperDocUpdateError.doc_archived: This operation is not allowed
+        on archived Paper docs.
+    :ivar paper.PaperDocUpdateError.doc_deleted: This operation is not allowed
+        on deleted Paper docs.
     """
 
     # Attribute is overwritten below the class definition
@@ -3348,11 +3389,12 @@ class PaperDocUpdatePolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar append: The content will be appended to the doc.
-    :ivar prepend: The content will be prepended to the doc. Note: the doc title
-        will not be affected.
-    :ivar overwrite_all: The document will be overwitten at the head with the
-        provided content.
+    :ivar paper.PaperDocUpdatePolicy.append: The content will be appended to the
+        doc.
+    :ivar paper.PaperDocUpdatePolicy.prepend: The content will be prepended to
+        the doc. Note: the doc title will not be affected.
+    :ivar paper.PaperDocUpdatePolicy.overwrite_all: The document will be
+        overwitten at the head with the provided content.
     """
 
     _catch_all = 'other'
@@ -3407,8 +3449,8 @@ PaperDocUpdatePolicy_validator = bv.Union(PaperDocUpdatePolicy)
 
 class RemovePaperDocUser(RefPaperDoc):
     """
-    :ivar member: User which should be removed from the Paper doc. Specify only
-        email address or Dropbox account ID.
+    :ivar paper.RemovePaperDocUser.member: User which should be removed from the
+        Paper doc. Specify only email address or Dropbox account ID.
     """
 
     __slots__ = [
@@ -3466,9 +3508,10 @@ class SharingPolicy(bb.Struct):
     """
     Sharing policy of Paper doc.
 
-    :ivar public_sharing_policy: This value applies to the non-team members.
-    :ivar team_sharing_policy: This value applies to the team members only. The
-        value is null for all personal accounts.
+    :ivar paper.SharingPolicy.public_sharing_policy: This value applies to the
+        non-team members.
+    :ivar paper.SharingPolicy.team_sharing_policy: This value applies to the
+        team members only. The value is null for all personal accounts.
     """
 
     __slots__ = [
@@ -3497,7 +3540,7 @@ class SharingPolicy(bb.Struct):
         """
         This value applies to the non-team members.
 
-        :rtype: SharingPublicPolicyType
+        :rtype: paper.SharingPublicPolicyType
         """
         if self._public_sharing_policy_present:
             return self._public_sharing_policy_value
@@ -3524,7 +3567,7 @@ class SharingPolicy(bb.Struct):
         This value applies to the team members only. The value is null for all
         personal accounts.
 
-        :rtype: SharingTeamPolicyType
+        :rtype: paper.SharingTeamPolicyType
         """
         if self._team_sharing_policy_present:
             return self._team_sharing_policy_value
@@ -3564,11 +3607,12 @@ class SharingTeamPolicyType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar people_with_link_can_edit: Users who have a link to this doc can edit
-        it.
-    :ivar people_with_link_can_view_and_comment: Users who have a link to this
-        doc can view and comment on it.
-    :ivar invite_only: Users must be explicitly invited to this doc.
+    :ivar paper.SharingTeamPolicyType.people_with_link_can_edit: Users who have
+        a link to this doc can edit it.
+    :ivar paper.SharingTeamPolicyType.people_with_link_can_view_and_comment:
+        Users who have a link to this doc can view and comment on it.
+    :ivar paper.SharingTeamPolicyType.invite_only: Users must be explicitly
+        invited to this doc.
     """
 
     _catch_all = None
@@ -3617,8 +3661,8 @@ class SharingPublicPolicyType(SharingTeamPolicyType):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar disabled: Value used to indicate that doc sharing is enabled only
-        within team.
+    :ivar paper.SharingPublicPolicyType.disabled: Value used to indicate that
+        doc sharing is enabled only within team.
     """
 
     # Attribute is overwritten below the class definition
@@ -3642,8 +3686,9 @@ SharingPublicPolicyType_validator = bv.Union(SharingPublicPolicyType)
 
 class UserInfoWithPermissionLevel(bb.Struct):
     """
-    :ivar user: User shared on the Paper doc.
-    :ivar permission_level: Permission level for the user.
+    :ivar paper.UserInfoWithPermissionLevel.user: User shared on the Paper doc.
+    :ivar paper.UserInfoWithPermissionLevel.permission_level: Permission level
+        for the user.
     """
 
     __slots__ = [
@@ -3695,7 +3740,7 @@ class UserInfoWithPermissionLevel(bb.Struct):
         """
         Permission level for the user.
 
-        :rtype: PaperDocPermissionLevel
+        :rtype: paper.PaperDocPermissionLevel
         """
         if self._permission_level_present:
             return self._permission_level_value
@@ -3730,9 +3775,11 @@ class UserOnPaperDocFilter(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar visited: all users who have visited the Paper doc.
-    :ivar shared: All uses who are shared on the Paper doc. This includes all
-        users who have visited the Paper doc as well as those who have not.
+    :ivar paper.UserOnPaperDocFilter.visited: all users who have visited the
+        Paper doc.
+    :ivar paper.UserOnPaperDocFilter.shared: All uses who are shared on the
+        Paper doc. This includes all users who have visited the Paper doc as
+        well as those who have not.
     """
 
     _catch_all = 'other'

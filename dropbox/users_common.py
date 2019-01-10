@@ -24,9 +24,9 @@ class AccountType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar basic: The basic account type.
-    :ivar pro: The Dropbox Pro account type.
-    :ivar business: The Dropbox Business account type.
+    :ivar users_common.AccountType.basic: The basic account type.
+    :ivar users_common.AccountType.pro: The Dropbox Pro account type.
+    :ivar users_common.AccountType.business: The Dropbox Business account type.
     """
 
     _catch_all = None
