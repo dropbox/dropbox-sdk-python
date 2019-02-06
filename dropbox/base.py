@@ -704,7 +704,7 @@ class DropboxBase(object):
         """
         Copy multiple files or folders to different locations at once in the
         user's Dropbox. This route will replace :meth:`files_copy_batch`. The
-        main difference is this route will return stutus for each entry, while
+        main difference is this route will return status for each entry, while
         :meth:`files_copy_batch` raises failure if any entry fails. This route
         will either finish synchronously, or return a job ID and do the async
         copy job in background. Please use :meth:`files_copy_batch_check_v2` to
@@ -1837,7 +1837,7 @@ class DropboxBase(object):
         """
         Move multiple files or folders to different locations at once in the
         user's Dropbox. This route will replace :meth:`files_move_batch_v2`. The
-        main difference is this route will return stutus for each entry, while
+        main difference is this route will return status for each entry, while
         :meth:`files_move_batch` raises failure if any entry fails. This route
         will either finish synchronously, or return a job ID and do the async
         move job in background. Please use :meth:`files_move_batch_check_v2` to
