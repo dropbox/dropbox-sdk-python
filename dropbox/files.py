@@ -209,8 +209,8 @@ class GetMetadataArg(bb.Struct):
         self._include_property_groups_value = None
         self._include_property_groups_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetMetadataArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetMetadataArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetMetadataArg(path={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_property_groups={!r})'.format(
@@ -281,8 +281,8 @@ class AlphaGetMetadataArg(GetMetadataArg):
         self._include_property_templates_value = None
         self._include_property_templates_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AlphaGetMetadataArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AlphaGetMetadataArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AlphaGetMetadataArg(path={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_property_groups={!r}, include_property_templates={!r})'.format(
@@ -311,8 +311,8 @@ class GetMetadataError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.GetMetadataError
+        :param LookupError val:
+        :rtype: GetMetadataError
         """
         return cls('path', val)
 
@@ -328,14 +328,14 @@ class GetMetadataError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetMetadataError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetMetadataError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetMetadataError(%r, %r)' % (self._tag, self._value)
@@ -356,7 +356,7 @@ class AlphaGetMetadataError(GetMetadataError):
         with value ``val``.
 
         :param file_properties.LookUpPropertiesError val:
-        :rtype: files.AlphaGetMetadataError
+        :rtype: AlphaGetMetadataError
         """
         return cls('properties_error', val)
 
@@ -378,8 +378,8 @@ class AlphaGetMetadataError(GetMetadataError):
             raise AttributeError("tag 'properties_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AlphaGetMetadataError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AlphaGetMetadataError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AlphaGetMetadataError(%r, %r)' % (self._tag, self._value)
@@ -495,7 +495,7 @@ class CommitInfo(bb.Struct):
         """
         Selects what to do if the file already exists.
 
-        :rtype: files.WriteMode
+        :rtype: WriteMode
         """
         if self._mode_present:
             return self._mode_value
@@ -645,8 +645,8 @@ class CommitInfo(bb.Struct):
         self._strict_conflict_value = None
         self._strict_conflict_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CommitInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CommitInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CommitInfo(path={!r}, mode={!r}, autorename={!r}, client_modified={!r}, mute={!r}, property_groups={!r}, strict_conflict={!r})'.format(
@@ -684,8 +684,8 @@ class CommitInfoWithProperties(CommitInfo):
                                                        property_groups,
                                                        strict_conflict)
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CommitInfoWithProperties, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CommitInfoWithProperties, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CommitInfoWithProperties(path={!r}, mode={!r}, autorename={!r}, client_modified={!r}, mute={!r}, property_groups={!r}, strict_conflict={!r})'.format(
@@ -756,7 +756,7 @@ class ContentSyncSetting(bb.Struct):
         """
         Setting for this item.
 
-        :rtype: files.SyncSetting
+        :rtype: SyncSetting
         """
         if self._sync_setting_present:
             return self._sync_setting_value
@@ -774,8 +774,8 @@ class ContentSyncSetting(bb.Struct):
         self._sync_setting_value = None
         self._sync_setting_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ContentSyncSetting, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ContentSyncSetting, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ContentSyncSetting(id={!r}, sync_setting={!r})'.format(
@@ -841,7 +841,7 @@ class ContentSyncSettingArg(bb.Struct):
         """
         Setting for this item.
 
-        :rtype: files.SyncSettingArg
+        :rtype: SyncSettingArg
         """
         if self._sync_setting_present:
             return self._sync_setting_value
@@ -859,8 +859,8 @@ class ContentSyncSettingArg(bb.Struct):
         self._sync_setting_value = None
         self._sync_setting_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ContentSyncSettingArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ContentSyncSettingArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ContentSyncSettingArg(id={!r}, sync_setting={!r})'.format(
@@ -945,8 +945,8 @@ class CreateFolderArg(bb.Struct):
         self._autorename_value = None
         self._autorename_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderArg(path={!r}, autorename={!r})'.format(
@@ -1066,8 +1066,8 @@ class CreateFolderBatchArg(bb.Struct):
         self._force_async_value = None
         self._force_async_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderBatchArg(paths={!r}, autorename={!r}, force_async={!r})'.format(
@@ -1110,8 +1110,8 @@ class CreateFolderBatchError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderBatchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderBatchError(%r, %r)' % (self._tag, self._value)
@@ -1124,10 +1124,10 @@ class CreateFolderBatchJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar CreateFolderBatchResult files.CreateFolderBatchJobStatus.complete: The
-        batch create folder has finished.
-    :ivar CreateFolderBatchError files.CreateFolderBatchJobStatus.failed: The
-        batch create folder has failed.
+    :ivar CreateFolderBatchResult CreateFolderBatchJobStatus.complete: The batch
+        create folder has finished.
+    :ivar CreateFolderBatchError CreateFolderBatchJobStatus.failed: The batch
+        create folder has failed.
     """
 
     _catch_all = 'other'
@@ -1140,8 +1140,8 @@ class CreateFolderBatchJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.CreateFolderBatchResult val:
-        :rtype: files.CreateFolderBatchJobStatus
+        :param CreateFolderBatchResult val:
+        :rtype: CreateFolderBatchJobStatus
         """
         return cls('complete', val)
 
@@ -1151,8 +1151,8 @@ class CreateFolderBatchJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param files.CreateFolderBatchError val:
-        :rtype: files.CreateFolderBatchJobStatus
+        :param CreateFolderBatchError val:
+        :rtype: CreateFolderBatchJobStatus
         """
         return cls('failed', val)
 
@@ -1186,7 +1186,7 @@ class CreateFolderBatchJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.CreateFolderBatchResult
+        :rtype: CreateFolderBatchResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -1198,14 +1198,14 @@ class CreateFolderBatchJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: files.CreateFolderBatchError
+        :rtype: CreateFolderBatchError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderBatchJobStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderBatchJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderBatchJobStatus(%r, %r)' % (self._tag, self._value)
@@ -1232,8 +1232,8 @@ class CreateFolderBatchLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.CreateFolderBatchResult val:
-        :rtype: files.CreateFolderBatchLaunch
+        :param CreateFolderBatchResult val:
+        :rtype: CreateFolderBatchLaunch
         """
         return cls('complete', val)
 
@@ -1257,14 +1257,14 @@ class CreateFolderBatchLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.CreateFolderBatchResult
+        :rtype: CreateFolderBatchResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderBatchLaunch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderBatchLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderBatchLaunch(%r, %r)' % (self._tag, self._value)
@@ -1281,8 +1281,8 @@ class FileOpsResult(bb.Struct):
     def __init__(self):
         pass
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FileOpsResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileOpsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FileOpsResult()'
@@ -1317,7 +1317,7 @@ class CreateFolderBatchResult(FileOpsResult):
         Each entry in ``CreateFolderBatchArg.paths`` will appear at the same
         position inside ``CreateFolderBatchResult.entries``.
 
-        :rtype: list of [files.CreateFolderBatchResultEntry]
+        :rtype: list of [CreateFolderBatchResultEntry]
         """
         if self._entries_present:
             return self._entries_value
@@ -1335,8 +1335,8 @@ class CreateFolderBatchResult(FileOpsResult):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderBatchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderBatchResult(entries={!r})'.format(
@@ -1360,8 +1360,8 @@ class CreateFolderBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param files.CreateFolderEntryResult val:
-        :rtype: files.CreateFolderBatchResultEntry
+        :param CreateFolderEntryResult val:
+        :rtype: CreateFolderBatchResultEntry
         """
         return cls('success', val)
 
@@ -1371,8 +1371,8 @@ class CreateFolderBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``failure`` tag with value
         ``val``.
 
-        :param files.CreateFolderEntryError val:
-        :rtype: files.CreateFolderBatchResultEntry
+        :param CreateFolderEntryError val:
+        :rtype: CreateFolderBatchResultEntry
         """
         return cls('failure', val)
 
@@ -1396,7 +1396,7 @@ class CreateFolderBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_success` is true.
 
-        :rtype: files.CreateFolderEntryResult
+        :rtype: CreateFolderEntryResult
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -1406,14 +1406,14 @@ class CreateFolderBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_failure` is true.
 
-        :rtype: files.CreateFolderEntryError
+        :rtype: CreateFolderEntryError
         """
         if not self.is_failure():
             raise AttributeError("tag 'failure' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderBatchResultEntry, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderBatchResultEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderBatchResultEntry(%r, %r)' % (self._tag, self._value)
@@ -1437,8 +1437,8 @@ class CreateFolderEntryError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.CreateFolderEntryError
+        :param WriteError val:
+        :rtype: CreateFolderEntryError
         """
         return cls('path', val)
 
@@ -1462,14 +1462,14 @@ class CreateFolderEntryError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderEntryError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderEntryError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderEntryError(%r, %r)' % (self._tag, self._value)
@@ -1501,7 +1501,7 @@ class CreateFolderEntryResult(bb.Struct):
         """
         Metadata of the created folder.
 
-        :rtype: files.FolderMetadata
+        :rtype: FolderMetadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -1519,8 +1519,8 @@ class CreateFolderEntryResult(bb.Struct):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderEntryResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderEntryResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderEntryResult(metadata={!r})'.format(
@@ -1544,8 +1544,8 @@ class CreateFolderError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.CreateFolderError
+        :param WriteError val:
+        :rtype: CreateFolderError
         """
         return cls('path', val)
 
@@ -1561,14 +1561,14 @@ class CreateFolderError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderError(%r, %r)' % (self._tag, self._value)
@@ -1600,7 +1600,7 @@ class CreateFolderResult(FileOpsResult):
         """
         Metadata of the created folder.
 
-        :rtype: files.FolderMetadata
+        :rtype: FolderMetadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -1618,8 +1618,8 @@ class CreateFolderResult(FileOpsResult):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CreateFolderResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateFolderResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CreateFolderResult(metadata={!r})'.format(
@@ -1707,8 +1707,8 @@ class DeleteArg(bb.Struct):
         self._parent_rev_value = None
         self._parent_rev_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteArg(path={!r}, parent_rev={!r})'.format(
@@ -1737,7 +1737,7 @@ class DeleteBatchArg(bb.Struct):
     @property
     def entries(self):
         """
-        :rtype: list of [files.DeleteArg]
+        :rtype: list of [DeleteArg]
         """
         if self._entries_present:
             return self._entries_value
@@ -1755,8 +1755,8 @@ class DeleteBatchArg(bb.Struct):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteBatchArg(entries={!r})'.format(
@@ -1799,8 +1799,8 @@ class DeleteBatchError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteBatchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteBatchError(%r, %r)' % (self._tag, self._value)
@@ -1813,10 +1813,10 @@ class DeleteBatchJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DeleteBatchResult files.DeleteBatchJobStatus.complete: The batch
-        delete has finished.
-    :ivar DeleteBatchError files.DeleteBatchJobStatus.failed: The batch delete
-        has failed.
+    :ivar DeleteBatchResult DeleteBatchJobStatus.complete: The batch delete has
+        finished.
+    :ivar DeleteBatchError DeleteBatchJobStatus.failed: The batch delete has
+        failed.
     """
 
     _catch_all = 'other'
@@ -1829,8 +1829,8 @@ class DeleteBatchJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.DeleteBatchResult val:
-        :rtype: files.DeleteBatchJobStatus
+        :param DeleteBatchResult val:
+        :rtype: DeleteBatchJobStatus
         """
         return cls('complete', val)
 
@@ -1840,8 +1840,8 @@ class DeleteBatchJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param files.DeleteBatchError val:
-        :rtype: files.DeleteBatchJobStatus
+        :param DeleteBatchError val:
+        :rtype: DeleteBatchJobStatus
         """
         return cls('failed', val)
 
@@ -1875,7 +1875,7 @@ class DeleteBatchJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.DeleteBatchResult
+        :rtype: DeleteBatchResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -1887,14 +1887,14 @@ class DeleteBatchJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: files.DeleteBatchError
+        :rtype: DeleteBatchError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteBatchJobStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteBatchJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteBatchJobStatus(%r, %r)' % (self._tag, self._value)
@@ -1921,8 +1921,8 @@ class DeleteBatchLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.DeleteBatchResult val:
-        :rtype: files.DeleteBatchLaunch
+        :param DeleteBatchResult val:
+        :rtype: DeleteBatchLaunch
         """
         return cls('complete', val)
 
@@ -1946,14 +1946,14 @@ class DeleteBatchLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.DeleteBatchResult
+        :rtype: DeleteBatchResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteBatchLaunch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteBatchLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteBatchLaunch(%r, %r)' % (self._tag, self._value)
@@ -1988,7 +1988,7 @@ class DeleteBatchResult(FileOpsResult):
         Each entry in ``DeleteBatchArg.entries`` will appear at the same
         position inside ``DeleteBatchResult.entries``.
 
-        :rtype: list of [files.DeleteBatchResultEntry]
+        :rtype: list of [DeleteBatchResultEntry]
         """
         if self._entries_present:
             return self._entries_value
@@ -2006,8 +2006,8 @@ class DeleteBatchResult(FileOpsResult):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteBatchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteBatchResult(entries={!r})'.format(
@@ -2040,7 +2040,7 @@ class DeleteBatchResultData(bb.Struct):
         """
         Metadata of the deleted object.
 
-        :rtype: files.Metadata
+        :rtype: Metadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -2058,8 +2058,8 @@ class DeleteBatchResultData(bb.Struct):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteBatchResultData, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteBatchResultData, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteBatchResultData(metadata={!r})'.format(
@@ -2083,8 +2083,8 @@ class DeleteBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param files.DeleteBatchResultData val:
-        :rtype: files.DeleteBatchResultEntry
+        :param DeleteBatchResultData val:
+        :rtype: DeleteBatchResultEntry
         """
         return cls('success', val)
 
@@ -2094,8 +2094,8 @@ class DeleteBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``failure`` tag with value
         ``val``.
 
-        :param files.DeleteError val:
-        :rtype: files.DeleteBatchResultEntry
+        :param DeleteError val:
+        :rtype: DeleteBatchResultEntry
         """
         return cls('failure', val)
 
@@ -2119,7 +2119,7 @@ class DeleteBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_success` is true.
 
-        :rtype: files.DeleteBatchResultData
+        :rtype: DeleteBatchResultData
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -2129,14 +2129,14 @@ class DeleteBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_failure` is true.
 
-        :rtype: files.DeleteError
+        :rtype: DeleteError
         """
         if not self.is_failure():
             raise AttributeError("tag 'failure' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteBatchResultEntry, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteBatchResultEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteBatchResultEntry(%r, %r)' % (self._tag, self._value)
@@ -2169,8 +2169,8 @@ class DeleteError(bb.Union):
         Create an instance of this class set to the ``path_lookup`` tag with
         value ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.DeleteError
+        :param LookupError val:
+        :rtype: DeleteError
         """
         return cls('path_lookup', val)
 
@@ -2180,8 +2180,8 @@ class DeleteError(bb.Union):
         Create an instance of this class set to the ``path_write`` tag with
         value ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.DeleteError
+        :param WriteError val:
+        :rtype: DeleteError
         """
         return cls('path_write', val)
 
@@ -2229,7 +2229,7 @@ class DeleteError(bb.Union):
         """
         Only call this if :meth:`is_path_lookup` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path_lookup():
             raise AttributeError("tag 'path_lookup' not set")
@@ -2239,14 +2239,14 @@ class DeleteError(bb.Union):
         """
         Only call this if :meth:`is_path_write` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_path_write():
             raise AttributeError("tag 'path_write' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteError(%r, %r)' % (self._tag, self._value)
@@ -2278,7 +2278,7 @@ class DeleteResult(FileOpsResult):
         """
         Metadata of the deleted object.
 
-        :rtype: files.Metadata
+        :rtype: Metadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -2296,8 +2296,8 @@ class DeleteResult(FileOpsResult):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeleteResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeleteResult(metadata={!r})'.format(
@@ -2472,8 +2472,8 @@ class Metadata(bb.Struct):
         self._parent_shared_folder_id_value = None
         self._parent_shared_folder_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Metadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Metadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'Metadata(name={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r})'.format(
@@ -2506,8 +2506,8 @@ class DeletedMetadata(Metadata):
                                               path_display,
                                               parent_shared_folder_id)
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeletedMetadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeletedMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeletedMetadata(name={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r})'.format(
@@ -2594,8 +2594,8 @@ class Dimensions(bb.Struct):
         self._width_value = None
         self._width_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Dimensions, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Dimensions, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'Dimensions(height={!r}, width={!r})'.format(
@@ -2681,8 +2681,8 @@ class DownloadArg(bb.Struct):
         self._rev_value = None
         self._rev_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DownloadArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DownloadArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DownloadArg(path={!r}, rev={!r})'.format(
@@ -2697,9 +2697,15 @@ class DownloadError(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar files.DownloadError.unsupported_file: This file type cannot be
+        downloaded directly; use :meth:`dropbox.dropbox.Dropbox.files_export`
+        instead.
     """
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unsupported_file = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -2709,8 +2715,8 @@ class DownloadError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.DownloadError
+        :param LookupError val:
+        :rtype: DownloadError
         """
         return cls('path', val)
 
@@ -2721,6 +2727,14 @@ class DownloadError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'path'
+
+    def is_unsupported_file(self):
+        """
+        Check if the union tag is ``unsupported_file``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_file'
 
     def is_other(self):
         """
@@ -2734,14 +2748,14 @@ class DownloadError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DownloadError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DownloadError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DownloadError(%r, %r)' % (self._tag, self._value)
@@ -2790,8 +2804,8 @@ class DownloadZipArg(bb.Struct):
         self._path_value = None
         self._path_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DownloadZipArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DownloadZipArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DownloadZipArg(path={!r})'.format(
@@ -2826,8 +2840,8 @@ class DownloadZipError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.DownloadZipError
+        :param LookupError val:
+        :rtype: DownloadZipError
         """
         return cls('path', val)
 
@@ -2867,14 +2881,14 @@ class DownloadZipError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DownloadZipError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DownloadZipError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DownloadZipError(%r, %r)' % (self._tag, self._value)
@@ -2900,7 +2914,7 @@ class DownloadZipResult(bb.Struct):
     @property
     def metadata(self):
         """
-        :rtype: files.FolderMetadata
+        :rtype: FolderMetadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -2918,8 +2932,8 @@ class DownloadZipResult(bb.Struct):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DownloadZipResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DownloadZipResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DownloadZipResult(metadata={!r})'.format(
@@ -2927,6 +2941,397 @@ class DownloadZipResult(bb.Struct):
         )
 
 DownloadZipResult_validator = bv.Struct(DownloadZipResult)
+
+class ExportArg(bb.Struct):
+    """
+    :ivar files.ExportArg.path: The path of the file to be exported.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None):
+        self._path_value = None
+        self._path_present = False
+        if path is not None:
+            self.path = path
+
+    @property
+    def path(self):
+        """
+        The path of the file to be exported.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportArg(path={!r})'.format(
+            self._path_value,
+        )
+
+ExportArg_validator = bv.Struct(ExportArg)
+
+class ExportError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.ExportError.non_exportable: This file type cannot be exported.
+        Use :meth:`dropbox.dropbox.Dropbox.files_download` instead.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    non_exportable = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: ExportError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_non_exportable(self):
+        """
+        Check if the union tag is ``non_exportable``.
+
+        :rtype: bool
+        """
+        return self._tag == 'non_exportable'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportError(%r, %r)' % (self._tag, self._value)
+
+ExportError_validator = bv.Union(ExportError)
+
+class ExportInfo(bb.Struct):
+    """
+    Export information for a file.
+
+    :ivar files.ExportInfo.export_as: Format to which the file can be exported
+        to.
+    """
+
+    __slots__ = [
+        '_export_as_value',
+        '_export_as_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 export_as=None):
+        self._export_as_value = None
+        self._export_as_present = False
+        if export_as is not None:
+            self.export_as = export_as
+
+    @property
+    def export_as(self):
+        """
+        Format to which the file can be exported to.
+
+        :rtype: str
+        """
+        if self._export_as_present:
+            return self._export_as_value
+        else:
+            return None
+
+    @export_as.setter
+    def export_as(self, val):
+        if val is None:
+            del self.export_as
+            return
+        val = self._export_as_validator.validate(val)
+        self._export_as_value = val
+        self._export_as_present = True
+
+    @export_as.deleter
+    def export_as(self):
+        self._export_as_value = None
+        self._export_as_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportInfo(export_as={!r})'.format(
+            self._export_as_value,
+        )
+
+ExportInfo_validator = bv.Struct(ExportInfo)
+
+class ExportMetadata(bb.Struct):
+    """
+    :ivar files.ExportMetadata.name: The last component of the path (including
+        extension). This never contains a slash.
+    :ivar files.ExportMetadata.size: The file size in bytes.
+    :ivar files.ExportMetadata.export_hash: A hash based on the exported file
+        content. This field can be used to verify data integrity. Similar to
+        content hash. For more information see our `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+    """
+
+    __slots__ = [
+        '_name_value',
+        '_name_present',
+        '_size_value',
+        '_size_present',
+        '_export_hash_value',
+        '_export_hash_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 name=None,
+                 size=None,
+                 export_hash=None):
+        self._name_value = None
+        self._name_present = False
+        self._size_value = None
+        self._size_present = False
+        self._export_hash_value = None
+        self._export_hash_present = False
+        if name is not None:
+            self.name = name
+        if size is not None:
+            self.size = size
+        if export_hash is not None:
+            self.export_hash = export_hash
+
+    @property
+    def name(self):
+        """
+        The last component of the path (including extension). This never
+        contains a slash.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def size(self):
+        """
+        The file size in bytes.
+
+        :rtype: int
+        """
+        if self._size_present:
+            return self._size_value
+        else:
+            raise AttributeError("missing required field 'size'")
+
+    @size.setter
+    def size(self, val):
+        val = self._size_validator.validate(val)
+        self._size_value = val
+        self._size_present = True
+
+    @size.deleter
+    def size(self):
+        self._size_value = None
+        self._size_present = False
+
+    @property
+    def export_hash(self):
+        """
+        A hash based on the exported file content. This field can be used to
+        verify data integrity. Similar to content hash. For more information see
+        our `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+
+        :rtype: str
+        """
+        if self._export_hash_present:
+            return self._export_hash_value
+        else:
+            return None
+
+    @export_hash.setter
+    def export_hash(self, val):
+        if val is None:
+            del self.export_hash
+            return
+        val = self._export_hash_validator.validate(val)
+        self._export_hash_value = val
+        self._export_hash_present = True
+
+    @export_hash.deleter
+    def export_hash(self):
+        self._export_hash_value = None
+        self._export_hash_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportMetadata(name={!r}, size={!r}, export_hash={!r})'.format(
+            self._name_value,
+            self._size_value,
+            self._export_hash_value,
+        )
+
+ExportMetadata_validator = bv.Struct(ExportMetadata)
+
+class ExportResult(bb.Struct):
+    """
+    :ivar files.ExportResult.export_metadata: Metadata for the exported version
+        of the file.
+    :ivar files.ExportResult.file_metadata: Metadata for the original file.
+    """
+
+    __slots__ = [
+        '_export_metadata_value',
+        '_export_metadata_present',
+        '_file_metadata_value',
+        '_file_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 export_metadata=None,
+                 file_metadata=None):
+        self._export_metadata_value = None
+        self._export_metadata_present = False
+        self._file_metadata_value = None
+        self._file_metadata_present = False
+        if export_metadata is not None:
+            self.export_metadata = export_metadata
+        if file_metadata is not None:
+            self.file_metadata = file_metadata
+
+    @property
+    def export_metadata(self):
+        """
+        Metadata for the exported version of the file.
+
+        :rtype: ExportMetadata
+        """
+        if self._export_metadata_present:
+            return self._export_metadata_value
+        else:
+            raise AttributeError("missing required field 'export_metadata'")
+
+    @export_metadata.setter
+    def export_metadata(self, val):
+        self._export_metadata_validator.validate_type_only(val)
+        self._export_metadata_value = val
+        self._export_metadata_present = True
+
+    @export_metadata.deleter
+    def export_metadata(self):
+        self._export_metadata_value = None
+        self._export_metadata_present = False
+
+    @property
+    def file_metadata(self):
+        """
+        Metadata for the original file.
+
+        :rtype: FileMetadata
+        """
+        if self._file_metadata_present:
+            return self._file_metadata_value
+        else:
+            raise AttributeError("missing required field 'file_metadata'")
+
+    @file_metadata.setter
+    def file_metadata(self, val):
+        self._file_metadata_validator.validate_type_only(val)
+        self._file_metadata_value = val
+        self._file_metadata_present = True
+
+    @file_metadata.deleter
+    def file_metadata(self):
+        self._file_metadata_value = None
+        self._file_metadata_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportResult(export_metadata={!r}, file_metadata={!r})'.format(
+            self._export_metadata_value,
+            self._file_metadata_value,
+        )
+
+ExportResult_validator = bv.Struct(ExportResult)
 
 class FileMetadata(Metadata):
     """
@@ -2944,10 +3349,19 @@ class FileMetadata(Metadata):
         used to detect changes and avoid conflicts.
     :ivar files.FileMetadata.size: The file size in bytes.
     :ivar files.FileMetadata.media_info: Additional information if the file is a
-        photo or video.
+        photo or video. This field will not be set on entries returned by
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder`,
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`, or
+        :meth:`dropbox.dropbox.Dropbox.files_get_thumbnail_batch`, starting
+        December 2, 2019.
     :ivar files.FileMetadata.symlink_info: Set if this file is a symlink.
     :ivar files.FileMetadata.sharing_info: Set if this file is contained in a
         shared folder.
+    :ivar files.FileMetadata.is_downloadable: If true, file can be downloaded
+        directly; else the file must be exported.
+    :ivar files.FileMetadata.export_info: Information about format this file can
+        be exported to. This filed must be set if ``is_downloadable`` is set to
+        false.
     :ivar files.FileMetadata.property_groups: Additional information if the file
         has custom properties with the property template specified.
     :ivar files.FileMetadata.has_explicit_shared_members: This flag will only be
@@ -2981,6 +3395,10 @@ class FileMetadata(Metadata):
         '_symlink_info_present',
         '_sharing_info_value',
         '_sharing_info_present',
+        '_is_downloadable_value',
+        '_is_downloadable_present',
+        '_export_info_value',
+        '_export_info_present',
         '_property_groups_value',
         '_property_groups_present',
         '_has_explicit_shared_members_value',
@@ -3004,6 +3422,8 @@ class FileMetadata(Metadata):
                  media_info=None,
                  symlink_info=None,
                  sharing_info=None,
+                 is_downloadable=None,
+                 export_info=None,
                  property_groups=None,
                  has_explicit_shared_members=None,
                  content_hash=None):
@@ -3027,6 +3447,10 @@ class FileMetadata(Metadata):
         self._symlink_info_present = False
         self._sharing_info_value = None
         self._sharing_info_present = False
+        self._is_downloadable_value = None
+        self._is_downloadable_present = False
+        self._export_info_value = None
+        self._export_info_present = False
         self._property_groups_value = None
         self._property_groups_present = False
         self._has_explicit_shared_members_value = None
@@ -3049,6 +3473,10 @@ class FileMetadata(Metadata):
             self.symlink_info = symlink_info
         if sharing_info is not None:
             self.sharing_info = sharing_info
+        if is_downloadable is not None:
+            self.is_downloadable = is_downloadable
+        if export_info is not None:
+            self.export_info = export_info
         if property_groups is not None:
             self.property_groups = property_groups
         if has_explicit_shared_members is not None:
@@ -3180,9 +3608,14 @@ class FileMetadata(Metadata):
     @property
     def media_info(self):
         """
-        Additional information if the file is a photo or video.
+        Additional information if the file is a photo or video. This field will
+        not be set on entries returned by
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder`,
+        :meth:`dropbox.dropbox.Dropbox.files_list_folder_continue`, or
+        :meth:`dropbox.dropbox.Dropbox.files_get_thumbnail_batch`, starting
+        December 2, 2019.
 
-        :rtype: files.MediaInfo
+        :rtype: MediaInfo
         """
         if self._media_info_present:
             return self._media_info_value
@@ -3208,7 +3641,7 @@ class FileMetadata(Metadata):
         """
         Set if this file is a symlink.
 
-        :rtype: files.SymlinkInfo
+        :rtype: SymlinkInfo
         """
         if self._symlink_info_present:
             return self._symlink_info_value
@@ -3234,7 +3667,7 @@ class FileMetadata(Metadata):
         """
         Set if this file is contained in a shared folder.
 
-        :rtype: files.FileSharingInfo
+        :rtype: FileSharingInfo
         """
         if self._sharing_info_present:
             return self._sharing_info_value
@@ -3254,6 +3687,57 @@ class FileMetadata(Metadata):
     def sharing_info(self):
         self._sharing_info_value = None
         self._sharing_info_present = False
+
+    @property
+    def is_downloadable(self):
+        """
+        If true, file can be downloaded directly; else the file must be
+        exported.
+
+        :rtype: bool
+        """
+        if self._is_downloadable_present:
+            return self._is_downloadable_value
+        else:
+            return True
+
+    @is_downloadable.setter
+    def is_downloadable(self, val):
+        val = self._is_downloadable_validator.validate(val)
+        self._is_downloadable_value = val
+        self._is_downloadable_present = True
+
+    @is_downloadable.deleter
+    def is_downloadable(self):
+        self._is_downloadable_value = None
+        self._is_downloadable_present = False
+
+    @property
+    def export_info(self):
+        """
+        Information about format this file can be exported to. This filed must
+        be set if ``is_downloadable`` is set to false.
+
+        :rtype: ExportInfo
+        """
+        if self._export_info_present:
+            return self._export_info_value
+        else:
+            return None
+
+    @export_info.setter
+    def export_info(self, val):
+        if val is None:
+            del self.export_info
+            return
+        self._export_info_validator.validate_type_only(val)
+        self._export_info_value = val
+        self._export_info_present = True
+
+    @export_info.deleter
+    def export_info(self):
+        self._export_info_value = None
+        self._export_info_present = False
 
     @property
     def property_groups(self):
@@ -3342,11 +3826,11 @@ class FileMetadata(Metadata):
         self._content_hash_value = None
         self._content_hash_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FileMetadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, symlink_info={!r}, sharing_info={!r}, property_groups={!r}, has_explicit_shared_members={!r}, content_hash={!r})'.format(
+        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, symlink_info={!r}, sharing_info={!r}, is_downloadable={!r}, export_info={!r}, property_groups={!r}, has_explicit_shared_members={!r}, content_hash={!r})'.format(
             self._name_value,
             self._id_value,
             self._client_modified_value,
@@ -3359,6 +3843,8 @@ class FileMetadata(Metadata):
             self._media_info_value,
             self._symlink_info_value,
             self._sharing_info_value,
+            self._is_downloadable_value,
+            self._export_info_value,
             self._property_groups_value,
             self._has_explicit_shared_members_value,
             self._content_hash_value,
@@ -3411,8 +3897,8 @@ class SharingInfo(bb.Struct):
         self._read_only_value = None
         self._read_only_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharingInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SharingInfo(read_only={!r})'.format(
@@ -3504,8 +3990,8 @@ class FileSharingInfo(SharingInfo):
         self._modified_by_value = None
         self._modified_by_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FileSharingInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileSharingInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FileSharingInfo(read_only={!r}, parent_shared_folder_id={!r}, modified_by={!r})'.format(
@@ -3627,7 +4113,7 @@ class FolderMetadata(Metadata):
         Set if the folder is contained in a shared folder or is a shared folder
         mount point.
 
-        :rtype: files.FolderSharingInfo
+        :rtype: FolderSharingInfo
         """
         if self._sharing_info_present:
             return self._sharing_info_value
@@ -3677,8 +4163,8 @@ class FolderMetadata(Metadata):
         self._property_groups_value = None
         self._property_groups_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FolderMetadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FolderMetadata(name={!r}, id={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, shared_folder_id={!r}, sharing_info={!r}, property_groups={!r})'.format(
@@ -3851,8 +4337,8 @@ class FolderSharingInfo(SharingInfo):
         self._no_access_value = None
         self._no_access_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FolderSharingInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderSharingInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FolderSharingInfo(read_only={!r}, parent_shared_folder_id={!r}, shared_folder_id={!r}, traverse_only={!r}, no_access={!r})'.format(
@@ -3908,8 +4394,8 @@ class GetCopyReferenceArg(bb.Struct):
         self._path_value = None
         self._path_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetCopyReferenceArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetCopyReferenceArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetCopyReferenceArg(path={!r})'.format(
@@ -3935,8 +4421,8 @@ class GetCopyReferenceError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.GetCopyReferenceError
+        :param LookupError val:
+        :rtype: GetCopyReferenceError
         """
         return cls('path', val)
 
@@ -3960,14 +4446,14 @@ class GetCopyReferenceError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetCopyReferenceError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetCopyReferenceError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetCopyReferenceError(%r, %r)' % (self._tag, self._value)
@@ -4017,7 +4503,7 @@ class GetCopyReferenceResult(bb.Struct):
         """
         Metadata of the file or folder.
 
-        :rtype: files.Metadata
+        :rtype: Metadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -4083,8 +4569,8 @@ class GetCopyReferenceResult(bb.Struct):
         self._expires_value = None
         self._expires_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetCopyReferenceResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetCopyReferenceResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetCopyReferenceResult(metadata={!r}, copy_reference={!r}, expires={!r})'.format(
@@ -4138,8 +4624,8 @@ class GetTemporaryLinkArg(bb.Struct):
         self._path_value = None
         self._path_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetTemporaryLinkArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTemporaryLinkArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetTemporaryLinkArg(path={!r})'.format(
@@ -4153,9 +4639,19 @@ class GetTemporaryLinkError(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar files.GetTemporaryLinkError.email_not_verified: The user's email
+        address needs to be verified to use this functionality.
+    :ivar files.GetTemporaryLinkError.unsupported_file: Cannot get temporary
+        link to this file type; use :meth:`dropbox.dropbox.Dropbox.files_export`
+        instead.
     """
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    email_not_verified = None
+    # Attribute is overwritten below the class definition
+    unsupported_file = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -4165,8 +4661,8 @@ class GetTemporaryLinkError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.GetTemporaryLinkError
+        :param LookupError val:
+        :rtype: GetTemporaryLinkError
         """
         return cls('path', val)
 
@@ -4177,6 +4673,22 @@ class GetTemporaryLinkError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'path'
+
+    def is_email_not_verified(self):
+        """
+        Check if the union tag is ``email_not_verified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_not_verified'
+
+    def is_unsupported_file(self):
+        """
+        Check if the union tag is ``unsupported_file``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_file'
 
     def is_other(self):
         """
@@ -4190,14 +4702,14 @@ class GetTemporaryLinkError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetTemporaryLinkError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTemporaryLinkError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetTemporaryLinkError(%r, %r)' % (self._tag, self._value)
@@ -4237,7 +4749,7 @@ class GetTemporaryLinkResult(bb.Struct):
         """
         Metadata of the file.
 
-        :rtype: files.FileMetadata
+        :rtype: FileMetadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -4278,8 +4790,8 @@ class GetTemporaryLinkResult(bb.Struct):
         self._link_value = None
         self._link_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetTemporaryLinkResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTemporaryLinkResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetTemporaryLinkResult(metadata={!r}, link={!r})'.format(
@@ -4328,7 +4840,7 @@ class GetTemporaryUploadLinkArg(bb.Struct):
         commit. Equivalent to the parameters provided to
         :meth:`dropbox.dropbox.Dropbox.files_upload`.
 
-        :rtype: files.CommitInfo
+        :rtype: CommitInfo
         """
         if self._commit_info_present:
             return self._commit_info_value
@@ -4371,8 +4883,8 @@ class GetTemporaryUploadLinkArg(bb.Struct):
         self._duration_value = None
         self._duration_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetTemporaryUploadLinkArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTemporaryUploadLinkArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetTemporaryUploadLinkArg(commit_info={!r}, duration={!r})'.format(
@@ -4426,8 +4938,8 @@ class GetTemporaryUploadLinkResult(bb.Struct):
         self._link_value = None
         self._link_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetTemporaryUploadLinkResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTemporaryUploadLinkResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetTemporaryUploadLinkResult(link={!r})'.format(
@@ -4462,7 +4974,7 @@ class GetThumbnailBatchArg(bb.Struct):
         """
         List of files to get thumbnails.
 
-        :rtype: list of [files.ThumbnailArg]
+        :rtype: list of [ThumbnailArg]
         """
         if self._entries_present:
             return self._entries_value
@@ -4480,8 +4992,8 @@ class GetThumbnailBatchArg(bb.Struct):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetThumbnailBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetThumbnailBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetThumbnailBatchArg(entries={!r})'.format(
@@ -4522,8 +5034,8 @@ class GetThumbnailBatchError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetThumbnailBatchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetThumbnailBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetThumbnailBatchError(%r, %r)' % (self._tag, self._value)
@@ -4555,7 +5067,7 @@ class GetThumbnailBatchResult(bb.Struct):
         """
         List of files and their thumbnails.
 
-        :rtype: list of [files.GetThumbnailBatchResultEntry]
+        :rtype: list of [GetThumbnailBatchResultEntry]
         """
         if self._entries_present:
             return self._entries_value
@@ -4573,8 +5085,8 @@ class GetThumbnailBatchResult(bb.Struct):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetThumbnailBatchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetThumbnailBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetThumbnailBatchResult(entries={!r})'.format(
@@ -4613,7 +5125,7 @@ class GetThumbnailBatchResultData(bb.Struct):
     @property
     def metadata(self):
         """
-        :rtype: files.FileMetadata
+        :rtype: FileMetadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -4654,8 +5166,8 @@ class GetThumbnailBatchResultData(bb.Struct):
         self._thumbnail_value = None
         self._thumbnail_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetThumbnailBatchResultData, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetThumbnailBatchResultData, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetThumbnailBatchResultData(metadata={!r}, thumbnail={!r})'.format(
@@ -4671,8 +5183,8 @@ class GetThumbnailBatchResultEntry(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar ThumbnailError files.GetThumbnailBatchResultEntry.failure: The result
-        for this file if it was an error.
+    :ivar ThumbnailError GetThumbnailBatchResultEntry.failure: The result for
+        this file if it was an error.
     """
 
     _catch_all = 'other'
@@ -4685,8 +5197,8 @@ class GetThumbnailBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param files.GetThumbnailBatchResultData val:
-        :rtype: files.GetThumbnailBatchResultEntry
+        :param GetThumbnailBatchResultData val:
+        :rtype: GetThumbnailBatchResultEntry
         """
         return cls('success', val)
 
@@ -4696,8 +5208,8 @@ class GetThumbnailBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``failure`` tag with value
         ``val``.
 
-        :param files.ThumbnailError val:
-        :rtype: files.GetThumbnailBatchResultEntry
+        :param ThumbnailError val:
+        :rtype: GetThumbnailBatchResultEntry
         """
         return cls('failure', val)
 
@@ -4729,7 +5241,7 @@ class GetThumbnailBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_success` is true.
 
-        :rtype: files.GetThumbnailBatchResultData
+        :rtype: GetThumbnailBatchResultData
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -4741,14 +5253,14 @@ class GetThumbnailBatchResultEntry(bb.Union):
 
         Only call this if :meth:`is_failure` is true.
 
-        :rtype: files.ThumbnailError
+        :rtype: ThumbnailError
         """
         if not self.is_failure():
             raise AttributeError("tag 'failure' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetThumbnailBatchResultEntry, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetThumbnailBatchResultEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetThumbnailBatchResultEntry(%r, %r)' % (self._tag, self._value)
@@ -4830,8 +5342,8 @@ class GpsCoordinates(bb.Struct):
         self._longitude_value = None
         self._longitude_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GpsCoordinates, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GpsCoordinates, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GpsCoordinates(latitude={!r}, longitude={!r})'.format(
@@ -4848,7 +5360,8 @@ class ListFolderArg(bb.Struct):
         be applied recursively to all subfolders and the response will contain
         contents of all subfolders.
     :ivar files.ListFolderArg.include_media_info: If true,
-        ``FileMetadata.media_info`` is set for photo and video.
+        ``FileMetadata.media_info`` is set for photo and video. This parameter
+        will no longer have an effect starting December 2, 2019.
     :ivar files.ListFolderArg.include_deleted: If true, the results will include
         entries for files and folders that used to exist but were deleted.
     :ivar files.ListFolderArg.include_has_explicit_shared_members: If true, the
@@ -4868,6 +5381,8 @@ class ListFolderArg(bb.Struct):
     :ivar files.ListFolderArg.include_property_groups: If set to a valid list of
         template IDs, ``FileMetadata.property_groups`` is set if there exists
         property data associated with the file and each of the listed templates.
+    :ivar files.ListFolderArg.include_non_downloadable_files: If true, include
+        files that are not downloadable, i.e. Google Docs.
     """
 
     __slots__ = [
@@ -4889,6 +5404,8 @@ class ListFolderArg(bb.Struct):
         '_shared_link_present',
         '_include_property_groups_value',
         '_include_property_groups_present',
+        '_include_non_downloadable_files_value',
+        '_include_non_downloadable_files_present',
     ]
 
     _has_required_fields = True
@@ -4902,7 +5419,8 @@ class ListFolderArg(bb.Struct):
                  include_mounted_folders=None,
                  limit=None,
                  shared_link=None,
-                 include_property_groups=None):
+                 include_property_groups=None,
+                 include_non_downloadable_files=None):
         self._path_value = None
         self._path_present = False
         self._recursive_value = None
@@ -4921,6 +5439,8 @@ class ListFolderArg(bb.Struct):
         self._shared_link_present = False
         self._include_property_groups_value = None
         self._include_property_groups_present = False
+        self._include_non_downloadable_files_value = None
+        self._include_non_downloadable_files_present = False
         if path is not None:
             self.path = path
         if recursive is not None:
@@ -4939,6 +5459,8 @@ class ListFolderArg(bb.Struct):
             self.shared_link = shared_link
         if include_property_groups is not None:
             self.include_property_groups = include_property_groups
+        if include_non_downloadable_files is not None:
+            self.include_non_downloadable_files = include_non_downloadable_files
 
     @property
     def path(self):
@@ -4990,7 +5512,8 @@ class ListFolderArg(bb.Struct):
     @property
     def include_media_info(self):
         """
-        If true, ``FileMetadata.media_info`` is set for photo and video.
+        If true, ``FileMetadata.media_info`` is set for photo and video. This
+        parameter will no longer have an effect starting December 2, 2019.
 
         :rtype: bool
         """
@@ -5118,7 +5641,7 @@ class ListFolderArg(bb.Struct):
         present, ``ListFolderArg.path`` will be relative to root of the shared
         link. Only non-recursive mode is supported for shared link.
 
-        :rtype: files.SharedLink
+        :rtype: SharedLink
         """
         if self._shared_link_present:
             return self._shared_link_value
@@ -5167,11 +5690,34 @@ class ListFolderArg(bb.Struct):
         self._include_property_groups_value = None
         self._include_property_groups_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderArg, self)._process_custom_annotations(annotation_type, processor)
+    @property
+    def include_non_downloadable_files(self):
+        """
+        If true, include files that are not downloadable, i.e. Google Docs.
+
+        :rtype: bool
+        """
+        if self._include_non_downloadable_files_present:
+            return self._include_non_downloadable_files_value
+        else:
+            return True
+
+    @include_non_downloadable_files.setter
+    def include_non_downloadable_files(self, val):
+        val = self._include_non_downloadable_files_validator.validate(val)
+        self._include_non_downloadable_files_value = val
+        self._include_non_downloadable_files_present = True
+
+    @include_non_downloadable_files.deleter
+    def include_non_downloadable_files(self):
+        self._include_non_downloadable_files_value = None
+        self._include_non_downloadable_files_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_mounted_folders={!r}, limit={!r}, shared_link={!r}, include_property_groups={!r})'.format(
+        return 'ListFolderArg(path={!r}, recursive={!r}, include_media_info={!r}, include_deleted={!r}, include_has_explicit_shared_members={!r}, include_mounted_folders={!r}, limit={!r}, shared_link={!r}, include_property_groups={!r}, include_non_downloadable_files={!r})'.format(
             self._path_value,
             self._recursive_value,
             self._include_media_info_value,
@@ -5181,6 +5727,7 @@ class ListFolderArg(bb.Struct):
             self._limit_value,
             self._shared_link_value,
             self._include_property_groups_value,
+            self._include_non_downloadable_files_value,
         )
 
 ListFolderArg_validator = bv.Struct(ListFolderArg)
@@ -5231,8 +5778,8 @@ class ListFolderContinueArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderContinueArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListFolderContinueArg(cursor={!r})'.format(
@@ -5264,8 +5811,8 @@ class ListFolderContinueError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.ListFolderContinueError
+        :param LookupError val:
+        :rtype: ListFolderContinueError
         """
         return cls('path', val)
 
@@ -5297,14 +5844,14 @@ class ListFolderContinueError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderContinueError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListFolderContinueError(%r, %r)' % (self._tag, self._value)
@@ -5328,8 +5875,8 @@ class ListFolderError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.ListFolderError
+        :param LookupError val:
+        :rtype: ListFolderError
         """
         return cls('path', val)
 
@@ -5353,14 +5900,14 @@ class ListFolderError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListFolderError(%r, %r)' % (self._tag, self._value)
@@ -5413,8 +5960,8 @@ class ListFolderGetLatestCursorResult(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderGetLatestCursorResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderGetLatestCursorResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListFolderGetLatestCursorResult(cursor={!r})'.format(
@@ -5511,8 +6058,8 @@ class ListFolderLongpollArg(bb.Struct):
         self._timeout_value = None
         self._timeout_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderLongpollArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderLongpollArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListFolderLongpollArg(cursor={!r}, timeout={!r})'.format(
@@ -5555,8 +6102,8 @@ class ListFolderLongpollError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderLongpollError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderLongpollError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListFolderLongpollError(%r, %r)' % (self._tag, self._value)
@@ -5647,8 +6194,8 @@ class ListFolderLongpollResult(bb.Struct):
         self._backoff_value = None
         self._backoff_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderLongpollResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderLongpollResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListFolderLongpollResult(changes={!r}, backoff={!r})'.format(
@@ -5704,7 +6251,7 @@ class ListFolderResult(bb.Struct):
         """
         The files and (direct) subfolders in the folder.
 
-        :rtype: list of [files.Metadata]
+        :rtype: list of [Metadata]
         """
         if self._entries_present:
             return self._entries_value
@@ -5772,8 +6319,8 @@ class ListFolderResult(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListFolderResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListFolderResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListFolderResult(entries={!r}, cursor={!r}, has_more={!r})'.format(
@@ -5851,7 +6398,7 @@ class ListRevisionsArg(bb.Struct):
         Determines the behavior of the API in listing the revisions for a given
         file path or id.
 
-        :rtype: files.ListRevisionsMode
+        :rtype: ListRevisionsMode
         """
         if self._mode_present:
             return self._mode_value
@@ -5892,8 +6439,8 @@ class ListRevisionsArg(bb.Struct):
         self._limit_value = None
         self._limit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListRevisionsArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListRevisionsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListRevisionsArg(path={!r}, mode={!r}, limit={!r})'.format(
@@ -5921,8 +6468,8 @@ class ListRevisionsError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.ListRevisionsError
+        :param LookupError val:
+        :rtype: ListRevisionsError
         """
         return cls('path', val)
 
@@ -5946,14 +6493,14 @@ class ListRevisionsError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListRevisionsError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListRevisionsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListRevisionsError(%r, %r)' % (self._tag, self._value)
@@ -6005,8 +6552,8 @@ class ListRevisionsMode(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListRevisionsMode, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListRevisionsMode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListRevisionsMode(%r, %r)' % (self._tag, self._value)
@@ -6107,7 +6654,7 @@ class ListRevisionsResult(bb.Struct):
         The revisions for the file. Only revisions that are not deleted will
         show up here.
 
-        :rtype: list of [files.FileMetadata]
+        :rtype: list of [FileMetadata]
         """
         if self._entries_present:
             return self._entries_value
@@ -6125,8 +6672,8 @@ class ListRevisionsResult(bb.Struct):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListRevisionsResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListRevisionsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListRevisionsResult(is_deleted={!r}, entries={!r}, server_deleted={!r})'.format(
@@ -6156,6 +6703,8 @@ class LookupError(bb.Union):
     :ivar files.LookupError.restricted_content: The file cannot be transferred
         because the content is restricted.  For example, sometimes there are
         legal restrictions due to copyright claims.
+    :ivar files.LookupError.unsupported_content_type: This operation is not
+        supported for this content type.
     """
 
     _catch_all = 'other'
@@ -6168,6 +6717,8 @@ class LookupError(bb.Union):
     # Attribute is overwritten below the class definition
     restricted_content = None
     # Attribute is overwritten below the class definition
+    unsupported_content_type = None
+    # Attribute is overwritten below the class definition
     other = None
 
     @classmethod
@@ -6177,7 +6728,7 @@ class LookupError(bb.Union):
         value ``val``.
 
         :param Optional[str] val:
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         return cls('malformed_path', val)
 
@@ -6221,6 +6772,14 @@ class LookupError(bb.Union):
         """
         return self._tag == 'restricted_content'
 
+    def is_unsupported_content_type(self):
+        """
+        Check if the union tag is ``unsupported_content_type``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_content_type'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -6244,8 +6803,8 @@ class LookupError(bb.Union):
             raise AttributeError("tag 'malformed_path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(LookupError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'LookupError(%r, %r)' % (self._tag, self._value)
@@ -6260,8 +6819,7 @@ class MediaInfo(bb.Union):
 
     :ivar files.MediaInfo.pending: Indicate the photo/video is still under
         processing and metadata is not available yet.
-    :ivar MediaMetadata files.MediaInfo.metadata: The metadata for the
-        photo/video.
+    :ivar MediaMetadata MediaInfo.metadata: The metadata for the photo/video.
     """
 
     _catch_all = None
@@ -6274,8 +6832,8 @@ class MediaInfo(bb.Union):
         Create an instance of this class set to the ``metadata`` tag with value
         ``val``.
 
-        :param files.MediaMetadata val:
-        :rtype: files.MediaInfo
+        :param MediaMetadata val:
+        :rtype: MediaInfo
         """
         return cls('metadata', val)
 
@@ -6301,14 +6859,14 @@ class MediaInfo(bb.Union):
 
         Only call this if :meth:`is_metadata` is true.
 
-        :rtype: files.MediaMetadata
+        :rtype: MediaMetadata
         """
         if not self.is_metadata():
             raise AttributeError("tag 'metadata' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MediaInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MediaInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MediaInfo(%r, %r)' % (self._tag, self._value)
@@ -6358,7 +6916,7 @@ class MediaMetadata(bb.Struct):
         """
         Dimension of the photo/video.
 
-        :rtype: files.Dimensions
+        :rtype: Dimensions
         """
         if self._dimensions_present:
             return self._dimensions_value
@@ -6384,7 +6942,7 @@ class MediaMetadata(bb.Struct):
         """
         The GPS coordinate of the photo/video.
 
-        :rtype: files.GpsCoordinates
+        :rtype: GpsCoordinates
         """
         if self._location_present:
             return self._location_value
@@ -6431,8 +6989,8 @@ class MediaMetadata(bb.Struct):
         self._time_taken_value = None
         self._time_taken_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MediaMetadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MediaMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MediaMetadata(dimensions={!r}, location={!r}, time_taken={!r})'.format(
@@ -6479,7 +7037,7 @@ class RelocationBatchArgBase(bb.Struct):
         List of entries to be moved or copied. Each entry is
         :class:`RelocationPath`.
 
-        :rtype: list of [files.RelocationPath]
+        :rtype: list of [RelocationPath]
         """
         if self._entries_present:
             return self._entries_value
@@ -6521,8 +7079,8 @@ class RelocationBatchArgBase(bb.Struct):
         self._autorename_value = None
         self._autorename_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchArgBase, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchArgBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchArgBase(entries={!r}, autorename={!r})'.format(
@@ -6581,8 +7139,8 @@ class MoveBatchArg(RelocationBatchArgBase):
         self._allow_ownership_transfer_value = None
         self._allow_ownership_transfer_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MoveBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MoveBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MoveBatchArg(entries={!r}, autorename={!r}, allow_ownership_transfer={!r})'.format(
@@ -6611,8 +7169,8 @@ class PhotoMetadata(MediaMetadata):
                                             location,
                                             time_taken)
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PhotoMetadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PhotoMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PhotoMetadata(dimensions={!r}, location={!r}, time_taken={!r})'.format(
@@ -6699,8 +7257,8 @@ class PreviewArg(bb.Struct):
         self._rev_value = None
         self._rev_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PreviewArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PreviewArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PreviewArg(path={!r}, rev={!r})'.format(
@@ -6716,7 +7274,7 @@ class PreviewError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError files.PreviewError.path: An error occurs when downloading
+    :ivar LookupError PreviewError.path: An error occurs when downloading
         metadata for the file.
     :ivar files.PreviewError.in_progress: This preview generation is still in
         progress and the file is not ready  for preview yet.
@@ -6740,8 +7298,8 @@ class PreviewError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.PreviewError
+        :param LookupError val:
+        :rtype: PreviewError
         """
         return cls('path', val)
 
@@ -6783,14 +7341,14 @@ class PreviewError(bb.Union):
 
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PreviewError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PreviewError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PreviewError(%r, %r)' % (self._tag, self._value)
@@ -6872,8 +7430,8 @@ class RelocationPath(bb.Struct):
         self._to_path_value = None
         self._to_path_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationPath, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationPath, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationPath(from_path={!r}, to_path={!r})'.format(
@@ -7003,8 +7561,8 @@ class RelocationArg(RelocationPath):
         self._allow_ownership_transfer_value = None
         self._allow_ownership_transfer_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationArg(from_path={!r}, to_path={!r}, allow_shared_folder={!r}, autorename={!r}, allow_ownership_transfer={!r})'.format(
@@ -7106,8 +7664,8 @@ class RelocationBatchArg(RelocationBatchArgBase):
         self._allow_ownership_transfer_value = None
         self._allow_ownership_transfer_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchArg(entries={!r}, autorename={!r}, allow_shared_folder={!r}, allow_ownership_transfer={!r})'.format(
@@ -7144,6 +7702,8 @@ class RelocationError(bb.Union):
     :ivar files.RelocationError.internal_error: Something went wrong with the
         job on Dropbox's end. You'll need to verify that the action you were
         taking succeeded, and if not, try again. This should happen very rarely.
+    :ivar files.RelocationError.cant_move_shared_folder: Can't move the shared
+        folder to the given destination.
     """
 
     _catch_all = 'other'
@@ -7164,6 +7724,8 @@ class RelocationError(bb.Union):
     # Attribute is overwritten below the class definition
     internal_error = None
     # Attribute is overwritten below the class definition
+    cant_move_shared_folder = None
+    # Attribute is overwritten below the class definition
     other = None
 
     @classmethod
@@ -7172,8 +7734,8 @@ class RelocationError(bb.Union):
         Create an instance of this class set to the ``from_lookup`` tag with
         value ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.RelocationError
+        :param LookupError val:
+        :rtype: RelocationError
         """
         return cls('from_lookup', val)
 
@@ -7183,8 +7745,8 @@ class RelocationError(bb.Union):
         Create an instance of this class set to the ``from_write`` tag with
         value ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.RelocationError
+        :param WriteError val:
+        :rtype: RelocationError
         """
         return cls('from_write', val)
 
@@ -7194,8 +7756,8 @@ class RelocationError(bb.Union):
         Create an instance of this class set to the ``to`` tag with value
         ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.RelocationError
+        :param WriteError val:
+        :rtype: RelocationError
         """
         return cls('to', val)
 
@@ -7287,6 +7849,14 @@ class RelocationError(bb.Union):
         """
         return self._tag == 'internal_error'
 
+    def is_cant_move_shared_folder(self):
+        """
+        Check if the union tag is ``cant_move_shared_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cant_move_shared_folder'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -7299,7 +7869,7 @@ class RelocationError(bb.Union):
         """
         Only call this if :meth:`is_from_lookup` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_from_lookup():
             raise AttributeError("tag 'from_lookup' not set")
@@ -7309,7 +7879,7 @@ class RelocationError(bb.Union):
         """
         Only call this if :meth:`is_from_write` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_from_write():
             raise AttributeError("tag 'from_write' not set")
@@ -7319,14 +7889,14 @@ class RelocationError(bb.Union):
         """
         Only call this if :meth:`is_to` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_to():
             raise AttributeError("tag 'to' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationError(%r, %r)' % (self._tag, self._value)
@@ -7354,8 +7924,8 @@ class RelocationBatchError(RelocationError):
         """
         return self._tag == 'too_many_write_operations'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchError(%r, %r)' % (self._tag, self._value)
@@ -7368,7 +7938,7 @@ class RelocationBatchErrorEntry(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar RelocationError files.RelocationBatchErrorEntry.relocation_error: User
+    :ivar RelocationError RelocationBatchErrorEntry.relocation_error: User
         errors that retry won't help.
     :ivar files.RelocationBatchErrorEntry.internal_error: Something went wrong
         with the job on Dropbox's end. You'll need to verify that the action you
@@ -7392,8 +7962,8 @@ class RelocationBatchErrorEntry(bb.Union):
         Create an instance of this class set to the ``relocation_error`` tag
         with value ``val``.
 
-        :param files.RelocationError val:
-        :rtype: files.RelocationBatchErrorEntry
+        :param RelocationError val:
+        :rtype: RelocationBatchErrorEntry
         """
         return cls('relocation_error', val)
 
@@ -7435,14 +8005,14 @@ class RelocationBatchErrorEntry(bb.Union):
 
         Only call this if :meth:`is_relocation_error` is true.
 
-        :rtype: files.RelocationError
+        :rtype: RelocationError
         """
         if not self.is_relocation_error():
             raise AttributeError("tag 'relocation_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchErrorEntry, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchErrorEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchErrorEntry(%r, %r)' % (self._tag, self._value)
@@ -7455,10 +8025,10 @@ class RelocationBatchJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar RelocationBatchResult files.RelocationBatchJobStatus.complete: The
-        copy or move batch job has finished.
-    :ivar RelocationBatchError files.RelocationBatchJobStatus.failed: The copy
-        or move batch job has failed with exception.
+    :ivar RelocationBatchResult RelocationBatchJobStatus.complete: The copy or
+        move batch job has finished.
+    :ivar RelocationBatchError RelocationBatchJobStatus.failed: The copy or move
+        batch job has failed with exception.
     """
 
     @classmethod
@@ -7467,8 +8037,8 @@ class RelocationBatchJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.RelocationBatchResult val:
-        :rtype: files.RelocationBatchJobStatus
+        :param RelocationBatchResult val:
+        :rtype: RelocationBatchJobStatus
         """
         return cls('complete', val)
 
@@ -7478,8 +8048,8 @@ class RelocationBatchJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param files.RelocationBatchError val:
-        :rtype: files.RelocationBatchJobStatus
+        :param RelocationBatchError val:
+        :rtype: RelocationBatchJobStatus
         """
         return cls('failed', val)
 
@@ -7505,7 +8075,7 @@ class RelocationBatchJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.RelocationBatchResult
+        :rtype: RelocationBatchResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -7517,14 +8087,14 @@ class RelocationBatchJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: files.RelocationBatchError
+        :rtype: RelocationBatchError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchJobStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchJobStatus(%r, %r)' % (self._tag, self._value)
@@ -7552,8 +8122,8 @@ class RelocationBatchLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.RelocationBatchResult val:
-        :rtype: files.RelocationBatchLaunch
+        :param RelocationBatchResult val:
+        :rtype: RelocationBatchLaunch
         """
         return cls('complete', val)
 
@@ -7577,14 +8147,14 @@ class RelocationBatchLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.RelocationBatchResult
+        :rtype: RelocationBatchResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchLaunch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchLaunch(%r, %r)' % (self._tag, self._value)
@@ -7611,7 +8181,7 @@ class RelocationBatchResult(FileOpsResult):
     @property
     def entries(self):
         """
-        :rtype: list of [files.RelocationBatchResultData]
+        :rtype: list of [RelocationBatchResultData]
         """
         if self._entries_present:
             return self._entries_value
@@ -7629,8 +8199,8 @@ class RelocationBatchResult(FileOpsResult):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchResult(entries={!r})'.format(
@@ -7664,7 +8234,7 @@ class RelocationBatchResultData(bb.Struct):
         """
         Metadata of the relocated object.
 
-        :rtype: files.Metadata
+        :rtype: Metadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -7682,8 +8252,8 @@ class RelocationBatchResultData(bb.Struct):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchResultData, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchResultData, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchResultData(metadata={!r})'.format(
@@ -7709,8 +8279,8 @@ class RelocationBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param files.Metadata val:
-        :rtype: files.RelocationBatchResultEntry
+        :param Metadata val:
+        :rtype: RelocationBatchResultEntry
         """
         return cls('success', val)
 
@@ -7720,8 +8290,8 @@ class RelocationBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``failure`` tag with value
         ``val``.
 
-        :param files.RelocationBatchErrorEntry val:
-        :rtype: files.RelocationBatchResultEntry
+        :param RelocationBatchErrorEntry val:
+        :rtype: RelocationBatchResultEntry
         """
         return cls('failure', val)
 
@@ -7753,7 +8323,7 @@ class RelocationBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_success` is true.
 
-        :rtype: files.Metadata
+        :rtype: Metadata
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -7763,14 +8333,14 @@ class RelocationBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_failure` is true.
 
-        :rtype: files.RelocationBatchErrorEntry
+        :rtype: RelocationBatchErrorEntry
         """
         if not self.is_failure():
             raise AttributeError("tag 'failure' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchResultEntry, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchResultEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchResultEntry(%r, %r)' % (self._tag, self._value)
@@ -7779,16 +8349,16 @@ RelocationBatchResultEntry_validator = bv.Union(RelocationBatchResultEntry)
 
 class RelocationBatchV2JobStatus(async_.PollResultBase):
     """
-    Result returned by :meth:`dropbox.dropbox.Dropbox.files_copy_batch` or
-    :meth:`dropbox.dropbox.Dropbox.files_move_batch` that may either launch an
-    asynchronous job or complete synchronously.
+    Result returned by :meth:`dropbox.dropbox.Dropbox.files_copy_batch_check` or
+    :meth:`dropbox.dropbox.Dropbox.files_move_batch_check` that may either be in
+    progress or completed with result for each entry.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar RelocationBatchV2Result files.RelocationBatchV2JobStatus.complete: The
-        copy or move batch job has finished.
+    :ivar RelocationBatchV2Result RelocationBatchV2JobStatus.complete: The copy
+        or move batch job has finished.
     """
 
     @classmethod
@@ -7797,8 +8367,8 @@ class RelocationBatchV2JobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.RelocationBatchV2Result val:
-        :rtype: files.RelocationBatchV2JobStatus
+        :param RelocationBatchV2Result val:
+        :rtype: RelocationBatchV2JobStatus
         """
         return cls('complete', val)
 
@@ -7816,14 +8386,14 @@ class RelocationBatchV2JobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.RelocationBatchV2Result
+        :rtype: RelocationBatchV2Result
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchV2JobStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchV2JobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchV2JobStatus(%r, %r)' % (self._tag, self._value)
@@ -7847,8 +8417,8 @@ class RelocationBatchV2Launch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.RelocationBatchV2Result val:
-        :rtype: files.RelocationBatchV2Launch
+        :param RelocationBatchV2Result val:
+        :rtype: RelocationBatchV2Launch
         """
         return cls('complete', val)
 
@@ -7864,14 +8434,14 @@ class RelocationBatchV2Launch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.RelocationBatchV2Result
+        :rtype: RelocationBatchV2Result
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchV2Launch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchV2Launch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchV2Launch(%r, %r)' % (self._tag, self._value)
@@ -7906,7 +8476,7 @@ class RelocationBatchV2Result(FileOpsResult):
         Each entry in CopyBatchArg.entries or ``MoveBatchArg.entries`` will
         appear at the same position inside ``RelocationBatchV2Result.entries``.
 
-        :rtype: list of [files.RelocationBatchResultEntry]
+        :rtype: list of [RelocationBatchResultEntry]
         """
         if self._entries_present:
             return self._entries_value
@@ -7924,8 +8494,8 @@ class RelocationBatchV2Result(FileOpsResult):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationBatchV2Result, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationBatchV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationBatchV2Result(entries={!r})'.format(
@@ -7959,7 +8529,7 @@ class RelocationResult(FileOpsResult):
         """
         Metadata of the relocated object.
 
-        :rtype: files.Metadata
+        :rtype: Metadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -7977,8 +8547,8 @@ class RelocationResult(FileOpsResult):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RelocationResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RelocationResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RelocationResult(metadata={!r})'.format(
@@ -8060,8 +8630,8 @@ class RestoreArg(bb.Struct):
         self._rev_value = None
         self._rev_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RestoreArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RestoreArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RestoreArg(path={!r}, rev={!r})'.format(
@@ -8077,10 +8647,10 @@ class RestoreError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError files.RestoreError.path_lookup: An error occurs when
-        downloading metadata for the file.
-    :ivar WriteError files.RestoreError.path_write: An error occurs when trying
-        to restore the file to that path.
+    :ivar LookupError RestoreError.path_lookup: An error occurs when downloading
+        metadata for the file.
+    :ivar WriteError RestoreError.path_write: An error occurs when trying to
+        restore the file to that path.
     :ivar files.RestoreError.invalid_revision: The revision is invalid. It may
         not exist.
     """
@@ -8097,8 +8667,8 @@ class RestoreError(bb.Union):
         Create an instance of this class set to the ``path_lookup`` tag with
         value ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.RestoreError
+        :param LookupError val:
+        :rtype: RestoreError
         """
         return cls('path_lookup', val)
 
@@ -8108,8 +8678,8 @@ class RestoreError(bb.Union):
         Create an instance of this class set to the ``path_write`` tag with
         value ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.RestoreError
+        :param WriteError val:
+        :rtype: RestoreError
         """
         return cls('path_write', val)
 
@@ -8151,7 +8721,7 @@ class RestoreError(bb.Union):
 
         Only call this if :meth:`is_path_lookup` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path_lookup():
             raise AttributeError("tag 'path_lookup' not set")
@@ -8163,14 +8733,14 @@ class RestoreError(bb.Union):
 
         Only call this if :meth:`is_path_write` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_path_write():
             raise AttributeError("tag 'path_write' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RestoreError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RestoreError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RestoreError(%r, %r)' % (self._tag, self._value)
@@ -8253,8 +8823,8 @@ class SaveCopyReferenceArg(bb.Struct):
         self._path_value = None
         self._path_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SaveCopyReferenceArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SaveCopyReferenceArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SaveCopyReferenceArg(copy_reference={!r}, path={!r})'.format(
@@ -8300,8 +8870,8 @@ class SaveCopyReferenceError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.SaveCopyReferenceError
+        :param WriteError val:
+        :rtype: SaveCopyReferenceError
         """
         return cls('path', val)
 
@@ -8357,14 +8927,14 @@ class SaveCopyReferenceError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SaveCopyReferenceError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SaveCopyReferenceError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SaveCopyReferenceError(%r, %r)' % (self._tag, self._value)
@@ -8396,7 +8966,7 @@ class SaveCopyReferenceResult(bb.Struct):
         """
         The metadata of the saved file or folder in the user's Dropbox.
 
-        :rtype: files.Metadata
+        :rtype: Metadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -8414,8 +8984,8 @@ class SaveCopyReferenceResult(bb.Struct):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SaveCopyReferenceResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SaveCopyReferenceResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SaveCopyReferenceResult(metadata={!r})'.format(
@@ -8498,8 +9068,8 @@ class SaveUrlArg(bb.Struct):
         self._url_value = None
         self._url_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SaveUrlArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SaveUrlArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SaveUrlArg(path={!r}, url={!r})'.format(
@@ -8516,6 +9086,7 @@ class SaveUrlError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar files.SaveUrlError.download_failed: Failed downloading the given URL.
+        The url may be password-protected / the password provided was incorrect.
     :ivar files.SaveUrlError.invalid_url: The given URL is invalid.
     :ivar files.SaveUrlError.not_found: The file where the URL is saved to no
         longer exists.
@@ -8537,8 +9108,8 @@ class SaveUrlError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.SaveUrlError
+        :param WriteError val:
+        :rtype: SaveUrlError
         """
         return cls('path', val)
 
@@ -8586,14 +9157,14 @@ class SaveUrlError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SaveUrlError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SaveUrlError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SaveUrlError(%r, %r)' % (self._tag, self._value)
@@ -8606,8 +9177,8 @@ class SaveUrlJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar FileMetadata files.SaveUrlJobStatus.complete: Metadata of the file
-        where the URL is saved to.
+    :ivar FileMetadata SaveUrlJobStatus.complete: Metadata of the file where the
+        URL is saved to.
     """
 
     @classmethod
@@ -8616,8 +9187,8 @@ class SaveUrlJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.FileMetadata val:
-        :rtype: files.SaveUrlJobStatus
+        :param FileMetadata val:
+        :rtype: SaveUrlJobStatus
         """
         return cls('complete', val)
 
@@ -8627,8 +9198,8 @@ class SaveUrlJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param files.SaveUrlError val:
-        :rtype: files.SaveUrlJobStatus
+        :param SaveUrlError val:
+        :rtype: SaveUrlJobStatus
         """
         return cls('failed', val)
 
@@ -8654,7 +9225,7 @@ class SaveUrlJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.FileMetadata
+        :rtype: FileMetadata
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -8664,14 +9235,14 @@ class SaveUrlJobStatus(async_.PollResultBase):
         """
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: files.SaveUrlError
+        :rtype: SaveUrlError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SaveUrlJobStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SaveUrlJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SaveUrlJobStatus(%r, %r)' % (self._tag, self._value)
@@ -8684,8 +9255,8 @@ class SaveUrlResult(async_.LaunchResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar FileMetadata files.SaveUrlResult.complete: Metadata of the file where
-        the URL is saved to.
+    :ivar FileMetadata SaveUrlResult.complete: Metadata of the file where the
+        URL is saved to.
     """
 
     @classmethod
@@ -8694,8 +9265,8 @@ class SaveUrlResult(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.FileMetadata val:
-        :rtype: files.SaveUrlResult
+        :param FileMetadata val:
+        :rtype: SaveUrlResult
         """
         return cls('complete', val)
 
@@ -8713,14 +9284,14 @@ class SaveUrlResult(async_.LaunchResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.FileMetadata
+        :rtype: FileMetadata
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SaveUrlResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SaveUrlResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SaveUrlResult(%r, %r)' % (self._tag, self._value)
@@ -8887,7 +9458,7 @@ class SearchArg(bb.Struct):
         Note that searching file content is only available for Dropbox Business
         accounts.
 
-        :rtype: files.SearchMode
+        :rtype: SearchMode
         """
         if self._mode_present:
             return self._mode_value
@@ -8905,8 +9476,8 @@ class SearchArg(bb.Struct):
         self._mode_value = None
         self._mode_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SearchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SearchArg(path={!r}, query={!r}, start={!r}, max_results={!r}, mode={!r})'.format(
@@ -8936,8 +9507,8 @@ class SearchError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.SearchError
+        :param LookupError val:
+        :rtype: SearchError
         """
         return cls('path', val)
 
@@ -8961,14 +9532,14 @@ class SearchError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SearchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SearchError(%r, %r)' % (self._tag, self._value)
@@ -9008,7 +9579,7 @@ class SearchMatch(bb.Struct):
         """
         The type of the match.
 
-        :rtype: files.SearchMatchType
+        :rtype: SearchMatchType
         """
         if self._match_type_present:
             return self._match_type_value
@@ -9031,7 +9602,7 @@ class SearchMatch(bb.Struct):
         """
         The metadata for the matched file or folder.
 
-        :rtype: files.Metadata
+        :rtype: Metadata
         """
         if self._metadata_present:
             return self._metadata_value
@@ -9049,8 +9620,8 @@ class SearchMatch(bb.Struct):
         self._metadata_value = None
         self._metadata_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SearchMatch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchMatch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SearchMatch(match_type={!r}, metadata={!r})'.format(
@@ -9108,8 +9679,8 @@ class SearchMatchType(bb.Union):
         """
         return self._tag == 'both'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SearchMatchType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchMatchType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SearchMatchType(%r, %r)' % (self._tag, self._value)
@@ -9161,8 +9732,8 @@ class SearchMode(bb.Union):
         """
         return self._tag == 'deleted_filename'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SearchMode, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchMode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SearchMode(%r, %r)' % (self._tag, self._value)
@@ -9214,7 +9785,7 @@ class SearchResult(bb.Struct):
         """
         A list (possibly empty) of matches for the query.
 
-        :rtype: list of [files.SearchMatch]
+        :rtype: list of [SearchMatch]
         """
         if self._matches_present:
             return self._matches_value
@@ -9282,8 +9853,8 @@ class SearchResult(bb.Struct):
         self._start_value = None
         self._start_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SearchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SearchResult(matches={!r}, more={!r}, start={!r})'.format(
@@ -9370,8 +9941,8 @@ class SharedLink(bb.Struct):
         self._password_value = None
         self._password_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharedLink, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLink, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SharedLink(url={!r}, password={!r})'.format(
@@ -9423,8 +9994,8 @@ class SymlinkInfo(bb.Struct):
         self._target_value = None
         self._target_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SymlinkInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SymlinkInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SymlinkInfo(target={!r})'.format(
@@ -9491,8 +10062,8 @@ class SyncSetting(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SyncSetting, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SyncSetting, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SyncSetting(%r, %r)' % (self._tag, self._value)
@@ -9544,8 +10115,8 @@ class SyncSettingArg(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SyncSettingArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SyncSettingArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SyncSettingArg(%r, %r)' % (self._tag, self._value)
@@ -9578,8 +10149,8 @@ class SyncSettingsError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.SyncSettingsError
+        :param LookupError val:
+        :rtype: SyncSettingsError
         """
         return cls('path', val)
 
@@ -9619,14 +10190,14 @@ class SyncSettingsError(bb.Union):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SyncSettingsError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SyncSettingsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SyncSettingsError(%r, %r)' % (self._tag, self._value)
@@ -9710,7 +10281,7 @@ class ThumbnailArg(bb.Struct):
         that are photos, jpeg should be preferred, while png is  better for
         screenshots and digital arts.
 
-        :rtype: files.ThumbnailFormat
+        :rtype: ThumbnailFormat
         """
         if self._format_present:
             return self._format_value
@@ -9733,7 +10304,7 @@ class ThumbnailArg(bb.Struct):
         """
         The size for the thumbnail image.
 
-        :rtype: files.ThumbnailSize
+        :rtype: ThumbnailSize
         """
         if self._size_present:
             return self._size_value
@@ -9756,7 +10327,7 @@ class ThumbnailArg(bb.Struct):
         """
         How to resize and crop the image to achieve the desired size.
 
-        :rtype: files.ThumbnailMode
+        :rtype: ThumbnailMode
         """
         if self._mode_present:
             return self._mode_value
@@ -9774,8 +10345,8 @@ class ThumbnailArg(bb.Struct):
         self._mode_value = None
         self._mode_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ThumbnailArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ThumbnailArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ThumbnailArg(path={!r}, format={!r}, size={!r}, mode={!r})'.format(
@@ -9793,8 +10364,8 @@ class ThumbnailError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError files.ThumbnailError.path: An error occurs when
-        downloading metadata for the image.
+    :ivar LookupError ThumbnailError.path: An error occurs when downloading
+        metadata for the image.
     :ivar files.ThumbnailError.unsupported_extension: The file extension doesn't
         allow conversion to a thumbnail.
     :ivar files.ThumbnailError.unsupported_image: The image cannot be converted
@@ -9817,8 +10388,8 @@ class ThumbnailError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.LookupError val:
-        :rtype: files.ThumbnailError
+        :param LookupError val:
+        :rtype: ThumbnailError
         """
         return cls('path', val)
 
@@ -9860,14 +10431,14 @@ class ThumbnailError(bb.Union):
 
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ThumbnailError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ThumbnailError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ThumbnailError(%r, %r)' % (self._tag, self._value)
@@ -9903,8 +10474,8 @@ class ThumbnailFormat(bb.Union):
         """
         return self._tag == 'png'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ThumbnailFormat, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ThumbnailFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ThumbnailFormat(%r, %r)' % (self._tag, self._value)
@@ -9957,8 +10528,8 @@ class ThumbnailMode(bb.Union):
         """
         return self._tag == 'fitone_bestfit'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ThumbnailMode, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ThumbnailMode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ThumbnailMode(%r, %r)' % (self._tag, self._value)
@@ -10074,8 +10645,8 @@ class ThumbnailSize(bb.Union):
         """
         return self._tag == 'w2048h1536'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ThumbnailSize, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ThumbnailSize, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ThumbnailSize(%r, %r)' % (self._tag, self._value)
@@ -10088,11 +10659,11 @@ class UploadError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UploadWriteFailed files.UploadError.path: Unable to save the uploaded
+    :ivar UploadWriteFailed UploadError.path: Unable to save the uploaded
         contents to a file.
-    :ivar InvalidPropertyGroupError files.UploadError.properties_error: The
-        supplied property group is invalid. The file has uploaded without
-        property groups.
+    :ivar InvalidPropertyGroupError UploadError.properties_error: The supplied
+        property group is invalid. The file has uploaded without property
+        groups.
     """
 
     _catch_all = 'other'
@@ -10105,8 +10676,8 @@ class UploadError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.UploadWriteFailed val:
-        :rtype: files.UploadError
+        :param UploadWriteFailed val:
+        :rtype: UploadError
         """
         return cls('path', val)
 
@@ -10117,7 +10688,7 @@ class UploadError(bb.Union):
         with value ``val``.
 
         :param file_properties.InvalidPropertyGroupError val:
-        :rtype: files.UploadError
+        :rtype: UploadError
         """
         return cls('properties_error', val)
 
@@ -10151,7 +10722,7 @@ class UploadError(bb.Union):
 
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.UploadWriteFailed
+        :rtype: UploadWriteFailed
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
@@ -10170,8 +10741,8 @@ class UploadError(bb.Union):
             raise AttributeError("tag 'properties_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadError(%r, %r)' % (self._tag, self._value)
@@ -10185,8 +10756,8 @@ class UploadErrorWithProperties(UploadError):
     corresponding ``get_*`` method.
     """
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadErrorWithProperties, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadErrorWithProperties, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadErrorWithProperties(%r, %r)' % (self._tag, self._value)
@@ -10229,7 +10800,7 @@ class UploadSessionAppendArg(bb.Struct):
         """
         Contains the upload session ID and the offset.
 
-        :rtype: files.UploadSessionCursor
+        :rtype: UploadSessionCursor
         """
         if self._cursor_present:
             return self._cursor_value
@@ -10272,8 +10843,8 @@ class UploadSessionAppendArg(bb.Struct):
         self._close_value = None
         self._close_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionAppendArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionAppendArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionAppendArg(cursor={!r}, close={!r})'.format(
@@ -10362,8 +10933,8 @@ class UploadSessionCursor(bb.Struct):
         self._offset_value = None
         self._offset_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionCursor, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionCursor, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionCursor(session_id={!r}, offset={!r})'.format(
@@ -10407,7 +10978,7 @@ class UploadSessionFinishArg(bb.Struct):
         """
         Contains the upload session ID and the offset.
 
-        :rtype: files.UploadSessionCursor
+        :rtype: UploadSessionCursor
         """
         if self._cursor_present:
             return self._cursor_value
@@ -10430,7 +11001,7 @@ class UploadSessionFinishArg(bb.Struct):
         """
         Contains the path and other optional modifiers for the commit.
 
-        :rtype: files.CommitInfo
+        :rtype: CommitInfo
         """
         if self._commit_present:
             return self._commit_value
@@ -10448,8 +11019,8 @@ class UploadSessionFinishArg(bb.Struct):
         self._commit_value = None
         self._commit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionFinishArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionFinishArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionFinishArg(cursor={!r}, commit={!r})'.format(
@@ -10484,7 +11055,7 @@ class UploadSessionFinishBatchArg(bb.Struct):
         """
         Commit information for each file in the batch.
 
-        :rtype: list of [files.UploadSessionFinishArg]
+        :rtype: list of [UploadSessionFinishArg]
         """
         if self._entries_present:
             return self._entries_value
@@ -10502,8 +11073,8 @@ class UploadSessionFinishBatchArg(bb.Struct):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionFinishBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionFinishBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionFinishBatchArg(entries={!r})'.format(
@@ -10519,7 +11090,7 @@ class UploadSessionFinishBatchJobStatus(async_.PollResultBase):
     corresponding ``get_*`` method.
 
     :ivar UploadSessionFinishBatchResult
-        files.UploadSessionFinishBatchJobStatus.complete: The
+        UploadSessionFinishBatchJobStatus.complete: The
         :meth:`dropbox.dropbox.Dropbox.files_upload_session_finish_batch` has
         finished.
     """
@@ -10530,8 +11101,8 @@ class UploadSessionFinishBatchJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.UploadSessionFinishBatchResult val:
-        :rtype: files.UploadSessionFinishBatchJobStatus
+        :param UploadSessionFinishBatchResult val:
+        :rtype: UploadSessionFinishBatchJobStatus
         """
         return cls('complete', val)
 
@@ -10550,14 +11121,14 @@ class UploadSessionFinishBatchJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.UploadSessionFinishBatchResult
+        :rtype: UploadSessionFinishBatchResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionFinishBatchJobStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionFinishBatchJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionFinishBatchJobStatus(%r, %r)' % (self._tag, self._value)
@@ -10585,8 +11156,8 @@ class UploadSessionFinishBatchLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param files.UploadSessionFinishBatchResult val:
-        :rtype: files.UploadSessionFinishBatchLaunch
+        :param UploadSessionFinishBatchResult val:
+        :rtype: UploadSessionFinishBatchLaunch
         """
         return cls('complete', val)
 
@@ -10610,14 +11181,14 @@ class UploadSessionFinishBatchLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: files.UploadSessionFinishBatchResult
+        :rtype: UploadSessionFinishBatchResult
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionFinishBatchLaunch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionFinishBatchLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionFinishBatchLaunch(%r, %r)' % (self._tag, self._value)
@@ -10651,7 +11222,7 @@ class UploadSessionFinishBatchResult(bb.Struct):
         Each entry in ``UploadSessionFinishBatchArg.entries`` will appear at the
         same position inside ``UploadSessionFinishBatchResult.entries``.
 
-        :rtype: list of [files.UploadSessionFinishBatchResultEntry]
+        :rtype: list of [UploadSessionFinishBatchResultEntry]
         """
         if self._entries_present:
             return self._entries_value
@@ -10669,8 +11240,8 @@ class UploadSessionFinishBatchResult(bb.Struct):
         self._entries_value = None
         self._entries_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionFinishBatchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionFinishBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionFinishBatchResult(entries={!r})'.format(
@@ -10694,8 +11265,8 @@ class UploadSessionFinishBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param files.FileMetadata val:
-        :rtype: files.UploadSessionFinishBatchResultEntry
+        :param FileMetadata val:
+        :rtype: UploadSessionFinishBatchResultEntry
         """
         return cls('success', val)
 
@@ -10705,8 +11276,8 @@ class UploadSessionFinishBatchResultEntry(bb.Union):
         Create an instance of this class set to the ``failure`` tag with value
         ``val``.
 
-        :param files.UploadSessionFinishError val:
-        :rtype: files.UploadSessionFinishBatchResultEntry
+        :param UploadSessionFinishError val:
+        :rtype: UploadSessionFinishBatchResultEntry
         """
         return cls('failure', val)
 
@@ -10730,7 +11301,7 @@ class UploadSessionFinishBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_success` is true.
 
-        :rtype: files.FileMetadata
+        :rtype: FileMetadata
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -10740,14 +11311,14 @@ class UploadSessionFinishBatchResultEntry(bb.Union):
         """
         Only call this if :meth:`is_failure` is true.
 
-        :rtype: files.UploadSessionFinishError
+        :rtype: UploadSessionFinishError
         """
         if not self.is_failure():
             raise AttributeError("tag 'failure' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionFinishBatchResultEntry, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionFinishBatchResultEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionFinishBatchResultEntry(%r, %r)' % (self._tag, self._value)
@@ -10760,14 +11331,14 @@ class UploadSessionFinishError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UploadSessionLookupError files.UploadSessionFinishError.lookup_failed:
-        The session arguments are incorrect; the value explains the reason.
-    :ivar WriteError files.UploadSessionFinishError.path: Unable to save the
-        uploaded contents to a file. Data has already been appended to the
-        upload session. Please retry with empty data body and updated offset.
-    :ivar InvalidPropertyGroupError
-        files.UploadSessionFinishError.properties_error: The supplied property
-        group is invalid. The file has uploaded without property groups.
+    :ivar UploadSessionLookupError UploadSessionFinishError.lookup_failed: The
+        session arguments are incorrect; the value explains the reason.
+    :ivar WriteError UploadSessionFinishError.path: Unable to save the uploaded
+        contents to a file. Data has already been appended to the upload
+        session. Please retry with empty data body and updated offset.
+    :ivar InvalidPropertyGroupError UploadSessionFinishError.properties_error:
+        The supplied property group is invalid. The file has uploaded without
+        property groups.
     :ivar files.UploadSessionFinishError.too_many_shared_folder_targets: The
         batch request commits files into too many different shared folders.
         Please limit your batch request to files contained in a single shared
@@ -10791,8 +11362,8 @@ class UploadSessionFinishError(bb.Union):
         Create an instance of this class set to the ``lookup_failed`` tag with
         value ``val``.
 
-        :param files.UploadSessionLookupError val:
-        :rtype: files.UploadSessionFinishError
+        :param UploadSessionLookupError val:
+        :rtype: UploadSessionFinishError
         """
         return cls('lookup_failed', val)
 
@@ -10802,8 +11373,8 @@ class UploadSessionFinishError(bb.Union):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param files.WriteError val:
-        :rtype: files.UploadSessionFinishError
+        :param WriteError val:
+        :rtype: UploadSessionFinishError
         """
         return cls('path', val)
 
@@ -10814,7 +11385,7 @@ class UploadSessionFinishError(bb.Union):
         with value ``val``.
 
         :param file_properties.InvalidPropertyGroupError val:
-        :rtype: files.UploadSessionFinishError
+        :rtype: UploadSessionFinishError
         """
         return cls('properties_error', val)
 
@@ -10872,7 +11443,7 @@ class UploadSessionFinishError(bb.Union):
 
         Only call this if :meth:`is_lookup_failed` is true.
 
-        :rtype: files.UploadSessionLookupError
+        :rtype: UploadSessionLookupError
         """
         if not self.is_lookup_failed():
             raise AttributeError("tag 'lookup_failed' not set")
@@ -10886,7 +11457,7 @@ class UploadSessionFinishError(bb.Union):
 
         Only call this if :meth:`is_path` is true.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
@@ -10905,8 +11476,8 @@ class UploadSessionFinishError(bb.Union):
             raise AttributeError("tag 'properties_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionFinishError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionFinishError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionFinishError(%r, %r)' % (self._tag, self._value)
@@ -10921,14 +11492,13 @@ class UploadSessionLookupError(bb.Union):
 
     :ivar files.UploadSessionLookupError.not_found: The upload session ID was
         not found or has expired. Upload sessions are valid for 48 hours.
-    :ivar UploadSessionOffsetError
-        files.UploadSessionLookupError.incorrect_offset: The specified offset
-        was incorrect. See the value for the correct offset. This error may
-        occur when a previous request was received and processed successfully
-        but the client did not receive the response, e.g. due to a network
-        error.
+    :ivar UploadSessionOffsetError UploadSessionLookupError.incorrect_offset:
+        The specified offset was incorrect. See the value for the correct
+        offset. This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.
     :ivar files.UploadSessionLookupError.closed: You are attempting to append
-        data to an upload session that has alread been closed (i.e. committed).
+        data to an upload session that has already been closed (i.e. committed).
     :ivar files.UploadSessionLookupError.not_closed: The session must be closed
         before calling upload_session/finish_batch.
     :ivar files.UploadSessionLookupError.too_large: You can not append to the
@@ -10954,8 +11524,8 @@ class UploadSessionLookupError(bb.Union):
         Create an instance of this class set to the ``incorrect_offset`` tag
         with value ``val``.
 
-        :param files.UploadSessionOffsetError val:
-        :rtype: files.UploadSessionLookupError
+        :param UploadSessionOffsetError val:
+        :rtype: UploadSessionLookupError
         """
         return cls('incorrect_offset', val)
 
@@ -11016,14 +11586,14 @@ class UploadSessionLookupError(bb.Union):
 
         Only call this if :meth:`is_incorrect_offset` is true.
 
-        :rtype: files.UploadSessionOffsetError
+        :rtype: UploadSessionOffsetError
         """
         if not self.is_incorrect_offset():
             raise AttributeError("tag 'incorrect_offset' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionLookupError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionLookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionLookupError(%r, %r)' % (self._tag, self._value)
@@ -11073,8 +11643,8 @@ class UploadSessionOffsetError(bb.Struct):
         self._correct_offset_value = None
         self._correct_offset_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionOffsetError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionOffsetError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionOffsetError(correct_offset={!r})'.format(
@@ -11130,8 +11700,8 @@ class UploadSessionStartArg(bb.Struct):
         self._close_value = None
         self._close_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionStartArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionStartArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionStartArg(close={!r})'.format(
@@ -11187,8 +11757,8 @@ class UploadSessionStartResult(bb.Struct):
         self._session_id_value = None
         self._session_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadSessionStartResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionStartResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadSessionStartResult(session_id={!r})'.format(
@@ -11233,7 +11803,7 @@ class UploadWriteFailed(bb.Struct):
         """
         The reason why the file couldn't be saved.
 
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         if self._reason_present:
             return self._reason_value
@@ -11276,8 +11846,8 @@ class UploadWriteFailed(bb.Struct):
         self._upload_session_id_value = None
         self._upload_session_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadWriteFailed, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadWriteFailed, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadWriteFailed(reason={!r}, upload_session_id={!r})'.format(
@@ -11341,8 +11911,8 @@ class VideoMetadata(MediaMetadata):
         self._duration_value = None
         self._duration_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(VideoMetadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(VideoMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'VideoMetadata(dimensions={!r}, location={!r}, time_taken={!r}, duration={!r})'.format(
@@ -11408,8 +11978,8 @@ class WriteConflictError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(WriteConflictError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(WriteConflictError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'WriteConflictError(%r, %r)' % (self._tag, self._value)
@@ -11427,8 +11997,8 @@ class WriteError(bb.Union):
         formats documentation
         https://www.dropbox.com/developers/documentation/http/documentation#path-formats`
         for more information.
-    :ivar WriteConflictError files.WriteError.conflict: Couldn't write to the
-        target path because there was something in the way.
+    :ivar WriteConflictError WriteError.conflict: Couldn't write to the target
+        path because there was something in the way.
     :ivar files.WriteError.no_write_permission: The user doesn't have
         permissions to write to the target location.
     :ivar files.WriteError.insufficient_space: The user doesn't have enough
@@ -11462,7 +12032,7 @@ class WriteError(bb.Union):
         value ``val``.
 
         :param Optional[str] val:
-        :rtype: files.WriteError
+        :rtype: WriteError
         """
         return cls('malformed_path', val)
 
@@ -11472,8 +12042,8 @@ class WriteError(bb.Union):
         Create an instance of this class set to the ``conflict`` tag with value
         ``val``.
 
-        :param files.WriteConflictError val:
-        :rtype: files.WriteError
+        :param WriteConflictError val:
+        :rtype: WriteError
         """
         return cls('conflict', val)
 
@@ -11563,14 +12133,14 @@ class WriteError(bb.Union):
 
         Only call this if :meth:`is_conflict` is true.
 
-        :rtype: files.WriteConflictError
+        :rtype: WriteConflictError
         """
         if not self.is_conflict():
             raise AttributeError("tag 'conflict' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(WriteError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(WriteError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'WriteError(%r, %r)' % (self._tag, self._value)
@@ -11618,7 +12188,7 @@ class WriteMode(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: files.WriteMode
+        :rtype: WriteMode
         """
         return cls('update', val)
 
@@ -11661,8 +12231,8 @@ class WriteMode(bb.Union):
             raise AttributeError("tag 'update' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(WriteMode, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(WriteMode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'WriteMode(%r, %r)' % (self._tag, self._value)
@@ -12006,12 +12576,15 @@ DownloadArg._all_fields_ = [
 ]
 
 DownloadError._path_validator = LookupError_validator
+DownloadError._unsupported_file_validator = bv.Void()
 DownloadError._other_validator = bv.Void()
 DownloadError._tagmap = {
     'path': DownloadError._path_validator,
+    'unsupported_file': DownloadError._unsupported_file_validator,
     'other': DownloadError._other_validator,
 }
 
+DownloadError.unsupported_file = DownloadError('unsupported_file')
 DownloadError.other = DownloadError('other')
 
 DownloadZipArg._path_validator = ReadPath_validator
@@ -12037,6 +12610,51 @@ DownloadZipResult._metadata_validator = FolderMetadata_validator
 DownloadZipResult._all_field_names_ = set(['metadata'])
 DownloadZipResult._all_fields_ = [('metadata', DownloadZipResult._metadata_validator)]
 
+ExportArg._path_validator = ReadPath_validator
+ExportArg._all_field_names_ = set(['path'])
+ExportArg._all_fields_ = [('path', ExportArg._path_validator)]
+
+ExportError._path_validator = LookupError_validator
+ExportError._non_exportable_validator = bv.Void()
+ExportError._other_validator = bv.Void()
+ExportError._tagmap = {
+    'path': ExportError._path_validator,
+    'non_exportable': ExportError._non_exportable_validator,
+    'other': ExportError._other_validator,
+}
+
+ExportError.non_exportable = ExportError('non_exportable')
+ExportError.other = ExportError('other')
+
+ExportInfo._export_as_validator = bv.Nullable(bv.String())
+ExportInfo._all_field_names_ = set(['export_as'])
+ExportInfo._all_fields_ = [('export_as', ExportInfo._export_as_validator)]
+
+ExportMetadata._name_validator = bv.String()
+ExportMetadata._size_validator = bv.UInt64()
+ExportMetadata._export_hash_validator = bv.Nullable(Sha256HexHash_validator)
+ExportMetadata._all_field_names_ = set([
+    'name',
+    'size',
+    'export_hash',
+])
+ExportMetadata._all_fields_ = [
+    ('name', ExportMetadata._name_validator),
+    ('size', ExportMetadata._size_validator),
+    ('export_hash', ExportMetadata._export_hash_validator),
+]
+
+ExportResult._export_metadata_validator = ExportMetadata_validator
+ExportResult._file_metadata_validator = FileMetadata_validator
+ExportResult._all_field_names_ = set([
+    'export_metadata',
+    'file_metadata',
+])
+ExportResult._all_fields_ = [
+    ('export_metadata', ExportResult._export_metadata_validator),
+    ('file_metadata', ExportResult._file_metadata_validator),
+]
+
 FileMetadata._id_validator = Id_validator
 FileMetadata._client_modified_validator = common.DropboxTimestamp_validator
 FileMetadata._server_modified_validator = common.DropboxTimestamp_validator
@@ -12045,6 +12663,8 @@ FileMetadata._size_validator = bv.UInt64()
 FileMetadata._media_info_validator = bv.Nullable(MediaInfo_validator)
 FileMetadata._symlink_info_validator = bv.Nullable(SymlinkInfo_validator)
 FileMetadata._sharing_info_validator = bv.Nullable(FileSharingInfo_validator)
+FileMetadata._is_downloadable_validator = bv.Boolean()
+FileMetadata._export_info_validator = bv.Nullable(ExportInfo_validator)
 FileMetadata._property_groups_validator = bv.Nullable(bv.List(file_properties.PropertyGroup_validator))
 FileMetadata._has_explicit_shared_members_validator = bv.Nullable(bv.Boolean())
 FileMetadata._content_hash_validator = bv.Nullable(Sha256HexHash_validator)
@@ -12057,6 +12677,8 @@ FileMetadata._field_names_ = set([
     'media_info',
     'symlink_info',
     'sharing_info',
+    'is_downloadable',
+    'export_info',
     'property_groups',
     'has_explicit_shared_members',
     'content_hash',
@@ -12071,6 +12693,8 @@ FileMetadata._fields_ = [
     ('media_info', FileMetadata._media_info_validator),
     ('symlink_info', FileMetadata._symlink_info_validator),
     ('sharing_info', FileMetadata._sharing_info_validator),
+    ('is_downloadable', FileMetadata._is_downloadable_validator),
+    ('export_info', FileMetadata._export_info_validator),
     ('property_groups', FileMetadata._property_groups_validator),
     ('has_explicit_shared_members', FileMetadata._has_explicit_shared_members_validator),
     ('content_hash', FileMetadata._content_hash_validator),
@@ -12160,12 +12784,18 @@ GetTemporaryLinkArg._all_field_names_ = set(['path'])
 GetTemporaryLinkArg._all_fields_ = [('path', GetTemporaryLinkArg._path_validator)]
 
 GetTemporaryLinkError._path_validator = LookupError_validator
+GetTemporaryLinkError._email_not_verified_validator = bv.Void()
+GetTemporaryLinkError._unsupported_file_validator = bv.Void()
 GetTemporaryLinkError._other_validator = bv.Void()
 GetTemporaryLinkError._tagmap = {
     'path': GetTemporaryLinkError._path_validator,
+    'email_not_verified': GetTemporaryLinkError._email_not_verified_validator,
+    'unsupported_file': GetTemporaryLinkError._unsupported_file_validator,
     'other': GetTemporaryLinkError._other_validator,
 }
 
+GetTemporaryLinkError.email_not_verified = GetTemporaryLinkError('email_not_verified')
+GetTemporaryLinkError.unsupported_file = GetTemporaryLinkError('unsupported_file')
 GetTemporaryLinkError.other = GetTemporaryLinkError('other')
 
 GetTemporaryLinkResult._metadata_validator = FileMetadata_validator
@@ -12254,6 +12884,7 @@ ListFolderArg._include_mounted_folders_validator = bv.Boolean()
 ListFolderArg._limit_validator = bv.Nullable(bv.UInt32(min_value=1, max_value=2000))
 ListFolderArg._shared_link_validator = bv.Nullable(SharedLink_validator)
 ListFolderArg._include_property_groups_validator = bv.Nullable(file_properties.TemplateFilterBase_validator)
+ListFolderArg._include_non_downloadable_files_validator = bv.Boolean()
 ListFolderArg._all_field_names_ = set([
     'path',
     'recursive',
@@ -12264,6 +12895,7 @@ ListFolderArg._all_field_names_ = set([
     'limit',
     'shared_link',
     'include_property_groups',
+    'include_non_downloadable_files',
 ])
 ListFolderArg._all_fields_ = [
     ('path', ListFolderArg._path_validator),
@@ -12275,6 +12907,7 @@ ListFolderArg._all_fields_ = [
     ('limit', ListFolderArg._limit_validator),
     ('shared_link', ListFolderArg._shared_link_validator),
     ('include_property_groups', ListFolderArg._include_property_groups_validator),
+    ('include_non_downloadable_files', ListFolderArg._include_non_downloadable_files_validator),
 ]
 
 ListFolderContinueArg._cursor_validator = ListFolderCursor_validator
@@ -12407,6 +13040,7 @@ LookupError._not_found_validator = bv.Void()
 LookupError._not_file_validator = bv.Void()
 LookupError._not_folder_validator = bv.Void()
 LookupError._restricted_content_validator = bv.Void()
+LookupError._unsupported_content_type_validator = bv.Void()
 LookupError._other_validator = bv.Void()
 LookupError._tagmap = {
     'malformed_path': LookupError._malformed_path_validator,
@@ -12414,6 +13048,7 @@ LookupError._tagmap = {
     'not_file': LookupError._not_file_validator,
     'not_folder': LookupError._not_folder_validator,
     'restricted_content': LookupError._restricted_content_validator,
+    'unsupported_content_type': LookupError._unsupported_content_type_validator,
     'other': LookupError._other_validator,
 }
 
@@ -12421,6 +13056,7 @@ LookupError.not_found = LookupError('not_found')
 LookupError.not_file = LookupError('not_file')
 LookupError.not_folder = LookupError('not_folder')
 LookupError.restricted_content = LookupError('restricted_content')
+LookupError.unsupported_content_type = LookupError('unsupported_content_type')
 LookupError.other = LookupError('other')
 
 MediaInfo._pending_validator = bv.Void()
@@ -12551,6 +13187,7 @@ RelocationError._duplicated_or_nested_paths_validator = bv.Void()
 RelocationError._cant_transfer_ownership_validator = bv.Void()
 RelocationError._insufficient_quota_validator = bv.Void()
 RelocationError._internal_error_validator = bv.Void()
+RelocationError._cant_move_shared_folder_validator = bv.Void()
 RelocationError._other_validator = bv.Void()
 RelocationError._tagmap = {
     'from_lookup': RelocationError._from_lookup_validator,
@@ -12564,6 +13201,7 @@ RelocationError._tagmap = {
     'cant_transfer_ownership': RelocationError._cant_transfer_ownership_validator,
     'insufficient_quota': RelocationError._insufficient_quota_validator,
     'internal_error': RelocationError._internal_error_validator,
+    'cant_move_shared_folder': RelocationError._cant_move_shared_folder_validator,
     'other': RelocationError._other_validator,
 }
 
@@ -12575,6 +13213,7 @@ RelocationError.duplicated_or_nested_paths = RelocationError('duplicated_or_nest
 RelocationError.cant_transfer_ownership = RelocationError('cant_transfer_ownership')
 RelocationError.insufficient_quota = RelocationError('insufficient_quota')
 RelocationError.internal_error = RelocationError('internal_error')
+RelocationError.cant_move_shared_folder = RelocationError('cant_move_shared_folder')
 RelocationError.other = RelocationError('other')
 
 RelocationBatchError._too_many_write_operations_validator = bv.Void()
@@ -12763,7 +13402,7 @@ SaveUrlResult._tagmap.update(async_.LaunchResultBase._tagmap)
 
 SearchArg._path_validator = PathROrId_validator
 SearchArg._query_validator = bv.String()
-SearchArg._start_validator = bv.UInt64()
+SearchArg._start_validator = bv.UInt64(max_value=9999)
 SearchArg._max_results_validator = bv.UInt64(min_value=1, max_value=1000)
 SearchArg._mode_validator = SearchMode_validator
 SearchArg._all_field_names_ = set([
@@ -13388,6 +14027,16 @@ download_zip = bb.Route(
     {'host': u'content',
      'style': u'download'},
 )
+export = bb.Route(
+    'export',
+    1,
+    False,
+    ExportArg_validator,
+    ExportResult_validator,
+    ExportError_validator,
+    {'host': u'content',
+     'style': u'download'},
+)
 get_metadata = bb.Route(
     'get_metadata',
     1,
@@ -13760,6 +14409,7 @@ ROUTES = {
     'delete_batch/check': delete_batch_check,
     'download': download,
     'download_zip': download_zip,
+    'export': export,
     'get_metadata': get_metadata,
     'get_preview': get_preview,
     'get_temporary_link': get_temporary_link,

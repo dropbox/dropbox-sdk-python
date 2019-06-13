@@ -56,8 +56,8 @@ class CameraUploadsPolicyState(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CameraUploadsPolicyState, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CameraUploadsPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CameraUploadsPolicyState(%r, %r)' % (self._tag, self._value)
@@ -117,8 +117,8 @@ class EmmState(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(EmmState, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EmmState, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'EmmState(%r, %r)' % (self._tag, self._value)
@@ -159,8 +159,8 @@ class GroupCreation(bb.Union):
         """
         return self._tag == 'admins_only'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupCreation, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupCreation, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupCreation(%r, %r)' % (self._tag, self._value)
@@ -209,13 +209,65 @@ class OfficeAddInPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(OfficeAddInPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OfficeAddInPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'OfficeAddInPolicy(%r, %r)' % (self._tag, self._value)
 
 OfficeAddInPolicy_validator = bv.Union(OfficeAddInPolicy)
+
+class PaperDefaultFolderPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.PaperDefaultFolderPolicy.everyone_in_team: Everyone in
+        team will be the default option when creating a folder in Paper.
+    :ivar team_policies.PaperDefaultFolderPolicy.invite_only: Invite only will
+        be the default option when creating a folder in Paper.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    everyone_in_team = None
+    # Attribute is overwritten below the class definition
+    invite_only = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_everyone_in_team(self):
+        """
+        Check if the union tag is ``everyone_in_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'everyone_in_team'
+
+    def is_invite_only(self):
+        """
+        Check if the union tag is ``invite_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_only'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDefaultFolderPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PaperDefaultFolderPolicy(%r, %r)' % (self._tag, self._value)
+
+PaperDefaultFolderPolicy_validator = bv.Union(PaperDefaultFolderPolicy)
 
 class PaperDeploymentPolicy(bb.Union):
     """
@@ -262,13 +314,65 @@ class PaperDeploymentPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDeploymentPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDeploymentPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDeploymentPolicy(%r, %r)' % (self._tag, self._value)
 
 PaperDeploymentPolicy_validator = bv.Union(PaperDeploymentPolicy)
+
+class PaperDesktopPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.PaperDesktopPolicy.disabled: Do not allow team members
+        to use Paper Desktop.
+    :ivar team_policies.PaperDesktopPolicy.enabled: Allow team members to use
+        Paper Desktop.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDesktopPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PaperDesktopPolicy(%r, %r)' % (self._tag, self._value)
+
+PaperDesktopPolicy_validator = bv.Union(PaperDesktopPolicy)
 
 class PaperEnabledPolicy(bb.Union):
     """
@@ -323,8 +427,8 @@ class PaperEnabledPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperEnabledPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperEnabledPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperEnabledPolicy(%r, %r)' % (self._tag, self._value)
@@ -387,8 +491,8 @@ class PasswordStrengthPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PasswordStrengthPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PasswordStrengthPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PasswordStrengthPolicy(%r, %r)' % (self._tag, self._value)
@@ -440,8 +544,8 @@ class RolloutMethod(bb.Union):
         """
         return self._tag == 'add_member_to_exceptions'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RolloutMethod, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RolloutMethod, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RolloutMethod(%r, %r)' % (self._tag, self._value)
@@ -495,8 +599,8 @@ class SharedFolderJoinPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharedFolderJoinPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderJoinPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SharedFolderJoinPolicy(%r, %r)' % (self._tag, self._value)
@@ -549,8 +653,8 @@ class SharedFolderMemberPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharedFolderMemberPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderMemberPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SharedFolderMemberPolicy(%r, %r)' % (self._tag, self._value)
@@ -619,8 +723,8 @@ class SharedLinkCreatePolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharedLinkCreatePolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkCreatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SharedLinkCreatePolicy(%r, %r)' % (self._tag, self._value)
@@ -671,8 +775,8 @@ class ShowcaseDownloadPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ShowcaseDownloadPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShowcaseDownloadPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ShowcaseDownloadPolicy(%r, %r)' % (self._tag, self._value)
@@ -721,8 +825,8 @@ class ShowcaseEnabledPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ShowcaseEnabledPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShowcaseEnabledPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ShowcaseEnabledPolicy(%r, %r)' % (self._tag, self._value)
@@ -773,8 +877,8 @@ class ShowcaseExternalSharingPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ShowcaseExternalSharingPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShowcaseExternalSharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ShowcaseExternalSharingPolicy(%r, %r)' % (self._tag, self._value)
@@ -825,8 +929,8 @@ class SmartSyncPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SmartSyncPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SmartSyncPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SmartSyncPolicy(%r, %r)' % (self._tag, self._value)
@@ -889,8 +993,8 @@ class SsoPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SsoPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SsoPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SsoPolicy(%r, %r)' % (self._tag, self._value)
@@ -946,7 +1050,7 @@ class TeamMemberPolicies(bb.Struct):
         """
         Policies governing sharing.
 
-        :rtype: team_policies.TeamSharingPolicies
+        :rtype: TeamSharingPolicies
         """
         if self._sharing_present:
             return self._sharing_value
@@ -974,7 +1078,7 @@ class TeamMemberPolicies(bb.Struct):
         new feature and in the future we'll be adding more new fields and
         additional documentation.
 
-        :rtype: team_policies.EmmState
+        :rtype: EmmState
         """
         if self._emm_state_present:
             return self._emm_state_value
@@ -997,7 +1101,7 @@ class TeamMemberPolicies(bb.Struct):
         """
         The admin policy around the Dropbox Office Add-In for this team.
 
-        :rtype: team_policies.OfficeAddInPolicy
+        :rtype: OfficeAddInPolicy
         """
         if self._office_addin_present:
             return self._office_addin_value
@@ -1015,8 +1119,8 @@ class TeamMemberPolicies(bb.Struct):
         self._office_addin_value = None
         self._office_addin_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamMemberPolicies, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMemberPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamMemberPolicies(sharing={!r}, emm_state={!r}, office_addin={!r})'.format(
@@ -1072,7 +1176,7 @@ class TeamSharingPolicies(bb.Struct):
         """
         Who can join folders shared by team members.
 
-        :rtype: team_policies.SharedFolderMemberPolicy
+        :rtype: SharedFolderMemberPolicy
         """
         if self._shared_folder_member_policy_present:
             return self._shared_folder_member_policy_value
@@ -1095,7 +1199,7 @@ class TeamSharingPolicies(bb.Struct):
         """
         Which shared folders team members can join.
 
-        :rtype: team_policies.SharedFolderJoinPolicy
+        :rtype: SharedFolderJoinPolicy
         """
         if self._shared_folder_join_policy_present:
             return self._shared_folder_join_policy_value
@@ -1118,7 +1222,7 @@ class TeamSharingPolicies(bb.Struct):
         """
         Who can view shared links owned by team members.
 
-        :rtype: team_policies.SharedLinkCreatePolicy
+        :rtype: SharedLinkCreatePolicy
         """
         if self._shared_link_create_policy_present:
             return self._shared_link_create_policy_value
@@ -1136,8 +1240,8 @@ class TeamSharingPolicies(bb.Struct):
         self._shared_link_create_policy_value = None
         self._shared_link_create_policy_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamSharingPolicies(shared_folder_member_policy={!r}, shared_folder_join_policy={!r}, shared_link_create_policy={!r})'.format(
@@ -1192,13 +1296,65 @@ class TwoStepVerificationPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TwoStepVerificationPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TwoStepVerificationPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TwoStepVerificationPolicy(%r, %r)' % (self._tag, self._value)
 
 TwoStepVerificationPolicy_validator = bv.Union(TwoStepVerificationPolicy)
+
+class TwoStepVerificationState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.TwoStepVerificationState.required: Enabled require two
+        factor authorization.
+    :ivar team_policies.TwoStepVerificationState.optional: Optional require two
+        factor authorization.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    required = None
+    # Attribute is overwritten below the class definition
+    optional = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_required(self):
+        """
+        Check if the union tag is ``required``.
+
+        :rtype: bool
+        """
+        return self._tag == 'required'
+
+    def is_optional(self):
+        """
+        Check if the union tag is ``optional``.
+
+        :rtype: bool
+        """
+        return self._tag == 'optional'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TwoStepVerificationState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TwoStepVerificationState(%r, %r)' % (self._tag, self._value)
+
+TwoStepVerificationState_validator = bv.Union(TwoStepVerificationState)
 
 CameraUploadsPolicyState._disabled_validator = bv.Void()
 CameraUploadsPolicyState._enabled_validator = bv.Void()
@@ -1252,6 +1408,19 @@ OfficeAddInPolicy.disabled = OfficeAddInPolicy('disabled')
 OfficeAddInPolicy.enabled = OfficeAddInPolicy('enabled')
 OfficeAddInPolicy.other = OfficeAddInPolicy('other')
 
+PaperDefaultFolderPolicy._everyone_in_team_validator = bv.Void()
+PaperDefaultFolderPolicy._invite_only_validator = bv.Void()
+PaperDefaultFolderPolicy._other_validator = bv.Void()
+PaperDefaultFolderPolicy._tagmap = {
+    'everyone_in_team': PaperDefaultFolderPolicy._everyone_in_team_validator,
+    'invite_only': PaperDefaultFolderPolicy._invite_only_validator,
+    'other': PaperDefaultFolderPolicy._other_validator,
+}
+
+PaperDefaultFolderPolicy.everyone_in_team = PaperDefaultFolderPolicy('everyone_in_team')
+PaperDefaultFolderPolicy.invite_only = PaperDefaultFolderPolicy('invite_only')
+PaperDefaultFolderPolicy.other = PaperDefaultFolderPolicy('other')
+
 PaperDeploymentPolicy._full_validator = bv.Void()
 PaperDeploymentPolicy._partial_validator = bv.Void()
 PaperDeploymentPolicy._other_validator = bv.Void()
@@ -1264,6 +1433,19 @@ PaperDeploymentPolicy._tagmap = {
 PaperDeploymentPolicy.full = PaperDeploymentPolicy('full')
 PaperDeploymentPolicy.partial = PaperDeploymentPolicy('partial')
 PaperDeploymentPolicy.other = PaperDeploymentPolicy('other')
+
+PaperDesktopPolicy._disabled_validator = bv.Void()
+PaperDesktopPolicy._enabled_validator = bv.Void()
+PaperDesktopPolicy._other_validator = bv.Void()
+PaperDesktopPolicy._tagmap = {
+    'disabled': PaperDesktopPolicy._disabled_validator,
+    'enabled': PaperDesktopPolicy._enabled_validator,
+    'other': PaperDesktopPolicy._other_validator,
+}
+
+PaperDesktopPolicy.disabled = PaperDesktopPolicy('disabled')
+PaperDesktopPolicy.enabled = PaperDesktopPolicy('enabled')
+PaperDesktopPolicy.other = PaperDesktopPolicy('other')
 
 PaperEnabledPolicy._disabled_validator = bv.Void()
 PaperEnabledPolicy._enabled_validator = bv.Void()
@@ -1460,6 +1642,19 @@ TwoStepVerificationPolicy._tagmap = {
 TwoStepVerificationPolicy.require_tfa_enable = TwoStepVerificationPolicy('require_tfa_enable')
 TwoStepVerificationPolicy.require_tfa_disable = TwoStepVerificationPolicy('require_tfa_disable')
 TwoStepVerificationPolicy.other = TwoStepVerificationPolicy('other')
+
+TwoStepVerificationState._required_validator = bv.Void()
+TwoStepVerificationState._optional_validator = bv.Void()
+TwoStepVerificationState._other_validator = bv.Void()
+TwoStepVerificationState._tagmap = {
+    'required': TwoStepVerificationState._required_validator,
+    'optional': TwoStepVerificationState._optional_validator,
+    'other': TwoStepVerificationState._other_validator,
+}
+
+TwoStepVerificationState.required = TwoStepVerificationState('required')
+TwoStepVerificationState.optional = TwoStepVerificationState('optional')
+TwoStepVerificationState.other = TwoStepVerificationState('other')
 
 ROUTES = {
 }

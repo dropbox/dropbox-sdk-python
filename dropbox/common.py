@@ -42,7 +42,7 @@ class PathRoot(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: common.PathRoot
+        :rtype: PathRoot
         """
         return cls('root', val)
 
@@ -53,7 +53,7 @@ class PathRoot(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: common.PathRoot
+        :rtype: PathRoot
         """
         return cls('namespace_id', val)
 
@@ -117,8 +117,8 @@ class PathRoot(bb.Union):
             raise AttributeError("tag 'namespace_id' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PathRoot, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PathRoot, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PathRoot(%r, %r)' % (self._tag, self._value)
@@ -131,7 +131,7 @@ class PathRootError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar RootInfo common.PathRootError.invalid_root: The root namespace id in
+    :ivar RootInfo PathRootError.invalid_root: The root namespace id in
         Dropbox-API-Path-Root header is not valid. The value of this error is
         use's latest root info.
     :ivar common.PathRootError.no_permission: You don't have permission to
@@ -150,8 +150,8 @@ class PathRootError(bb.Union):
         Create an instance of this class set to the ``invalid_root`` tag with
         value ``val``.
 
-        :param common.RootInfo val:
-        :rtype: common.PathRootError
+        :param RootInfo val:
+        :rtype: PathRootError
         """
         return cls('invalid_root', val)
 
@@ -186,14 +186,14 @@ class PathRootError(bb.Union):
 
         Only call this if :meth:`is_invalid_root` is true.
 
-        :rtype: common.RootInfo
+        :rtype: RootInfo
         """
         if not self.is_invalid_root():
             raise AttributeError("tag 'invalid_root' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PathRootError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PathRootError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PathRootError(%r, %r)' % (self._tag, self._value)
@@ -281,8 +281,8 @@ class RootInfo(bb.Struct):
         self._home_namespace_id_value = None
         self._home_namespace_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RootInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RootInfo(root_namespace_id={!r}, home_namespace_id={!r})'.format(
@@ -341,8 +341,8 @@ class TeamRootInfo(RootInfo):
         self._home_path_value = None
         self._home_path_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamRootInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamRootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamRootInfo(root_namespace_id={!r}, home_namespace_id={!r}, home_path={!r})'.format(
@@ -370,8 +370,8 @@ class UserRootInfo(RootInfo):
         super(UserRootInfo, self).__init__(root_namespace_id,
                                            home_namespace_id)
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserRootInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserRootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UserRootInfo(root_namespace_id={!r}, home_namespace_id={!r})'.format(

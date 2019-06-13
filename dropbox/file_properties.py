@@ -89,7 +89,7 @@ class AddPropertiesArg(bb.Struct):
         """
         The property groups which are to be added to a Dropbox file.
 
-        :rtype: list of [file_properties.PropertyGroup]
+        :rtype: list of [PropertyGroup]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -107,8 +107,8 @@ class AddPropertiesArg(bb.Struct):
         self._property_groups_value = None
         self._property_groups_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddPropertiesArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddPropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AddPropertiesArg(path={!r}, property_groups={!r})'.format(
@@ -143,7 +143,7 @@ class TemplateError(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: file_properties.TemplateError
+        :rtype: TemplateError
         """
         return cls('template_not_found', val)
 
@@ -183,8 +183,8 @@ class TemplateError(bb.Union):
             raise AttributeError("tag 'template_not_found' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TemplateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TemplateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TemplateError(%r, %r)' % (self._tag, self._value)
@@ -210,8 +210,8 @@ class PropertiesError(TemplateError):
         Create an instance of this class set to the ``path`` tag with value
         ``val``.
 
-        :param file_properties.LookupError val:
-        :rtype: file_properties.PropertiesError
+        :param LookupError val:
+        :rtype: PropertiesError
         """
         return cls('path', val)
 
@@ -235,14 +235,14 @@ class PropertiesError(TemplateError):
         """
         Only call this if :meth:`is_path` is true.
 
-        :rtype: file_properties.LookupError
+        :rtype: LookupError
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesError(%r, %r)' % (self._tag, self._value)
@@ -283,8 +283,8 @@ class InvalidPropertyGroupError(PropertiesError):
         """
         return self._tag == 'does_not_fit_template'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(InvalidPropertyGroupError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(InvalidPropertyGroupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'InvalidPropertyGroupError(%r, %r)' % (self._tag, self._value)
@@ -312,8 +312,8 @@ class AddPropertiesError(InvalidPropertyGroupError):
         """
         return self._tag == 'property_group_already_exists'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddPropertiesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddPropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AddPropertiesError(%r, %r)' % (self._tag, self._value)
@@ -414,7 +414,7 @@ class PropertyGroupTemplate(bb.Struct):
         Definitions of the property fields associated with this template. There
         can be up to 32 properties in a single template.
 
-        :rtype: list of [file_properties.PropertyFieldTemplate]
+        :rtype: list of [PropertyFieldTemplate]
         """
         if self._fields_present:
             return self._fields_value
@@ -432,8 +432,8 @@ class PropertyGroupTemplate(bb.Struct):
         self._fields_value = None
         self._fields_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertyGroupTemplate, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertyGroupTemplate, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertyGroupTemplate(name={!r}, description={!r}, fields={!r})'.format(
@@ -459,8 +459,8 @@ class AddTemplateArg(PropertyGroupTemplate):
                                              description,
                                              fields)
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddTemplateArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AddTemplateArg(name={!r}, description={!r}, fields={!r})'.format(
@@ -520,8 +520,8 @@ class AddTemplateResult(bb.Struct):
         self._template_id_value = None
         self._template_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddTemplateResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AddTemplateResult(template_id={!r})'.format(
@@ -579,8 +579,8 @@ class GetTemplateArg(bb.Struct):
         self._template_id_value = None
         self._template_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetTemplateArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetTemplateArg(template_id={!r})'.format(
@@ -604,8 +604,8 @@ class GetTemplateResult(PropertyGroupTemplate):
                                                 description,
                                                 fields)
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetTemplateResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetTemplateResult(name={!r}, description={!r}, fields={!r})'.format(
@@ -665,8 +665,8 @@ class ListTemplateResult(bb.Struct):
         self._template_ids_value = None
         self._template_ids_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListTemplateResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListTemplateResult(template_ids={!r})'.format(
@@ -709,8 +709,8 @@ class LogicalOperator(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(LogicalOperator, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LogicalOperator, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'LogicalOperator(%r, %r)' % (self._tag, self._value)
@@ -749,8 +749,8 @@ class LookUpPropertiesError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(LookUpPropertiesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LookUpPropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'LookUpPropertiesError(%r, %r)' % (self._tag, self._value)
@@ -793,7 +793,7 @@ class LookupError(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: file_properties.LookupError
+        :rtype: LookupError
         """
         return cls('malformed_path', val)
 
@@ -855,8 +855,8 @@ class LookupError(bb.Union):
             raise AttributeError("tag 'malformed_path' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(LookupError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'LookupError(%r, %r)' % (self._tag, self._value)
@@ -922,8 +922,8 @@ class ModifyTemplateError(TemplateError):
         """
         return self._tag == 'template_attribute_too_large'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ModifyTemplateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ModifyTemplateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ModifyTemplateError(%r, %r)' % (self._tag, self._value)
@@ -987,7 +987,7 @@ class OverwritePropertyGroupArg(bb.Struct):
         """
         The property groups "snapshot" updates to force apply.
 
-        :rtype: list of [file_properties.PropertyGroup]
+        :rtype: list of [PropertyGroup]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -1005,8 +1005,8 @@ class OverwritePropertyGroupArg(bb.Struct):
         self._property_groups_value = None
         self._property_groups_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(OverwritePropertyGroupArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OverwritePropertyGroupArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'OverwritePropertyGroupArg(path={!r}, property_groups={!r})'.format(
@@ -1049,7 +1049,7 @@ class PropertiesSearchArg(bb.Struct):
         """
         Queries to search.
 
-        :rtype: list of [file_properties.PropertiesSearchQuery]
+        :rtype: list of [PropertiesSearchQuery]
         """
         if self._queries_present:
             return self._queries_value
@@ -1073,7 +1073,7 @@ class PropertiesSearchArg(bb.Struct):
         Filter results to contain only properties associated with these template
         IDs.
 
-        :rtype: file_properties.TemplateFilter
+        :rtype: TemplateFilter
         """
         if self._template_filter_present:
             return self._template_filter_value
@@ -1091,8 +1091,8 @@ class PropertiesSearchArg(bb.Struct):
         self._template_filter_value = None
         self._template_filter_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesSearchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesSearchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesSearchArg(queries={!r}, template_filter={!r})'.format(
@@ -1149,8 +1149,8 @@ class PropertiesSearchContinueArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesSearchContinueArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesSearchContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesSearchContinueArg(cursor={!r})'.format(
@@ -1193,8 +1193,8 @@ class PropertiesSearchContinueError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesSearchContinueError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesSearchContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesSearchContinueError(%r, %r)' % (self._tag, self._value)
@@ -1218,8 +1218,8 @@ class PropertiesSearchError(bb.Union):
         Create an instance of this class set to the ``property_group_lookup``
         tag with value ``val``.
 
-        :param file_properties.LookUpPropertiesError val:
-        :rtype: file_properties.PropertiesSearchError
+        :param LookUpPropertiesError val:
+        :rtype: PropertiesSearchError
         """
         return cls('property_group_lookup', val)
 
@@ -1243,14 +1243,14 @@ class PropertiesSearchError(bb.Union):
         """
         Only call this if :meth:`is_property_group_lookup` is true.
 
-        :rtype: file_properties.LookUpPropertiesError
+        :rtype: LookUpPropertiesError
         """
         if not self.is_property_group_lookup():
             raise AttributeError("tag 'property_group_lookup' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesSearchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesSearchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesSearchError(%r, %r)' % (self._tag, self._value)
@@ -1378,7 +1378,7 @@ class PropertiesSearchMatch(bb.Struct):
         """
         List of custom property groups associated with the file.
 
-        :rtype: list of [file_properties.PropertyGroup]
+        :rtype: list of [PropertyGroup]
         """
         if self._property_groups_present:
             return self._property_groups_value
@@ -1396,8 +1396,8 @@ class PropertiesSearchMatch(bb.Struct):
         self._property_groups_value = None
         self._property_groups_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesSearchMatch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesSearchMatch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesSearchMatch(id={!r}, path={!r}, is_deleted={!r}, property_groups={!r})'.format(
@@ -1430,7 +1430,7 @@ class PropertiesSearchMode(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: file_properties.PropertiesSearchMode
+        :rtype: PropertiesSearchMode
         """
         return cls('field_name', val)
 
@@ -1462,8 +1462,8 @@ class PropertiesSearchMode(bb.Union):
             raise AttributeError("tag 'field_name' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesSearchMode, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesSearchMode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesSearchMode(%r, %r)' % (self._tag, self._value)
@@ -1536,7 +1536,7 @@ class PropertiesSearchQuery(bb.Struct):
         """
         The mode with which to perform the search.
 
-        :rtype: file_properties.PropertiesSearchMode
+        :rtype: PropertiesSearchMode
         """
         if self._mode_present:
             return self._mode_value
@@ -1559,7 +1559,7 @@ class PropertiesSearchQuery(bb.Struct):
         """
         The logical operator with which to append the query.
 
-        :rtype: file_properties.LogicalOperator
+        :rtype: LogicalOperator
         """
         if self._logical_operator_present:
             return self._logical_operator_value
@@ -1577,8 +1577,8 @@ class PropertiesSearchQuery(bb.Struct):
         self._logical_operator_value = None
         self._logical_operator_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesSearchQuery, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesSearchQuery, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesSearchQuery(query={!r}, mode={!r}, logical_operator={!r})'.format(
@@ -1625,7 +1625,7 @@ class PropertiesSearchResult(bb.Struct):
         """
         A list (possibly empty) of matches for the query.
 
-        :rtype: list of [file_properties.PropertiesSearchMatch]
+        :rtype: list of [PropertiesSearchMatch]
         """
         if self._matches_present:
             return self._matches_value
@@ -1672,8 +1672,8 @@ class PropertiesSearchResult(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertiesSearchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertiesSearchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertiesSearchResult(matches={!r}, cursor={!r})'.format(
@@ -1763,8 +1763,8 @@ class PropertyField(bb.Struct):
         self._value_value = None
         self._value_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertyField, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertyField, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertyField(name={!r}, value={!r})'.format(
@@ -1870,7 +1870,7 @@ class PropertyFieldTemplate(bb.Struct):
         Data type of the value of this property field. This type will be
         enforced upon property creation and modifications.
 
-        :rtype: file_properties.PropertyType
+        :rtype: PropertyType
         """
         if self._type_present:
             return self._type_value
@@ -1888,8 +1888,8 @@ class PropertyFieldTemplate(bb.Struct):
         self._type_value = None
         self._type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertyFieldTemplate, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertyFieldTemplate, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertyFieldTemplate(name={!r}, description={!r}, type={!r})'.format(
@@ -1963,7 +1963,7 @@ class PropertyGroup(bb.Struct):
         The actual properties associated with the template. There can be up to
         32 property types per template.
 
-        :rtype: list of [file_properties.PropertyField]
+        :rtype: list of [PropertyField]
         """
         if self._fields_present:
             return self._fields_value
@@ -1981,8 +1981,8 @@ class PropertyGroup(bb.Struct):
         self._fields_value = None
         self._fields_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertyGroup, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertyGroup, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertyGroup(template_id={!r}, fields={!r})'.format(
@@ -2061,7 +2061,7 @@ class PropertyGroupUpdate(bb.Struct):
         updated. If the property field doesn't exist, the property group is
         added.
 
-        :rtype: list of [file_properties.PropertyField]
+        :rtype: list of [PropertyField]
         """
         if self._add_or_update_fields_present:
             return self._add_or_update_fields_value
@@ -2108,8 +2108,8 @@ class PropertyGroupUpdate(bb.Struct):
         self._remove_fields_value = None
         self._remove_fields_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertyGroupUpdate, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertyGroupUpdate, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertyGroupUpdate(template_id={!r}, add_or_update_fields={!r}, remove_fields={!r})'.format(
@@ -2154,8 +2154,8 @@ class PropertyType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PropertyType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PropertyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PropertyType(%r, %r)' % (self._tag, self._value)
@@ -2243,8 +2243,8 @@ class RemovePropertiesArg(bb.Struct):
         self._property_template_ids_value = None
         self._property_template_ids_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RemovePropertiesArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemovePropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RemovePropertiesArg(path={!r}, property_template_ids={!r})'.format(
@@ -2267,8 +2267,8 @@ class RemovePropertiesError(PropertiesError):
         Create an instance of this class set to the ``property_group_lookup``
         tag with value ``val``.
 
-        :param file_properties.LookUpPropertiesError val:
-        :rtype: file_properties.RemovePropertiesError
+        :param LookUpPropertiesError val:
+        :rtype: RemovePropertiesError
         """
         return cls('property_group_lookup', val)
 
@@ -2284,14 +2284,14 @@ class RemovePropertiesError(PropertiesError):
         """
         Only call this if :meth:`is_property_group_lookup` is true.
 
-        :rtype: file_properties.LookUpPropertiesError
+        :rtype: LookUpPropertiesError
         """
         if not self.is_property_group_lookup():
             raise AttributeError("tag 'property_group_lookup' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RemovePropertiesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemovePropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RemovePropertiesError(%r, %r)' % (self._tag, self._value)
@@ -2347,8 +2347,8 @@ class RemoveTemplateArg(bb.Struct):
         self._template_id_value = None
         self._template_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RemoveTemplateArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemoveTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RemoveTemplateArg(template_id={!r})'.format(
@@ -2379,7 +2379,7 @@ class TemplateFilterBase(bb.Union):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: file_properties.TemplateFilterBase
+        :rtype: TemplateFilterBase
         """
         return cls('filter_some', val)
 
@@ -2412,8 +2412,8 @@ class TemplateFilterBase(bb.Union):
             raise AttributeError("tag 'filter_some' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TemplateFilterBase, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TemplateFilterBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TemplateFilterBase(%r, %r)' % (self._tag, self._value)
@@ -2441,8 +2441,8 @@ class TemplateFilter(TemplateFilterBase):
         """
         return self._tag == 'filter_none'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TemplateFilter, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TemplateFilter, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TemplateFilter(%r, %r)' % (self._tag, self._value)
@@ -2493,8 +2493,8 @@ class TemplateOwnerType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TemplateOwnerType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TemplateOwnerType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TemplateOwnerType(%r, %r)' % (self._tag, self._value)
@@ -2558,7 +2558,7 @@ class UpdatePropertiesArg(bb.Struct):
         """
         The property groups "delta" updates to apply.
 
-        :rtype: list of [file_properties.PropertyGroupUpdate]
+        :rtype: list of [PropertyGroupUpdate]
         """
         if self._update_property_groups_present:
             return self._update_property_groups_value
@@ -2576,8 +2576,8 @@ class UpdatePropertiesArg(bb.Struct):
         self._update_property_groups_value = None
         self._update_property_groups_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UpdatePropertiesArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UpdatePropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UpdatePropertiesArg(path={!r}, update_property_groups={!r})'.format(
@@ -2600,8 +2600,8 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
         Create an instance of this class set to the ``property_group_lookup``
         tag with value ``val``.
 
-        :param file_properties.LookUpPropertiesError val:
-        :rtype: file_properties.UpdatePropertiesError
+        :param LookUpPropertiesError val:
+        :rtype: UpdatePropertiesError
         """
         return cls('property_group_lookup', val)
 
@@ -2617,14 +2617,14 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
         """
         Only call this if :meth:`is_property_group_lookup` is true.
 
-        :rtype: file_properties.LookUpPropertiesError
+        :rtype: LookUpPropertiesError
         """
         if not self.is_property_group_lookup():
             raise AttributeError("tag 'property_group_lookup' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UpdatePropertiesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UpdatePropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UpdatePropertiesError(%r, %r)' % (self._tag, self._value)
@@ -2767,7 +2767,7 @@ class UpdateTemplateArg(bb.Struct):
         Property field templates to be added to the group template. There can be
         up to 32 properties in a single template.
 
-        :rtype: list of [file_properties.PropertyFieldTemplate]
+        :rtype: list of [PropertyFieldTemplate]
         """
         if self._add_fields_present:
             return self._add_fields_value
@@ -2788,8 +2788,8 @@ class UpdateTemplateArg(bb.Struct):
         self._add_fields_value = None
         self._add_fields_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UpdateTemplateArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UpdateTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UpdateTemplateArg(template_id={!r}, name={!r}, description={!r}, add_fields={!r})'.format(
@@ -2850,8 +2850,8 @@ class UpdateTemplateResult(bb.Struct):
         self._template_id_value = None
         self._template_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UpdateTemplateResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UpdateTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UpdateTemplateResult(template_id={!r})'.format(

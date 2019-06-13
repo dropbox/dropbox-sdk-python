@@ -123,7 +123,7 @@ class Account(bb.Struct):
         """
         Details of a user's name.
 
-        :rtype: users.Name
+        :rtype: Name
         """
         if self._name_present:
             return self._name_value
@@ -238,8 +238,8 @@ class Account(bb.Struct):
         self._disabled_value = None
         self._disabled_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Account, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Account, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'Account(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, profile_photo_url={!r})'.format(
@@ -349,8 +349,8 @@ class BasicAccount(Account):
         self._team_member_id_value = None
         self._team_member_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(BasicAccount, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BasicAccount, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'BasicAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, is_teammate={!r}, profile_photo_url={!r}, team_member_id={!r})'.format(
@@ -543,7 +543,7 @@ class FullAccount(Account):
         """
         If this account is a member of a team, information about that team.
 
-        :rtype: users.FullTeam
+        :rtype: FullTeam
         """
         if self._team_present:
             return self._team_value
@@ -662,8 +662,8 @@ class FullAccount(Account):
         self._root_info_value = None
         self._root_info_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FullAccount, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FullAccount, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FullAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, root_info={!r}, profile_photo_url={!r}, country={!r}, team={!r}, team_member_id={!r})'.format(
@@ -760,8 +760,8 @@ class Team(bb.Struct):
         self._name_value = None
         self._name_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Team, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Team, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'Team(id={!r}, name={!r})'.format(
@@ -851,8 +851,8 @@ class FullTeam(Team):
         self._office_addin_policy_value = None
         self._office_addin_policy_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FullTeam, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FullTeam, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FullTeam(id={!r}, name={!r}, sharing_policies={!r}, office_addin_policy={!r})'.format(
@@ -906,8 +906,8 @@ class GetAccountArg(bb.Struct):
         self._account_id_value = None
         self._account_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetAccountArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetAccountArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetAccountArg(account_id={!r})'.format(
@@ -960,8 +960,8 @@ class GetAccountBatchArg(bb.Struct):
         self._account_ids_value = None
         self._account_ids_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetAccountBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetAccountBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetAccountBatchArg(account_ids={!r})'.format(
@@ -992,7 +992,7 @@ class GetAccountBatchError(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: users.GetAccountBatchError
+        :rtype: GetAccountBatchError
         """
         return cls('no_account', val)
 
@@ -1025,8 +1025,8 @@ class GetAccountBatchError(bb.Union):
             raise AttributeError("tag 'no_account' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetAccountBatchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetAccountBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetAccountBatchError(%r, %r)' % (self._tag, self._value)
@@ -1065,8 +1065,8 @@ class GetAccountError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetAccountError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetAccountError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetAccountError(%r, %r)' % (self._tag, self._value)
@@ -1116,8 +1116,8 @@ class IndividualSpaceAllocation(bb.Struct):
         self._allocated_value = None
         self._allocated_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(IndividualSpaceAllocation, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(IndividualSpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'IndividualSpaceAllocation(allocated={!r})'.format(
@@ -1302,8 +1302,8 @@ class Name(bb.Struct):
         self._abbreviated_name_value = None
         self._abbreviated_name_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Name, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Name, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'Name(given_name={!r}, surname={!r}, familiar_name={!r}, display_name={!r}, abbreviated_name={!r})'.format(
@@ -1324,10 +1324,10 @@ class SpaceAllocation(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar IndividualSpaceAllocation users.SpaceAllocation.individual: The user's
-        space allocation applies only to their individual account.
-    :ivar TeamSpaceAllocation users.SpaceAllocation.team: The user shares space
-        with other members of their team.
+    :ivar IndividualSpaceAllocation SpaceAllocation.individual: The user's space
+        allocation applies only to their individual account.
+    :ivar TeamSpaceAllocation SpaceAllocation.team: The user shares space with
+        other members of their team.
     """
 
     _catch_all = 'other'
@@ -1340,8 +1340,8 @@ class SpaceAllocation(bb.Union):
         Create an instance of this class set to the ``individual`` tag with
         value ``val``.
 
-        :param users.IndividualSpaceAllocation val:
-        :rtype: users.SpaceAllocation
+        :param IndividualSpaceAllocation val:
+        :rtype: SpaceAllocation
         """
         return cls('individual', val)
 
@@ -1351,8 +1351,8 @@ class SpaceAllocation(bb.Union):
         Create an instance of this class set to the ``team`` tag with value
         ``val``.
 
-        :param users.TeamSpaceAllocation val:
-        :rtype: users.SpaceAllocation
+        :param TeamSpaceAllocation val:
+        :rtype: SpaceAllocation
         """
         return cls('team', val)
 
@@ -1386,7 +1386,7 @@ class SpaceAllocation(bb.Union):
 
         Only call this if :meth:`is_individual` is true.
 
-        :rtype: users.IndividualSpaceAllocation
+        :rtype: IndividualSpaceAllocation
         """
         if not self.is_individual():
             raise AttributeError("tag 'individual' not set")
@@ -1398,14 +1398,14 @@ class SpaceAllocation(bb.Union):
 
         Only call this if :meth:`is_team` is true.
 
-        :rtype: users.TeamSpaceAllocation
+        :rtype: TeamSpaceAllocation
         """
         if not self.is_team():
             raise AttributeError("tag 'team' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SpaceAllocation, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SpaceAllocation(%r, %r)' % (self._tag, self._value)
@@ -1469,7 +1469,7 @@ class SpaceUsage(bb.Struct):
         """
         The user's space allocation.
 
-        :rtype: users.SpaceAllocation
+        :rtype: SpaceAllocation
         """
         if self._allocation_present:
             return self._allocation_value
@@ -1487,8 +1487,8 @@ class SpaceUsage(bb.Struct):
         self._allocation_value = None
         self._allocation_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SpaceUsage, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SpaceUsage, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SpaceUsage(used={!r}, allocation={!r})'.format(
@@ -1642,8 +1642,8 @@ class TeamSpaceAllocation(bb.Struct):
         self._user_within_team_space_limit_type_value = None
         self._user_within_team_space_limit_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamSpaceAllocation, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamSpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamSpaceAllocation(used={!r}, allocated={!r}, user_within_team_space_allocated={!r}, user_within_team_space_limit_type={!r})'.format(

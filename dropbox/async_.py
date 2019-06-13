@@ -38,7 +38,7 @@ class LaunchResultBase(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: async_.LaunchResultBase
+        :rtype: LaunchResultBase
         """
         return cls('async_job_id', val)
 
@@ -63,8 +63,8 @@ class LaunchResultBase(bb.Union):
             raise AttributeError("tag 'async_job_id' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(LaunchResultBase, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LaunchResultBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'LaunchResultBase(%r, %r)' % (self._tag, self._value)
@@ -96,8 +96,8 @@ class LaunchEmptyResult(LaunchResultBase):
         """
         return self._tag == 'complete'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(LaunchEmptyResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LaunchEmptyResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'LaunchEmptyResult(%r, %r)' % (self._tag, self._value)
@@ -150,8 +150,8 @@ class PollArg(bb.Struct):
         self._async_job_id_value = None
         self._async_job_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PollArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PollArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PollArg(async_job_id={!r})'.format(
@@ -187,8 +187,8 @@ class PollResultBase(bb.Union):
         """
         return self._tag == 'in_progress'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PollResultBase, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PollResultBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PollResultBase(%r, %r)' % (self._tag, self._value)
@@ -219,8 +219,8 @@ class PollEmptyResult(PollResultBase):
         """
         return self._tag == 'complete'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PollEmptyResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PollEmptyResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PollEmptyResult(%r, %r)' % (self._tag, self._value)
@@ -273,8 +273,8 @@ class PollError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PollError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PollError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PollError(%r, %r)' % (self._tag, self._value)

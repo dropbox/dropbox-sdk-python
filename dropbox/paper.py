@@ -58,7 +58,7 @@ class AddMember(bb.Struct):
         """
         Permission for the user.
 
-        :rtype: paper.PaperDocPermissionLevel
+        :rtype: PaperDocPermissionLevel
         """
         if self._permission_level_present:
             return self._permission_level_value
@@ -100,8 +100,8 @@ class AddMember(bb.Struct):
         self._member_value = None
         self._member_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddMember, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddMember, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AddMember(member={!r}, permission_level={!r})'.format(
@@ -153,8 +153,8 @@ class RefPaperDoc(bb.Struct):
         self._doc_id_value = None
         self._doc_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RefPaperDoc, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RefPaperDoc, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RefPaperDoc(doc_id={!r})'.format(
@@ -209,7 +209,7 @@ class AddPaperDocUser(RefPaperDoc):
         User which should be added to the Paper doc. Specify only email address
         or Dropbox account ID.
 
-        :rtype: list of [paper.AddMember]
+        :rtype: list of [AddMember]
         """
         if self._members_present:
             return self._members_value
@@ -278,8 +278,8 @@ class AddPaperDocUser(RefPaperDoc):
         self._quiet_value = None
         self._quiet_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddPaperDocUser, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddPaperDocUser, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AddPaperDocUser(doc_id={!r}, members={!r}, custom_message={!r}, quiet={!r})'.format(
@@ -350,7 +350,7 @@ class AddPaperDocUserMemberResult(bb.Struct):
         """
         The outcome of the action on this member.
 
-        :rtype: paper.AddPaperDocUserResult
+        :rtype: AddPaperDocUserResult
         """
         if self._result_present:
             return self._result_value
@@ -368,8 +368,8 @@ class AddPaperDocUserMemberResult(bb.Struct):
         self._result_value = None
         self._result_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddPaperDocUserMemberResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddPaperDocUserMemberResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AddPaperDocUserMemberResult(member={!r}, result={!r})'.format(
@@ -483,8 +483,8 @@ class AddPaperDocUserResult(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddPaperDocUserResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddPaperDocUserResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AddPaperDocUserResult(%r, %r)' % (self._tag, self._value)
@@ -591,8 +591,8 @@ class Cursor(bb.Struct):
         self._expiration_value = None
         self._expiration_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Cursor, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Cursor, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'Cursor(value={!r}, expiration={!r})'.format(
@@ -634,8 +634,8 @@ class PaperApiBaseError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperApiBaseError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperApiBaseError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperApiBaseError(%r, %r)' % (self._tag, self._value)
@@ -662,8 +662,8 @@ class DocLookupError(PaperApiBaseError):
         """
         return self._tag == 'doc_not_found'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DocLookupError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DocLookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DocLookupError(%r, %r)' % (self._tag, self._value)
@@ -730,8 +730,8 @@ class DocSubscriptionLevel(bb.Union):
         """
         return self._tag == 'no_email'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DocSubscriptionLevel, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DocSubscriptionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DocSubscriptionLevel(%r, %r)' % (self._tag, self._value)
@@ -782,8 +782,8 @@ class ExportFormat(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExportFormat, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExportFormat(%r, %r)' % (self._tag, self._value)
@@ -866,8 +866,8 @@ class Folder(bb.Struct):
         self._name_value = None
         self._name_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Folder, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Folder, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'Folder(id={!r}, name={!r})'.format(
@@ -914,8 +914,8 @@ class FolderSharingPolicyType(bb.Union):
         """
         return self._tag == 'invite_only'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FolderSharingPolicyType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderSharingPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FolderSharingPolicyType(%r, %r)' % (self._tag, self._value)
@@ -982,8 +982,8 @@ class FolderSubscriptionLevel(bb.Union):
         """
         return self._tag == 'weekly_emails'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FolderSubscriptionLevel, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderSubscriptionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FolderSubscriptionLevel(%r, %r)' % (self._tag, self._value)
@@ -1026,7 +1026,7 @@ class FoldersContainingPaperDoc(bb.Struct):
         """
         The sharing policy of the folder containing the Paper doc.
 
-        :rtype: paper.FolderSharingPolicyType
+        :rtype: FolderSharingPolicyType
         """
         if self._folder_sharing_policy_type_present:
             return self._folder_sharing_policy_type_value
@@ -1052,7 +1052,7 @@ class FoldersContainingPaperDoc(bb.Struct):
         """
         The folder path. If present the first folder is the root folder.
 
-        :rtype: list of [paper.Folder]
+        :rtype: list of [Folder]
         """
         if self._folders_present:
             return self._folders_value
@@ -1073,8 +1073,8 @@ class FoldersContainingPaperDoc(bb.Struct):
         self._folders_value = None
         self._folders_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FoldersContainingPaperDoc, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FoldersContainingPaperDoc, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FoldersContainingPaperDoc(folder_sharing_policy_type={!r}, folders={!r})'.format(
@@ -1144,8 +1144,8 @@ class ImportFormat(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ImportFormat, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ImportFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ImportFormat(%r, %r)' % (self._tag, self._value)
@@ -1209,7 +1209,7 @@ class InviteeInfoWithPermissionLevel(bb.Struct):
         """
         Permission level for the invitee.
 
-        :rtype: paper.PaperDocPermissionLevel
+        :rtype: PaperDocPermissionLevel
         """
         if self._permission_level_present:
             return self._permission_level_value
@@ -1227,8 +1227,8 @@ class InviteeInfoWithPermissionLevel(bb.Struct):
         self._permission_level_value = None
         self._permission_level_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(InviteeInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(InviteeInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'InviteeInfoWithPermissionLevel(invitee={!r}, permission_level={!r})'.format(
@@ -1255,8 +1255,8 @@ class ListDocsCursorError(bb.Union):
         Create an instance of this class set to the ``cursor_error`` tag with
         value ``val``.
 
-        :param paper.PaperApiCursorError val:
-        :rtype: paper.ListDocsCursorError
+        :param PaperApiCursorError val:
+        :rtype: ListDocsCursorError
         """
         return cls('cursor_error', val)
 
@@ -1280,14 +1280,14 @@ class ListDocsCursorError(bb.Union):
         """
         Only call this if :meth:`is_cursor_error` is true.
 
-        :rtype: paper.PaperApiCursorError
+        :rtype: PaperApiCursorError
         """
         if not self.is_cursor_error():
             raise AttributeError("tag 'cursor_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListDocsCursorError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListDocsCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListDocsCursorError(%r, %r)' % (self._tag, self._value)
@@ -1347,7 +1347,7 @@ class ListPaperDocsArgs(bb.Struct):
         """
         Allows user to specify how the Paper docs should be filtered.
 
-        :rtype: paper.ListPaperDocsFilterBy
+        :rtype: ListPaperDocsFilterBy
         """
         if self._filter_by_present:
             return self._filter_by_value
@@ -1370,7 +1370,7 @@ class ListPaperDocsArgs(bb.Struct):
         """
         Allows user to specify how the Paper docs should be sorted.
 
-        :rtype: paper.ListPaperDocsSortBy
+        :rtype: ListPaperDocsSortBy
         """
         if self._sort_by_present:
             return self._sort_by_value
@@ -1393,7 +1393,7 @@ class ListPaperDocsArgs(bb.Struct):
         """
         Allows user to specify the sort order of the result.
 
-        :rtype: paper.ListPaperDocsSortOrder
+        :rtype: ListPaperDocsSortOrder
         """
         if self._sort_order_present:
             return self._sort_order_value
@@ -1435,8 +1435,8 @@ class ListPaperDocsArgs(bb.Struct):
         self._limit_value = None
         self._limit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListPaperDocsArgs(filter_by={!r}, sort_by={!r}, sort_order={!r}, limit={!r})'.format(
@@ -1495,8 +1495,8 @@ class ListPaperDocsContinueArgs(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsContinueArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListPaperDocsContinueArgs(cursor={!r})'.format(
@@ -1549,8 +1549,8 @@ class ListPaperDocsFilterBy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsFilterBy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsFilterBy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListPaperDocsFilterBy(%r, %r)' % (self._tag, self._value)
@@ -1637,7 +1637,7 @@ class ListPaperDocsResponse(bb.Struct):
         through all files. The cursor preserves all properties as specified in
         the original call to :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
 
-        :rtype: paper.Cursor
+        :rtype: Cursor
         """
         if self._cursor_present:
             return self._cursor_value
@@ -1682,8 +1682,8 @@ class ListPaperDocsResponse(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsResponse, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListPaperDocsResponse(doc_ids={!r}, cursor={!r}, has_more={!r})'.format(
@@ -1750,8 +1750,8 @@ class ListPaperDocsSortBy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsSortBy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsSortBy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListPaperDocsSortBy(%r, %r)' % (self._tag, self._value)
@@ -1802,8 +1802,8 @@ class ListPaperDocsSortOrder(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsSortOrder, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsSortOrder, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListPaperDocsSortOrder(%r, %r)' % (self._tag, self._value)
@@ -1829,8 +1829,8 @@ class ListUsersCursorError(PaperApiBaseError):
         Create an instance of this class set to the ``cursor_error`` tag with
         value ``val``.
 
-        :param paper.PaperApiCursorError val:
-        :rtype: paper.ListUsersCursorError
+        :param PaperApiCursorError val:
+        :rtype: ListUsersCursorError
         """
         return cls('cursor_error', val)
 
@@ -1854,14 +1854,14 @@ class ListUsersCursorError(PaperApiBaseError):
         """
         Only call this if :meth:`is_cursor_error` is true.
 
-        :rtype: paper.PaperApiCursorError
+        :rtype: PaperApiCursorError
         """
         if not self.is_cursor_error():
             raise AttributeError("tag 'cursor_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersCursorError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListUsersCursorError(%r, %r)' % (self._tag, self._value)
@@ -1915,8 +1915,8 @@ class ListUsersOnFolderArgs(RefPaperDoc):
         self._limit_value = None
         self._limit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnFolderArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnFolderArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListUsersOnFolderArgs(doc_id={!r}, limit={!r})'.format(
@@ -1976,8 +1976,8 @@ class ListUsersOnFolderContinueArgs(RefPaperDoc):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnFolderContinueArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnFolderContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListUsersOnFolderContinueArgs(doc_id={!r}, cursor={!r})'.format(
@@ -2096,7 +2096,7 @@ class ListUsersOnFolderResponse(bb.Struct):
         specified in the original call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list`.
 
-        :rtype: paper.Cursor
+        :rtype: Cursor
         """
         if self._cursor_present:
             return self._cursor_value
@@ -2141,8 +2141,8 @@ class ListUsersOnFolderResponse(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnFolderResponse, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnFolderResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListUsersOnFolderResponse(invitees={!r}, users={!r}, cursor={!r}, has_more={!r})'.format(
@@ -2216,7 +2216,7 @@ class ListUsersOnPaperDocArgs(RefPaperDoc):
         Specify this attribute if you want to obtain users that have already
         accessed the Paper doc.
 
-        :rtype: paper.UserOnPaperDocFilter
+        :rtype: UserOnPaperDocFilter
         """
         if self._filter_by_present:
             return self._filter_by_value
@@ -2234,8 +2234,8 @@ class ListUsersOnPaperDocArgs(RefPaperDoc):
         self._filter_by_value = None
         self._filter_by_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnPaperDocArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnPaperDocArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListUsersOnPaperDocArgs(doc_id={!r}, limit={!r}, filter_by={!r})'.format(
@@ -2296,8 +2296,8 @@ class ListUsersOnPaperDocContinueArgs(RefPaperDoc):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnPaperDocContinueArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnPaperDocContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListUsersOnPaperDocContinueArgs(doc_id={!r}, cursor={!r})'.format(
@@ -2377,7 +2377,7 @@ class ListUsersOnPaperDocResponse(bb.Struct):
         List of email addresses with their respective permission levels that are
         invited on the Paper doc.
 
-        :rtype: list of [paper.InviteeInfoWithPermissionLevel]
+        :rtype: list of [InviteeInfoWithPermissionLevel]
         """
         if self._invitees_present:
             return self._invitees_value
@@ -2401,7 +2401,7 @@ class ListUsersOnPaperDocResponse(bb.Struct):
         List of users with their respective permission levels that are invited
         on the Paper folder.
 
-        :rtype: list of [paper.UserInfoWithPermissionLevel]
+        :rtype: list of [UserInfoWithPermissionLevel]
         """
         if self._users_present:
             return self._users_value
@@ -2451,7 +2451,7 @@ class ListUsersOnPaperDocResponse(bb.Struct):
         specified in the original call to
         :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list`.
 
-        :rtype: paper.Cursor
+        :rtype: Cursor
         """
         if self._cursor_present:
             return self._cursor_value
@@ -2496,8 +2496,8 @@ class ListUsersOnPaperDocResponse(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnPaperDocResponse, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnPaperDocResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListUsersOnPaperDocResponse(invitees={!r}, users={!r}, doc_owner={!r}, cursor={!r}, has_more={!r})'.format(
@@ -2579,8 +2579,8 @@ class PaperApiCursorError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperApiCursorError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperApiCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperApiCursorError(%r, %r)' % (self._tag, self._value)
@@ -2648,7 +2648,7 @@ class PaperDocCreateArgs(bb.Struct):
         """
         The format of provided data.
 
-        :rtype: paper.ImportFormat
+        :rtype: ImportFormat
         """
         if self._import_format_present:
             return self._import_format_value
@@ -2666,8 +2666,8 @@ class PaperDocCreateArgs(bb.Struct):
         self._import_format_value = None
         self._import_format_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocCreateArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocCreateArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocCreateArgs(import_format={!r}, parent_folder_id={!r})'.format(
@@ -2735,8 +2735,8 @@ class PaperDocCreateError(PaperApiBaseError):
         """
         return self._tag == 'image_size_exceeded'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocCreateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocCreateError(%r, %r)' % (self._tag, self._value)
@@ -2849,8 +2849,8 @@ class PaperDocCreateUpdateResult(bb.Struct):
         self._title_value = None
         self._title_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocCreateUpdateResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocCreateUpdateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocCreateUpdateResult(doc_id={!r}, revision={!r}, title={!r})'.format(
@@ -2882,7 +2882,7 @@ class PaperDocExport(RefPaperDoc):
     @property
     def export_format(self):
         """
-        :rtype: paper.ExportFormat
+        :rtype: ExportFormat
         """
         if self._export_format_present:
             return self._export_format_value
@@ -2900,8 +2900,8 @@ class PaperDocExport(RefPaperDoc):
         self._export_format_value = None
         self._export_format_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocExport, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocExport, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocExport(doc_id={!r}, export_format={!r})'.format(
@@ -3049,8 +3049,8 @@ class PaperDocExportResult(bb.Struct):
         self._mime_type_value = None
         self._mime_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocExportResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocExportResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocExportResult(owner={!r}, title={!r}, revision={!r}, mime_type={!r})'.format(
@@ -3106,8 +3106,8 @@ class PaperDocPermissionLevel(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocPermissionLevel, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocPermissionLevel(%r, %r)' % (self._tag, self._value)
@@ -3141,7 +3141,7 @@ class PaperDocSharingPolicy(RefPaperDoc):
         """
         The default sharing policy to be set for the Paper doc.
 
-        :rtype: paper.SharingPolicy
+        :rtype: SharingPolicy
         """
         if self._sharing_policy_present:
             return self._sharing_policy_value
@@ -3159,8 +3159,8 @@ class PaperDocSharingPolicy(RefPaperDoc):
         self._sharing_policy_value = None
         self._sharing_policy_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocSharingPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocSharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocSharingPolicy(doc_id={!r}, sharing_policy={!r})'.format(
@@ -3215,7 +3215,7 @@ class PaperDocUpdateArgs(RefPaperDoc):
         """
         The policy used for the current update call.
 
-        :rtype: paper.PaperDocUpdatePolicy
+        :rtype: PaperDocUpdatePolicy
         """
         if self._doc_update_policy_present:
             return self._doc_update_policy_value
@@ -3262,7 +3262,7 @@ class PaperDocUpdateArgs(RefPaperDoc):
         """
         The format of provided data.
 
-        :rtype: paper.ImportFormat
+        :rtype: ImportFormat
         """
         if self._import_format_present:
             return self._import_format_value
@@ -3280,8 +3280,8 @@ class PaperDocUpdateArgs(RefPaperDoc):
         self._import_format_value = None
         self._import_format_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocUpdateArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocUpdateArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocUpdateArgs(doc_id={!r}, doc_update_policy={!r}, revision={!r}, import_format={!r})'.format(
@@ -3375,8 +3375,8 @@ class PaperDocUpdateError(DocLookupError):
         """
         return self._tag == 'doc_deleted'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocUpdateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocUpdateError(%r, %r)' % (self._tag, self._value)
@@ -3439,8 +3439,8 @@ class PaperDocUpdatePolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocUpdatePolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocUpdatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperDocUpdatePolicy(%r, %r)' % (self._tag, self._value)
@@ -3493,8 +3493,8 @@ class RemovePaperDocUser(RefPaperDoc):
         self._member_value = None
         self._member_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RemovePaperDocUser, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemovePaperDocUser, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RemovePaperDocUser(doc_id={!r}, member={!r})'.format(
@@ -3540,7 +3540,7 @@ class SharingPolicy(bb.Struct):
         """
         This value applies to the non-team members.
 
-        :rtype: paper.SharingPublicPolicyType
+        :rtype: SharingPublicPolicyType
         """
         if self._public_sharing_policy_present:
             return self._public_sharing_policy_value
@@ -3567,7 +3567,7 @@ class SharingPolicy(bb.Struct):
         This value applies to the team members only. The value is null for all
         personal accounts.
 
-        :rtype: paper.SharingTeamPolicyType
+        :rtype: SharingTeamPolicyType
         """
         if self._team_sharing_policy_present:
             return self._team_sharing_policy_value
@@ -3588,8 +3588,8 @@ class SharingPolicy(bb.Struct):
         self._team_sharing_policy_value = None
         self._team_sharing_policy_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharingPolicy, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SharingPolicy(public_sharing_policy={!r}, team_sharing_policy={!r})'.format(
@@ -3647,8 +3647,8 @@ class SharingTeamPolicyType(bb.Union):
         """
         return self._tag == 'invite_only'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharingTeamPolicyType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingTeamPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SharingTeamPolicyType(%r, %r)' % (self._tag, self._value)
@@ -3676,8 +3676,8 @@ class SharingPublicPolicyType(SharingTeamPolicyType):
         """
         return self._tag == 'disabled'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharingPublicPolicyType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingPublicPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SharingPublicPolicyType(%r, %r)' % (self._tag, self._value)
@@ -3740,7 +3740,7 @@ class UserInfoWithPermissionLevel(bb.Struct):
         """
         Permission level for the user.
 
-        :rtype: paper.PaperDocPermissionLevel
+        :rtype: PaperDocPermissionLevel
         """
         if self._permission_level_present:
             return self._permission_level_value
@@ -3758,8 +3758,8 @@ class UserInfoWithPermissionLevel(bb.Struct):
         self._permission_level_value = None
         self._permission_level_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UserInfoWithPermissionLevel(user={!r}, permission_level={!r})'.format(
@@ -3814,8 +3814,8 @@ class UserOnPaperDocFilter(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserOnPaperDocFilter, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserOnPaperDocFilter, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UserOnPaperDocFilter(%r, %r)' % (self._tag, self._value)

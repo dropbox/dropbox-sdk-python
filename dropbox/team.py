@@ -214,8 +214,8 @@ class DeviceSession(bb.Struct):
         self._updated_value = None
         self._updated_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeviceSession, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeviceSession, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeviceSession(session_id={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r})'.format(
@@ -379,8 +379,8 @@ class ActiveWebSession(DeviceSession):
         self._expires_value = None
         self._expires_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ActiveWebSession, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ActiveWebSession, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ActiveWebSession(session_id={!r}, user_agent={!r}, os={!r}, browser={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r}, expires={!r})'.format(
@@ -456,8 +456,8 @@ class AdminTier(bb.Union):
         """
         return self._tag == 'member_only'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AdminTier, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminTier, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AdminTier(%r, %r)' % (self._tag, self._value)
@@ -673,8 +673,8 @@ class ApiApp(bb.Struct):
         self._is_app_folder_value = None
         self._is_app_folder_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ApiApp, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ApiApp, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ApiApp(app_id={!r}, app_name={!r}, is_app_folder={!r}, publisher={!r}, publisher_url={!r}, linked={!r})'.format(
@@ -733,8 +733,8 @@ class BaseDfbReport(bb.Struct):
         self._start_date_value = None
         self._start_date_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(BaseDfbReport, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BaseDfbReport, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'BaseDfbReport(start_date={!r})'.format(
@@ -762,8 +762,8 @@ class BaseTeamFolderError(bb.Union):
         Create an instance of this class set to the ``access_error`` tag with
         value ``val``.
 
-        :param team.TeamFolderAccessError val:
-        :rtype: team.BaseTeamFolderError
+        :param TeamFolderAccessError val:
+        :rtype: BaseTeamFolderError
         """
         return cls('access_error', val)
 
@@ -773,8 +773,8 @@ class BaseTeamFolderError(bb.Union):
         Create an instance of this class set to the ``status_error`` tag with
         value ``val``.
 
-        :param team.TeamFolderInvalidStatusError val:
-        :rtype: team.BaseTeamFolderError
+        :param TeamFolderInvalidStatusError val:
+        :rtype: BaseTeamFolderError
         """
         return cls('status_error', val)
 
@@ -784,8 +784,8 @@ class BaseTeamFolderError(bb.Union):
         Create an instance of this class set to the
         ``team_shared_dropbox_error`` tag with value ``val``.
 
-        :param team.TeamFolderTeamSharedDropboxError val:
-        :rtype: team.BaseTeamFolderError
+        :param TeamFolderTeamSharedDropboxError val:
+        :rtype: BaseTeamFolderError
         """
         return cls('team_shared_dropbox_error', val)
 
@@ -825,7 +825,7 @@ class BaseTeamFolderError(bb.Union):
         """
         Only call this if :meth:`is_access_error` is true.
 
-        :rtype: team.TeamFolderAccessError
+        :rtype: TeamFolderAccessError
         """
         if not self.is_access_error():
             raise AttributeError("tag 'access_error' not set")
@@ -835,7 +835,7 @@ class BaseTeamFolderError(bb.Union):
         """
         Only call this if :meth:`is_status_error` is true.
 
-        :rtype: team.TeamFolderInvalidStatusError
+        :rtype: TeamFolderInvalidStatusError
         """
         if not self.is_status_error():
             raise AttributeError("tag 'status_error' not set")
@@ -845,14 +845,14 @@ class BaseTeamFolderError(bb.Union):
         """
         Only call this if :meth:`is_team_shared_dropbox_error` is true.
 
-        :rtype: team.TeamFolderTeamSharedDropboxError
+        :rtype: TeamFolderTeamSharedDropboxError
         """
         if not self.is_team_shared_dropbox_error():
             raise AttributeError("tag 'team_shared_dropbox_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(BaseTeamFolderError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BaseTeamFolderError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'BaseTeamFolderError(%r, %r)' % (self._tag, self._value)
@@ -893,8 +893,8 @@ class CustomQuotaError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CustomQuotaError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CustomQuotaError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CustomQuotaError(%r, %r)' % (self._tag, self._value)
@@ -909,10 +909,9 @@ class CustomQuotaResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserCustomQuotaResult team.CustomQuotaResult.success: User's custom
-        quota.
-    :ivar UserSelectorArg team.CustomQuotaResult.invalid_user: Invalid user (not
-        in team).
+    :ivar UserCustomQuotaResult CustomQuotaResult.success: User's custom quota.
+    :ivar UserSelectorArg CustomQuotaResult.invalid_user: Invalid user (not in
+        team).
     """
 
     _catch_all = 'other'
@@ -925,8 +924,8 @@ class CustomQuotaResult(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param team.UserCustomQuotaResult val:
-        :rtype: team.CustomQuotaResult
+        :param UserCustomQuotaResult val:
+        :rtype: CustomQuotaResult
         """
         return cls('success', val)
 
@@ -936,8 +935,8 @@ class CustomQuotaResult(bb.Union):
         Create an instance of this class set to the ``invalid_user`` tag with
         value ``val``.
 
-        :param team.UserSelectorArg val:
-        :rtype: team.CustomQuotaResult
+        :param UserSelectorArg val:
+        :rtype: CustomQuotaResult
         """
         return cls('invalid_user', val)
 
@@ -971,7 +970,7 @@ class CustomQuotaResult(bb.Union):
 
         Only call this if :meth:`is_success` is true.
 
-        :rtype: team.UserCustomQuotaResult
+        :rtype: UserCustomQuotaResult
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -983,14 +982,14 @@ class CustomQuotaResult(bb.Union):
 
         Only call this if :meth:`is_invalid_user` is true.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if not self.is_invalid_user():
             raise AttributeError("tag 'invalid_user' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CustomQuotaResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CustomQuotaResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CustomQuotaResult(%r, %r)' % (self._tag, self._value)
@@ -1021,7 +1020,7 @@ class CustomQuotaUsersArg(bb.Struct):
         """
         List of users.
 
-        :rtype: list of [team.UserSelectorArg]
+        :rtype: list of [UserSelectorArg]
         """
         if self._users_present:
             return self._users_value
@@ -1039,8 +1038,8 @@ class CustomQuotaUsersArg(bb.Struct):
         self._users_value = None
         self._users_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CustomQuotaUsersArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CustomQuotaUsersArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'CustomQuotaUsersArg(users={!r})'.format(
@@ -1130,8 +1129,8 @@ class DateRange(bb.Struct):
         self._end_date_value = None
         self._end_date_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DateRange, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DateRange, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DateRange(start_date={!r}, end_date={!r})'.format(
@@ -1162,8 +1161,8 @@ class DateRangeError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DateRangeError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DateRangeError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DateRangeError(%r, %r)' % (self._tag, self._value)
@@ -1264,7 +1263,7 @@ class DesktopClientSession(DeviceSession):
         """
         The Dropbox desktop client type.
 
-        :rtype: team.DesktopPlatform
+        :rtype: DesktopPlatform
         """
         if self._client_type_present:
             return self._client_type_value
@@ -1351,8 +1350,8 @@ class DesktopClientSession(DeviceSession):
         self._is_delete_on_unlink_supported_value = None
         self._is_delete_on_unlink_supported_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DesktopClientSession, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DesktopClientSession, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DesktopClientSession(session_id={!r}, host_name={!r}, client_type={!r}, client_version={!r}, platform={!r}, is_delete_on_unlink_supported={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r})'.format(
@@ -1423,8 +1422,8 @@ class DesktopPlatform(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DesktopPlatform, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DesktopPlatform, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DesktopPlatform(%r, %r)' % (self._tag, self._value)
@@ -1505,8 +1504,8 @@ class DeviceSessionArg(bb.Struct):
         self._team_member_id_value = None
         self._team_member_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DeviceSessionArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeviceSessionArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DeviceSessionArg(session_id={!r}, team_member_id={!r})'.format(
@@ -1756,8 +1755,8 @@ class DevicesActive(bb.Struct):
         self._total_value = None
         self._total_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DevicesActive, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DevicesActive, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'DevicesActive(windows={!r}, macos={!r}, linux={!r}, ios={!r}, android={!r}, other={!r}, total={!r})'.format(
@@ -1816,8 +1815,8 @@ class ExcludedUsersListArg(bb.Struct):
         self._limit_value = None
         self._limit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersListArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersListArg(limit={!r})'.format(
@@ -1871,8 +1870,8 @@ class ExcludedUsersListContinueArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersListContinueArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersListContinueArg(cursor={!r})'.format(
@@ -1915,8 +1914,8 @@ class ExcludedUsersListContinueError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersListContinueError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersListContinueError(%r, %r)' % (self._tag, self._value)
@@ -1956,8 +1955,8 @@ class ExcludedUsersListError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersListError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersListError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersListError(%r, %r)' % (self._tag, self._value)
@@ -2008,7 +2007,7 @@ class ExcludedUsersListResult(bb.Struct):
     @property
     def users(self):
         """
-        :rtype: list of [team.MemberProfile]
+        :rtype: list of [MemberProfile]
         """
         if self._users_present:
             return self._users_value
@@ -2080,8 +2079,8 @@ class ExcludedUsersListResult(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersListResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersListResult(users={!r}, has_more={!r}, cursor={!r})'.format(
@@ -2120,7 +2119,7 @@ class ExcludedUsersUpdateArg(bb.Struct):
         """
         List of users to be added/removed.
 
-        :rtype: list of [team.UserSelectorArg]
+        :rtype: list of [UserSelectorArg]
         """
         if self._users_present:
             return self._users_value
@@ -2141,8 +2140,8 @@ class ExcludedUsersUpdateArg(bb.Struct):
         self._users_value = None
         self._users_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersUpdateArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersUpdateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersUpdateArg(users={!r})'.format(
@@ -2197,8 +2196,8 @@ class ExcludedUsersUpdateError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersUpdateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersUpdateError(%r, %r)' % (self._tag, self._value)
@@ -2231,7 +2230,7 @@ class ExcludedUsersUpdateResult(bb.Struct):
         """
         Update status.
 
-        :rtype: team.ExcludedUsersUpdateStatus
+        :rtype: ExcludedUsersUpdateStatus
         """
         if self._status_present:
             return self._status_value
@@ -2249,8 +2248,8 @@ class ExcludedUsersUpdateResult(bb.Struct):
         self._status_value = None
         self._status_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersUpdateResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersUpdateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersUpdateResult(status={!r})'.format(
@@ -2292,8 +2291,8 @@ class ExcludedUsersUpdateStatus(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExcludedUsersUpdateStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExcludedUsersUpdateStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ExcludedUsersUpdateStatus(%r, %r)' % (self._tag, self._value)
@@ -2369,8 +2368,8 @@ class Feature(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Feature, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Feature, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'Feature(%r, %r)' % (self._tag, self._value)
@@ -2397,8 +2396,8 @@ class FeatureValue(bb.Union):
         Create an instance of this class set to the ``upload_api_rate_limit``
         tag with value ``val``.
 
-        :param team.UploadApiRateLimitValue val:
-        :rtype: team.FeatureValue
+        :param UploadApiRateLimitValue val:
+        :rtype: FeatureValue
         """
         return cls('upload_api_rate_limit', val)
 
@@ -2408,8 +2407,8 @@ class FeatureValue(bb.Union):
         Create an instance of this class set to the ``has_team_shared_dropbox``
         tag with value ``val``.
 
-        :param team.HasTeamSharedDropboxValue val:
-        :rtype: team.FeatureValue
+        :param HasTeamSharedDropboxValue val:
+        :rtype: FeatureValue
         """
         return cls('has_team_shared_dropbox', val)
 
@@ -2419,8 +2418,8 @@ class FeatureValue(bb.Union):
         Create an instance of this class set to the ``has_team_file_events`` tag
         with value ``val``.
 
-        :param team.HasTeamFileEventsValue val:
-        :rtype: team.FeatureValue
+        :param HasTeamFileEventsValue val:
+        :rtype: FeatureValue
         """
         return cls('has_team_file_events', val)
 
@@ -2430,8 +2429,8 @@ class FeatureValue(bb.Union):
         Create an instance of this class set to the ``has_team_selective_sync``
         tag with value ``val``.
 
-        :param team.HasTeamSelectiveSyncValue val:
-        :rtype: team.FeatureValue
+        :param HasTeamSelectiveSyncValue val:
+        :rtype: FeatureValue
         """
         return cls('has_team_selective_sync', val)
 
@@ -2479,7 +2478,7 @@ class FeatureValue(bb.Union):
         """
         Only call this if :meth:`is_upload_api_rate_limit` is true.
 
-        :rtype: team.UploadApiRateLimitValue
+        :rtype: UploadApiRateLimitValue
         """
         if not self.is_upload_api_rate_limit():
             raise AttributeError("tag 'upload_api_rate_limit' not set")
@@ -2489,7 +2488,7 @@ class FeatureValue(bb.Union):
         """
         Only call this if :meth:`is_has_team_shared_dropbox` is true.
 
-        :rtype: team.HasTeamSharedDropboxValue
+        :rtype: HasTeamSharedDropboxValue
         """
         if not self.is_has_team_shared_dropbox():
             raise AttributeError("tag 'has_team_shared_dropbox' not set")
@@ -2499,7 +2498,7 @@ class FeatureValue(bb.Union):
         """
         Only call this if :meth:`is_has_team_file_events` is true.
 
-        :rtype: team.HasTeamFileEventsValue
+        :rtype: HasTeamFileEventsValue
         """
         if not self.is_has_team_file_events():
             raise AttributeError("tag 'has_team_file_events' not set")
@@ -2509,14 +2508,14 @@ class FeatureValue(bb.Union):
         """
         Only call this if :meth:`is_has_team_selective_sync` is true.
 
-        :rtype: team.HasTeamSelectiveSyncValue
+        :rtype: HasTeamSelectiveSyncValue
         """
         if not self.is_has_team_selective_sync():
             raise AttributeError("tag 'has_team_selective_sync' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FeatureValue, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FeatureValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FeatureValue(%r, %r)' % (self._tag, self._value)
@@ -2550,7 +2549,7 @@ class FeaturesGetValuesBatchArg(bb.Struct):
         A list of features in :class:`Feature`. If the list is empty, this route
         will return :class:`FeaturesGetValuesBatchError`.
 
-        :rtype: list of [team.Feature]
+        :rtype: list of [Feature]
         """
         if self._features_present:
             return self._features_value
@@ -2568,8 +2567,8 @@ class FeaturesGetValuesBatchArg(bb.Struct):
         self._features_value = None
         self._features_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FeaturesGetValuesBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FeaturesGetValuesBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FeaturesGetValuesBatchArg(features={!r})'.format(
@@ -2611,8 +2610,8 @@ class FeaturesGetValuesBatchError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FeaturesGetValuesBatchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FeaturesGetValuesBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FeaturesGetValuesBatchError(%r, %r)' % (self._tag, self._value)
@@ -2638,7 +2637,7 @@ class FeaturesGetValuesBatchResult(bb.Struct):
     @property
     def values(self):
         """
-        :rtype: list of [team.FeatureValue]
+        :rtype: list of [FeatureValue]
         """
         if self._values_present:
             return self._values_value
@@ -2656,8 +2655,8 @@ class FeaturesGetValuesBatchResult(bb.Struct):
         self._values_value = None
         self._values_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FeaturesGetValuesBatchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FeaturesGetValuesBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'FeaturesGetValuesBatchResult(values={!r})'.format(
@@ -3141,8 +3140,8 @@ class GetActivityReport(BaseDfbReport):
         self._shared_links_viewed_total_value = None
         self._shared_links_viewed_total_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetActivityReport, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetActivityReport, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetActivityReport(start_date={!r}, adds={!r}, edits={!r}, deletes={!r}, active_users_28_day={!r}, active_users_7_day={!r}, active_users_1_day={!r}, active_shared_folders_28_day={!r}, active_shared_folders_7_day={!r}, active_shared_folders_1_day={!r}, shared_links_created={!r}, shared_links_viewed_by_team={!r}, shared_links_viewed_by_outside_user={!r}, shared_links_viewed_by_not_logged_in={!r}, shared_links_viewed_total={!r})'.format(
@@ -3215,7 +3214,7 @@ class GetDevicesReport(BaseDfbReport):
         """
         Report of the number of devices active in the last day.
 
-        :rtype: team.DevicesActive
+        :rtype: DevicesActive
         """
         if self._active_1_day_present:
             return self._active_1_day_value
@@ -3238,7 +3237,7 @@ class GetDevicesReport(BaseDfbReport):
         """
         Report of the number of devices active in the last 7 days.
 
-        :rtype: team.DevicesActive
+        :rtype: DevicesActive
         """
         if self._active_7_day_present:
             return self._active_7_day_value
@@ -3261,7 +3260,7 @@ class GetDevicesReport(BaseDfbReport):
         """
         Report of the number of devices active in the last 28 days.
 
-        :rtype: team.DevicesActive
+        :rtype: DevicesActive
         """
         if self._active_28_day_present:
             return self._active_28_day_value
@@ -3279,8 +3278,8 @@ class GetDevicesReport(BaseDfbReport):
         self._active_28_day_value = None
         self._active_28_day_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetDevicesReport, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetDevicesReport, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetDevicesReport(start_date={!r}, active_1_day={!r}, active_7_day={!r}, active_28_day={!r})'.format(
@@ -3468,8 +3467,8 @@ class GetMembershipReport(BaseDfbReport):
         self._licenses_value = None
         self._licenses_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetMembershipReport, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetMembershipReport, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetMembershipReport(start_date={!r}, team_size={!r}, pending_invites={!r}, members_joined={!r}, suspended_members={!r}, licenses={!r})'.format(
@@ -3654,7 +3653,7 @@ class GetStorageReport(BaseDfbReport):
         per day. If there is no data for a day, the storage summary will be
         empty.
 
-        :rtype: list of [list of [team.StorageBucket]]
+        :rtype: list of [list of [StorageBucket]]
         """
         if self._member_storage_map_present:
             return self._member_storage_map_value
@@ -3672,8 +3671,8 @@ class GetStorageReport(BaseDfbReport):
         self._member_storage_map_value = None
         self._member_storage_map_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GetStorageReport, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetStorageReport, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GetStorageReport(start_date={!r}, total_usage={!r}, shared_usage={!r}, unshared_usage={!r}, shared_folders={!r}, member_storage_map={!r})'.format(
@@ -3723,8 +3722,8 @@ class GroupAccessType(bb.Union):
         """
         return self._tag == 'owner'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupAccessType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupAccessType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupAccessType(%r, %r)' % (self._tag, self._value)
@@ -3845,8 +3844,8 @@ class GroupCreateArg(bb.Struct):
         self._group_management_type_value = None
         self._group_management_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupCreateArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupCreateArg(group_name={!r}, group_external_id={!r}, group_management_type={!r})'.format(
@@ -3925,8 +3924,8 @@ class GroupCreateError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupCreateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupCreateError(%r, %r)' % (self._tag, self._value)
@@ -3967,8 +3966,8 @@ class GroupSelectorError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupSelectorError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupSelectorError(%r, %r)' % (self._tag, self._value)
@@ -3999,8 +3998,8 @@ class GroupSelectorWithTeamGroupError(GroupSelectorError):
         """
         return self._tag == 'system_managed_group_disallowed'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupSelectorWithTeamGroupError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupSelectorWithTeamGroupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupSelectorWithTeamGroupError(%r, %r)' % (self._tag, self._value)
@@ -4028,8 +4027,8 @@ class GroupDeleteError(GroupSelectorWithTeamGroupError):
         """
         return self._tag == 'group_already_deleted'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupDeleteError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupDeleteError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupDeleteError(%r, %r)' % (self._tag, self._value)
@@ -4081,7 +4080,7 @@ class GroupFullInfo(team_common.GroupSummary):
         """
         List of group members.
 
-        :rtype: list of [team.GroupMemberInfo]
+        :rtype: list of [GroupMemberInfo]
         """
         if self._members_present:
             return self._members_value
@@ -4126,8 +4125,8 @@ class GroupFullInfo(team_common.GroupSummary):
         self._created_value = None
         self._created_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupFullInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupFullInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupFullInfo(group_name={!r}, group_id={!r}, group_management_type={!r}, created={!r}, group_external_id={!r}, member_count={!r}, members={!r})'.format(
@@ -4177,7 +4176,7 @@ class GroupMemberInfo(bb.Struct):
         """
         Profile of group member.
 
-        :rtype: team.MemberProfile
+        :rtype: MemberProfile
         """
         if self._profile_present:
             return self._profile_value
@@ -4200,7 +4199,7 @@ class GroupMemberInfo(bb.Struct):
         """
         The role that the user has in the group.
 
-        :rtype: team.GroupAccessType
+        :rtype: GroupAccessType
         """
         if self._access_type_present:
             return self._access_type_value
@@ -4218,8 +4217,8 @@ class GroupMemberInfo(bb.Struct):
         self._access_type_value = None
         self._access_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMemberInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMemberInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMemberInfo(profile={!r}, access_type={!r})'.format(
@@ -4264,7 +4263,7 @@ class GroupMemberSelector(bb.Struct):
         """
         Specify a group.
 
-        :rtype: team.GroupSelector
+        :rtype: GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -4287,7 +4286,7 @@ class GroupMemberSelector(bb.Struct):
         """
         Identity of a user that is a member of ``group``.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -4305,8 +4304,8 @@ class GroupMemberSelector(bb.Struct):
         self._user_value = None
         self._user_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMemberSelector, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMemberSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMemberSelector(group={!r}, user={!r})'.format(
@@ -4340,8 +4339,8 @@ class GroupMemberSelectorError(GroupSelectorWithTeamGroupError):
         """
         return self._tag == 'member_not_in_group'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMemberSelectorError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMemberSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMemberSelectorError(%r, %r)' % (self._tag, self._value)
@@ -4370,8 +4369,8 @@ class GroupMemberSetAccessTypeError(GroupMemberSelectorError):
         """
         return self._tag == 'user_cannot_be_manager_of_company_managed_group'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMemberSetAccessTypeError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMemberSetAccessTypeError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMemberSetAccessTypeError(%r, %r)' % (self._tag, self._value)
@@ -4425,8 +4424,8 @@ class IncludeMembersArg(bb.Struct):
         self._return_members_value = None
         self._return_members_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(IncludeMembersArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(IncludeMembersArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'IncludeMembersArg(return_members={!r})'.format(
@@ -4470,7 +4469,7 @@ class GroupMembersAddArg(IncludeMembersArg):
         """
         Group to which users will be added.
 
-        :rtype: team.GroupSelector
+        :rtype: GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -4493,7 +4492,7 @@ class GroupMembersAddArg(IncludeMembersArg):
         """
         List of users to be added to the group.
 
-        :rtype: list of [team.MemberAccess]
+        :rtype: list of [MemberAccess]
         """
         if self._members_present:
             return self._members_value
@@ -4511,8 +4510,8 @@ class GroupMembersAddArg(IncludeMembersArg):
         self._members_value = None
         self._members_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMembersAddArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMembersAddArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMembersAddArg(group={!r}, members={!r}, return_members={!r})'.format(
@@ -4562,7 +4561,7 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
         with value ``val``.
 
         :param list of [str] val:
-        :rtype: team.GroupMembersAddError
+        :rtype: GroupMembersAddError
         """
         return cls('members_not_in_team', val)
 
@@ -4573,7 +4572,7 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: team.GroupMembersAddError
+        :rtype: GroupMembersAddError
         """
         return cls('users_not_found', val)
 
@@ -4585,7 +4584,7 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
         ``val``.
 
         :param list of [str] val:
-        :rtype: team.GroupMembersAddError
+        :rtype: GroupMembersAddError
         """
         return cls('user_cannot_be_manager_of_company_managed_group', val)
 
@@ -4677,8 +4676,8 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
             raise AttributeError("tag 'user_cannot_be_manager_of_company_managed_group' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMembersAddError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMembersAddError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMembersAddError(%r, %r)' % (self._tag, self._value)
@@ -4722,7 +4721,7 @@ class GroupMembersChangeResult(bb.Struct):
         """
         The group info after member change operation has been performed.
 
-        :rtype: team.GroupFullInfo
+        :rtype: GroupFullInfo
         """
         if self._group_info_present:
             return self._group_info_value
@@ -4764,8 +4763,8 @@ class GroupMembersChangeResult(bb.Struct):
         self._async_job_id_value = None
         self._async_job_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMembersChangeResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMembersChangeResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMembersChangeResult(group_info={!r}, async_job_id={!r})'.format(
@@ -4811,7 +4810,7 @@ class GroupMembersRemoveArg(IncludeMembersArg):
         """
         Group from which users will be removed.
 
-        :rtype: team.GroupSelector
+        :rtype: GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -4834,7 +4833,7 @@ class GroupMembersRemoveArg(IncludeMembersArg):
         """
         List of users to be removed from the group.
 
-        :rtype: list of [team.UserSelectorArg]
+        :rtype: list of [UserSelectorArg]
         """
         if self._users_present:
             return self._users_value
@@ -4852,8 +4851,8 @@ class GroupMembersRemoveArg(IncludeMembersArg):
         self._users_value = None
         self._users_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMembersRemoveArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMembersRemoveArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMembersRemoveArg(group={!r}, users={!r}, return_members={!r})'.format(
@@ -4888,8 +4887,8 @@ class GroupMembersSelectorError(GroupSelectorWithTeamGroupError):
         """
         return self._tag == 'member_not_in_group'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMembersSelectorError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMembersSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMembersSelectorError(%r, %r)' % (self._tag, self._value)
@@ -4921,7 +4920,7 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
         with value ``val``.
 
         :param list of [str] val:
-        :rtype: team.GroupMembersRemoveError
+        :rtype: GroupMembersRemoveError
         """
         return cls('members_not_in_team', val)
 
@@ -4932,7 +4931,7 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: team.GroupMembersRemoveError
+        :rtype: GroupMembersRemoveError
         """
         return cls('users_not_found', val)
 
@@ -4984,8 +4983,8 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
             raise AttributeError("tag 'users_not_found' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMembersRemoveError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMembersRemoveError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMembersRemoveError(%r, %r)' % (self._tag, self._value)
@@ -5027,7 +5026,7 @@ class GroupMembersSelector(bb.Struct):
         """
         Specify a group.
 
-        :rtype: team.GroupSelector
+        :rtype: GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -5050,7 +5049,7 @@ class GroupMembersSelector(bb.Struct):
         """
         A list of users that are members of ``group``.
 
-        :rtype: team.UsersSelectorArg
+        :rtype: UsersSelectorArg
         """
         if self._users_present:
             return self._users_value
@@ -5068,8 +5067,8 @@ class GroupMembersSelector(bb.Struct):
         self._users_value = None
         self._users_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMembersSelector, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMembersSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMembersSelector(group={!r}, users={!r})'.format(
@@ -5119,7 +5118,7 @@ class GroupMembersSetAccessTypeArg(GroupMemberSelector):
         """
         New group access type the user will have.
 
-        :rtype: team.GroupAccessType
+        :rtype: GroupAccessType
         """
         if self._access_type_present:
             return self._access_type_value
@@ -5162,8 +5161,8 @@ class GroupMembersSetAccessTypeArg(GroupMemberSelector):
         self._return_members_value = None
         self._return_members_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupMembersSetAccessTypeArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupMembersSetAccessTypeArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupMembersSetAccessTypeArg(group={!r}, user={!r}, access_type={!r}, return_members={!r})'.format(
@@ -5197,7 +5196,7 @@ class GroupSelector(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: team.GroupSelector
+        :rtype: GroupSelector
         """
         return cls('group_id', val)
 
@@ -5208,7 +5207,7 @@ class GroupSelector(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: team.GroupSelector
+        :rtype: GroupSelector
         """
         return cls('group_external_id', val)
 
@@ -5252,8 +5251,8 @@ class GroupSelector(bb.Union):
             raise AttributeError("tag 'group_external_id' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupSelector, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupSelector(%r, %r)' % (self._tag, self._value)
@@ -5315,7 +5314,7 @@ class GroupUpdateArgs(IncludeMembersArg):
         """
         Specify a group.
 
-        :rtype: team.GroupSelector
+        :rtype: GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -5413,8 +5412,8 @@ class GroupUpdateArgs(IncludeMembersArg):
         self._new_group_management_type_value = None
         self._new_group_management_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupUpdateArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupUpdateArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupUpdateArgs(group={!r}, return_members={!r}, new_group_name={!r}, new_group_external_id={!r}, new_group_management_type={!r})'.format(
@@ -5472,8 +5471,8 @@ class GroupUpdateError(GroupSelectorWithTeamGroupError):
         """
         return self._tag == 'external_id_already_in_use'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupUpdateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupUpdateError(%r, %r)' % (self._tag, self._value)
@@ -5512,8 +5511,8 @@ class GroupsGetInfoError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsGetInfoError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsGetInfoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsGetInfoError(%r, %r)' % (self._tag, self._value)
@@ -5530,7 +5529,7 @@ class GroupsGetInfoItem(bb.Union):
         parameter to :route:`groups/get_info`, and did not match a corresponding
         group. The ID can be a group ID, or an external ID, depending on how the
         method was called.
-    :ivar GroupFullInfo team.GroupsGetInfoItem.group_info: Info about a group.
+    :ivar GroupFullInfo GroupsGetInfoItem.group_info: Info about a group.
     """
 
     _catch_all = None
@@ -5542,7 +5541,7 @@ class GroupsGetInfoItem(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: team.GroupsGetInfoItem
+        :rtype: GroupsGetInfoItem
         """
         return cls('id_not_found', val)
 
@@ -5552,8 +5551,8 @@ class GroupsGetInfoItem(bb.Union):
         Create an instance of this class set to the ``group_info`` tag with
         value ``val``.
 
-        :param team.GroupFullInfo val:
-        :rtype: team.GroupsGetInfoItem
+        :param GroupFullInfo val:
+        :rtype: GroupsGetInfoItem
         """
         return cls('group_info', val)
 
@@ -5594,14 +5593,14 @@ class GroupsGetInfoItem(bb.Union):
 
         Only call this if :meth:`is_group_info` is true.
 
-        :rtype: team.GroupFullInfo
+        :rtype: GroupFullInfo
         """
         if not self.is_group_info():
             raise AttributeError("tag 'group_info' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsGetInfoItem, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsGetInfoItem, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsGetInfoItem(%r, %r)' % (self._tag, self._value)
@@ -5650,8 +5649,8 @@ class GroupsListArg(bb.Struct):
         self._limit_value = None
         self._limit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsListArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsListArg(limit={!r})'.format(
@@ -5703,8 +5702,8 @@ class GroupsListContinueArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsListContinueArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsListContinueArg(cursor={!r})'.format(
@@ -5744,8 +5743,8 @@ class GroupsListContinueError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsListContinueError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsListContinueError(%r, %r)' % (self._tag, self._value)
@@ -5863,8 +5862,8 @@ class GroupsListResult(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsListResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsListResult(groups={!r}, cursor={!r}, has_more={!r})'.format(
@@ -5908,7 +5907,7 @@ class GroupsMembersListArg(bb.Struct):
         """
         The group whose members are to be listed.
 
-        :rtype: team.GroupSelector
+        :rtype: GroupSelector
         """
         if self._group_present:
             return self._group_value
@@ -5949,8 +5948,8 @@ class GroupsMembersListArg(bb.Struct):
         self._limit_value = None
         self._limit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsMembersListArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsMembersListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsMembersListArg(group={!r}, limit={!r})'.format(
@@ -6003,8 +6002,8 @@ class GroupsMembersListContinueArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsMembersListContinueArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsMembersListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsMembersListContinueArg(cursor={!r})'.format(
@@ -6045,8 +6044,8 @@ class GroupsMembersListContinueError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsMembersListContinueError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsMembersListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsMembersListContinueError(%r, %r)' % (self._tag, self._value)
@@ -6095,7 +6094,7 @@ class GroupsMembersListResult(bb.Struct):
     @property
     def members(self):
         """
-        :rtype: list of [team.GroupMemberInfo]
+        :rtype: list of [GroupMemberInfo]
         """
         if self._members_present:
             return self._members_value
@@ -6164,8 +6163,8 @@ class GroupsMembersListResult(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsMembersListResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsMembersListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsMembersListResult(members={!r}, cursor={!r}, has_more={!r})'.format(
@@ -6197,8 +6196,8 @@ class GroupsPollError(async_.PollError):
         """
         return self._tag == 'access_denied'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsPollError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsPollError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsPollError(%r, %r)' % (self._tag, self._value)
@@ -6228,7 +6227,7 @@ class GroupsSelector(bb.Union):
         ``val``.
 
         :param list of [str] val:
-        :rtype: team.GroupsSelector
+        :rtype: GroupsSelector
         """
         return cls('group_ids', val)
 
@@ -6239,7 +6238,7 @@ class GroupsSelector(bb.Union):
         with value ``val``.
 
         :param list of [str] val:
-        :rtype: team.GroupsSelector
+        :rtype: GroupsSelector
         """
         return cls('group_external_ids', val)
 
@@ -6283,8 +6282,8 @@ class GroupsSelector(bb.Union):
             raise AttributeError("tag 'group_external_ids' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupsSelector, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupsSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupsSelector(%r, %r)' % (self._tag, self._value)
@@ -6314,7 +6313,7 @@ class HasTeamFileEventsValue(bb.Union):
         ``val``.
 
         :param bool val:
-        :rtype: team.HasTeamFileEventsValue
+        :rtype: HasTeamFileEventsValue
         """
         return cls('enabled', val)
 
@@ -6346,8 +6345,8 @@ class HasTeamFileEventsValue(bb.Union):
             raise AttributeError("tag 'enabled' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(HasTeamFileEventsValue, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(HasTeamFileEventsValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'HasTeamFileEventsValue(%r, %r)' % (self._tag, self._value)
@@ -6377,7 +6376,7 @@ class HasTeamSelectiveSyncValue(bb.Union):
         tag with value ``val``.
 
         :param bool val:
-        :rtype: team.HasTeamSelectiveSyncValue
+        :rtype: HasTeamSelectiveSyncValue
         """
         return cls('has_team_selective_sync', val)
 
@@ -6409,8 +6408,8 @@ class HasTeamSelectiveSyncValue(bb.Union):
             raise AttributeError("tag 'has_team_selective_sync' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(HasTeamSelectiveSyncValue, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(HasTeamSelectiveSyncValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'HasTeamSelectiveSyncValue(%r, %r)' % (self._tag, self._value)
@@ -6440,7 +6439,7 @@ class HasTeamSharedDropboxValue(bb.Union):
         tag with value ``val``.
 
         :param bool val:
-        :rtype: team.HasTeamSharedDropboxValue
+        :rtype: HasTeamSharedDropboxValue
         """
         return cls('has_team_shared_dropbox', val)
 
@@ -6472,8 +6471,8 @@ class HasTeamSharedDropboxValue(bb.Union):
             raise AttributeError("tag 'has_team_shared_dropbox' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(HasTeamSharedDropboxValue, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(HasTeamSharedDropboxValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'HasTeamSharedDropboxValue(%r, %r)' % (self._tag, self._value)
@@ -6522,8 +6521,8 @@ class ListMemberAppsArg(bb.Struct):
         self._team_member_id_value = None
         self._team_member_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMemberAppsArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMemberAppsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMemberAppsArg(team_member_id={!r})'.format(
@@ -6566,8 +6565,8 @@ class ListMemberAppsError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMemberAppsError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMemberAppsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMemberAppsError(%r, %r)' % (self._tag, self._value)
@@ -6599,7 +6598,7 @@ class ListMemberAppsResult(bb.Struct):
         """
         List of third party applications linked by this team member.
 
-        :rtype: list of [team.ApiApp]
+        :rtype: list of [ApiApp]
         """
         if self._linked_api_apps_present:
             return self._linked_api_apps_value
@@ -6617,8 +6616,8 @@ class ListMemberAppsResult(bb.Struct):
         self._linked_api_apps_value = None
         self._linked_api_apps_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMemberAppsResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMemberAppsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMemberAppsResult(linked_api_apps={!r})'.format(
@@ -6765,8 +6764,8 @@ class ListMemberDevicesArg(bb.Struct):
         self._include_mobile_clients_value = None
         self._include_mobile_clients_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMemberDevicesArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMemberDevicesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMemberDevicesArg(team_member_id={!r}, include_web_sessions={!r}, include_desktop_clients={!r}, include_mobile_clients={!r})'.format(
@@ -6809,8 +6808,8 @@ class ListMemberDevicesError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMemberDevicesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMemberDevicesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMemberDevicesError(%r, %r)' % (self._tag, self._value)
@@ -6860,7 +6859,7 @@ class ListMemberDevicesResult(bb.Struct):
         """
         List of web sessions made by this team member.
 
-        :rtype: list of [team.ActiveWebSession]
+        :rtype: list of [ActiveWebSession]
         """
         if self._active_web_sessions_present:
             return self._active_web_sessions_value
@@ -6886,7 +6885,7 @@ class ListMemberDevicesResult(bb.Struct):
         """
         List of desktop clients used by this team member.
 
-        :rtype: list of [team.DesktopClientSession]
+        :rtype: list of [DesktopClientSession]
         """
         if self._desktop_client_sessions_present:
             return self._desktop_client_sessions_value
@@ -6912,7 +6911,7 @@ class ListMemberDevicesResult(bb.Struct):
         """
         List of mobile client used by this team member.
 
-        :rtype: list of [team.MobileClientSession]
+        :rtype: list of [MobileClientSession]
         """
         if self._mobile_client_sessions_present:
             return self._mobile_client_sessions_value
@@ -6933,8 +6932,8 @@ class ListMemberDevicesResult(bb.Struct):
         self._mobile_client_sessions_value = None
         self._mobile_client_sessions_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMemberDevicesResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMemberDevicesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMemberDevicesResult(active_web_sessions={!r}, desktop_client_sessions={!r}, mobile_client_sessions={!r})'.format(
@@ -7001,8 +7000,8 @@ class ListMembersAppsArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMembersAppsArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMembersAppsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMembersAppsArg(cursor={!r})'.format(
@@ -7048,8 +7047,8 @@ class ListMembersAppsError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMembersAppsError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMembersAppsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMembersAppsError(%r, %r)' % (self._tag, self._value)
@@ -7105,7 +7104,7 @@ class ListMembersAppsResult(bb.Struct):
         """
         The linked applications of each member of the team.
 
-        :rtype: list of [team.MemberLinkedApps]
+        :rtype: list of [MemberLinkedApps]
         """
         if self._apps_present:
             return self._apps_value
@@ -7176,8 +7175,8 @@ class ListMembersAppsResult(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMembersAppsResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMembersAppsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMembersAppsResult(apps={!r}, has_more={!r}, cursor={!r})'.format(
@@ -7337,8 +7336,8 @@ class ListMembersDevicesArg(bb.Struct):
         self._include_mobile_clients_value = None
         self._include_mobile_clients_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMembersDevicesArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMembersDevicesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMembersDevicesArg(cursor={!r}, include_web_sessions={!r}, include_desktop_clients={!r}, include_mobile_clients={!r})'.format(
@@ -7384,8 +7383,8 @@ class ListMembersDevicesError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMembersDevicesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMembersDevicesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMembersDevicesError(%r, %r)' % (self._tag, self._value)
@@ -7438,7 +7437,7 @@ class ListMembersDevicesResult(bb.Struct):
         """
         The devices of each member of the team.
 
-        :rtype: list of [team.MemberDevices]
+        :rtype: list of [MemberDevices]
         """
         if self._devices_present:
             return self._devices_value
@@ -7509,8 +7508,8 @@ class ListMembersDevicesResult(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListMembersDevicesResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListMembersDevicesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListMembersDevicesResult(devices={!r}, has_more={!r}, cursor={!r})'.format(
@@ -7577,8 +7576,8 @@ class ListTeamAppsArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListTeamAppsArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListTeamAppsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListTeamAppsArg(cursor={!r})'.format(
@@ -7624,8 +7623,8 @@ class ListTeamAppsError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListTeamAppsError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListTeamAppsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListTeamAppsError(%r, %r)' % (self._tag, self._value)
@@ -7681,7 +7680,7 @@ class ListTeamAppsResult(bb.Struct):
         """
         The linked applications of each member of the team.
 
-        :rtype: list of [team.MemberLinkedApps]
+        :rtype: list of [MemberLinkedApps]
         """
         if self._apps_present:
             return self._apps_value
@@ -7752,8 +7751,8 @@ class ListTeamAppsResult(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListTeamAppsResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListTeamAppsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListTeamAppsResult(apps={!r}, has_more={!r}, cursor={!r})'.format(
@@ -7913,8 +7912,8 @@ class ListTeamDevicesArg(bb.Struct):
         self._include_mobile_clients_value = None
         self._include_mobile_clients_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListTeamDevicesArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListTeamDevicesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListTeamDevicesArg(cursor={!r}, include_web_sessions={!r}, include_desktop_clients={!r}, include_mobile_clients={!r})'.format(
@@ -7960,8 +7959,8 @@ class ListTeamDevicesError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListTeamDevicesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListTeamDevicesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListTeamDevicesError(%r, %r)' % (self._tag, self._value)
@@ -8014,7 +8013,7 @@ class ListTeamDevicesResult(bb.Struct):
         """
         The devices of each member of the team.
 
-        :rtype: list of [team.MemberDevices]
+        :rtype: list of [MemberDevices]
         """
         if self._devices_present:
             return self._devices_value
@@ -8085,8 +8084,8 @@ class ListTeamDevicesResult(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListTeamDevicesResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListTeamDevicesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'ListTeamDevicesResult(devices={!r}, has_more={!r}, cursor={!r})'.format(
@@ -8131,7 +8130,7 @@ class MemberAccess(bb.Struct):
         """
         Identity of a user.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -8154,7 +8153,7 @@ class MemberAccess(bb.Struct):
         """
         Access type.
 
-        :rtype: team.GroupAccessType
+        :rtype: GroupAccessType
         """
         if self._access_type_present:
             return self._access_type_value
@@ -8172,8 +8171,8 @@ class MemberAccess(bb.Struct):
         self._access_type_value = None
         self._access_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberAccess, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberAccess, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MemberAccess(user={!r}, access_type={!r})'.format(
@@ -8416,7 +8415,7 @@ class MemberAddArg(bb.Struct):
     @property
     def role(self):
         """
-        :rtype: team.AdminTier
+        :rtype: AdminTier
         """
         if self._role_present:
             return self._role_value
@@ -8460,8 +8459,8 @@ class MemberAddArg(bb.Struct):
         self._is_directory_restricted_value = None
         self._is_directory_restricted_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberAddArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberAddArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MemberAddArg(member_email={!r}, member_given_name={!r}, member_surname={!r}, member_external_id={!r}, member_persistent_id={!r}, send_welcome_email={!r}, role={!r}, is_directory_restricted={!r})'.format(
@@ -8488,7 +8487,7 @@ class MemberAddResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar TeamMemberInfo team.MemberAddResult.success: Describes a user that was
+    :ivar TeamMemberInfo MemberAddResult.success: Describes a user that was
         successfully added to the team.
     :ivar str team.MemberAddResult.team_license_limit: Team is already full. The
         organization has no available licenses.
@@ -8525,8 +8524,8 @@ class MemberAddResult(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param team.TeamMemberInfo val:
-        :rtype: team.MemberAddResult
+        :param TeamMemberInfo val:
+        :rtype: MemberAddResult
         """
         return cls('success', val)
 
@@ -8537,7 +8536,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('team_license_limit', val)
 
@@ -8548,7 +8547,7 @@ class MemberAddResult(bb.Union):
         ``free_team_member_limit_reached`` tag with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('free_team_member_limit_reached', val)
 
@@ -8559,7 +8558,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('user_already_on_team', val)
 
@@ -8570,7 +8569,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('user_on_another_team', val)
 
@@ -8581,7 +8580,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('user_already_paired', val)
 
@@ -8592,7 +8591,7 @@ class MemberAddResult(bb.Union):
         tag with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('user_migration_failed', val)
 
@@ -8603,7 +8602,7 @@ class MemberAddResult(bb.Union):
         ``duplicate_external_member_id`` tag with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('duplicate_external_member_id', val)
 
@@ -8614,7 +8613,7 @@ class MemberAddResult(bb.Union):
         ``duplicate_member_persistent_id`` tag with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('duplicate_member_persistent_id', val)
 
@@ -8625,7 +8624,7 @@ class MemberAddResult(bb.Union):
         tag with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('persistent_id_disabled', val)
 
@@ -8636,7 +8635,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: team.MemberAddResult
+        :rtype: MemberAddResult
         """
         return cls('user_creation_failed', val)
 
@@ -8734,7 +8733,7 @@ class MemberAddResult(bb.Union):
 
         Only call this if :meth:`is_success` is true.
 
-        :rtype: team.TeamMemberInfo
+        :rtype: TeamMemberInfo
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -8867,8 +8866,8 @@ class MemberAddResult(bb.Union):
             raise AttributeError("tag 'user_creation_failed' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberAddResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberAddResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MemberAddResult(%r, %r)' % (self._tag, self._value)
@@ -8951,7 +8950,7 @@ class MemberDevices(bb.Struct):
         """
         List of web sessions made by this team member.
 
-        :rtype: list of [team.ActiveWebSession]
+        :rtype: list of [ActiveWebSession]
         """
         if self._web_sessions_present:
             return self._web_sessions_value
@@ -8977,7 +8976,7 @@ class MemberDevices(bb.Struct):
         """
         List of desktop clients by this team member.
 
-        :rtype: list of [team.DesktopClientSession]
+        :rtype: list of [DesktopClientSession]
         """
         if self._desktop_clients_present:
             return self._desktop_clients_value
@@ -9003,7 +9002,7 @@ class MemberDevices(bb.Struct):
         """
         List of mobile clients by this team member.
 
-        :rtype: list of [team.MobileClientSession]
+        :rtype: list of [MobileClientSession]
         """
         if self._mobile_clients_present:
             return self._mobile_clients_value
@@ -9024,8 +9023,8 @@ class MemberDevices(bb.Struct):
         self._mobile_clients_value = None
         self._mobile_clients_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberDevices, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberDevices, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MemberDevices(team_member_id={!r}, web_sessions={!r}, desktop_clients={!r}, mobile_clients={!r})'.format(
@@ -9095,7 +9094,7 @@ class MemberLinkedApps(bb.Struct):
         """
         List of third party applications linked by this team member.
 
-        :rtype: list of [team.ApiApp]
+        :rtype: list of [ApiApp]
         """
         if self._linked_api_apps_present:
             return self._linked_api_apps_value
@@ -9113,8 +9112,8 @@ class MemberLinkedApps(bb.Struct):
         self._linked_api_apps_value = None
         self._linked_api_apps_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberLinkedApps, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberLinkedApps, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MemberLinkedApps(team_member_id={!r}, linked_api_apps={!r})'.format(
@@ -9144,11 +9143,16 @@ class MemberProfile(bb.Struct):
         the team's shared quota).
     :ivar team.MemberProfile.joined_on: The date and time the user joined as a
         member of a specific team.
+    :ivar team.MemberProfile.suspended_on: The date and time the user was
+        suspended from the team (contains value only when the member's status
+        matches ``TeamMemberStatus.suspended``.
     :ivar team.MemberProfile.persistent_id: Persistent ID that a team can attach
         to the user. The persistent ID is unique ID to be used for SAML
         authentication.
     :ivar team.MemberProfile.is_directory_restricted: Whether the user is a
         directory restricted user.
+    :ivar team.MemberProfile.profile_photo_url: URL for the photo representing
+        the user, if one is set.
     """
 
     __slots__ = [
@@ -9170,10 +9174,14 @@ class MemberProfile(bb.Struct):
         '_membership_type_present',
         '_joined_on_value',
         '_joined_on_present',
+        '_suspended_on_value',
+        '_suspended_on_present',
         '_persistent_id_value',
         '_persistent_id_present',
         '_is_directory_restricted_value',
         '_is_directory_restricted_present',
+        '_profile_photo_url_value',
+        '_profile_photo_url_present',
     ]
 
     _has_required_fields = True
@@ -9188,8 +9196,10 @@ class MemberProfile(bb.Struct):
                  external_id=None,
                  account_id=None,
                  joined_on=None,
+                 suspended_on=None,
                  persistent_id=None,
-                 is_directory_restricted=None):
+                 is_directory_restricted=None,
+                 profile_photo_url=None):
         self._team_member_id_value = None
         self._team_member_id_present = False
         self._external_id_value = None
@@ -9208,10 +9218,14 @@ class MemberProfile(bb.Struct):
         self._membership_type_present = False
         self._joined_on_value = None
         self._joined_on_present = False
+        self._suspended_on_value = None
+        self._suspended_on_present = False
         self._persistent_id_value = None
         self._persistent_id_present = False
         self._is_directory_restricted_value = None
         self._is_directory_restricted_present = False
+        self._profile_photo_url_value = None
+        self._profile_photo_url_present = False
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if external_id is not None:
@@ -9230,10 +9244,14 @@ class MemberProfile(bb.Struct):
             self.membership_type = membership_type
         if joined_on is not None:
             self.joined_on = joined_on
+        if suspended_on is not None:
+            self.suspended_on = suspended_on
         if persistent_id is not None:
             self.persistent_id = persistent_id
         if is_directory_restricted is not None:
             self.is_directory_restricted = is_directory_restricted
+        if profile_photo_url is not None:
+            self.profile_photo_url = profile_photo_url
 
     @property
     def team_member_id(self):
@@ -9363,7 +9381,7 @@ class MemberProfile(bb.Struct):
         """
         The user's status as a member of a specific team.
 
-        :rtype: team.TeamMemberStatus
+        :rtype: TeamMemberStatus
         """
         if self._status_present:
             return self._status_value
@@ -9410,7 +9428,7 @@ class MemberProfile(bb.Struct):
         The user's membership type: full (normal team member) vs limited (does
         not use a license; no access to the team's shared quota).
 
-        :rtype: team.TeamMembershipType
+        :rtype: TeamMembershipType
         """
         if self._membership_type_present:
             return self._membership_type_value
@@ -9453,6 +9471,33 @@ class MemberProfile(bb.Struct):
     def joined_on(self):
         self._joined_on_value = None
         self._joined_on_present = False
+
+    @property
+    def suspended_on(self):
+        """
+        The date and time the user was suspended from the team (contains value
+        only when the member's status matches ``TeamMemberStatus.suspended``.
+
+        :rtype: datetime.datetime
+        """
+        if self._suspended_on_present:
+            return self._suspended_on_value
+        else:
+            return None
+
+    @suspended_on.setter
+    def suspended_on(self, val):
+        if val is None:
+            del self.suspended_on
+            return
+        val = self._suspended_on_validator.validate(val)
+        self._suspended_on_value = val
+        self._suspended_on_present = True
+
+    @suspended_on.deleter
+    def suspended_on(self):
+        self._suspended_on_value = None
+        self._suspended_on_present = False
 
     @property
     def persistent_id(self):
@@ -9507,11 +9552,37 @@ class MemberProfile(bb.Struct):
         self._is_directory_restricted_value = None
         self._is_directory_restricted_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberProfile, self)._process_custom_annotations(annotation_type, processor)
+    @property
+    def profile_photo_url(self):
+        """
+        URL for the photo representing the user, if one is set.
+
+        :rtype: str
+        """
+        if self._profile_photo_url_present:
+            return self._profile_photo_url_value
+        else:
+            return None
+
+    @profile_photo_url.setter
+    def profile_photo_url(self, val):
+        if val is None:
+            del self.profile_photo_url
+            return
+        val = self._profile_photo_url_validator.validate(val)
+        self._profile_photo_url_value = val
+        self._profile_photo_url_present = True
+
+    @profile_photo_url.deleter
+    def profile_photo_url(self):
+        self._profile_photo_url_value = None
+        self._profile_photo_url_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberProfile, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, persistent_id={!r}, is_directory_restricted={!r})'.format(
+        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, suspended_on={!r}, persistent_id={!r}, is_directory_restricted={!r}, profile_photo_url={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -9521,8 +9592,10 @@ class MemberProfile(bb.Struct):
             self._external_id_value,
             self._account_id_value,
             self._joined_on_value,
+            self._suspended_on_value,
             self._persistent_id_value,
             self._is_directory_restricted_value,
+            self._profile_photo_url_value,
         )
 
 MemberProfile_validator = bv.Struct(MemberProfile)
@@ -9553,8 +9626,8 @@ class UserSelectorError(bb.Union):
         """
         return self._tag == 'user_not_found'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserSelectorError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UserSelectorError(%r, %r)' % (self._tag, self._value)
@@ -9582,8 +9655,8 @@ class MemberSelectorError(UserSelectorError):
         """
         return self._tag == 'user_not_in_team'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberSelectorError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MemberSelectorError(%r, %r)' % (self._tag, self._value)
@@ -9624,7 +9697,7 @@ class MembersAddArg(bb.Struct):
         """
         Details of new members to be added to the team.
 
-        :rtype: list of [team.MemberAddArg]
+        :rtype: list of [MemberAddArg]
         """
         if self._new_members_present:
             return self._new_members_value
@@ -9665,8 +9738,8 @@ class MembersAddArg(bb.Struct):
         self._force_async_value = None
         self._force_async_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersAddArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersAddArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersAddArg(new_members={!r}, force_async={!r})'.format(
@@ -9682,7 +9755,7 @@ class MembersAddJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar list of [team.MemberAddResult] team.MembersAddJobStatus.complete: The
+    :ivar list of [MemberAddResult] team.MembersAddJobStatus.complete: The
         asynchronous job has finished. For each member that was specified in the
         parameter :type:`MembersAddArg` that was provided to
         :route:`members/add`, a corresponding item is returned in this list.
@@ -9696,8 +9769,8 @@ class MembersAddJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param list of [team.MemberAddResult] val:
-        :rtype: team.MembersAddJobStatus
+        :param list of [MemberAddResult] val:
+        :rtype: MembersAddJobStatus
         """
         return cls('complete', val)
 
@@ -9708,7 +9781,7 @@ class MembersAddJobStatus(async_.PollResultBase):
         ``val``.
 
         :param str val:
-        :rtype: team.MembersAddJobStatus
+        :rtype: MembersAddJobStatus
         """
         return cls('failed', val)
 
@@ -9737,7 +9810,7 @@ class MembersAddJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: list of [team.MemberAddResult]
+        :rtype: list of [MemberAddResult]
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -9756,8 +9829,8 @@ class MembersAddJobStatus(async_.PollResultBase):
             raise AttributeError("tag 'failed' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersAddJobStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersAddJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersAddJobStatus(%r, %r)' % (self._tag, self._value)
@@ -9777,8 +9850,8 @@ class MembersAddLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param list of [team.MemberAddResult] val:
-        :rtype: team.MembersAddLaunch
+        :param list of [MemberAddResult] val:
+        :rtype: MembersAddLaunch
         """
         return cls('complete', val)
 
@@ -9794,14 +9867,14 @@ class MembersAddLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: list of [team.MemberAddResult]
+        :rtype: list of [MemberAddResult]
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersAddLaunch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersAddLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersAddLaunch(%r, %r)' % (self._tag, self._value)
@@ -9836,7 +9909,7 @@ class MembersDeactivateBaseArg(bb.Struct):
         """
         Identity of user to remove/suspend/have their files moved.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -9854,8 +9927,8 @@ class MembersDeactivateBaseArg(bb.Struct):
         self._user_value = None
         self._user_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersDeactivateBaseArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersDeactivateBaseArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersDeactivateBaseArg(user={!r})'.format(
@@ -9900,7 +9973,7 @@ class MembersDataTransferArg(MembersDeactivateBaseArg):
         """
         Files from the deleted member account will be transferred to this user.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._transfer_dest_id_present:
             return self._transfer_dest_id_value
@@ -9923,7 +9996,7 @@ class MembersDataTransferArg(MembersDeactivateBaseArg):
         """
         Errors during the transfer process will be sent via email to this user.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._transfer_admin_id_present:
             return self._transfer_admin_id_value
@@ -9941,8 +10014,8 @@ class MembersDataTransferArg(MembersDeactivateBaseArg):
         self._transfer_admin_id_value = None
         self._transfer_admin_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersDataTransferArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersDataTransferArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersDataTransferArg(user={!r}, transfer_dest_id={!r}, transfer_admin_id={!r})'.format(
@@ -9999,8 +10072,8 @@ class MembersDeactivateArg(MembersDeactivateBaseArg):
         self._wipe_data_value = None
         self._wipe_data_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersDeactivateArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersDeactivateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersDeactivateArg(user={!r}, wipe_data={!r})'.format(
@@ -10042,8 +10115,8 @@ class MembersDeactivateError(UserSelectorError):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersDeactivateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersDeactivateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersDeactivateError(%r, %r)' % (self._tag, self._value)
@@ -10074,7 +10147,7 @@ class MembersGetInfoArgs(bb.Struct):
         """
         List of team members.
 
-        :rtype: list of [team.UserSelectorArg]
+        :rtype: list of [UserSelectorArg]
         """
         if self._members_present:
             return self._members_value
@@ -10092,8 +10165,8 @@ class MembersGetInfoArgs(bb.Struct):
         self._members_value = None
         self._members_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersGetInfoArgs, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersGetInfoArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersGetInfoArgs(members={!r})'.format(
@@ -10121,8 +10194,8 @@ class MembersGetInfoError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersGetInfoError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersGetInfoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersGetInfoError(%r, %r)' % (self._tag, self._value)
@@ -10142,7 +10215,7 @@ class MembersGetInfoItem(bb.Union):
         parameter to :route:`members/get_info`, and did not match a
         corresponding user. This might be a team_member_id, an email, or an
         external ID, depending on how the method was called.
-    :ivar TeamMemberInfo team.MembersGetInfoItem.member_info: Info about a team
+    :ivar TeamMemberInfo MembersGetInfoItem.member_info: Info about a team
         member.
     """
 
@@ -10155,7 +10228,7 @@ class MembersGetInfoItem(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: team.MembersGetInfoItem
+        :rtype: MembersGetInfoItem
         """
         return cls('id_not_found', val)
 
@@ -10165,8 +10238,8 @@ class MembersGetInfoItem(bb.Union):
         Create an instance of this class set to the ``member_info`` tag with
         value ``val``.
 
-        :param team.TeamMemberInfo val:
-        :rtype: team.MembersGetInfoItem
+        :param TeamMemberInfo val:
+        :rtype: MembersGetInfoItem
         """
         return cls('member_info', val)
 
@@ -10207,14 +10280,14 @@ class MembersGetInfoItem(bb.Union):
 
         Only call this if :meth:`is_member_info` is true.
 
-        :rtype: team.TeamMemberInfo
+        :rtype: TeamMemberInfo
         """
         if not self.is_member_info():
             raise AttributeError("tag 'member_info' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersGetInfoItem, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersGetInfoItem, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersGetInfoItem(%r, %r)' % (self._tag, self._value)
@@ -10295,8 +10368,8 @@ class MembersListArg(bb.Struct):
         self._include_removed_value = None
         self._include_removed_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersListArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersListArg(limit={!r}, include_removed={!r})'.format(
@@ -10349,8 +10422,8 @@ class MembersListContinueArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersListContinueArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersListContinueArg(cursor={!r})'.format(
@@ -10390,8 +10463,8 @@ class MembersListContinueError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersListContinueError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersListContinueError(%r, %r)' % (self._tag, self._value)
@@ -10417,8 +10490,8 @@ class MembersListError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersListError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersListError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersListError(%r, %r)' % (self._tag, self._value)
@@ -10470,7 +10543,7 @@ class MembersListResult(bb.Struct):
         """
         List of team members.
 
-        :rtype: list of [team.TeamMemberInfo]
+        :rtype: list of [TeamMemberInfo]
         """
         if self._members_present:
             return self._members_value
@@ -10539,8 +10612,8 @@ class MembersListResult(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersListResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersListResult(members={!r}, cursor={!r}, has_more={!r})'.format(
@@ -10578,7 +10651,7 @@ class MembersRecoverArg(bb.Struct):
         """
         Identity of user to recover.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -10596,8 +10669,8 @@ class MembersRecoverArg(bb.Struct):
         self._user_value = None
         self._user_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersRecoverArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersRecoverArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersRecoverArg(user={!r})'.format(
@@ -10662,8 +10735,8 @@ class MembersRecoverError(UserSelectorError):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersRecoverError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersRecoverError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersRecoverError(%r, %r)' % (self._tag, self._value)
@@ -10723,7 +10796,7 @@ class MembersRemoveArg(MembersDeactivateArg):
         If provided, files from the deleted member account will be transferred
         to this user.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._transfer_dest_id_present:
             return self._transfer_dest_id_value
@@ -10751,7 +10824,7 @@ class MembersRemoveArg(MembersDeactivateArg):
         to this user. If the transfer_dest_id argument was provided, then this
         argument must be provided as well.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._transfer_admin_id_present:
             return self._transfer_admin_id_value
@@ -10798,8 +10871,8 @@ class MembersRemoveArg(MembersDeactivateArg):
         self._keep_account_value = None
         self._keep_account_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersRemoveArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersRemoveArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersRemoveArg(user={!r}, wipe_data={!r}, transfer_dest_id={!r}, transfer_admin_id={!r}, keep_account={!r})'.format(
@@ -10932,8 +11005,8 @@ class MembersTransferFilesError(MembersDeactivateError):
         """
         return self._tag == 'recipient_not_verified'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersTransferFilesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersTransferFilesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersTransferFilesError(%r, %r)' % (self._tag, self._value)
@@ -11010,8 +11083,8 @@ class MembersRemoveError(MembersTransferFilesError):
         """
         return self._tag == 'cannot_keep_invited_user_account'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersRemoveError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersRemoveError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersRemoveError(%r, %r)' % (self._tag, self._value)
@@ -11037,8 +11110,8 @@ class MembersSendWelcomeError(MemberSelectorError):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersSendWelcomeError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSendWelcomeError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersSendWelcomeError(%r, %r)' % (self._tag, self._value)
@@ -11081,7 +11154,7 @@ class MembersSetPermissionsArg(bb.Struct):
         """
         Identity of user whose role will be set.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -11104,7 +11177,7 @@ class MembersSetPermissionsArg(bb.Struct):
         """
         The new role of the member.
 
-        :rtype: team.AdminTier
+        :rtype: AdminTier
         """
         if self._new_role_present:
             return self._new_role_value
@@ -11122,8 +11195,8 @@ class MembersSetPermissionsArg(bb.Struct):
         self._new_role_value = None
         self._new_role_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersSetPermissionsArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetPermissionsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersSetPermissionsArg(user={!r}, new_role={!r})'.format(
@@ -11201,8 +11274,8 @@ class MembersSetPermissionsError(UserSelectorError):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersSetPermissionsError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetPermissionsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersSetPermissionsError(%r, %r)' % (self._tag, self._value)
@@ -11265,7 +11338,7 @@ class MembersSetPermissionsResult(bb.Struct):
         """
         The role after the change.
 
-        :rtype: team.AdminTier
+        :rtype: AdminTier
         """
         if self._role_present:
             return self._role_value
@@ -11283,8 +11356,8 @@ class MembersSetPermissionsResult(bb.Struct):
         self._role_value = None
         self._role_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersSetPermissionsResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetPermissionsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersSetPermissionsResult(team_member_id={!r}, role={!r})'.format(
@@ -11373,7 +11446,7 @@ class MembersSetProfileArg(bb.Struct):
         """
         Identity of user whose profile will be set.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -11548,8 +11621,8 @@ class MembersSetProfileArg(bb.Struct):
         self._new_is_directory_restricted_value = None
         self._new_is_directory_restricted_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersSetProfileArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetProfileArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersSetProfileArg(user={!r}, new_email={!r}, new_external_id={!r}, new_given_name={!r}, new_surname={!r}, new_persistent_id={!r}, new_is_directory_restricted={!r})'.format(
@@ -11693,8 +11766,8 @@ class MembersSetProfileError(MemberSelectorError):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersSetProfileError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetProfileError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersSetProfileError(%r, %r)' % (self._tag, self._value)
@@ -11746,8 +11819,8 @@ class MembersSuspendError(MembersDeactivateError):
         """
         return self._tag == 'team_license_limit'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersSuspendError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersSuspendError(%r, %r)' % (self._tag, self._value)
@@ -11815,8 +11888,8 @@ class MembersTransferFormerMembersFilesError(MembersTransferFilesError):
         """
         return self._tag == 'user_data_already_transferred'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersTransferFormerMembersFilesError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersTransferFormerMembersFilesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersTransferFormerMembersFilesError(%r, %r)' % (self._tag, self._value)
@@ -11850,7 +11923,7 @@ class MembersUnsuspendArg(bb.Struct):
         """
         Identity of user to unsuspend.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -11868,8 +11941,8 @@ class MembersUnsuspendArg(bb.Struct):
         self._user_value = None
         self._user_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersUnsuspendArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersUnsuspendArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersUnsuspendArg(user={!r})'.format(
@@ -11911,8 +11984,8 @@ class MembersUnsuspendError(MembersDeactivateError):
         """
         return self._tag == 'team_license_limit'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MembersUnsuspendError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersUnsuspendError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MembersUnsuspendError(%r, %r)' % (self._tag, self._value)
@@ -11996,8 +12069,8 @@ class MobileClientPlatform(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MobileClientPlatform, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MobileClientPlatform, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MobileClientPlatform(%r, %r)' % (self._tag, self._value)
@@ -12096,7 +12169,7 @@ class MobileClientSession(DeviceSession):
         """
         The mobile application type.
 
-        :rtype: team.MobileClientPlatform
+        :rtype: MobileClientPlatform
         """
         if self._client_type_present:
             return self._client_type_value
@@ -12192,8 +12265,8 @@ class MobileClientSession(DeviceSession):
         self._last_carrier_value = None
         self._last_carrier_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MobileClientSession, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MobileClientSession, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MobileClientSession(session_id={!r}, device_name={!r}, client_type={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r}, client_version={!r}, os_version={!r}, last_carrier={!r})'.format(
@@ -12309,7 +12382,7 @@ class NamespaceMetadata(bb.Struct):
         """
         The type of this namespace.
 
-        :rtype: team.NamespaceType
+        :rtype: NamespaceType
         """
         if self._namespace_type_present:
             return self._namespace_type_value
@@ -12354,8 +12427,8 @@ class NamespaceMetadata(bb.Struct):
         self._team_member_id_value = None
         self._team_member_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(NamespaceMetadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NamespaceMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'NamespaceMetadata(name={!r}, namespace_id={!r}, namespace_type={!r}, team_member_id={!r})'.format(
@@ -12431,8 +12504,8 @@ class NamespaceType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(NamespaceType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NamespaceType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'NamespaceType(%r, %r)' % (self._tag, self._value)
@@ -12447,10 +12520,10 @@ class RemoveCustomQuotaResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserSelectorArg team.RemoveCustomQuotaResult.success: Successfully
-        removed user.
-    :ivar UserSelectorArg team.RemoveCustomQuotaResult.invalid_user: Invalid
-        user (not in team).
+    :ivar UserSelectorArg RemoveCustomQuotaResult.success: Successfully removed
+        user.
+    :ivar UserSelectorArg RemoveCustomQuotaResult.invalid_user: Invalid user
+        (not in team).
     """
 
     _catch_all = 'other'
@@ -12463,8 +12536,8 @@ class RemoveCustomQuotaResult(bb.Union):
         Create an instance of this class set to the ``success`` tag with value
         ``val``.
 
-        :param team.UserSelectorArg val:
-        :rtype: team.RemoveCustomQuotaResult
+        :param UserSelectorArg val:
+        :rtype: RemoveCustomQuotaResult
         """
         return cls('success', val)
 
@@ -12474,8 +12547,8 @@ class RemoveCustomQuotaResult(bb.Union):
         Create an instance of this class set to the ``invalid_user`` tag with
         value ``val``.
 
-        :param team.UserSelectorArg val:
-        :rtype: team.RemoveCustomQuotaResult
+        :param UserSelectorArg val:
+        :rtype: RemoveCustomQuotaResult
         """
         return cls('invalid_user', val)
 
@@ -12509,7 +12582,7 @@ class RemoveCustomQuotaResult(bb.Union):
 
         Only call this if :meth:`is_success` is true.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if not self.is_success():
             raise AttributeError("tag 'success' not set")
@@ -12521,14 +12594,14 @@ class RemoveCustomQuotaResult(bb.Union):
 
         Only call this if :meth:`is_invalid_user` is true.
 
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if not self.is_invalid_user():
             raise AttributeError("tag 'invalid_user' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RemoveCustomQuotaResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemoveCustomQuotaResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RemoveCustomQuotaResult(%r, %r)' % (self._tag, self._value)
@@ -12610,8 +12683,8 @@ class RemovedStatus(bb.Struct):
         self._is_disconnected_value = None
         self._is_disconnected_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RemovedStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemovedStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RemovedStatus(is_recoverable={!r}, is_disconnected={!r})'.format(
@@ -12671,8 +12744,8 @@ class RevokeDesktopClientArg(DeviceSessionArg):
         self._delete_on_unlink_value = None
         self._delete_on_unlink_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeDesktopClientArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeDesktopClientArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeDesktopClientArg(session_id={!r}, team_member_id={!r}, delete_on_unlink={!r})'.format(
@@ -12689,12 +12762,12 @@ class RevokeDeviceSessionArg(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DeviceSessionArg team.RevokeDeviceSessionArg.web_session: End an
-        active session.
-    :ivar RevokeDesktopClientArg team.RevokeDeviceSessionArg.desktop_client:
-        Unlink a linked desktop device.
-    :ivar DeviceSessionArg team.RevokeDeviceSessionArg.mobile_client: Unlink a
-        linked mobile device.
+    :ivar DeviceSessionArg RevokeDeviceSessionArg.web_session: End an active
+        session.
+    :ivar RevokeDesktopClientArg RevokeDeviceSessionArg.desktop_client: Unlink a
+        linked desktop device.
+    :ivar DeviceSessionArg RevokeDeviceSessionArg.mobile_client: Unlink a linked
+        mobile device.
     """
 
     _catch_all = None
@@ -12705,8 +12778,8 @@ class RevokeDeviceSessionArg(bb.Union):
         Create an instance of this class set to the ``web_session`` tag with
         value ``val``.
 
-        :param team.DeviceSessionArg val:
-        :rtype: team.RevokeDeviceSessionArg
+        :param DeviceSessionArg val:
+        :rtype: RevokeDeviceSessionArg
         """
         return cls('web_session', val)
 
@@ -12716,8 +12789,8 @@ class RevokeDeviceSessionArg(bb.Union):
         Create an instance of this class set to the ``desktop_client`` tag with
         value ``val``.
 
-        :param team.RevokeDesktopClientArg val:
-        :rtype: team.RevokeDeviceSessionArg
+        :param RevokeDesktopClientArg val:
+        :rtype: RevokeDeviceSessionArg
         """
         return cls('desktop_client', val)
 
@@ -12727,8 +12800,8 @@ class RevokeDeviceSessionArg(bb.Union):
         Create an instance of this class set to the ``mobile_client`` tag with
         value ``val``.
 
-        :param team.DeviceSessionArg val:
-        :rtype: team.RevokeDeviceSessionArg
+        :param DeviceSessionArg val:
+        :rtype: RevokeDeviceSessionArg
         """
         return cls('mobile_client', val)
 
@@ -12762,7 +12835,7 @@ class RevokeDeviceSessionArg(bb.Union):
 
         Only call this if :meth:`is_web_session` is true.
 
-        :rtype: team.DeviceSessionArg
+        :rtype: DeviceSessionArg
         """
         if not self.is_web_session():
             raise AttributeError("tag 'web_session' not set")
@@ -12774,7 +12847,7 @@ class RevokeDeviceSessionArg(bb.Union):
 
         Only call this if :meth:`is_desktop_client` is true.
 
-        :rtype: team.RevokeDesktopClientArg
+        :rtype: RevokeDesktopClientArg
         """
         if not self.is_desktop_client():
             raise AttributeError("tag 'desktop_client' not set")
@@ -12786,14 +12859,14 @@ class RevokeDeviceSessionArg(bb.Union):
 
         Only call this if :meth:`is_mobile_client` is true.
 
-        :rtype: team.DeviceSessionArg
+        :rtype: DeviceSessionArg
         """
         if not self.is_mobile_client():
             raise AttributeError("tag 'mobile_client' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeDeviceSessionArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeDeviceSessionArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeDeviceSessionArg(%r, %r)' % (self._tag, self._value)
@@ -12819,7 +12892,7 @@ class RevokeDeviceSessionBatchArg(bb.Struct):
     @property
     def revoke_devices(self):
         """
-        :rtype: list of [team.RevokeDeviceSessionArg]
+        :rtype: list of [RevokeDeviceSessionArg]
         """
         if self._revoke_devices_present:
             return self._revoke_devices_value
@@ -12837,8 +12910,8 @@ class RevokeDeviceSessionBatchArg(bb.Struct):
         self._revoke_devices_value = None
         self._revoke_devices_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeDeviceSessionBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeDeviceSessionBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeDeviceSessionBatchArg(revoke_devices={!r})'.format(
@@ -12866,8 +12939,8 @@ class RevokeDeviceSessionBatchError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeDeviceSessionBatchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeDeviceSessionBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeDeviceSessionBatchError(%r, %r)' % (self._tag, self._value)
@@ -12893,7 +12966,7 @@ class RevokeDeviceSessionBatchResult(bb.Struct):
     @property
     def revoke_devices_status(self):
         """
-        :rtype: list of [team.RevokeDeviceSessionStatus]
+        :rtype: list of [RevokeDeviceSessionStatus]
         """
         if self._revoke_devices_status_present:
             return self._revoke_devices_status_value
@@ -12911,8 +12984,8 @@ class RevokeDeviceSessionBatchResult(bb.Struct):
         self._revoke_devices_status_value = None
         self._revoke_devices_status_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeDeviceSessionBatchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeDeviceSessionBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeDeviceSessionBatchResult(revoke_devices_status={!r})'.format(
@@ -12964,8 +13037,8 @@ class RevokeDeviceSessionError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeDeviceSessionError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeDeviceSessionError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeDeviceSessionError(%r, %r)' % (self._tag, self._value)
@@ -13029,7 +13102,7 @@ class RevokeDeviceSessionStatus(bb.Struct):
         """
         The error cause in case of a failure.
 
-        :rtype: team.RevokeDeviceSessionError
+        :rtype: RevokeDeviceSessionError
         """
         if self._error_type_present:
             return self._error_type_value
@@ -13050,8 +13123,8 @@ class RevokeDeviceSessionStatus(bb.Struct):
         self._error_type_value = None
         self._error_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeDeviceSessionStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeDeviceSessionStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeDeviceSessionStatus(success={!r}, error_type={!r})'.format(
@@ -13168,8 +13241,8 @@ class RevokeLinkedApiAppArg(bb.Struct):
         self._keep_app_folder_value = None
         self._keep_app_folder_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeLinkedApiAppArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeLinkedApiAppArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeLinkedApiAppArg(app_id={!r}, team_member_id={!r}, keep_app_folder={!r})'.format(
@@ -13199,7 +13272,7 @@ class RevokeLinkedApiAppBatchArg(bb.Struct):
     @property
     def revoke_linked_app(self):
         """
-        :rtype: list of [team.RevokeLinkedApiAppArg]
+        :rtype: list of [RevokeLinkedApiAppArg]
         """
         if self._revoke_linked_app_present:
             return self._revoke_linked_app_value
@@ -13217,8 +13290,8 @@ class RevokeLinkedApiAppBatchArg(bb.Struct):
         self._revoke_linked_app_value = None
         self._revoke_linked_app_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeLinkedApiAppBatchArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeLinkedApiAppBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeLinkedApiAppBatchArg(revoke_linked_app={!r})'.format(
@@ -13249,8 +13322,8 @@ class RevokeLinkedAppBatchError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeLinkedAppBatchError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeLinkedAppBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeLinkedAppBatchError(%r, %r)' % (self._tag, self._value)
@@ -13276,7 +13349,7 @@ class RevokeLinkedAppBatchResult(bb.Struct):
     @property
     def revoke_linked_app_status(self):
         """
-        :rtype: list of [team.RevokeLinkedAppStatus]
+        :rtype: list of [RevokeLinkedAppStatus]
         """
         if self._revoke_linked_app_status_present:
             return self._revoke_linked_app_status_value
@@ -13294,8 +13367,8 @@ class RevokeLinkedAppBatchResult(bb.Struct):
         self._revoke_linked_app_status_value = None
         self._revoke_linked_app_status_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeLinkedAppBatchResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeLinkedAppBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeLinkedAppBatchResult(revoke_linked_app_status={!r})'.format(
@@ -13349,8 +13422,8 @@ class RevokeLinkedAppError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeLinkedAppError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeLinkedAppError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeLinkedAppError(%r, %r)' % (self._tag, self._value)
@@ -13413,7 +13486,7 @@ class RevokeLinkedAppStatus(bb.Struct):
         """
         The error cause in case of a failure.
 
-        :rtype: team.RevokeLinkedAppError
+        :rtype: RevokeLinkedAppError
         """
         if self._error_type_present:
             return self._error_type_value
@@ -13434,8 +13507,8 @@ class RevokeLinkedAppStatus(bb.Struct):
         self._error_type_value = None
         self._error_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RevokeLinkedAppStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RevokeLinkedAppStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RevokeLinkedAppStatus(success={!r}, error_type={!r})'.format(
@@ -13470,7 +13543,7 @@ class SetCustomQuotaArg(bb.Struct):
         """
         List of users and their custom quotas.
 
-        :rtype: list of [team.UserCustomQuotaArg]
+        :rtype: list of [UserCustomQuotaArg]
         """
         if self._users_and_quotas_present:
             return self._users_and_quotas_value
@@ -13488,8 +13561,8 @@ class SetCustomQuotaArg(bb.Struct):
         self._users_and_quotas_value = None
         self._users_and_quotas_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SetCustomQuotaArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SetCustomQuotaArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SetCustomQuotaArg(users_and_quotas={!r})'.format(
@@ -13521,8 +13594,8 @@ class SetCustomQuotaError(CustomQuotaError):
         """
         return self._tag == 'some_users_are_excluded'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SetCustomQuotaError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SetCustomQuotaError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'SetCustomQuotaError(%r, %r)' % (self._tag, self._value)
@@ -13608,8 +13681,8 @@ class StorageBucket(bb.Struct):
         self._users_value = None
         self._users_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(StorageBucket, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(StorageBucket, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'StorageBucket(bucket={!r}, users={!r})'.format(
@@ -13663,8 +13736,8 @@ class TeamFolderAccessError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderAccessError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderAccessError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderAccessError(%r, %r)' % (self._tag, self._value)
@@ -13678,8 +13751,8 @@ class TeamFolderActivateError(BaseTeamFolderError):
     corresponding ``get_*`` method.
     """
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderActivateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderActivateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderActivateError(%r, %r)' % (self._tag, self._value)
@@ -13728,8 +13801,8 @@ class TeamFolderIdArg(bb.Struct):
         self._team_folder_id_value = None
         self._team_folder_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderIdArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderIdArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderIdArg(team_folder_id={!r})'.format(
@@ -13783,8 +13856,8 @@ class TeamFolderArchiveArg(TeamFolderIdArg):
         self._force_async_off_value = None
         self._force_async_off_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderArchiveArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderArchiveArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderArchiveArg(team_folder_id={!r}, force_async_off={!r})'.format(
@@ -13801,8 +13874,8 @@ class TeamFolderArchiveError(BaseTeamFolderError):
     corresponding ``get_*`` method.
     """
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderArchiveError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderArchiveError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderArchiveError(%r, %r)' % (self._tag, self._value)
@@ -13815,10 +13888,10 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar TeamFolderMetadata team.TeamFolderArchiveJobStatus.complete: The
-        archive job has finished. The value is the metadata for the resulting
-        team folder.
-    :ivar TeamFolderArchiveError team.TeamFolderArchiveJobStatus.failed: Error
+    :ivar TeamFolderMetadata TeamFolderArchiveJobStatus.complete: The archive
+        job has finished. The value is the metadata for the resulting team
+        folder.
+    :ivar TeamFolderArchiveError TeamFolderArchiveJobStatus.failed: Error
         occurred while performing an asynchronous job from
         :meth:`dropbox.dropbox.Dropbox.team_team_folder_archive`.
     """
@@ -13829,8 +13902,8 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param team.TeamFolderMetadata val:
-        :rtype: team.TeamFolderArchiveJobStatus
+        :param TeamFolderMetadata val:
+        :rtype: TeamFolderArchiveJobStatus
         """
         return cls('complete', val)
 
@@ -13840,8 +13913,8 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param team.TeamFolderArchiveError val:
-        :rtype: team.TeamFolderArchiveJobStatus
+        :param TeamFolderArchiveError val:
+        :rtype: TeamFolderArchiveJobStatus
         """
         return cls('failed', val)
 
@@ -13868,7 +13941,7 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: team.TeamFolderMetadata
+        :rtype: TeamFolderMetadata
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
@@ -13881,14 +13954,14 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
 
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: team.TeamFolderArchiveError
+        :rtype: TeamFolderArchiveError
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderArchiveJobStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderArchiveJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderArchiveJobStatus(%r, %r)' % (self._tag, self._value)
@@ -13908,8 +13981,8 @@ class TeamFolderArchiveLaunch(async_.LaunchResultBase):
         Create an instance of this class set to the ``complete`` tag with value
         ``val``.
 
-        :param team.TeamFolderMetadata val:
-        :rtype: team.TeamFolderArchiveLaunch
+        :param TeamFolderMetadata val:
+        :rtype: TeamFolderArchiveLaunch
         """
         return cls('complete', val)
 
@@ -13925,14 +13998,14 @@ class TeamFolderArchiveLaunch(async_.LaunchResultBase):
         """
         Only call this if :meth:`is_complete` is true.
 
-        :rtype: team.TeamFolderMetadata
+        :rtype: TeamFolderMetadata
         """
         if not self.is_complete():
             raise AttributeError("tag 'complete' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderArchiveLaunch, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderArchiveLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderArchiveLaunch(%r, %r)' % (self._tag, self._value)
@@ -14018,8 +14091,8 @@ class TeamFolderCreateArg(bb.Struct):
         self._sync_setting_value = None
         self._sync_setting_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderCreateArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderCreateArg(name={!r}, sync_setting={!r})'.format(
@@ -14041,8 +14114,8 @@ class TeamFolderCreateError(bb.Union):
         a team folder with the provided name.
     :ivar team.TeamFolderCreateError.folder_name_reserved: The provided name
         cannot be used because it is reserved.
-    :ivar SyncSettingsError team.TeamFolderCreateError.sync_settings_error: An
-        error occurred setting the sync settings.
+    :ivar SyncSettingsError TeamFolderCreateError.sync_settings_error: An error
+        occurred setting the sync settings.
     """
 
     _catch_all = 'other'
@@ -14062,7 +14135,7 @@ class TeamFolderCreateError(bb.Union):
         with value ``val``.
 
         :param files.SyncSettingsError val:
-        :rtype: team.TeamFolderCreateError
+        :rtype: TeamFolderCreateError
         """
         return cls('sync_settings_error', val)
 
@@ -14118,8 +14191,8 @@ class TeamFolderCreateError(bb.Union):
             raise AttributeError("tag 'sync_settings_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderCreateError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderCreateError(%r, %r)' % (self._tag, self._value)
@@ -14135,7 +14208,7 @@ class TeamFolderGetInfoItem(bb.Union):
     :ivar str team.TeamFolderGetInfoItem.id_not_found: An ID that was provided
         as a parameter to :route:`team_folder/get_info` did not match any of the
         team's team folders.
-    :ivar TeamFolderMetadata team.TeamFolderGetInfoItem.team_folder_metadata:
+    :ivar TeamFolderMetadata TeamFolderGetInfoItem.team_folder_metadata:
         Properties of a team folder.
     """
 
@@ -14148,7 +14221,7 @@ class TeamFolderGetInfoItem(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: team.TeamFolderGetInfoItem
+        :rtype: TeamFolderGetInfoItem
         """
         return cls('id_not_found', val)
 
@@ -14158,8 +14231,8 @@ class TeamFolderGetInfoItem(bb.Union):
         Create an instance of this class set to the ``team_folder_metadata`` tag
         with value ``val``.
 
-        :param team.TeamFolderMetadata val:
-        :rtype: team.TeamFolderGetInfoItem
+        :param TeamFolderMetadata val:
+        :rtype: TeamFolderGetInfoItem
         """
         return cls('team_folder_metadata', val)
 
@@ -14199,14 +14272,14 @@ class TeamFolderGetInfoItem(bb.Union):
 
         Only call this if :meth:`is_team_folder_metadata` is true.
 
-        :rtype: team.TeamFolderMetadata
+        :rtype: TeamFolderMetadata
         """
         if not self.is_team_folder_metadata():
             raise AttributeError("tag 'team_folder_metadata' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderGetInfoItem, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderGetInfoItem, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderGetInfoItem(%r, %r)' % (self._tag, self._value)
@@ -14255,8 +14328,8 @@ class TeamFolderIdListArg(bb.Struct):
         self._team_folder_ids_value = None
         self._team_folder_ids_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderIdListArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderIdListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderIdListArg(team_folder_ids={!r})'.format(
@@ -14321,8 +14394,8 @@ class TeamFolderInvalidStatusError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderInvalidStatusError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderInvalidStatusError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderInvalidStatusError(%r, %r)' % (self._tag, self._value)
@@ -14372,8 +14445,8 @@ class TeamFolderListArg(bb.Struct):
         self._limit_value = None
         self._limit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderListArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderListArg(limit={!r})'.format(
@@ -14425,8 +14498,8 @@ class TeamFolderListContinueArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderListContinueArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderListContinueArg(cursor={!r})'.format(
@@ -14467,8 +14540,8 @@ class TeamFolderListContinueError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderListContinueError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderListContinueError(%r, %r)' % (self._tag, self._value)
@@ -14494,7 +14567,7 @@ class TeamFolderListError(bb.Struct):
     @property
     def access_error(self):
         """
-        :rtype: team.TeamFolderAccessError
+        :rtype: TeamFolderAccessError
         """
         if self._access_error_present:
             return self._access_error_value
@@ -14512,8 +14585,8 @@ class TeamFolderListError(bb.Struct):
         self._access_error_value = None
         self._access_error_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderListError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderListError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderListError(access_error={!r})'.format(
@@ -14571,7 +14644,7 @@ class TeamFolderListResult(bb.Struct):
         """
         List of all team folders in the authenticated team.
 
-        :rtype: list of [team.TeamFolderMetadata]
+        :rtype: list of [TeamFolderMetadata]
         """
         if self._team_folders_present:
             return self._team_folders_value
@@ -14640,8 +14713,8 @@ class TeamFolderListResult(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderListResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderListResult(team_folders={!r}, cursor={!r}, has_more={!r})'.format(
@@ -14767,7 +14840,7 @@ class TeamFolderMetadata(bb.Struct):
         """
         The status of the team folder.
 
-        :rtype: team.TeamFolderStatus
+        :rtype: TeamFolderStatus
         """
         if self._status_present:
             return self._status_value
@@ -14854,8 +14927,8 @@ class TeamFolderMetadata(bb.Struct):
         self._content_sync_settings_value = None
         self._content_sync_settings_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderMetadata, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderMetadata(team_folder_id={!r}, name={!r}, status={!r}, is_team_shared_dropbox={!r}, sync_setting={!r}, content_sync_settings={!r})'.format(
@@ -14876,8 +14949,8 @@ class TeamFolderPermanentlyDeleteError(BaseTeamFolderError):
     corresponding ``get_*`` method.
     """
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderPermanentlyDeleteError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderPermanentlyDeleteError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderPermanentlyDeleteError(%r, %r)' % (self._tag, self._value)
@@ -14928,8 +15001,8 @@ class TeamFolderRenameArg(TeamFolderIdArg):
         self._name_value = None
         self._name_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderRenameArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderRenameArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderRenameArg(team_folder_id={!r}, name={!r})'.format(
@@ -14984,8 +15057,8 @@ class TeamFolderRenameError(BaseTeamFolderError):
         """
         return self._tag == 'folder_name_reserved'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderRenameError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderRenameError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderRenameError(%r, %r)' % (self._tag, self._value)
@@ -15048,8 +15121,8 @@ class TeamFolderStatus(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderStatus(%r, %r)' % (self._tag, self._value)
@@ -15088,8 +15161,8 @@ class TeamFolderTeamSharedDropboxError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderTeamSharedDropboxError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderTeamSharedDropboxError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderTeamSharedDropboxError(%r, %r)' % (self._tag, self._value)
@@ -15181,8 +15254,8 @@ class TeamFolderUpdateSyncSettingsArg(TeamFolderIdArg):
         self._content_sync_settings_value = None
         self._content_sync_settings_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderUpdateSyncSettingsArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderUpdateSyncSettingsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderUpdateSyncSettingsArg(team_folder_id={!r}, sync_setting={!r}, content_sync_settings={!r})'.format(
@@ -15200,8 +15273,8 @@ class TeamFolderUpdateSyncSettingsError(BaseTeamFolderError):
     corresponding ``get_*`` method.
 
     :ivar SyncSettingsError
-        team.TeamFolderUpdateSyncSettingsError.sync_settings_error: An error
-        occurred setting the sync settings.
+        TeamFolderUpdateSyncSettingsError.sync_settings_error: An error occurred
+        setting the sync settings.
     """
 
     @classmethod
@@ -15211,7 +15284,7 @@ class TeamFolderUpdateSyncSettingsError(BaseTeamFolderError):
         with value ``val``.
 
         :param files.SyncSettingsError val:
-        :rtype: team.TeamFolderUpdateSyncSettingsError
+        :rtype: TeamFolderUpdateSyncSettingsError
         """
         return cls('sync_settings_error', val)
 
@@ -15235,8 +15308,8 @@ class TeamFolderUpdateSyncSettingsError(BaseTeamFolderError):
             raise AttributeError("tag 'sync_settings_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamFolderUpdateSyncSettingsError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderUpdateSyncSettingsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamFolderUpdateSyncSettingsError(%r, %r)' % (self._tag, self._value)
@@ -15409,8 +15482,8 @@ class TeamGetInfoResult(bb.Struct):
         self._policies_value = None
         self._policies_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamGetInfoResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamGetInfoResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamGetInfoResult(name={!r}, team_id={!r}, num_licensed_users={!r}, num_provisioned_users={!r}, policies={!r})'.format(
@@ -15457,7 +15530,7 @@ class TeamMemberInfo(bb.Struct):
         """
         Profile of a user as a member of a team.
 
-        :rtype: team.TeamMemberProfile
+        :rtype: TeamMemberProfile
         """
         if self._profile_present:
             return self._profile_value
@@ -15480,7 +15553,7 @@ class TeamMemberInfo(bb.Struct):
         """
         The user's role in the team.
 
-        :rtype: team.AdminTier
+        :rtype: AdminTier
         """
         if self._role_present:
             return self._role_value
@@ -15498,8 +15571,8 @@ class TeamMemberInfo(bb.Struct):
         self._role_value = None
         self._role_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamMemberInfo, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMemberInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamMemberInfo(profile={!r}, role={!r})'.format(
@@ -15540,8 +15613,10 @@ class TeamMemberProfile(MemberProfile):
                  external_id=None,
                  account_id=None,
                  joined_on=None,
+                 suspended_on=None,
                  persistent_id=None,
-                 is_directory_restricted=None):
+                 is_directory_restricted=None,
+                 profile_photo_url=None):
         super(TeamMemberProfile, self).__init__(team_member_id,
                                                 email,
                                                 email_verified,
@@ -15551,8 +15626,10 @@ class TeamMemberProfile(MemberProfile):
                                                 external_id,
                                                 account_id,
                                                 joined_on,
+                                                suspended_on,
                                                 persistent_id,
-                                                is_directory_restricted)
+                                                is_directory_restricted,
+                                                profile_photo_url)
         self._groups_value = None
         self._groups_present = False
         self._member_folder_id_value = None
@@ -15608,11 +15685,11 @@ class TeamMemberProfile(MemberProfile):
         self._member_folder_id_value = None
         self._member_folder_id_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamMemberProfile, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMemberProfile, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, member_folder_id={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, persistent_id={!r}, is_directory_restricted={!r})'.format(
+        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, member_folder_id={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, suspended_on={!r}, persistent_id={!r}, is_directory_restricted={!r}, profile_photo_url={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -15624,8 +15701,10 @@ class TeamMemberProfile(MemberProfile):
             self._external_id_value,
             self._account_id_value,
             self._joined_on_value,
+            self._suspended_on_value,
             self._persistent_id_value,
             self._is_directory_restricted_value,
+            self._profile_photo_url_value,
         )
 
 TeamMemberProfile_validator = bv.Struct(TeamMemberProfile)
@@ -15644,9 +15723,9 @@ class TeamMemberStatus(bb.Union):
     :ivar team.TeamMemberStatus.suspended: User is no longer a member of the
         team, but the account can be un-suspended, re-establishing the user as a
         team member.
-    :ivar RemovedStatus team.TeamMemberStatus.removed: User is no longer a
-        member of the team. Removed users are only listed when include_removed
-        is true in members/list.
+    :ivar RemovedStatus TeamMemberStatus.removed: User is no longer a member of
+        the team. Removed users are only listed when include_removed is true in
+        members/list.
     """
 
     _catch_all = None
@@ -15663,8 +15742,8 @@ class TeamMemberStatus(bb.Union):
         Create an instance of this class set to the ``removed`` tag with value
         ``val``.
 
-        :param team.RemovedStatus val:
-        :rtype: team.TeamMemberStatus
+        :param RemovedStatus val:
+        :rtype: TeamMemberStatus
         """
         return cls('removed', val)
 
@@ -15707,14 +15786,14 @@ class TeamMemberStatus(bb.Union):
 
         Only call this if :meth:`is_removed` is true.
 
-        :rtype: team.RemovedStatus
+        :rtype: RemovedStatus
         """
         if not self.is_removed():
             raise AttributeError("tag 'removed' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamMemberStatus, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMemberStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamMemberStatus(%r, %r)' % (self._tag, self._value)
@@ -15755,8 +15834,8 @@ class TeamMembershipType(bb.Union):
         """
         return self._tag == 'limited'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamMembershipType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMembershipType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamMembershipType(%r, %r)' % (self._tag, self._value)
@@ -15806,8 +15885,8 @@ class TeamNamespacesListArg(bb.Struct):
         self._limit_value = None
         self._limit_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamNamespacesListArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamNamespacesListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamNamespacesListArg(limit={!r})'.format(
@@ -15860,8 +15939,8 @@ class TeamNamespacesListContinueArg(bb.Struct):
         self._cursor_value = None
         self._cursor_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamNamespacesListContinueArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamNamespacesListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamNamespacesListContinueArg(cursor={!r})'.format(
@@ -15902,8 +15981,8 @@ class TeamNamespacesListError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamNamespacesListError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamNamespacesListError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamNamespacesListError(%r, %r)' % (self._tag, self._value)
@@ -15931,8 +16010,8 @@ class TeamNamespacesListContinueError(TeamNamespacesListError):
         """
         return self._tag == 'invalid_cursor'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamNamespacesListContinueError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamNamespacesListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamNamespacesListContinueError(%r, %r)' % (self._tag, self._value)
@@ -15985,7 +16064,7 @@ class TeamNamespacesListResult(bb.Struct):
         """
         List of all namespaces the team can access.
 
-        :rtype: list of [team.NamespaceMetadata]
+        :rtype: list of [NamespaceMetadata]
         """
         if self._namespaces_present:
             return self._namespaces_value
@@ -16052,8 +16131,8 @@ class TeamNamespacesListResult(bb.Struct):
         self._has_more_value = None
         self._has_more_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamNamespacesListResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamNamespacesListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TeamNamespacesListResult(namespaces={!r}, cursor={!r}, has_more={!r})'.format(
@@ -16063,6 +16142,72 @@ class TeamNamespacesListResult(bb.Struct):
         )
 
 TeamNamespacesListResult_validator = bv.Struct(TeamNamespacesListResult)
+
+class TeamReportFailureReason(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.TeamReportFailureReason.temporary_error: We couldn't create the
+        report, but we think this was a fluke. Everything should work if you try
+        it again.
+    :ivar team.TeamReportFailureReason.many_reports_at_once: Too many other
+        reports are being created right now. Try creating this report again once
+        the others finish.
+    :ivar team.TeamReportFailureReason.too_much_data: We couldn't create the
+        report. Try creating the report again with less data.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    temporary_error = None
+    # Attribute is overwritten below the class definition
+    many_reports_at_once = None
+    # Attribute is overwritten below the class definition
+    too_much_data = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_temporary_error(self):
+        """
+        Check if the union tag is ``temporary_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'temporary_error'
+
+    def is_many_reports_at_once(self):
+        """
+        Check if the union tag is ``many_reports_at_once``.
+
+        :rtype: bool
+        """
+        return self._tag == 'many_reports_at_once'
+
+    def is_too_much_data(self):
+        """
+        Check if the union tag is ``too_much_data``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_much_data'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamReportFailureReason, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamReportFailureReason(%r, %r)' % (self._tag, self._value)
+
+TeamReportFailureReason_validator = bv.Union(TeamReportFailureReason)
 
 class TokenGetAuthenticatedAdminError(bb.Union):
     """
@@ -16114,8 +16259,8 @@ class TokenGetAuthenticatedAdminError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TokenGetAuthenticatedAdminError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TokenGetAuthenticatedAdminError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TokenGetAuthenticatedAdminError(%r, %r)' % (self._tag, self._value)
@@ -16150,7 +16295,7 @@ class TokenGetAuthenticatedAdminResult(bb.Struct):
         """
         The admin who authorized the token.
 
-        :rtype: team.TeamMemberProfile
+        :rtype: TeamMemberProfile
         """
         if self._admin_profile_present:
             return self._admin_profile_value
@@ -16168,8 +16313,8 @@ class TokenGetAuthenticatedAdminResult(bb.Struct):
         self._admin_profile_value = None
         self._admin_profile_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TokenGetAuthenticatedAdminResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TokenGetAuthenticatedAdminResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TokenGetAuthenticatedAdminResult(admin_profile={!r})'.format(
@@ -16206,7 +16351,7 @@ class UploadApiRateLimitValue(bb.Union):
         ``val``.
 
         :param int val:
-        :rtype: team.UploadApiRateLimitValue
+        :rtype: UploadApiRateLimitValue
         """
         return cls('limit', val)
 
@@ -16246,8 +16391,8 @@ class UploadApiRateLimitValue(bb.Union):
             raise AttributeError("tag 'limit' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UploadApiRateLimitValue, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadApiRateLimitValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UploadApiRateLimitValue(%r, %r)' % (self._tag, self._value)
@@ -16283,7 +16428,7 @@ class UserCustomQuotaArg(bb.Struct):
     @property
     def user(self):
         """
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -16322,8 +16467,8 @@ class UserCustomQuotaArg(bb.Struct):
         self._quota_gb_value = None
         self._quota_gb_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserCustomQuotaArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserCustomQuotaArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UserCustomQuotaArg(user={!r}, quota_gb={!r})'.format(
@@ -16363,7 +16508,7 @@ class UserCustomQuotaResult(bb.Struct):
     @property
     def user(self):
         """
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         if self._user_present:
             return self._user_value
@@ -16405,8 +16550,8 @@ class UserCustomQuotaResult(bb.Struct):
         self._quota_gb_value = None
         self._quota_gb_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserCustomQuotaResult, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserCustomQuotaResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UserCustomQuotaResult(user={!r}, quota_gb={!r})'.format(
@@ -16435,7 +16580,7 @@ class UserSelectorArg(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         return cls('team_member_id', val)
 
@@ -16446,7 +16591,7 @@ class UserSelectorArg(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         return cls('external_id', val)
 
@@ -16457,7 +16602,7 @@ class UserSelectorArg(bb.Union):
         ``val``.
 
         :param str val:
-        :rtype: team.UserSelectorArg
+        :rtype: UserSelectorArg
         """
         return cls('email', val)
 
@@ -16515,8 +16660,8 @@ class UserSelectorArg(bb.Union):
             raise AttributeError("tag 'email' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserSelectorArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserSelectorArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UserSelectorArg(%r, %r)' % (self._tag, self._value)
@@ -16548,7 +16693,7 @@ class UsersSelectorArg(bb.Union):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: team.UsersSelectorArg
+        :rtype: UsersSelectorArg
         """
         return cls('team_member_ids', val)
 
@@ -16559,7 +16704,7 @@ class UsersSelectorArg(bb.Union):
         value ``val``.
 
         :param list of [str] val:
-        :rtype: team.UsersSelectorArg
+        :rtype: UsersSelectorArg
         """
         return cls('external_ids', val)
 
@@ -16570,7 +16715,7 @@ class UsersSelectorArg(bb.Union):
         ``val``.
 
         :param list of [str] val:
-        :rtype: team.UsersSelectorArg
+        :rtype: UsersSelectorArg
         """
         return cls('emails', val)
 
@@ -16634,8 +16779,8 @@ class UsersSelectorArg(bb.Union):
             raise AttributeError("tag 'emails' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UsersSelectorArg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UsersSelectorArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'UsersSelectorArg(%r, %r)' % (self._tag, self._value)
@@ -17765,8 +17910,10 @@ MemberProfile._status_validator = TeamMemberStatus_validator
 MemberProfile._name_validator = users.Name_validator
 MemberProfile._membership_type_validator = TeamMembershipType_validator
 MemberProfile._joined_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
+MemberProfile._suspended_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
 MemberProfile._persistent_id_validator = bv.Nullable(bv.String())
 MemberProfile._is_directory_restricted_validator = bv.Nullable(bv.Boolean())
+MemberProfile._profile_photo_url_validator = bv.Nullable(bv.String())
 MemberProfile._all_field_names_ = set([
     'team_member_id',
     'external_id',
@@ -17777,8 +17924,10 @@ MemberProfile._all_field_names_ = set([
     'name',
     'membership_type',
     'joined_on',
+    'suspended_on',
     'persistent_id',
     'is_directory_restricted',
+    'profile_photo_url',
 ])
 MemberProfile._all_fields_ = [
     ('team_member_id', MemberProfile._team_member_id_validator),
@@ -17790,8 +17939,10 @@ MemberProfile._all_fields_ = [
     ('name', MemberProfile._name_validator),
     ('membership_type', MemberProfile._membership_type_validator),
     ('joined_on', MemberProfile._joined_on_validator),
+    ('suspended_on', MemberProfile._suspended_on_validator),
     ('persistent_id', MemberProfile._persistent_id_validator),
     ('is_directory_restricted', MemberProfile._is_directory_restricted_validator),
+    ('profile_photo_url', MemberProfile._profile_photo_url_validator),
 ]
 
 UserSelectorError._user_not_found_validator = bv.Void()
@@ -18729,6 +18880,22 @@ TeamNamespacesListResult._all_fields_ = [
     ('cursor', TeamNamespacesListResult._cursor_validator),
     ('has_more', TeamNamespacesListResult._has_more_validator),
 ]
+
+TeamReportFailureReason._temporary_error_validator = bv.Void()
+TeamReportFailureReason._many_reports_at_once_validator = bv.Void()
+TeamReportFailureReason._too_much_data_validator = bv.Void()
+TeamReportFailureReason._other_validator = bv.Void()
+TeamReportFailureReason._tagmap = {
+    'temporary_error': TeamReportFailureReason._temporary_error_validator,
+    'many_reports_at_once': TeamReportFailureReason._many_reports_at_once_validator,
+    'too_much_data': TeamReportFailureReason._too_much_data_validator,
+    'other': TeamReportFailureReason._other_validator,
+}
+
+TeamReportFailureReason.temporary_error = TeamReportFailureReason('temporary_error')
+TeamReportFailureReason.many_reports_at_once = TeamReportFailureReason('many_reports_at_once')
+TeamReportFailureReason.too_much_data = TeamReportFailureReason('too_much_data')
+TeamReportFailureReason.other = TeamReportFailureReason('other')
 
 TokenGetAuthenticatedAdminError._mapping_not_found_validator = bv.Void()
 TokenGetAuthenticatedAdminError._admin_not_active_validator = bv.Void()

@@ -77,8 +77,8 @@ class GroupManagementType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupManagementType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupManagementType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupManagementType(%r, %r)' % (self._tag, self._value)
@@ -239,7 +239,7 @@ class GroupSummary(bb.Struct):
         """
         Who is allowed to manage the group.
 
-        :rtype: team_common.GroupManagementType
+        :rtype: GroupManagementType
         """
         if self._group_management_type_present:
             return self._group_management_type_value
@@ -257,8 +257,8 @@ class GroupSummary(bb.Struct):
         self._group_management_type_value = None
         self._group_management_type_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupSummary, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupSummary, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupSummary(group_name={!r}, group_id={!r}, group_management_type={!r}, group_external_id={!r}, member_count={!r})'.format(
@@ -318,8 +318,8 @@ class GroupType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'GroupType(%r, %r)' % (self._tag, self._value)
@@ -386,8 +386,8 @@ class MemberSpaceLimitType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberSpaceLimitType, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberSpaceLimitType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'MemberSpaceLimitType(%r, %r)' % (self._tag, self._value)
@@ -475,8 +475,8 @@ class TimeRange(bb.Struct):
         self._end_time_value = None
         self._end_time_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TimeRange, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TimeRange, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TimeRange(start_time={!r}, end_time={!r})'.format(

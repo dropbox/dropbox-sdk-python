@@ -21,9 +21,9 @@ class AccessError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar InvalidAccountTypeError auth.AccessError.invalid_account_type: Current
+    :ivar InvalidAccountTypeError AccessError.invalid_account_type: Current
         account type cannot access the resource.
-    :ivar PaperAccessError auth.AccessError.paper_access_denied: Current account
+    :ivar PaperAccessError AccessError.paper_access_denied: Current account
         cannot access Paper.
     """
 
@@ -37,8 +37,8 @@ class AccessError(bb.Union):
         Create an instance of this class set to the ``invalid_account_type`` tag
         with value ``val``.
 
-        :param auth.InvalidAccountTypeError val:
-        :rtype: auth.AccessError
+        :param InvalidAccountTypeError val:
+        :rtype: AccessError
         """
         return cls('invalid_account_type', val)
 
@@ -48,8 +48,8 @@ class AccessError(bb.Union):
         Create an instance of this class set to the ``paper_access_denied`` tag
         with value ``val``.
 
-        :param auth.PaperAccessError val:
-        :rtype: auth.AccessError
+        :param PaperAccessError val:
+        :rtype: AccessError
         """
         return cls('paper_access_denied', val)
 
@@ -83,7 +83,7 @@ class AccessError(bb.Union):
 
         Only call this if :meth:`is_invalid_account_type` is true.
 
-        :rtype: auth.InvalidAccountTypeError
+        :rtype: InvalidAccountTypeError
         """
         if not self.is_invalid_account_type():
             raise AttributeError("tag 'invalid_account_type' not set")
@@ -95,14 +95,14 @@ class AccessError(bb.Union):
 
         Only call this if :meth:`is_paper_access_denied` is true.
 
-        :rtype: auth.PaperAccessError
+        :rtype: PaperAccessError
         """
         if not self.is_paper_access_denied():
             raise AttributeError("tag 'paper_access_denied' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AccessError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AccessError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AccessError(%r, %r)' % (self._tag, self._value)
@@ -124,6 +124,8 @@ class AuthError(bb.Union):
         'Dropbox-API-Select-Admin' is not a Dropbox Business team admin.
     :ivar auth.AuthError.user_suspended: The user has been suspended.
     :ivar auth.AuthError.expired_access_token: The access token has expired.
+    :ivar TokenScopeError AuthError.missing_scope: The access token does not
+        have the required scope to access the route.
     """
 
     _catch_all = 'other'
@@ -139,6 +141,17 @@ class AuthError(bb.Union):
     expired_access_token = None
     # Attribute is overwritten below the class definition
     other = None
+
+    @classmethod
+    def missing_scope(cls, val):
+        """
+        Create an instance of this class set to the ``missing_scope`` tag with
+        value ``val``.
+
+        :param TokenScopeError val:
+        :rtype: AuthError
+        """
+        return cls('missing_scope', val)
 
     def is_invalid_access_token(self):
         """
@@ -180,6 +193,14 @@ class AuthError(bb.Union):
         """
         return self._tag == 'expired_access_token'
 
+    def is_missing_scope(self):
+        """
+        Check if the union tag is ``missing_scope``.
+
+        :rtype: bool
+        """
+        return self._tag == 'missing_scope'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -188,8 +209,20 @@ class AuthError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AuthError, self)._process_custom_annotations(annotation_type, processor)
+    def get_missing_scope(self):
+        """
+        The access token does not have the required scope to access the route.
+
+        Only call this if :meth:`is_missing_scope` is true.
+
+        :rtype: TokenScopeError
+        """
+        if not self.is_missing_scope():
+            raise AttributeError("tag 'missing_scope' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AuthError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'AuthError(%r, %r)' % (self._tag, self._value)
@@ -240,8 +273,8 @@ class InvalidAccountTypeError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(InvalidAccountTypeError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(InvalidAccountTypeError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'InvalidAccountTypeError(%r, %r)' % (self._tag, self._value)
@@ -291,8 +324,8 @@ class PaperAccessError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperAccessError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperAccessError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'PaperAccessError(%r, %r)' % (self._tag, self._value)
@@ -335,7 +368,7 @@ class RateLimitError(bb.Struct):
         """
         The reason why the app is being rate limited.
 
-        :rtype: auth.RateLimitReason
+        :rtype: RateLimitReason
         """
         if self._reason_present:
             return self._reason_value
@@ -377,8 +410,8 @@ class RateLimitError(bb.Struct):
         self._retry_after_value = None
         self._retry_after_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RateLimitError, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RateLimitError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RateLimitError(reason={!r}, retry_after={!r})'.format(
@@ -432,8 +465,8 @@ class RateLimitReason(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RateLimitReason, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RateLimitReason, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'RateLimitReason(%r, %r)' % (self._tag, self._value)
@@ -515,8 +548,8 @@ class TokenFromOAuth1Arg(bb.Struct):
         self._oauth1_token_secret_value = None
         self._oauth1_token_secret_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TokenFromOAuth1Arg, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TokenFromOAuth1Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TokenFromOAuth1Arg(oauth1_token={!r}, oauth1_token_secret={!r})'.format(
@@ -570,8 +603,8 @@ class TokenFromOAuth1Error(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TokenFromOAuth1Error, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TokenFromOAuth1Error, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TokenFromOAuth1Error(%r, %r)' % (self._tag, self._value)
@@ -621,8 +654,8 @@ class TokenFromOAuth1Result(bb.Struct):
         self._oauth2_token_value = None
         self._oauth2_token_present = False
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TokenFromOAuth1Result, self)._process_custom_annotations(annotation_type, processor)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TokenFromOAuth1Result, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
         return 'TokenFromOAuth1Result(oauth2_token={!r})'.format(
@@ -630,6 +663,59 @@ class TokenFromOAuth1Result(bb.Struct):
         )
 
 TokenFromOAuth1Result_validator = bv.Struct(TokenFromOAuth1Result)
+
+class TokenScopeError(bb.Struct):
+    """
+    :ivar auth.TokenScopeError.required_scope: The required scope to access the
+        route.
+    """
+
+    __slots__ = [
+        '_required_scope_value',
+        '_required_scope_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 required_scope=None):
+        self._required_scope_value = None
+        self._required_scope_present = False
+        if required_scope is not None:
+            self.required_scope = required_scope
+
+    @property
+    def required_scope(self):
+        """
+        The required scope to access the route.
+
+        :rtype: str
+        """
+        if self._required_scope_present:
+            return self._required_scope_value
+        else:
+            raise AttributeError("missing required field 'required_scope'")
+
+    @required_scope.setter
+    def required_scope(self, val):
+        val = self._required_scope_validator.validate(val)
+        self._required_scope_value = val
+        self._required_scope_present = True
+
+    @required_scope.deleter
+    def required_scope(self):
+        self._required_scope_value = None
+        self._required_scope_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TokenScopeError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TokenScopeError(required_scope={!r})'.format(
+            self._required_scope_value,
+        )
+
+TokenScopeError_validator = bv.Struct(TokenScopeError)
 
 AccessError._invalid_account_type_validator = InvalidAccountTypeError_validator
 AccessError._paper_access_denied_validator = PaperAccessError_validator
@@ -647,6 +733,7 @@ AuthError._invalid_select_user_validator = bv.Void()
 AuthError._invalid_select_admin_validator = bv.Void()
 AuthError._user_suspended_validator = bv.Void()
 AuthError._expired_access_token_validator = bv.Void()
+AuthError._missing_scope_validator = TokenScopeError_validator
 AuthError._other_validator = bv.Void()
 AuthError._tagmap = {
     'invalid_access_token': AuthError._invalid_access_token_validator,
@@ -654,6 +741,7 @@ AuthError._tagmap = {
     'invalid_select_admin': AuthError._invalid_select_admin_validator,
     'user_suspended': AuthError._user_suspended_validator,
     'expired_access_token': AuthError._expired_access_token_validator,
+    'missing_scope': AuthError._missing_scope_validator,
     'other': AuthError._other_validator,
 }
 
@@ -741,6 +829,10 @@ TokenFromOAuth1Error.other = TokenFromOAuth1Error('other')
 TokenFromOAuth1Result._oauth2_token_validator = bv.String(min_length=1)
 TokenFromOAuth1Result._all_field_names_ = set(['oauth2_token'])
 TokenFromOAuth1Result._all_fields_ = [('oauth2_token', TokenFromOAuth1Result._oauth2_token_validator)]
+
+TokenScopeError._required_scope_validator = bv.String()
+TokenScopeError._all_field_names_ = set(['required_scope'])
+TokenScopeError._all_fields_ = [('required_scope', TokenScopeError._required_scope_validator)]
 
 token_from_oauth1 = bb.Route(
     'token/from_oauth1',

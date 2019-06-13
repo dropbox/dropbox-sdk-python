@@ -432,6 +432,22 @@ class DropboxBase(object):
     # ------------------------------------------
     # Routes in file_requests namespace
 
+    def file_requests_count(self):
+        """
+        Returns the total number of file requests owned by this user. Includes
+        both open and closed file requests.
+
+        :rtype: :class:`dropbox.file_requests.CountFileRequestsResult`
+        """
+        arg = None
+        r = self.request(
+            file_requests.count,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
+
     def file_requests_create(self,
                              title,
                              destination,
@@ -467,6 +483,42 @@ class DropboxBase(object):
         )
         return r
 
+    def file_requests_delete(self,
+                             ids):
+        """
+        Delete a batch of closed file requests.
+
+        :param list ids: List IDs of the file requests to delete.
+        :rtype: :class:`dropbox.file_requests.DeleteFileRequestsResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.file_requests.DeleteFileRequestError`
+        """
+        arg = file_requests.DeleteFileRequestArgs(ids)
+        r = self.request(
+            file_requests.delete,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
+
+    def file_requests_delete_all_closed(self):
+        """
+        Delete all closed file requests owned by this user.
+
+        :rtype: :class:`dropbox.file_requests.DeleteAllClosedFileRequestsResult`
+        """
+        arg = None
+        r = self.request(
+            file_requests.delete_all_closed,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
+
     def file_requests_get(self,
                           id):
         """
@@ -484,6 +536,26 @@ class DropboxBase(object):
         )
         return r
 
+    def file_requests_list_v2(self,
+                              limit=1000):
+        """
+        Returns a list of file requests owned by this user. For apps with the
+        app folder permission, this will only return file requests with
+        destinations in the app folder.
+
+        :param int limit: The maximum number of file requests that should be
+            returned per request.
+        :rtype: :class:`dropbox.file_requests.ListFileRequestsV2Result`
+        """
+        arg = file_requests.ListFileRequestsArg(limit)
+        r = self.request(
+            file_requests.list_v2,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
+
     def file_requests_list(self):
         """
         Returns a list of file requests owned by this user. For apps with the
@@ -495,6 +567,31 @@ class DropboxBase(object):
         arg = None
         r = self.request(
             file_requests.list,
+            'file_requests',
+            arg,
+            None,
+        )
+        return r
+
+    def file_requests_list_continue(self,
+                                    cursor):
+        """
+        Once a cursor has been retrieved from :meth:`file_requests_list_v2`, use
+        this to paginate through all file requests. The cursor must come from a
+        previous call to :meth:`file_requests_list_v2` or
+        :meth:`file_requests_list_continue`.
+
+        :param str cursor: The cursor returned by the previous API call
+            specified in the endpoint description.
+        :rtype: :class:`dropbox.file_requests.ListFileRequestsV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.file_requests.ListFileRequestsContinueError`
+        """
+        arg = file_requests.ListFileRequestsContinueArg(cursor)
+        r = self.request(
+            file_requests.list_continue,
             'file_requests',
             arg,
             None,
@@ -704,7 +801,7 @@ class DropboxBase(object):
         """
         Copy multiple files or folders to different locations at once in the
         user's Dropbox. This route will replace :meth:`files_copy_batch`. The
-        main difference is this route will return stutus for each entry, while
+        main difference is this route will return status for each entry, while
         :meth:`files_copy_batch` raises failure if any entry fails. This route
         will either finish synchronously, or return a job ID and do the async
         copy job in background. Please use :meth:`files_copy_batch_check_v2` to
@@ -1201,6 +1298,62 @@ class DropboxBase(object):
         self._save_body_to_file(download_path, r[1])
         return r[0]
 
+    def files_export(self,
+                     path):
+        """
+        Export a file from a user's Dropbox. This route only supports exporting
+        files that cannot be downloaded directly  and whose
+        ``ExportResult.file_metadata`` has ``ExportInfo.export_as`` populated.
+
+        :param str path: The path of the file to be exported.
+        :rtype: (:class:`dropbox.files.ExportResult`,
+                 :class:`requests.models.Response`)
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.ExportError`
+
+        If you do not consume the entire response body, then you must call close
+        on the response object, otherwise you will max out your available
+        connections. We recommend using the `contextlib.closing
+        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
+        context manager to ensure this.
+        """
+        arg = files.ExportArg(path)
+        r = self.request(
+            files.export,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_export_to_file(self,
+                             download_path,
+                             path):
+        """
+        Export a file from a user's Dropbox. This route only supports exporting
+        files that cannot be downloaded directly  and whose
+        ``ExportResult.file_metadata`` has ``ExportInfo.export_as`` populated.
+
+        :param str download_path: Path on local machine to save file.
+        :param str path: The path of the file to be exported.
+        :rtype: :class:`dropbox.files.ExportResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.ExportError`
+        """
+        arg = files.ExportArg(path)
+        r = self.request(
+            files.export,
+            'files',
+            arg,
+            None,
+        )
+        self._save_body_to_file(download_path, r[1])
+        return r[0]
+
     def files_get_metadata(self,
                            path,
                            include_media_info=False,
@@ -1250,9 +1403,10 @@ class DropboxBase(object):
         """
         Get a preview for a file. Currently, PDF previews are generated for
         files with the following extensions: .ai, .doc, .docm, .docx, .eps,
-        .odp, .odt, .pps, .ppsm, .ppsx, .ppt, .pptm, .pptx, .rtf. HTML previews
-        are generated for files with the following extensions: .csv, .ods, .xls,
-        .xlsm, .xlsx. Other formats will return an unsupported extension error.
+        .gdoc, .gslides, .odp, .odt, .pps, .ppsm, .ppsx, .ppt, .pptm, .pptx,
+        .rtf. HTML previews are generated for files with the following
+        extensions: .csv, .ods, .xls, .xlsm, .gsheet, .xlsx. Other formats will
+        return an unsupported extension error.
 
         :param str path: The path of the file to preview.
         :param Nullable rev: Please specify revision in ``path`` instead.
@@ -1286,9 +1440,10 @@ class DropboxBase(object):
         """
         Get a preview for a file. Currently, PDF previews are generated for
         files with the following extensions: .ai, .doc, .docm, .docx, .eps,
-        .odp, .odt, .pps, .ppsm, .ppsx, .ppt, .pptm, .pptx, .rtf. HTML previews
-        are generated for files with the following extensions: .csv, .ods, .xls,
-        .xlsm, .xlsx. Other formats will return an unsupported extension error.
+        .gdoc, .gslides, .odp, .odt, .pps, .ppsm, .ppsx, .ppt, .pptm, .pptx,
+        .rtf. HTML previews are generated for files with the following
+        extensions: .csv, .ods, .xls, .xlsm, .gsheet, .xlsx. Other formats will
+        return an unsupported extension error.
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to preview.
@@ -1314,8 +1469,8 @@ class DropboxBase(object):
                                  path):
         """
         Get a temporary link to stream content of a file. This link will expire
-        in four hours and afterwards you will get 410 Gone. So this URL should
-        not be used to display content directly in the browser.  Content-Type of
+        in four hours and afterwards you will get 410 Gone. This URL should not
+        be used to display content directly in the browser. The Content-Type of
         the link is determined automatically by the file's mime type.
 
         :param str path: The path to the file you want a temporary link to.
@@ -1509,7 +1664,8 @@ class DropboxBase(object):
                           include_mounted_folders=True,
                           limit=None,
                           shared_link=None,
-                          include_property_groups=None):
+                          include_property_groups=None,
+                          include_non_downloadable_files=True):
         """
         Starts returning the contents of a folder. If the result's
         ``ListFolderResult.has_more`` field is ``True``, call
@@ -1541,7 +1697,8 @@ class DropboxBase(object):
             applied recursively to all subfolders and the response will contain
             contents of all subfolders.
         :param bool include_media_info: If true, ``FileMetadata.media_info`` is
-            set for photo and video.
+            set for photo and video. This parameter will no longer have an
+            effect starting December 2, 2019.
         :param bool include_deleted: If true, the results will include entries
             for files and folders that used to exist but were deleted.
         :param bool include_has_explicit_shared_members: If true, the results
@@ -1562,6 +1719,8 @@ class DropboxBase(object):
             template IDs, ``FileMetadata.property_groups`` is set if there
             exists property data associated with the file and each of the listed
             templates.
+        :param bool include_non_downloadable_files: If true, include files that
+            are not downloadable, i.e. Google Docs.
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1576,7 +1735,8 @@ class DropboxBase(object):
                                   include_mounted_folders,
                                   limit,
                                   shared_link,
-                                  include_property_groups)
+                                  include_property_groups,
+                                  include_non_downloadable_files)
         r = self.request(
             files.list_folder,
             'files',
@@ -1618,7 +1778,8 @@ class DropboxBase(object):
                                             include_mounted_folders=True,
                                             limit=None,
                                             shared_link=None,
-                                            include_property_groups=None):
+                                            include_property_groups=None,
+                                            include_non_downloadable_files=True):
         """
         A way to quickly get a cursor for the folder's state. Unlike
         :meth:`files_list_folder`, :meth:`files_list_folder_get_latest_cursor`
@@ -1631,7 +1792,8 @@ class DropboxBase(object):
             applied recursively to all subfolders and the response will contain
             contents of all subfolders.
         :param bool include_media_info: If true, ``FileMetadata.media_info`` is
-            set for photo and video.
+            set for photo and video. This parameter will no longer have an
+            effect starting December 2, 2019.
         :param bool include_deleted: If true, the results will include entries
             for files and folders that used to exist but were deleted.
         :param bool include_has_explicit_shared_members: If true, the results
@@ -1652,6 +1814,8 @@ class DropboxBase(object):
             template IDs, ``FileMetadata.property_groups`` is set if there
             exists property data associated with the file and each of the listed
             templates.
+        :param bool include_non_downloadable_files: If true, include files that
+            are not downloadable, i.e. Google Docs.
         :rtype: :class:`dropbox.files.ListFolderGetLatestCursorResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1666,7 +1830,8 @@ class DropboxBase(object):
                                   include_mounted_folders,
                                   limit,
                                   shared_link,
-                                  include_property_groups)
+                                  include_property_groups,
+                                  include_non_downloadable_files)
         r = self.request(
             files.list_folder_get_latest_cursor,
             'files',
@@ -1836,8 +2001,8 @@ class DropboxBase(object):
                             allow_ownership_transfer=False):
         """
         Move multiple files or folders to different locations at once in the
-        user's Dropbox. This route will replace :meth:`files_move_batch_v2`. The
-        main difference is this route will return stutus for each entry, while
+        user's Dropbox. This route will replace :meth:`files_move_batch`. The
+        main difference is this route will return status for each entry, while
         :meth:`files_move_batch` raises failure if any entry fails. This route
         will either finish synchronously, or return a job ID and do the async
         move job in background. Please use :meth:`files_move_batch_check_v2` to
