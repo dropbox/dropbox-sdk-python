@@ -1,4 +1,5 @@
 #!/bin/sh
+# The script is meant for SDK release on Github. You need write permission on https://github.com/dropbox/dropbox-sdk-python to run this script properly.
 
 if [ -z $1 ]; then
     echo "error: $0 needs a version number as argument.";
