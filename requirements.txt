@@ -3,3 +3,6 @@ pytest
 pytest-runner
 requests
 six
+sphinx
+twine
+wheel
