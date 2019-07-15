@@ -126,7 +126,7 @@ class _DropboxTransport(object):
     _ROUTE_STYLE_RPC = 'rpc'
 
     # This is the default longest time we'll block on receiving data from the server
-    _DEFAULT_TIMEOUT = 30
+    _DEFAULT_TIMEOUT = 100
 
     def __init__(self,
                  oauth2_access_token,
