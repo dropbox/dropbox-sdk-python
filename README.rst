@@ -35,7 +35,7 @@ A Python SDK for integrating with the Dropbox API v2. Compatible with Python
 Installation
 ------------
 
-Install via ``pip``:
+Install via `pip <https://pip.pypa.io/>`_:
 
 .. code-block:: console
 
