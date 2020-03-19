@@ -125,6 +125,58 @@ class EmmState(bb.Union):
 
 EmmState_validator = bv.Union(EmmState)
 
+class FileLockingPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.FileLockingPolicyState.disabled: File locking feature is
+        disabled.
+    :ivar team_policies.FileLockingPolicyState.enabled: File locking feature is
+        allowed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockingPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLockingPolicyState(%r, %r)' % (self._tag, self._value)
+
+FileLockingPolicyState_validator = bv.Union(FileLockingPolicyState)
+
 class GroupCreation(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -434,6 +486,56 @@ class PaperEnabledPolicy(bb.Union):
         return 'PaperEnabledPolicy(%r, %r)' % (self._tag, self._value)
 
 PaperEnabledPolicy_validator = bv.Union(PaperEnabledPolicy)
+
+class PasswordControlMode(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.PasswordControlMode.disabled: Password is disabled.
+    :ivar team_policies.PasswordControlMode.enabled: Password is enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PasswordControlMode, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PasswordControlMode(%r, %r)' % (self._tag, self._value)
+
+PasswordControlMode_validator = bv.Union(PasswordControlMode)
 
 class PasswordStrengthPolicy(bb.Union):
     """
@@ -937,6 +1039,58 @@ class SmartSyncPolicy(bb.Union):
 
 SmartSyncPolicy_validator = bv.Union(SmartSyncPolicy)
 
+class SmarterSmartSyncPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.SmarterSmartSyncPolicyState.disabled: Smarter Smart Sync
+        feature is disabled.
+    :ivar team_policies.SmarterSmartSyncPolicyState.enabled: Smarter Smart Sync
+        feature is enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SmarterSmartSyncPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SmarterSmartSyncPolicyState(%r, %r)' % (self._tag, self._value)
+
+SmarterSmartSyncPolicyState_validator = bv.Union(SmarterSmartSyncPolicyState)
+
 class SsoPolicy(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -1314,6 +1468,8 @@ class TwoStepVerificationState(bb.Union):
         factor authorization.
     :ivar team_policies.TwoStepVerificationState.optional: Optional require two
         factor authorization.
+    :ivar team_policies.TwoStepVerificationState.disabled: Disabled require two
+        factor authorization.
     """
 
     _catch_all = 'other'
@@ -1321,6 +1477,8 @@ class TwoStepVerificationState(bb.Union):
     required = None
     # Attribute is overwritten below the class definition
     optional = None
+    # Attribute is overwritten below the class definition
+    disabled = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -1339,6 +1497,14 @@ class TwoStepVerificationState(bb.Union):
         :rtype: bool
         """
         return self._tag == 'optional'
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
 
     def is_other(self):
         """
@@ -1384,6 +1550,19 @@ EmmState.disabled = EmmState('disabled')
 EmmState.optional = EmmState('optional')
 EmmState.required = EmmState('required')
 EmmState.other = EmmState('other')
+
+FileLockingPolicyState._disabled_validator = bv.Void()
+FileLockingPolicyState._enabled_validator = bv.Void()
+FileLockingPolicyState._other_validator = bv.Void()
+FileLockingPolicyState._tagmap = {
+    'disabled': FileLockingPolicyState._disabled_validator,
+    'enabled': FileLockingPolicyState._enabled_validator,
+    'other': FileLockingPolicyState._other_validator,
+}
+
+FileLockingPolicyState.disabled = FileLockingPolicyState('disabled')
+FileLockingPolicyState.enabled = FileLockingPolicyState('enabled')
+FileLockingPolicyState.other = FileLockingPolicyState('other')
 
 GroupCreation._admins_and_members_validator = bv.Void()
 GroupCreation._admins_only_validator = bv.Void()
@@ -1462,6 +1641,19 @@ PaperEnabledPolicy.disabled = PaperEnabledPolicy('disabled')
 PaperEnabledPolicy.enabled = PaperEnabledPolicy('enabled')
 PaperEnabledPolicy.unspecified = PaperEnabledPolicy('unspecified')
 PaperEnabledPolicy.other = PaperEnabledPolicy('other')
+
+PasswordControlMode._disabled_validator = bv.Void()
+PasswordControlMode._enabled_validator = bv.Void()
+PasswordControlMode._other_validator = bv.Void()
+PasswordControlMode._tagmap = {
+    'disabled': PasswordControlMode._disabled_validator,
+    'enabled': PasswordControlMode._enabled_validator,
+    'other': PasswordControlMode._other_validator,
+}
+
+PasswordControlMode.disabled = PasswordControlMode('disabled')
+PasswordControlMode.enabled = PasswordControlMode('enabled')
+PasswordControlMode.other = PasswordControlMode('other')
 
 PasswordStrengthPolicy._minimal_requirements_validator = bv.Void()
 PasswordStrengthPolicy._moderate_password_validator = bv.Void()
@@ -1586,6 +1778,19 @@ SmartSyncPolicy.local = SmartSyncPolicy('local')
 SmartSyncPolicy.on_demand = SmartSyncPolicy('on_demand')
 SmartSyncPolicy.other = SmartSyncPolicy('other')
 
+SmarterSmartSyncPolicyState._disabled_validator = bv.Void()
+SmarterSmartSyncPolicyState._enabled_validator = bv.Void()
+SmarterSmartSyncPolicyState._other_validator = bv.Void()
+SmarterSmartSyncPolicyState._tagmap = {
+    'disabled': SmarterSmartSyncPolicyState._disabled_validator,
+    'enabled': SmarterSmartSyncPolicyState._enabled_validator,
+    'other': SmarterSmartSyncPolicyState._other_validator,
+}
+
+SmarterSmartSyncPolicyState.disabled = SmarterSmartSyncPolicyState('disabled')
+SmarterSmartSyncPolicyState.enabled = SmarterSmartSyncPolicyState('enabled')
+SmarterSmartSyncPolicyState.other = SmarterSmartSyncPolicyState('other')
+
 SsoPolicy._disabled_validator = bv.Void()
 SsoPolicy._optional_validator = bv.Void()
 SsoPolicy._required_validator = bv.Void()
@@ -1645,15 +1850,18 @@ TwoStepVerificationPolicy.other = TwoStepVerificationPolicy('other')
 
 TwoStepVerificationState._required_validator = bv.Void()
 TwoStepVerificationState._optional_validator = bv.Void()
+TwoStepVerificationState._disabled_validator = bv.Void()
 TwoStepVerificationState._other_validator = bv.Void()
 TwoStepVerificationState._tagmap = {
     'required': TwoStepVerificationState._required_validator,
     'optional': TwoStepVerificationState._optional_validator,
+    'disabled': TwoStepVerificationState._disabled_validator,
     'other': TwoStepVerificationState._other_validator,
 }
 
 TwoStepVerificationState.required = TwoStepVerificationState('required')
 TwoStepVerificationState.optional = TwoStepVerificationState('optional')
+TwoStepVerificationState.disabled = TwoStepVerificationState('disabled')
 TwoStepVerificationState.other = TwoStepVerificationState('other')
 
 ROUTES = {

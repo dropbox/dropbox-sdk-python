@@ -11520,7 +11520,8 @@ class RequestedLinkAccessLevel(bb.Union):
     :ivar sharing.RequestedLinkAccessLevel.viewer: Users who use the link can
         view and comment on the content.
     :ivar sharing.RequestedLinkAccessLevel.editor: Users who use the link can
-        edit, view and comment on the content.
+        edit, view and comment on the content. Note not all file types support
+        edit links yet.
     :ivar sharing.RequestedLinkAccessLevel.max: Request for the maximum access
         level you can set the link to.
     """
@@ -13941,6 +13942,8 @@ class SharedFolderMetadataBase(bb.Struct):
         contained within another shared folder.
     :ivar sharing.SharedFolderMetadataBase.path_lower: The lower-cased full path
         of this shared folder. Absent for unmounted folders.
+    :ivar sharing.SharedFolderMetadataBase.parent_folder_name: Display name for
+        the parent folder.
     """
 
     __slots__ = [
@@ -13958,6 +13961,8 @@ class SharedFolderMetadataBase(bb.Struct):
         '_parent_shared_folder_id_present',
         '_path_lower_value',
         '_path_lower_present',
+        '_parent_folder_name_value',
+        '_parent_folder_name_present',
     ]
 
     _has_required_fields = True
@@ -13969,7 +13974,8 @@ class SharedFolderMetadataBase(bb.Struct):
                  owner_display_names=None,
                  owner_team=None,
                  parent_shared_folder_id=None,
-                 path_lower=None):
+                 path_lower=None,
+                 parent_folder_name=None):
         self._access_type_value = None
         self._access_type_present = False
         self._is_inside_team_folder_value = None
@@ -13984,6 +13990,8 @@ class SharedFolderMetadataBase(bb.Struct):
         self._parent_shared_folder_id_present = False
         self._path_lower_value = None
         self._path_lower_present = False
+        self._parent_folder_name_value = None
+        self._parent_folder_name_present = False
         if access_type is not None:
             self.access_type = access_type
         if is_inside_team_folder is not None:
@@ -13998,6 +14006,8 @@ class SharedFolderMetadataBase(bb.Struct):
             self.parent_shared_folder_id = parent_shared_folder_id
         if path_lower is not None:
             self.path_lower = path_lower
+        if parent_folder_name is not None:
+            self.parent_folder_name = parent_folder_name
 
     @property
     def access_type(self):
@@ -14178,11 +14188,37 @@ class SharedFolderMetadataBase(bb.Struct):
         self._path_lower_value = None
         self._path_lower_present = False
 
+    @property
+    def parent_folder_name(self):
+        """
+        Display name for the parent folder.
+
+        :rtype: str
+        """
+        if self._parent_folder_name_present:
+            return self._parent_folder_name_value
+        else:
+            return None
+
+    @parent_folder_name.setter
+    def parent_folder_name(self, val):
+        if val is None:
+            del self.parent_folder_name
+            return
+        val = self._parent_folder_name_validator.validate(val)
+        self._parent_folder_name_value = val
+        self._parent_folder_name_present = True
+
+    @parent_folder_name.deleter
+    def parent_folder_name(self):
+        self._parent_folder_name_value = None
+        self._parent_folder_name_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedFolderMetadataBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'SharedFolderMetadataBase(access_type={!r}, is_inside_team_folder={!r}, is_team_folder={!r}, owner_display_names={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r})'.format(
+        return 'SharedFolderMetadataBase(access_type={!r}, is_inside_team_folder={!r}, is_team_folder={!r}, owner_display_names={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r}, parent_folder_name={!r})'.format(
             self._access_type_value,
             self._is_inside_team_folder_value,
             self._is_team_folder_value,
@@ -14190,6 +14226,7 @@ class SharedFolderMetadataBase(bb.Struct):
             self._owner_team_value,
             self._parent_shared_folder_id_value,
             self._path_lower_value,
+            self._parent_folder_name_value,
         )
 
 SharedFolderMetadataBase_validator = bv.Struct(SharedFolderMetadataBase)
@@ -14251,6 +14288,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
                  owner_team=None,
                  parent_shared_folder_id=None,
                  path_lower=None,
+                 parent_folder_name=None,
                  link_metadata=None,
                  permissions=None,
                  access_inheritance=None):
@@ -14260,7 +14298,8 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
                                                    owner_display_names,
                                                    owner_team,
                                                    parent_shared_folder_id,
-                                                   path_lower)
+                                                   path_lower,
+                                                   parent_folder_name)
         self._link_metadata_value = None
         self._link_metadata_present = False
         self._name_value = None
@@ -14492,7 +14531,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
         super(SharedFolderMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'SharedFolderMetadata(access_type={!r}, is_inside_team_folder={!r}, is_team_folder={!r}, name={!r}, policy={!r}, preview_url={!r}, shared_folder_id={!r}, time_invited={!r}, owner_display_names={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r}, link_metadata={!r}, permissions={!r}, access_inheritance={!r})'.format(
+        return 'SharedFolderMetadata(access_type={!r}, is_inside_team_folder={!r}, is_team_folder={!r}, name={!r}, policy={!r}, preview_url={!r}, shared_folder_id={!r}, time_invited={!r}, owner_display_names={!r}, owner_team={!r}, parent_shared_folder_id={!r}, path_lower={!r}, parent_folder_name={!r}, link_metadata={!r}, permissions={!r}, access_inheritance={!r})'.format(
             self._access_type_value,
             self._is_inside_team_folder_value,
             self._is_team_folder_value,
@@ -14505,6 +14544,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
             self._owner_team_value,
             self._parent_shared_folder_id_value,
             self._path_lower_value,
+            self._parent_folder_name_value,
             self._link_metadata_value,
             self._permissions_value,
             self._access_inheritance_value,
@@ -14742,7 +14782,8 @@ class SharedLinkSettings(bb.Struct):
         the final effective audience type in the `effective_audience` field of
         `LinkPermissions.
     :ivar sharing.SharedLinkSettings.access: Requested access level you want the
-        audience to gain from this link.
+        audience to gain from this link. Note, modifying access level for an
+        existing link is not supported.
     """
 
     __slots__ = [
@@ -14900,6 +14941,7 @@ class SharedLinkSettings(bb.Struct):
     def access(self):
         """
         Requested access level you want the audience to gain from this link.
+        Note, modifying access level for an existing link is not supported.
 
         :rtype: RequestedLinkAccessLevel
         """
@@ -19004,6 +19046,7 @@ SharedFolderMetadataBase._owner_display_names_validator = bv.Nullable(bv.List(bv
 SharedFolderMetadataBase._owner_team_validator = bv.Nullable(users.Team_validator)
 SharedFolderMetadataBase._parent_shared_folder_id_validator = bv.Nullable(common.SharedFolderId_validator)
 SharedFolderMetadataBase._path_lower_validator = bv.Nullable(bv.String())
+SharedFolderMetadataBase._parent_folder_name_validator = bv.Nullable(bv.String())
 SharedFolderMetadataBase._all_field_names_ = set([
     'access_type',
     'is_inside_team_folder',
@@ -19012,6 +19055,7 @@ SharedFolderMetadataBase._all_field_names_ = set([
     'owner_team',
     'parent_shared_folder_id',
     'path_lower',
+    'parent_folder_name',
 ])
 SharedFolderMetadataBase._all_fields_ = [
     ('access_type', SharedFolderMetadataBase._access_type_validator),
@@ -19021,6 +19065,7 @@ SharedFolderMetadataBase._all_fields_ = [
     ('owner_team', SharedFolderMetadataBase._owner_team_validator),
     ('parent_shared_folder_id', SharedFolderMetadataBase._parent_shared_folder_id_validator),
     ('path_lower', SharedFolderMetadataBase._path_lower_validator),
+    ('parent_folder_name', SharedFolderMetadataBase._parent_folder_name_validator),
 ]
 
 SharedFolderMetadata._link_metadata_validator = bv.Nullable(SharedContentLinkMetadata_validator)

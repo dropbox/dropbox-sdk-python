@@ -126,6 +126,8 @@ class AuthError(bb.Union):
     :ivar auth.AuthError.expired_access_token: The access token has expired.
     :ivar TokenScopeError AuthError.missing_scope: The access token does not
         have the required scope to access the route.
+    :ivar auth.AuthError.route_access_denied: The route is not available to
+        public.
     """
 
     _catch_all = 'other'
@@ -139,6 +141,8 @@ class AuthError(bb.Union):
     user_suspended = None
     # Attribute is overwritten below the class definition
     expired_access_token = None
+    # Attribute is overwritten below the class definition
+    route_access_denied = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -200,6 +204,14 @@ class AuthError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'missing_scope'
+
+    def is_route_access_denied(self):
+        """
+        Check if the union tag is ``route_access_denied``.
+
+        :rtype: bool
+        """
+        return self._tag == 'route_access_denied'
 
     def is_other(self):
         """
@@ -734,6 +746,7 @@ AuthError._invalid_select_admin_validator = bv.Void()
 AuthError._user_suspended_validator = bv.Void()
 AuthError._expired_access_token_validator = bv.Void()
 AuthError._missing_scope_validator = TokenScopeError_validator
+AuthError._route_access_denied_validator = bv.Void()
 AuthError._other_validator = bv.Void()
 AuthError._tagmap = {
     'invalid_access_token': AuthError._invalid_access_token_validator,
@@ -742,6 +755,7 @@ AuthError._tagmap = {
     'user_suspended': AuthError._user_suspended_validator,
     'expired_access_token': AuthError._expired_access_token_validator,
     'missing_scope': AuthError._missing_scope_validator,
+    'route_access_denied': AuthError._route_access_denied_validator,
     'other': AuthError._other_validator,
 }
 
@@ -750,6 +764,7 @@ AuthError.invalid_select_user = AuthError('invalid_select_user')
 AuthError.invalid_select_admin = AuthError('invalid_select_admin')
 AuthError.user_suspended = AuthError('user_suspended')
 AuthError.expired_access_token = AuthError('expired_access_token')
+AuthError.route_access_denied = AuthError('route_access_denied')
 AuthError.other = AuthError('other')
 
 InvalidAccountTypeError._endpoint_validator = bv.Void()

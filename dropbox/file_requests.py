@@ -410,8 +410,8 @@ class CreateFileRequestError(FileRequestError):
     :ivar file_requests.CreateFileRequestError.invalid_location: File requests
         are not available on the specified folder.
     :ivar file_requests.CreateFileRequestError.rate_limit: The user has reached
-        the rate limit for creating file requests. The limit is currently 100
-        file requests per day.
+        the rate limit for creating file requests. The limit is currently 4000
+        file requests total.
     """
 
     # Attribute is overwritten below the class definition

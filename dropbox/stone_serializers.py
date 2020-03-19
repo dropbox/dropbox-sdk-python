@@ -13,6 +13,7 @@ than being added to a project.
 from __future__ import absolute_import, unicode_literals
 
 import base64
+import binascii
 import collections
 import datetime
 import functools
@@ -657,12 +658,11 @@ class PythonPrimitiveToStoneDecoder(object):
             else:
                 raise bv.ValidationError("unknown tag '%s'" % tag)
         elif isinstance(obj, dict):
-            tag, val = self.decode_union_dict(
-                data_type, obj)
+            tag, val = self.decode_union_dict(data_type, obj)
         else:
             raise bv.ValidationError("expected string or object, got %s" %
                                      bv.generic_type_name(obj))
-        return data_type.definition(tag, val)
+        return data_type.definition(six.ensure_str(tag), val)
 
     def decode_union_dict(self, data_type, obj):
         if '.tag' not in obj:
@@ -789,7 +789,7 @@ class PythonPrimitiveToStoneDecoder(object):
         else:
             raise bv.ValidationError("expected string or object, got %s" %
                                      bv.generic_type_name(obj))
-        return data_type.definition(tag, val)
+        return data_type.definition(six.ensure_str(tag), val)
 
     def decode_struct_tree(self, data_type, obj):
         """
@@ -891,7 +891,7 @@ class PythonPrimitiveToStoneDecoder(object):
             else:
                 try:
                     ret = base64.b64decode(val)
-                except TypeError:
+                except (TypeError, binascii.Error):
                     raise bv.ValidationError('invalid base64-encoded bytes')
         elif isinstance(data_type, bv.Void):
             if self.strict and val is not None:

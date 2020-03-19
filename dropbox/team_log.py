@@ -48,6 +48,8 @@ class AccessMethodLogInfo(bb.Union):
         session details.
     :ivar WebSessionLogInfo AccessMethodLogInfo.admin_console: Admin console
         session details.
+    :ivar WebSessionLogInfo AccessMethodLogInfo.enterprise_console: Enterprise
+        console session details.
     :ivar ApiSessionLogInfo AccessMethodLogInfo.api: Api session details.
     """
 
@@ -100,6 +102,17 @@ class AccessMethodLogInfo(bb.Union):
         return cls('admin_console', val)
 
     @classmethod
+    def enterprise_console(cls, val):
+        """
+        Create an instance of this class set to the ``enterprise_console`` tag
+        with value ``val``.
+
+        :param WebSessionLogInfo val:
+        :rtype: AccessMethodLogInfo
+        """
+        return cls('enterprise_console', val)
+
+    @classmethod
     def api(cls, val):
         """
         Create an instance of this class set to the ``api`` tag with value
@@ -141,6 +154,14 @@ class AccessMethodLogInfo(bb.Union):
         :rtype: bool
         """
         return self._tag == 'admin_console'
+
+    def is_enterprise_console(self):
+        """
+        Check if the union tag is ``enterprise_console``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enterprise_console'
 
     def is_api(self):
         """
@@ -204,6 +225,18 @@ class AccessMethodLogInfo(bb.Union):
         """
         if not self.is_admin_console():
             raise AttributeError("tag 'admin_console' not set")
+        return self._value
+
+    def get_enterprise_console(self):
+        """
+        Enterprise console session details.
+
+        Only call this if :meth:`is_enterprise_console` is true.
+
+        :rtype: WebSessionLogInfo
+        """
+        if not self.is_enterprise_console():
+            raise AttributeError("tag 'enterprise_console' not set")
         return self._value
 
     def get_api(self):
@@ -655,25 +688,35 @@ AccountCaptureMigrateAccountType_validator = bv.Struct(AccountCaptureMigrateAcco
 
 class AccountCaptureNotificationEmailsSentDetails(bb.Struct):
     """
-    Sent proactive account capture email to all unmanaged members.
+    Sent account capture email to all unmanaged members.
 
     :ivar team_log.AccountCaptureNotificationEmailsSentDetails.domain_name:
         Domain name.
+    :ivar
+        team_log.AccountCaptureNotificationEmailsSentDetails.notification_type:
+        Account-capture email notification type.
     """
 
     __slots__ = [
         '_domain_name_value',
         '_domain_name_present',
+        '_notification_type_value',
+        '_notification_type_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 domain_name=None):
+                 domain_name=None,
+                 notification_type=None):
         self._domain_name_value = None
         self._domain_name_present = False
+        self._notification_type_value = None
+        self._notification_type_present = False
         if domain_name is not None:
             self.domain_name = domain_name
+        if notification_type is not None:
+            self.notification_type = notification_type
 
     @property
     def domain_name(self):
@@ -698,12 +741,39 @@ class AccountCaptureNotificationEmailsSentDetails(bb.Struct):
         self._domain_name_value = None
         self._domain_name_present = False
 
+    @property
+    def notification_type(self):
+        """
+        Account-capture email notification type.
+
+        :rtype: AccountCaptureNotificationType
+        """
+        if self._notification_type_present:
+            return self._notification_type_value
+        else:
+            return None
+
+    @notification_type.setter
+    def notification_type(self, val):
+        if val is None:
+            del self.notification_type
+            return
+        self._notification_type_validator.validate_type_only(val)
+        self._notification_type_value = val
+        self._notification_type_present = True
+
+    @notification_type.deleter
+    def notification_type(self):
+        self._notification_type_value = None
+        self._notification_type_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AccountCaptureNotificationEmailsSentDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'AccountCaptureNotificationEmailsSentDetails(domain_name={!r})'.format(
+        return 'AccountCaptureNotificationEmailsSentDetails(domain_name={!r}, notification_type={!r})'.format(
             self._domain_name_value,
+            self._notification_type_value,
         )
 
 AccountCaptureNotificationEmailsSentDetails_validator = bv.Struct(AccountCaptureNotificationEmailsSentDetails)
@@ -754,6 +824,53 @@ class AccountCaptureNotificationEmailsSentType(bb.Struct):
         )
 
 AccountCaptureNotificationEmailsSentType_validator = bv.Struct(AccountCaptureNotificationEmailsSentType)
+
+class AccountCaptureNotificationType(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    proactive_warning_notification = None
+    # Attribute is overwritten below the class definition
+    actionable_notification = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_proactive_warning_notification(self):
+        """
+        Check if the union tag is ``proactive_warning_notification``.
+
+        :rtype: bool
+        """
+        return self._tag == 'proactive_warning_notification'
+
+    def is_actionable_notification(self):
+        """
+        Check if the union tag is ``actionable_notification``.
+
+        :rtype: bool
+        """
+        return self._tag == 'actionable_notification'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AccountCaptureNotificationType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AccountCaptureNotificationType(%r, %r)' % (self._tag, self._value)
+
+AccountCaptureNotificationType_validator = bv.Union(AccountCaptureNotificationType)
 
 class AccountCapturePolicy(bb.Union):
     """
@@ -927,6 +1044,8 @@ class ActionDetails(bb.Union):
         information relevant when a new member joins the team.
     :ivar MemberRemoveActionType ActionDetails.remove_action: Define how the
         user was removed from the team.
+    :ivar TeamInviteDetails ActionDetails.team_invite_details: Additional
+        information relevant when someone is invited to the team.
     """
 
     _catch_all = 'other'
@@ -955,6 +1074,17 @@ class ActionDetails(bb.Union):
         """
         return cls('remove_action', val)
 
+    @classmethod
+    def team_invite_details(cls, val):
+        """
+        Create an instance of this class set to the ``team_invite_details`` tag
+        with value ``val``.
+
+        :param TeamInviteDetails val:
+        :rtype: ActionDetails
+        """
+        return cls('team_invite_details', val)
+
     def is_team_join_details(self):
         """
         Check if the union tag is ``team_join_details``.
@@ -970,6 +1100,14 @@ class ActionDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'remove_action'
+
+    def is_team_invite_details(self):
+        """
+        Check if the union tag is ``team_invite_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_invite_details'
 
     def is_other(self):
         """
@@ -1001,6 +1139,18 @@ class ActionDetails(bb.Union):
         """
         if not self.is_remove_action():
             raise AttributeError("tag 'remove_action' not set")
+        return self._value
+
+    def get_team_invite_details(self):
+        """
+        Additional information relevant when someone is invited to the team.
+
+        Only call this if :meth:`is_team_invite_details` is true.
+
+        :rtype: TeamInviteDetails
+        """
+        if not self.is_team_invite_details():
+            raise AttributeError("tag 'team_invite_details' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -2148,6 +2298,1412 @@ class AssetLogInfo(bb.Union):
 
 AssetLogInfo_validator = bv.Union(AssetLogInfo)
 
+class BinderAddPageDetails(bb.Struct):
+    """
+    Added Binder page.
+
+    :ivar team_log.BinderAddPageDetails.event_uuid: Event unique identifier.
+    :ivar team_log.BinderAddPageDetails.doc_title: Title of the Binder doc.
+    :ivar team_log.BinderAddPageDetails.binder_item_name: Name of the Binder
+        page/section.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_doc_title_value',
+        '_doc_title_present',
+        '_binder_item_name_value',
+        '_binder_item_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 doc_title=None,
+                 binder_item_name=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._doc_title_value = None
+        self._doc_title_present = False
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if doc_title is not None:
+            self.doc_title = doc_title
+        if binder_item_name is not None:
+            self.binder_item_name = binder_item_name
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def doc_title(self):
+        """
+        Title of the Binder doc.
+
+        :rtype: str
+        """
+        if self._doc_title_present:
+            return self._doc_title_value
+        else:
+            raise AttributeError("missing required field 'doc_title'")
+
+    @doc_title.setter
+    def doc_title(self, val):
+        val = self._doc_title_validator.validate(val)
+        self._doc_title_value = val
+        self._doc_title_present = True
+
+    @doc_title.deleter
+    def doc_title(self):
+        self._doc_title_value = None
+        self._doc_title_present = False
+
+    @property
+    def binder_item_name(self):
+        """
+        Name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._binder_item_name_present:
+            return self._binder_item_name_value
+        else:
+            raise AttributeError("missing required field 'binder_item_name'")
+
+    @binder_item_name.setter
+    def binder_item_name(self, val):
+        val = self._binder_item_name_validator.validate(val)
+        self._binder_item_name_value = val
+        self._binder_item_name_present = True
+
+    @binder_item_name.deleter
+    def binder_item_name(self):
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderAddPageDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderAddPageDetails(event_uuid={!r}, doc_title={!r}, binder_item_name={!r})'.format(
+            self._event_uuid_value,
+            self._doc_title_value,
+            self._binder_item_name_value,
+        )
+
+BinderAddPageDetails_validator = bv.Struct(BinderAddPageDetails)
+
+class BinderAddPageType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderAddPageType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderAddPageType(description={!r})'.format(
+            self._description_value,
+        )
+
+BinderAddPageType_validator = bv.Struct(BinderAddPageType)
+
+class BinderAddSectionDetails(bb.Struct):
+    """
+    Added Binder section.
+
+    :ivar team_log.BinderAddSectionDetails.event_uuid: Event unique identifier.
+    :ivar team_log.BinderAddSectionDetails.doc_title: Title of the Binder doc.
+    :ivar team_log.BinderAddSectionDetails.binder_item_name: Name of the Binder
+        page/section.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_doc_title_value',
+        '_doc_title_present',
+        '_binder_item_name_value',
+        '_binder_item_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 doc_title=None,
+                 binder_item_name=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._doc_title_value = None
+        self._doc_title_present = False
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if doc_title is not None:
+            self.doc_title = doc_title
+        if binder_item_name is not None:
+            self.binder_item_name = binder_item_name
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def doc_title(self):
+        """
+        Title of the Binder doc.
+
+        :rtype: str
+        """
+        if self._doc_title_present:
+            return self._doc_title_value
+        else:
+            raise AttributeError("missing required field 'doc_title'")
+
+    @doc_title.setter
+    def doc_title(self, val):
+        val = self._doc_title_validator.validate(val)
+        self._doc_title_value = val
+        self._doc_title_present = True
+
+    @doc_title.deleter
+    def doc_title(self):
+        self._doc_title_value = None
+        self._doc_title_present = False
+
+    @property
+    def binder_item_name(self):
+        """
+        Name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._binder_item_name_present:
+            return self._binder_item_name_value
+        else:
+            raise AttributeError("missing required field 'binder_item_name'")
+
+    @binder_item_name.setter
+    def binder_item_name(self, val):
+        val = self._binder_item_name_validator.validate(val)
+        self._binder_item_name_value = val
+        self._binder_item_name_present = True
+
+    @binder_item_name.deleter
+    def binder_item_name(self):
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderAddSectionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderAddSectionDetails(event_uuid={!r}, doc_title={!r}, binder_item_name={!r})'.format(
+            self._event_uuid_value,
+            self._doc_title_value,
+            self._binder_item_name_value,
+        )
+
+BinderAddSectionDetails_validator = bv.Struct(BinderAddSectionDetails)
+
+class BinderAddSectionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderAddSectionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderAddSectionType(description={!r})'.format(
+            self._description_value,
+        )
+
+BinderAddSectionType_validator = bv.Struct(BinderAddSectionType)
+
+class BinderRemovePageDetails(bb.Struct):
+    """
+    Removed Binder page.
+
+    :ivar team_log.BinderRemovePageDetails.event_uuid: Event unique identifier.
+    :ivar team_log.BinderRemovePageDetails.doc_title: Title of the Binder doc.
+    :ivar team_log.BinderRemovePageDetails.binder_item_name: Name of the Binder
+        page/section.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_doc_title_value',
+        '_doc_title_present',
+        '_binder_item_name_value',
+        '_binder_item_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 doc_title=None,
+                 binder_item_name=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._doc_title_value = None
+        self._doc_title_present = False
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if doc_title is not None:
+            self.doc_title = doc_title
+        if binder_item_name is not None:
+            self.binder_item_name = binder_item_name
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def doc_title(self):
+        """
+        Title of the Binder doc.
+
+        :rtype: str
+        """
+        if self._doc_title_present:
+            return self._doc_title_value
+        else:
+            raise AttributeError("missing required field 'doc_title'")
+
+    @doc_title.setter
+    def doc_title(self, val):
+        val = self._doc_title_validator.validate(val)
+        self._doc_title_value = val
+        self._doc_title_present = True
+
+    @doc_title.deleter
+    def doc_title(self):
+        self._doc_title_value = None
+        self._doc_title_present = False
+
+    @property
+    def binder_item_name(self):
+        """
+        Name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._binder_item_name_present:
+            return self._binder_item_name_value
+        else:
+            raise AttributeError("missing required field 'binder_item_name'")
+
+    @binder_item_name.setter
+    def binder_item_name(self, val):
+        val = self._binder_item_name_validator.validate(val)
+        self._binder_item_name_value = val
+        self._binder_item_name_present = True
+
+    @binder_item_name.deleter
+    def binder_item_name(self):
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderRemovePageDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderRemovePageDetails(event_uuid={!r}, doc_title={!r}, binder_item_name={!r})'.format(
+            self._event_uuid_value,
+            self._doc_title_value,
+            self._binder_item_name_value,
+        )
+
+BinderRemovePageDetails_validator = bv.Struct(BinderRemovePageDetails)
+
+class BinderRemovePageType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderRemovePageType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderRemovePageType(description={!r})'.format(
+            self._description_value,
+        )
+
+BinderRemovePageType_validator = bv.Struct(BinderRemovePageType)
+
+class BinderRemoveSectionDetails(bb.Struct):
+    """
+    Removed Binder section.
+
+    :ivar team_log.BinderRemoveSectionDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.BinderRemoveSectionDetails.doc_title: Title of the Binder
+        doc.
+    :ivar team_log.BinderRemoveSectionDetails.binder_item_name: Name of the
+        Binder page/section.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_doc_title_value',
+        '_doc_title_present',
+        '_binder_item_name_value',
+        '_binder_item_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 doc_title=None,
+                 binder_item_name=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._doc_title_value = None
+        self._doc_title_present = False
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if doc_title is not None:
+            self.doc_title = doc_title
+        if binder_item_name is not None:
+            self.binder_item_name = binder_item_name
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def doc_title(self):
+        """
+        Title of the Binder doc.
+
+        :rtype: str
+        """
+        if self._doc_title_present:
+            return self._doc_title_value
+        else:
+            raise AttributeError("missing required field 'doc_title'")
+
+    @doc_title.setter
+    def doc_title(self, val):
+        val = self._doc_title_validator.validate(val)
+        self._doc_title_value = val
+        self._doc_title_present = True
+
+    @doc_title.deleter
+    def doc_title(self):
+        self._doc_title_value = None
+        self._doc_title_present = False
+
+    @property
+    def binder_item_name(self):
+        """
+        Name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._binder_item_name_present:
+            return self._binder_item_name_value
+        else:
+            raise AttributeError("missing required field 'binder_item_name'")
+
+    @binder_item_name.setter
+    def binder_item_name(self, val):
+        val = self._binder_item_name_validator.validate(val)
+        self._binder_item_name_value = val
+        self._binder_item_name_present = True
+
+    @binder_item_name.deleter
+    def binder_item_name(self):
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderRemoveSectionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderRemoveSectionDetails(event_uuid={!r}, doc_title={!r}, binder_item_name={!r})'.format(
+            self._event_uuid_value,
+            self._doc_title_value,
+            self._binder_item_name_value,
+        )
+
+BinderRemoveSectionDetails_validator = bv.Struct(BinderRemoveSectionDetails)
+
+class BinderRemoveSectionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderRemoveSectionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderRemoveSectionType(description={!r})'.format(
+            self._description_value,
+        )
+
+BinderRemoveSectionType_validator = bv.Struct(BinderRemoveSectionType)
+
+class BinderRenamePageDetails(bb.Struct):
+    """
+    Renamed Binder page.
+
+    :ivar team_log.BinderRenamePageDetails.event_uuid: Event unique identifier.
+    :ivar team_log.BinderRenamePageDetails.doc_title: Title of the Binder doc.
+    :ivar team_log.BinderRenamePageDetails.binder_item_name: Name of the Binder
+        page/section.
+    :ivar team_log.BinderRenamePageDetails.previous_binder_item_name: Previous
+        name of the Binder page/section.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_doc_title_value',
+        '_doc_title_present',
+        '_binder_item_name_value',
+        '_binder_item_name_present',
+        '_previous_binder_item_name_value',
+        '_previous_binder_item_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 doc_title=None,
+                 binder_item_name=None,
+                 previous_binder_item_name=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._doc_title_value = None
+        self._doc_title_present = False
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+        self._previous_binder_item_name_value = None
+        self._previous_binder_item_name_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if doc_title is not None:
+            self.doc_title = doc_title
+        if binder_item_name is not None:
+            self.binder_item_name = binder_item_name
+        if previous_binder_item_name is not None:
+            self.previous_binder_item_name = previous_binder_item_name
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def doc_title(self):
+        """
+        Title of the Binder doc.
+
+        :rtype: str
+        """
+        if self._doc_title_present:
+            return self._doc_title_value
+        else:
+            raise AttributeError("missing required field 'doc_title'")
+
+    @doc_title.setter
+    def doc_title(self, val):
+        val = self._doc_title_validator.validate(val)
+        self._doc_title_value = val
+        self._doc_title_present = True
+
+    @doc_title.deleter
+    def doc_title(self):
+        self._doc_title_value = None
+        self._doc_title_present = False
+
+    @property
+    def binder_item_name(self):
+        """
+        Name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._binder_item_name_present:
+            return self._binder_item_name_value
+        else:
+            raise AttributeError("missing required field 'binder_item_name'")
+
+    @binder_item_name.setter
+    def binder_item_name(self, val):
+        val = self._binder_item_name_validator.validate(val)
+        self._binder_item_name_value = val
+        self._binder_item_name_present = True
+
+    @binder_item_name.deleter
+    def binder_item_name(self):
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+
+    @property
+    def previous_binder_item_name(self):
+        """
+        Previous name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._previous_binder_item_name_present:
+            return self._previous_binder_item_name_value
+        else:
+            return None
+
+    @previous_binder_item_name.setter
+    def previous_binder_item_name(self, val):
+        if val is None:
+            del self.previous_binder_item_name
+            return
+        val = self._previous_binder_item_name_validator.validate(val)
+        self._previous_binder_item_name_value = val
+        self._previous_binder_item_name_present = True
+
+    @previous_binder_item_name.deleter
+    def previous_binder_item_name(self):
+        self._previous_binder_item_name_value = None
+        self._previous_binder_item_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderRenamePageDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderRenamePageDetails(event_uuid={!r}, doc_title={!r}, binder_item_name={!r}, previous_binder_item_name={!r})'.format(
+            self._event_uuid_value,
+            self._doc_title_value,
+            self._binder_item_name_value,
+            self._previous_binder_item_name_value,
+        )
+
+BinderRenamePageDetails_validator = bv.Struct(BinderRenamePageDetails)
+
+class BinderRenamePageType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderRenamePageType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderRenamePageType(description={!r})'.format(
+            self._description_value,
+        )
+
+BinderRenamePageType_validator = bv.Struct(BinderRenamePageType)
+
+class BinderRenameSectionDetails(bb.Struct):
+    """
+    Renamed Binder section.
+
+    :ivar team_log.BinderRenameSectionDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.BinderRenameSectionDetails.doc_title: Title of the Binder
+        doc.
+    :ivar team_log.BinderRenameSectionDetails.binder_item_name: Name of the
+        Binder page/section.
+    :ivar team_log.BinderRenameSectionDetails.previous_binder_item_name:
+        Previous name of the Binder page/section.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_doc_title_value',
+        '_doc_title_present',
+        '_binder_item_name_value',
+        '_binder_item_name_present',
+        '_previous_binder_item_name_value',
+        '_previous_binder_item_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 doc_title=None,
+                 binder_item_name=None,
+                 previous_binder_item_name=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._doc_title_value = None
+        self._doc_title_present = False
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+        self._previous_binder_item_name_value = None
+        self._previous_binder_item_name_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if doc_title is not None:
+            self.doc_title = doc_title
+        if binder_item_name is not None:
+            self.binder_item_name = binder_item_name
+        if previous_binder_item_name is not None:
+            self.previous_binder_item_name = previous_binder_item_name
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def doc_title(self):
+        """
+        Title of the Binder doc.
+
+        :rtype: str
+        """
+        if self._doc_title_present:
+            return self._doc_title_value
+        else:
+            raise AttributeError("missing required field 'doc_title'")
+
+    @doc_title.setter
+    def doc_title(self, val):
+        val = self._doc_title_validator.validate(val)
+        self._doc_title_value = val
+        self._doc_title_present = True
+
+    @doc_title.deleter
+    def doc_title(self):
+        self._doc_title_value = None
+        self._doc_title_present = False
+
+    @property
+    def binder_item_name(self):
+        """
+        Name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._binder_item_name_present:
+            return self._binder_item_name_value
+        else:
+            raise AttributeError("missing required field 'binder_item_name'")
+
+    @binder_item_name.setter
+    def binder_item_name(self, val):
+        val = self._binder_item_name_validator.validate(val)
+        self._binder_item_name_value = val
+        self._binder_item_name_present = True
+
+    @binder_item_name.deleter
+    def binder_item_name(self):
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+
+    @property
+    def previous_binder_item_name(self):
+        """
+        Previous name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._previous_binder_item_name_present:
+            return self._previous_binder_item_name_value
+        else:
+            return None
+
+    @previous_binder_item_name.setter
+    def previous_binder_item_name(self, val):
+        if val is None:
+            del self.previous_binder_item_name
+            return
+        val = self._previous_binder_item_name_validator.validate(val)
+        self._previous_binder_item_name_value = val
+        self._previous_binder_item_name_present = True
+
+    @previous_binder_item_name.deleter
+    def previous_binder_item_name(self):
+        self._previous_binder_item_name_value = None
+        self._previous_binder_item_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderRenameSectionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderRenameSectionDetails(event_uuid={!r}, doc_title={!r}, binder_item_name={!r}, previous_binder_item_name={!r})'.format(
+            self._event_uuid_value,
+            self._doc_title_value,
+            self._binder_item_name_value,
+            self._previous_binder_item_name_value,
+        )
+
+BinderRenameSectionDetails_validator = bv.Struct(BinderRenameSectionDetails)
+
+class BinderRenameSectionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderRenameSectionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderRenameSectionType(description={!r})'.format(
+            self._description_value,
+        )
+
+BinderRenameSectionType_validator = bv.Struct(BinderRenameSectionType)
+
+class BinderReorderPageDetails(bb.Struct):
+    """
+    Reordered Binder page.
+
+    :ivar team_log.BinderReorderPageDetails.event_uuid: Event unique identifier.
+    :ivar team_log.BinderReorderPageDetails.doc_title: Title of the Binder doc.
+    :ivar team_log.BinderReorderPageDetails.binder_item_name: Name of the Binder
+        page/section.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_doc_title_value',
+        '_doc_title_present',
+        '_binder_item_name_value',
+        '_binder_item_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 doc_title=None,
+                 binder_item_name=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._doc_title_value = None
+        self._doc_title_present = False
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if doc_title is not None:
+            self.doc_title = doc_title
+        if binder_item_name is not None:
+            self.binder_item_name = binder_item_name
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def doc_title(self):
+        """
+        Title of the Binder doc.
+
+        :rtype: str
+        """
+        if self._doc_title_present:
+            return self._doc_title_value
+        else:
+            raise AttributeError("missing required field 'doc_title'")
+
+    @doc_title.setter
+    def doc_title(self, val):
+        val = self._doc_title_validator.validate(val)
+        self._doc_title_value = val
+        self._doc_title_present = True
+
+    @doc_title.deleter
+    def doc_title(self):
+        self._doc_title_value = None
+        self._doc_title_present = False
+
+    @property
+    def binder_item_name(self):
+        """
+        Name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._binder_item_name_present:
+            return self._binder_item_name_value
+        else:
+            raise AttributeError("missing required field 'binder_item_name'")
+
+    @binder_item_name.setter
+    def binder_item_name(self, val):
+        val = self._binder_item_name_validator.validate(val)
+        self._binder_item_name_value = val
+        self._binder_item_name_present = True
+
+    @binder_item_name.deleter
+    def binder_item_name(self):
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderReorderPageDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderReorderPageDetails(event_uuid={!r}, doc_title={!r}, binder_item_name={!r})'.format(
+            self._event_uuid_value,
+            self._doc_title_value,
+            self._binder_item_name_value,
+        )
+
+BinderReorderPageDetails_validator = bv.Struct(BinderReorderPageDetails)
+
+class BinderReorderPageType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderReorderPageType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderReorderPageType(description={!r})'.format(
+            self._description_value,
+        )
+
+BinderReorderPageType_validator = bv.Struct(BinderReorderPageType)
+
+class BinderReorderSectionDetails(bb.Struct):
+    """
+    Reordered Binder section.
+
+    :ivar team_log.BinderReorderSectionDetails.event_uuid: Event unique
+        identifier.
+    :ivar team_log.BinderReorderSectionDetails.doc_title: Title of the Binder
+        doc.
+    :ivar team_log.BinderReorderSectionDetails.binder_item_name: Name of the
+        Binder page/section.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_doc_title_value',
+        '_doc_title_present',
+        '_binder_item_name_value',
+        '_binder_item_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 doc_title=None,
+                 binder_item_name=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._doc_title_value = None
+        self._doc_title_present = False
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if doc_title is not None:
+            self.doc_title = doc_title
+        if binder_item_name is not None:
+            self.binder_item_name = binder_item_name
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def doc_title(self):
+        """
+        Title of the Binder doc.
+
+        :rtype: str
+        """
+        if self._doc_title_present:
+            return self._doc_title_value
+        else:
+            raise AttributeError("missing required field 'doc_title'")
+
+    @doc_title.setter
+    def doc_title(self, val):
+        val = self._doc_title_validator.validate(val)
+        self._doc_title_value = val
+        self._doc_title_present = True
+
+    @doc_title.deleter
+    def doc_title(self):
+        self._doc_title_value = None
+        self._doc_title_present = False
+
+    @property
+    def binder_item_name(self):
+        """
+        Name of the Binder page/section.
+
+        :rtype: str
+        """
+        if self._binder_item_name_present:
+            return self._binder_item_name_value
+        else:
+            raise AttributeError("missing required field 'binder_item_name'")
+
+    @binder_item_name.setter
+    def binder_item_name(self, val):
+        val = self._binder_item_name_validator.validate(val)
+        self._binder_item_name_value = val
+        self._binder_item_name_present = True
+
+    @binder_item_name.deleter
+    def binder_item_name(self):
+        self._binder_item_name_value = None
+        self._binder_item_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderReorderSectionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderReorderSectionDetails(event_uuid={!r}, doc_title={!r}, binder_item_name={!r})'.format(
+            self._event_uuid_value,
+            self._doc_title_value,
+            self._binder_item_name_value,
+        )
+
+BinderReorderSectionDetails_validator = bv.Struct(BinderReorderSectionDetails)
+
+class BinderReorderSectionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BinderReorderSectionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BinderReorderSectionType(description={!r})'.format(
+            self._description_value,
+        )
+
+BinderReorderSectionType_validator = bv.Struct(BinderReorderSectionType)
+
 class CameraUploadsPolicy(bb.Union):
     """
     Policy for controlling if team members can activate camera uploads
@@ -2581,6 +4137,375 @@ class Certificate(bb.Struct):
 
 Certificate_validator = bv.Struct(Certificate)
 
+class ChangedEnterpriseAdminRoleDetails(bb.Struct):
+    """
+    Changed enterprise admin role.
+
+    :ivar team_log.ChangedEnterpriseAdminRoleDetails.previous_value: The
+        member&#x2019s previous enterprise admin role.
+    :ivar team_log.ChangedEnterpriseAdminRoleDetails.new_value: The
+        member&#x2019s new enterprise admin role.
+    :ivar team_log.ChangedEnterpriseAdminRoleDetails.team_name: The name of the
+        member&#x2019s team.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+        '_team_name_value',
+        '_team_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None,
+                 team_name=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        self._team_name_value = None
+        self._team_name_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+        if team_name is not None:
+            self.team_name = team_name
+
+    @property
+    def previous_value(self):
+        """
+        The member&#x2019s previous enterprise admin role.
+
+        :rtype: FedAdminRole
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        The member&#x2019s new enterprise admin role.
+
+        :rtype: FedAdminRole
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def team_name(self):
+        """
+        The name of the member&#x2019s team.
+
+        :rtype: str
+        """
+        if self._team_name_present:
+            return self._team_name_value
+        else:
+            raise AttributeError("missing required field 'team_name'")
+
+    @team_name.setter
+    def team_name(self, val):
+        val = self._team_name_validator.validate(val)
+        self._team_name_value = val
+        self._team_name_present = True
+
+    @team_name.deleter
+    def team_name(self):
+        self._team_name_value = None
+        self._team_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ChangedEnterpriseAdminRoleDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ChangedEnterpriseAdminRoleDetails(previous_value={!r}, new_value={!r}, team_name={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+            self._team_name_value,
+        )
+
+ChangedEnterpriseAdminRoleDetails_validator = bv.Struct(ChangedEnterpriseAdminRoleDetails)
+
+class ChangedEnterpriseAdminRoleType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ChangedEnterpriseAdminRoleType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ChangedEnterpriseAdminRoleType(description={!r})'.format(
+            self._description_value,
+        )
+
+ChangedEnterpriseAdminRoleType_validator = bv.Struct(ChangedEnterpriseAdminRoleType)
+
+class ChangedEnterpriseConnectedTeamStatusDetails(bb.Struct):
+    """
+    Changed enterprise-connected team status.
+
+    :ivar team_log.ChangedEnterpriseConnectedTeamStatusDetails.action: The
+        preformed change in the team&#x2019s connection status.
+    :ivar team_log.ChangedEnterpriseConnectedTeamStatusDetails.additional_info:
+        Additional information about the organization or team.
+    :ivar team_log.ChangedEnterpriseConnectedTeamStatusDetails.previous_value:
+        Previous request state.
+    :ivar team_log.ChangedEnterpriseConnectedTeamStatusDetails.new_value: New
+        request state.
+    """
+
+    __slots__ = [
+        '_action_value',
+        '_action_present',
+        '_additional_info_value',
+        '_additional_info_present',
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 action=None,
+                 additional_info=None,
+                 previous_value=None,
+                 new_value=None):
+        self._action_value = None
+        self._action_present = False
+        self._additional_info_value = None
+        self._additional_info_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if action is not None:
+            self.action = action
+        if additional_info is not None:
+            self.additional_info = additional_info
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def action(self):
+        """
+        The preformed change in the team&#x2019s connection status.
+
+        :rtype: FedHandshakeAction
+        """
+        if self._action_present:
+            return self._action_value
+        else:
+            raise AttributeError("missing required field 'action'")
+
+    @action.setter
+    def action(self, val):
+        self._action_validator.validate_type_only(val)
+        self._action_value = val
+        self._action_present = True
+
+    @action.deleter
+    def action(self):
+        self._action_value = None
+        self._action_present = False
+
+    @property
+    def additional_info(self):
+        """
+        Additional information about the organization or team.
+
+        :rtype: FederationStatusChangeAdditionalInfo
+        """
+        if self._additional_info_present:
+            return self._additional_info_value
+        else:
+            raise AttributeError("missing required field 'additional_info'")
+
+    @additional_info.setter
+    def additional_info(self, val):
+        self._additional_info_validator.validate_type_only(val)
+        self._additional_info_value = val
+        self._additional_info_present = True
+
+    @additional_info.deleter
+    def additional_info(self):
+        self._additional_info_value = None
+        self._additional_info_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous request state.
+
+        :rtype: TrustedTeamsRequestState
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New request state.
+
+        :rtype: TrustedTeamsRequestState
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ChangedEnterpriseConnectedTeamStatusDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ChangedEnterpriseConnectedTeamStatusDetails(action={!r}, additional_info={!r}, previous_value={!r}, new_value={!r})'.format(
+            self._action_value,
+            self._additional_info_value,
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+ChangedEnterpriseConnectedTeamStatusDetails_validator = bv.Struct(ChangedEnterpriseConnectedTeamStatusDetails)
+
+class ChangedEnterpriseConnectedTeamStatusType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ChangedEnterpriseConnectedTeamStatusType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ChangedEnterpriseConnectedTeamStatusType(description={!r})'.format(
+            self._description_value,
+        )
+
+ChangedEnterpriseConnectedTeamStatusType_validator = bv.Struct(ChangedEnterpriseConnectedTeamStatusType)
+
 class CollectionShareDetails(bb.Struct):
     """
     Shared album.
@@ -2682,6 +4607,60 @@ class CollectionShareType(bb.Struct):
 
 CollectionShareType_validator = bv.Struct(CollectionShareType)
 
+class ConnectedTeamName(bb.Struct):
+    """
+    The name of the team
+
+    :ivar team_log.ConnectedTeamName.team: The name of the team.
+    """
+
+    __slots__ = [
+        '_team_value',
+        '_team_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team=None):
+        self._team_value = None
+        self._team_present = False
+        if team is not None:
+            self.team = team
+
+    @property
+    def team(self):
+        """
+        The name of the team.
+
+        :rtype: str
+        """
+        if self._team_present:
+            return self._team_value
+        else:
+            raise AttributeError("missing required field 'team'")
+
+    @team.setter
+    def team(self, val):
+        val = self._team_validator.validate(val)
+        self._team_value = val
+        self._team_present = True
+
+    @team.deleter
+    def team(self):
+        self._team_value = None
+        self._team_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ConnectedTeamName, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ConnectedTeamName(team={!r})'.format(
+            self._team_value,
+        )
+
+ConnectedTeamName_validator = bv.Struct(ConnectedTeamName)
+
 class ContentPermanentDeletePolicy(bb.Union):
     """
     Policy for pemanent content deletion
@@ -2745,6 +4724,8 @@ class ContextLogInfo(bb.Union):
         on behalf of a non team member.
     :ivar team_log.ContextLogInfo.anonymous: Anonymous context.
     :ivar team_log.ContextLogInfo.team: Action was done on behalf of the team.
+    :ivar TeamLogInfo ContextLogInfo.organization_team: Action was done on
+        behalf of a team that's part of an organization.
     :ivar TrustedNonTeamMemberLogInfo ContextLogInfo.trusted_non_team_member:
         Action was done on behalf of a trusted non team member.
     """
@@ -2778,6 +4759,17 @@ class ContextLogInfo(bb.Union):
         :rtype: ContextLogInfo
         """
         return cls('non_team_member', val)
+
+    @classmethod
+    def organization_team(cls, val):
+        """
+        Create an instance of this class set to the ``organization_team`` tag
+        with value ``val``.
+
+        :param TeamLogInfo val:
+        :rtype: ContextLogInfo
+        """
+        return cls('organization_team', val)
 
     @classmethod
     def trusted_non_team_member(cls, val):
@@ -2822,6 +4814,14 @@ class ContextLogInfo(bb.Union):
         """
         return self._tag == 'team'
 
+    def is_organization_team(self):
+        """
+        Check if the union tag is ``organization_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'organization_team'
+
     def is_trusted_non_team_member(self):
         """
         Check if the union tag is ``trusted_non_team_member``.
@@ -2860,6 +4860,18 @@ class ContextLogInfo(bb.Union):
         """
         if not self.is_non_team_member():
             raise AttributeError("tag 'non_team_member' not set")
+        return self._value
+
+    def get_organization_team(self):
+        """
+        Action was done on behalf of a team that's part of an organization.
+
+        Only call this if :meth:`is_organization_team` is true.
+
+        :rtype: TeamLogInfo
+        """
+        if not self.is_organization_team():
+            raise AttributeError("tag 'organization_team' not set")
         return self._value
 
     def get_trusted_non_team_member(self):
@@ -2949,6 +4961,141 @@ class CreateFolderType(bb.Struct):
         )
 
 CreateFolderType_validator = bv.Struct(CreateFolderType)
+
+class CreateTeamInviteLinkDetails(bb.Struct):
+    """
+    Created team invite link.
+
+    :ivar team_log.CreateTeamInviteLinkDetails.link_url: The invite link url
+        that was created.
+    :ivar team_log.CreateTeamInviteLinkDetails.expiry_date: The expiration date
+        of the invite link.
+    """
+
+    __slots__ = [
+        '_link_url_value',
+        '_link_url_present',
+        '_expiry_date_value',
+        '_expiry_date_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 link_url=None,
+                 expiry_date=None):
+        self._link_url_value = None
+        self._link_url_present = False
+        self._expiry_date_value = None
+        self._expiry_date_present = False
+        if link_url is not None:
+            self.link_url = link_url
+        if expiry_date is not None:
+            self.expiry_date = expiry_date
+
+    @property
+    def link_url(self):
+        """
+        The invite link url that was created.
+
+        :rtype: str
+        """
+        if self._link_url_present:
+            return self._link_url_value
+        else:
+            raise AttributeError("missing required field 'link_url'")
+
+    @link_url.setter
+    def link_url(self, val):
+        val = self._link_url_validator.validate(val)
+        self._link_url_value = val
+        self._link_url_present = True
+
+    @link_url.deleter
+    def link_url(self):
+        self._link_url_value = None
+        self._link_url_present = False
+
+    @property
+    def expiry_date(self):
+        """
+        The expiration date of the invite link.
+
+        :rtype: str
+        """
+        if self._expiry_date_present:
+            return self._expiry_date_value
+        else:
+            raise AttributeError("missing required field 'expiry_date'")
+
+    @expiry_date.setter
+    def expiry_date(self, val):
+        val = self._expiry_date_validator.validate(val)
+        self._expiry_date_value = val
+        self._expiry_date_present = True
+
+    @expiry_date.deleter
+    def expiry_date(self):
+        self._expiry_date_value = None
+        self._expiry_date_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateTeamInviteLinkDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'CreateTeamInviteLinkDetails(link_url={!r}, expiry_date={!r})'.format(
+            self._link_url_value,
+            self._expiry_date_value,
+        )
+
+CreateTeamInviteLinkDetails_validator = bv.Struct(CreateTeamInviteLinkDetails)
+
+class CreateTeamInviteLinkType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CreateTeamInviteLinkType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'CreateTeamInviteLinkType(description={!r})'.format(
+            self._description_value,
+        )
+
+CreateTeamInviteLinkType_validator = bv.Struct(CreateTeamInviteLinkType)
 
 class DataPlacementRestrictionChangePolicyDetails(bb.Struct):
     """
@@ -3187,6 +5334,108 @@ class DataPlacementRestrictionSatisfyPolicyType(bb.Struct):
         )
 
 DataPlacementRestrictionSatisfyPolicyType_validator = bv.Struct(DataPlacementRestrictionSatisfyPolicyType)
+
+class DeleteTeamInviteLinkDetails(bb.Struct):
+    """
+    Deleted team invite link.
+
+    :ivar team_log.DeleteTeamInviteLinkDetails.link_url: The invite link url
+        that was deleted.
+    """
+
+    __slots__ = [
+        '_link_url_value',
+        '_link_url_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 link_url=None):
+        self._link_url_value = None
+        self._link_url_present = False
+        if link_url is not None:
+            self.link_url = link_url
+
+    @property
+    def link_url(self):
+        """
+        The invite link url that was deleted.
+
+        :rtype: str
+        """
+        if self._link_url_present:
+            return self._link_url_value
+        else:
+            raise AttributeError("missing required field 'link_url'")
+
+    @link_url.setter
+    def link_url(self, val):
+        val = self._link_url_validator.validate(val)
+        self._link_url_value = val
+        self._link_url_present = True
+
+    @link_url.deleter
+    def link_url(self):
+        self._link_url_value = None
+        self._link_url_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteTeamInviteLinkDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeleteTeamInviteLinkDetails(link_url={!r})'.format(
+            self._link_url_value,
+        )
+
+DeleteTeamInviteLinkDetails_validator = bv.Struct(DeleteTeamInviteLinkDetails)
+
+class DeleteTeamInviteLinkType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteTeamInviteLinkType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeleteTeamInviteLinkType(description={!r})'.format(
+            self._description_value,
+        )
+
+DeleteTeamInviteLinkType_validator = bv.Struct(DeleteTeamInviteLinkType)
 
 class DeviceSessionLogInfo(bb.Struct):
     """
@@ -3639,6 +5888,74 @@ class DesktopSessionLogInfo(SessionLogInfo):
         )
 
 DesktopSessionLogInfo_validator = bv.Struct(DesktopSessionLogInfo)
+
+class DeviceApprovalsAddExceptionDetails(bb.Struct):
+    """
+    Added members to device approvals exception list.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeviceApprovalsAddExceptionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeviceApprovalsAddExceptionDetails()'
+
+DeviceApprovalsAddExceptionDetails_validator = bv.Struct(DeviceApprovalsAddExceptionDetails)
+
+class DeviceApprovalsAddExceptionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeviceApprovalsAddExceptionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeviceApprovalsAddExceptionType(description={!r})'.format(
+            self._description_value,
+        )
+
+DeviceApprovalsAddExceptionType_validator = bv.Struct(DeviceApprovalsAddExceptionType)
 
 class DeviceApprovalsChangeDesktopPolicyDetails(bb.Struct):
     """
@@ -4264,6 +6581,74 @@ class DeviceApprovalsPolicy(bb.Union):
         return 'DeviceApprovalsPolicy(%r, %r)' % (self._tag, self._value)
 
 DeviceApprovalsPolicy_validator = bv.Union(DeviceApprovalsPolicy)
+
+class DeviceApprovalsRemoveExceptionDetails(bb.Struct):
+    """
+    Removed members from device approvals exception list.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeviceApprovalsRemoveExceptionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeviceApprovalsRemoveExceptionDetails()'
+
+DeviceApprovalsRemoveExceptionDetails_validator = bv.Struct(DeviceApprovalsRemoveExceptionDetails)
+
+class DeviceApprovalsRemoveExceptionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeviceApprovalsRemoveExceptionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeviceApprovalsRemoveExceptionType(description={!r})'.format(
+            self._description_value,
+        )
+
+DeviceApprovalsRemoveExceptionType_validator = bv.Struct(DeviceApprovalsRemoveExceptionType)
 
 class DeviceChangeIpDesktopDetails(bb.Struct):
     """
@@ -7380,6 +9765,380 @@ class EnabledDomainInvitesType(bb.Struct):
 
 EnabledDomainInvitesType_validator = bv.Struct(EnabledDomainInvitesType)
 
+class EndedEnterpriseAdminSessionDeprecatedDetails(bb.Struct):
+    """
+    Ended enterprise admin session.
+
+    :ivar
+        team_log.EndedEnterpriseAdminSessionDeprecatedDetails.federation_extra_details:
+        More information about the organization or team.
+    """
+
+    __slots__ = [
+        '_federation_extra_details_value',
+        '_federation_extra_details_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 federation_extra_details=None):
+        self._federation_extra_details_value = None
+        self._federation_extra_details_present = False
+        if federation_extra_details is not None:
+            self.federation_extra_details = federation_extra_details
+
+    @property
+    def federation_extra_details(self):
+        """
+        More information about the organization or team.
+
+        :rtype: FedExtraDetails
+        """
+        if self._federation_extra_details_present:
+            return self._federation_extra_details_value
+        else:
+            raise AttributeError("missing required field 'federation_extra_details'")
+
+    @federation_extra_details.setter
+    def federation_extra_details(self, val):
+        self._federation_extra_details_validator.validate_type_only(val)
+        self._federation_extra_details_value = val
+        self._federation_extra_details_present = True
+
+    @federation_extra_details.deleter
+    def federation_extra_details(self):
+        self._federation_extra_details_value = None
+        self._federation_extra_details_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EndedEnterpriseAdminSessionDeprecatedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'EndedEnterpriseAdminSessionDeprecatedDetails(federation_extra_details={!r})'.format(
+            self._federation_extra_details_value,
+        )
+
+EndedEnterpriseAdminSessionDeprecatedDetails_validator = bv.Struct(EndedEnterpriseAdminSessionDeprecatedDetails)
+
+class EndedEnterpriseAdminSessionDeprecatedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EndedEnterpriseAdminSessionDeprecatedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'EndedEnterpriseAdminSessionDeprecatedType(description={!r})'.format(
+            self._description_value,
+        )
+
+EndedEnterpriseAdminSessionDeprecatedType_validator = bv.Struct(EndedEnterpriseAdminSessionDeprecatedType)
+
+class EndedEnterpriseAdminSessionDetails(bb.Struct):
+    """
+    Ended enterprise admin session.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EndedEnterpriseAdminSessionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'EndedEnterpriseAdminSessionDetails()'
+
+EndedEnterpriseAdminSessionDetails_validator = bv.Struct(EndedEnterpriseAdminSessionDetails)
+
+class EndedEnterpriseAdminSessionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EndedEnterpriseAdminSessionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'EndedEnterpriseAdminSessionType(description={!r})'.format(
+            self._description_value,
+        )
+
+EndedEnterpriseAdminSessionType_validator = bv.Struct(EndedEnterpriseAdminSessionType)
+
+class EnterpriseSettingsLockingDetails(bb.Struct):
+    """
+    Changed who can update a setting.
+
+    :ivar team_log.EnterpriseSettingsLockingDetails.team_name: The secondary
+        team name.
+    :ivar team_log.EnterpriseSettingsLockingDetails.settings_page_name: Settings
+        page name.
+    :ivar
+        team_log.EnterpriseSettingsLockingDetails.previous_settings_page_locking_state:
+        Previous locked settings page state.
+    :ivar
+        team_log.EnterpriseSettingsLockingDetails.new_settings_page_locking_state:
+        New locked settings page state.
+    """
+
+    __slots__ = [
+        '_team_name_value',
+        '_team_name_present',
+        '_settings_page_name_value',
+        '_settings_page_name_present',
+        '_previous_settings_page_locking_state_value',
+        '_previous_settings_page_locking_state_present',
+        '_new_settings_page_locking_state_value',
+        '_new_settings_page_locking_state_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_name=None,
+                 settings_page_name=None,
+                 previous_settings_page_locking_state=None,
+                 new_settings_page_locking_state=None):
+        self._team_name_value = None
+        self._team_name_present = False
+        self._settings_page_name_value = None
+        self._settings_page_name_present = False
+        self._previous_settings_page_locking_state_value = None
+        self._previous_settings_page_locking_state_present = False
+        self._new_settings_page_locking_state_value = None
+        self._new_settings_page_locking_state_present = False
+        if team_name is not None:
+            self.team_name = team_name
+        if settings_page_name is not None:
+            self.settings_page_name = settings_page_name
+        if previous_settings_page_locking_state is not None:
+            self.previous_settings_page_locking_state = previous_settings_page_locking_state
+        if new_settings_page_locking_state is not None:
+            self.new_settings_page_locking_state = new_settings_page_locking_state
+
+    @property
+    def team_name(self):
+        """
+        The secondary team name.
+
+        :rtype: str
+        """
+        if self._team_name_present:
+            return self._team_name_value
+        else:
+            raise AttributeError("missing required field 'team_name'")
+
+    @team_name.setter
+    def team_name(self, val):
+        val = self._team_name_validator.validate(val)
+        self._team_name_value = val
+        self._team_name_present = True
+
+    @team_name.deleter
+    def team_name(self):
+        self._team_name_value = None
+        self._team_name_present = False
+
+    @property
+    def settings_page_name(self):
+        """
+        Settings page name.
+
+        :rtype: str
+        """
+        if self._settings_page_name_present:
+            return self._settings_page_name_value
+        else:
+            raise AttributeError("missing required field 'settings_page_name'")
+
+    @settings_page_name.setter
+    def settings_page_name(self, val):
+        val = self._settings_page_name_validator.validate(val)
+        self._settings_page_name_value = val
+        self._settings_page_name_present = True
+
+    @settings_page_name.deleter
+    def settings_page_name(self):
+        self._settings_page_name_value = None
+        self._settings_page_name_present = False
+
+    @property
+    def previous_settings_page_locking_state(self):
+        """
+        Previous locked settings page state.
+
+        :rtype: str
+        """
+        if self._previous_settings_page_locking_state_present:
+            return self._previous_settings_page_locking_state_value
+        else:
+            raise AttributeError("missing required field 'previous_settings_page_locking_state'")
+
+    @previous_settings_page_locking_state.setter
+    def previous_settings_page_locking_state(self, val):
+        val = self._previous_settings_page_locking_state_validator.validate(val)
+        self._previous_settings_page_locking_state_value = val
+        self._previous_settings_page_locking_state_present = True
+
+    @previous_settings_page_locking_state.deleter
+    def previous_settings_page_locking_state(self):
+        self._previous_settings_page_locking_state_value = None
+        self._previous_settings_page_locking_state_present = False
+
+    @property
+    def new_settings_page_locking_state(self):
+        """
+        New locked settings page state.
+
+        :rtype: str
+        """
+        if self._new_settings_page_locking_state_present:
+            return self._new_settings_page_locking_state_value
+        else:
+            raise AttributeError("missing required field 'new_settings_page_locking_state'")
+
+    @new_settings_page_locking_state.setter
+    def new_settings_page_locking_state(self, val):
+        val = self._new_settings_page_locking_state_validator.validate(val)
+        self._new_settings_page_locking_state_value = val
+        self._new_settings_page_locking_state_present = True
+
+    @new_settings_page_locking_state.deleter
+    def new_settings_page_locking_state(self):
+        self._new_settings_page_locking_state_value = None
+        self._new_settings_page_locking_state_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnterpriseSettingsLockingDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'EnterpriseSettingsLockingDetails(team_name={!r}, settings_page_name={!r}, previous_settings_page_locking_state={!r}, new_settings_page_locking_state={!r})'.format(
+            self._team_name_value,
+            self._settings_page_name_value,
+            self._previous_settings_page_locking_state_value,
+            self._new_settings_page_locking_state_value,
+        )
+
+EnterpriseSettingsLockingDetails_validator = bv.Struct(EnterpriseSettingsLockingDetails)
+
+class EnterpriseSettingsLockingType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnterpriseSettingsLockingType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'EnterpriseSettingsLockingType(description={!r})'.format(
+            self._description_value,
+        )
+
+EnterpriseSettingsLockingType_validator = bv.Struct(EnterpriseSettingsLockingType)
+
 class EventCategory(bb.Union):
     """
     Category of events in event audit log.
@@ -7401,6 +10160,8 @@ class EventCategory(bb.Union):
     :ivar team_log.EventCategory.file_requests: Events that apply to the file
         requests feature.
     :ivar team_log.EventCategory.groups: Events that involve group management.
+    :ivar team_log.EventCategory.legal_holds: Events that involve placing holds
+        on content for litigation reasons
     :ivar team_log.EventCategory.logins: Events that involve users signing in to
         or out of Dropbox.
     :ivar team_log.EventCategory.members: Events that involve team member
@@ -7445,6 +10206,8 @@ class EventCategory(bb.Union):
     file_requests = None
     # Attribute is overwritten below the class definition
     groups = None
+    # Attribute is overwritten below the class definition
+    legal_holds = None
     # Attribute is overwritten below the class definition
     logins = None
     # Attribute is overwritten below the class definition
@@ -7529,6 +10292,14 @@ class EventCategory(bb.Union):
         :rtype: bool
         """
         return self._tag == 'groups'
+
+    def is_legal_holds(self):
+        """
+        Check if the union tag is ``legal_holds``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds'
 
     def is_logins(self):
         """
@@ -8190,6 +10961,17 @@ class EventDetails(bb.Union):
         return cls('file_get_copy_reference_details', val)
 
     @classmethod
+    def file_locking_lock_status_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_locking_lock_status_changed_details`` tag with value ``val``.
+
+        :param FileLockingLockStatusChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_locking_lock_status_changed_details', val)
+
+    @classmethod
     def file_move_details(cls, val):
         """
         Create an instance of this class set to the ``file_move_details`` tag
@@ -8276,6 +11058,50 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('file_save_copy_reference_details', val)
+
+    @classmethod
+    def folder_overview_description_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``folder_overview_description_changed_details`` tag with value ``val``.
+
+        :param FolderOverviewDescriptionChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('folder_overview_description_changed_details', val)
+
+    @classmethod
+    def folder_overview_item_pinned_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``folder_overview_item_pinned_details`` tag with value ``val``.
+
+        :param FolderOverviewItemPinnedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('folder_overview_item_pinned_details', val)
+
+    @classmethod
+    def folder_overview_item_unpinned_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``folder_overview_item_unpinned_details`` tag with value ``val``.
+
+        :param FolderOverviewItemUnpinnedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('folder_overview_item_unpinned_details', val)
+
+    @classmethod
+    def rewind_folder_details(cls, val):
+        """
+        Create an instance of this class set to the ``rewind_folder_details``
+        tag with value ``val``.
+
+        :param RewindFolderDetails val:
+        :rtype: EventDetails
+        """
+        return cls('rewind_folder_details', val)
 
     @classmethod
     def file_request_change_details(cls, val):
@@ -8476,6 +11302,127 @@ class EventDetails(bb.Union):
         return cls('group_rename_details', val)
 
     @classmethod
+    def legal_holds_activate_a_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_activate_a_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsActivateAHoldDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_activate_a_hold_details', val)
+
+    @classmethod
+    def legal_holds_add_members_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_add_members_details`` tag with value ``val``.
+
+        :param LegalHoldsAddMembersDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_add_members_details', val)
+
+    @classmethod
+    def legal_holds_change_hold_details_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_change_hold_details_details`` tag with value ``val``.
+
+        :param LegalHoldsChangeHoldDetailsDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_change_hold_details_details', val)
+
+    @classmethod
+    def legal_holds_change_hold_name_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_change_hold_name_details`` tag with value ``val``.
+
+        :param LegalHoldsChangeHoldNameDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_change_hold_name_details', val)
+
+    @classmethod
+    def legal_holds_export_a_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_a_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsExportAHoldDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_export_a_hold_details', val)
+
+    @classmethod
+    def legal_holds_export_cancelled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_cancelled_details`` tag with value ``val``.
+
+        :param LegalHoldsExportCancelledDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_export_cancelled_details', val)
+
+    @classmethod
+    def legal_holds_export_downloaded_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_downloaded_details`` tag with value ``val``.
+
+        :param LegalHoldsExportDownloadedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_export_downloaded_details', val)
+
+    @classmethod
+    def legal_holds_export_removed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_removed_details`` tag with value ``val``.
+
+        :param LegalHoldsExportRemovedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_export_removed_details', val)
+
+    @classmethod
+    def legal_holds_release_a_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_release_a_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsReleaseAHoldDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_release_a_hold_details', val)
+
+    @classmethod
+    def legal_holds_remove_members_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_remove_members_details`` tag with value ``val``.
+
+        :param LegalHoldsRemoveMembersDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_remove_members_details', val)
+
+    @classmethod
+    def legal_holds_report_a_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_report_a_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsReportAHoldDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_report_a_hold_details', val)
+
+    @classmethod
     def emm_error_details(cls, val):
         """
         Create an instance of this class set to the ``emm_error_details`` tag
@@ -8599,6 +11546,28 @@ class EventDetails(bb.Union):
         return cls('sso_error_details', val)
 
     @classmethod
+    def create_team_invite_link_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``create_team_invite_link_details`` tag with value ``val``.
+
+        :param CreateTeamInviteLinkDetails val:
+        :rtype: EventDetails
+        """
+        return cls('create_team_invite_link_details', val)
+
+    @classmethod
+    def delete_team_invite_link_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``delete_team_invite_link_details`` tag with value ``val``.
+
+        :param DeleteTeamInviteLinkDetails val:
+        :rtype: EventDetails
+        """
+        return cls('delete_team_invite_link_details', val)
+
+    @classmethod
     def member_add_external_id_details(cls, val):
         """
         Create an instance of this class set to the
@@ -8698,6 +11667,17 @@ class EventDetails(bb.Union):
         return cls('member_delete_manual_contacts_details', val)
 
     @classmethod
+    def member_delete_profile_photo_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_delete_profile_photo_details`` tag with value ``val``.
+
+        :param MemberDeleteProfilePhotoDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_delete_profile_photo_details', val)
+
+    @classmethod
     def member_permanently_delete_account_contents_details(cls, val):
         """
         Create an instance of this class set to the
@@ -8719,6 +11699,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('member_remove_external_id_details', val)
+
+    @classmethod
+    def member_set_profile_photo_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_set_profile_photo_details`` tag with value ``val``.
+
+        :param MemberSetProfilePhotoDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_set_profile_photo_details', val)
 
     @classmethod
     def member_space_limits_add_custom_quota_details(cls, val):
@@ -8789,6 +11780,39 @@ class EventDetails(bb.Union):
         return cls('member_transfer_account_contents_details', val)
 
     @classmethod
+    def pending_secondary_email_added_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``pending_secondary_email_added_details`` tag with value ``val``.
+
+        :param PendingSecondaryEmailAddedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('pending_secondary_email_added_details', val)
+
+    @classmethod
+    def secondary_email_deleted_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``secondary_email_deleted_details`` tag with value ``val``.
+
+        :param SecondaryEmailDeletedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('secondary_email_deleted_details', val)
+
+    @classmethod
+    def secondary_email_verified_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``secondary_email_verified_details`` tag with value ``val``.
+
+        :param SecondaryEmailVerifiedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('secondary_email_verified_details', val)
+
+    @classmethod
     def secondary_mails_policy_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -8798,6 +11822,94 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('secondary_mails_policy_changed_details', val)
+
+    @classmethod
+    def binder_add_page_details(cls, val):
+        """
+        Create an instance of this class set to the ``binder_add_page_details``
+        tag with value ``val``.
+
+        :param BinderAddPageDetails val:
+        :rtype: EventDetails
+        """
+        return cls('binder_add_page_details', val)
+
+    @classmethod
+    def binder_add_section_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``binder_add_section_details`` tag with value ``val``.
+
+        :param BinderAddSectionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('binder_add_section_details', val)
+
+    @classmethod
+    def binder_remove_page_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``binder_remove_page_details`` tag with value ``val``.
+
+        :param BinderRemovePageDetails val:
+        :rtype: EventDetails
+        """
+        return cls('binder_remove_page_details', val)
+
+    @classmethod
+    def binder_remove_section_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``binder_remove_section_details`` tag with value ``val``.
+
+        :param BinderRemoveSectionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('binder_remove_section_details', val)
+
+    @classmethod
+    def binder_rename_page_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``binder_rename_page_details`` tag with value ``val``.
+
+        :param BinderRenamePageDetails val:
+        :rtype: EventDetails
+        """
+        return cls('binder_rename_page_details', val)
+
+    @classmethod
+    def binder_rename_section_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``binder_rename_section_details`` tag with value ``val``.
+
+        :param BinderRenameSectionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('binder_rename_section_details', val)
+
+    @classmethod
+    def binder_reorder_page_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``binder_reorder_page_details`` tag with value ``val``.
+
+        :param BinderReorderPageDetails val:
+        :rtype: EventDetails
+        """
+        return cls('binder_reorder_page_details', val)
+
+    @classmethod
+    def binder_reorder_section_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``binder_reorder_section_details`` tag with value ``val``.
+
+        :param BinderReorderSectionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('binder_reorder_section_details', val)
 
     @classmethod
     def paper_content_add_member_details(cls, val):
@@ -9207,6 +12319,18 @@ class EventDetails(bb.Union):
         return cls('paper_folder_team_invite_details', val)
 
     @classmethod
+    def paper_published_link_change_permission_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_published_link_change_permission_details`` tag with value
+        ``val``.
+
+        :param PaperPublishedLinkChangePermissionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('paper_published_link_change_permission_details', val)
+
+    @classmethod
     def paper_published_link_create_details(cls, val):
         """
         Create an instance of this class set to the
@@ -9306,6 +12430,17 @@ class EventDetails(bb.Union):
         return cls('export_members_report_details', val)
 
     @classmethod
+    def export_members_report_fail_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``export_members_report_fail_details`` tag with value ``val``.
+
+        :param ExportMembersReportFailDetails val:
+        :rtype: EventDetails
+        """
+        return cls('export_members_report_fail_details', val)
+
+    @classmethod
     def paper_admin_export_start_details(cls, val):
         """
         Create an instance of this class set to the
@@ -9360,6 +12495,61 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('collection_share_details', val)
+
+    @classmethod
+    def file_transfers_file_add_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_file_add_details`` tag with value ``val``.
+
+        :param FileTransfersFileAddDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_transfers_file_add_details', val)
+
+    @classmethod
+    def file_transfers_transfer_delete_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_transfer_delete_details`` tag with value ``val``.
+
+        :param FileTransfersTransferDeleteDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_transfers_transfer_delete_details', val)
+
+    @classmethod
+    def file_transfers_transfer_download_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_transfer_download_details`` tag with value ``val``.
+
+        :param FileTransfersTransferDownloadDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_transfers_transfer_download_details', val)
+
+    @classmethod
+    def file_transfers_transfer_send_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_transfer_send_details`` tag with value ``val``.
+
+        :param FileTransfersTransferSendDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_transfers_transfer_send_details', val)
+
+    @classmethod
+    def file_transfers_transfer_view_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_transfer_view_details`` tag with value ``val``.
+
+        :param FileTransfersTransferViewDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_transfers_transfer_view_details', val)
 
     @classmethod
     def note_acl_invite_only_details(cls, val):
@@ -9794,6 +12984,28 @@ class EventDetails(bb.Union):
         return cls('shared_content_request_access_details', val)
 
     @classmethod
+    def shared_content_restore_invitees_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_content_restore_invitees_details`` tag with value ``val``.
+
+        :param SharedContentRestoreInviteesDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_content_restore_invitees_details', val)
+
+    @classmethod
+    def shared_content_restore_member_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_content_restore_member_details`` tag with value ``val``.
+
+        :param SharedContentRestoreMemberDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_content_restore_member_details', val)
+
+    @classmethod
     def shared_content_unshare_details(cls, val):
         """
         Create an instance of this class set to the
@@ -10014,6 +13226,109 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('shared_link_remove_expiry_details', val)
+
+    @classmethod
+    def shared_link_settings_add_expiration_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_add_expiration_details`` tag with value ``val``.
+
+        :param SharedLinkSettingsAddExpirationDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_add_expiration_details', val)
+
+    @classmethod
+    def shared_link_settings_add_password_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_add_password_details`` tag with value ``val``.
+
+        :param SharedLinkSettingsAddPasswordDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_add_password_details', val)
+
+    @classmethod
+    def shared_link_settings_allow_download_disabled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_allow_download_disabled_details`` tag with value
+        ``val``.
+
+        :param SharedLinkSettingsAllowDownloadDisabledDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_allow_download_disabled_details', val)
+
+    @classmethod
+    def shared_link_settings_allow_download_enabled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_allow_download_enabled_details`` tag with value
+        ``val``.
+
+        :param SharedLinkSettingsAllowDownloadEnabledDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_allow_download_enabled_details', val)
+
+    @classmethod
+    def shared_link_settings_change_audience_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_change_audience_details`` tag with value ``val``.
+
+        :param SharedLinkSettingsChangeAudienceDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_change_audience_details', val)
+
+    @classmethod
+    def shared_link_settings_change_expiration_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_change_expiration_details`` tag with value
+        ``val``.
+
+        :param SharedLinkSettingsChangeExpirationDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_change_expiration_details', val)
+
+    @classmethod
+    def shared_link_settings_change_password_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_change_password_details`` tag with value ``val``.
+
+        :param SharedLinkSettingsChangePasswordDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_change_password_details', val)
+
+    @classmethod
+    def shared_link_settings_remove_expiration_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_remove_expiration_details`` tag with value
+        ``val``.
+
+        :param SharedLinkSettingsRemoveExpirationDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_remove_expiration_details', val)
+
+    @classmethod
+    def shared_link_settings_remove_password_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_remove_password_details`` tag with value ``val``.
+
+        :param SharedLinkSettingsRemovePasswordDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shared_link_settings_remove_password_details', val)
 
     @classmethod
     def shared_link_share_details(cls, val):
@@ -10568,6 +13883,17 @@ class EventDetails(bb.Union):
         return cls('data_placement_restriction_satisfy_policy_details', val)
 
     @classmethod
+    def device_approvals_add_exception_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``device_approvals_add_exception_details`` tag with value ``val``.
+
+        :param DeviceApprovalsAddExceptionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('device_approvals_add_exception_details', val)
+
+    @classmethod
     def device_approvals_change_desktop_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -10614,6 +13940,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('device_approvals_change_unlink_action_details', val)
+
+    @classmethod
+    def device_approvals_remove_exception_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``device_approvals_remove_exception_details`` tag with value ``val``.
+
+        :param DeviceApprovalsRemoveExceptionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('device_approvals_remove_exception_details', val)
 
     @classmethod
     def directory_restrictions_add_members_details(cls, val):
@@ -10695,6 +14032,17 @@ class EventDetails(bb.Union):
         return cls('file_comments_change_policy_details', val)
 
     @classmethod
+    def file_locking_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_locking_policy_changed_details`` tag with value ``val``.
+
+        :param FileLockingPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_locking_policy_changed_details', val)
+
+    @classmethod
     def file_requests_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -10727,6 +14075,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('file_requests_emails_restricted_to_team_only_details', val)
+
+    @classmethod
+    def file_transfers_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_policy_changed_details`` tag with value ``val``.
+
+        :param FileTransfersPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_transfers_policy_changed_details', val)
 
     @classmethod
     def google_sso_change_policy_details(cls, val):
@@ -10939,6 +14298,18 @@ class EventDetails(bb.Union):
         return cls('paper_enabled_users_group_removal_details', val)
 
     @classmethod
+    def password_strength_requirements_change_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``password_strength_requirements_change_policy_details`` tag with value
+        ``val``.
+
+        :param PasswordStrengthRequirementsChangePolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('password_strength_requirements_change_policy_details', val)
+
+    @classmethod
     def permanent_delete_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -10959,6 +14330,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('reseller_support_change_policy_details', val)
+
+    @classmethod
+    def rewind_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``rewind_policy_changed_details`` tag with value ``val``.
+
+        :param RewindPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('rewind_policy_changed_details', val)
 
     @classmethod
     def sharing_change_folder_join_policy_details(cls, val):
@@ -11028,6 +14410,17 @@ class EventDetails(bb.Union):
         return cls('showcase_change_external_sharing_policy_details', val)
 
     @classmethod
+    def smarter_smart_sync_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``smarter_smart_sync_policy_changed_details`` tag with value ``val``.
+
+        :param SmarterSmartSyncPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('smarter_smart_sync_policy_changed_details', val)
+
+    @classmethod
     def smart_sync_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -11094,6 +14487,29 @@ class EventDetails(bb.Union):
         return cls('team_selective_sync_policy_changed_details', val)
 
     @classmethod
+    def team_sharing_whitelist_subjects_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_sharing_whitelist_subjects_changed_details`` tag with value
+        ``val``.
+
+        :param TeamSharingWhitelistSubjectsChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_sharing_whitelist_subjects_changed_details', val)
+
+    @classmethod
+    def tfa_add_exception_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``tfa_add_exception_details`` tag with value ``val``.
+
+        :param TfaAddExceptionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('tfa_add_exception_details', val)
+
+    @classmethod
     def tfa_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -11103,6 +14519,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('tfa_change_policy_details', val)
+
+    @classmethod
+    def tfa_remove_exception_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``tfa_remove_exception_details`` tag with value ``val``.
+
+        :param TfaRemoveExceptionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('tfa_remove_exception_details', val)
 
     @classmethod
     def two_account_change_policy_details(cls, val):
@@ -11125,6 +14552,29 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('viewer_info_policy_changed_details', val)
+
+    @classmethod
+    def watermarking_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``watermarking_policy_changed_details`` tag with value ``val``.
+
+        :param WatermarkingPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('watermarking_policy_changed_details', val)
+
+    @classmethod
+    def web_sessions_change_active_session_limit_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``web_sessions_change_active_session_limit_details`` tag with value
+        ``val``.
+
+        :param WebSessionsChangeActiveSessionLimitDetails val:
+        :rtype: EventDetails
+        """
+        return cls('web_sessions_change_active_session_limit_details', val)
 
     @classmethod
     def web_sessions_change_fixed_length_policy_details(cls, val):
@@ -11305,6 +14755,63 @@ class EventDetails(bb.Union):
         return cls('tfa_reset_details', val)
 
     @classmethod
+    def changed_enterprise_admin_role_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``changed_enterprise_admin_role_details`` tag with value ``val``.
+
+        :param ChangedEnterpriseAdminRoleDetails val:
+        :rtype: EventDetails
+        """
+        return cls('changed_enterprise_admin_role_details', val)
+
+    @classmethod
+    def changed_enterprise_connected_team_status_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``changed_enterprise_connected_team_status_details`` tag with value
+        ``val``.
+
+        :param ChangedEnterpriseConnectedTeamStatusDetails val:
+        :rtype: EventDetails
+        """
+        return cls('changed_enterprise_connected_team_status_details', val)
+
+    @classmethod
+    def ended_enterprise_admin_session_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ended_enterprise_admin_session_details`` tag with value ``val``.
+
+        :param EndedEnterpriseAdminSessionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('ended_enterprise_admin_session_details', val)
+
+    @classmethod
+    def ended_enterprise_admin_session_deprecated_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ended_enterprise_admin_session_deprecated_details`` tag with value
+        ``val``.
+
+        :param EndedEnterpriseAdminSessionDeprecatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('ended_enterprise_admin_session_deprecated_details', val)
+
+    @classmethod
+    def enterprise_settings_locking_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``enterprise_settings_locking_details`` tag with value ``val``.
+
+        :param EnterpriseSettingsLockingDetails val:
+        :rtype: EventDetails
+        """
+        return cls('enterprise_settings_locking_details', val)
+
+    @classmethod
     def guest_admin_change_status_details(cls, val):
         """
         Create an instance of this class set to the
@@ -11314,6 +14821,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('guest_admin_change_status_details', val)
+
+    @classmethod
+    def started_enterprise_admin_session_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``started_enterprise_admin_session_details`` tag with value ``val``.
+
+        :param StartedEnterpriseAdminSessionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('started_enterprise_admin_session_details', val)
 
     @classmethod
     def team_merge_request_accepted_details(cls, val):
@@ -11912,6 +15430,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'file_get_copy_reference_details'
 
+    def is_file_locking_lock_status_changed_details(self):
+        """
+        Check if the union tag is ``file_locking_lock_status_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_locking_lock_status_changed_details'
+
     def is_file_move_details(self):
         """
         Check if the union tag is ``file_move_details``.
@@ -11975,6 +15501,38 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_save_copy_reference_details'
+
+    def is_folder_overview_description_changed_details(self):
+        """
+        Check if the union tag is ``folder_overview_description_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_description_changed_details'
+
+    def is_folder_overview_item_pinned_details(self):
+        """
+        Check if the union tag is ``folder_overview_item_pinned_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_item_pinned_details'
+
+    def is_folder_overview_item_unpinned_details(self):
+        """
+        Check if the union tag is ``folder_overview_item_unpinned_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_item_unpinned_details'
+
+    def is_rewind_folder_details(self):
+        """
+        Check if the union tag is ``rewind_folder_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rewind_folder_details'
 
     def is_file_request_change_details(self):
         """
@@ -12120,6 +15678,94 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'group_rename_details'
 
+    def is_legal_holds_activate_a_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_activate_a_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_activate_a_hold_details'
+
+    def is_legal_holds_add_members_details(self):
+        """
+        Check if the union tag is ``legal_holds_add_members_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_add_members_details'
+
+    def is_legal_holds_change_hold_details_details(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_details_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_details_details'
+
+    def is_legal_holds_change_hold_name_details(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_name_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_name_details'
+
+    def is_legal_holds_export_a_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_export_a_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_a_hold_details'
+
+    def is_legal_holds_export_cancelled_details(self):
+        """
+        Check if the union tag is ``legal_holds_export_cancelled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_cancelled_details'
+
+    def is_legal_holds_export_downloaded_details(self):
+        """
+        Check if the union tag is ``legal_holds_export_downloaded_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_downloaded_details'
+
+    def is_legal_holds_export_removed_details(self):
+        """
+        Check if the union tag is ``legal_holds_export_removed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_removed_details'
+
+    def is_legal_holds_release_a_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_release_a_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_release_a_hold_details'
+
+    def is_legal_holds_remove_members_details(self):
+        """
+        Check if the union tag is ``legal_holds_remove_members_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_remove_members_details'
+
+    def is_legal_holds_report_a_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_report_a_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_report_a_hold_details'
+
     def is_emm_error_details(self):
         """
         Check if the union tag is ``emm_error_details``.
@@ -12208,6 +15854,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'sso_error_details'
 
+    def is_create_team_invite_link_details(self):
+        """
+        Check if the union tag is ``create_team_invite_link_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'create_team_invite_link_details'
+
+    def is_delete_team_invite_link_details(self):
+        """
+        Check if the union tag is ``delete_team_invite_link_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'delete_team_invite_link_details'
+
     def is_member_add_external_id_details(self):
         """
         Check if the union tag is ``member_add_external_id_details``.
@@ -12280,6 +15942,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'member_delete_manual_contacts_details'
 
+    def is_member_delete_profile_photo_details(self):
+        """
+        Check if the union tag is ``member_delete_profile_photo_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_delete_profile_photo_details'
+
     def is_member_permanently_delete_account_contents_details(self):
         """
         Check if the union tag is ``member_permanently_delete_account_contents_details``.
@@ -12295,6 +15965,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_remove_external_id_details'
+
+    def is_member_set_profile_photo_details(self):
+        """
+        Check if the union tag is ``member_set_profile_photo_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_set_profile_photo_details'
 
     def is_member_space_limits_add_custom_quota_details(self):
         """
@@ -12344,6 +16022,30 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'member_transfer_account_contents_details'
 
+    def is_pending_secondary_email_added_details(self):
+        """
+        Check if the union tag is ``pending_secondary_email_added_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'pending_secondary_email_added_details'
+
+    def is_secondary_email_deleted_details(self):
+        """
+        Check if the union tag is ``secondary_email_deleted_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_email_deleted_details'
+
+    def is_secondary_email_verified_details(self):
+        """
+        Check if the union tag is ``secondary_email_verified_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_email_verified_details'
+
     def is_secondary_mails_policy_changed_details(self):
         """
         Check if the union tag is ``secondary_mails_policy_changed_details``.
@@ -12351,6 +16053,70 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'secondary_mails_policy_changed_details'
+
+    def is_binder_add_page_details(self):
+        """
+        Check if the union tag is ``binder_add_page_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_add_page_details'
+
+    def is_binder_add_section_details(self):
+        """
+        Check if the union tag is ``binder_add_section_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_add_section_details'
+
+    def is_binder_remove_page_details(self):
+        """
+        Check if the union tag is ``binder_remove_page_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_remove_page_details'
+
+    def is_binder_remove_section_details(self):
+        """
+        Check if the union tag is ``binder_remove_section_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_remove_section_details'
+
+    def is_binder_rename_page_details(self):
+        """
+        Check if the union tag is ``binder_rename_page_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_rename_page_details'
+
+    def is_binder_rename_section_details(self):
+        """
+        Check if the union tag is ``binder_rename_section_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_rename_section_details'
+
+    def is_binder_reorder_page_details(self):
+        """
+        Check if the union tag is ``binder_reorder_page_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_reorder_page_details'
+
+    def is_binder_reorder_section_details(self):
+        """
+        Check if the union tag is ``binder_reorder_section_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_reorder_section_details'
 
     def is_paper_content_add_member_details(self):
         """
@@ -12648,6 +16414,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'paper_folder_team_invite_details'
 
+    def is_paper_published_link_change_permission_details(self):
+        """
+        Check if the union tag is ``paper_published_link_change_permission_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_published_link_change_permission_details'
+
     def is_paper_published_link_create_details(self):
         """
         Check if the union tag is ``paper_published_link_create_details``.
@@ -12720,6 +16494,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'export_members_report_details'
 
+    def is_export_members_report_fail_details(self):
+        """
+        Check if the union tag is ``export_members_report_fail_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'export_members_report_fail_details'
+
     def is_paper_admin_export_start_details(self):
         """
         Check if the union tag is ``paper_admin_export_start_details``.
@@ -12759,6 +16541,46 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'collection_share_details'
+
+    def is_file_transfers_file_add_details(self):
+        """
+        Check if the union tag is ``file_transfers_file_add_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_file_add_details'
+
+    def is_file_transfers_transfer_delete_details(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_delete_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_delete_details'
+
+    def is_file_transfers_transfer_download_details(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_download_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_download_details'
+
+    def is_file_transfers_transfer_send_details(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_send_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_send_details'
+
+    def is_file_transfers_transfer_view_details(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_view_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_view_details'
 
     def is_note_acl_invite_only_details(self):
         """
@@ -13072,6 +16894,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'shared_content_request_access_details'
 
+    def is_shared_content_restore_invitees_details(self):
+        """
+        Check if the union tag is ``shared_content_restore_invitees_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_restore_invitees_details'
+
+    def is_shared_content_restore_member_details(self):
+        """
+        Check if the union tag is ``shared_content_restore_member_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_restore_member_details'
+
     def is_shared_content_unshare_details(self):
         """
         Check if the union tag is ``shared_content_unshare_details``.
@@ -13231,6 +17069,78 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'shared_link_remove_expiry_details'
+
+    def is_shared_link_settings_add_expiration_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_add_expiration_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_add_expiration_details'
+
+    def is_shared_link_settings_add_password_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_add_password_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_add_password_details'
+
+    def is_shared_link_settings_allow_download_disabled_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_allow_download_disabled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_allow_download_disabled_details'
+
+    def is_shared_link_settings_allow_download_enabled_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_allow_download_enabled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_allow_download_enabled_details'
+
+    def is_shared_link_settings_change_audience_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_audience_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_audience_details'
+
+    def is_shared_link_settings_change_expiration_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_expiration_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_expiration_details'
+
+    def is_shared_link_settings_change_password_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_password_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_password_details'
+
+    def is_shared_link_settings_remove_expiration_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_remove_expiration_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_remove_expiration_details'
+
+    def is_shared_link_settings_remove_password_details(self):
+        """
+        Check if the union tag is ``shared_link_settings_remove_password_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_remove_password_details'
 
     def is_shared_link_share_details(self):
         """
@@ -13632,6 +17542,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'data_placement_restriction_satisfy_policy_details'
 
+    def is_device_approvals_add_exception_details(self):
+        """
+        Check if the union tag is ``device_approvals_add_exception_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_add_exception_details'
+
     def is_device_approvals_change_desktop_policy_details(self):
         """
         Check if the union tag is ``device_approvals_change_desktop_policy_details``.
@@ -13663,6 +17581,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_approvals_change_unlink_action_details'
+
+    def is_device_approvals_remove_exception_details(self):
+        """
+        Check if the union tag is ``device_approvals_remove_exception_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_remove_exception_details'
 
     def is_directory_restrictions_add_members_details(self):
         """
@@ -13720,6 +17646,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'file_comments_change_policy_details'
 
+    def is_file_locking_policy_changed_details(self):
+        """
+        Check if the union tag is ``file_locking_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_locking_policy_changed_details'
+
     def is_file_requests_change_policy_details(self):
         """
         Check if the union tag is ``file_requests_change_policy_details``.
@@ -13743,6 +17677,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_requests_emails_restricted_to_team_only_details'
+
+    def is_file_transfers_policy_changed_details(self):
+        """
+        Check if the union tag is ``file_transfers_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_policy_changed_details'
 
     def is_google_sso_change_policy_details(self):
         """
@@ -13896,6 +17838,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'paper_enabled_users_group_removal_details'
 
+    def is_password_strength_requirements_change_policy_details(self):
+        """
+        Check if the union tag is ``password_strength_requirements_change_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'password_strength_requirements_change_policy_details'
+
     def is_permanent_delete_change_policy_details(self):
         """
         Check if the union tag is ``permanent_delete_change_policy_details``.
@@ -13911,6 +17861,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'reseller_support_change_policy_details'
+
+    def is_rewind_policy_changed_details(self):
+        """
+        Check if the union tag is ``rewind_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rewind_policy_changed_details'
 
     def is_sharing_change_folder_join_policy_details(self):
         """
@@ -13960,6 +17918,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'showcase_change_external_sharing_policy_details'
 
+    def is_smarter_smart_sync_policy_changed_details(self):
+        """
+        Check if the union tag is ``smarter_smart_sync_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'smarter_smart_sync_policy_changed_details'
+
     def is_smart_sync_change_policy_details(self):
         """
         Check if the union tag is ``smart_sync_change_policy_details``.
@@ -14008,6 +17974,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'team_selective_sync_policy_changed_details'
 
+    def is_team_sharing_whitelist_subjects_changed_details(self):
+        """
+        Check if the union tag is ``team_sharing_whitelist_subjects_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_sharing_whitelist_subjects_changed_details'
+
+    def is_tfa_add_exception_details(self):
+        """
+        Check if the union tag is ``tfa_add_exception_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_add_exception_details'
+
     def is_tfa_change_policy_details(self):
         """
         Check if the union tag is ``tfa_change_policy_details``.
@@ -14015,6 +17997,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'tfa_change_policy_details'
+
+    def is_tfa_remove_exception_details(self):
+        """
+        Check if the union tag is ``tfa_remove_exception_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_remove_exception_details'
 
     def is_two_account_change_policy_details(self):
         """
@@ -14031,6 +18021,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'viewer_info_policy_changed_details'
+
+    def is_watermarking_policy_changed_details(self):
+        """
+        Check if the union tag is ``watermarking_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'watermarking_policy_changed_details'
+
+    def is_web_sessions_change_active_session_limit_details(self):
+        """
+        Check if the union tag is ``web_sessions_change_active_session_limit_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_sessions_change_active_session_limit_details'
 
     def is_web_sessions_change_fixed_length_policy_details(self):
         """
@@ -14160,6 +18166,46 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'tfa_reset_details'
 
+    def is_changed_enterprise_admin_role_details(self):
+        """
+        Check if the union tag is ``changed_enterprise_admin_role_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'changed_enterprise_admin_role_details'
+
+    def is_changed_enterprise_connected_team_status_details(self):
+        """
+        Check if the union tag is ``changed_enterprise_connected_team_status_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'changed_enterprise_connected_team_status_details'
+
+    def is_ended_enterprise_admin_session_details(self):
+        """
+        Check if the union tag is ``ended_enterprise_admin_session_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ended_enterprise_admin_session_details'
+
+    def is_ended_enterprise_admin_session_deprecated_details(self):
+        """
+        Check if the union tag is ``ended_enterprise_admin_session_deprecated_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ended_enterprise_admin_session_deprecated_details'
+
+    def is_enterprise_settings_locking_details(self):
+        """
+        Check if the union tag is ``enterprise_settings_locking_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enterprise_settings_locking_details'
+
     def is_guest_admin_change_status_details(self):
         """
         Check if the union tag is ``guest_admin_change_status_details``.
@@ -14167,6 +18213,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'guest_admin_change_status_details'
+
+    def is_started_enterprise_admin_session_details(self):
+        """
+        Check if the union tag is ``started_enterprise_admin_session_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'started_enterprise_admin_session_details'
 
     def is_team_merge_request_accepted_details(self):
         """
@@ -14798,6 +18852,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'file_get_copy_reference_details' not set")
         return self._value
 
+    def get_file_locking_lock_status_changed_details(self):
+        """
+        Only call this if :meth:`is_file_locking_lock_status_changed_details` is true.
+
+        :rtype: FileLockingLockStatusChangedDetails
+        """
+        if not self.is_file_locking_lock_status_changed_details():
+            raise AttributeError("tag 'file_locking_lock_status_changed_details' not set")
+        return self._value
+
     def get_file_move_details(self):
         """
         Only call this if :meth:`is_file_move_details` is true.
@@ -14876,6 +18940,46 @@ class EventDetails(bb.Union):
         """
         if not self.is_file_save_copy_reference_details():
             raise AttributeError("tag 'file_save_copy_reference_details' not set")
+        return self._value
+
+    def get_folder_overview_description_changed_details(self):
+        """
+        Only call this if :meth:`is_folder_overview_description_changed_details` is true.
+
+        :rtype: FolderOverviewDescriptionChangedDetails
+        """
+        if not self.is_folder_overview_description_changed_details():
+            raise AttributeError("tag 'folder_overview_description_changed_details' not set")
+        return self._value
+
+    def get_folder_overview_item_pinned_details(self):
+        """
+        Only call this if :meth:`is_folder_overview_item_pinned_details` is true.
+
+        :rtype: FolderOverviewItemPinnedDetails
+        """
+        if not self.is_folder_overview_item_pinned_details():
+            raise AttributeError("tag 'folder_overview_item_pinned_details' not set")
+        return self._value
+
+    def get_folder_overview_item_unpinned_details(self):
+        """
+        Only call this if :meth:`is_folder_overview_item_unpinned_details` is true.
+
+        :rtype: FolderOverviewItemUnpinnedDetails
+        """
+        if not self.is_folder_overview_item_unpinned_details():
+            raise AttributeError("tag 'folder_overview_item_unpinned_details' not set")
+        return self._value
+
+    def get_rewind_folder_details(self):
+        """
+        Only call this if :meth:`is_rewind_folder_details` is true.
+
+        :rtype: RewindFolderDetails
+        """
+        if not self.is_rewind_folder_details():
+            raise AttributeError("tag 'rewind_folder_details' not set")
         return self._value
 
     def get_file_request_change_details(self):
@@ -15058,6 +19162,116 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'group_rename_details' not set")
         return self._value
 
+    def get_legal_holds_activate_a_hold_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_activate_a_hold_details` is true.
+
+        :rtype: LegalHoldsActivateAHoldDetails
+        """
+        if not self.is_legal_holds_activate_a_hold_details():
+            raise AttributeError("tag 'legal_holds_activate_a_hold_details' not set")
+        return self._value
+
+    def get_legal_holds_add_members_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_add_members_details` is true.
+
+        :rtype: LegalHoldsAddMembersDetails
+        """
+        if not self.is_legal_holds_add_members_details():
+            raise AttributeError("tag 'legal_holds_add_members_details' not set")
+        return self._value
+
+    def get_legal_holds_change_hold_details_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_change_hold_details_details` is true.
+
+        :rtype: LegalHoldsChangeHoldDetailsDetails
+        """
+        if not self.is_legal_holds_change_hold_details_details():
+            raise AttributeError("tag 'legal_holds_change_hold_details_details' not set")
+        return self._value
+
+    def get_legal_holds_change_hold_name_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_change_hold_name_details` is true.
+
+        :rtype: LegalHoldsChangeHoldNameDetails
+        """
+        if not self.is_legal_holds_change_hold_name_details():
+            raise AttributeError("tag 'legal_holds_change_hold_name_details' not set")
+        return self._value
+
+    def get_legal_holds_export_a_hold_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_export_a_hold_details` is true.
+
+        :rtype: LegalHoldsExportAHoldDetails
+        """
+        if not self.is_legal_holds_export_a_hold_details():
+            raise AttributeError("tag 'legal_holds_export_a_hold_details' not set")
+        return self._value
+
+    def get_legal_holds_export_cancelled_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_export_cancelled_details` is true.
+
+        :rtype: LegalHoldsExportCancelledDetails
+        """
+        if not self.is_legal_holds_export_cancelled_details():
+            raise AttributeError("tag 'legal_holds_export_cancelled_details' not set")
+        return self._value
+
+    def get_legal_holds_export_downloaded_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_export_downloaded_details` is true.
+
+        :rtype: LegalHoldsExportDownloadedDetails
+        """
+        if not self.is_legal_holds_export_downloaded_details():
+            raise AttributeError("tag 'legal_holds_export_downloaded_details' not set")
+        return self._value
+
+    def get_legal_holds_export_removed_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_export_removed_details` is true.
+
+        :rtype: LegalHoldsExportRemovedDetails
+        """
+        if not self.is_legal_holds_export_removed_details():
+            raise AttributeError("tag 'legal_holds_export_removed_details' not set")
+        return self._value
+
+    def get_legal_holds_release_a_hold_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_release_a_hold_details` is true.
+
+        :rtype: LegalHoldsReleaseAHoldDetails
+        """
+        if not self.is_legal_holds_release_a_hold_details():
+            raise AttributeError("tag 'legal_holds_release_a_hold_details' not set")
+        return self._value
+
+    def get_legal_holds_remove_members_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_remove_members_details` is true.
+
+        :rtype: LegalHoldsRemoveMembersDetails
+        """
+        if not self.is_legal_holds_remove_members_details():
+            raise AttributeError("tag 'legal_holds_remove_members_details' not set")
+        return self._value
+
+    def get_legal_holds_report_a_hold_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_report_a_hold_details` is true.
+
+        :rtype: LegalHoldsReportAHoldDetails
+        """
+        if not self.is_legal_holds_report_a_hold_details():
+            raise AttributeError("tag 'legal_holds_report_a_hold_details' not set")
+        return self._value
+
     def get_emm_error_details(self):
         """
         Only call this if :meth:`is_emm_error_details` is true.
@@ -15168,6 +19382,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'sso_error_details' not set")
         return self._value
 
+    def get_create_team_invite_link_details(self):
+        """
+        Only call this if :meth:`is_create_team_invite_link_details` is true.
+
+        :rtype: CreateTeamInviteLinkDetails
+        """
+        if not self.is_create_team_invite_link_details():
+            raise AttributeError("tag 'create_team_invite_link_details' not set")
+        return self._value
+
+    def get_delete_team_invite_link_details(self):
+        """
+        Only call this if :meth:`is_delete_team_invite_link_details` is true.
+
+        :rtype: DeleteTeamInviteLinkDetails
+        """
+        if not self.is_delete_team_invite_link_details():
+            raise AttributeError("tag 'delete_team_invite_link_details' not set")
+        return self._value
+
     def get_member_add_external_id_details(self):
         """
         Only call this if :meth:`is_member_add_external_id_details` is true.
@@ -15258,6 +19492,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'member_delete_manual_contacts_details' not set")
         return self._value
 
+    def get_member_delete_profile_photo_details(self):
+        """
+        Only call this if :meth:`is_member_delete_profile_photo_details` is true.
+
+        :rtype: MemberDeleteProfilePhotoDetails
+        """
+        if not self.is_member_delete_profile_photo_details():
+            raise AttributeError("tag 'member_delete_profile_photo_details' not set")
+        return self._value
+
     def get_member_permanently_delete_account_contents_details(self):
         """
         Only call this if :meth:`is_member_permanently_delete_account_contents_details` is true.
@@ -15276,6 +19520,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_member_remove_external_id_details():
             raise AttributeError("tag 'member_remove_external_id_details' not set")
+        return self._value
+
+    def get_member_set_profile_photo_details(self):
+        """
+        Only call this if :meth:`is_member_set_profile_photo_details` is true.
+
+        :rtype: MemberSetProfilePhotoDetails
+        """
+        if not self.is_member_set_profile_photo_details():
+            raise AttributeError("tag 'member_set_profile_photo_details' not set")
         return self._value
 
     def get_member_space_limits_add_custom_quota_details(self):
@@ -15338,6 +19592,36 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'member_transfer_account_contents_details' not set")
         return self._value
 
+    def get_pending_secondary_email_added_details(self):
+        """
+        Only call this if :meth:`is_pending_secondary_email_added_details` is true.
+
+        :rtype: PendingSecondaryEmailAddedDetails
+        """
+        if not self.is_pending_secondary_email_added_details():
+            raise AttributeError("tag 'pending_secondary_email_added_details' not set")
+        return self._value
+
+    def get_secondary_email_deleted_details(self):
+        """
+        Only call this if :meth:`is_secondary_email_deleted_details` is true.
+
+        :rtype: SecondaryEmailDeletedDetails
+        """
+        if not self.is_secondary_email_deleted_details():
+            raise AttributeError("tag 'secondary_email_deleted_details' not set")
+        return self._value
+
+    def get_secondary_email_verified_details(self):
+        """
+        Only call this if :meth:`is_secondary_email_verified_details` is true.
+
+        :rtype: SecondaryEmailVerifiedDetails
+        """
+        if not self.is_secondary_email_verified_details():
+            raise AttributeError("tag 'secondary_email_verified_details' not set")
+        return self._value
+
     def get_secondary_mails_policy_changed_details(self):
         """
         Only call this if :meth:`is_secondary_mails_policy_changed_details` is true.
@@ -15346,6 +19630,86 @@ class EventDetails(bb.Union):
         """
         if not self.is_secondary_mails_policy_changed_details():
             raise AttributeError("tag 'secondary_mails_policy_changed_details' not set")
+        return self._value
+
+    def get_binder_add_page_details(self):
+        """
+        Only call this if :meth:`is_binder_add_page_details` is true.
+
+        :rtype: BinderAddPageDetails
+        """
+        if not self.is_binder_add_page_details():
+            raise AttributeError("tag 'binder_add_page_details' not set")
+        return self._value
+
+    def get_binder_add_section_details(self):
+        """
+        Only call this if :meth:`is_binder_add_section_details` is true.
+
+        :rtype: BinderAddSectionDetails
+        """
+        if not self.is_binder_add_section_details():
+            raise AttributeError("tag 'binder_add_section_details' not set")
+        return self._value
+
+    def get_binder_remove_page_details(self):
+        """
+        Only call this if :meth:`is_binder_remove_page_details` is true.
+
+        :rtype: BinderRemovePageDetails
+        """
+        if not self.is_binder_remove_page_details():
+            raise AttributeError("tag 'binder_remove_page_details' not set")
+        return self._value
+
+    def get_binder_remove_section_details(self):
+        """
+        Only call this if :meth:`is_binder_remove_section_details` is true.
+
+        :rtype: BinderRemoveSectionDetails
+        """
+        if not self.is_binder_remove_section_details():
+            raise AttributeError("tag 'binder_remove_section_details' not set")
+        return self._value
+
+    def get_binder_rename_page_details(self):
+        """
+        Only call this if :meth:`is_binder_rename_page_details` is true.
+
+        :rtype: BinderRenamePageDetails
+        """
+        if not self.is_binder_rename_page_details():
+            raise AttributeError("tag 'binder_rename_page_details' not set")
+        return self._value
+
+    def get_binder_rename_section_details(self):
+        """
+        Only call this if :meth:`is_binder_rename_section_details` is true.
+
+        :rtype: BinderRenameSectionDetails
+        """
+        if not self.is_binder_rename_section_details():
+            raise AttributeError("tag 'binder_rename_section_details' not set")
+        return self._value
+
+    def get_binder_reorder_page_details(self):
+        """
+        Only call this if :meth:`is_binder_reorder_page_details` is true.
+
+        :rtype: BinderReorderPageDetails
+        """
+        if not self.is_binder_reorder_page_details():
+            raise AttributeError("tag 'binder_reorder_page_details' not set")
+        return self._value
+
+    def get_binder_reorder_section_details(self):
+        """
+        Only call this if :meth:`is_binder_reorder_section_details` is true.
+
+        :rtype: BinderReorderSectionDetails
+        """
+        if not self.is_binder_reorder_section_details():
+            raise AttributeError("tag 'binder_reorder_section_details' not set")
         return self._value
 
     def get_paper_content_add_member_details(self):
@@ -15718,6 +20082,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'paper_folder_team_invite_details' not set")
         return self._value
 
+    def get_paper_published_link_change_permission_details(self):
+        """
+        Only call this if :meth:`is_paper_published_link_change_permission_details` is true.
+
+        :rtype: PaperPublishedLinkChangePermissionDetails
+        """
+        if not self.is_paper_published_link_change_permission_details():
+            raise AttributeError("tag 'paper_published_link_change_permission_details' not set")
+        return self._value
+
     def get_paper_published_link_create_details(self):
         """
         Only call this if :meth:`is_paper_published_link_create_details` is true.
@@ -15808,6 +20182,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'export_members_report_details' not set")
         return self._value
 
+    def get_export_members_report_fail_details(self):
+        """
+        Only call this if :meth:`is_export_members_report_fail_details` is true.
+
+        :rtype: ExportMembersReportFailDetails
+        """
+        if not self.is_export_members_report_fail_details():
+            raise AttributeError("tag 'export_members_report_fail_details' not set")
+        return self._value
+
     def get_paper_admin_export_start_details(self):
         """
         Only call this if :meth:`is_paper_admin_export_start_details` is true.
@@ -15856,6 +20240,56 @@ class EventDetails(bb.Union):
         """
         if not self.is_collection_share_details():
             raise AttributeError("tag 'collection_share_details' not set")
+        return self._value
+
+    def get_file_transfers_file_add_details(self):
+        """
+        Only call this if :meth:`is_file_transfers_file_add_details` is true.
+
+        :rtype: FileTransfersFileAddDetails
+        """
+        if not self.is_file_transfers_file_add_details():
+            raise AttributeError("tag 'file_transfers_file_add_details' not set")
+        return self._value
+
+    def get_file_transfers_transfer_delete_details(self):
+        """
+        Only call this if :meth:`is_file_transfers_transfer_delete_details` is true.
+
+        :rtype: FileTransfersTransferDeleteDetails
+        """
+        if not self.is_file_transfers_transfer_delete_details():
+            raise AttributeError("tag 'file_transfers_transfer_delete_details' not set")
+        return self._value
+
+    def get_file_transfers_transfer_download_details(self):
+        """
+        Only call this if :meth:`is_file_transfers_transfer_download_details` is true.
+
+        :rtype: FileTransfersTransferDownloadDetails
+        """
+        if not self.is_file_transfers_transfer_download_details():
+            raise AttributeError("tag 'file_transfers_transfer_download_details' not set")
+        return self._value
+
+    def get_file_transfers_transfer_send_details(self):
+        """
+        Only call this if :meth:`is_file_transfers_transfer_send_details` is true.
+
+        :rtype: FileTransfersTransferSendDetails
+        """
+        if not self.is_file_transfers_transfer_send_details():
+            raise AttributeError("tag 'file_transfers_transfer_send_details' not set")
+        return self._value
+
+    def get_file_transfers_transfer_view_details(self):
+        """
+        Only call this if :meth:`is_file_transfers_transfer_view_details` is true.
+
+        :rtype: FileTransfersTransferViewDetails
+        """
+        if not self.is_file_transfers_transfer_view_details():
+            raise AttributeError("tag 'file_transfers_transfer_view_details' not set")
         return self._value
 
     def get_note_acl_invite_only_details(self):
@@ -16248,6 +20682,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shared_content_request_access_details' not set")
         return self._value
 
+    def get_shared_content_restore_invitees_details(self):
+        """
+        Only call this if :meth:`is_shared_content_restore_invitees_details` is true.
+
+        :rtype: SharedContentRestoreInviteesDetails
+        """
+        if not self.is_shared_content_restore_invitees_details():
+            raise AttributeError("tag 'shared_content_restore_invitees_details' not set")
+        return self._value
+
+    def get_shared_content_restore_member_details(self):
+        """
+        Only call this if :meth:`is_shared_content_restore_member_details` is true.
+
+        :rtype: SharedContentRestoreMemberDetails
+        """
+        if not self.is_shared_content_restore_member_details():
+            raise AttributeError("tag 'shared_content_restore_member_details' not set")
+        return self._value
+
     def get_shared_content_unshare_details(self):
         """
         Only call this if :meth:`is_shared_content_unshare_details` is true.
@@ -16446,6 +20900,96 @@ class EventDetails(bb.Union):
         """
         if not self.is_shared_link_remove_expiry_details():
             raise AttributeError("tag 'shared_link_remove_expiry_details' not set")
+        return self._value
+
+    def get_shared_link_settings_add_expiration_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_add_expiration_details` is true.
+
+        :rtype: SharedLinkSettingsAddExpirationDetails
+        """
+        if not self.is_shared_link_settings_add_expiration_details():
+            raise AttributeError("tag 'shared_link_settings_add_expiration_details' not set")
+        return self._value
+
+    def get_shared_link_settings_add_password_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_add_password_details` is true.
+
+        :rtype: SharedLinkSettingsAddPasswordDetails
+        """
+        if not self.is_shared_link_settings_add_password_details():
+            raise AttributeError("tag 'shared_link_settings_add_password_details' not set")
+        return self._value
+
+    def get_shared_link_settings_allow_download_disabled_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_allow_download_disabled_details` is true.
+
+        :rtype: SharedLinkSettingsAllowDownloadDisabledDetails
+        """
+        if not self.is_shared_link_settings_allow_download_disabled_details():
+            raise AttributeError("tag 'shared_link_settings_allow_download_disabled_details' not set")
+        return self._value
+
+    def get_shared_link_settings_allow_download_enabled_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_allow_download_enabled_details` is true.
+
+        :rtype: SharedLinkSettingsAllowDownloadEnabledDetails
+        """
+        if not self.is_shared_link_settings_allow_download_enabled_details():
+            raise AttributeError("tag 'shared_link_settings_allow_download_enabled_details' not set")
+        return self._value
+
+    def get_shared_link_settings_change_audience_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_change_audience_details` is true.
+
+        :rtype: SharedLinkSettingsChangeAudienceDetails
+        """
+        if not self.is_shared_link_settings_change_audience_details():
+            raise AttributeError("tag 'shared_link_settings_change_audience_details' not set")
+        return self._value
+
+    def get_shared_link_settings_change_expiration_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_change_expiration_details` is true.
+
+        :rtype: SharedLinkSettingsChangeExpirationDetails
+        """
+        if not self.is_shared_link_settings_change_expiration_details():
+            raise AttributeError("tag 'shared_link_settings_change_expiration_details' not set")
+        return self._value
+
+    def get_shared_link_settings_change_password_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_change_password_details` is true.
+
+        :rtype: SharedLinkSettingsChangePasswordDetails
+        """
+        if not self.is_shared_link_settings_change_password_details():
+            raise AttributeError("tag 'shared_link_settings_change_password_details' not set")
+        return self._value
+
+    def get_shared_link_settings_remove_expiration_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_remove_expiration_details` is true.
+
+        :rtype: SharedLinkSettingsRemoveExpirationDetails
+        """
+        if not self.is_shared_link_settings_remove_expiration_details():
+            raise AttributeError("tag 'shared_link_settings_remove_expiration_details' not set")
+        return self._value
+
+    def get_shared_link_settings_remove_password_details(self):
+        """
+        Only call this if :meth:`is_shared_link_settings_remove_password_details` is true.
+
+        :rtype: SharedLinkSettingsRemovePasswordDetails
+        """
+        if not self.is_shared_link_settings_remove_password_details():
+            raise AttributeError("tag 'shared_link_settings_remove_password_details' not set")
         return self._value
 
     def get_shared_link_share_details(self):
@@ -16948,6 +21492,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'data_placement_restriction_satisfy_policy_details' not set")
         return self._value
 
+    def get_device_approvals_add_exception_details(self):
+        """
+        Only call this if :meth:`is_device_approvals_add_exception_details` is true.
+
+        :rtype: DeviceApprovalsAddExceptionDetails
+        """
+        if not self.is_device_approvals_add_exception_details():
+            raise AttributeError("tag 'device_approvals_add_exception_details' not set")
+        return self._value
+
     def get_device_approvals_change_desktop_policy_details(self):
         """
         Only call this if :meth:`is_device_approvals_change_desktop_policy_details` is true.
@@ -16986,6 +21540,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_device_approvals_change_unlink_action_details():
             raise AttributeError("tag 'device_approvals_change_unlink_action_details' not set")
+        return self._value
+
+    def get_device_approvals_remove_exception_details(self):
+        """
+        Only call this if :meth:`is_device_approvals_remove_exception_details` is true.
+
+        :rtype: DeviceApprovalsRemoveExceptionDetails
+        """
+        if not self.is_device_approvals_remove_exception_details():
+            raise AttributeError("tag 'device_approvals_remove_exception_details' not set")
         return self._value
 
     def get_directory_restrictions_add_members_details(self):
@@ -17058,6 +21622,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'file_comments_change_policy_details' not set")
         return self._value
 
+    def get_file_locking_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_file_locking_policy_changed_details` is true.
+
+        :rtype: FileLockingPolicyChangedDetails
+        """
+        if not self.is_file_locking_policy_changed_details():
+            raise AttributeError("tag 'file_locking_policy_changed_details' not set")
+        return self._value
+
     def get_file_requests_change_policy_details(self):
         """
         Only call this if :meth:`is_file_requests_change_policy_details` is true.
@@ -17086,6 +21660,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_file_requests_emails_restricted_to_team_only_details():
             raise AttributeError("tag 'file_requests_emails_restricted_to_team_only_details' not set")
+        return self._value
+
+    def get_file_transfers_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_file_transfers_policy_changed_details` is true.
+
+        :rtype: FileTransfersPolicyChangedDetails
+        """
+        if not self.is_file_transfers_policy_changed_details():
+            raise AttributeError("tag 'file_transfers_policy_changed_details' not set")
         return self._value
 
     def get_google_sso_change_policy_details(self):
@@ -17278,6 +21862,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'paper_enabled_users_group_removal_details' not set")
         return self._value
 
+    def get_password_strength_requirements_change_policy_details(self):
+        """
+        Only call this if :meth:`is_password_strength_requirements_change_policy_details` is true.
+
+        :rtype: PasswordStrengthRequirementsChangePolicyDetails
+        """
+        if not self.is_password_strength_requirements_change_policy_details():
+            raise AttributeError("tag 'password_strength_requirements_change_policy_details' not set")
+        return self._value
+
     def get_permanent_delete_change_policy_details(self):
         """
         Only call this if :meth:`is_permanent_delete_change_policy_details` is true.
@@ -17296,6 +21890,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_reseller_support_change_policy_details():
             raise AttributeError("tag 'reseller_support_change_policy_details' not set")
+        return self._value
+
+    def get_rewind_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_rewind_policy_changed_details` is true.
+
+        :rtype: RewindPolicyChangedDetails
+        """
+        if not self.is_rewind_policy_changed_details():
+            raise AttributeError("tag 'rewind_policy_changed_details' not set")
         return self._value
 
     def get_sharing_change_folder_join_policy_details(self):
@@ -17358,6 +21962,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'showcase_change_external_sharing_policy_details' not set")
         return self._value
 
+    def get_smarter_smart_sync_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_smarter_smart_sync_policy_changed_details` is true.
+
+        :rtype: SmarterSmartSyncPolicyChangedDetails
+        """
+        if not self.is_smarter_smart_sync_policy_changed_details():
+            raise AttributeError("tag 'smarter_smart_sync_policy_changed_details' not set")
+        return self._value
+
     def get_smart_sync_change_policy_details(self):
         """
         Only call this if :meth:`is_smart_sync_change_policy_details` is true.
@@ -17418,6 +22032,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'team_selective_sync_policy_changed_details' not set")
         return self._value
 
+    def get_team_sharing_whitelist_subjects_changed_details(self):
+        """
+        Only call this if :meth:`is_team_sharing_whitelist_subjects_changed_details` is true.
+
+        :rtype: TeamSharingWhitelistSubjectsChangedDetails
+        """
+        if not self.is_team_sharing_whitelist_subjects_changed_details():
+            raise AttributeError("tag 'team_sharing_whitelist_subjects_changed_details' not set")
+        return self._value
+
+    def get_tfa_add_exception_details(self):
+        """
+        Only call this if :meth:`is_tfa_add_exception_details` is true.
+
+        :rtype: TfaAddExceptionDetails
+        """
+        if not self.is_tfa_add_exception_details():
+            raise AttributeError("tag 'tfa_add_exception_details' not set")
+        return self._value
+
     def get_tfa_change_policy_details(self):
         """
         Only call this if :meth:`is_tfa_change_policy_details` is true.
@@ -17426,6 +22060,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_tfa_change_policy_details():
             raise AttributeError("tag 'tfa_change_policy_details' not set")
+        return self._value
+
+    def get_tfa_remove_exception_details(self):
+        """
+        Only call this if :meth:`is_tfa_remove_exception_details` is true.
+
+        :rtype: TfaRemoveExceptionDetails
+        """
+        if not self.is_tfa_remove_exception_details():
+            raise AttributeError("tag 'tfa_remove_exception_details' not set")
         return self._value
 
     def get_two_account_change_policy_details(self):
@@ -17446,6 +22090,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_viewer_info_policy_changed_details():
             raise AttributeError("tag 'viewer_info_policy_changed_details' not set")
+        return self._value
+
+    def get_watermarking_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_watermarking_policy_changed_details` is true.
+
+        :rtype: WatermarkingPolicyChangedDetails
+        """
+        if not self.is_watermarking_policy_changed_details():
+            raise AttributeError("tag 'watermarking_policy_changed_details' not set")
+        return self._value
+
+    def get_web_sessions_change_active_session_limit_details(self):
+        """
+        Only call this if :meth:`is_web_sessions_change_active_session_limit_details` is true.
+
+        :rtype: WebSessionsChangeActiveSessionLimitDetails
+        """
+        if not self.is_web_sessions_change_active_session_limit_details():
+            raise AttributeError("tag 'web_sessions_change_active_session_limit_details' not set")
         return self._value
 
     def get_web_sessions_change_fixed_length_policy_details(self):
@@ -17608,6 +22272,56 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'tfa_reset_details' not set")
         return self._value
 
+    def get_changed_enterprise_admin_role_details(self):
+        """
+        Only call this if :meth:`is_changed_enterprise_admin_role_details` is true.
+
+        :rtype: ChangedEnterpriseAdminRoleDetails
+        """
+        if not self.is_changed_enterprise_admin_role_details():
+            raise AttributeError("tag 'changed_enterprise_admin_role_details' not set")
+        return self._value
+
+    def get_changed_enterprise_connected_team_status_details(self):
+        """
+        Only call this if :meth:`is_changed_enterprise_connected_team_status_details` is true.
+
+        :rtype: ChangedEnterpriseConnectedTeamStatusDetails
+        """
+        if not self.is_changed_enterprise_connected_team_status_details():
+            raise AttributeError("tag 'changed_enterprise_connected_team_status_details' not set")
+        return self._value
+
+    def get_ended_enterprise_admin_session_details(self):
+        """
+        Only call this if :meth:`is_ended_enterprise_admin_session_details` is true.
+
+        :rtype: EndedEnterpriseAdminSessionDetails
+        """
+        if not self.is_ended_enterprise_admin_session_details():
+            raise AttributeError("tag 'ended_enterprise_admin_session_details' not set")
+        return self._value
+
+    def get_ended_enterprise_admin_session_deprecated_details(self):
+        """
+        Only call this if :meth:`is_ended_enterprise_admin_session_deprecated_details` is true.
+
+        :rtype: EndedEnterpriseAdminSessionDeprecatedDetails
+        """
+        if not self.is_ended_enterprise_admin_session_deprecated_details():
+            raise AttributeError("tag 'ended_enterprise_admin_session_deprecated_details' not set")
+        return self._value
+
+    def get_enterprise_settings_locking_details(self):
+        """
+        Only call this if :meth:`is_enterprise_settings_locking_details` is true.
+
+        :rtype: EnterpriseSettingsLockingDetails
+        """
+        if not self.is_enterprise_settings_locking_details():
+            raise AttributeError("tag 'enterprise_settings_locking_details' not set")
+        return self._value
+
     def get_guest_admin_change_status_details(self):
         """
         Only call this if :meth:`is_guest_admin_change_status_details` is true.
@@ -17616,6 +22330,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_guest_admin_change_status_details():
             raise AttributeError("tag 'guest_admin_change_status_details' not set")
+        return self._value
+
+    def get_started_enterprise_admin_session_details(self):
+        """
+        Only call this if :meth:`is_started_enterprise_admin_session_details` is true.
+
+        :rtype: StartedEnterpriseAdminSessionDetails
+        """
+        if not self.is_started_enterprise_admin_session_details():
+            raise AttributeError("tag 'started_enterprise_admin_session_details' not set")
         return self._value
 
     def get_team_merge_request_accepted_details(self):
@@ -17885,7 +22609,7 @@ class EventType(bb.Union):
         user migrated account to team
     :ivar AccountCaptureNotificationEmailsSentType
         EventType.account_capture_notification_emails_sent: (domains) Sent
-        proactive account capture email to all unmanaged members
+        account capture email to all unmanaged members
     :ivar AccountCaptureRelinquishAccountType
         EventType.account_capture_relinquish_account: (domains) Account-captured
         user changed account email to personal email
@@ -17933,6 +22657,9 @@ class EventType(bb.Union):
     :ivar FileEditType EventType.file_edit: (file_operations) Edited files
     :ivar FileGetCopyReferenceType EventType.file_get_copy_reference:
         (file_operations) Created copy reference to file/folder
+    :ivar FileLockingLockStatusChangedType
+        EventType.file_locking_lock_status_changed: (file_operations)
+        Locked/unlocked editing for a file
     :ivar FileMoveType EventType.file_move: (file_operations) Moved files and/or
         folders
     :ivar FilePermanentlyDeleteType EventType.file_permanently_delete:
@@ -17949,6 +22676,16 @@ class EventType(bb.Union):
         (file_operations) Rolled back file actions
     :ivar FileSaveCopyReferenceType EventType.file_save_copy_reference:
         (file_operations) Saved file/folder using copy reference
+    :ivar FolderOverviewDescriptionChangedType
+        EventType.folder_overview_description_changed: (file_operations) Updated
+        folder overview
+    :ivar FolderOverviewItemPinnedType EventType.folder_overview_item_pinned:
+        (file_operations) Pinned item to folder overview
+    :ivar FolderOverviewItemUnpinnedType
+        EventType.folder_overview_item_unpinned: (file_operations) Unpinned item
+        from folder overview
+    :ivar RewindFolderType EventType.rewind_folder: (file_operations) Rewound a
+        folder
     :ivar FileRequestChangeType EventType.file_request_change: (file_requests)
         Changed file request
     :ivar FileRequestCloseType EventType.file_request_close: (file_requests)
@@ -17982,6 +22719,30 @@ class EventType(bb.Union):
     :ivar GroupRemoveMemberType EventType.group_remove_member: (groups) Removed
         team members from group
     :ivar GroupRenameType EventType.group_rename: (groups) Renamed group
+    :ivar LegalHoldsActivateAHoldType EventType.legal_holds_activate_a_hold:
+        (legal_holds) Activated a hold
+    :ivar LegalHoldsAddMembersType EventType.legal_holds_add_members:
+        (legal_holds) Added members to a hold
+    :ivar LegalHoldsChangeHoldDetailsType
+        EventType.legal_holds_change_hold_details: (legal_holds) Edited details
+        for a hold
+    :ivar LegalHoldsChangeHoldNameType EventType.legal_holds_change_hold_name:
+        (legal_holds) Renamed a hold
+    :ivar LegalHoldsExportAHoldType EventType.legal_holds_export_a_hold:
+        (legal_holds) Exported hold
+    :ivar LegalHoldsExportCancelledType EventType.legal_holds_export_cancelled:
+        (legal_holds) Canceled export for a hold
+    :ivar LegalHoldsExportDownloadedType
+        EventType.legal_holds_export_downloaded: (legal_holds) Downloaded export
+        for a hold
+    :ivar LegalHoldsExportRemovedType EventType.legal_holds_export_removed:
+        (legal_holds) Removed export for a hold
+    :ivar LegalHoldsReleaseAHoldType EventType.legal_holds_release_a_hold:
+        (legal_holds) Released a hold
+    :ivar LegalHoldsRemoveMembersType EventType.legal_holds_remove_members:
+        (legal_holds) Removed members from a hold
+    :ivar LegalHoldsReportAHoldType EventType.legal_holds_report_a_hold:
+        (legal_holds) Created a summary report for a hold
     :ivar EmmErrorType EventType.emm_error: (logins) Failed to sign in via EMM
         (deprecated, replaced by 'Failed to sign in')
     :ivar GuestAdminSignedInViaTrustedTeamsType
@@ -18004,6 +22765,10 @@ class EventType(bb.Union):
         Started admin sign-in-as session
     :ivar SsoErrorType EventType.sso_error: (logins) Failed to sign in via SSO
         (deprecated, replaced by 'Failed to sign in')
+    :ivar CreateTeamInviteLinkType EventType.create_team_invite_link: (members)
+        Created team invite link
+    :ivar DeleteTeamInviteLinkType EventType.delete_team_invite_link: (members)
+        Deleted team invite link
     :ivar MemberAddExternalIdType EventType.member_add_external_id: (members)
         Added an external ID for team member
     :ivar MemberAddNameType EventType.member_add_name: (members) Added team
@@ -18024,11 +22789,15 @@ class EventType(bb.Union):
     :ivar MemberDeleteManualContactsType
         EventType.member_delete_manual_contacts: (members) Cleared manually
         added contacts
+    :ivar MemberDeleteProfilePhotoType EventType.member_delete_profile_photo:
+        (members) Deleted team member profile photo
     :ivar MemberPermanentlyDeleteAccountContentsType
         EventType.member_permanently_delete_account_contents: (members)
         Permanently deleted contents of deleted team member account
     :ivar MemberRemoveExternalIdType EventType.member_remove_external_id:
         (members) Removed the external ID for team member
+    :ivar MemberSetProfilePhotoType EventType.member_set_profile_photo:
+        (members) Set team member profile photo
     :ivar MemberSpaceLimitsAddCustomQuotaType
         EventType.member_space_limits_add_custom_quota: (members) Set custom
         member space limit
@@ -18046,11 +22815,34 @@ class EventType(bb.Union):
     :ivar MemberTransferAccountContentsType
         EventType.member_transfer_account_contents: (members) Transferred
         contents of deleted member account to another member
+    :ivar PendingSecondaryEmailAddedType
+        EventType.pending_secondary_email_added: (members) Added pending
+        secondary email
+    :ivar SecondaryEmailDeletedType EventType.secondary_email_deleted: (members)
+        Deleted secondary email
+    :ivar SecondaryEmailVerifiedType EventType.secondary_email_verified:
+        (members) Verified secondary email
     :ivar SecondaryMailsPolicyChangedType
         EventType.secondary_mails_policy_changed: (members) Secondary mails
         policy changed
+    :ivar BinderAddPageType EventType.binder_add_page: (paper) Added Binder page
+        (deprecated, replaced by 'Edited files')
+    :ivar BinderAddSectionType EventType.binder_add_section: (paper) Added
+        Binder section (deprecated, replaced by 'Edited files')
+    :ivar BinderRemovePageType EventType.binder_remove_page: (paper) Removed
+        Binder page (deprecated, replaced by 'Edited files')
+    :ivar BinderRemoveSectionType EventType.binder_remove_section: (paper)
+        Removed Binder section (deprecated, replaced by 'Edited files')
+    :ivar BinderRenamePageType EventType.binder_rename_page: (paper) Renamed
+        Binder page (deprecated, replaced by 'Edited files')
+    :ivar BinderRenameSectionType EventType.binder_rename_section: (paper)
+        Renamed Binder section (deprecated, replaced by 'Edited files')
+    :ivar BinderReorderPageType EventType.binder_reorder_page: (paper) Reordered
+        Binder page (deprecated, replaced by 'Edited files')
+    :ivar BinderReorderSectionType EventType.binder_reorder_section: (paper)
+        Reordered Binder section (deprecated, replaced by 'Edited files')
     :ivar PaperContentAddMemberType EventType.paper_content_add_member: (paper)
-        Added team member to Paper doc/folder
+        Added users and/or groups to Paper doc/folder
     :ivar PaperContentAddToFolderType EventType.paper_content_add_to_folder:
         (paper) Added Paper doc/folder to folder
     :ivar PaperContentArchiveType EventType.paper_content_archive: (paper)
@@ -18064,7 +22856,7 @@ class EventType(bb.Union):
         EventType.paper_content_remove_from_folder: (paper) Removed Paper
         doc/folder from folder
     :ivar PaperContentRemoveMemberType EventType.paper_content_remove_member:
-        (paper) Removed team member from Paper doc/folder
+        (paper) Removed users and/or groups from Paper doc/folder
     :ivar PaperContentRenameType EventType.paper_content_rename: (paper) Renamed
         Paper doc/folder
     :ivar PaperContentRestoreType EventType.paper_content_restore: (paper)
@@ -18072,7 +22864,7 @@ class EventType(bb.Union):
     :ivar PaperDocAddCommentType EventType.paper_doc_add_comment: (paper) Added
         Paper doc comment
     :ivar PaperDocChangeMemberRoleType EventType.paper_doc_change_member_role:
-        (paper) Changed team member permissions for Paper doc
+        (paper) Changed member permissions for Paper doc
     :ivar PaperDocChangeSharingPolicyType
         EventType.paper_doc_change_sharing_policy: (paper) Changed sharing
         setting for Paper doc
@@ -18091,7 +22883,7 @@ class EventType(bb.Union):
     :ivar PaperDocFollowedType EventType.paper_doc_followed: (paper) Followed
         Paper doc (deprecated, replaced by 'Followed/unfollowed Paper doc')
     :ivar PaperDocMentionType EventType.paper_doc_mention: (paper) Mentioned
-        team member in Paper doc
+        user in Paper doc
     :ivar PaperDocOwnershipChangedType EventType.paper_doc_ownership_changed:
         (paper) Transferred ownership of Paper doc
     :ivar PaperDocRequestAccessType EventType.paper_doc_request_access: (paper)
@@ -18103,7 +22895,7 @@ class EventType(bb.Union):
     :ivar PaperDocSlackShareType EventType.paper_doc_slack_share: (paper) Shared
         Paper doc via Slack
     :ivar PaperDocTeamInviteType EventType.paper_doc_team_invite: (paper) Shared
-        Paper doc with team member (deprecated, no longer logged)
+        Paper doc with users and/or groups (deprecated, no longer logged)
     :ivar PaperDocTrashedType EventType.paper_doc_trashed: (paper) Deleted Paper
         doc
     :ivar PaperDocUnresolveCommentType EventType.paper_doc_unresolve_comment:
@@ -18129,7 +22921,11 @@ class EventType(bb.Union):
         Followed Paper folder (deprecated, replaced by 'Followed/unfollowed
         Paper folder')
     :ivar PaperFolderTeamInviteType EventType.paper_folder_team_invite: (paper)
-        Shared Paper folder with member (deprecated, no longer logged)
+        Shared Paper folder with users and/or groups (deprecated, no longer
+        logged)
+    :ivar PaperPublishedLinkChangePermissionType
+        EventType.paper_published_link_change_permission: (paper) Changed
+        permissions for published doc
     :ivar PaperPublishedLinkCreateType EventType.paper_published_link_create:
         (paper) Published doc
     :ivar PaperPublishedLinkDisabledType
@@ -18147,6 +22943,8 @@ class EventType(bb.Union):
         Created EMM mobile app usage report
     :ivar ExportMembersReportType EventType.export_members_report: (reports)
         Created member data report
+    :ivar ExportMembersReportFailType EventType.export_members_report_fail:
+        (reports) Failed to create members data report
     :ivar PaperAdminExportStartType EventType.paper_admin_export_start:
         (reports) Exported all team Paper docs
     :ivar SmartSyncCreateAdminPrivilegeReportType
@@ -18158,6 +22956,17 @@ class EventType(bb.Union):
         EventType.team_activity_create_report_fail: (reports) Couldn't generate
         team activity report
     :ivar CollectionShareType EventType.collection_share: (sharing) Shared album
+    :ivar FileTransfersFileAddType EventType.file_transfers_file_add: (sharing)
+        Transfer files added
+    :ivar FileTransfersTransferDeleteType
+        EventType.file_transfers_transfer_delete: (sharing) Deleted transfer
+    :ivar FileTransfersTransferDownloadType
+        EventType.file_transfers_transfer_download: (sharing) Transfer
+        downloaded
+    :ivar FileTransfersTransferSendType EventType.file_transfers_transfer_send:
+        (sharing) Sent transfer
+    :ivar FileTransfersTransferViewType EventType.file_transfers_transfer_view:
+        (sharing) Viewed transfer
     :ivar NoteAclInviteOnlyType EventType.note_acl_invite_only: (sharing)
         Changed Paper doc to invite-only (deprecated, no longer logged)
     :ivar NoteAclLinkType EventType.note_acl_link: (sharing) Changed Paper doc
@@ -18208,27 +23017,28 @@ class EventType(bb.Union):
         (sharing) Invited user to Dropbox and added them to shared file/folder
     :ivar SharedContentAddLinkExpiryType
         EventType.shared_content_add_link_expiry: (sharing) Added expiration
-        date to link for shared file/folder
+        date to link for shared file/folder (deprecated, no longer logged)
     :ivar SharedContentAddLinkPasswordType
         EventType.shared_content_add_link_password: (sharing) Added password to
-        link for shared file/folder
+        link for shared file/folder (deprecated, no longer logged)
     :ivar SharedContentAddMemberType EventType.shared_content_add_member:
         (sharing) Added users and/or groups to shared file/folder
     :ivar SharedContentChangeDownloadsPolicyType
         EventType.shared_content_change_downloads_policy: (sharing) Changed
-        whether members can download shared file/folder
+        whether members can download shared file/folder (deprecated, no longer
+        logged)
     :ivar SharedContentChangeInviteeRoleType
         EventType.shared_content_change_invitee_role: (sharing) Changed access
         type of invitee to shared file/folder before invite was accepted
     :ivar SharedContentChangeLinkAudienceType
         EventType.shared_content_change_link_audience: (sharing) Changed link
-        audience of shared file/folder
+        audience of shared file/folder (deprecated, no longer logged)
     :ivar SharedContentChangeLinkExpiryType
         EventType.shared_content_change_link_expiry: (sharing) Changed link
-        expiration of shared file/folder
+        expiration of shared file/folder (deprecated, no longer logged)
     :ivar SharedContentChangeLinkPasswordType
         EventType.shared_content_change_link_password: (sharing) Changed link
-        password of shared file/folder
+        password of shared file/folder (deprecated, no longer logged)
     :ivar SharedContentChangeMemberRoleType
         EventType.shared_content_change_member_role: (sharing) Changed access
         type of shared file/folder member
@@ -18250,17 +23060,23 @@ class EventType(bb.Union):
         shared file/folder before invite was accepted
     :ivar SharedContentRemoveLinkExpiryType
         EventType.shared_content_remove_link_expiry: (sharing) Removed link
-        expiration date of shared file/folder
+        expiration date of shared file/folder (deprecated, no longer logged)
     :ivar SharedContentRemoveLinkPasswordType
         EventType.shared_content_remove_link_password: (sharing) Removed link
-        password of shared file/folder
+        password of shared file/folder (deprecated, no longer logged)
     :ivar SharedContentRemoveMemberType EventType.shared_content_remove_member:
         (sharing) Removed user/group from shared file/folder
     :ivar SharedContentRequestAccessType
         EventType.shared_content_request_access: (sharing) Requested access to
         shared file/folder
+    :ivar SharedContentRestoreInviteesType
+        EventType.shared_content_restore_invitees: (sharing) Restored shared
+        file/folder invitees
+    :ivar SharedContentRestoreMemberType
+        EventType.shared_content_restore_member: (sharing) Restored users and/or
+        groups to membership of shared file/folder
     :ivar SharedContentUnshareType EventType.shared_content_unshare: (sharing)
-        Unshared file/folder by clearing membership and turning off link
+        Unshared file/folder by clearing membership
     :ivar SharedContentViewType EventType.shared_content_view: (sharing)
         Previewed shared file/folder
     :ivar SharedFolderChangeLinkPolicyType
@@ -18306,6 +23122,33 @@ class EventType(bb.Union):
         Downloaded file/folder from shared link
     :ivar SharedLinkRemoveExpiryType EventType.shared_link_remove_expiry:
         (sharing) Removed shared link expiration date
+    :ivar SharedLinkSettingsAddExpirationType
+        EventType.shared_link_settings_add_expiration: (sharing) Added an
+        expiration date to the shared link
+    :ivar SharedLinkSettingsAddPasswordType
+        EventType.shared_link_settings_add_password: (sharing) Added a password
+        to the shared link
+    :ivar SharedLinkSettingsAllowDownloadDisabledType
+        EventType.shared_link_settings_allow_download_disabled: (sharing)
+        Disabled downloads
+    :ivar SharedLinkSettingsAllowDownloadEnabledType
+        EventType.shared_link_settings_allow_download_enabled: (sharing) Enabled
+        downloads
+    :ivar SharedLinkSettingsChangeAudienceType
+        EventType.shared_link_settings_change_audience: (sharing) Changed the
+        audience of the shared link
+    :ivar SharedLinkSettingsChangeExpirationType
+        EventType.shared_link_settings_change_expiration: (sharing) Changed the
+        expiration date of the shared link
+    :ivar SharedLinkSettingsChangePasswordType
+        EventType.shared_link_settings_change_password: (sharing) Changed the
+        password of the shared link
+    :ivar SharedLinkSettingsRemoveExpirationType
+        EventType.shared_link_settings_remove_expiration: (sharing) Removed the
+        expiration date from the shared link
+    :ivar SharedLinkSettingsRemovePasswordType
+        EventType.shared_link_settings_remove_password: (sharing) Removed the
+        password from the shared link
     :ivar SharedLinkShareType EventType.shared_link_share: (sharing) Added
         members as audience of shared link
     :ivar SharedLinkViewType EventType.shared_link_view: (sharing) Opened shared
@@ -18413,6 +23256,9 @@ class EventType(bb.Union):
     :ivar DataPlacementRestrictionSatisfyPolicyType
         EventType.data_placement_restriction_satisfy_policy: (team_policies)
         Completed restrictions on data center locations where team data resides
+    :ivar DeviceApprovalsAddExceptionType
+        EventType.device_approvals_add_exception: (team_policies) Added members
+        to device approvals exception list
     :ivar DeviceApprovalsChangeDesktopPolicyType
         EventType.device_approvals_change_desktop_policy: (team_policies)
         Set/removed limit on number of computers member can link to team Dropbox
@@ -18427,6 +23273,9 @@ class EventType(bb.Union):
     :ivar DeviceApprovalsChangeUnlinkActionType
         EventType.device_approvals_change_unlink_action: (team_policies) Changed
         device approvals setting when member unlinks approved device
+    :ivar DeviceApprovalsRemoveExceptionType
+        EventType.device_approvals_remove_exception: (team_policies) Removed
+        members from device approvals exception list
     :ivar DirectoryRestrictionsAddMembersType
         EventType.directory_restrictions_add_members: (team_policies) Added
         members to directory restrictions list
@@ -18444,6 +23293,8 @@ class EventType(bb.Union):
         Accepted/opted out of extended version history
     :ivar FileCommentsChangePolicyType EventType.file_comments_change_policy:
         (team_policies) Enabled/disabled commenting on team files
+    :ivar FileLockingPolicyChangedType EventType.file_locking_policy_changed:
+        (team_policies) Changed file locking policy for team
     :ivar FileRequestsChangePolicyType EventType.file_requests_change_policy:
         (team_policies) Enabled/disabled file requests
     :ivar FileRequestsEmailsEnabledType EventType.file_requests_emails_enabled:
@@ -18452,6 +23303,9 @@ class EventType(bb.Union):
     :ivar FileRequestsEmailsRestrictedToTeamOnlyType
         EventType.file_requests_emails_restricted_to_team_only: (team_policies)
         Enabled file request emails for team (deprecated, no longer logged)
+    :ivar FileTransfersPolicyChangedType
+        EventType.file_transfers_policy_changed: (team_policies) Changed file
+        transfers policy for team
     :ivar GoogleSsoChangePolicyType EventType.google_sso_change_policy:
         (team_policies) Enabled/disabled Google single sign-on for team
     :ivar GroupUserManagementChangePolicyType
@@ -18509,12 +23363,17 @@ class EventType(bb.Union):
     :ivar PaperEnabledUsersGroupRemovalType
         EventType.paper_enabled_users_group_removal: (team_policies) Removed
         users from Paper-enabled users list
+    :ivar PasswordStrengthRequirementsChangePolicyType
+        EventType.password_strength_requirements_change_policy: (team_policies)
+        Changed team password strength requirements
     :ivar PermanentDeleteChangePolicyType
         EventType.permanent_delete_change_policy: (team_policies)
         Enabled/disabled ability of team members to permanently delete content
     :ivar ResellerSupportChangePolicyType
         EventType.reseller_support_change_policy: (team_policies)
         Enabled/disabled reseller support
+    :ivar RewindPolicyChangedType EventType.rewind_policy_changed:
+        (team_policies) Changed Rewind policy for team
     :ivar SharingChangeFolderJoinPolicyType
         EventType.sharing_change_folder_join_policy: (team_policies) Changed
         whether team members can join shared folders owned outside team
@@ -18533,6 +23392,9 @@ class EventType(bb.Union):
     :ivar ShowcaseChangeExternalSharingPolicyType
         EventType.showcase_change_external_sharing_policy: (team_policies)
         Enabled/disabled sharing Dropbox Showcase externally for team
+    :ivar SmarterSmartSyncPolicyChangedType
+        EventType.smarter_smart_sync_policy_changed: (team_policies) Changed
+        automatic Smart Sync setting for team
     :ivar SmartSyncChangePolicyType EventType.smart_sync_change_policy:
         (team_policies) Changed default Smart Sync setting for team members
     :ivar SmartSyncNotOptOutType EventType.smart_sync_not_opt_out:
@@ -18547,13 +23409,25 @@ class EventType(bb.Union):
     :ivar TeamSelectiveSyncPolicyChangedType
         EventType.team_selective_sync_policy_changed: (team_policies)
         Enabled/disabled Team Selective Sync for team
+    :ivar TeamSharingWhitelistSubjectsChangedType
+        EventType.team_sharing_whitelist_subjects_changed: (team_policies)
+        Edited the approved list for sharing externally
+    :ivar TfaAddExceptionType EventType.tfa_add_exception: (team_policies) Added
+        members to two factor authentication exception list
     :ivar TfaChangePolicyType EventType.tfa_change_policy: (team_policies)
         Changed two-step verification setting for team
+    :ivar TfaRemoveExceptionType EventType.tfa_remove_exception: (team_policies)
+        Removed members from two factor authentication exception list
     :ivar TwoAccountChangePolicyType EventType.two_account_change_policy:
         (team_policies) Enabled/disabled option for members to link personal
         Dropbox account and team account to same computer
     :ivar ViewerInfoPolicyChangedType EventType.viewer_info_policy_changed:
         (team_policies) Changed team policy for viewer info
+    :ivar WatermarkingPolicyChangedType EventType.watermarking_policy_changed:
+        (team_policies) Changed watermarking policy for team
+    :ivar WebSessionsChangeActiveSessionLimitType
+        EventType.web_sessions_change_active_session_limit: (team_policies)
+        Changed limit on active sessions per member
     :ivar WebSessionsChangeFixedLengthPolicyType
         EventType.web_sessions_change_fixed_length_policy: (team_policies)
         Changed how long members can stay signed in to Dropbox.com
@@ -18589,8 +23463,26 @@ class EventType(bb.Union):
         Removed security key for two-step verification
     :ivar TfaResetType EventType.tfa_reset: (tfa) Reset two-step verification
         for team member
+    :ivar ChangedEnterpriseAdminRoleType
+        EventType.changed_enterprise_admin_role: (trusted_teams) Changed
+        enterprise admin role
+    :ivar ChangedEnterpriseConnectedTeamStatusType
+        EventType.changed_enterprise_connected_team_status: (trusted_teams)
+        Changed enterprise-connected team status
+    :ivar EndedEnterpriseAdminSessionType
+        EventType.ended_enterprise_admin_session: (trusted_teams) Ended
+        enterprise admin session
+    :ivar EndedEnterpriseAdminSessionDeprecatedType
+        EventType.ended_enterprise_admin_session_deprecated: (trusted_teams)
+        Ended enterprise admin session (deprecated, replaced by 'Ended
+        enterprise admin session')
+    :ivar EnterpriseSettingsLockingType EventType.enterprise_settings_locking:
+        (trusted_teams) Changed who can update a setting
     :ivar GuestAdminChangeStatusType EventType.guest_admin_change_status:
         (trusted_teams) Changed guest team admin status
+    :ivar StartedEnterpriseAdminSessionType
+        EventType.started_enterprise_admin_session: (trusted_teams) Started
+        enterprise admin session
     :ivar TeamMergeRequestAcceptedType EventType.team_merge_request_accepted:
         (trusted_teams) Accepted a team merge request
     :ivar TeamMergeRequestAcceptedShownToPrimaryTeamType
@@ -19176,6 +24068,17 @@ class EventType(bb.Union):
         return cls('file_get_copy_reference', val)
 
     @classmethod
+    def file_locking_lock_status_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_locking_lock_status_changed`` tag with value ``val``.
+
+        :param FileLockingLockStatusChangedType val:
+        :rtype: EventType
+        """
+        return cls('file_locking_lock_status_changed', val)
+
+    @classmethod
     def file_move(cls, val):
         """
         Create an instance of this class set to the ``file_move`` tag with value
@@ -19262,6 +24165,50 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('file_save_copy_reference', val)
+
+    @classmethod
+    def folder_overview_description_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``folder_overview_description_changed`` tag with value ``val``.
+
+        :param FolderOverviewDescriptionChangedType val:
+        :rtype: EventType
+        """
+        return cls('folder_overview_description_changed', val)
+
+    @classmethod
+    def folder_overview_item_pinned(cls, val):
+        """
+        Create an instance of this class set to the
+        ``folder_overview_item_pinned`` tag with value ``val``.
+
+        :param FolderOverviewItemPinnedType val:
+        :rtype: EventType
+        """
+        return cls('folder_overview_item_pinned', val)
+
+    @classmethod
+    def folder_overview_item_unpinned(cls, val):
+        """
+        Create an instance of this class set to the
+        ``folder_overview_item_unpinned`` tag with value ``val``.
+
+        :param FolderOverviewItemUnpinnedType val:
+        :rtype: EventType
+        """
+        return cls('folder_overview_item_unpinned', val)
+
+    @classmethod
+    def rewind_folder(cls, val):
+        """
+        Create an instance of this class set to the ``rewind_folder`` tag with
+        value ``val``.
+
+        :param RewindFolderType val:
+        :rtype: EventType
+        """
+        return cls('rewind_folder', val)
 
     @classmethod
     def file_request_change(cls, val):
@@ -19462,6 +24409,127 @@ class EventType(bb.Union):
         return cls('group_rename', val)
 
     @classmethod
+    def legal_holds_activate_a_hold(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_activate_a_hold`` tag with value ``val``.
+
+        :param LegalHoldsActivateAHoldType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_activate_a_hold', val)
+
+    @classmethod
+    def legal_holds_add_members(cls, val):
+        """
+        Create an instance of this class set to the ``legal_holds_add_members``
+        tag with value ``val``.
+
+        :param LegalHoldsAddMembersType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_add_members', val)
+
+    @classmethod
+    def legal_holds_change_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_change_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsChangeHoldDetailsType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_change_hold_details', val)
+
+    @classmethod
+    def legal_holds_change_hold_name(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_change_hold_name`` tag with value ``val``.
+
+        :param LegalHoldsChangeHoldNameType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_change_hold_name', val)
+
+    @classmethod
+    def legal_holds_export_a_hold(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_a_hold`` tag with value ``val``.
+
+        :param LegalHoldsExportAHoldType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_export_a_hold', val)
+
+    @classmethod
+    def legal_holds_export_cancelled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_cancelled`` tag with value ``val``.
+
+        :param LegalHoldsExportCancelledType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_export_cancelled', val)
+
+    @classmethod
+    def legal_holds_export_downloaded(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_downloaded`` tag with value ``val``.
+
+        :param LegalHoldsExportDownloadedType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_export_downloaded', val)
+
+    @classmethod
+    def legal_holds_export_removed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_removed`` tag with value ``val``.
+
+        :param LegalHoldsExportRemovedType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_export_removed', val)
+
+    @classmethod
+    def legal_holds_release_a_hold(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_release_a_hold`` tag with value ``val``.
+
+        :param LegalHoldsReleaseAHoldType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_release_a_hold', val)
+
+    @classmethod
+    def legal_holds_remove_members(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_remove_members`` tag with value ``val``.
+
+        :param LegalHoldsRemoveMembersType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_remove_members', val)
+
+    @classmethod
+    def legal_holds_report_a_hold(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_report_a_hold`` tag with value ``val``.
+
+        :param LegalHoldsReportAHoldType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_report_a_hold', val)
+
+    @classmethod
     def emm_error(cls, val):
         """
         Create an instance of this class set to the ``emm_error`` tag with value
@@ -19583,6 +24651,28 @@ class EventType(bb.Union):
         return cls('sso_error', val)
 
     @classmethod
+    def create_team_invite_link(cls, val):
+        """
+        Create an instance of this class set to the ``create_team_invite_link``
+        tag with value ``val``.
+
+        :param CreateTeamInviteLinkType val:
+        :rtype: EventType
+        """
+        return cls('create_team_invite_link', val)
+
+    @classmethod
+    def delete_team_invite_link(cls, val):
+        """
+        Create an instance of this class set to the ``delete_team_invite_link``
+        tag with value ``val``.
+
+        :param DeleteTeamInviteLinkType val:
+        :rtype: EventType
+        """
+        return cls('delete_team_invite_link', val)
+
+    @classmethod
     def member_add_external_id(cls, val):
         """
         Create an instance of this class set to the ``member_add_external_id``
@@ -19682,6 +24772,17 @@ class EventType(bb.Union):
         return cls('member_delete_manual_contacts', val)
 
     @classmethod
+    def member_delete_profile_photo(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_delete_profile_photo`` tag with value ``val``.
+
+        :param MemberDeleteProfilePhotoType val:
+        :rtype: EventType
+        """
+        return cls('member_delete_profile_photo', val)
+
+    @classmethod
     def member_permanently_delete_account_contents(cls, val):
         """
         Create an instance of this class set to the
@@ -19702,6 +24803,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('member_remove_external_id', val)
+
+    @classmethod
+    def member_set_profile_photo(cls, val):
+        """
+        Create an instance of this class set to the ``member_set_profile_photo``
+        tag with value ``val``.
+
+        :param MemberSetProfilePhotoType val:
+        :rtype: EventType
+        """
+        return cls('member_set_profile_photo', val)
 
     @classmethod
     def member_space_limits_add_custom_quota(cls, val):
@@ -19770,6 +24882,39 @@ class EventType(bb.Union):
         return cls('member_transfer_account_contents', val)
 
     @classmethod
+    def pending_secondary_email_added(cls, val):
+        """
+        Create an instance of this class set to the
+        ``pending_secondary_email_added`` tag with value ``val``.
+
+        :param PendingSecondaryEmailAddedType val:
+        :rtype: EventType
+        """
+        return cls('pending_secondary_email_added', val)
+
+    @classmethod
+    def secondary_email_deleted(cls, val):
+        """
+        Create an instance of this class set to the ``secondary_email_deleted``
+        tag with value ``val``.
+
+        :param SecondaryEmailDeletedType val:
+        :rtype: EventType
+        """
+        return cls('secondary_email_deleted', val)
+
+    @classmethod
+    def secondary_email_verified(cls, val):
+        """
+        Create an instance of this class set to the ``secondary_email_verified``
+        tag with value ``val``.
+
+        :param SecondaryEmailVerifiedType val:
+        :rtype: EventType
+        """
+        return cls('secondary_email_verified', val)
+
+    @classmethod
     def secondary_mails_policy_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -19779,6 +24924,94 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('secondary_mails_policy_changed', val)
+
+    @classmethod
+    def binder_add_page(cls, val):
+        """
+        Create an instance of this class set to the ``binder_add_page`` tag with
+        value ``val``.
+
+        :param BinderAddPageType val:
+        :rtype: EventType
+        """
+        return cls('binder_add_page', val)
+
+    @classmethod
+    def binder_add_section(cls, val):
+        """
+        Create an instance of this class set to the ``binder_add_section`` tag
+        with value ``val``.
+
+        :param BinderAddSectionType val:
+        :rtype: EventType
+        """
+        return cls('binder_add_section', val)
+
+    @classmethod
+    def binder_remove_page(cls, val):
+        """
+        Create an instance of this class set to the ``binder_remove_page`` tag
+        with value ``val``.
+
+        :param BinderRemovePageType val:
+        :rtype: EventType
+        """
+        return cls('binder_remove_page', val)
+
+    @classmethod
+    def binder_remove_section(cls, val):
+        """
+        Create an instance of this class set to the ``binder_remove_section``
+        tag with value ``val``.
+
+        :param BinderRemoveSectionType val:
+        :rtype: EventType
+        """
+        return cls('binder_remove_section', val)
+
+    @classmethod
+    def binder_rename_page(cls, val):
+        """
+        Create an instance of this class set to the ``binder_rename_page`` tag
+        with value ``val``.
+
+        :param BinderRenamePageType val:
+        :rtype: EventType
+        """
+        return cls('binder_rename_page', val)
+
+    @classmethod
+    def binder_rename_section(cls, val):
+        """
+        Create an instance of this class set to the ``binder_rename_section``
+        tag with value ``val``.
+
+        :param BinderRenameSectionType val:
+        :rtype: EventType
+        """
+        return cls('binder_rename_section', val)
+
+    @classmethod
+    def binder_reorder_page(cls, val):
+        """
+        Create an instance of this class set to the ``binder_reorder_page`` tag
+        with value ``val``.
+
+        :param BinderReorderPageType val:
+        :rtype: EventType
+        """
+        return cls('binder_reorder_page', val)
+
+    @classmethod
+    def binder_reorder_section(cls, val):
+        """
+        Create an instance of this class set to the ``binder_reorder_section``
+        tag with value ``val``.
+
+        :param BinderReorderSectionType val:
+        :rtype: EventType
+        """
+        return cls('binder_reorder_section', val)
 
     @classmethod
     def paper_content_add_member(cls, val):
@@ -20188,6 +25421,17 @@ class EventType(bb.Union):
         return cls('paper_folder_team_invite', val)
 
     @classmethod
+    def paper_published_link_change_permission(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_published_link_change_permission`` tag with value ``val``.
+
+        :param PaperPublishedLinkChangePermissionType val:
+        :rtype: EventType
+        """
+        return cls('paper_published_link_change_permission', val)
+
+    @classmethod
     def paper_published_link_create(cls, val):
         """
         Create an instance of this class set to the
@@ -20287,6 +25531,17 @@ class EventType(bb.Union):
         return cls('export_members_report', val)
 
     @classmethod
+    def export_members_report_fail(cls, val):
+        """
+        Create an instance of this class set to the
+        ``export_members_report_fail`` tag with value ``val``.
+
+        :param ExportMembersReportFailType val:
+        :rtype: EventType
+        """
+        return cls('export_members_report_fail', val)
+
+    @classmethod
     def paper_admin_export_start(cls, val):
         """
         Create an instance of this class set to the ``paper_admin_export_start``
@@ -20340,6 +25595,61 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('collection_share', val)
+
+    @classmethod
+    def file_transfers_file_add(cls, val):
+        """
+        Create an instance of this class set to the ``file_transfers_file_add``
+        tag with value ``val``.
+
+        :param FileTransfersFileAddType val:
+        :rtype: EventType
+        """
+        return cls('file_transfers_file_add', val)
+
+    @classmethod
+    def file_transfers_transfer_delete(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_transfer_delete`` tag with value ``val``.
+
+        :param FileTransfersTransferDeleteType val:
+        :rtype: EventType
+        """
+        return cls('file_transfers_transfer_delete', val)
+
+    @classmethod
+    def file_transfers_transfer_download(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_transfer_download`` tag with value ``val``.
+
+        :param FileTransfersTransferDownloadType val:
+        :rtype: EventType
+        """
+        return cls('file_transfers_transfer_download', val)
+
+    @classmethod
+    def file_transfers_transfer_send(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_transfer_send`` tag with value ``val``.
+
+        :param FileTransfersTransferSendType val:
+        :rtype: EventType
+        """
+        return cls('file_transfers_transfer_send', val)
+
+    @classmethod
+    def file_transfers_transfer_view(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_transfer_view`` tag with value ``val``.
+
+        :param FileTransfersTransferViewType val:
+        :rtype: EventType
+        """
+        return cls('file_transfers_transfer_view', val)
 
     @classmethod
     def note_acl_invite_only(cls, val):
@@ -20771,6 +26081,28 @@ class EventType(bb.Union):
         return cls('shared_content_request_access', val)
 
     @classmethod
+    def shared_content_restore_invitees(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_content_restore_invitees`` tag with value ``val``.
+
+        :param SharedContentRestoreInviteesType val:
+        :rtype: EventType
+        """
+        return cls('shared_content_restore_invitees', val)
+
+    @classmethod
+    def shared_content_restore_member(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_content_restore_member`` tag with value ``val``.
+
+        :param SharedContentRestoreMemberType val:
+        :rtype: EventType
+        """
+        return cls('shared_content_restore_member', val)
+
+    @classmethod
     def shared_content_unshare(cls, val):
         """
         Create an instance of this class set to the ``shared_content_unshare``
@@ -20991,6 +26323,105 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('shared_link_remove_expiry', val)
+
+    @classmethod
+    def shared_link_settings_add_expiration(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_add_expiration`` tag with value ``val``.
+
+        :param SharedLinkSettingsAddExpirationType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_add_expiration', val)
+
+    @classmethod
+    def shared_link_settings_add_password(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_add_password`` tag with value ``val``.
+
+        :param SharedLinkSettingsAddPasswordType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_add_password', val)
+
+    @classmethod
+    def shared_link_settings_allow_download_disabled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_allow_download_disabled`` tag with value ``val``.
+
+        :param SharedLinkSettingsAllowDownloadDisabledType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_allow_download_disabled', val)
+
+    @classmethod
+    def shared_link_settings_allow_download_enabled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_allow_download_enabled`` tag with value ``val``.
+
+        :param SharedLinkSettingsAllowDownloadEnabledType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_allow_download_enabled', val)
+
+    @classmethod
+    def shared_link_settings_change_audience(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_change_audience`` tag with value ``val``.
+
+        :param SharedLinkSettingsChangeAudienceType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_change_audience', val)
+
+    @classmethod
+    def shared_link_settings_change_expiration(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_change_expiration`` tag with value ``val``.
+
+        :param SharedLinkSettingsChangeExpirationType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_change_expiration', val)
+
+    @classmethod
+    def shared_link_settings_change_password(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_change_password`` tag with value ``val``.
+
+        :param SharedLinkSettingsChangePasswordType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_change_password', val)
+
+    @classmethod
+    def shared_link_settings_remove_expiration(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_remove_expiration`` tag with value ``val``.
+
+        :param SharedLinkSettingsRemoveExpirationType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_remove_expiration', val)
+
+    @classmethod
+    def shared_link_settings_remove_password(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_link_settings_remove_password`` tag with value ``val``.
+
+        :param SharedLinkSettingsRemovePasswordType val:
+        :rtype: EventType
+        """
+        return cls('shared_link_settings_remove_password', val)
 
     @classmethod
     def shared_link_share(cls, val):
@@ -21543,6 +26974,17 @@ class EventType(bb.Union):
         return cls('data_placement_restriction_satisfy_policy', val)
 
     @classmethod
+    def device_approvals_add_exception(cls, val):
+        """
+        Create an instance of this class set to the
+        ``device_approvals_add_exception`` tag with value ``val``.
+
+        :param DeviceApprovalsAddExceptionType val:
+        :rtype: EventType
+        """
+        return cls('device_approvals_add_exception', val)
+
+    @classmethod
     def device_approvals_change_desktop_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -21585,6 +27027,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('device_approvals_change_unlink_action', val)
+
+    @classmethod
+    def device_approvals_remove_exception(cls, val):
+        """
+        Create an instance of this class set to the
+        ``device_approvals_remove_exception`` tag with value ``val``.
+
+        :param DeviceApprovalsRemoveExceptionType val:
+        :rtype: EventType
+        """
+        return cls('device_approvals_remove_exception', val)
 
     @classmethod
     def directory_restrictions_add_members(cls, val):
@@ -21664,6 +27117,17 @@ class EventType(bb.Union):
         return cls('file_comments_change_policy', val)
 
     @classmethod
+    def file_locking_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_locking_policy_changed`` tag with value ``val``.
+
+        :param FileLockingPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('file_locking_policy_changed', val)
+
+    @classmethod
     def file_requests_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -21695,6 +27159,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('file_requests_emails_restricted_to_team_only', val)
+
+    @classmethod
+    def file_transfers_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_transfers_policy_changed`` tag with value ``val``.
+
+        :param FileTransfersPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('file_transfers_policy_changed', val)
 
     @classmethod
     def google_sso_change_policy(cls, val):
@@ -21906,6 +27381,17 @@ class EventType(bb.Union):
         return cls('paper_enabled_users_group_removal', val)
 
     @classmethod
+    def password_strength_requirements_change_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``password_strength_requirements_change_policy`` tag with value ``val``.
+
+        :param PasswordStrengthRequirementsChangePolicyType val:
+        :rtype: EventType
+        """
+        return cls('password_strength_requirements_change_policy', val)
+
+    @classmethod
     def permanent_delete_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -21926,6 +27412,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('reseller_support_change_policy', val)
+
+    @classmethod
+    def rewind_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the ``rewind_policy_changed``
+        tag with value ``val``.
+
+        :param RewindPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('rewind_policy_changed', val)
 
     @classmethod
     def sharing_change_folder_join_policy(cls, val):
@@ -21994,6 +27491,17 @@ class EventType(bb.Union):
         return cls('showcase_change_external_sharing_policy', val)
 
     @classmethod
+    def smarter_smart_sync_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``smarter_smart_sync_policy_changed`` tag with value ``val``.
+
+        :param SmarterSmartSyncPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('smarter_smart_sync_policy_changed', val)
+
+    @classmethod
     def smart_sync_change_policy(cls, val):
         """
         Create an instance of this class set to the ``smart_sync_change_policy``
@@ -22060,6 +27568,28 @@ class EventType(bb.Union):
         return cls('team_selective_sync_policy_changed', val)
 
     @classmethod
+    def team_sharing_whitelist_subjects_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_sharing_whitelist_subjects_changed`` tag with value ``val``.
+
+        :param TeamSharingWhitelistSubjectsChangedType val:
+        :rtype: EventType
+        """
+        return cls('team_sharing_whitelist_subjects_changed', val)
+
+    @classmethod
+    def tfa_add_exception(cls, val):
+        """
+        Create an instance of this class set to the ``tfa_add_exception`` tag
+        with value ``val``.
+
+        :param TfaAddExceptionType val:
+        :rtype: EventType
+        """
+        return cls('tfa_add_exception', val)
+
+    @classmethod
     def tfa_change_policy(cls, val):
         """
         Create an instance of this class set to the ``tfa_change_policy`` tag
@@ -22069,6 +27599,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('tfa_change_policy', val)
+
+    @classmethod
+    def tfa_remove_exception(cls, val):
+        """
+        Create an instance of this class set to the ``tfa_remove_exception`` tag
+        with value ``val``.
+
+        :param TfaRemoveExceptionType val:
+        :rtype: EventType
+        """
+        return cls('tfa_remove_exception', val)
 
     @classmethod
     def two_account_change_policy(cls, val):
@@ -22091,6 +27632,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('viewer_info_policy_changed', val)
+
+    @classmethod
+    def watermarking_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``watermarking_policy_changed`` tag with value ``val``.
+
+        :param WatermarkingPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('watermarking_policy_changed', val)
+
+    @classmethod
+    def web_sessions_change_active_session_limit(cls, val):
+        """
+        Create an instance of this class set to the
+        ``web_sessions_change_active_session_limit`` tag with value ``val``.
+
+        :param WebSessionsChangeActiveSessionLimitType val:
+        :rtype: EventType
+        """
+        return cls('web_sessions_change_active_session_limit', val)
 
     @classmethod
     def web_sessions_change_fixed_length_policy(cls, val):
@@ -22269,6 +27832,61 @@ class EventType(bb.Union):
         return cls('tfa_reset', val)
 
     @classmethod
+    def changed_enterprise_admin_role(cls, val):
+        """
+        Create an instance of this class set to the
+        ``changed_enterprise_admin_role`` tag with value ``val``.
+
+        :param ChangedEnterpriseAdminRoleType val:
+        :rtype: EventType
+        """
+        return cls('changed_enterprise_admin_role', val)
+
+    @classmethod
+    def changed_enterprise_connected_team_status(cls, val):
+        """
+        Create an instance of this class set to the
+        ``changed_enterprise_connected_team_status`` tag with value ``val``.
+
+        :param ChangedEnterpriseConnectedTeamStatusType val:
+        :rtype: EventType
+        """
+        return cls('changed_enterprise_connected_team_status', val)
+
+    @classmethod
+    def ended_enterprise_admin_session(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ended_enterprise_admin_session`` tag with value ``val``.
+
+        :param EndedEnterpriseAdminSessionType val:
+        :rtype: EventType
+        """
+        return cls('ended_enterprise_admin_session', val)
+
+    @classmethod
+    def ended_enterprise_admin_session_deprecated(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ended_enterprise_admin_session_deprecated`` tag with value ``val``.
+
+        :param EndedEnterpriseAdminSessionDeprecatedType val:
+        :rtype: EventType
+        """
+        return cls('ended_enterprise_admin_session_deprecated', val)
+
+    @classmethod
+    def enterprise_settings_locking(cls, val):
+        """
+        Create an instance of this class set to the
+        ``enterprise_settings_locking`` tag with value ``val``.
+
+        :param EnterpriseSettingsLockingType val:
+        :rtype: EventType
+        """
+        return cls('enterprise_settings_locking', val)
+
+    @classmethod
     def guest_admin_change_status(cls, val):
         """
         Create an instance of this class set to the
@@ -22278,6 +27896,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('guest_admin_change_status', val)
+
+    @classmethod
+    def started_enterprise_admin_session(cls, val):
+        """
+        Create an instance of this class set to the
+        ``started_enterprise_admin_session`` tag with value ``val``.
+
+        :param StartedEnterpriseAdminSessionType val:
+        :rtype: EventType
+        """
+        return cls('started_enterprise_admin_session', val)
 
     @classmethod
     def team_merge_request_accepted(cls, val):
@@ -22865,6 +28494,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'file_get_copy_reference'
 
+    def is_file_locking_lock_status_changed(self):
+        """
+        Check if the union tag is ``file_locking_lock_status_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_locking_lock_status_changed'
+
     def is_file_move(self):
         """
         Check if the union tag is ``file_move``.
@@ -22928,6 +28565,38 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_save_copy_reference'
+
+    def is_folder_overview_description_changed(self):
+        """
+        Check if the union tag is ``folder_overview_description_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_description_changed'
+
+    def is_folder_overview_item_pinned(self):
+        """
+        Check if the union tag is ``folder_overview_item_pinned``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_item_pinned'
+
+    def is_folder_overview_item_unpinned(self):
+        """
+        Check if the union tag is ``folder_overview_item_unpinned``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_item_unpinned'
+
+    def is_rewind_folder(self):
+        """
+        Check if the union tag is ``rewind_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rewind_folder'
 
     def is_file_request_change(self):
         """
@@ -23073,6 +28742,94 @@ class EventType(bb.Union):
         """
         return self._tag == 'group_rename'
 
+    def is_legal_holds_activate_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_activate_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_activate_a_hold'
+
+    def is_legal_holds_add_members(self):
+        """
+        Check if the union tag is ``legal_holds_add_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_add_members'
+
+    def is_legal_holds_change_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_details'
+
+    def is_legal_holds_change_hold_name(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_name'
+
+    def is_legal_holds_export_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_export_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_a_hold'
+
+    def is_legal_holds_export_cancelled(self):
+        """
+        Check if the union tag is ``legal_holds_export_cancelled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_cancelled'
+
+    def is_legal_holds_export_downloaded(self):
+        """
+        Check if the union tag is ``legal_holds_export_downloaded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_downloaded'
+
+    def is_legal_holds_export_removed(self):
+        """
+        Check if the union tag is ``legal_holds_export_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_removed'
+
+    def is_legal_holds_release_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_release_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_release_a_hold'
+
+    def is_legal_holds_remove_members(self):
+        """
+        Check if the union tag is ``legal_holds_remove_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_remove_members'
+
+    def is_legal_holds_report_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_report_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_report_a_hold'
+
     def is_emm_error(self):
         """
         Check if the union tag is ``emm_error``.
@@ -23161,6 +28918,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'sso_error'
 
+    def is_create_team_invite_link(self):
+        """
+        Check if the union tag is ``create_team_invite_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'create_team_invite_link'
+
+    def is_delete_team_invite_link(self):
+        """
+        Check if the union tag is ``delete_team_invite_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'delete_team_invite_link'
+
     def is_member_add_external_id(self):
         """
         Check if the union tag is ``member_add_external_id``.
@@ -23233,6 +29006,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'member_delete_manual_contacts'
 
+    def is_member_delete_profile_photo(self):
+        """
+        Check if the union tag is ``member_delete_profile_photo``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_delete_profile_photo'
+
     def is_member_permanently_delete_account_contents(self):
         """
         Check if the union tag is ``member_permanently_delete_account_contents``.
@@ -23248,6 +29029,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_remove_external_id'
+
+    def is_member_set_profile_photo(self):
+        """
+        Check if the union tag is ``member_set_profile_photo``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_set_profile_photo'
 
     def is_member_space_limits_add_custom_quota(self):
         """
@@ -23297,6 +29086,30 @@ class EventType(bb.Union):
         """
         return self._tag == 'member_transfer_account_contents'
 
+    def is_pending_secondary_email_added(self):
+        """
+        Check if the union tag is ``pending_secondary_email_added``.
+
+        :rtype: bool
+        """
+        return self._tag == 'pending_secondary_email_added'
+
+    def is_secondary_email_deleted(self):
+        """
+        Check if the union tag is ``secondary_email_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_email_deleted'
+
+    def is_secondary_email_verified(self):
+        """
+        Check if the union tag is ``secondary_email_verified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_email_verified'
+
     def is_secondary_mails_policy_changed(self):
         """
         Check if the union tag is ``secondary_mails_policy_changed``.
@@ -23304,6 +29117,70 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'secondary_mails_policy_changed'
+
+    def is_binder_add_page(self):
+        """
+        Check if the union tag is ``binder_add_page``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_add_page'
+
+    def is_binder_add_section(self):
+        """
+        Check if the union tag is ``binder_add_section``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_add_section'
+
+    def is_binder_remove_page(self):
+        """
+        Check if the union tag is ``binder_remove_page``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_remove_page'
+
+    def is_binder_remove_section(self):
+        """
+        Check if the union tag is ``binder_remove_section``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_remove_section'
+
+    def is_binder_rename_page(self):
+        """
+        Check if the union tag is ``binder_rename_page``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_rename_page'
+
+    def is_binder_rename_section(self):
+        """
+        Check if the union tag is ``binder_rename_section``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_rename_section'
+
+    def is_binder_reorder_page(self):
+        """
+        Check if the union tag is ``binder_reorder_page``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_reorder_page'
+
+    def is_binder_reorder_section(self):
+        """
+        Check if the union tag is ``binder_reorder_section``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_reorder_section'
 
     def is_paper_content_add_member(self):
         """
@@ -23601,6 +29478,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'paper_folder_team_invite'
 
+    def is_paper_published_link_change_permission(self):
+        """
+        Check if the union tag is ``paper_published_link_change_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_published_link_change_permission'
+
     def is_paper_published_link_create(self):
         """
         Check if the union tag is ``paper_published_link_create``.
@@ -23673,6 +29558,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'export_members_report'
 
+    def is_export_members_report_fail(self):
+        """
+        Check if the union tag is ``export_members_report_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'export_members_report_fail'
+
     def is_paper_admin_export_start(self):
         """
         Check if the union tag is ``paper_admin_export_start``.
@@ -23712,6 +29605,46 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'collection_share'
+
+    def is_file_transfers_file_add(self):
+        """
+        Check if the union tag is ``file_transfers_file_add``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_file_add'
+
+    def is_file_transfers_transfer_delete(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_delete'
+
+    def is_file_transfers_transfer_download(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_download``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_download'
+
+    def is_file_transfers_transfer_send(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_send``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_send'
+
+    def is_file_transfers_transfer_view(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_view'
 
     def is_note_acl_invite_only(self):
         """
@@ -24025,6 +29958,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'shared_content_request_access'
 
+    def is_shared_content_restore_invitees(self):
+        """
+        Check if the union tag is ``shared_content_restore_invitees``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_restore_invitees'
+
+    def is_shared_content_restore_member(self):
+        """
+        Check if the union tag is ``shared_content_restore_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_restore_member'
+
     def is_shared_content_unshare(self):
         """
         Check if the union tag is ``shared_content_unshare``.
@@ -24184,6 +30133,78 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'shared_link_remove_expiry'
+
+    def is_shared_link_settings_add_expiration(self):
+        """
+        Check if the union tag is ``shared_link_settings_add_expiration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_add_expiration'
+
+    def is_shared_link_settings_add_password(self):
+        """
+        Check if the union tag is ``shared_link_settings_add_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_add_password'
+
+    def is_shared_link_settings_allow_download_disabled(self):
+        """
+        Check if the union tag is ``shared_link_settings_allow_download_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_allow_download_disabled'
+
+    def is_shared_link_settings_allow_download_enabled(self):
+        """
+        Check if the union tag is ``shared_link_settings_allow_download_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_allow_download_enabled'
+
+    def is_shared_link_settings_change_audience(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_audience``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_audience'
+
+    def is_shared_link_settings_change_expiration(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_expiration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_expiration'
+
+    def is_shared_link_settings_change_password(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_password'
+
+    def is_shared_link_settings_remove_expiration(self):
+        """
+        Check if the union tag is ``shared_link_settings_remove_expiration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_remove_expiration'
+
+    def is_shared_link_settings_remove_password(self):
+        """
+        Check if the union tag is ``shared_link_settings_remove_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_remove_password'
 
     def is_shared_link_share(self):
         """
@@ -24585,6 +30606,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'data_placement_restriction_satisfy_policy'
 
+    def is_device_approvals_add_exception(self):
+        """
+        Check if the union tag is ``device_approvals_add_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_add_exception'
+
     def is_device_approvals_change_desktop_policy(self):
         """
         Check if the union tag is ``device_approvals_change_desktop_policy``.
@@ -24616,6 +30645,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_approvals_change_unlink_action'
+
+    def is_device_approvals_remove_exception(self):
+        """
+        Check if the union tag is ``device_approvals_remove_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_remove_exception'
 
     def is_directory_restrictions_add_members(self):
         """
@@ -24673,6 +30710,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'file_comments_change_policy'
 
+    def is_file_locking_policy_changed(self):
+        """
+        Check if the union tag is ``file_locking_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_locking_policy_changed'
+
     def is_file_requests_change_policy(self):
         """
         Check if the union tag is ``file_requests_change_policy``.
@@ -24696,6 +30741,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_requests_emails_restricted_to_team_only'
+
+    def is_file_transfers_policy_changed(self):
+        """
+        Check if the union tag is ``file_transfers_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_policy_changed'
 
     def is_google_sso_change_policy(self):
         """
@@ -24849,6 +30902,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'paper_enabled_users_group_removal'
 
+    def is_password_strength_requirements_change_policy(self):
+        """
+        Check if the union tag is ``password_strength_requirements_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'password_strength_requirements_change_policy'
+
     def is_permanent_delete_change_policy(self):
         """
         Check if the union tag is ``permanent_delete_change_policy``.
@@ -24864,6 +30925,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'reseller_support_change_policy'
+
+    def is_rewind_policy_changed(self):
+        """
+        Check if the union tag is ``rewind_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rewind_policy_changed'
 
     def is_sharing_change_folder_join_policy(self):
         """
@@ -24913,6 +30982,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'showcase_change_external_sharing_policy'
 
+    def is_smarter_smart_sync_policy_changed(self):
+        """
+        Check if the union tag is ``smarter_smart_sync_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'smarter_smart_sync_policy_changed'
+
     def is_smart_sync_change_policy(self):
         """
         Check if the union tag is ``smart_sync_change_policy``.
@@ -24961,6 +31038,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'team_selective_sync_policy_changed'
 
+    def is_team_sharing_whitelist_subjects_changed(self):
+        """
+        Check if the union tag is ``team_sharing_whitelist_subjects_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_sharing_whitelist_subjects_changed'
+
+    def is_tfa_add_exception(self):
+        """
+        Check if the union tag is ``tfa_add_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_add_exception'
+
     def is_tfa_change_policy(self):
         """
         Check if the union tag is ``tfa_change_policy``.
@@ -24968,6 +31061,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'tfa_change_policy'
+
+    def is_tfa_remove_exception(self):
+        """
+        Check if the union tag is ``tfa_remove_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_remove_exception'
 
     def is_two_account_change_policy(self):
         """
@@ -24984,6 +31085,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'viewer_info_policy_changed'
+
+    def is_watermarking_policy_changed(self):
+        """
+        Check if the union tag is ``watermarking_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'watermarking_policy_changed'
+
+    def is_web_sessions_change_active_session_limit(self):
+        """
+        Check if the union tag is ``web_sessions_change_active_session_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_sessions_change_active_session_limit'
 
     def is_web_sessions_change_fixed_length_policy(self):
         """
@@ -25113,6 +31230,46 @@ class EventType(bb.Union):
         """
         return self._tag == 'tfa_reset'
 
+    def is_changed_enterprise_admin_role(self):
+        """
+        Check if the union tag is ``changed_enterprise_admin_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'changed_enterprise_admin_role'
+
+    def is_changed_enterprise_connected_team_status(self):
+        """
+        Check if the union tag is ``changed_enterprise_connected_team_status``.
+
+        :rtype: bool
+        """
+        return self._tag == 'changed_enterprise_connected_team_status'
+
+    def is_ended_enterprise_admin_session(self):
+        """
+        Check if the union tag is ``ended_enterprise_admin_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ended_enterprise_admin_session'
+
+    def is_ended_enterprise_admin_session_deprecated(self):
+        """
+        Check if the union tag is ``ended_enterprise_admin_session_deprecated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ended_enterprise_admin_session_deprecated'
+
+    def is_enterprise_settings_locking(self):
+        """
+        Check if the union tag is ``enterprise_settings_locking``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enterprise_settings_locking'
+
     def is_guest_admin_change_status(self):
         """
         Check if the union tag is ``guest_admin_change_status``.
@@ -25120,6 +31277,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'guest_admin_change_status'
+
+    def is_started_enterprise_admin_session(self):
+        """
+        Check if the union tag is ``started_enterprise_admin_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'started_enterprise_admin_session'
 
     def is_team_merge_request_accepted(self):
         """
@@ -25601,7 +31766,7 @@ class EventType(bb.Union):
 
     def get_account_capture_notification_emails_sent(self):
         """
-        (domains) Sent proactive account capture email to all unmanaged members
+        (domains) Sent account capture email to all unmanaged members
 
         Only call this if :meth:`is_account_capture_notification_emails_sent` is true.
 
@@ -25842,6 +32007,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'file_get_copy_reference' not set")
         return self._value
 
+    def get_file_locking_lock_status_changed(self):
+        """
+        (file_operations) Locked/unlocked editing for a file
+
+        Only call this if :meth:`is_file_locking_lock_status_changed` is true.
+
+        :rtype: FileLockingLockStatusChangedType
+        """
+        if not self.is_file_locking_lock_status_changed():
+            raise AttributeError("tag 'file_locking_lock_status_changed' not set")
+        return self._value
+
     def get_file_move(self):
         """
         (file_operations) Moved files and/or folders
@@ -25936,6 +32113,54 @@ class EventType(bb.Union):
         """
         if not self.is_file_save_copy_reference():
             raise AttributeError("tag 'file_save_copy_reference' not set")
+        return self._value
+
+    def get_folder_overview_description_changed(self):
+        """
+        (file_operations) Updated folder overview
+
+        Only call this if :meth:`is_folder_overview_description_changed` is true.
+
+        :rtype: FolderOverviewDescriptionChangedType
+        """
+        if not self.is_folder_overview_description_changed():
+            raise AttributeError("tag 'folder_overview_description_changed' not set")
+        return self._value
+
+    def get_folder_overview_item_pinned(self):
+        """
+        (file_operations) Pinned item to folder overview
+
+        Only call this if :meth:`is_folder_overview_item_pinned` is true.
+
+        :rtype: FolderOverviewItemPinnedType
+        """
+        if not self.is_folder_overview_item_pinned():
+            raise AttributeError("tag 'folder_overview_item_pinned' not set")
+        return self._value
+
+    def get_folder_overview_item_unpinned(self):
+        """
+        (file_operations) Unpinned item from folder overview
+
+        Only call this if :meth:`is_folder_overview_item_unpinned` is true.
+
+        :rtype: FolderOverviewItemUnpinnedType
+        """
+        if not self.is_folder_overview_item_unpinned():
+            raise AttributeError("tag 'folder_overview_item_unpinned' not set")
+        return self._value
+
+    def get_rewind_folder(self):
+        """
+        (file_operations) Rewound a folder
+
+        Only call this if :meth:`is_rewind_folder` is true.
+
+        :rtype: RewindFolderType
+        """
+        if not self.is_rewind_folder():
+            raise AttributeError("tag 'rewind_folder' not set")
         return self._value
 
     def get_file_request_change(self):
@@ -26154,6 +32379,138 @@ class EventType(bb.Union):
             raise AttributeError("tag 'group_rename' not set")
         return self._value
 
+    def get_legal_holds_activate_a_hold(self):
+        """
+        (legal_holds) Activated a hold
+
+        Only call this if :meth:`is_legal_holds_activate_a_hold` is true.
+
+        :rtype: LegalHoldsActivateAHoldType
+        """
+        if not self.is_legal_holds_activate_a_hold():
+            raise AttributeError("tag 'legal_holds_activate_a_hold' not set")
+        return self._value
+
+    def get_legal_holds_add_members(self):
+        """
+        (legal_holds) Added members to a hold
+
+        Only call this if :meth:`is_legal_holds_add_members` is true.
+
+        :rtype: LegalHoldsAddMembersType
+        """
+        if not self.is_legal_holds_add_members():
+            raise AttributeError("tag 'legal_holds_add_members' not set")
+        return self._value
+
+    def get_legal_holds_change_hold_details(self):
+        """
+        (legal_holds) Edited details for a hold
+
+        Only call this if :meth:`is_legal_holds_change_hold_details` is true.
+
+        :rtype: LegalHoldsChangeHoldDetailsType
+        """
+        if not self.is_legal_holds_change_hold_details():
+            raise AttributeError("tag 'legal_holds_change_hold_details' not set")
+        return self._value
+
+    def get_legal_holds_change_hold_name(self):
+        """
+        (legal_holds) Renamed a hold
+
+        Only call this if :meth:`is_legal_holds_change_hold_name` is true.
+
+        :rtype: LegalHoldsChangeHoldNameType
+        """
+        if not self.is_legal_holds_change_hold_name():
+            raise AttributeError("tag 'legal_holds_change_hold_name' not set")
+        return self._value
+
+    def get_legal_holds_export_a_hold(self):
+        """
+        (legal_holds) Exported hold
+
+        Only call this if :meth:`is_legal_holds_export_a_hold` is true.
+
+        :rtype: LegalHoldsExportAHoldType
+        """
+        if not self.is_legal_holds_export_a_hold():
+            raise AttributeError("tag 'legal_holds_export_a_hold' not set")
+        return self._value
+
+    def get_legal_holds_export_cancelled(self):
+        """
+        (legal_holds) Canceled export for a hold
+
+        Only call this if :meth:`is_legal_holds_export_cancelled` is true.
+
+        :rtype: LegalHoldsExportCancelledType
+        """
+        if not self.is_legal_holds_export_cancelled():
+            raise AttributeError("tag 'legal_holds_export_cancelled' not set")
+        return self._value
+
+    def get_legal_holds_export_downloaded(self):
+        """
+        (legal_holds) Downloaded export for a hold
+
+        Only call this if :meth:`is_legal_holds_export_downloaded` is true.
+
+        :rtype: LegalHoldsExportDownloadedType
+        """
+        if not self.is_legal_holds_export_downloaded():
+            raise AttributeError("tag 'legal_holds_export_downloaded' not set")
+        return self._value
+
+    def get_legal_holds_export_removed(self):
+        """
+        (legal_holds) Removed export for a hold
+
+        Only call this if :meth:`is_legal_holds_export_removed` is true.
+
+        :rtype: LegalHoldsExportRemovedType
+        """
+        if not self.is_legal_holds_export_removed():
+            raise AttributeError("tag 'legal_holds_export_removed' not set")
+        return self._value
+
+    def get_legal_holds_release_a_hold(self):
+        """
+        (legal_holds) Released a hold
+
+        Only call this if :meth:`is_legal_holds_release_a_hold` is true.
+
+        :rtype: LegalHoldsReleaseAHoldType
+        """
+        if not self.is_legal_holds_release_a_hold():
+            raise AttributeError("tag 'legal_holds_release_a_hold' not set")
+        return self._value
+
+    def get_legal_holds_remove_members(self):
+        """
+        (legal_holds) Removed members from a hold
+
+        Only call this if :meth:`is_legal_holds_remove_members` is true.
+
+        :rtype: LegalHoldsRemoveMembersType
+        """
+        if not self.is_legal_holds_remove_members():
+            raise AttributeError("tag 'legal_holds_remove_members' not set")
+        return self._value
+
+    def get_legal_holds_report_a_hold(self):
+        """
+        (legal_holds) Created a summary report for a hold
+
+        Only call this if :meth:`is_legal_holds_report_a_hold` is true.
+
+        :rtype: LegalHoldsReportAHoldType
+        """
+        if not self.is_legal_holds_report_a_hold():
+            raise AttributeError("tag 'legal_holds_report_a_hold' not set")
+        return self._value
+
     def get_emm_error(self):
         """
         (logins) Failed to sign in via EMM (deprecated, replaced by 'Failed to
@@ -26288,6 +32645,30 @@ class EventType(bb.Union):
             raise AttributeError("tag 'sso_error' not set")
         return self._value
 
+    def get_create_team_invite_link(self):
+        """
+        (members) Created team invite link
+
+        Only call this if :meth:`is_create_team_invite_link` is true.
+
+        :rtype: CreateTeamInviteLinkType
+        """
+        if not self.is_create_team_invite_link():
+            raise AttributeError("tag 'create_team_invite_link' not set")
+        return self._value
+
+    def get_delete_team_invite_link(self):
+        """
+        (members) Deleted team invite link
+
+        Only call this if :meth:`is_delete_team_invite_link` is true.
+
+        :rtype: DeleteTeamInviteLinkType
+        """
+        if not self.is_delete_team_invite_link():
+            raise AttributeError("tag 'delete_team_invite_link' not set")
+        return self._value
+
     def get_member_add_external_id(self):
         """
         (members) Added an external ID for team member
@@ -26397,6 +32778,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'member_delete_manual_contacts' not set")
         return self._value
 
+    def get_member_delete_profile_photo(self):
+        """
+        (members) Deleted team member profile photo
+
+        Only call this if :meth:`is_member_delete_profile_photo` is true.
+
+        :rtype: MemberDeleteProfilePhotoType
+        """
+        if not self.is_member_delete_profile_photo():
+            raise AttributeError("tag 'member_delete_profile_photo' not set")
+        return self._value
+
     def get_member_permanently_delete_account_contents(self):
         """
         (members) Permanently deleted contents of deleted team member account
@@ -26419,6 +32812,18 @@ class EventType(bb.Union):
         """
         if not self.is_member_remove_external_id():
             raise AttributeError("tag 'member_remove_external_id' not set")
+        return self._value
+
+    def get_member_set_profile_photo(self):
+        """
+        (members) Set team member profile photo
+
+        Only call this if :meth:`is_member_set_profile_photo` is true.
+
+        :rtype: MemberSetProfilePhotoType
+        """
+        if not self.is_member_set_profile_photo():
+            raise AttributeError("tag 'member_set_profile_photo' not set")
         return self._value
 
     def get_member_space_limits_add_custom_quota(self):
@@ -26494,6 +32899,42 @@ class EventType(bb.Union):
             raise AttributeError("tag 'member_transfer_account_contents' not set")
         return self._value
 
+    def get_pending_secondary_email_added(self):
+        """
+        (members) Added pending secondary email
+
+        Only call this if :meth:`is_pending_secondary_email_added` is true.
+
+        :rtype: PendingSecondaryEmailAddedType
+        """
+        if not self.is_pending_secondary_email_added():
+            raise AttributeError("tag 'pending_secondary_email_added' not set")
+        return self._value
+
+    def get_secondary_email_deleted(self):
+        """
+        (members) Deleted secondary email
+
+        Only call this if :meth:`is_secondary_email_deleted` is true.
+
+        :rtype: SecondaryEmailDeletedType
+        """
+        if not self.is_secondary_email_deleted():
+            raise AttributeError("tag 'secondary_email_deleted' not set")
+        return self._value
+
+    def get_secondary_email_verified(self):
+        """
+        (members) Verified secondary email
+
+        Only call this if :meth:`is_secondary_email_verified` is true.
+
+        :rtype: SecondaryEmailVerifiedType
+        """
+        if not self.is_secondary_email_verified():
+            raise AttributeError("tag 'secondary_email_verified' not set")
+        return self._value
+
     def get_secondary_mails_policy_changed(self):
         """
         (members) Secondary mails policy changed
@@ -26506,9 +32947,106 @@ class EventType(bb.Union):
             raise AttributeError("tag 'secondary_mails_policy_changed' not set")
         return self._value
 
+    def get_binder_add_page(self):
+        """
+        (paper) Added Binder page (deprecated, replaced by 'Edited files')
+
+        Only call this if :meth:`is_binder_add_page` is true.
+
+        :rtype: BinderAddPageType
+        """
+        if not self.is_binder_add_page():
+            raise AttributeError("tag 'binder_add_page' not set")
+        return self._value
+
+    def get_binder_add_section(self):
+        """
+        (paper) Added Binder section (deprecated, replaced by 'Edited files')
+
+        Only call this if :meth:`is_binder_add_section` is true.
+
+        :rtype: BinderAddSectionType
+        """
+        if not self.is_binder_add_section():
+            raise AttributeError("tag 'binder_add_section' not set")
+        return self._value
+
+    def get_binder_remove_page(self):
+        """
+        (paper) Removed Binder page (deprecated, replaced by 'Edited files')
+
+        Only call this if :meth:`is_binder_remove_page` is true.
+
+        :rtype: BinderRemovePageType
+        """
+        if not self.is_binder_remove_page():
+            raise AttributeError("tag 'binder_remove_page' not set")
+        return self._value
+
+    def get_binder_remove_section(self):
+        """
+        (paper) Removed Binder section (deprecated, replaced by 'Edited files')
+
+        Only call this if :meth:`is_binder_remove_section` is true.
+
+        :rtype: BinderRemoveSectionType
+        """
+        if not self.is_binder_remove_section():
+            raise AttributeError("tag 'binder_remove_section' not set")
+        return self._value
+
+    def get_binder_rename_page(self):
+        """
+        (paper) Renamed Binder page (deprecated, replaced by 'Edited files')
+
+        Only call this if :meth:`is_binder_rename_page` is true.
+
+        :rtype: BinderRenamePageType
+        """
+        if not self.is_binder_rename_page():
+            raise AttributeError("tag 'binder_rename_page' not set")
+        return self._value
+
+    def get_binder_rename_section(self):
+        """
+        (paper) Renamed Binder section (deprecated, replaced by 'Edited files')
+
+        Only call this if :meth:`is_binder_rename_section` is true.
+
+        :rtype: BinderRenameSectionType
+        """
+        if not self.is_binder_rename_section():
+            raise AttributeError("tag 'binder_rename_section' not set")
+        return self._value
+
+    def get_binder_reorder_page(self):
+        """
+        (paper) Reordered Binder page (deprecated, replaced by 'Edited files')
+
+        Only call this if :meth:`is_binder_reorder_page` is true.
+
+        :rtype: BinderReorderPageType
+        """
+        if not self.is_binder_reorder_page():
+            raise AttributeError("tag 'binder_reorder_page' not set")
+        return self._value
+
+    def get_binder_reorder_section(self):
+        """
+        (paper) Reordered Binder section (deprecated, replaced by 'Edited
+        files')
+
+        Only call this if :meth:`is_binder_reorder_section` is true.
+
+        :rtype: BinderReorderSectionType
+        """
+        if not self.is_binder_reorder_section():
+            raise AttributeError("tag 'binder_reorder_section' not set")
+        return self._value
+
     def get_paper_content_add_member(self):
         """
-        (paper) Added team member to Paper doc/folder
+        (paper) Added users and/or groups to Paper doc/folder
 
         Only call this if :meth:`is_paper_content_add_member` is true.
 
@@ -26580,7 +33118,7 @@ class EventType(bb.Union):
 
     def get_paper_content_remove_member(self):
         """
-        (paper) Removed team member from Paper doc/folder
+        (paper) Removed users and/or groups from Paper doc/folder
 
         Only call this if :meth:`is_paper_content_remove_member` is true.
 
@@ -26628,7 +33166,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_change_member_role(self):
         """
-        (paper) Changed team member permissions for Paper doc
+        (paper) Changed member permissions for Paper doc
 
         Only call this if :meth:`is_paper_doc_change_member_role` is true.
 
@@ -26737,7 +33275,7 @@ class EventType(bb.Union):
 
     def get_paper_doc_mention(self):
         """
-        (paper) Mentioned team member in Paper doc
+        (paper) Mentioned user in Paper doc
 
         Only call this if :meth:`is_paper_doc_mention` is true.
 
@@ -26809,7 +33347,8 @@ class EventType(bb.Union):
 
     def get_paper_doc_team_invite(self):
         """
-        (paper) Shared Paper doc with team member (deprecated, no longer logged)
+        (paper) Shared Paper doc with users and/or groups (deprecated, no longer
+        logged)
 
         Only call this if :meth:`is_paper_doc_team_invite` is true.
 
@@ -26945,7 +33484,8 @@ class EventType(bb.Union):
 
     def get_paper_folder_team_invite(self):
         """
-        (paper) Shared Paper folder with member (deprecated, no longer logged)
+        (paper) Shared Paper folder with users and/or groups (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_paper_folder_team_invite` is true.
 
@@ -26953,6 +33493,18 @@ class EventType(bb.Union):
         """
         if not self.is_paper_folder_team_invite():
             raise AttributeError("tag 'paper_folder_team_invite' not set")
+        return self._value
+
+    def get_paper_published_link_change_permission(self):
+        """
+        (paper) Changed permissions for published doc
+
+        Only call this if :meth:`is_paper_published_link_change_permission` is true.
+
+        :rtype: PaperPublishedLinkChangePermissionType
+        """
+        if not self.is_paper_published_link_change_permission():
+            raise AttributeError("tag 'paper_published_link_change_permission' not set")
         return self._value
 
     def get_paper_published_link_create(self):
@@ -27063,6 +33615,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'export_members_report' not set")
         return self._value
 
+    def get_export_members_report_fail(self):
+        """
+        (reports) Failed to create members data report
+
+        Only call this if :meth:`is_export_members_report_fail` is true.
+
+        :rtype: ExportMembersReportFailType
+        """
+        if not self.is_export_members_report_fail():
+            raise AttributeError("tag 'export_members_report_fail' not set")
+        return self._value
+
     def get_paper_admin_export_start(self):
         """
         (reports) Exported all team Paper docs
@@ -27121,6 +33685,66 @@ class EventType(bb.Union):
         """
         if not self.is_collection_share():
             raise AttributeError("tag 'collection_share' not set")
+        return self._value
+
+    def get_file_transfers_file_add(self):
+        """
+        (sharing) Transfer files added
+
+        Only call this if :meth:`is_file_transfers_file_add` is true.
+
+        :rtype: FileTransfersFileAddType
+        """
+        if not self.is_file_transfers_file_add():
+            raise AttributeError("tag 'file_transfers_file_add' not set")
+        return self._value
+
+    def get_file_transfers_transfer_delete(self):
+        """
+        (sharing) Deleted transfer
+
+        Only call this if :meth:`is_file_transfers_transfer_delete` is true.
+
+        :rtype: FileTransfersTransferDeleteType
+        """
+        if not self.is_file_transfers_transfer_delete():
+            raise AttributeError("tag 'file_transfers_transfer_delete' not set")
+        return self._value
+
+    def get_file_transfers_transfer_download(self):
+        """
+        (sharing) Transfer downloaded
+
+        Only call this if :meth:`is_file_transfers_transfer_download` is true.
+
+        :rtype: FileTransfersTransferDownloadType
+        """
+        if not self.is_file_transfers_transfer_download():
+            raise AttributeError("tag 'file_transfers_transfer_download' not set")
+        return self._value
+
+    def get_file_transfers_transfer_send(self):
+        """
+        (sharing) Sent transfer
+
+        Only call this if :meth:`is_file_transfers_transfer_send` is true.
+
+        :rtype: FileTransfersTransferSendType
+        """
+        if not self.is_file_transfers_transfer_send():
+            raise AttributeError("tag 'file_transfers_transfer_send' not set")
+        return self._value
+
+    def get_file_transfers_transfer_view(self):
+        """
+        (sharing) Viewed transfer
+
+        Only call this if :meth:`is_file_transfers_transfer_view` is true.
+
+        :rtype: FileTransfersTransferViewType
+        """
+        if not self.is_file_transfers_transfer_view():
+            raise AttributeError("tag 'file_transfers_transfer_view' not set")
         return self._value
 
     def get_note_acl_invite_only(self):
@@ -27379,6 +34003,7 @@ class EventType(bb.Union):
     def get_shared_content_add_link_expiry(self):
         """
         (sharing) Added expiration date to link for shared file/folder
+        (deprecated, no longer logged)
 
         Only call this if :meth:`is_shared_content_add_link_expiry` is true.
 
@@ -27390,7 +34015,8 @@ class EventType(bb.Union):
 
     def get_shared_content_add_link_password(self):
         """
-        (sharing) Added password to link for shared file/folder
+        (sharing) Added password to link for shared file/folder (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_shared_content_add_link_password` is true.
 
@@ -27415,6 +34041,7 @@ class EventType(bb.Union):
     def get_shared_content_change_downloads_policy(self):
         """
         (sharing) Changed whether members can download shared file/folder
+        (deprecated, no longer logged)
 
         Only call this if :meth:`is_shared_content_change_downloads_policy` is true.
 
@@ -27439,7 +34066,8 @@ class EventType(bb.Union):
 
     def get_shared_content_change_link_audience(self):
         """
-        (sharing) Changed link audience of shared file/folder
+        (sharing) Changed link audience of shared file/folder (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_shared_content_change_link_audience` is true.
 
@@ -27451,7 +34079,8 @@ class EventType(bb.Union):
 
     def get_shared_content_change_link_expiry(self):
         """
-        (sharing) Changed link expiration of shared file/folder
+        (sharing) Changed link expiration of shared file/folder (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_shared_content_change_link_expiry` is true.
 
@@ -27463,7 +34092,8 @@ class EventType(bb.Union):
 
     def get_shared_content_change_link_password(self):
         """
-        (sharing) Changed link password of shared file/folder
+        (sharing) Changed link password of shared file/folder (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_shared_content_change_link_password` is true.
 
@@ -27561,6 +34191,7 @@ class EventType(bb.Union):
     def get_shared_content_remove_link_expiry(self):
         """
         (sharing) Removed link expiration date of shared file/folder
+        (deprecated, no longer logged)
 
         Only call this if :meth:`is_shared_content_remove_link_expiry` is true.
 
@@ -27572,7 +34203,8 @@ class EventType(bb.Union):
 
     def get_shared_content_remove_link_password(self):
         """
-        (sharing) Removed link password of shared file/folder
+        (sharing) Removed link password of shared file/folder (deprecated, no
+        longer logged)
 
         Only call this if :meth:`is_shared_content_remove_link_password` is true.
 
@@ -27606,10 +34238,34 @@ class EventType(bb.Union):
             raise AttributeError("tag 'shared_content_request_access' not set")
         return self._value
 
+    def get_shared_content_restore_invitees(self):
+        """
+        (sharing) Restored shared file/folder invitees
+
+        Only call this if :meth:`is_shared_content_restore_invitees` is true.
+
+        :rtype: SharedContentRestoreInviteesType
+        """
+        if not self.is_shared_content_restore_invitees():
+            raise AttributeError("tag 'shared_content_restore_invitees' not set")
+        return self._value
+
+    def get_shared_content_restore_member(self):
+        """
+        (sharing) Restored users and/or groups to membership of shared
+        file/folder
+
+        Only call this if :meth:`is_shared_content_restore_member` is true.
+
+        :rtype: SharedContentRestoreMemberType
+        """
+        if not self.is_shared_content_restore_member():
+            raise AttributeError("tag 'shared_content_restore_member' not set")
+        return self._value
+
     def get_shared_content_unshare(self):
         """
-        (sharing) Unshared file/folder by clearing membership and turning off
-        link
+        (sharing) Unshared file/folder by clearing membership
 
         Only call this if :meth:`is_shared_content_unshare` is true.
 
@@ -27846,6 +34502,114 @@ class EventType(bb.Union):
         """
         if not self.is_shared_link_remove_expiry():
             raise AttributeError("tag 'shared_link_remove_expiry' not set")
+        return self._value
+
+    def get_shared_link_settings_add_expiration(self):
+        """
+        (sharing) Added an expiration date to the shared link
+
+        Only call this if :meth:`is_shared_link_settings_add_expiration` is true.
+
+        :rtype: SharedLinkSettingsAddExpirationType
+        """
+        if not self.is_shared_link_settings_add_expiration():
+            raise AttributeError("tag 'shared_link_settings_add_expiration' not set")
+        return self._value
+
+    def get_shared_link_settings_add_password(self):
+        """
+        (sharing) Added a password to the shared link
+
+        Only call this if :meth:`is_shared_link_settings_add_password` is true.
+
+        :rtype: SharedLinkSettingsAddPasswordType
+        """
+        if not self.is_shared_link_settings_add_password():
+            raise AttributeError("tag 'shared_link_settings_add_password' not set")
+        return self._value
+
+    def get_shared_link_settings_allow_download_disabled(self):
+        """
+        (sharing) Disabled downloads
+
+        Only call this if :meth:`is_shared_link_settings_allow_download_disabled` is true.
+
+        :rtype: SharedLinkSettingsAllowDownloadDisabledType
+        """
+        if not self.is_shared_link_settings_allow_download_disabled():
+            raise AttributeError("tag 'shared_link_settings_allow_download_disabled' not set")
+        return self._value
+
+    def get_shared_link_settings_allow_download_enabled(self):
+        """
+        (sharing) Enabled downloads
+
+        Only call this if :meth:`is_shared_link_settings_allow_download_enabled` is true.
+
+        :rtype: SharedLinkSettingsAllowDownloadEnabledType
+        """
+        if not self.is_shared_link_settings_allow_download_enabled():
+            raise AttributeError("tag 'shared_link_settings_allow_download_enabled' not set")
+        return self._value
+
+    def get_shared_link_settings_change_audience(self):
+        """
+        (sharing) Changed the audience of the shared link
+
+        Only call this if :meth:`is_shared_link_settings_change_audience` is true.
+
+        :rtype: SharedLinkSettingsChangeAudienceType
+        """
+        if not self.is_shared_link_settings_change_audience():
+            raise AttributeError("tag 'shared_link_settings_change_audience' not set")
+        return self._value
+
+    def get_shared_link_settings_change_expiration(self):
+        """
+        (sharing) Changed the expiration date of the shared link
+
+        Only call this if :meth:`is_shared_link_settings_change_expiration` is true.
+
+        :rtype: SharedLinkSettingsChangeExpirationType
+        """
+        if not self.is_shared_link_settings_change_expiration():
+            raise AttributeError("tag 'shared_link_settings_change_expiration' not set")
+        return self._value
+
+    def get_shared_link_settings_change_password(self):
+        """
+        (sharing) Changed the password of the shared link
+
+        Only call this if :meth:`is_shared_link_settings_change_password` is true.
+
+        :rtype: SharedLinkSettingsChangePasswordType
+        """
+        if not self.is_shared_link_settings_change_password():
+            raise AttributeError("tag 'shared_link_settings_change_password' not set")
+        return self._value
+
+    def get_shared_link_settings_remove_expiration(self):
+        """
+        (sharing) Removed the expiration date from the shared link
+
+        Only call this if :meth:`is_shared_link_settings_remove_expiration` is true.
+
+        :rtype: SharedLinkSettingsRemoveExpirationType
+        """
+        if not self.is_shared_link_settings_remove_expiration():
+            raise AttributeError("tag 'shared_link_settings_remove_expiration' not set")
+        return self._value
+
+    def get_shared_link_settings_remove_password(self):
+        """
+        (sharing) Removed the password from the shared link
+
+        Only call this if :meth:`is_shared_link_settings_remove_password` is true.
+
+        :rtype: SharedLinkSettingsRemovePasswordType
+        """
+        if not self.is_shared_link_settings_remove_password():
+            raise AttributeError("tag 'shared_link_settings_remove_password' not set")
         return self._value
 
     def get_shared_link_share(self):
@@ -28452,6 +35216,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'data_placement_restriction_satisfy_policy' not set")
         return self._value
 
+    def get_device_approvals_add_exception(self):
+        """
+        (team_policies) Added members to device approvals exception list
+
+        Only call this if :meth:`is_device_approvals_add_exception` is true.
+
+        :rtype: DeviceApprovalsAddExceptionType
+        """
+        if not self.is_device_approvals_add_exception():
+            raise AttributeError("tag 'device_approvals_add_exception' not set")
+        return self._value
+
     def get_device_approvals_change_desktop_policy(self):
         """
         (team_policies) Set/removed limit on number of computers member can link
@@ -28502,6 +35278,18 @@ class EventType(bb.Union):
         """
         if not self.is_device_approvals_change_unlink_action():
             raise AttributeError("tag 'device_approvals_change_unlink_action' not set")
+        return self._value
+
+    def get_device_approvals_remove_exception(self):
+        """
+        (team_policies) Removed members from device approvals exception list
+
+        Only call this if :meth:`is_device_approvals_remove_exception` is true.
+
+        :rtype: DeviceApprovalsRemoveExceptionType
+        """
+        if not self.is_device_approvals_remove_exception():
+            raise AttributeError("tag 'device_approvals_remove_exception' not set")
         return self._value
 
     def get_directory_restrictions_add_members(self):
@@ -28589,6 +35377,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'file_comments_change_policy' not set")
         return self._value
 
+    def get_file_locking_policy_changed(self):
+        """
+        (team_policies) Changed file locking policy for team
+
+        Only call this if :meth:`is_file_locking_policy_changed` is true.
+
+        :rtype: FileLockingPolicyChangedType
+        """
+        if not self.is_file_locking_policy_changed():
+            raise AttributeError("tag 'file_locking_policy_changed' not set")
+        return self._value
+
     def get_file_requests_change_policy(self):
         """
         (team_policies) Enabled/disabled file requests
@@ -28625,6 +35425,18 @@ class EventType(bb.Union):
         """
         if not self.is_file_requests_emails_restricted_to_team_only():
             raise AttributeError("tag 'file_requests_emails_restricted_to_team_only' not set")
+        return self._value
+
+    def get_file_transfers_policy_changed(self):
+        """
+        (team_policies) Changed file transfers policy for team
+
+        Only call this if :meth:`is_file_transfers_policy_changed` is true.
+
+        :rtype: FileTransfersPolicyChangedType
+        """
+        if not self.is_file_transfers_policy_changed():
+            raise AttributeError("tag 'file_transfers_policy_changed' not set")
         return self._value
 
     def get_google_sso_change_policy(self):
@@ -28860,6 +35672,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'paper_enabled_users_group_removal' not set")
         return self._value
 
+    def get_password_strength_requirements_change_policy(self):
+        """
+        (team_policies) Changed team password strength requirements
+
+        Only call this if :meth:`is_password_strength_requirements_change_policy` is true.
+
+        :rtype: PasswordStrengthRequirementsChangePolicyType
+        """
+        if not self.is_password_strength_requirements_change_policy():
+            raise AttributeError("tag 'password_strength_requirements_change_policy' not set")
+        return self._value
+
     def get_permanent_delete_change_policy(self):
         """
         (team_policies) Enabled/disabled ability of team members to permanently
@@ -28883,6 +35707,18 @@ class EventType(bb.Union):
         """
         if not self.is_reseller_support_change_policy():
             raise AttributeError("tag 'reseller_support_change_policy' not set")
+        return self._value
+
+    def get_rewind_policy_changed(self):
+        """
+        (team_policies) Changed Rewind policy for team
+
+        Only call this if :meth:`is_rewind_policy_changed` is true.
+
+        :rtype: RewindPolicyChangedType
+        """
+        if not self.is_rewind_policy_changed():
+            raise AttributeError("tag 'rewind_policy_changed' not set")
         return self._value
 
     def get_sharing_change_folder_join_policy(self):
@@ -28962,6 +35798,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'showcase_change_external_sharing_policy' not set")
         return self._value
 
+    def get_smarter_smart_sync_policy_changed(self):
+        """
+        (team_policies) Changed automatic Smart Sync setting for team
+
+        Only call this if :meth:`is_smarter_smart_sync_policy_changed` is true.
+
+        :rtype: SmarterSmartSyncPolicyChangedType
+        """
+        if not self.is_smarter_smart_sync_policy_changed():
+            raise AttributeError("tag 'smarter_smart_sync_policy_changed' not set")
+        return self._value
+
     def get_smart_sync_change_policy(self):
         """
         (team_policies) Changed default Smart Sync setting for team members
@@ -29034,6 +35882,31 @@ class EventType(bb.Union):
             raise AttributeError("tag 'team_selective_sync_policy_changed' not set")
         return self._value
 
+    def get_team_sharing_whitelist_subjects_changed(self):
+        """
+        (team_policies) Edited the approved list for sharing externally
+
+        Only call this if :meth:`is_team_sharing_whitelist_subjects_changed` is true.
+
+        :rtype: TeamSharingWhitelistSubjectsChangedType
+        """
+        if not self.is_team_sharing_whitelist_subjects_changed():
+            raise AttributeError("tag 'team_sharing_whitelist_subjects_changed' not set")
+        return self._value
+
+    def get_tfa_add_exception(self):
+        """
+        (team_policies) Added members to two factor authentication exception
+        list
+
+        Only call this if :meth:`is_tfa_add_exception` is true.
+
+        :rtype: TfaAddExceptionType
+        """
+        if not self.is_tfa_add_exception():
+            raise AttributeError("tag 'tfa_add_exception' not set")
+        return self._value
+
     def get_tfa_change_policy(self):
         """
         (team_policies) Changed two-step verification setting for team
@@ -29044,6 +35917,19 @@ class EventType(bb.Union):
         """
         if not self.is_tfa_change_policy():
             raise AttributeError("tag 'tfa_change_policy' not set")
+        return self._value
+
+    def get_tfa_remove_exception(self):
+        """
+        (team_policies) Removed members from two factor authentication exception
+        list
+
+        Only call this if :meth:`is_tfa_remove_exception` is true.
+
+        :rtype: TfaRemoveExceptionType
+        """
+        if not self.is_tfa_remove_exception():
+            raise AttributeError("tag 'tfa_remove_exception' not set")
         return self._value
 
     def get_two_account_change_policy(self):
@@ -29069,6 +35955,30 @@ class EventType(bb.Union):
         """
         if not self.is_viewer_info_policy_changed():
             raise AttributeError("tag 'viewer_info_policy_changed' not set")
+        return self._value
+
+    def get_watermarking_policy_changed(self):
+        """
+        (team_policies) Changed watermarking policy for team
+
+        Only call this if :meth:`is_watermarking_policy_changed` is true.
+
+        :rtype: WatermarkingPolicyChangedType
+        """
+        if not self.is_watermarking_policy_changed():
+            raise AttributeError("tag 'watermarking_policy_changed' not set")
+        return self._value
+
+    def get_web_sessions_change_active_session_limit(self):
+        """
+        (team_policies) Changed limit on active sessions per member
+
+        Only call this if :meth:`is_web_sessions_change_active_session_limit` is true.
+
+        :rtype: WebSessionsChangeActiveSessionLimitType
+        """
+        if not self.is_web_sessions_change_active_session_limit():
+            raise AttributeError("tag 'web_sessions_change_active_session_limit' not set")
         return self._value
 
     def get_web_sessions_change_fixed_length_policy(self):
@@ -29265,6 +36175,67 @@ class EventType(bb.Union):
             raise AttributeError("tag 'tfa_reset' not set")
         return self._value
 
+    def get_changed_enterprise_admin_role(self):
+        """
+        (trusted_teams) Changed enterprise admin role
+
+        Only call this if :meth:`is_changed_enterprise_admin_role` is true.
+
+        :rtype: ChangedEnterpriseAdminRoleType
+        """
+        if not self.is_changed_enterprise_admin_role():
+            raise AttributeError("tag 'changed_enterprise_admin_role' not set")
+        return self._value
+
+    def get_changed_enterprise_connected_team_status(self):
+        """
+        (trusted_teams) Changed enterprise-connected team status
+
+        Only call this if :meth:`is_changed_enterprise_connected_team_status` is true.
+
+        :rtype: ChangedEnterpriseConnectedTeamStatusType
+        """
+        if not self.is_changed_enterprise_connected_team_status():
+            raise AttributeError("tag 'changed_enterprise_connected_team_status' not set")
+        return self._value
+
+    def get_ended_enterprise_admin_session(self):
+        """
+        (trusted_teams) Ended enterprise admin session
+
+        Only call this if :meth:`is_ended_enterprise_admin_session` is true.
+
+        :rtype: EndedEnterpriseAdminSessionType
+        """
+        if not self.is_ended_enterprise_admin_session():
+            raise AttributeError("tag 'ended_enterprise_admin_session' not set")
+        return self._value
+
+    def get_ended_enterprise_admin_session_deprecated(self):
+        """
+        (trusted_teams) Ended enterprise admin session (deprecated, replaced by
+        'Ended enterprise admin session')
+
+        Only call this if :meth:`is_ended_enterprise_admin_session_deprecated` is true.
+
+        :rtype: EndedEnterpriseAdminSessionDeprecatedType
+        """
+        if not self.is_ended_enterprise_admin_session_deprecated():
+            raise AttributeError("tag 'ended_enterprise_admin_session_deprecated' not set")
+        return self._value
+
+    def get_enterprise_settings_locking(self):
+        """
+        (trusted_teams) Changed who can update a setting
+
+        Only call this if :meth:`is_enterprise_settings_locking` is true.
+
+        :rtype: EnterpriseSettingsLockingType
+        """
+        if not self.is_enterprise_settings_locking():
+            raise AttributeError("tag 'enterprise_settings_locking' not set")
+        return self._value
+
     def get_guest_admin_change_status(self):
         """
         (trusted_teams) Changed guest team admin status
@@ -29275,6 +36246,18 @@ class EventType(bb.Union):
         """
         if not self.is_guest_admin_change_status():
             raise AttributeError("tag 'guest_admin_change_status' not set")
+        return self._value
+
+    def get_started_enterprise_admin_session(self):
+        """
+        (trusted_teams) Started enterprise admin session
+
+        Only call this if :meth:`is_started_enterprise_admin_session` is true.
+
+        :rtype: StartedEnterpriseAdminSessionType
+        """
+        if not self.is_started_enterprise_admin_session():
+            raise AttributeError("tag 'started_enterprise_admin_session' not set")
         return self._value
 
     def get_team_merge_request_accepted(self):
@@ -29531,6 +36514,108 @@ class ExportMembersReportDetails(bb.Struct):
         return 'ExportMembersReportDetails()'
 
 ExportMembersReportDetails_validator = bv.Struct(ExportMembersReportDetails)
+
+class ExportMembersReportFailDetails(bb.Struct):
+    """
+    Failed to create members data report.
+
+    :ivar team_log.ExportMembersReportFailDetails.failure_reason: Failure
+        reason.
+    """
+
+    __slots__ = [
+        '_failure_reason_value',
+        '_failure_reason_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 failure_reason=None):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+        if failure_reason is not None:
+            self.failure_reason = failure_reason
+
+    @property
+    def failure_reason(self):
+        """
+        Failure reason.
+
+        :rtype: team.TeamReportFailureReason
+        """
+        if self._failure_reason_present:
+            return self._failure_reason_value
+        else:
+            raise AttributeError("missing required field 'failure_reason'")
+
+    @failure_reason.setter
+    def failure_reason(self, val):
+        self._failure_reason_validator.validate_type_only(val)
+        self._failure_reason_value = val
+        self._failure_reason_present = True
+
+    @failure_reason.deleter
+    def failure_reason(self):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportMembersReportFailDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportMembersReportFailDetails(failure_reason={!r})'.format(
+            self._failure_reason_value,
+        )
+
+ExportMembersReportFailDetails_validator = bv.Struct(ExportMembersReportFailDetails)
+
+class ExportMembersReportFailType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportMembersReportFailType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportMembersReportFailType(description={!r})'.format(
+            self._description_value,
+        )
+
+ExportMembersReportFailType_validator = bv.Struct(ExportMembersReportFailType)
 
 class ExportMembersReportType(bb.Struct):
 
@@ -29967,6 +37052,367 @@ class FailureDetailsLogInfo(bb.Struct):
         )
 
 FailureDetailsLogInfo_validator = bv.Struct(FailureDetailsLogInfo)
+
+class FedAdminRole(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    not_enterprise_admin = None
+    # Attribute is overwritten below the class definition
+    enterprise_admin = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_not_enterprise_admin(self):
+        """
+        Check if the union tag is ``not_enterprise_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_enterprise_admin'
+
+    def is_enterprise_admin(self):
+        """
+        Check if the union tag is ``enterprise_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enterprise_admin'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FedAdminRole, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FedAdminRole(%r, %r)' % (self._tag, self._value)
+
+FedAdminRole_validator = bv.Union(FedAdminRole)
+
+class FedExtraDetails(bb.Union):
+    """
+    More details about the organization or team.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamDetails FedExtraDetails.team: More details about the team.
+    :ivar OrganizationDetails FedExtraDetails.organization: More details about
+        the organization.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def team(cls, val):
+        """
+        Create an instance of this class set to the ``team`` tag with value
+        ``val``.
+
+        :param TeamDetails val:
+        :rtype: FedExtraDetails
+        """
+        return cls('team', val)
+
+    @classmethod
+    def organization(cls, val):
+        """
+        Create an instance of this class set to the ``organization`` tag with
+        value ``val``.
+
+        :param OrganizationDetails val:
+        :rtype: FedExtraDetails
+        """
+        return cls('organization', val)
+
+    def is_team(self):
+        """
+        Check if the union tag is ``team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team'
+
+    def is_organization(self):
+        """
+        Check if the union tag is ``organization``.
+
+        :rtype: bool
+        """
+        return self._tag == 'organization'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_team(self):
+        """
+        More details about the team.
+
+        Only call this if :meth:`is_team` is true.
+
+        :rtype: TeamDetails
+        """
+        if not self.is_team():
+            raise AttributeError("tag 'team' not set")
+        return self._value
+
+    def get_organization(self):
+        """
+        More details about the organization.
+
+        Only call this if :meth:`is_organization` is true.
+
+        :rtype: OrganizationDetails
+        """
+        if not self.is_organization():
+            raise AttributeError("tag 'organization' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FedExtraDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FedExtraDetails(%r, %r)' % (self._tag, self._value)
+
+FedExtraDetails_validator = bv.Union(FedExtraDetails)
+
+class FedHandshakeAction(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invited = None
+    # Attribute is overwritten below the class definition
+    accepted_invite = None
+    # Attribute is overwritten below the class definition
+    rejected_invite = None
+    # Attribute is overwritten below the class definition
+    canceled_invite = None
+    # Attribute is overwritten below the class definition
+    removed_team = None
+    # Attribute is overwritten below the class definition
+    invite_expired = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invited(self):
+        """
+        Check if the union tag is ``invited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invited'
+
+    def is_accepted_invite(self):
+        """
+        Check if the union tag is ``accepted_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'accepted_invite'
+
+    def is_rejected_invite(self):
+        """
+        Check if the union tag is ``rejected_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rejected_invite'
+
+    def is_canceled_invite(self):
+        """
+        Check if the union tag is ``canceled_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'canceled_invite'
+
+    def is_removed_team(self):
+        """
+        Check if the union tag is ``removed_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'removed_team'
+
+    def is_invite_expired(self):
+        """
+        Check if the union tag is ``invite_expired``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_expired'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FedHandshakeAction, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FedHandshakeAction(%r, %r)' % (self._tag, self._value)
+
+FedHandshakeAction_validator = bv.Union(FedHandshakeAction)
+
+class FederationStatusChangeAdditionalInfo(bb.Union):
+    """
+    Additional information about the organization or connected team
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar ConnectedTeamName
+        FederationStatusChangeAdditionalInfo.connected_team_name: The name of
+        the team.
+    :ivar NonTrustedTeamDetails
+        FederationStatusChangeAdditionalInfo.non_trusted_team_details: The email
+        to which the request was sent.
+    :ivar OrganizationName
+        FederationStatusChangeAdditionalInfo.organization_name: The name of the
+        organization.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def connected_team_name(cls, val):
+        """
+        Create an instance of this class set to the ``connected_team_name`` tag
+        with value ``val``.
+
+        :param ConnectedTeamName val:
+        :rtype: FederationStatusChangeAdditionalInfo
+        """
+        return cls('connected_team_name', val)
+
+    @classmethod
+    def non_trusted_team_details(cls, val):
+        """
+        Create an instance of this class set to the ``non_trusted_team_details``
+        tag with value ``val``.
+
+        :param NonTrustedTeamDetails val:
+        :rtype: FederationStatusChangeAdditionalInfo
+        """
+        return cls('non_trusted_team_details', val)
+
+    @classmethod
+    def organization_name(cls, val):
+        """
+        Create an instance of this class set to the ``organization_name`` tag
+        with value ``val``.
+
+        :param OrganizationName val:
+        :rtype: FederationStatusChangeAdditionalInfo
+        """
+        return cls('organization_name', val)
+
+    def is_connected_team_name(self):
+        """
+        Check if the union tag is ``connected_team_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'connected_team_name'
+
+    def is_non_trusted_team_details(self):
+        """
+        Check if the union tag is ``non_trusted_team_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'non_trusted_team_details'
+
+    def is_organization_name(self):
+        """
+        Check if the union tag is ``organization_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'organization_name'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_connected_team_name(self):
+        """
+        The name of the team.
+
+        Only call this if :meth:`is_connected_team_name` is true.
+
+        :rtype: ConnectedTeamName
+        """
+        if not self.is_connected_team_name():
+            raise AttributeError("tag 'connected_team_name' not set")
+        return self._value
+
+    def get_non_trusted_team_details(self):
+        """
+        The email to which the request was sent.
+
+        Only call this if :meth:`is_non_trusted_team_details` is true.
+
+        :rtype: NonTrustedTeamDetails
+        """
+        if not self.is_non_trusted_team_details():
+            raise AttributeError("tag 'non_trusted_team_details' not set")
+        return self._value
+
+    def get_organization_name(self):
+        """
+        The name of the organization.
+
+        Only call this if :meth:`is_organization_name` is true.
+
+        :rtype: OrganizationName
+        """
+        if not self.is_organization_name():
+            raise AttributeError("tag 'organization_name' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FederationStatusChangeAdditionalInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FederationStatusChangeAdditionalInfo(%r, %r)' % (self._tag, self._value)
+
+FederationStatusChangeAdditionalInfo_validator = bv.Union(FederationStatusChangeAdditionalInfo)
 
 class FileAddCommentDetails(bb.Struct):
     """
@@ -31239,6 +38685,276 @@ class FileLikeCommentType(bb.Struct):
         )
 
 FileLikeCommentType_validator = bv.Struct(FileLikeCommentType)
+
+class FileLockingLockStatusChangedDetails(bb.Struct):
+    """
+    Locked/unlocked editing for a file.
+
+    :ivar team_log.FileLockingLockStatusChangedDetails.previous_value: Previous
+        lock status of the file.
+    :ivar team_log.FileLockingLockStatusChangedDetails.new_value: New lock
+        status of the file.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Previous lock status of the file.
+
+        :rtype: LockStatus
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New lock status of the file.
+
+        :rtype: LockStatus
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockingLockStatusChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLockingLockStatusChangedDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+FileLockingLockStatusChangedDetails_validator = bv.Struct(FileLockingLockStatusChangedDetails)
+
+class FileLockingLockStatusChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockingLockStatusChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLockingLockStatusChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileLockingLockStatusChangedType_validator = bv.Struct(FileLockingLockStatusChangedType)
+
+class FileLockingPolicyChangedDetails(bb.Struct):
+    """
+    Changed file locking policy for team.
+
+    :ivar team_log.FileLockingPolicyChangedDetails.new_value: New file locking
+        policy.
+    :ivar team_log.FileLockingPolicyChangedDetails.previous_value: Previous file
+        locking policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New file locking policy.
+
+        :rtype: team_policies.FileLockingPolicyState
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous file locking policy.
+
+        :rtype: team_policies.FileLockingPolicyState
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockingPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLockingPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+FileLockingPolicyChangedDetails_validator = bv.Struct(FileLockingPolicyChangedDetails)
+
+class FileLockingPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockingPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLockingPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileLockingPolicyChangedType_validator = bv.Struct(FileLockingPolicyChangedType)
 
 class FileOrFolderLogInfo(bb.Struct):
     """
@@ -33507,6 +41223,699 @@ class FileSaveCopyReferenceType(bb.Struct):
 
 FileSaveCopyReferenceType_validator = bv.Struct(FileSaveCopyReferenceType)
 
+class FileTransfersFileAddDetails(bb.Struct):
+    """
+    Transfer files added.
+
+    :ivar team_log.FileTransfersFileAddDetails.file_transfer_id: Transfer id.
+    """
+
+    __slots__ = [
+        '_file_transfer_id_value',
+        '_file_transfer_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file_transfer_id=None):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+        if file_transfer_id is not None:
+            self.file_transfer_id = file_transfer_id
+
+    @property
+    def file_transfer_id(self):
+        """
+        Transfer id.
+
+        :rtype: str
+        """
+        if self._file_transfer_id_present:
+            return self._file_transfer_id_value
+        else:
+            raise AttributeError("missing required field 'file_transfer_id'")
+
+    @file_transfer_id.setter
+    def file_transfer_id(self, val):
+        val = self._file_transfer_id_validator.validate(val)
+        self._file_transfer_id_value = val
+        self._file_transfer_id_present = True
+
+    @file_transfer_id.deleter
+    def file_transfer_id(self):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersFileAddDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersFileAddDetails(file_transfer_id={!r})'.format(
+            self._file_transfer_id_value,
+        )
+
+FileTransfersFileAddDetails_validator = bv.Struct(FileTransfersFileAddDetails)
+
+class FileTransfersFileAddType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersFileAddType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersFileAddType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileTransfersFileAddType_validator = bv.Struct(FileTransfersFileAddType)
+
+class FileTransfersPolicy(bb.Union):
+    """
+    File transfers policy
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersPolicy(%r, %r)' % (self._tag, self._value)
+
+FileTransfersPolicy_validator = bv.Union(FileTransfersPolicy)
+
+class FileTransfersPolicyChangedDetails(bb.Struct):
+    """
+    Changed file transfers policy for team.
+
+    :ivar team_log.FileTransfersPolicyChangedDetails.new_value: New file
+        transfers policy.
+    :ivar team_log.FileTransfersPolicyChangedDetails.previous_value: Previous
+        file transfers policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New file transfers policy.
+
+        :rtype: FileTransfersPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous file transfers policy.
+
+        :rtype: FileTransfersPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+FileTransfersPolicyChangedDetails_validator = bv.Struct(FileTransfersPolicyChangedDetails)
+
+class FileTransfersPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileTransfersPolicyChangedType_validator = bv.Struct(FileTransfersPolicyChangedType)
+
+class FileTransfersTransferDeleteDetails(bb.Struct):
+    """
+    Deleted transfer.
+
+    :ivar team_log.FileTransfersTransferDeleteDetails.file_transfer_id: Transfer
+        id.
+    """
+
+    __slots__ = [
+        '_file_transfer_id_value',
+        '_file_transfer_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file_transfer_id=None):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+        if file_transfer_id is not None:
+            self.file_transfer_id = file_transfer_id
+
+    @property
+    def file_transfer_id(self):
+        """
+        Transfer id.
+
+        :rtype: str
+        """
+        if self._file_transfer_id_present:
+            return self._file_transfer_id_value
+        else:
+            raise AttributeError("missing required field 'file_transfer_id'")
+
+    @file_transfer_id.setter
+    def file_transfer_id(self, val):
+        val = self._file_transfer_id_validator.validate(val)
+        self._file_transfer_id_value = val
+        self._file_transfer_id_present = True
+
+    @file_transfer_id.deleter
+    def file_transfer_id(self):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersTransferDeleteDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersTransferDeleteDetails(file_transfer_id={!r})'.format(
+            self._file_transfer_id_value,
+        )
+
+FileTransfersTransferDeleteDetails_validator = bv.Struct(FileTransfersTransferDeleteDetails)
+
+class FileTransfersTransferDeleteType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersTransferDeleteType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersTransferDeleteType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileTransfersTransferDeleteType_validator = bv.Struct(FileTransfersTransferDeleteType)
+
+class FileTransfersTransferDownloadDetails(bb.Struct):
+    """
+    Transfer downloaded.
+
+    :ivar team_log.FileTransfersTransferDownloadDetails.file_transfer_id:
+        Transfer id.
+    """
+
+    __slots__ = [
+        '_file_transfer_id_value',
+        '_file_transfer_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file_transfer_id=None):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+        if file_transfer_id is not None:
+            self.file_transfer_id = file_transfer_id
+
+    @property
+    def file_transfer_id(self):
+        """
+        Transfer id.
+
+        :rtype: str
+        """
+        if self._file_transfer_id_present:
+            return self._file_transfer_id_value
+        else:
+            raise AttributeError("missing required field 'file_transfer_id'")
+
+    @file_transfer_id.setter
+    def file_transfer_id(self, val):
+        val = self._file_transfer_id_validator.validate(val)
+        self._file_transfer_id_value = val
+        self._file_transfer_id_present = True
+
+    @file_transfer_id.deleter
+    def file_transfer_id(self):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersTransferDownloadDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersTransferDownloadDetails(file_transfer_id={!r})'.format(
+            self._file_transfer_id_value,
+        )
+
+FileTransfersTransferDownloadDetails_validator = bv.Struct(FileTransfersTransferDownloadDetails)
+
+class FileTransfersTransferDownloadType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersTransferDownloadType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersTransferDownloadType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileTransfersTransferDownloadType_validator = bv.Struct(FileTransfersTransferDownloadType)
+
+class FileTransfersTransferSendDetails(bb.Struct):
+    """
+    Sent transfer.
+
+    :ivar team_log.FileTransfersTransferSendDetails.file_transfer_id: Transfer
+        id.
+    """
+
+    __slots__ = [
+        '_file_transfer_id_value',
+        '_file_transfer_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file_transfer_id=None):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+        if file_transfer_id is not None:
+            self.file_transfer_id = file_transfer_id
+
+    @property
+    def file_transfer_id(self):
+        """
+        Transfer id.
+
+        :rtype: str
+        """
+        if self._file_transfer_id_present:
+            return self._file_transfer_id_value
+        else:
+            raise AttributeError("missing required field 'file_transfer_id'")
+
+    @file_transfer_id.setter
+    def file_transfer_id(self, val):
+        val = self._file_transfer_id_validator.validate(val)
+        self._file_transfer_id_value = val
+        self._file_transfer_id_present = True
+
+    @file_transfer_id.deleter
+    def file_transfer_id(self):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersTransferSendDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersTransferSendDetails(file_transfer_id={!r})'.format(
+            self._file_transfer_id_value,
+        )
+
+FileTransfersTransferSendDetails_validator = bv.Struct(FileTransfersTransferSendDetails)
+
+class FileTransfersTransferSendType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersTransferSendType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersTransferSendType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileTransfersTransferSendType_validator = bv.Struct(FileTransfersTransferSendType)
+
+class FileTransfersTransferViewDetails(bb.Struct):
+    """
+    Viewed transfer.
+
+    :ivar team_log.FileTransfersTransferViewDetails.file_transfer_id: Transfer
+        id.
+    """
+
+    __slots__ = [
+        '_file_transfer_id_value',
+        '_file_transfer_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 file_transfer_id=None):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+        if file_transfer_id is not None:
+            self.file_transfer_id = file_transfer_id
+
+    @property
+    def file_transfer_id(self):
+        """
+        Transfer id.
+
+        :rtype: str
+        """
+        if self._file_transfer_id_present:
+            return self._file_transfer_id_value
+        else:
+            raise AttributeError("missing required field 'file_transfer_id'")
+
+    @file_transfer_id.setter
+    def file_transfer_id(self, val):
+        val = self._file_transfer_id_validator.validate(val)
+        self._file_transfer_id_value = val
+        self._file_transfer_id_present = True
+
+    @file_transfer_id.deleter
+    def file_transfer_id(self):
+        self._file_transfer_id_value = None
+        self._file_transfer_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersTransferViewDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersTransferViewDetails(file_transfer_id={!r})'.format(
+            self._file_transfer_id_value,
+        )
+
+FileTransfersTransferViewDetails_validator = bv.Struct(FileTransfersTransferViewDetails)
+
+class FileTransfersTransferViewType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileTransfersTransferViewType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileTransfersTransferViewType(description={!r})'.format(
+            self._description_value,
+        )
+
+FileTransfersTransferViewType_validator = bv.Struct(FileTransfersTransferViewType)
+
 class FileUnlikeCommentDetails(bb.Struct):
     """
     Unliked file comment.
@@ -33746,6 +42155,381 @@ class FolderLogInfo(FileOrFolderLogInfo):
         )
 
 FolderLogInfo_validator = bv.Struct(FolderLogInfo)
+
+class FolderOverviewDescriptionChangedDetails(bb.Struct):
+    """
+    Updated folder overview.
+
+    :ivar
+        team_log.FolderOverviewDescriptionChangedDetails.folder_overview_location_asset:
+        Folder Overview location position in the Assets list.
+    """
+
+    __slots__ = [
+        '_folder_overview_location_asset_value',
+        '_folder_overview_location_asset_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 folder_overview_location_asset=None):
+        self._folder_overview_location_asset_value = None
+        self._folder_overview_location_asset_present = False
+        if folder_overview_location_asset is not None:
+            self.folder_overview_location_asset = folder_overview_location_asset
+
+    @property
+    def folder_overview_location_asset(self):
+        """
+        Folder Overview location position in the Assets list.
+
+        :rtype: int
+        """
+        if self._folder_overview_location_asset_present:
+            return self._folder_overview_location_asset_value
+        else:
+            raise AttributeError("missing required field 'folder_overview_location_asset'")
+
+    @folder_overview_location_asset.setter
+    def folder_overview_location_asset(self, val):
+        val = self._folder_overview_location_asset_validator.validate(val)
+        self._folder_overview_location_asset_value = val
+        self._folder_overview_location_asset_present = True
+
+    @folder_overview_location_asset.deleter
+    def folder_overview_location_asset(self):
+        self._folder_overview_location_asset_value = None
+        self._folder_overview_location_asset_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderOverviewDescriptionChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FolderOverviewDescriptionChangedDetails(folder_overview_location_asset={!r})'.format(
+            self._folder_overview_location_asset_value,
+        )
+
+FolderOverviewDescriptionChangedDetails_validator = bv.Struct(FolderOverviewDescriptionChangedDetails)
+
+class FolderOverviewDescriptionChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderOverviewDescriptionChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FolderOverviewDescriptionChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+FolderOverviewDescriptionChangedType_validator = bv.Struct(FolderOverviewDescriptionChangedType)
+
+class FolderOverviewItemPinnedDetails(bb.Struct):
+    """
+    Pinned item to folder overview.
+
+    :ivar
+        team_log.FolderOverviewItemPinnedDetails.folder_overview_location_asset:
+        Folder Overview location position in the Assets list.
+    :ivar team_log.FolderOverviewItemPinnedDetails.pinned_items_asset_indices:
+        Pinned items positions in the Assets list.
+    """
+
+    __slots__ = [
+        '_folder_overview_location_asset_value',
+        '_folder_overview_location_asset_present',
+        '_pinned_items_asset_indices_value',
+        '_pinned_items_asset_indices_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 folder_overview_location_asset=None,
+                 pinned_items_asset_indices=None):
+        self._folder_overview_location_asset_value = None
+        self._folder_overview_location_asset_present = False
+        self._pinned_items_asset_indices_value = None
+        self._pinned_items_asset_indices_present = False
+        if folder_overview_location_asset is not None:
+            self.folder_overview_location_asset = folder_overview_location_asset
+        if pinned_items_asset_indices is not None:
+            self.pinned_items_asset_indices = pinned_items_asset_indices
+
+    @property
+    def folder_overview_location_asset(self):
+        """
+        Folder Overview location position in the Assets list.
+
+        :rtype: int
+        """
+        if self._folder_overview_location_asset_present:
+            return self._folder_overview_location_asset_value
+        else:
+            raise AttributeError("missing required field 'folder_overview_location_asset'")
+
+    @folder_overview_location_asset.setter
+    def folder_overview_location_asset(self, val):
+        val = self._folder_overview_location_asset_validator.validate(val)
+        self._folder_overview_location_asset_value = val
+        self._folder_overview_location_asset_present = True
+
+    @folder_overview_location_asset.deleter
+    def folder_overview_location_asset(self):
+        self._folder_overview_location_asset_value = None
+        self._folder_overview_location_asset_present = False
+
+    @property
+    def pinned_items_asset_indices(self):
+        """
+        Pinned items positions in the Assets list.
+
+        :rtype: list of [int]
+        """
+        if self._pinned_items_asset_indices_present:
+            return self._pinned_items_asset_indices_value
+        else:
+            raise AttributeError("missing required field 'pinned_items_asset_indices'")
+
+    @pinned_items_asset_indices.setter
+    def pinned_items_asset_indices(self, val):
+        val = self._pinned_items_asset_indices_validator.validate(val)
+        self._pinned_items_asset_indices_value = val
+        self._pinned_items_asset_indices_present = True
+
+    @pinned_items_asset_indices.deleter
+    def pinned_items_asset_indices(self):
+        self._pinned_items_asset_indices_value = None
+        self._pinned_items_asset_indices_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderOverviewItemPinnedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FolderOverviewItemPinnedDetails(folder_overview_location_asset={!r}, pinned_items_asset_indices={!r})'.format(
+            self._folder_overview_location_asset_value,
+            self._pinned_items_asset_indices_value,
+        )
+
+FolderOverviewItemPinnedDetails_validator = bv.Struct(FolderOverviewItemPinnedDetails)
+
+class FolderOverviewItemPinnedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderOverviewItemPinnedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FolderOverviewItemPinnedType(description={!r})'.format(
+            self._description_value,
+        )
+
+FolderOverviewItemPinnedType_validator = bv.Struct(FolderOverviewItemPinnedType)
+
+class FolderOverviewItemUnpinnedDetails(bb.Struct):
+    """
+    Unpinned item from folder overview.
+
+    :ivar
+        team_log.FolderOverviewItemUnpinnedDetails.folder_overview_location_asset:
+        Folder Overview location position in the Assets list.
+    :ivar team_log.FolderOverviewItemUnpinnedDetails.pinned_items_asset_indices:
+        Pinned items positions in the Assets list.
+    """
+
+    __slots__ = [
+        '_folder_overview_location_asset_value',
+        '_folder_overview_location_asset_present',
+        '_pinned_items_asset_indices_value',
+        '_pinned_items_asset_indices_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 folder_overview_location_asset=None,
+                 pinned_items_asset_indices=None):
+        self._folder_overview_location_asset_value = None
+        self._folder_overview_location_asset_present = False
+        self._pinned_items_asset_indices_value = None
+        self._pinned_items_asset_indices_present = False
+        if folder_overview_location_asset is not None:
+            self.folder_overview_location_asset = folder_overview_location_asset
+        if pinned_items_asset_indices is not None:
+            self.pinned_items_asset_indices = pinned_items_asset_indices
+
+    @property
+    def folder_overview_location_asset(self):
+        """
+        Folder Overview location position in the Assets list.
+
+        :rtype: int
+        """
+        if self._folder_overview_location_asset_present:
+            return self._folder_overview_location_asset_value
+        else:
+            raise AttributeError("missing required field 'folder_overview_location_asset'")
+
+    @folder_overview_location_asset.setter
+    def folder_overview_location_asset(self, val):
+        val = self._folder_overview_location_asset_validator.validate(val)
+        self._folder_overview_location_asset_value = val
+        self._folder_overview_location_asset_present = True
+
+    @folder_overview_location_asset.deleter
+    def folder_overview_location_asset(self):
+        self._folder_overview_location_asset_value = None
+        self._folder_overview_location_asset_present = False
+
+    @property
+    def pinned_items_asset_indices(self):
+        """
+        Pinned items positions in the Assets list.
+
+        :rtype: list of [int]
+        """
+        if self._pinned_items_asset_indices_present:
+            return self._pinned_items_asset_indices_value
+        else:
+            raise AttributeError("missing required field 'pinned_items_asset_indices'")
+
+    @pinned_items_asset_indices.setter
+    def pinned_items_asset_indices(self, val):
+        val = self._pinned_items_asset_indices_validator.validate(val)
+        self._pinned_items_asset_indices_value = val
+        self._pinned_items_asset_indices_present = True
+
+    @pinned_items_asset_indices.deleter
+    def pinned_items_asset_indices(self):
+        self._pinned_items_asset_indices_value = None
+        self._pinned_items_asset_indices_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderOverviewItemUnpinnedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FolderOverviewItemUnpinnedDetails(folder_overview_location_asset={!r}, pinned_items_asset_indices={!r})'.format(
+            self._folder_overview_location_asset_value,
+            self._pinned_items_asset_indices_value,
+        )
+
+FolderOverviewItemUnpinnedDetails_validator = bv.Struct(FolderOverviewItemUnpinnedDetails)
+
+class FolderOverviewItemUnpinnedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderOverviewItemUnpinnedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FolderOverviewItemUnpinnedType(description={!r})'.format(
+            self._description_value,
+        )
+
+FolderOverviewItemUnpinnedType_validator = bv.Struct(FolderOverviewItemUnpinnedType)
 
 class GeoLocationLogInfo(bb.Struct):
     """
@@ -37334,13 +46118,66 @@ class IntegrationPolicyChangedType(bb.Struct):
 
 IntegrationPolicyChangedType_validator = bv.Struct(IntegrationPolicyChangedType)
 
+class InviteMethod(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invite_link = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invite_link(self):
+        """
+        Check if the union tag is ``invite_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_link'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(InviteMethod, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'InviteMethod(%r, %r)' % (self._tag, self._value)
+
+InviteMethod_validator = bv.Union(InviteMethod)
+
 class JoinTeamDetails(bb.Struct):
     """
     Additional information relevant when a new member joins the team.
 
     :ivar team_log.JoinTeamDetails.linked_apps: Linked applications.
-    :ivar team_log.JoinTeamDetails.linked_devices: Linked devices.
+        (Deprecated) Please use has_linked_apps boolean field instead.
+    :ivar team_log.JoinTeamDetails.linked_devices: Linked devices. (Deprecated)
+        Please use has_linked_devices boolean field instead.
     :ivar team_log.JoinTeamDetails.linked_shared_folders: Linked shared folders.
+        (Deprecated) Please use has_linked_shared_folders boolean field instead.
+    :ivar team_log.JoinTeamDetails.was_linked_apps_truncated: True if the
+        linked_apps list was truncated to the maximum supported length (50).
+    :ivar team_log.JoinTeamDetails.was_linked_devices_truncated: True if the
+        linked_devices list was truncated to the maximum supported length (50).
+    :ivar team_log.JoinTeamDetails.was_linked_shared_folders_truncated: True if
+        the linked_shared_folders list was truncated to the maximum supported
+        length (50).
+    :ivar team_log.JoinTeamDetails.has_linked_apps: True if the user had linked
+        apps at event time.
+    :ivar team_log.JoinTeamDetails.has_linked_devices: True if the user had
+        linked apps at event time.
+    :ivar team_log.JoinTeamDetails.has_linked_shared_folders: True if the user
+        had linked shared folders at event time.
     """
 
     __slots__ = [
@@ -37350,6 +46187,18 @@ class JoinTeamDetails(bb.Struct):
         '_linked_devices_present',
         '_linked_shared_folders_value',
         '_linked_shared_folders_present',
+        '_was_linked_apps_truncated_value',
+        '_was_linked_apps_truncated_present',
+        '_was_linked_devices_truncated_value',
+        '_was_linked_devices_truncated_present',
+        '_was_linked_shared_folders_truncated_value',
+        '_was_linked_shared_folders_truncated_present',
+        '_has_linked_apps_value',
+        '_has_linked_apps_present',
+        '_has_linked_devices_value',
+        '_has_linked_devices_present',
+        '_has_linked_shared_folders_value',
+        '_has_linked_shared_folders_present',
     ]
 
     _has_required_fields = True
@@ -37357,24 +46206,55 @@ class JoinTeamDetails(bb.Struct):
     def __init__(self,
                  linked_apps=None,
                  linked_devices=None,
-                 linked_shared_folders=None):
+                 linked_shared_folders=None,
+                 was_linked_apps_truncated=None,
+                 was_linked_devices_truncated=None,
+                 was_linked_shared_folders_truncated=None,
+                 has_linked_apps=None,
+                 has_linked_devices=None,
+                 has_linked_shared_folders=None):
         self._linked_apps_value = None
         self._linked_apps_present = False
         self._linked_devices_value = None
         self._linked_devices_present = False
         self._linked_shared_folders_value = None
         self._linked_shared_folders_present = False
+        self._was_linked_apps_truncated_value = None
+        self._was_linked_apps_truncated_present = False
+        self._was_linked_devices_truncated_value = None
+        self._was_linked_devices_truncated_present = False
+        self._was_linked_shared_folders_truncated_value = None
+        self._was_linked_shared_folders_truncated_present = False
+        self._has_linked_apps_value = None
+        self._has_linked_apps_present = False
+        self._has_linked_devices_value = None
+        self._has_linked_devices_present = False
+        self._has_linked_shared_folders_value = None
+        self._has_linked_shared_folders_present = False
         if linked_apps is not None:
             self.linked_apps = linked_apps
         if linked_devices is not None:
             self.linked_devices = linked_devices
         if linked_shared_folders is not None:
             self.linked_shared_folders = linked_shared_folders
+        if was_linked_apps_truncated is not None:
+            self.was_linked_apps_truncated = was_linked_apps_truncated
+        if was_linked_devices_truncated is not None:
+            self.was_linked_devices_truncated = was_linked_devices_truncated
+        if was_linked_shared_folders_truncated is not None:
+            self.was_linked_shared_folders_truncated = was_linked_shared_folders_truncated
+        if has_linked_apps is not None:
+            self.has_linked_apps = has_linked_apps
+        if has_linked_devices is not None:
+            self.has_linked_devices = has_linked_devices
+        if has_linked_shared_folders is not None:
+            self.has_linked_shared_folders = has_linked_shared_folders
 
     @property
     def linked_apps(self):
         """
-        Linked applications.
+        Linked applications. (Deprecated) Please use has_linked_apps boolean
+        field instead.
 
         :rtype: list of [UserLinkedAppLogInfo]
         """
@@ -37397,7 +46277,8 @@ class JoinTeamDetails(bb.Struct):
     @property
     def linked_devices(self):
         """
-        Linked devices.
+        Linked devices. (Deprecated) Please use has_linked_devices boolean field
+        instead.
 
         :rtype: list of [LinkedDeviceLogInfo]
         """
@@ -37420,7 +46301,8 @@ class JoinTeamDetails(bb.Struct):
     @property
     def linked_shared_folders(self):
         """
-        Linked shared folders.
+        Linked shared folders. (Deprecated) Please use has_linked_shared_folders
+        boolean field instead.
 
         :rtype: list of [FolderLogInfo]
         """
@@ -37440,14 +46322,179 @@ class JoinTeamDetails(bb.Struct):
         self._linked_shared_folders_value = None
         self._linked_shared_folders_present = False
 
+    @property
+    def was_linked_apps_truncated(self):
+        """
+        True if the linked_apps list was truncated to the maximum supported
+        length (50).
+
+        :rtype: bool
+        """
+        if self._was_linked_apps_truncated_present:
+            return self._was_linked_apps_truncated_value
+        else:
+            return None
+
+    @was_linked_apps_truncated.setter
+    def was_linked_apps_truncated(self, val):
+        if val is None:
+            del self.was_linked_apps_truncated
+            return
+        val = self._was_linked_apps_truncated_validator.validate(val)
+        self._was_linked_apps_truncated_value = val
+        self._was_linked_apps_truncated_present = True
+
+    @was_linked_apps_truncated.deleter
+    def was_linked_apps_truncated(self):
+        self._was_linked_apps_truncated_value = None
+        self._was_linked_apps_truncated_present = False
+
+    @property
+    def was_linked_devices_truncated(self):
+        """
+        True if the linked_devices list was truncated to the maximum supported
+        length (50).
+
+        :rtype: bool
+        """
+        if self._was_linked_devices_truncated_present:
+            return self._was_linked_devices_truncated_value
+        else:
+            return None
+
+    @was_linked_devices_truncated.setter
+    def was_linked_devices_truncated(self, val):
+        if val is None:
+            del self.was_linked_devices_truncated
+            return
+        val = self._was_linked_devices_truncated_validator.validate(val)
+        self._was_linked_devices_truncated_value = val
+        self._was_linked_devices_truncated_present = True
+
+    @was_linked_devices_truncated.deleter
+    def was_linked_devices_truncated(self):
+        self._was_linked_devices_truncated_value = None
+        self._was_linked_devices_truncated_present = False
+
+    @property
+    def was_linked_shared_folders_truncated(self):
+        """
+        True if the linked_shared_folders list was truncated to the maximum
+        supported length (50).
+
+        :rtype: bool
+        """
+        if self._was_linked_shared_folders_truncated_present:
+            return self._was_linked_shared_folders_truncated_value
+        else:
+            return None
+
+    @was_linked_shared_folders_truncated.setter
+    def was_linked_shared_folders_truncated(self, val):
+        if val is None:
+            del self.was_linked_shared_folders_truncated
+            return
+        val = self._was_linked_shared_folders_truncated_validator.validate(val)
+        self._was_linked_shared_folders_truncated_value = val
+        self._was_linked_shared_folders_truncated_present = True
+
+    @was_linked_shared_folders_truncated.deleter
+    def was_linked_shared_folders_truncated(self):
+        self._was_linked_shared_folders_truncated_value = None
+        self._was_linked_shared_folders_truncated_present = False
+
+    @property
+    def has_linked_apps(self):
+        """
+        True if the user had linked apps at event time.
+
+        :rtype: bool
+        """
+        if self._has_linked_apps_present:
+            return self._has_linked_apps_value
+        else:
+            return None
+
+    @has_linked_apps.setter
+    def has_linked_apps(self, val):
+        if val is None:
+            del self.has_linked_apps
+            return
+        val = self._has_linked_apps_validator.validate(val)
+        self._has_linked_apps_value = val
+        self._has_linked_apps_present = True
+
+    @has_linked_apps.deleter
+    def has_linked_apps(self):
+        self._has_linked_apps_value = None
+        self._has_linked_apps_present = False
+
+    @property
+    def has_linked_devices(self):
+        """
+        True if the user had linked apps at event time.
+
+        :rtype: bool
+        """
+        if self._has_linked_devices_present:
+            return self._has_linked_devices_value
+        else:
+            return None
+
+    @has_linked_devices.setter
+    def has_linked_devices(self, val):
+        if val is None:
+            del self.has_linked_devices
+            return
+        val = self._has_linked_devices_validator.validate(val)
+        self._has_linked_devices_value = val
+        self._has_linked_devices_present = True
+
+    @has_linked_devices.deleter
+    def has_linked_devices(self):
+        self._has_linked_devices_value = None
+        self._has_linked_devices_present = False
+
+    @property
+    def has_linked_shared_folders(self):
+        """
+        True if the user had linked shared folders at event time.
+
+        :rtype: bool
+        """
+        if self._has_linked_shared_folders_present:
+            return self._has_linked_shared_folders_value
+        else:
+            return None
+
+    @has_linked_shared_folders.setter
+    def has_linked_shared_folders(self, val):
+        if val is None:
+            del self.has_linked_shared_folders
+            return
+        val = self._has_linked_shared_folders_validator.validate(val)
+        self._has_linked_shared_folders_value = val
+        self._has_linked_shared_folders_present = True
+
+    @has_linked_shared_folders.deleter
+    def has_linked_shared_folders(self):
+        self._has_linked_shared_folders_value = None
+        self._has_linked_shared_folders_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(JoinTeamDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'JoinTeamDetails(linked_apps={!r}, linked_devices={!r}, linked_shared_folders={!r})'.format(
+        return 'JoinTeamDetails(linked_apps={!r}, linked_devices={!r}, linked_shared_folders={!r}, was_linked_apps_truncated={!r}, was_linked_devices_truncated={!r}, was_linked_shared_folders_truncated={!r}, has_linked_apps={!r}, has_linked_devices={!r}, has_linked_shared_folders={!r})'.format(
             self._linked_apps_value,
             self._linked_devices_value,
             self._linked_shared_folders_value,
+            self._was_linked_apps_truncated_value,
+            self._was_linked_devices_truncated_value,
+            self._was_linked_shared_folders_truncated_value,
+            self._has_linked_apps_value,
+            self._has_linked_devices_value,
+            self._has_linked_shared_folders_value,
         )
 
 JoinTeamDetails_validator = bv.Struct(JoinTeamDetails)
@@ -37813,6 +46860,1835 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
 
 LegacyDeviceSessionLogInfo_validator = bv.Struct(LegacyDeviceSessionLogInfo)
 
+class LegalHoldsActivateAHoldDetails(bb.Struct):
+    """
+    Activated a hold.
+
+    :ivar team_log.LegalHoldsActivateAHoldDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsActivateAHoldDetails.name: Hold name.
+    :ivar team_log.LegalHoldsActivateAHoldDetails.start_date: Hold start date.
+    :ivar team_log.LegalHoldsActivateAHoldDetails.end_date: Hold end date.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+        '_start_date_value',
+        '_start_date_present',
+        '_end_date_value',
+        '_end_date_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None,
+                 start_date=None,
+                 end_date=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._start_date_value = None
+        self._start_date_present = False
+        self._end_date_value = None
+        self._end_date_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+        if start_date is not None:
+            self.start_date = start_date
+        if end_date is not None:
+            self.end_date = end_date
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def start_date(self):
+        """
+        Hold start date.
+
+        :rtype: datetime.datetime
+        """
+        if self._start_date_present:
+            return self._start_date_value
+        else:
+            raise AttributeError("missing required field 'start_date'")
+
+    @start_date.setter
+    def start_date(self, val):
+        val = self._start_date_validator.validate(val)
+        self._start_date_value = val
+        self._start_date_present = True
+
+    @start_date.deleter
+    def start_date(self):
+        self._start_date_value = None
+        self._start_date_present = False
+
+    @property
+    def end_date(self):
+        """
+        Hold end date.
+
+        :rtype: datetime.datetime
+        """
+        if self._end_date_present:
+            return self._end_date_value
+        else:
+            return None
+
+    @end_date.setter
+    def end_date(self, val):
+        if val is None:
+            del self.end_date
+            return
+        val = self._end_date_validator.validate(val)
+        self._end_date_value = val
+        self._end_date_present = True
+
+    @end_date.deleter
+    def end_date(self):
+        self._end_date_value = None
+        self._end_date_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsActivateAHoldDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsActivateAHoldDetails(legal_hold_id={!r}, name={!r}, start_date={!r}, end_date={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+            self._start_date_value,
+            self._end_date_value,
+        )
+
+LegalHoldsActivateAHoldDetails_validator = bv.Struct(LegalHoldsActivateAHoldDetails)
+
+class LegalHoldsActivateAHoldType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsActivateAHoldType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsActivateAHoldType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsActivateAHoldType_validator = bv.Struct(LegalHoldsActivateAHoldType)
+
+class LegalHoldsAddMembersDetails(bb.Struct):
+    """
+    Added members to a hold.
+
+    :ivar team_log.LegalHoldsAddMembersDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsAddMembersDetails.name: Hold name.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsAddMembersDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsAddMembersDetails(legal_hold_id={!r}, name={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+        )
+
+LegalHoldsAddMembersDetails_validator = bv.Struct(LegalHoldsAddMembersDetails)
+
+class LegalHoldsAddMembersType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsAddMembersType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsAddMembersType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsAddMembersType_validator = bv.Struct(LegalHoldsAddMembersType)
+
+class LegalHoldsChangeHoldDetailsDetails(bb.Struct):
+    """
+    Edited details for a hold.
+
+    :ivar team_log.LegalHoldsChangeHoldDetailsDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsChangeHoldDetailsDetails.name: Hold name.
+    :ivar team_log.LegalHoldsChangeHoldDetailsDetails.previous_value: Previous
+        details.
+    :ivar team_log.LegalHoldsChangeHoldDetailsDetails.new_value: New details.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None,
+                 previous_value=None,
+                 new_value=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous details.
+
+        :rtype: str
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New details.
+
+        :rtype: str
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsChangeHoldDetailsDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsChangeHoldDetailsDetails(legal_hold_id={!r}, name={!r}, previous_value={!r}, new_value={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+LegalHoldsChangeHoldDetailsDetails_validator = bv.Struct(LegalHoldsChangeHoldDetailsDetails)
+
+class LegalHoldsChangeHoldDetailsType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsChangeHoldDetailsType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsChangeHoldDetailsType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsChangeHoldDetailsType_validator = bv.Struct(LegalHoldsChangeHoldDetailsType)
+
+class LegalHoldsChangeHoldNameDetails(bb.Struct):
+    """
+    Renamed a hold.
+
+    :ivar team_log.LegalHoldsChangeHoldNameDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsChangeHoldNameDetails.previous_value: Previous
+        Name.
+    :ivar team_log.LegalHoldsChangeHoldNameDetails.new_value: New Name.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 previous_value=None,
+                 new_value=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous Name.
+
+        :rtype: str
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New Name.
+
+        :rtype: str
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsChangeHoldNameDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsChangeHoldNameDetails(legal_hold_id={!r}, previous_value={!r}, new_value={!r})'.format(
+            self._legal_hold_id_value,
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+LegalHoldsChangeHoldNameDetails_validator = bv.Struct(LegalHoldsChangeHoldNameDetails)
+
+class LegalHoldsChangeHoldNameType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsChangeHoldNameType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsChangeHoldNameType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsChangeHoldNameType_validator = bv.Struct(LegalHoldsChangeHoldNameType)
+
+class LegalHoldsExportAHoldDetails(bb.Struct):
+    """
+    Exported hold.
+
+    :ivar team_log.LegalHoldsExportAHoldDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsExportAHoldDetails.name: Hold name.
+    :ivar team_log.LegalHoldsExportAHoldDetails.export_name: Export name.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+        '_export_name_value',
+        '_export_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None,
+                 export_name=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._export_name_value = None
+        self._export_name_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+        if export_name is not None:
+            self.export_name = export_name
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def export_name(self):
+        """
+        Export name.
+
+        :rtype: str
+        """
+        if self._export_name_present:
+            return self._export_name_value
+        else:
+            return None
+
+    @export_name.setter
+    def export_name(self, val):
+        if val is None:
+            del self.export_name
+            return
+        val = self._export_name_validator.validate(val)
+        self._export_name_value = val
+        self._export_name_present = True
+
+    @export_name.deleter
+    def export_name(self):
+        self._export_name_value = None
+        self._export_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportAHoldDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportAHoldDetails(legal_hold_id={!r}, name={!r}, export_name={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+            self._export_name_value,
+        )
+
+LegalHoldsExportAHoldDetails_validator = bv.Struct(LegalHoldsExportAHoldDetails)
+
+class LegalHoldsExportAHoldType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportAHoldType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportAHoldType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsExportAHoldType_validator = bv.Struct(LegalHoldsExportAHoldType)
+
+class LegalHoldsExportCancelledDetails(bb.Struct):
+    """
+    Canceled export for a hold.
+
+    :ivar team_log.LegalHoldsExportCancelledDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsExportCancelledDetails.name: Hold name.
+    :ivar team_log.LegalHoldsExportCancelledDetails.export_name: Export name.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+        '_export_name_value',
+        '_export_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None,
+                 export_name=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._export_name_value = None
+        self._export_name_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+        if export_name is not None:
+            self.export_name = export_name
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def export_name(self):
+        """
+        Export name.
+
+        :rtype: str
+        """
+        if self._export_name_present:
+            return self._export_name_value
+        else:
+            raise AttributeError("missing required field 'export_name'")
+
+    @export_name.setter
+    def export_name(self, val):
+        val = self._export_name_validator.validate(val)
+        self._export_name_value = val
+        self._export_name_present = True
+
+    @export_name.deleter
+    def export_name(self):
+        self._export_name_value = None
+        self._export_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportCancelledDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportCancelledDetails(legal_hold_id={!r}, name={!r}, export_name={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+            self._export_name_value,
+        )
+
+LegalHoldsExportCancelledDetails_validator = bv.Struct(LegalHoldsExportCancelledDetails)
+
+class LegalHoldsExportCancelledType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportCancelledType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportCancelledType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsExportCancelledType_validator = bv.Struct(LegalHoldsExportCancelledType)
+
+class LegalHoldsExportDownloadedDetails(bb.Struct):
+    """
+    Downloaded export for a hold.
+
+    :ivar team_log.LegalHoldsExportDownloadedDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsExportDownloadedDetails.name: Hold name.
+    :ivar team_log.LegalHoldsExportDownloadedDetails.export_name: Export name.
+    :ivar team_log.LegalHoldsExportDownloadedDetails.part: Part.
+    :ivar team_log.LegalHoldsExportDownloadedDetails.file_name: Filename.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+        '_export_name_value',
+        '_export_name_present',
+        '_part_value',
+        '_part_present',
+        '_file_name_value',
+        '_file_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None,
+                 export_name=None,
+                 part=None,
+                 file_name=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._export_name_value = None
+        self._export_name_present = False
+        self._part_value = None
+        self._part_present = False
+        self._file_name_value = None
+        self._file_name_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+        if export_name is not None:
+            self.export_name = export_name
+        if part is not None:
+            self.part = part
+        if file_name is not None:
+            self.file_name = file_name
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def export_name(self):
+        """
+        Export name.
+
+        :rtype: str
+        """
+        if self._export_name_present:
+            return self._export_name_value
+        else:
+            raise AttributeError("missing required field 'export_name'")
+
+    @export_name.setter
+    def export_name(self, val):
+        val = self._export_name_validator.validate(val)
+        self._export_name_value = val
+        self._export_name_present = True
+
+    @export_name.deleter
+    def export_name(self):
+        self._export_name_value = None
+        self._export_name_present = False
+
+    @property
+    def part(self):
+        """
+        Part.
+
+        :rtype: str
+        """
+        if self._part_present:
+            return self._part_value
+        else:
+            return None
+
+    @part.setter
+    def part(self, val):
+        if val is None:
+            del self.part
+            return
+        val = self._part_validator.validate(val)
+        self._part_value = val
+        self._part_present = True
+
+    @part.deleter
+    def part(self):
+        self._part_value = None
+        self._part_present = False
+
+    @property
+    def file_name(self):
+        """
+        Filename.
+
+        :rtype: str
+        """
+        if self._file_name_present:
+            return self._file_name_value
+        else:
+            return None
+
+    @file_name.setter
+    def file_name(self, val):
+        if val is None:
+            del self.file_name
+            return
+        val = self._file_name_validator.validate(val)
+        self._file_name_value = val
+        self._file_name_present = True
+
+    @file_name.deleter
+    def file_name(self):
+        self._file_name_value = None
+        self._file_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportDownloadedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportDownloadedDetails(legal_hold_id={!r}, name={!r}, export_name={!r}, part={!r}, file_name={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+            self._export_name_value,
+            self._part_value,
+            self._file_name_value,
+        )
+
+LegalHoldsExportDownloadedDetails_validator = bv.Struct(LegalHoldsExportDownloadedDetails)
+
+class LegalHoldsExportDownloadedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportDownloadedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportDownloadedType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsExportDownloadedType_validator = bv.Struct(LegalHoldsExportDownloadedType)
+
+class LegalHoldsExportRemovedDetails(bb.Struct):
+    """
+    Removed export for a hold.
+
+    :ivar team_log.LegalHoldsExportRemovedDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsExportRemovedDetails.name: Hold name.
+    :ivar team_log.LegalHoldsExportRemovedDetails.export_name: Export name.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+        '_export_name_value',
+        '_export_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None,
+                 export_name=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._export_name_value = None
+        self._export_name_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+        if export_name is not None:
+            self.export_name = export_name
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def export_name(self):
+        """
+        Export name.
+
+        :rtype: str
+        """
+        if self._export_name_present:
+            return self._export_name_value
+        else:
+            raise AttributeError("missing required field 'export_name'")
+
+    @export_name.setter
+    def export_name(self, val):
+        val = self._export_name_validator.validate(val)
+        self._export_name_value = val
+        self._export_name_present = True
+
+    @export_name.deleter
+    def export_name(self):
+        self._export_name_value = None
+        self._export_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportRemovedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportRemovedDetails(legal_hold_id={!r}, name={!r}, export_name={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+            self._export_name_value,
+        )
+
+LegalHoldsExportRemovedDetails_validator = bv.Struct(LegalHoldsExportRemovedDetails)
+
+class LegalHoldsExportRemovedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportRemovedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportRemovedType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsExportRemovedType_validator = bv.Struct(LegalHoldsExportRemovedType)
+
+class LegalHoldsReleaseAHoldDetails(bb.Struct):
+    """
+    Released a hold.
+
+    :ivar team_log.LegalHoldsReleaseAHoldDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsReleaseAHoldDetails.name: Hold name.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsReleaseAHoldDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsReleaseAHoldDetails(legal_hold_id={!r}, name={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+        )
+
+LegalHoldsReleaseAHoldDetails_validator = bv.Struct(LegalHoldsReleaseAHoldDetails)
+
+class LegalHoldsReleaseAHoldType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsReleaseAHoldType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsReleaseAHoldType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsReleaseAHoldType_validator = bv.Struct(LegalHoldsReleaseAHoldType)
+
+class LegalHoldsRemoveMembersDetails(bb.Struct):
+    """
+    Removed members from a hold.
+
+    :ivar team_log.LegalHoldsRemoveMembersDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsRemoveMembersDetails.name: Hold name.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsRemoveMembersDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsRemoveMembersDetails(legal_hold_id={!r}, name={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+        )
+
+LegalHoldsRemoveMembersDetails_validator = bv.Struct(LegalHoldsRemoveMembersDetails)
+
+class LegalHoldsRemoveMembersType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsRemoveMembersType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsRemoveMembersType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsRemoveMembersType_validator = bv.Struct(LegalHoldsRemoveMembersType)
+
+class LegalHoldsReportAHoldDetails(bb.Struct):
+    """
+    Created a summary report for a hold.
+
+    :ivar team_log.LegalHoldsReportAHoldDetails.legal_hold_id: Hold ID.
+    :ivar team_log.LegalHoldsReportAHoldDetails.name: Hold name.
+    """
+
+    __slots__ = [
+        '_legal_hold_id_value',
+        '_legal_hold_id_present',
+        '_name_value',
+        '_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 legal_hold_id=None,
+                 name=None):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+        self._name_value = None
+        self._name_present = False
+        if legal_hold_id is not None:
+            self.legal_hold_id = legal_hold_id
+        if name is not None:
+            self.name = name
+
+    @property
+    def legal_hold_id(self):
+        """
+        Hold ID.
+
+        :rtype: str
+        """
+        if self._legal_hold_id_present:
+            return self._legal_hold_id_value
+        else:
+            raise AttributeError("missing required field 'legal_hold_id'")
+
+    @legal_hold_id.setter
+    def legal_hold_id(self, val):
+        val = self._legal_hold_id_validator.validate(val)
+        self._legal_hold_id_value = val
+        self._legal_hold_id_present = True
+
+    @legal_hold_id.deleter
+    def legal_hold_id(self):
+        self._legal_hold_id_value = None
+        self._legal_hold_id_present = False
+
+    @property
+    def name(self):
+        """
+        Hold name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsReportAHoldDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsReportAHoldDetails(legal_hold_id={!r}, name={!r})'.format(
+            self._legal_hold_id_value,
+            self._name_value,
+        )
+
+LegalHoldsReportAHoldDetails_validator = bv.Struct(LegalHoldsReportAHoldDetails)
+
+class LegalHoldsReportAHoldType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsReportAHoldType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsReportAHoldType(description={!r})'.format(
+            self._description_value,
+        )
+
+LegalHoldsReportAHoldType_validator = bv.Struct(LegalHoldsReportAHoldType)
+
 class LinkedDeviceLogInfo(bb.Union):
     """
     The device sessions that user is linked to.
@@ -37975,6 +48851,55 @@ class LinkedDeviceLogInfo(bb.Union):
         return 'LinkedDeviceLogInfo(%r, %r)' % (self._tag, self._value)
 
 LinkedDeviceLogInfo_validator = bv.Union(LinkedDeviceLogInfo)
+
+class LockStatus(bb.Union):
+    """
+    File lock status
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    locked = None
+    # Attribute is overwritten below the class definition
+    unlocked = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_locked(self):
+        """
+        Check if the union tag is ``locked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'locked'
+
+    def is_unlocked(self):
+        """
+        Check if the union tag is ``unlocked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unlocked'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LockStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LockStatus(%r, %r)' % (self._tag, self._value)
+
+LockStatus_validator = bv.Union(LockStatus)
 
 class LoginFailDetails(bb.Struct):
     """
@@ -38163,6 +49088,12 @@ class LoginMethod(bb.Union):
     # Attribute is overwritten below the class definition
     google_oauth = None
     # Attribute is overwritten below the class definition
+    web_session = None
+    # Attribute is overwritten below the class definition
+    qr_code = None
+    # Attribute is overwritten below the class definition
+    apple_oauth = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_password(self):
@@ -38196,6 +49127,30 @@ class LoginMethod(bb.Union):
         :rtype: bool
         """
         return self._tag == 'google_oauth'
+
+    def is_web_session(self):
+        """
+        Check if the union tag is ``web_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_session'
+
+    def is_qr_code(self):
+        """
+        Check if the union tag is ``qr_code``.
+
+        :rtype: bool
+        """
+        return self._tag == 'qr_code'
+
+    def is_apple_oauth(self):
+        """
+        Check if the union tag is ``apple_oauth``.
+
+        :rtype: bool
+        """
+        return self._tag == 'apple_oauth'
 
     def is_other(self):
         """
@@ -39551,6 +50506,74 @@ class MemberDeleteManualContactsType(bb.Struct):
 
 MemberDeleteManualContactsType_validator = bv.Struct(MemberDeleteManualContactsType)
 
+class MemberDeleteProfilePhotoDetails(bb.Struct):
+    """
+    Deleted team member profile photo.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberDeleteProfilePhotoDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberDeleteProfilePhotoDetails()'
+
+MemberDeleteProfilePhotoDetails_validator = bv.Struct(MemberDeleteProfilePhotoDetails)
+
+class MemberDeleteProfilePhotoType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberDeleteProfilePhotoType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberDeleteProfilePhotoType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberDeleteProfilePhotoType_validator = bv.Struct(MemberDeleteProfilePhotoType)
+
 class MemberPermanentlyDeleteAccountContentsDetails(bb.Struct):
     """
     Permanently deleted contents of deleted team member account.
@@ -39984,6 +51007,74 @@ class MemberRequestsPolicy(bb.Union):
         return 'MemberRequestsPolicy(%r, %r)' % (self._tag, self._value)
 
 MemberRequestsPolicy_validator = bv.Union(MemberRequestsPolicy)
+
+class MemberSetProfilePhotoDetails(bb.Struct):
+    """
+    Set team member profile photo.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberSetProfilePhotoDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberSetProfilePhotoDetails()'
+
+MemberSetProfilePhotoDetails_validator = bv.Struct(MemberSetProfilePhotoDetails)
+
+class MemberSetProfilePhotoType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberSetProfilePhotoType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberSetProfilePhotoType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberSetProfilePhotoType_validator = bv.Struct(MemberSetProfilePhotoType)
 
 class MemberSpaceLimitsAddCustomQuotaDetails(bb.Struct):
     """
@@ -41799,6 +52890,8 @@ class NamespaceRelativePathLogInfo(bb.Struct):
     :ivar team_log.NamespaceRelativePathLogInfo.relative_path: A path relative
         to the specified namespace ID. Might be missing due to historical data
         gap.
+    :ivar team_log.NamespaceRelativePathLogInfo.is_shared_namespace: True if the
+        namespace is shared. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -41806,21 +52899,28 @@ class NamespaceRelativePathLogInfo(bb.Struct):
         '_ns_id_present',
         '_relative_path_value',
         '_relative_path_present',
+        '_is_shared_namespace_value',
+        '_is_shared_namespace_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  ns_id=None,
-                 relative_path=None):
+                 relative_path=None,
+                 is_shared_namespace=None):
         self._ns_id_value = None
         self._ns_id_present = False
         self._relative_path_value = None
         self._relative_path_present = False
+        self._is_shared_namespace_value = None
+        self._is_shared_namespace_present = False
         if ns_id is not None:
             self.ns_id = ns_id
         if relative_path is not None:
             self.relative_path = relative_path
+        if is_shared_namespace is not None:
+            self.is_shared_namespace = is_shared_namespace
 
     @property
     def ns_id(self):
@@ -41875,13 +52975,41 @@ class NamespaceRelativePathLogInfo(bb.Struct):
         self._relative_path_value = None
         self._relative_path_present = False
 
+    @property
+    def is_shared_namespace(self):
+        """
+        True if the namespace is shared. Might be missing due to historical data
+        gap.
+
+        :rtype: bool
+        """
+        if self._is_shared_namespace_present:
+            return self._is_shared_namespace_value
+        else:
+            return None
+
+    @is_shared_namespace.setter
+    def is_shared_namespace(self, val):
+        if val is None:
+            del self.is_shared_namespace
+            return
+        val = self._is_shared_namespace_validator.validate(val)
+        self._is_shared_namespace_value = val
+        self._is_shared_namespace_present = True
+
+    @is_shared_namespace.deleter
+    def is_shared_namespace(self):
+        self._is_shared_namespace_value = None
+        self._is_shared_namespace_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(NamespaceRelativePathLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'NamespaceRelativePathLogInfo(ns_id={!r}, relative_path={!r})'.format(
+        return 'NamespaceRelativePathLogInfo(ns_id={!r}, relative_path={!r}, is_shared_namespace={!r})'.format(
             self._ns_id_value,
             self._relative_path_value,
+            self._is_shared_namespace_value,
         )
 
 NamespaceRelativePathLogInfo_validator = bv.Struct(NamespaceRelativePathLogInfo)
@@ -42233,6 +53361,61 @@ class NonTeamMemberLogInfo(UserLogInfo):
         )
 
 NonTeamMemberLogInfo_validator = bv.Struct(NonTeamMemberLogInfo)
+
+class NonTrustedTeamDetails(bb.Struct):
+    """
+    The email to which the request was sent
+
+    :ivar team_log.NonTrustedTeamDetails.team: The email to which the request
+        was sent.
+    """
+
+    __slots__ = [
+        '_team_value',
+        '_team_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team=None):
+        self._team_value = None
+        self._team_present = False
+        if team is not None:
+            self.team = team
+
+    @property
+    def team(self):
+        """
+        The email to which the request was sent.
+
+        :rtype: str
+        """
+        if self._team_present:
+            return self._team_value
+        else:
+            raise AttributeError("missing required field 'team'")
+
+    @team.setter
+    def team(self, val):
+        val = self._team_validator.validate(val)
+        self._team_value = val
+        self._team_present = True
+
+    @team.deleter
+    def team(self):
+        self._team_value = None
+        self._team_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NonTrustedTeamDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NonTrustedTeamDetails(team={!r})'.format(
+            self._team_value,
+        )
+
+NonTrustedTeamDetails_validator = bv.Struct(NonTrustedTeamDetails)
 
 class NoteAclInviteOnlyDetails(bb.Struct):
     """
@@ -42641,6 +53824,115 @@ class OpenNoteSharedType(bb.Struct):
         )
 
 OpenNoteSharedType_validator = bv.Struct(OpenNoteSharedType)
+
+class OrganizationDetails(bb.Struct):
+    """
+    More details about the organization.
+
+    :ivar team_log.OrganizationDetails.organization: The name of the
+        organization.
+    """
+
+    __slots__ = [
+        '_organization_value',
+        '_organization_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 organization=None):
+        self._organization_value = None
+        self._organization_present = False
+        if organization is not None:
+            self.organization = organization
+
+    @property
+    def organization(self):
+        """
+        The name of the organization.
+
+        :rtype: str
+        """
+        if self._organization_present:
+            return self._organization_value
+        else:
+            raise AttributeError("missing required field 'organization'")
+
+    @organization.setter
+    def organization(self, val):
+        val = self._organization_validator.validate(val)
+        self._organization_value = val
+        self._organization_present = True
+
+    @organization.deleter
+    def organization(self):
+        self._organization_value = None
+        self._organization_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OrganizationDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'OrganizationDetails(organization={!r})'.format(
+            self._organization_value,
+        )
+
+OrganizationDetails_validator = bv.Struct(OrganizationDetails)
+
+class OrganizationName(bb.Struct):
+    """
+    The name of the organization
+
+    :ivar team_log.OrganizationName.organization: The name of the organization.
+    """
+
+    __slots__ = [
+        '_organization_value',
+        '_organization_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 organization=None):
+        self._organization_value = None
+        self._organization_present = False
+        if organization is not None:
+            self.organization = organization
+
+    @property
+    def organization(self):
+        """
+        The name of the organization.
+
+        :rtype: str
+        """
+        if self._organization_present:
+            return self._organization_value
+        else:
+            raise AttributeError("missing required field 'organization'")
+
+    @organization.setter
+    def organization(self, val):
+        val = self._organization_validator.validate(val)
+        self._organization_value = val
+        self._organization_present = True
+
+    @organization.deleter
+    def organization(self):
+        self._organization_value = None
+        self._organization_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OrganizationName, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'OrganizationName(organization={!r})'.format(
+            self._organization_value,
+        )
+
+OrganizationName_validator = bv.Struct(OrganizationName)
 
 class OriginLogInfo(bb.Struct):
     """
@@ -43381,7 +54673,7 @@ PaperChangePolicyType_validator = bv.Struct(PaperChangePolicyType)
 
 class PaperContentAddMemberDetails(bb.Struct):
     """
-    Added team member to Paper doc/folder.
+    Added users and/or groups to Paper doc/folder.
 
     :ivar team_log.PaperContentAddMemberDetails.event_uuid: Event unique
         identifier.
@@ -44028,10 +55320,13 @@ class PaperContentRemoveFromFolderDetails(bb.Struct):
         if self._target_asset_index_present:
             return self._target_asset_index_value
         else:
-            raise AttributeError("missing required field 'target_asset_index'")
+            return None
 
     @target_asset_index.setter
     def target_asset_index(self, val):
+        if val is None:
+            del self.target_asset_index
+            return
         val = self._target_asset_index_validator.validate(val)
         self._target_asset_index_value = val
         self._target_asset_index_present = True
@@ -44051,10 +55346,13 @@ class PaperContentRemoveFromFolderDetails(bb.Struct):
         if self._parent_asset_index_present:
             return self._parent_asset_index_value
         else:
-            raise AttributeError("missing required field 'parent_asset_index'")
+            return None
 
     @parent_asset_index.setter
     def parent_asset_index(self, val):
+        if val is None:
+            del self.parent_asset_index
+            return
         val = self._parent_asset_index_validator.validate(val)
         self._parent_asset_index_value = val
         self._parent_asset_index_present = True
@@ -44125,7 +55423,7 @@ PaperContentRemoveFromFolderType_validator = bv.Struct(PaperContentRemoveFromFol
 
 class PaperContentRemoveMemberDetails(bb.Struct):
     """
-    Removed team member from Paper doc/folder.
+    Removed users and/or groups from Paper doc/folder.
 
     :ivar team_log.PaperContentRemoveMemberDetails.event_uuid: Event unique
         identifier.
@@ -44937,7 +56235,7 @@ PaperDocAddCommentType_validator = bv.Struct(PaperDocAddCommentType)
 
 class PaperDocChangeMemberRoleDetails(bb.Struct):
     """
-    Changed team member permissions for Paper doc.
+    Changed member permissions for Paper doc.
 
     :ivar team_log.PaperDocChangeMemberRoleDetails.event_uuid: Event unique
         identifier.
@@ -46135,7 +57433,7 @@ PaperDocFollowedType_validator = bv.Struct(PaperDocFollowedType)
 
 class PaperDocMentionDetails(bb.Struct):
     """
-    Mentioned team member in Paper doc.
+    Mentioned user in Paper doc.
 
     :ivar team_log.PaperDocMentionDetails.event_uuid: Event unique identifier.
     """
@@ -46849,7 +58147,7 @@ PaperDocSlackShareType_validator = bv.Struct(PaperDocSlackShareType)
 
 class PaperDocTeamInviteDetails(bb.Struct):
     """
-    Shared Paper doc with team member.
+    Shared Paper doc with users and/or groups.
 
     :ivar team_log.PaperDocTeamInviteDetails.event_uuid: Event unique
         identifier.
@@ -48451,7 +59749,7 @@ PaperFolderLogInfo_validator = bv.Struct(PaperFolderLogInfo)
 
 class PaperFolderTeamInviteDetails(bb.Struct):
     """
-    Shared Paper folder with member.
+    Shared Paper folder with users and/or groups.
 
     :ivar team_log.PaperFolderTeamInviteDetails.event_uuid: Event unique
         identifier.
@@ -48609,6 +59907,176 @@ class PaperMemberPolicy(bb.Union):
         return 'PaperMemberPolicy(%r, %r)' % (self._tag, self._value)
 
 PaperMemberPolicy_validator = bv.Union(PaperMemberPolicy)
+
+class PaperPublishedLinkChangePermissionDetails(bb.Struct):
+    """
+    Changed permissions for published doc.
+
+    :ivar team_log.PaperPublishedLinkChangePermissionDetails.event_uuid: Event
+        unique identifier.
+    :ivar
+        team_log.PaperPublishedLinkChangePermissionDetails.new_permission_level:
+        New permission level.
+    :ivar
+        team_log.PaperPublishedLinkChangePermissionDetails.previous_permission_level:
+        Previous permission level.
+    """
+
+    __slots__ = [
+        '_event_uuid_value',
+        '_event_uuid_present',
+        '_new_permission_level_value',
+        '_new_permission_level_present',
+        '_previous_permission_level_value',
+        '_previous_permission_level_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 event_uuid=None,
+                 new_permission_level=None,
+                 previous_permission_level=None):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+        self._new_permission_level_value = None
+        self._new_permission_level_present = False
+        self._previous_permission_level_value = None
+        self._previous_permission_level_present = False
+        if event_uuid is not None:
+            self.event_uuid = event_uuid
+        if new_permission_level is not None:
+            self.new_permission_level = new_permission_level
+        if previous_permission_level is not None:
+            self.previous_permission_level = previous_permission_level
+
+    @property
+    def event_uuid(self):
+        """
+        Event unique identifier.
+
+        :rtype: str
+        """
+        if self._event_uuid_present:
+            return self._event_uuid_value
+        else:
+            raise AttributeError("missing required field 'event_uuid'")
+
+    @event_uuid.setter
+    def event_uuid(self, val):
+        val = self._event_uuid_validator.validate(val)
+        self._event_uuid_value = val
+        self._event_uuid_present = True
+
+    @event_uuid.deleter
+    def event_uuid(self):
+        self._event_uuid_value = None
+        self._event_uuid_present = False
+
+    @property
+    def new_permission_level(self):
+        """
+        New permission level.
+
+        :rtype: str
+        """
+        if self._new_permission_level_present:
+            return self._new_permission_level_value
+        else:
+            raise AttributeError("missing required field 'new_permission_level'")
+
+    @new_permission_level.setter
+    def new_permission_level(self, val):
+        val = self._new_permission_level_validator.validate(val)
+        self._new_permission_level_value = val
+        self._new_permission_level_present = True
+
+    @new_permission_level.deleter
+    def new_permission_level(self):
+        self._new_permission_level_value = None
+        self._new_permission_level_present = False
+
+    @property
+    def previous_permission_level(self):
+        """
+        Previous permission level.
+
+        :rtype: str
+        """
+        if self._previous_permission_level_present:
+            return self._previous_permission_level_value
+        else:
+            raise AttributeError("missing required field 'previous_permission_level'")
+
+    @previous_permission_level.setter
+    def previous_permission_level(self, val):
+        val = self._previous_permission_level_validator.validate(val)
+        self._previous_permission_level_value = val
+        self._previous_permission_level_present = True
+
+    @previous_permission_level.deleter
+    def previous_permission_level(self):
+        self._previous_permission_level_value = None
+        self._previous_permission_level_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperPublishedLinkChangePermissionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PaperPublishedLinkChangePermissionDetails(event_uuid={!r}, new_permission_level={!r}, previous_permission_level={!r})'.format(
+            self._event_uuid_value,
+            self._new_permission_level_value,
+            self._previous_permission_level_value,
+        )
+
+PaperPublishedLinkChangePermissionDetails_validator = bv.Struct(PaperPublishedLinkChangePermissionDetails)
+
+class PaperPublishedLinkChangePermissionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperPublishedLinkChangePermissionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PaperPublishedLinkChangePermissionType(description={!r})'.format(
+            self._description_value,
+        )
+
+PaperPublishedLinkChangePermissionType_validator = bv.Struct(PaperPublishedLinkChangePermissionType)
 
 class PaperPublishedLinkCreateDetails(bb.Struct):
     """
@@ -49271,6 +60739,142 @@ class PasswordResetType(bb.Struct):
 
 PasswordResetType_validator = bv.Struct(PasswordResetType)
 
+class PasswordStrengthRequirementsChangePolicyDetails(bb.Struct):
+    """
+    Changed team password strength requirements.
+
+    :ivar
+        team_log.PasswordStrengthRequirementsChangePolicyDetails.previous_value:
+        Old password strength policy.
+    :ivar team_log.PasswordStrengthRequirementsChangePolicyDetails.new_value:
+        New password strength policy.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Old password strength policy.
+
+        :rtype: team_policies.PasswordStrengthPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New password strength policy.
+
+        :rtype: team_policies.PasswordStrengthPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PasswordStrengthRequirementsChangePolicyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PasswordStrengthRequirementsChangePolicyDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+PasswordStrengthRequirementsChangePolicyDetails_validator = bv.Struct(PasswordStrengthRequirementsChangePolicyDetails)
+
+class PasswordStrengthRequirementsChangePolicyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PasswordStrengthRequirementsChangePolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PasswordStrengthRequirementsChangePolicyType(description={!r})'.format(
+            self._description_value,
+        )
+
+PasswordStrengthRequirementsChangePolicyType_validator = bv.Struct(PasswordStrengthRequirementsChangePolicyType)
+
 class PathLogInfo(bb.Struct):
     """
     Path's details.
@@ -49362,6 +60966,108 @@ class PathLogInfo(bb.Struct):
         )
 
 PathLogInfo_validator = bv.Struct(PathLogInfo)
+
+class PendingSecondaryEmailAddedDetails(bb.Struct):
+    """
+    Added pending secondary email.
+
+    :ivar team_log.PendingSecondaryEmailAddedDetails.secondary_email: New
+        pending secondary email.
+    """
+
+    __slots__ = [
+        '_secondary_email_value',
+        '_secondary_email_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 secondary_email=None):
+        self._secondary_email_value = None
+        self._secondary_email_present = False
+        if secondary_email is not None:
+            self.secondary_email = secondary_email
+
+    @property
+    def secondary_email(self):
+        """
+        New pending secondary email.
+
+        :rtype: str
+        """
+        if self._secondary_email_present:
+            return self._secondary_email_value
+        else:
+            raise AttributeError("missing required field 'secondary_email'")
+
+    @secondary_email.setter
+    def secondary_email(self, val):
+        val = self._secondary_email_validator.validate(val)
+        self._secondary_email_value = val
+        self._secondary_email_present = True
+
+    @secondary_email.deleter
+    def secondary_email(self):
+        self._secondary_email_value = None
+        self._secondary_email_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PendingSecondaryEmailAddedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PendingSecondaryEmailAddedDetails(secondary_email={!r})'.format(
+            self._secondary_email_value,
+        )
+
+PendingSecondaryEmailAddedDetails_validator = bv.Struct(PendingSecondaryEmailAddedDetails)
+
+class PendingSecondaryEmailAddedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PendingSecondaryEmailAddedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PendingSecondaryEmailAddedType(description={!r})'.format(
+            self._description_value,
+        )
+
+PendingSecondaryEmailAddedType_validator = bv.Struct(PendingSecondaryEmailAddedType)
 
 class PermanentDeleteChangePolicyDetails(bb.Struct):
     """
@@ -49941,6 +61647,8 @@ class QuickActionType(bb.Union):
     # Attribute is overwritten below the class definition
     unlink_app = None
     # Attribute is overwritten below the class definition
+    unlink_device = None
+    # Attribute is overwritten below the class definition
     unlink_session = None
     # Attribute is overwritten below the class definition
     other = None
@@ -49976,6 +61684,14 @@ class QuickActionType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'unlink_app'
+
+    def is_unlink_device(self):
+        """
+        Check if the union tag is ``unlink_device``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unlink_device'
 
     def is_unlink_session(self):
         """
@@ -50496,6 +62212,496 @@ class ResellerSupportSessionStartType(bb.Struct):
         )
 
 ResellerSupportSessionStartType_validator = bv.Struct(ResellerSupportSessionStartType)
+
+class RewindFolderDetails(bb.Struct):
+    """
+    Rewound a folder.
+
+    :ivar team_log.RewindFolderDetails.rewind_folder_target_ts_ms: Folder was
+        Rewound to this date.
+    """
+
+    __slots__ = [
+        '_rewind_folder_target_ts_ms_value',
+        '_rewind_folder_target_ts_ms_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 rewind_folder_target_ts_ms=None):
+        self._rewind_folder_target_ts_ms_value = None
+        self._rewind_folder_target_ts_ms_present = False
+        if rewind_folder_target_ts_ms is not None:
+            self.rewind_folder_target_ts_ms = rewind_folder_target_ts_ms
+
+    @property
+    def rewind_folder_target_ts_ms(self):
+        """
+        Folder was Rewound to this date.
+
+        :rtype: datetime.datetime
+        """
+        if self._rewind_folder_target_ts_ms_present:
+            return self._rewind_folder_target_ts_ms_value
+        else:
+            raise AttributeError("missing required field 'rewind_folder_target_ts_ms'")
+
+    @rewind_folder_target_ts_ms.setter
+    def rewind_folder_target_ts_ms(self, val):
+        val = self._rewind_folder_target_ts_ms_validator.validate(val)
+        self._rewind_folder_target_ts_ms_value = val
+        self._rewind_folder_target_ts_ms_present = True
+
+    @rewind_folder_target_ts_ms.deleter
+    def rewind_folder_target_ts_ms(self):
+        self._rewind_folder_target_ts_ms_value = None
+        self._rewind_folder_target_ts_ms_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RewindFolderDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'RewindFolderDetails(rewind_folder_target_ts_ms={!r})'.format(
+            self._rewind_folder_target_ts_ms_value,
+        )
+
+RewindFolderDetails_validator = bv.Struct(RewindFolderDetails)
+
+class RewindFolderType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RewindFolderType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'RewindFolderType(description={!r})'.format(
+            self._description_value,
+        )
+
+RewindFolderType_validator = bv.Struct(RewindFolderType)
+
+class RewindPolicy(bb.Union):
+    """
+    Policy for controlling whether team members can rewind
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    admins_only = None
+    # Attribute is overwritten below the class definition
+    everyone = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_admins_only(self):
+        """
+        Check if the union tag is ``admins_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admins_only'
+
+    def is_everyone(self):
+        """
+        Check if the union tag is ``everyone``.
+
+        :rtype: bool
+        """
+        return self._tag == 'everyone'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RewindPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'RewindPolicy(%r, %r)' % (self._tag, self._value)
+
+RewindPolicy_validator = bv.Union(RewindPolicy)
+
+class RewindPolicyChangedDetails(bb.Struct):
+    """
+    Changed Rewind policy for team.
+
+    :ivar team_log.RewindPolicyChangedDetails.new_value: New Dropbox Rewind
+        policy.
+    :ivar team_log.RewindPolicyChangedDetails.previous_value: Previous Dropbox
+        Rewind policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New Dropbox Rewind policy.
+
+        :rtype: RewindPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous Dropbox Rewind policy.
+
+        :rtype: RewindPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RewindPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'RewindPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+RewindPolicyChangedDetails_validator = bv.Struct(RewindPolicyChangedDetails)
+
+class RewindPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RewindPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'RewindPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+RewindPolicyChangedType_validator = bv.Struct(RewindPolicyChangedType)
+
+class SecondaryEmailDeletedDetails(bb.Struct):
+    """
+    Deleted secondary email.
+
+    :ivar team_log.SecondaryEmailDeletedDetails.secondary_email: Deleted
+        secondary email.
+    """
+
+    __slots__ = [
+        '_secondary_email_value',
+        '_secondary_email_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 secondary_email=None):
+        self._secondary_email_value = None
+        self._secondary_email_present = False
+        if secondary_email is not None:
+            self.secondary_email = secondary_email
+
+    @property
+    def secondary_email(self):
+        """
+        Deleted secondary email.
+
+        :rtype: str
+        """
+        if self._secondary_email_present:
+            return self._secondary_email_value
+        else:
+            raise AttributeError("missing required field 'secondary_email'")
+
+    @secondary_email.setter
+    def secondary_email(self, val):
+        val = self._secondary_email_validator.validate(val)
+        self._secondary_email_value = val
+        self._secondary_email_present = True
+
+    @secondary_email.deleter
+    def secondary_email(self):
+        self._secondary_email_value = None
+        self._secondary_email_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SecondaryEmailDeletedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SecondaryEmailDeletedDetails(secondary_email={!r})'.format(
+            self._secondary_email_value,
+        )
+
+SecondaryEmailDeletedDetails_validator = bv.Struct(SecondaryEmailDeletedDetails)
+
+class SecondaryEmailDeletedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SecondaryEmailDeletedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SecondaryEmailDeletedType(description={!r})'.format(
+            self._description_value,
+        )
+
+SecondaryEmailDeletedType_validator = bv.Struct(SecondaryEmailDeletedType)
+
+class SecondaryEmailVerifiedDetails(bb.Struct):
+    """
+    Verified secondary email.
+
+    :ivar team_log.SecondaryEmailVerifiedDetails.secondary_email: Verified
+        secondary email.
+    """
+
+    __slots__ = [
+        '_secondary_email_value',
+        '_secondary_email_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 secondary_email=None):
+        self._secondary_email_value = None
+        self._secondary_email_present = False
+        if secondary_email is not None:
+            self.secondary_email = secondary_email
+
+    @property
+    def secondary_email(self):
+        """
+        Verified secondary email.
+
+        :rtype: str
+        """
+        if self._secondary_email_present:
+            return self._secondary_email_value
+        else:
+            raise AttributeError("missing required field 'secondary_email'")
+
+    @secondary_email.setter
+    def secondary_email(self, val):
+        val = self._secondary_email_validator.validate(val)
+        self._secondary_email_value = val
+        self._secondary_email_present = True
+
+    @secondary_email.deleter
+    def secondary_email(self):
+        self._secondary_email_value = None
+        self._secondary_email_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SecondaryEmailVerifiedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SecondaryEmailVerifiedDetails(secondary_email={!r})'.format(
+            self._secondary_email_value,
+        )
+
+SecondaryEmailVerifiedDetails_validator = bv.Struct(SecondaryEmailVerifiedDetails)
+
+class SecondaryEmailVerifiedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SecondaryEmailVerifiedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SecondaryEmailVerifiedType(description={!r})'.format(
+            self._description_value,
+        )
+
+SecondaryEmailVerifiedType_validator = bv.Struct(SecondaryEmailVerifiedType)
 
 class SecondaryMailsPolicy(bb.Union):
     """
@@ -55541,9 +67747,248 @@ class SharedContentRequestAccessType(bb.Struct):
 
 SharedContentRequestAccessType_validator = bv.Struct(SharedContentRequestAccessType)
 
+class SharedContentRestoreInviteesDetails(bb.Struct):
+    """
+    Restored shared file/folder invitees.
+
+    :ivar
+        team_log.SharedContentRestoreInviteesDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar team_log.SharedContentRestoreInviteesDetails.invitees: A list of
+        invitees.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_invitees_value',
+        '_invitees_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 invitees=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._invitees_value = None
+        self._invitees_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if invitees is not None:
+            self.invitees = invitees
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def invitees(self):
+        """
+        A list of invitees.
+
+        :rtype: list of [str]
+        """
+        if self._invitees_present:
+            return self._invitees_value
+        else:
+            raise AttributeError("missing required field 'invitees'")
+
+    @invitees.setter
+    def invitees(self, val):
+        val = self._invitees_validator.validate(val)
+        self._invitees_value = val
+        self._invitees_present = True
+
+    @invitees.deleter
+    def invitees(self):
+        self._invitees_value = None
+        self._invitees_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedContentRestoreInviteesDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedContentRestoreInviteesDetails(shared_content_access_level={!r}, invitees={!r})'.format(
+            self._shared_content_access_level_value,
+            self._invitees_value,
+        )
+
+SharedContentRestoreInviteesDetails_validator = bv.Struct(SharedContentRestoreInviteesDetails)
+
+class SharedContentRestoreInviteesType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedContentRestoreInviteesType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedContentRestoreInviteesType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedContentRestoreInviteesType_validator = bv.Struct(SharedContentRestoreInviteesType)
+
+class SharedContentRestoreMemberDetails(bb.Struct):
+    """
+    Restored users and/or groups to membership of shared file/folder.
+
+    :ivar
+        team_log.SharedContentRestoreMemberDetails.shared_content_access_level:
+        Shared content access level.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedContentRestoreMemberDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedContentRestoreMemberDetails(shared_content_access_level={!r})'.format(
+            self._shared_content_access_level_value,
+        )
+
+SharedContentRestoreMemberDetails_validator = bv.Struct(SharedContentRestoreMemberDetails)
+
+class SharedContentRestoreMemberType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedContentRestoreMemberType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedContentRestoreMemberType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedContentRestoreMemberType_validator = bv.Struct(SharedContentRestoreMemberType)
+
 class SharedContentUnshareDetails(bb.Struct):
     """
-    Unshared file/folder by clearing membership and turning off link.
+    Unshared file/folder by clearing membership.
     """
 
     __slots__ = [
@@ -58021,6 +70466,1482 @@ class SharedLinkRemoveExpiryType(bb.Struct):
 
 SharedLinkRemoveExpiryType_validator = bv.Struct(SharedLinkRemoveExpiryType)
 
+class SharedLinkSettingsAddExpirationDetails(bb.Struct):
+    """
+    Added an expiration date to the shared link.
+
+    :ivar
+        team_log.SharedLinkSettingsAddExpirationDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar team_log.SharedLinkSettingsAddExpirationDetails.shared_content_link:
+        Shared content link.
+    :ivar team_log.SharedLinkSettingsAddExpirationDetails.new_value: New shared
+        content link expiration date. Might be missing due to historical data
+        gap.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 shared_content_link=None,
+                 new_value=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    @property
+    def new_value(self):
+        """
+        New shared content link expiration date. Might be missing due to
+        historical data gap.
+
+        :rtype: datetime.datetime
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            return None
+
+    @new_value.setter
+    def new_value(self, val):
+        if val is None:
+            del self.new_value
+            return
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsAddExpirationDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsAddExpirationDetails(shared_content_access_level={!r}, shared_content_link={!r}, new_value={!r})'.format(
+            self._shared_content_access_level_value,
+            self._shared_content_link_value,
+            self._new_value_value,
+        )
+
+SharedLinkSettingsAddExpirationDetails_validator = bv.Struct(SharedLinkSettingsAddExpirationDetails)
+
+class SharedLinkSettingsAddExpirationType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsAddExpirationType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsAddExpirationType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsAddExpirationType_validator = bv.Struct(SharedLinkSettingsAddExpirationType)
+
+class SharedLinkSettingsAddPasswordDetails(bb.Struct):
+    """
+    Added a password to the shared link.
+
+    :ivar
+        team_log.SharedLinkSettingsAddPasswordDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar team_log.SharedLinkSettingsAddPasswordDetails.shared_content_link:
+        Shared content link.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 shared_content_link=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsAddPasswordDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsAddPasswordDetails(shared_content_access_level={!r}, shared_content_link={!r})'.format(
+            self._shared_content_access_level_value,
+            self._shared_content_link_value,
+        )
+
+SharedLinkSettingsAddPasswordDetails_validator = bv.Struct(SharedLinkSettingsAddPasswordDetails)
+
+class SharedLinkSettingsAddPasswordType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsAddPasswordType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsAddPasswordType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsAddPasswordType_validator = bv.Struct(SharedLinkSettingsAddPasswordType)
+
+class SharedLinkSettingsAllowDownloadDisabledDetails(bb.Struct):
+    """
+    Disabled downloads.
+
+    :ivar
+        team_log.SharedLinkSettingsAllowDownloadDisabledDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar
+        team_log.SharedLinkSettingsAllowDownloadDisabledDetails.shared_content_link:
+        Shared content link.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 shared_content_link=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsAllowDownloadDisabledDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsAllowDownloadDisabledDetails(shared_content_access_level={!r}, shared_content_link={!r})'.format(
+            self._shared_content_access_level_value,
+            self._shared_content_link_value,
+        )
+
+SharedLinkSettingsAllowDownloadDisabledDetails_validator = bv.Struct(SharedLinkSettingsAllowDownloadDisabledDetails)
+
+class SharedLinkSettingsAllowDownloadDisabledType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsAllowDownloadDisabledType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsAllowDownloadDisabledType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsAllowDownloadDisabledType_validator = bv.Struct(SharedLinkSettingsAllowDownloadDisabledType)
+
+class SharedLinkSettingsAllowDownloadEnabledDetails(bb.Struct):
+    """
+    Enabled downloads.
+
+    :ivar
+        team_log.SharedLinkSettingsAllowDownloadEnabledDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar
+        team_log.SharedLinkSettingsAllowDownloadEnabledDetails.shared_content_link:
+        Shared content link.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 shared_content_link=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsAllowDownloadEnabledDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsAllowDownloadEnabledDetails(shared_content_access_level={!r}, shared_content_link={!r})'.format(
+            self._shared_content_access_level_value,
+            self._shared_content_link_value,
+        )
+
+SharedLinkSettingsAllowDownloadEnabledDetails_validator = bv.Struct(SharedLinkSettingsAllowDownloadEnabledDetails)
+
+class SharedLinkSettingsAllowDownloadEnabledType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsAllowDownloadEnabledType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsAllowDownloadEnabledType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsAllowDownloadEnabledType_validator = bv.Struct(SharedLinkSettingsAllowDownloadEnabledType)
+
+class SharedLinkSettingsChangeAudienceDetails(bb.Struct):
+    """
+    Changed the audience of the shared link.
+
+    :ivar
+        team_log.SharedLinkSettingsChangeAudienceDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar team_log.SharedLinkSettingsChangeAudienceDetails.shared_content_link:
+        Shared content link.
+    :ivar team_log.SharedLinkSettingsChangeAudienceDetails.new_value: New link
+        audience value.
+    :ivar team_log.SharedLinkSettingsChangeAudienceDetails.previous_value:
+        Previous link audience value.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 new_value=None,
+                 shared_content_link=None,
+                 previous_value=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    @property
+    def new_value(self):
+        """
+        New link audience value.
+
+        :rtype: sharing.LinkAudience
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous link audience value.
+
+        :rtype: sharing.LinkAudience
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            return None
+
+    @previous_value.setter
+    def previous_value(self, val):
+        if val is None:
+            del self.previous_value
+            return
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsChangeAudienceDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsChangeAudienceDetails(shared_content_access_level={!r}, new_value={!r}, shared_content_link={!r}, previous_value={!r})'.format(
+            self._shared_content_access_level_value,
+            self._new_value_value,
+            self._shared_content_link_value,
+            self._previous_value_value,
+        )
+
+SharedLinkSettingsChangeAudienceDetails_validator = bv.Struct(SharedLinkSettingsChangeAudienceDetails)
+
+class SharedLinkSettingsChangeAudienceType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsChangeAudienceType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsChangeAudienceType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsChangeAudienceType_validator = bv.Struct(SharedLinkSettingsChangeAudienceType)
+
+class SharedLinkSettingsChangeExpirationDetails(bb.Struct):
+    """
+    Changed the expiration date of the shared link.
+
+    :ivar
+        team_log.SharedLinkSettingsChangeExpirationDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar
+        team_log.SharedLinkSettingsChangeExpirationDetails.shared_content_link:
+        Shared content link.
+    :ivar team_log.SharedLinkSettingsChangeExpirationDetails.new_value: New
+        shared content link expiration date. Might be missing due to historical
+        data gap.
+    :ivar team_log.SharedLinkSettingsChangeExpirationDetails.previous_value:
+        Previous shared content link expiration date. Might be missing due to
+        historical data gap.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 shared_content_link=None,
+                 new_value=None,
+                 previous_value=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    @property
+    def new_value(self):
+        """
+        New shared content link expiration date. Might be missing due to
+        historical data gap.
+
+        :rtype: datetime.datetime
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            return None
+
+    @new_value.setter
+    def new_value(self, val):
+        if val is None:
+            del self.new_value
+            return
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous shared content link expiration date. Might be missing due to
+        historical data gap.
+
+        :rtype: datetime.datetime
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            return None
+
+    @previous_value.setter
+    def previous_value(self, val):
+        if val is None:
+            del self.previous_value
+            return
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsChangeExpirationDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsChangeExpirationDetails(shared_content_access_level={!r}, shared_content_link={!r}, new_value={!r}, previous_value={!r})'.format(
+            self._shared_content_access_level_value,
+            self._shared_content_link_value,
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+SharedLinkSettingsChangeExpirationDetails_validator = bv.Struct(SharedLinkSettingsChangeExpirationDetails)
+
+class SharedLinkSettingsChangeExpirationType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsChangeExpirationType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsChangeExpirationType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsChangeExpirationType_validator = bv.Struct(SharedLinkSettingsChangeExpirationType)
+
+class SharedLinkSettingsChangePasswordDetails(bb.Struct):
+    """
+    Changed the password of the shared link.
+
+    :ivar
+        team_log.SharedLinkSettingsChangePasswordDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar team_log.SharedLinkSettingsChangePasswordDetails.shared_content_link:
+        Shared content link.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 shared_content_link=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsChangePasswordDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsChangePasswordDetails(shared_content_access_level={!r}, shared_content_link={!r})'.format(
+            self._shared_content_access_level_value,
+            self._shared_content_link_value,
+        )
+
+SharedLinkSettingsChangePasswordDetails_validator = bv.Struct(SharedLinkSettingsChangePasswordDetails)
+
+class SharedLinkSettingsChangePasswordType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsChangePasswordType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsChangePasswordType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsChangePasswordType_validator = bv.Struct(SharedLinkSettingsChangePasswordType)
+
+class SharedLinkSettingsRemoveExpirationDetails(bb.Struct):
+    """
+    Removed the expiration date from the shared link.
+
+    :ivar
+        team_log.SharedLinkSettingsRemoveExpirationDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar
+        team_log.SharedLinkSettingsRemoveExpirationDetails.shared_content_link:
+        Shared content link.
+    :ivar team_log.SharedLinkSettingsRemoveExpirationDetails.previous_value:
+        Previous shared link expiration date. Might be missing due to historical
+        data gap.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 shared_content_link=None,
+                 previous_value=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous shared link expiration date. Might be missing due to historical
+        data gap.
+
+        :rtype: datetime.datetime
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            return None
+
+    @previous_value.setter
+    def previous_value(self, val):
+        if val is None:
+            del self.previous_value
+            return
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsRemoveExpirationDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsRemoveExpirationDetails(shared_content_access_level={!r}, shared_content_link={!r}, previous_value={!r})'.format(
+            self._shared_content_access_level_value,
+            self._shared_content_link_value,
+            self._previous_value_value,
+        )
+
+SharedLinkSettingsRemoveExpirationDetails_validator = bv.Struct(SharedLinkSettingsRemoveExpirationDetails)
+
+class SharedLinkSettingsRemoveExpirationType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsRemoveExpirationType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsRemoveExpirationType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsRemoveExpirationType_validator = bv.Struct(SharedLinkSettingsRemoveExpirationType)
+
+class SharedLinkSettingsRemovePasswordDetails(bb.Struct):
+    """
+    Removed the password from the shared link.
+
+    :ivar
+        team_log.SharedLinkSettingsRemovePasswordDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar team_log.SharedLinkSettingsRemovePasswordDetails.shared_content_link:
+        Shared content link.
+    """
+
+    __slots__ = [
+        '_shared_content_access_level_value',
+        '_shared_content_access_level_present',
+        '_shared_content_link_value',
+        '_shared_content_link_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 shared_content_access_level=None,
+                 shared_content_link=None):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+        if shared_content_link is not None:
+            self.shared_content_link = shared_content_link
+
+    @property
+    def shared_content_access_level(self):
+        """
+        Shared content access level.
+
+        :rtype: sharing.AccessLevel
+        """
+        if self._shared_content_access_level_present:
+            return self._shared_content_access_level_value
+        else:
+            raise AttributeError("missing required field 'shared_content_access_level'")
+
+    @shared_content_access_level.setter
+    def shared_content_access_level(self, val):
+        self._shared_content_access_level_validator.validate_type_only(val)
+        self._shared_content_access_level_value = val
+        self._shared_content_access_level_present = True
+
+    @shared_content_access_level.deleter
+    def shared_content_access_level(self):
+        self._shared_content_access_level_value = None
+        self._shared_content_access_level_present = False
+
+    @property
+    def shared_content_link(self):
+        """
+        Shared content link.
+
+        :rtype: str
+        """
+        if self._shared_content_link_present:
+            return self._shared_content_link_value
+        else:
+            return None
+
+    @shared_content_link.setter
+    def shared_content_link(self, val):
+        if val is None:
+            del self.shared_content_link
+            return
+        val = self._shared_content_link_validator.validate(val)
+        self._shared_content_link_value = val
+        self._shared_content_link_present = True
+
+    @shared_content_link.deleter
+    def shared_content_link(self):
+        self._shared_content_link_value = None
+        self._shared_content_link_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsRemovePasswordDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsRemovePasswordDetails(shared_content_access_level={!r}, shared_content_link={!r})'.format(
+            self._shared_content_access_level_value,
+            self._shared_content_link_value,
+        )
+
+SharedLinkSettingsRemovePasswordDetails_validator = bv.Struct(SharedLinkSettingsRemovePasswordDetails)
+
+class SharedLinkSettingsRemovePasswordType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkSettingsRemovePasswordType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkSettingsRemovePasswordType(description={!r})'.format(
+            self._description_value,
+        )
+
+SharedLinkSettingsRemovePasswordType_validator = bv.Struct(SharedLinkSettingsRemovePasswordType)
+
 class SharedLinkShareDetails(bb.Struct):
     """
     Added members as audience of shared link.
@@ -58937,6 +72858,8 @@ class SharingMemberPolicy(bb.Union):
     # Attribute is overwritten below the class definition
     forbid = None
     # Attribute is overwritten below the class definition
+    forbid_with_exclusions = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_allow(self):
@@ -58954,6 +72877,14 @@ class SharingMemberPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'forbid'
+
+    def is_forbid_with_exclusions(self):
+        """
+        Check if the union tag is ``forbid_with_exclusions``.
+
+        :rtype: bool
+        """
+        return self._tag == 'forbid_with_exclusions'
 
     def is_other(self):
         """
@@ -62986,6 +76917,141 @@ class SmartSyncOptOutType(bb.Struct):
 
 SmartSyncOptOutType_validator = bv.Struct(SmartSyncOptOutType)
 
+class SmarterSmartSyncPolicyChangedDetails(bb.Struct):
+    """
+    Changed automatic Smart Sync setting for team.
+
+    :ivar team_log.SmarterSmartSyncPolicyChangedDetails.previous_value: Previous
+        automatic Smart Sync setting.
+    :ivar team_log.SmarterSmartSyncPolicyChangedDetails.new_value: New automatic
+        Smart Sync setting.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Previous automatic Smart Sync setting.
+
+        :rtype: team_policies.SmarterSmartSyncPolicyState
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New automatic Smart Sync setting.
+
+        :rtype: team_policies.SmarterSmartSyncPolicyState
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SmarterSmartSyncPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SmarterSmartSyncPolicyChangedDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+SmarterSmartSyncPolicyChangedDetails_validator = bv.Struct(SmarterSmartSyncPolicyChangedDetails)
+
+class SmarterSmartSyncPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SmarterSmartSyncPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SmarterSmartSyncPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+SmarterSmartSyncPolicyChangedType_validator = bv.Struct(SmarterSmartSyncPolicyChangedType)
+
 class SpaceCapsType(bb.Union):
     """
     Space limit alert policy
@@ -64475,6 +78541,109 @@ class SsoRemoveLogoutUrlType(bb.Struct):
 
 SsoRemoveLogoutUrlType_validator = bv.Struct(SsoRemoveLogoutUrlType)
 
+class StartedEnterpriseAdminSessionDetails(bb.Struct):
+    """
+    Started enterprise admin session.
+
+    :ivar
+        team_log.StartedEnterpriseAdminSessionDetails.federation_extra_details:
+        More information about the organization or team.
+    """
+
+    __slots__ = [
+        '_federation_extra_details_value',
+        '_federation_extra_details_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 federation_extra_details=None):
+        self._federation_extra_details_value = None
+        self._federation_extra_details_present = False
+        if federation_extra_details is not None:
+            self.federation_extra_details = federation_extra_details
+
+    @property
+    def federation_extra_details(self):
+        """
+        More information about the organization or team.
+
+        :rtype: FedExtraDetails
+        """
+        if self._federation_extra_details_present:
+            return self._federation_extra_details_value
+        else:
+            raise AttributeError("missing required field 'federation_extra_details'")
+
+    @federation_extra_details.setter
+    def federation_extra_details(self, val):
+        self._federation_extra_details_validator.validate_type_only(val)
+        self._federation_extra_details_value = val
+        self._federation_extra_details_present = True
+
+    @federation_extra_details.deleter
+    def federation_extra_details(self):
+        self._federation_extra_details_value = None
+        self._federation_extra_details_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(StartedEnterpriseAdminSessionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'StartedEnterpriseAdminSessionDetails(federation_extra_details={!r})'.format(
+            self._federation_extra_details_value,
+        )
+
+StartedEnterpriseAdminSessionDetails_validator = bv.Struct(StartedEnterpriseAdminSessionDetails)
+
+class StartedEnterpriseAdminSessionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(StartedEnterpriseAdminSessionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'StartedEnterpriseAdminSessionType(description={!r})'.format(
+            self._description_value,
+        )
+
+StartedEnterpriseAdminSessionType_validator = bv.Struct(StartedEnterpriseAdminSessionType)
+
 class TeamActivityCreateReportDetails(bb.Struct):
     """
     Created team activity report.
@@ -64710,6 +78879,60 @@ class TeamActivityCreateReportType(bb.Struct):
         )
 
 TeamActivityCreateReportType_validator = bv.Struct(TeamActivityCreateReportType)
+
+class TeamDetails(bb.Struct):
+    """
+    More details about the team.
+
+    :ivar team_log.TeamDetails.team: The name of the team.
+    """
+
+    __slots__ = [
+        '_team_value',
+        '_team_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team=None):
+        self._team_value = None
+        self._team_present = False
+        if team is not None:
+            self.team = team
+
+    @property
+    def team(self):
+        """
+        The name of the team.
+
+        :rtype: str
+        """
+        if self._team_present:
+            return self._team_value
+        else:
+            raise AttributeError("missing required field 'team'")
+
+    @team.setter
+    def team(self, val):
+        val = self._team_validator.validate(val)
+        self._team_value = val
+        self._team_present = True
+
+    @team.deleter
+    def team(self):
+        self._team_value = None
+        self._team_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamDetails(team={!r})'.format(
+            self._team_value,
+        )
+
+TeamDetails_validator = bv.Struct(TeamDetails)
 
 class TeamEvent(bb.Struct):
     """
@@ -65792,6 +80015,61 @@ class TeamFolderRenameType(bb.Struct):
 
 TeamFolderRenameType_validator = bv.Struct(TeamFolderRenameType)
 
+class TeamInviteDetails(bb.Struct):
+    """
+    Details about team invites
+
+    :ivar team_log.TeamInviteDetails.invite_method: How the user was invited to
+        the team.
+    """
+
+    __slots__ = [
+        '_invite_method_value',
+        '_invite_method_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 invite_method=None):
+        self._invite_method_value = None
+        self._invite_method_present = False
+        if invite_method is not None:
+            self.invite_method = invite_method
+
+    @property
+    def invite_method(self):
+        """
+        How the user was invited to the team.
+
+        :rtype: InviteMethod
+        """
+        if self._invite_method_present:
+            return self._invite_method_value
+        else:
+            raise AttributeError("missing required field 'invite_method'")
+
+    @invite_method.setter
+    def invite_method(self, val):
+        self._invite_method_validator.validate_type_only(val)
+        self._invite_method_value = val
+        self._invite_method_present = True
+
+    @invite_method.deleter
+    def invite_method(self):
+        self._invite_method_value = None
+        self._invite_method_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamInviteDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamInviteDetails(invite_method={!r})'.format(
+            self._invite_method_value,
+        )
+
+TeamInviteDetails_validator = bv.Struct(TeamInviteDetails)
+
 class TeamLinkedAppLogInfo(AppLogInfo):
     """
     Team linked app
@@ -65819,6 +80097,60 @@ class TeamLinkedAppLogInfo(AppLogInfo):
 
 TeamLinkedAppLogInfo_validator = bv.Struct(TeamLinkedAppLogInfo)
 
+class TeamLogInfo(bb.Struct):
+    """
+    Team's logged information.
+
+    :ivar team_log.TeamLogInfo.display_name: Team display name.
+    """
+
+    __slots__ = [
+        '_display_name_value',
+        '_display_name_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 display_name=None):
+        self._display_name_value = None
+        self._display_name_present = False
+        if display_name is not None:
+            self.display_name = display_name
+
+    @property
+    def display_name(self):
+        """
+        Team display name.
+
+        :rtype: str
+        """
+        if self._display_name_present:
+            return self._display_name_value
+        else:
+            raise AttributeError("missing required field 'display_name'")
+
+    @display_name.setter
+    def display_name(self, val):
+        val = self._display_name_validator.validate(val)
+        self._display_name_value = val
+        self._display_name_present = True
+
+    @display_name.deleter
+    def display_name(self):
+        self._display_name_value = None
+        self._display_name_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamLogInfo(display_name={!r})'.format(
+            self._display_name_value,
+        )
+
+TeamLogInfo_validator = bv.Struct(TeamLogInfo)
+
 class TeamMemberLogInfo(UserLogInfo):
     """
     Team member's logged information.
@@ -65827,6 +80159,8 @@ class TeamMemberLogInfo(UserLogInfo):
         missing due to historical data gap.
     :ivar team_log.TeamMemberLogInfo.member_external_id: Team member external
         ID.
+    :ivar team_log.TeamMemberLogInfo.team: Details about this user&#x2019s team
+        for enterprise event.
     """
 
     __slots__ = [
@@ -65834,6 +80168,8 @@ class TeamMemberLogInfo(UserLogInfo):
         '_team_member_id_present',
         '_member_external_id_value',
         '_member_external_id_present',
+        '_team_value',
+        '_team_present',
     ]
 
     _has_required_fields = False
@@ -65843,7 +80179,8 @@ class TeamMemberLogInfo(UserLogInfo):
                  display_name=None,
                  email=None,
                  team_member_id=None,
-                 member_external_id=None):
+                 member_external_id=None,
+                 team=None):
         super(TeamMemberLogInfo, self).__init__(account_id,
                                                 display_name,
                                                 email)
@@ -65851,10 +80188,14 @@ class TeamMemberLogInfo(UserLogInfo):
         self._team_member_id_present = False
         self._member_external_id_value = None
         self._member_external_id_present = False
+        self._team_value = None
+        self._team_present = False
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if member_external_id is not None:
             self.member_external_id = member_external_id
+        if team is not None:
+            self.team = team
 
     @property
     def team_member_id(self):
@@ -65908,16 +80249,43 @@ class TeamMemberLogInfo(UserLogInfo):
         self._member_external_id_value = None
         self._member_external_id_present = False
 
+    @property
+    def team(self):
+        """
+        Details about this user&#x2019s team for enterprise event.
+
+        :rtype: TeamLogInfo
+        """
+        if self._team_present:
+            return self._team_value
+        else:
+            return None
+
+    @team.setter
+    def team(self, val):
+        if val is None:
+            del self.team
+            return
+        self._team_validator.validate_type_only(val)
+        self._team_value = val
+        self._team_present = True
+
+    @team.deleter
+    def team(self):
+        self._team_value = None
+        self._team_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMemberLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'TeamMemberLogInfo(account_id={!r}, display_name={!r}, email={!r}, team_member_id={!r}, member_external_id={!r})'.format(
+        return 'TeamMemberLogInfo(account_id={!r}, display_name={!r}, email={!r}, team_member_id={!r}, member_external_id={!r}, team={!r})'.format(
             self._account_id_value,
             self._display_name_value,
             self._email_value,
             self._team_member_id_value,
             self._member_external_id_value,
+            self._team_value,
         )
 
 TeamMemberLogInfo_validator = bv.Struct(TeamMemberLogInfo)
@@ -69554,6 +83922,143 @@ class TeamSelectiveSyncSettingsChangedType(bb.Struct):
 
 TeamSelectiveSyncSettingsChangedType_validator = bv.Struct(TeamSelectiveSyncSettingsChangedType)
 
+class TeamSharingWhitelistSubjectsChangedDetails(bb.Struct):
+    """
+    Edited the approved list for sharing externally.
+
+    :ivar
+        team_log.TeamSharingWhitelistSubjectsChangedDetails.added_whitelist_subjects:
+        Domains or emails added to the approved list for sharing externally.
+    :ivar
+        team_log.TeamSharingWhitelistSubjectsChangedDetails.removed_whitelist_subjects:
+        Domains or emails removed from the approved list for sharing externally.
+    """
+
+    __slots__ = [
+        '_added_whitelist_subjects_value',
+        '_added_whitelist_subjects_present',
+        '_removed_whitelist_subjects_value',
+        '_removed_whitelist_subjects_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 added_whitelist_subjects=None,
+                 removed_whitelist_subjects=None):
+        self._added_whitelist_subjects_value = None
+        self._added_whitelist_subjects_present = False
+        self._removed_whitelist_subjects_value = None
+        self._removed_whitelist_subjects_present = False
+        if added_whitelist_subjects is not None:
+            self.added_whitelist_subjects = added_whitelist_subjects
+        if removed_whitelist_subjects is not None:
+            self.removed_whitelist_subjects = removed_whitelist_subjects
+
+    @property
+    def added_whitelist_subjects(self):
+        """
+        Domains or emails added to the approved list for sharing externally.
+
+        :rtype: list of [str]
+        """
+        if self._added_whitelist_subjects_present:
+            return self._added_whitelist_subjects_value
+        else:
+            raise AttributeError("missing required field 'added_whitelist_subjects'")
+
+    @added_whitelist_subjects.setter
+    def added_whitelist_subjects(self, val):
+        val = self._added_whitelist_subjects_validator.validate(val)
+        self._added_whitelist_subjects_value = val
+        self._added_whitelist_subjects_present = True
+
+    @added_whitelist_subjects.deleter
+    def added_whitelist_subjects(self):
+        self._added_whitelist_subjects_value = None
+        self._added_whitelist_subjects_present = False
+
+    @property
+    def removed_whitelist_subjects(self):
+        """
+        Domains or emails removed from the approved list for sharing externally.
+
+        :rtype: list of [str]
+        """
+        if self._removed_whitelist_subjects_present:
+            return self._removed_whitelist_subjects_value
+        else:
+            raise AttributeError("missing required field 'removed_whitelist_subjects'")
+
+    @removed_whitelist_subjects.setter
+    def removed_whitelist_subjects(self, val):
+        val = self._removed_whitelist_subjects_validator.validate(val)
+        self._removed_whitelist_subjects_value = val
+        self._removed_whitelist_subjects_present = True
+
+    @removed_whitelist_subjects.deleter
+    def removed_whitelist_subjects(self):
+        self._removed_whitelist_subjects_value = None
+        self._removed_whitelist_subjects_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamSharingWhitelistSubjectsChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamSharingWhitelistSubjectsChangedDetails(added_whitelist_subjects={!r}, removed_whitelist_subjects={!r})'.format(
+            self._added_whitelist_subjects_value,
+            self._removed_whitelist_subjects_value,
+        )
+
+TeamSharingWhitelistSubjectsChangedDetails_validator = bv.Struct(TeamSharingWhitelistSubjectsChangedDetails)
+
+class TeamSharingWhitelistSubjectsChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamSharingWhitelistSubjectsChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamSharingWhitelistSubjectsChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+TeamSharingWhitelistSubjectsChangedType_validator = bv.Struct(TeamSharingWhitelistSubjectsChangedType)
+
 class TfaAddBackupPhoneDetails(bb.Struct):
     """
     Added backup phone for two-step verification.
@@ -69621,6 +84126,74 @@ class TfaAddBackupPhoneType(bb.Struct):
         )
 
 TfaAddBackupPhoneType_validator = bv.Struct(TfaAddBackupPhoneType)
+
+class TfaAddExceptionDetails(bb.Struct):
+    """
+    Added members to two factor authentication exception list.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TfaAddExceptionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TfaAddExceptionDetails()'
+
+TfaAddExceptionDetails_validator = bv.Struct(TfaAddExceptionDetails)
+
+class TfaAddExceptionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TfaAddExceptionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TfaAddExceptionType(description={!r})'.format(
+            self._description_value,
+        )
+
+TfaAddExceptionType_validator = bv.Struct(TfaAddExceptionType)
 
 class TfaAddSecurityKeyDetails(bb.Struct):
     """
@@ -70211,6 +84784,74 @@ class TfaRemoveBackupPhoneType(bb.Struct):
 
 TfaRemoveBackupPhoneType_validator = bv.Struct(TfaRemoveBackupPhoneType)
 
+class TfaRemoveExceptionDetails(bb.Struct):
+    """
+    Removed members from two factor authentication exception list.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TfaRemoveExceptionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TfaRemoveExceptionDetails()'
+
+TfaRemoveExceptionDetails_validator = bv.Struct(TfaRemoveExceptionDetails)
+
+class TfaRemoveExceptionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TfaRemoveExceptionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TfaRemoveExceptionType(description={!r})'.format(
+            self._description_value,
+        )
+
+TfaRemoveExceptionType_validator = bv.Struct(TfaRemoveExceptionType)
+
 class TfaRemoveSecurityKeyDetails(bb.Struct):
     """
     Removed security key for two-step verification.
@@ -70459,12 +85100,16 @@ class TrustedNonTeamMemberLogInfo(UserLogInfo):
     User that is not a member of the team but considered trusted.
 
     :ivar team_log.TrustedNonTeamMemberLogInfo.trusted_non_team_member_type:
-        Indicates the type of the trusted non team member user.
+        Indicates the type of the member of a trusted team.
+    :ivar team_log.TrustedNonTeamMemberLogInfo.team: Details about this
+        useru2019s trusted team.
     """
 
     __slots__ = [
         '_trusted_non_team_member_type_value',
         '_trusted_non_team_member_type_present',
+        '_team_value',
+        '_team_present',
     ]
 
     _has_required_fields = True
@@ -70473,19 +85118,24 @@ class TrustedNonTeamMemberLogInfo(UserLogInfo):
                  trusted_non_team_member_type=None,
                  account_id=None,
                  display_name=None,
-                 email=None):
+                 email=None,
+                 team=None):
         super(TrustedNonTeamMemberLogInfo, self).__init__(account_id,
                                                           display_name,
                                                           email)
         self._trusted_non_team_member_type_value = None
         self._trusted_non_team_member_type_present = False
+        self._team_value = None
+        self._team_present = False
         if trusted_non_team_member_type is not None:
             self.trusted_non_team_member_type = trusted_non_team_member_type
+        if team is not None:
+            self.team = team
 
     @property
     def trusted_non_team_member_type(self):
         """
-        Indicates the type of the trusted non team member user.
+        Indicates the type of the member of a trusted team.
 
         :rtype: TrustedNonTeamMemberType
         """
@@ -70505,15 +85155,42 @@ class TrustedNonTeamMemberLogInfo(UserLogInfo):
         self._trusted_non_team_member_type_value = None
         self._trusted_non_team_member_type_present = False
 
+    @property
+    def team(self):
+        """
+        Details about this useru2019s trusted team.
+
+        :rtype: TeamLogInfo
+        """
+        if self._team_present:
+            return self._team_value
+        else:
+            return None
+
+    @team.setter
+    def team(self, val):
+        if val is None:
+            del self.team
+            return
+        self._team_validator.validate_type_only(val)
+        self._team_value = val
+        self._team_present = True
+
+    @team.deleter
+    def team(self):
+        self._team_value = None
+        self._team_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TrustedNonTeamMemberLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'TrustedNonTeamMemberLogInfo(trusted_non_team_member_type={!r}, account_id={!r}, display_name={!r}, email={!r})'.format(
+        return 'TrustedNonTeamMemberLogInfo(trusted_non_team_member_type={!r}, account_id={!r}, display_name={!r}, email={!r}, team={!r})'.format(
             self._trusted_non_team_member_type_value,
             self._account_id_value,
             self._display_name_value,
             self._email_value,
+            self._team_value,
         )
 
 TrustedNonTeamMemberLogInfo_validator = bv.Struct(TrustedNonTeamMemberLogInfo)
@@ -70529,6 +85206,8 @@ class TrustedNonTeamMemberType(bb.Union):
     # Attribute is overwritten below the class definition
     multi_instance_admin = None
     # Attribute is overwritten below the class definition
+    enterprise_admin = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_multi_instance_admin(self):
@@ -70538,6 +85217,14 @@ class TrustedNonTeamMemberType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'multi_instance_admin'
+
+    def is_enterprise_admin(self):
+        """
+        Check if the union tag is ``enterprise_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enterprise_admin'
 
     def is_other(self):
         """
@@ -71190,6 +85877,190 @@ class ViewerInfoPolicyChangedType(bb.Struct):
 
 ViewerInfoPolicyChangedType_validator = bv.Struct(ViewerInfoPolicyChangedType)
 
+class WatermarkingPolicy(bb.Union):
+    """
+    Policy for controlling team access to watermarking feature
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(WatermarkingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'WatermarkingPolicy(%r, %r)' % (self._tag, self._value)
+
+WatermarkingPolicy_validator = bv.Union(WatermarkingPolicy)
+
+class WatermarkingPolicyChangedDetails(bb.Struct):
+    """
+    Changed watermarking policy for team.
+
+    :ivar team_log.WatermarkingPolicyChangedDetails.new_value: New watermarking
+        policy.
+    :ivar team_log.WatermarkingPolicyChangedDetails.previous_value: Previous
+        watermarking policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New watermarking policy.
+
+        :rtype: WatermarkingPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous watermarking policy.
+
+        :rtype: WatermarkingPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(WatermarkingPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'WatermarkingPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+WatermarkingPolicyChangedDetails_validator = bv.Struct(WatermarkingPolicyChangedDetails)
+
+class WatermarkingPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(WatermarkingPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'WatermarkingPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+WatermarkingPolicyChangedType_validator = bv.Struct(WatermarkingPolicyChangedType)
+
 class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information on active web sessions
@@ -71379,6 +86250,141 @@ class WebSessionLogInfo(SessionLogInfo):
         )
 
 WebSessionLogInfo_validator = bv.Struct(WebSessionLogInfo)
+
+class WebSessionsChangeActiveSessionLimitDetails(bb.Struct):
+    """
+    Changed limit on active sessions per member.
+
+    :ivar team_log.WebSessionsChangeActiveSessionLimitDetails.previous_value:
+        Previous max number of concurrent active sessions policy.
+    :ivar team_log.WebSessionsChangeActiveSessionLimitDetails.new_value: New max
+        number of concurrent active sessions policy.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        Previous max number of concurrent active sessions policy.
+
+        :rtype: str
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New max number of concurrent active sessions policy.
+
+        :rtype: str
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(WebSessionsChangeActiveSessionLimitDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'WebSessionsChangeActiveSessionLimitDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+WebSessionsChangeActiveSessionLimitDetails_validator = bv.Struct(WebSessionsChangeActiveSessionLimitDetails)
+
+class WebSessionsChangeActiveSessionLimitType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(WebSessionsChangeActiveSessionLimitType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'WebSessionsChangeActiveSessionLimitType(description={!r})'.format(
+            self._description_value,
+        )
+
+WebSessionsChangeActiveSessionLimitType_validator = bv.Struct(WebSessionsChangeActiveSessionLimitType)
 
 class WebSessionsChangeFixedLengthPolicyDetails(bb.Struct):
     """
@@ -71827,6 +86833,7 @@ AccessMethodLogInfo._end_user_validator = SessionLogInfo_validator
 AccessMethodLogInfo._sign_in_as_validator = WebSessionLogInfo_validator
 AccessMethodLogInfo._content_manager_validator = WebSessionLogInfo_validator
 AccessMethodLogInfo._admin_console_validator = WebSessionLogInfo_validator
+AccessMethodLogInfo._enterprise_console_validator = WebSessionLogInfo_validator
 AccessMethodLogInfo._api_validator = ApiSessionLogInfo_validator
 AccessMethodLogInfo._other_validator = bv.Void()
 AccessMethodLogInfo._tagmap = {
@@ -71834,6 +86841,7 @@ AccessMethodLogInfo._tagmap = {
     'sign_in_as': AccessMethodLogInfo._sign_in_as_validator,
     'content_manager': AccessMethodLogInfo._content_manager_validator,
     'admin_console': AccessMethodLogInfo._admin_console_validator,
+    'enterprise_console': AccessMethodLogInfo._enterprise_console_validator,
     'api': AccessMethodLogInfo._api_validator,
     'other': AccessMethodLogInfo._other_validator,
 }
@@ -71892,12 +86900,32 @@ AccountCaptureMigrateAccountType._all_field_names_ = set(['description'])
 AccountCaptureMigrateAccountType._all_fields_ = [('description', AccountCaptureMigrateAccountType._description_validator)]
 
 AccountCaptureNotificationEmailsSentDetails._domain_name_validator = bv.String()
-AccountCaptureNotificationEmailsSentDetails._all_field_names_ = set(['domain_name'])
-AccountCaptureNotificationEmailsSentDetails._all_fields_ = [('domain_name', AccountCaptureNotificationEmailsSentDetails._domain_name_validator)]
+AccountCaptureNotificationEmailsSentDetails._notification_type_validator = bv.Nullable(AccountCaptureNotificationType_validator)
+AccountCaptureNotificationEmailsSentDetails._all_field_names_ = set([
+    'domain_name',
+    'notification_type',
+])
+AccountCaptureNotificationEmailsSentDetails._all_fields_ = [
+    ('domain_name', AccountCaptureNotificationEmailsSentDetails._domain_name_validator),
+    ('notification_type', AccountCaptureNotificationEmailsSentDetails._notification_type_validator),
+]
 
 AccountCaptureNotificationEmailsSentType._description_validator = bv.String()
 AccountCaptureNotificationEmailsSentType._all_field_names_ = set(['description'])
 AccountCaptureNotificationEmailsSentType._all_fields_ = [('description', AccountCaptureNotificationEmailsSentType._description_validator)]
+
+AccountCaptureNotificationType._proactive_warning_notification_validator = bv.Void()
+AccountCaptureNotificationType._actionable_notification_validator = bv.Void()
+AccountCaptureNotificationType._other_validator = bv.Void()
+AccountCaptureNotificationType._tagmap = {
+    'proactive_warning_notification': AccountCaptureNotificationType._proactive_warning_notification_validator,
+    'actionable_notification': AccountCaptureNotificationType._actionable_notification_validator,
+    'other': AccountCaptureNotificationType._other_validator,
+}
+
+AccountCaptureNotificationType.proactive_warning_notification = AccountCaptureNotificationType('proactive_warning_notification')
+AccountCaptureNotificationType.actionable_notification = AccountCaptureNotificationType('actionable_notification')
+AccountCaptureNotificationType.other = AccountCaptureNotificationType('other')
 
 AccountCapturePolicy._disabled_validator = bv.Void()
 AccountCapturePolicy._invited_users_validator = bv.Void()
@@ -71925,10 +86953,12 @@ AccountCaptureRelinquishAccountType._all_fields_ = [('description', AccountCaptu
 
 ActionDetails._team_join_details_validator = JoinTeamDetails_validator
 ActionDetails._remove_action_validator = MemberRemoveActionType_validator
+ActionDetails._team_invite_details_validator = TeamInviteDetails_validator
 ActionDetails._other_validator = bv.Void()
 ActionDetails._tagmap = {
     'team_join_details': ActionDetails._team_join_details_validator,
     'remove_action': ActionDetails._remove_action_validator,
+    'team_invite_details': ActionDetails._team_invite_details_validator,
     'other': ActionDetails._other_validator,
 }
 
@@ -72069,6 +87099,156 @@ AssetLogInfo._tagmap = {
 
 AssetLogInfo.other = AssetLogInfo('other')
 
+BinderAddPageDetails._event_uuid_validator = bv.String()
+BinderAddPageDetails._doc_title_validator = bv.String()
+BinderAddPageDetails._binder_item_name_validator = bv.String()
+BinderAddPageDetails._all_field_names_ = set([
+    'event_uuid',
+    'doc_title',
+    'binder_item_name',
+])
+BinderAddPageDetails._all_fields_ = [
+    ('event_uuid', BinderAddPageDetails._event_uuid_validator),
+    ('doc_title', BinderAddPageDetails._doc_title_validator),
+    ('binder_item_name', BinderAddPageDetails._binder_item_name_validator),
+]
+
+BinderAddPageType._description_validator = bv.String()
+BinderAddPageType._all_field_names_ = set(['description'])
+BinderAddPageType._all_fields_ = [('description', BinderAddPageType._description_validator)]
+
+BinderAddSectionDetails._event_uuid_validator = bv.String()
+BinderAddSectionDetails._doc_title_validator = bv.String()
+BinderAddSectionDetails._binder_item_name_validator = bv.String()
+BinderAddSectionDetails._all_field_names_ = set([
+    'event_uuid',
+    'doc_title',
+    'binder_item_name',
+])
+BinderAddSectionDetails._all_fields_ = [
+    ('event_uuid', BinderAddSectionDetails._event_uuid_validator),
+    ('doc_title', BinderAddSectionDetails._doc_title_validator),
+    ('binder_item_name', BinderAddSectionDetails._binder_item_name_validator),
+]
+
+BinderAddSectionType._description_validator = bv.String()
+BinderAddSectionType._all_field_names_ = set(['description'])
+BinderAddSectionType._all_fields_ = [('description', BinderAddSectionType._description_validator)]
+
+BinderRemovePageDetails._event_uuid_validator = bv.String()
+BinderRemovePageDetails._doc_title_validator = bv.String()
+BinderRemovePageDetails._binder_item_name_validator = bv.String()
+BinderRemovePageDetails._all_field_names_ = set([
+    'event_uuid',
+    'doc_title',
+    'binder_item_name',
+])
+BinderRemovePageDetails._all_fields_ = [
+    ('event_uuid', BinderRemovePageDetails._event_uuid_validator),
+    ('doc_title', BinderRemovePageDetails._doc_title_validator),
+    ('binder_item_name', BinderRemovePageDetails._binder_item_name_validator),
+]
+
+BinderRemovePageType._description_validator = bv.String()
+BinderRemovePageType._all_field_names_ = set(['description'])
+BinderRemovePageType._all_fields_ = [('description', BinderRemovePageType._description_validator)]
+
+BinderRemoveSectionDetails._event_uuid_validator = bv.String()
+BinderRemoveSectionDetails._doc_title_validator = bv.String()
+BinderRemoveSectionDetails._binder_item_name_validator = bv.String()
+BinderRemoveSectionDetails._all_field_names_ = set([
+    'event_uuid',
+    'doc_title',
+    'binder_item_name',
+])
+BinderRemoveSectionDetails._all_fields_ = [
+    ('event_uuid', BinderRemoveSectionDetails._event_uuid_validator),
+    ('doc_title', BinderRemoveSectionDetails._doc_title_validator),
+    ('binder_item_name', BinderRemoveSectionDetails._binder_item_name_validator),
+]
+
+BinderRemoveSectionType._description_validator = bv.String()
+BinderRemoveSectionType._all_field_names_ = set(['description'])
+BinderRemoveSectionType._all_fields_ = [('description', BinderRemoveSectionType._description_validator)]
+
+BinderRenamePageDetails._event_uuid_validator = bv.String()
+BinderRenamePageDetails._doc_title_validator = bv.String()
+BinderRenamePageDetails._binder_item_name_validator = bv.String()
+BinderRenamePageDetails._previous_binder_item_name_validator = bv.Nullable(bv.String())
+BinderRenamePageDetails._all_field_names_ = set([
+    'event_uuid',
+    'doc_title',
+    'binder_item_name',
+    'previous_binder_item_name',
+])
+BinderRenamePageDetails._all_fields_ = [
+    ('event_uuid', BinderRenamePageDetails._event_uuid_validator),
+    ('doc_title', BinderRenamePageDetails._doc_title_validator),
+    ('binder_item_name', BinderRenamePageDetails._binder_item_name_validator),
+    ('previous_binder_item_name', BinderRenamePageDetails._previous_binder_item_name_validator),
+]
+
+BinderRenamePageType._description_validator = bv.String()
+BinderRenamePageType._all_field_names_ = set(['description'])
+BinderRenamePageType._all_fields_ = [('description', BinderRenamePageType._description_validator)]
+
+BinderRenameSectionDetails._event_uuid_validator = bv.String()
+BinderRenameSectionDetails._doc_title_validator = bv.String()
+BinderRenameSectionDetails._binder_item_name_validator = bv.String()
+BinderRenameSectionDetails._previous_binder_item_name_validator = bv.Nullable(bv.String())
+BinderRenameSectionDetails._all_field_names_ = set([
+    'event_uuid',
+    'doc_title',
+    'binder_item_name',
+    'previous_binder_item_name',
+])
+BinderRenameSectionDetails._all_fields_ = [
+    ('event_uuid', BinderRenameSectionDetails._event_uuid_validator),
+    ('doc_title', BinderRenameSectionDetails._doc_title_validator),
+    ('binder_item_name', BinderRenameSectionDetails._binder_item_name_validator),
+    ('previous_binder_item_name', BinderRenameSectionDetails._previous_binder_item_name_validator),
+]
+
+BinderRenameSectionType._description_validator = bv.String()
+BinderRenameSectionType._all_field_names_ = set(['description'])
+BinderRenameSectionType._all_fields_ = [('description', BinderRenameSectionType._description_validator)]
+
+BinderReorderPageDetails._event_uuid_validator = bv.String()
+BinderReorderPageDetails._doc_title_validator = bv.String()
+BinderReorderPageDetails._binder_item_name_validator = bv.String()
+BinderReorderPageDetails._all_field_names_ = set([
+    'event_uuid',
+    'doc_title',
+    'binder_item_name',
+])
+BinderReorderPageDetails._all_fields_ = [
+    ('event_uuid', BinderReorderPageDetails._event_uuid_validator),
+    ('doc_title', BinderReorderPageDetails._doc_title_validator),
+    ('binder_item_name', BinderReorderPageDetails._binder_item_name_validator),
+]
+
+BinderReorderPageType._description_validator = bv.String()
+BinderReorderPageType._all_field_names_ = set(['description'])
+BinderReorderPageType._all_fields_ = [('description', BinderReorderPageType._description_validator)]
+
+BinderReorderSectionDetails._event_uuid_validator = bv.String()
+BinderReorderSectionDetails._doc_title_validator = bv.String()
+BinderReorderSectionDetails._binder_item_name_validator = bv.String()
+BinderReorderSectionDetails._all_field_names_ = set([
+    'event_uuid',
+    'doc_title',
+    'binder_item_name',
+])
+BinderReorderSectionDetails._all_fields_ = [
+    ('event_uuid', BinderReorderSectionDetails._event_uuid_validator),
+    ('doc_title', BinderReorderSectionDetails._doc_title_validator),
+    ('binder_item_name', BinderReorderSectionDetails._binder_item_name_validator),
+]
+
+BinderReorderSectionType._description_validator = bv.String()
+BinderReorderSectionType._all_field_names_ = set(['description'])
+BinderReorderSectionType._all_fields_ = [('description', BinderReorderSectionType._description_validator)]
+
 CameraUploadsPolicy._disabled_validator = bv.Void()
 CameraUploadsPolicy._enabled_validator = bv.Void()
 CameraUploadsPolicy._other_validator = bv.Void()
@@ -72123,6 +87303,45 @@ Certificate._all_fields_ = [
     ('common_name', Certificate._common_name_validator),
 ]
 
+ChangedEnterpriseAdminRoleDetails._previous_value_validator = FedAdminRole_validator
+ChangedEnterpriseAdminRoleDetails._new_value_validator = FedAdminRole_validator
+ChangedEnterpriseAdminRoleDetails._team_name_validator = bv.String()
+ChangedEnterpriseAdminRoleDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+    'team_name',
+])
+ChangedEnterpriseAdminRoleDetails._all_fields_ = [
+    ('previous_value', ChangedEnterpriseAdminRoleDetails._previous_value_validator),
+    ('new_value', ChangedEnterpriseAdminRoleDetails._new_value_validator),
+    ('team_name', ChangedEnterpriseAdminRoleDetails._team_name_validator),
+]
+
+ChangedEnterpriseAdminRoleType._description_validator = bv.String()
+ChangedEnterpriseAdminRoleType._all_field_names_ = set(['description'])
+ChangedEnterpriseAdminRoleType._all_fields_ = [('description', ChangedEnterpriseAdminRoleType._description_validator)]
+
+ChangedEnterpriseConnectedTeamStatusDetails._action_validator = FedHandshakeAction_validator
+ChangedEnterpriseConnectedTeamStatusDetails._additional_info_validator = FederationStatusChangeAdditionalInfo_validator
+ChangedEnterpriseConnectedTeamStatusDetails._previous_value_validator = TrustedTeamsRequestState_validator
+ChangedEnterpriseConnectedTeamStatusDetails._new_value_validator = TrustedTeamsRequestState_validator
+ChangedEnterpriseConnectedTeamStatusDetails._all_field_names_ = set([
+    'action',
+    'additional_info',
+    'previous_value',
+    'new_value',
+])
+ChangedEnterpriseConnectedTeamStatusDetails._all_fields_ = [
+    ('action', ChangedEnterpriseConnectedTeamStatusDetails._action_validator),
+    ('additional_info', ChangedEnterpriseConnectedTeamStatusDetails._additional_info_validator),
+    ('previous_value', ChangedEnterpriseConnectedTeamStatusDetails._previous_value_validator),
+    ('new_value', ChangedEnterpriseConnectedTeamStatusDetails._new_value_validator),
+]
+
+ChangedEnterpriseConnectedTeamStatusType._description_validator = bv.String()
+ChangedEnterpriseConnectedTeamStatusType._all_field_names_ = set(['description'])
+ChangedEnterpriseConnectedTeamStatusType._all_fields_ = [('description', ChangedEnterpriseConnectedTeamStatusType._description_validator)]
+
 CollectionShareDetails._album_name_validator = bv.String()
 CollectionShareDetails._all_field_names_ = set(['album_name'])
 CollectionShareDetails._all_fields_ = [('album_name', CollectionShareDetails._album_name_validator)]
@@ -72130,6 +87349,10 @@ CollectionShareDetails._all_fields_ = [('album_name', CollectionShareDetails._al
 CollectionShareType._description_validator = bv.String()
 CollectionShareType._all_field_names_ = set(['description'])
 CollectionShareType._all_fields_ = [('description', CollectionShareType._description_validator)]
+
+ConnectedTeamName._team_validator = bv.String()
+ConnectedTeamName._all_field_names_ = set(['team'])
+ConnectedTeamName._all_fields_ = [('team', ConnectedTeamName._team_validator)]
 
 ContentPermanentDeletePolicy._disabled_validator = bv.Void()
 ContentPermanentDeletePolicy._enabled_validator = bv.Void()
@@ -72148,6 +87371,7 @@ ContextLogInfo._team_member_validator = TeamMemberLogInfo_validator
 ContextLogInfo._non_team_member_validator = NonTeamMemberLogInfo_validator
 ContextLogInfo._anonymous_validator = bv.Void()
 ContextLogInfo._team_validator = bv.Void()
+ContextLogInfo._organization_team_validator = TeamLogInfo_validator
 ContextLogInfo._trusted_non_team_member_validator = TrustedNonTeamMemberLogInfo_validator
 ContextLogInfo._other_validator = bv.Void()
 ContextLogInfo._tagmap = {
@@ -72155,6 +87379,7 @@ ContextLogInfo._tagmap = {
     'non_team_member': ContextLogInfo._non_team_member_validator,
     'anonymous': ContextLogInfo._anonymous_validator,
     'team': ContextLogInfo._team_validator,
+    'organization_team': ContextLogInfo._organization_team_validator,
     'trusted_non_team_member': ContextLogInfo._trusted_non_team_member_validator,
     'other': ContextLogInfo._other_validator,
 }
@@ -72169,6 +87394,21 @@ CreateFolderDetails._all_fields_ = []
 CreateFolderType._description_validator = bv.String()
 CreateFolderType._all_field_names_ = set(['description'])
 CreateFolderType._all_fields_ = [('description', CreateFolderType._description_validator)]
+
+CreateTeamInviteLinkDetails._link_url_validator = bv.String()
+CreateTeamInviteLinkDetails._expiry_date_validator = bv.String()
+CreateTeamInviteLinkDetails._all_field_names_ = set([
+    'link_url',
+    'expiry_date',
+])
+CreateTeamInviteLinkDetails._all_fields_ = [
+    ('link_url', CreateTeamInviteLinkDetails._link_url_validator),
+    ('expiry_date', CreateTeamInviteLinkDetails._expiry_date_validator),
+]
+
+CreateTeamInviteLinkType._description_validator = bv.String()
+CreateTeamInviteLinkType._all_field_names_ = set(['description'])
+CreateTeamInviteLinkType._all_fields_ = [('description', CreateTeamInviteLinkType._description_validator)]
 
 DataPlacementRestrictionChangePolicyDetails._previous_value_validator = PlacementRestriction_validator
 DataPlacementRestrictionChangePolicyDetails._new_value_validator = PlacementRestriction_validator
@@ -72192,6 +87432,14 @@ DataPlacementRestrictionSatisfyPolicyDetails._all_fields_ = [('placement_restric
 DataPlacementRestrictionSatisfyPolicyType._description_validator = bv.String()
 DataPlacementRestrictionSatisfyPolicyType._all_field_names_ = set(['description'])
 DataPlacementRestrictionSatisfyPolicyType._all_fields_ = [('description', DataPlacementRestrictionSatisfyPolicyType._description_validator)]
+
+DeleteTeamInviteLinkDetails._link_url_validator = bv.String()
+DeleteTeamInviteLinkDetails._all_field_names_ = set(['link_url'])
+DeleteTeamInviteLinkDetails._all_fields_ = [('link_url', DeleteTeamInviteLinkDetails._link_url_validator)]
+
+DeleteTeamInviteLinkType._description_validator = bv.String()
+DeleteTeamInviteLinkType._all_field_names_ = set(['description'])
+DeleteTeamInviteLinkType._all_fields_ = [('description', DeleteTeamInviteLinkType._description_validator)]
 
 DeviceSessionLogInfo._ip_address_validator = bv.Nullable(IpAddress_validator)
 DeviceSessionLogInfo._created_validator = bv.Nullable(common.DropboxTimestamp_validator)
@@ -72271,6 +87519,13 @@ DesktopSessionLogInfo._all_field_names_ = SessionLogInfo._all_field_names_.union
 DesktopSessionLogInfo._fields_ = []
 DesktopSessionLogInfo._all_fields_ = SessionLogInfo._all_fields_ + DesktopSessionLogInfo._fields_
 
+DeviceApprovalsAddExceptionDetails._all_field_names_ = set([])
+DeviceApprovalsAddExceptionDetails._all_fields_ = []
+
+DeviceApprovalsAddExceptionType._description_validator = bv.String()
+DeviceApprovalsAddExceptionType._all_field_names_ = set(['description'])
+DeviceApprovalsAddExceptionType._all_fields_ = [('description', DeviceApprovalsAddExceptionType._description_validator)]
+
 DeviceApprovalsChangeDesktopPolicyDetails._new_value_validator = bv.Nullable(DeviceApprovalsPolicy_validator)
 DeviceApprovalsChangeDesktopPolicyDetails._previous_value_validator = bv.Nullable(DeviceApprovalsPolicy_validator)
 DeviceApprovalsChangeDesktopPolicyDetails._all_field_names_ = set([
@@ -72343,6 +87598,13 @@ DeviceApprovalsPolicy._tagmap = {
 DeviceApprovalsPolicy.unlimited = DeviceApprovalsPolicy('unlimited')
 DeviceApprovalsPolicy.limited = DeviceApprovalsPolicy('limited')
 DeviceApprovalsPolicy.other = DeviceApprovalsPolicy('other')
+
+DeviceApprovalsRemoveExceptionDetails._all_field_names_ = set([])
+DeviceApprovalsRemoveExceptionDetails._all_fields_ = []
+
+DeviceApprovalsRemoveExceptionType._description_validator = bv.String()
+DeviceApprovalsRemoveExceptionType._all_field_names_ = set(['description'])
+DeviceApprovalsRemoveExceptionType._all_fields_ = [('description', DeviceApprovalsRemoveExceptionType._description_validator)]
 
 DeviceChangeIpDesktopDetails._device_session_info_validator = DeviceSessionLogInfo_validator
 DeviceChangeIpDesktopDetails._all_field_names_ = set(['device_session_info'])
@@ -72680,6 +87942,42 @@ EnabledDomainInvitesType._description_validator = bv.String()
 EnabledDomainInvitesType._all_field_names_ = set(['description'])
 EnabledDomainInvitesType._all_fields_ = [('description', EnabledDomainInvitesType._description_validator)]
 
+EndedEnterpriseAdminSessionDeprecatedDetails._federation_extra_details_validator = FedExtraDetails_validator
+EndedEnterpriseAdminSessionDeprecatedDetails._all_field_names_ = set(['federation_extra_details'])
+EndedEnterpriseAdminSessionDeprecatedDetails._all_fields_ = [('federation_extra_details', EndedEnterpriseAdminSessionDeprecatedDetails._federation_extra_details_validator)]
+
+EndedEnterpriseAdminSessionDeprecatedType._description_validator = bv.String()
+EndedEnterpriseAdminSessionDeprecatedType._all_field_names_ = set(['description'])
+EndedEnterpriseAdminSessionDeprecatedType._all_fields_ = [('description', EndedEnterpriseAdminSessionDeprecatedType._description_validator)]
+
+EndedEnterpriseAdminSessionDetails._all_field_names_ = set([])
+EndedEnterpriseAdminSessionDetails._all_fields_ = []
+
+EndedEnterpriseAdminSessionType._description_validator = bv.String()
+EndedEnterpriseAdminSessionType._all_field_names_ = set(['description'])
+EndedEnterpriseAdminSessionType._all_fields_ = [('description', EndedEnterpriseAdminSessionType._description_validator)]
+
+EnterpriseSettingsLockingDetails._team_name_validator = bv.String()
+EnterpriseSettingsLockingDetails._settings_page_name_validator = bv.String()
+EnterpriseSettingsLockingDetails._previous_settings_page_locking_state_validator = bv.String()
+EnterpriseSettingsLockingDetails._new_settings_page_locking_state_validator = bv.String()
+EnterpriseSettingsLockingDetails._all_field_names_ = set([
+    'team_name',
+    'settings_page_name',
+    'previous_settings_page_locking_state',
+    'new_settings_page_locking_state',
+])
+EnterpriseSettingsLockingDetails._all_fields_ = [
+    ('team_name', EnterpriseSettingsLockingDetails._team_name_validator),
+    ('settings_page_name', EnterpriseSettingsLockingDetails._settings_page_name_validator),
+    ('previous_settings_page_locking_state', EnterpriseSettingsLockingDetails._previous_settings_page_locking_state_validator),
+    ('new_settings_page_locking_state', EnterpriseSettingsLockingDetails._new_settings_page_locking_state_validator),
+]
+
+EnterpriseSettingsLockingType._description_validator = bv.String()
+EnterpriseSettingsLockingType._all_field_names_ = set(['description'])
+EnterpriseSettingsLockingType._all_fields_ = [('description', EnterpriseSettingsLockingType._description_validator)]
+
 EventCategory._apps_validator = bv.Void()
 EventCategory._comments_validator = bv.Void()
 EventCategory._devices_validator = bv.Void()
@@ -72687,6 +87985,7 @@ EventCategory._domains_validator = bv.Void()
 EventCategory._file_operations_validator = bv.Void()
 EventCategory._file_requests_validator = bv.Void()
 EventCategory._groups_validator = bv.Void()
+EventCategory._legal_holds_validator = bv.Void()
 EventCategory._logins_validator = bv.Void()
 EventCategory._members_validator = bv.Void()
 EventCategory._paper_validator = bv.Void()
@@ -72709,6 +88008,7 @@ EventCategory._tagmap = {
     'file_operations': EventCategory._file_operations_validator,
     'file_requests': EventCategory._file_requests_validator,
     'groups': EventCategory._groups_validator,
+    'legal_holds': EventCategory._legal_holds_validator,
     'logins': EventCategory._logins_validator,
     'members': EventCategory._members_validator,
     'paper': EventCategory._paper_validator,
@@ -72732,6 +88032,7 @@ EventCategory.domains = EventCategory('domains')
 EventCategory.file_operations = EventCategory('file_operations')
 EventCategory.file_requests = EventCategory('file_requests')
 EventCategory.groups = EventCategory('groups')
+EventCategory.legal_holds = EventCategory('legal_holds')
 EventCategory.logins = EventCategory('logins')
 EventCategory.members = EventCategory('members')
 EventCategory.paper = EventCategory('paper')
@@ -72794,6 +88095,7 @@ EventDetails._file_delete_details_validator = FileDeleteDetails_validator
 EventDetails._file_download_details_validator = FileDownloadDetails_validator
 EventDetails._file_edit_details_validator = FileEditDetails_validator
 EventDetails._file_get_copy_reference_details_validator = FileGetCopyReferenceDetails_validator
+EventDetails._file_locking_lock_status_changed_details_validator = FileLockingLockStatusChangedDetails_validator
 EventDetails._file_move_details_validator = FileMoveDetails_validator
 EventDetails._file_permanently_delete_details_validator = FilePermanentlyDeleteDetails_validator
 EventDetails._file_preview_details_validator = FilePreviewDetails_validator
@@ -72802,6 +88104,10 @@ EventDetails._file_restore_details_validator = FileRestoreDetails_validator
 EventDetails._file_revert_details_validator = FileRevertDetails_validator
 EventDetails._file_rollback_changes_details_validator = FileRollbackChangesDetails_validator
 EventDetails._file_save_copy_reference_details_validator = FileSaveCopyReferenceDetails_validator
+EventDetails._folder_overview_description_changed_details_validator = FolderOverviewDescriptionChangedDetails_validator
+EventDetails._folder_overview_item_pinned_details_validator = FolderOverviewItemPinnedDetails_validator
+EventDetails._folder_overview_item_unpinned_details_validator = FolderOverviewItemUnpinnedDetails_validator
+EventDetails._rewind_folder_details_validator = RewindFolderDetails_validator
 EventDetails._file_request_change_details_validator = FileRequestChangeDetails_validator
 EventDetails._file_request_close_details_validator = FileRequestCloseDetails_validator
 EventDetails._file_request_create_details_validator = FileRequestCreateDetails_validator
@@ -72820,6 +88126,17 @@ EventDetails._group_moved_details_validator = GroupMovedDetails_validator
 EventDetails._group_remove_external_id_details_validator = GroupRemoveExternalIdDetails_validator
 EventDetails._group_remove_member_details_validator = GroupRemoveMemberDetails_validator
 EventDetails._group_rename_details_validator = GroupRenameDetails_validator
+EventDetails._legal_holds_activate_a_hold_details_validator = LegalHoldsActivateAHoldDetails_validator
+EventDetails._legal_holds_add_members_details_validator = LegalHoldsAddMembersDetails_validator
+EventDetails._legal_holds_change_hold_details_details_validator = LegalHoldsChangeHoldDetailsDetails_validator
+EventDetails._legal_holds_change_hold_name_details_validator = LegalHoldsChangeHoldNameDetails_validator
+EventDetails._legal_holds_export_a_hold_details_validator = LegalHoldsExportAHoldDetails_validator
+EventDetails._legal_holds_export_cancelled_details_validator = LegalHoldsExportCancelledDetails_validator
+EventDetails._legal_holds_export_downloaded_details_validator = LegalHoldsExportDownloadedDetails_validator
+EventDetails._legal_holds_export_removed_details_validator = LegalHoldsExportRemovedDetails_validator
+EventDetails._legal_holds_release_a_hold_details_validator = LegalHoldsReleaseAHoldDetails_validator
+EventDetails._legal_holds_remove_members_details_validator = LegalHoldsRemoveMembersDetails_validator
+EventDetails._legal_holds_report_a_hold_details_validator = LegalHoldsReportAHoldDetails_validator
 EventDetails._emm_error_details_validator = EmmErrorDetails_validator
 EventDetails._guest_admin_signed_in_via_trusted_teams_details_validator = GuestAdminSignedInViaTrustedTeamsDetails_validator
 EventDetails._guest_admin_signed_out_via_trusted_teams_details_validator = GuestAdminSignedOutViaTrustedTeamsDetails_validator
@@ -72831,6 +88148,8 @@ EventDetails._reseller_support_session_start_details_validator = ResellerSupport
 EventDetails._sign_in_as_session_end_details_validator = SignInAsSessionEndDetails_validator
 EventDetails._sign_in_as_session_start_details_validator = SignInAsSessionStartDetails_validator
 EventDetails._sso_error_details_validator = SsoErrorDetails_validator
+EventDetails._create_team_invite_link_details_validator = CreateTeamInviteLinkDetails_validator
+EventDetails._delete_team_invite_link_details_validator = DeleteTeamInviteLinkDetails_validator
 EventDetails._member_add_external_id_details_validator = MemberAddExternalIdDetails_validator
 EventDetails._member_add_name_details_validator = MemberAddNameDetails_validator
 EventDetails._member_change_admin_role_details_validator = MemberChangeAdminRoleDetails_validator
@@ -72840,15 +88159,28 @@ EventDetails._member_change_membership_type_details_validator = MemberChangeMemb
 EventDetails._member_change_name_details_validator = MemberChangeNameDetails_validator
 EventDetails._member_change_status_details_validator = MemberChangeStatusDetails_validator
 EventDetails._member_delete_manual_contacts_details_validator = MemberDeleteManualContactsDetails_validator
+EventDetails._member_delete_profile_photo_details_validator = MemberDeleteProfilePhotoDetails_validator
 EventDetails._member_permanently_delete_account_contents_details_validator = MemberPermanentlyDeleteAccountContentsDetails_validator
 EventDetails._member_remove_external_id_details_validator = MemberRemoveExternalIdDetails_validator
+EventDetails._member_set_profile_photo_details_validator = MemberSetProfilePhotoDetails_validator
 EventDetails._member_space_limits_add_custom_quota_details_validator = MemberSpaceLimitsAddCustomQuotaDetails_validator
 EventDetails._member_space_limits_change_custom_quota_details_validator = MemberSpaceLimitsChangeCustomQuotaDetails_validator
 EventDetails._member_space_limits_change_status_details_validator = MemberSpaceLimitsChangeStatusDetails_validator
 EventDetails._member_space_limits_remove_custom_quota_details_validator = MemberSpaceLimitsRemoveCustomQuotaDetails_validator
 EventDetails._member_suggest_details_validator = MemberSuggestDetails_validator
 EventDetails._member_transfer_account_contents_details_validator = MemberTransferAccountContentsDetails_validator
+EventDetails._pending_secondary_email_added_details_validator = PendingSecondaryEmailAddedDetails_validator
+EventDetails._secondary_email_deleted_details_validator = SecondaryEmailDeletedDetails_validator
+EventDetails._secondary_email_verified_details_validator = SecondaryEmailVerifiedDetails_validator
 EventDetails._secondary_mails_policy_changed_details_validator = SecondaryMailsPolicyChangedDetails_validator
+EventDetails._binder_add_page_details_validator = BinderAddPageDetails_validator
+EventDetails._binder_add_section_details_validator = BinderAddSectionDetails_validator
+EventDetails._binder_remove_page_details_validator = BinderRemovePageDetails_validator
+EventDetails._binder_remove_section_details_validator = BinderRemoveSectionDetails_validator
+EventDetails._binder_rename_page_details_validator = BinderRenamePageDetails_validator
+EventDetails._binder_rename_section_details_validator = BinderRenameSectionDetails_validator
+EventDetails._binder_reorder_page_details_validator = BinderReorderPageDetails_validator
+EventDetails._binder_reorder_section_details_validator = BinderReorderSectionDetails_validator
 EventDetails._paper_content_add_member_details_validator = PaperContentAddMemberDetails_validator
 EventDetails._paper_content_add_to_folder_details_validator = PaperContentAddToFolderDetails_validator
 EventDetails._paper_content_archive_details_validator = PaperContentArchiveDetails_validator
@@ -72886,6 +88218,7 @@ EventDetails._paper_folder_change_subscription_details_validator = PaperFolderCh
 EventDetails._paper_folder_deleted_details_validator = PaperFolderDeletedDetails_validator
 EventDetails._paper_folder_followed_details_validator = PaperFolderFollowedDetails_validator
 EventDetails._paper_folder_team_invite_details_validator = PaperFolderTeamInviteDetails_validator
+EventDetails._paper_published_link_change_permission_details_validator = PaperPublishedLinkChangePermissionDetails_validator
 EventDetails._paper_published_link_create_details_validator = PaperPublishedLinkCreateDetails_validator
 EventDetails._paper_published_link_disabled_details_validator = PaperPublishedLinkDisabledDetails_validator
 EventDetails._paper_published_link_view_details_validator = PaperPublishedLinkViewDetails_validator
@@ -72895,11 +88228,17 @@ EventDetails._password_reset_all_details_validator = PasswordResetAllDetails_val
 EventDetails._emm_create_exceptions_report_details_validator = EmmCreateExceptionsReportDetails_validator
 EventDetails._emm_create_usage_report_details_validator = EmmCreateUsageReportDetails_validator
 EventDetails._export_members_report_details_validator = ExportMembersReportDetails_validator
+EventDetails._export_members_report_fail_details_validator = ExportMembersReportFailDetails_validator
 EventDetails._paper_admin_export_start_details_validator = PaperAdminExportStartDetails_validator
 EventDetails._smart_sync_create_admin_privilege_report_details_validator = SmartSyncCreateAdminPrivilegeReportDetails_validator
 EventDetails._team_activity_create_report_details_validator = TeamActivityCreateReportDetails_validator
 EventDetails._team_activity_create_report_fail_details_validator = TeamActivityCreateReportFailDetails_validator
 EventDetails._collection_share_details_validator = CollectionShareDetails_validator
+EventDetails._file_transfers_file_add_details_validator = FileTransfersFileAddDetails_validator
+EventDetails._file_transfers_transfer_delete_details_validator = FileTransfersTransferDeleteDetails_validator
+EventDetails._file_transfers_transfer_download_details_validator = FileTransfersTransferDownloadDetails_validator
+EventDetails._file_transfers_transfer_send_details_validator = FileTransfersTransferSendDetails_validator
+EventDetails._file_transfers_transfer_view_details_validator = FileTransfersTransferViewDetails_validator
 EventDetails._note_acl_invite_only_details_validator = NoteAclInviteOnlyDetails_validator
 EventDetails._note_acl_link_details_validator = NoteAclLinkDetails_validator
 EventDetails._note_acl_team_link_details_validator = NoteAclTeamLinkDetails_validator
@@ -72939,6 +88278,8 @@ EventDetails._shared_content_remove_link_expiry_details_validator = SharedConten
 EventDetails._shared_content_remove_link_password_details_validator = SharedContentRemoveLinkPasswordDetails_validator
 EventDetails._shared_content_remove_member_details_validator = SharedContentRemoveMemberDetails_validator
 EventDetails._shared_content_request_access_details_validator = SharedContentRequestAccessDetails_validator
+EventDetails._shared_content_restore_invitees_details_validator = SharedContentRestoreInviteesDetails_validator
+EventDetails._shared_content_restore_member_details_validator = SharedContentRestoreMemberDetails_validator
 EventDetails._shared_content_unshare_details_validator = SharedContentUnshareDetails_validator
 EventDetails._shared_content_view_details_validator = SharedContentViewDetails_validator
 EventDetails._shared_folder_change_link_policy_details_validator = SharedFolderChangeLinkPolicyDetails_validator
@@ -72959,6 +88300,15 @@ EventDetails._shared_link_create_details_validator = SharedLinkCreateDetails_val
 EventDetails._shared_link_disable_details_validator = SharedLinkDisableDetails_validator
 EventDetails._shared_link_download_details_validator = SharedLinkDownloadDetails_validator
 EventDetails._shared_link_remove_expiry_details_validator = SharedLinkRemoveExpiryDetails_validator
+EventDetails._shared_link_settings_add_expiration_details_validator = SharedLinkSettingsAddExpirationDetails_validator
+EventDetails._shared_link_settings_add_password_details_validator = SharedLinkSettingsAddPasswordDetails_validator
+EventDetails._shared_link_settings_allow_download_disabled_details_validator = SharedLinkSettingsAllowDownloadDisabledDetails_validator
+EventDetails._shared_link_settings_allow_download_enabled_details_validator = SharedLinkSettingsAllowDownloadEnabledDetails_validator
+EventDetails._shared_link_settings_change_audience_details_validator = SharedLinkSettingsChangeAudienceDetails_validator
+EventDetails._shared_link_settings_change_expiration_details_validator = SharedLinkSettingsChangeExpirationDetails_validator
+EventDetails._shared_link_settings_change_password_details_validator = SharedLinkSettingsChangePasswordDetails_validator
+EventDetails._shared_link_settings_remove_expiration_details_validator = SharedLinkSettingsRemoveExpirationDetails_validator
+EventDetails._shared_link_settings_remove_password_details_validator = SharedLinkSettingsRemovePasswordDetails_validator
 EventDetails._shared_link_share_details_validator = SharedLinkShareDetails_validator
 EventDetails._shared_link_view_details_validator = SharedLinkViewDetails_validator
 EventDetails._shared_note_opened_details_validator = SharedNoteOpenedDetails_validator
@@ -73009,10 +88359,12 @@ EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDet
 EventDetails._camera_uploads_policy_changed_details_validator = CameraUploadsPolicyChangedDetails_validator
 EventDetails._data_placement_restriction_change_policy_details_validator = DataPlacementRestrictionChangePolicyDetails_validator
 EventDetails._data_placement_restriction_satisfy_policy_details_validator = DataPlacementRestrictionSatisfyPolicyDetails_validator
+EventDetails._device_approvals_add_exception_details_validator = DeviceApprovalsAddExceptionDetails_validator
 EventDetails._device_approvals_change_desktop_policy_details_validator = DeviceApprovalsChangeDesktopPolicyDetails_validator
 EventDetails._device_approvals_change_mobile_policy_details_validator = DeviceApprovalsChangeMobilePolicyDetails_validator
 EventDetails._device_approvals_change_overage_action_details_validator = DeviceApprovalsChangeOverageActionDetails_validator
 EventDetails._device_approvals_change_unlink_action_details_validator = DeviceApprovalsChangeUnlinkActionDetails_validator
+EventDetails._device_approvals_remove_exception_details_validator = DeviceApprovalsRemoveExceptionDetails_validator
 EventDetails._directory_restrictions_add_members_details_validator = DirectoryRestrictionsAddMembersDetails_validator
 EventDetails._directory_restrictions_remove_members_details_validator = DirectoryRestrictionsRemoveMembersDetails_validator
 EventDetails._emm_add_exception_details_validator = EmmAddExceptionDetails_validator
@@ -73020,9 +88372,11 @@ EventDetails._emm_change_policy_details_validator = EmmChangePolicyDetails_valid
 EventDetails._emm_remove_exception_details_validator = EmmRemoveExceptionDetails_validator
 EventDetails._extended_version_history_change_policy_details_validator = ExtendedVersionHistoryChangePolicyDetails_validator
 EventDetails._file_comments_change_policy_details_validator = FileCommentsChangePolicyDetails_validator
+EventDetails._file_locking_policy_changed_details_validator = FileLockingPolicyChangedDetails_validator
 EventDetails._file_requests_change_policy_details_validator = FileRequestsChangePolicyDetails_validator
 EventDetails._file_requests_emails_enabled_details_validator = FileRequestsEmailsEnabledDetails_validator
 EventDetails._file_requests_emails_restricted_to_team_only_details_validator = FileRequestsEmailsRestrictedToTeamOnlyDetails_validator
+EventDetails._file_transfers_policy_changed_details_validator = FileTransfersPolicyChangedDetails_validator
 EventDetails._google_sso_change_policy_details_validator = GoogleSsoChangePolicyDetails_validator
 EventDetails._group_user_management_change_policy_details_validator = GroupUserManagementChangePolicyDetails_validator
 EventDetails._integration_policy_changed_details_validator = IntegrationPolicyChangedDetails_validator
@@ -73042,23 +88396,31 @@ EventDetails._paper_default_folder_policy_changed_details_validator = PaperDefau
 EventDetails._paper_desktop_policy_changed_details_validator = PaperDesktopPolicyChangedDetails_validator
 EventDetails._paper_enabled_users_group_addition_details_validator = PaperEnabledUsersGroupAdditionDetails_validator
 EventDetails._paper_enabled_users_group_removal_details_validator = PaperEnabledUsersGroupRemovalDetails_validator
+EventDetails._password_strength_requirements_change_policy_details_validator = PasswordStrengthRequirementsChangePolicyDetails_validator
 EventDetails._permanent_delete_change_policy_details_validator = PermanentDeleteChangePolicyDetails_validator
 EventDetails._reseller_support_change_policy_details_validator = ResellerSupportChangePolicyDetails_validator
+EventDetails._rewind_policy_changed_details_validator = RewindPolicyChangedDetails_validator
 EventDetails._sharing_change_folder_join_policy_details_validator = SharingChangeFolderJoinPolicyDetails_validator
 EventDetails._sharing_change_link_policy_details_validator = SharingChangeLinkPolicyDetails_validator
 EventDetails._sharing_change_member_policy_details_validator = SharingChangeMemberPolicyDetails_validator
 EventDetails._showcase_change_download_policy_details_validator = ShowcaseChangeDownloadPolicyDetails_validator
 EventDetails._showcase_change_enabled_policy_details_validator = ShowcaseChangeEnabledPolicyDetails_validator
 EventDetails._showcase_change_external_sharing_policy_details_validator = ShowcaseChangeExternalSharingPolicyDetails_validator
+EventDetails._smarter_smart_sync_policy_changed_details_validator = SmarterSmartSyncPolicyChangedDetails_validator
 EventDetails._smart_sync_change_policy_details_validator = SmartSyncChangePolicyDetails_validator
 EventDetails._smart_sync_not_opt_out_details_validator = SmartSyncNotOptOutDetails_validator
 EventDetails._smart_sync_opt_out_details_validator = SmartSyncOptOutDetails_validator
 EventDetails._sso_change_policy_details_validator = SsoChangePolicyDetails_validator
 EventDetails._team_extensions_policy_changed_details_validator = TeamExtensionsPolicyChangedDetails_validator
 EventDetails._team_selective_sync_policy_changed_details_validator = TeamSelectiveSyncPolicyChangedDetails_validator
+EventDetails._team_sharing_whitelist_subjects_changed_details_validator = TeamSharingWhitelistSubjectsChangedDetails_validator
+EventDetails._tfa_add_exception_details_validator = TfaAddExceptionDetails_validator
 EventDetails._tfa_change_policy_details_validator = TfaChangePolicyDetails_validator
+EventDetails._tfa_remove_exception_details_validator = TfaRemoveExceptionDetails_validator
 EventDetails._two_account_change_policy_details_validator = TwoAccountChangePolicyDetails_validator
 EventDetails._viewer_info_policy_changed_details_validator = ViewerInfoPolicyChangedDetails_validator
+EventDetails._watermarking_policy_changed_details_validator = WatermarkingPolicyChangedDetails_validator
+EventDetails._web_sessions_change_active_session_limit_details_validator = WebSessionsChangeActiveSessionLimitDetails_validator
 EventDetails._web_sessions_change_fixed_length_policy_details_validator = WebSessionsChangeFixedLengthPolicyDetails_validator
 EventDetails._web_sessions_change_idle_length_policy_details_validator = WebSessionsChangeIdleLengthPolicyDetails_validator
 EventDetails._team_merge_from_details_validator = TeamMergeFromDetails_validator
@@ -73075,7 +88437,13 @@ EventDetails._tfa_change_status_details_validator = TfaChangeStatusDetails_valid
 EventDetails._tfa_remove_backup_phone_details_validator = TfaRemoveBackupPhoneDetails_validator
 EventDetails._tfa_remove_security_key_details_validator = TfaRemoveSecurityKeyDetails_validator
 EventDetails._tfa_reset_details_validator = TfaResetDetails_validator
+EventDetails._changed_enterprise_admin_role_details_validator = ChangedEnterpriseAdminRoleDetails_validator
+EventDetails._changed_enterprise_connected_team_status_details_validator = ChangedEnterpriseConnectedTeamStatusDetails_validator
+EventDetails._ended_enterprise_admin_session_details_validator = EndedEnterpriseAdminSessionDetails_validator
+EventDetails._ended_enterprise_admin_session_deprecated_details_validator = EndedEnterpriseAdminSessionDeprecatedDetails_validator
+EventDetails._enterprise_settings_locking_details_validator = EnterpriseSettingsLockingDetails_validator
 EventDetails._guest_admin_change_status_details_validator = GuestAdminChangeStatusDetails_validator
+EventDetails._started_enterprise_admin_session_details_validator = StartedEnterpriseAdminSessionDetails_validator
 EventDetails._team_merge_request_accepted_details_validator = TeamMergeRequestAcceptedDetails_validator
 EventDetails._team_merge_request_accepted_shown_to_primary_team_details_validator = TeamMergeRequestAcceptedShownToPrimaryTeamDetails_validator
 EventDetails._team_merge_request_accepted_shown_to_secondary_team_details_validator = TeamMergeRequestAcceptedShownToSecondaryTeamDetails_validator
@@ -73144,6 +88512,7 @@ EventDetails._tagmap = {
     'file_download_details': EventDetails._file_download_details_validator,
     'file_edit_details': EventDetails._file_edit_details_validator,
     'file_get_copy_reference_details': EventDetails._file_get_copy_reference_details_validator,
+    'file_locking_lock_status_changed_details': EventDetails._file_locking_lock_status_changed_details_validator,
     'file_move_details': EventDetails._file_move_details_validator,
     'file_permanently_delete_details': EventDetails._file_permanently_delete_details_validator,
     'file_preview_details': EventDetails._file_preview_details_validator,
@@ -73152,6 +88521,10 @@ EventDetails._tagmap = {
     'file_revert_details': EventDetails._file_revert_details_validator,
     'file_rollback_changes_details': EventDetails._file_rollback_changes_details_validator,
     'file_save_copy_reference_details': EventDetails._file_save_copy_reference_details_validator,
+    'folder_overview_description_changed_details': EventDetails._folder_overview_description_changed_details_validator,
+    'folder_overview_item_pinned_details': EventDetails._folder_overview_item_pinned_details_validator,
+    'folder_overview_item_unpinned_details': EventDetails._folder_overview_item_unpinned_details_validator,
+    'rewind_folder_details': EventDetails._rewind_folder_details_validator,
     'file_request_change_details': EventDetails._file_request_change_details_validator,
     'file_request_close_details': EventDetails._file_request_close_details_validator,
     'file_request_create_details': EventDetails._file_request_create_details_validator,
@@ -73170,6 +88543,17 @@ EventDetails._tagmap = {
     'group_remove_external_id_details': EventDetails._group_remove_external_id_details_validator,
     'group_remove_member_details': EventDetails._group_remove_member_details_validator,
     'group_rename_details': EventDetails._group_rename_details_validator,
+    'legal_holds_activate_a_hold_details': EventDetails._legal_holds_activate_a_hold_details_validator,
+    'legal_holds_add_members_details': EventDetails._legal_holds_add_members_details_validator,
+    'legal_holds_change_hold_details_details': EventDetails._legal_holds_change_hold_details_details_validator,
+    'legal_holds_change_hold_name_details': EventDetails._legal_holds_change_hold_name_details_validator,
+    'legal_holds_export_a_hold_details': EventDetails._legal_holds_export_a_hold_details_validator,
+    'legal_holds_export_cancelled_details': EventDetails._legal_holds_export_cancelled_details_validator,
+    'legal_holds_export_downloaded_details': EventDetails._legal_holds_export_downloaded_details_validator,
+    'legal_holds_export_removed_details': EventDetails._legal_holds_export_removed_details_validator,
+    'legal_holds_release_a_hold_details': EventDetails._legal_holds_release_a_hold_details_validator,
+    'legal_holds_remove_members_details': EventDetails._legal_holds_remove_members_details_validator,
+    'legal_holds_report_a_hold_details': EventDetails._legal_holds_report_a_hold_details_validator,
     'emm_error_details': EventDetails._emm_error_details_validator,
     'guest_admin_signed_in_via_trusted_teams_details': EventDetails._guest_admin_signed_in_via_trusted_teams_details_validator,
     'guest_admin_signed_out_via_trusted_teams_details': EventDetails._guest_admin_signed_out_via_trusted_teams_details_validator,
@@ -73181,6 +88565,8 @@ EventDetails._tagmap = {
     'sign_in_as_session_end_details': EventDetails._sign_in_as_session_end_details_validator,
     'sign_in_as_session_start_details': EventDetails._sign_in_as_session_start_details_validator,
     'sso_error_details': EventDetails._sso_error_details_validator,
+    'create_team_invite_link_details': EventDetails._create_team_invite_link_details_validator,
+    'delete_team_invite_link_details': EventDetails._delete_team_invite_link_details_validator,
     'member_add_external_id_details': EventDetails._member_add_external_id_details_validator,
     'member_add_name_details': EventDetails._member_add_name_details_validator,
     'member_change_admin_role_details': EventDetails._member_change_admin_role_details_validator,
@@ -73190,15 +88576,28 @@ EventDetails._tagmap = {
     'member_change_name_details': EventDetails._member_change_name_details_validator,
     'member_change_status_details': EventDetails._member_change_status_details_validator,
     'member_delete_manual_contacts_details': EventDetails._member_delete_manual_contacts_details_validator,
+    'member_delete_profile_photo_details': EventDetails._member_delete_profile_photo_details_validator,
     'member_permanently_delete_account_contents_details': EventDetails._member_permanently_delete_account_contents_details_validator,
     'member_remove_external_id_details': EventDetails._member_remove_external_id_details_validator,
+    'member_set_profile_photo_details': EventDetails._member_set_profile_photo_details_validator,
     'member_space_limits_add_custom_quota_details': EventDetails._member_space_limits_add_custom_quota_details_validator,
     'member_space_limits_change_custom_quota_details': EventDetails._member_space_limits_change_custom_quota_details_validator,
     'member_space_limits_change_status_details': EventDetails._member_space_limits_change_status_details_validator,
     'member_space_limits_remove_custom_quota_details': EventDetails._member_space_limits_remove_custom_quota_details_validator,
     'member_suggest_details': EventDetails._member_suggest_details_validator,
     'member_transfer_account_contents_details': EventDetails._member_transfer_account_contents_details_validator,
+    'pending_secondary_email_added_details': EventDetails._pending_secondary_email_added_details_validator,
+    'secondary_email_deleted_details': EventDetails._secondary_email_deleted_details_validator,
+    'secondary_email_verified_details': EventDetails._secondary_email_verified_details_validator,
     'secondary_mails_policy_changed_details': EventDetails._secondary_mails_policy_changed_details_validator,
+    'binder_add_page_details': EventDetails._binder_add_page_details_validator,
+    'binder_add_section_details': EventDetails._binder_add_section_details_validator,
+    'binder_remove_page_details': EventDetails._binder_remove_page_details_validator,
+    'binder_remove_section_details': EventDetails._binder_remove_section_details_validator,
+    'binder_rename_page_details': EventDetails._binder_rename_page_details_validator,
+    'binder_rename_section_details': EventDetails._binder_rename_section_details_validator,
+    'binder_reorder_page_details': EventDetails._binder_reorder_page_details_validator,
+    'binder_reorder_section_details': EventDetails._binder_reorder_section_details_validator,
     'paper_content_add_member_details': EventDetails._paper_content_add_member_details_validator,
     'paper_content_add_to_folder_details': EventDetails._paper_content_add_to_folder_details_validator,
     'paper_content_archive_details': EventDetails._paper_content_archive_details_validator,
@@ -73236,6 +88635,7 @@ EventDetails._tagmap = {
     'paper_folder_deleted_details': EventDetails._paper_folder_deleted_details_validator,
     'paper_folder_followed_details': EventDetails._paper_folder_followed_details_validator,
     'paper_folder_team_invite_details': EventDetails._paper_folder_team_invite_details_validator,
+    'paper_published_link_change_permission_details': EventDetails._paper_published_link_change_permission_details_validator,
     'paper_published_link_create_details': EventDetails._paper_published_link_create_details_validator,
     'paper_published_link_disabled_details': EventDetails._paper_published_link_disabled_details_validator,
     'paper_published_link_view_details': EventDetails._paper_published_link_view_details_validator,
@@ -73245,11 +88645,17 @@ EventDetails._tagmap = {
     'emm_create_exceptions_report_details': EventDetails._emm_create_exceptions_report_details_validator,
     'emm_create_usage_report_details': EventDetails._emm_create_usage_report_details_validator,
     'export_members_report_details': EventDetails._export_members_report_details_validator,
+    'export_members_report_fail_details': EventDetails._export_members_report_fail_details_validator,
     'paper_admin_export_start_details': EventDetails._paper_admin_export_start_details_validator,
     'smart_sync_create_admin_privilege_report_details': EventDetails._smart_sync_create_admin_privilege_report_details_validator,
     'team_activity_create_report_details': EventDetails._team_activity_create_report_details_validator,
     'team_activity_create_report_fail_details': EventDetails._team_activity_create_report_fail_details_validator,
     'collection_share_details': EventDetails._collection_share_details_validator,
+    'file_transfers_file_add_details': EventDetails._file_transfers_file_add_details_validator,
+    'file_transfers_transfer_delete_details': EventDetails._file_transfers_transfer_delete_details_validator,
+    'file_transfers_transfer_download_details': EventDetails._file_transfers_transfer_download_details_validator,
+    'file_transfers_transfer_send_details': EventDetails._file_transfers_transfer_send_details_validator,
+    'file_transfers_transfer_view_details': EventDetails._file_transfers_transfer_view_details_validator,
     'note_acl_invite_only_details': EventDetails._note_acl_invite_only_details_validator,
     'note_acl_link_details': EventDetails._note_acl_link_details_validator,
     'note_acl_team_link_details': EventDetails._note_acl_team_link_details_validator,
@@ -73289,6 +88695,8 @@ EventDetails._tagmap = {
     'shared_content_remove_link_password_details': EventDetails._shared_content_remove_link_password_details_validator,
     'shared_content_remove_member_details': EventDetails._shared_content_remove_member_details_validator,
     'shared_content_request_access_details': EventDetails._shared_content_request_access_details_validator,
+    'shared_content_restore_invitees_details': EventDetails._shared_content_restore_invitees_details_validator,
+    'shared_content_restore_member_details': EventDetails._shared_content_restore_member_details_validator,
     'shared_content_unshare_details': EventDetails._shared_content_unshare_details_validator,
     'shared_content_view_details': EventDetails._shared_content_view_details_validator,
     'shared_folder_change_link_policy_details': EventDetails._shared_folder_change_link_policy_details_validator,
@@ -73309,6 +88717,15 @@ EventDetails._tagmap = {
     'shared_link_disable_details': EventDetails._shared_link_disable_details_validator,
     'shared_link_download_details': EventDetails._shared_link_download_details_validator,
     'shared_link_remove_expiry_details': EventDetails._shared_link_remove_expiry_details_validator,
+    'shared_link_settings_add_expiration_details': EventDetails._shared_link_settings_add_expiration_details_validator,
+    'shared_link_settings_add_password_details': EventDetails._shared_link_settings_add_password_details_validator,
+    'shared_link_settings_allow_download_disabled_details': EventDetails._shared_link_settings_allow_download_disabled_details_validator,
+    'shared_link_settings_allow_download_enabled_details': EventDetails._shared_link_settings_allow_download_enabled_details_validator,
+    'shared_link_settings_change_audience_details': EventDetails._shared_link_settings_change_audience_details_validator,
+    'shared_link_settings_change_expiration_details': EventDetails._shared_link_settings_change_expiration_details_validator,
+    'shared_link_settings_change_password_details': EventDetails._shared_link_settings_change_password_details_validator,
+    'shared_link_settings_remove_expiration_details': EventDetails._shared_link_settings_remove_expiration_details_validator,
+    'shared_link_settings_remove_password_details': EventDetails._shared_link_settings_remove_password_details_validator,
     'shared_link_share_details': EventDetails._shared_link_share_details_validator,
     'shared_link_view_details': EventDetails._shared_link_view_details_validator,
     'shared_note_opened_details': EventDetails._shared_note_opened_details_validator,
@@ -73359,10 +88776,12 @@ EventDetails._tagmap = {
     'camera_uploads_policy_changed_details': EventDetails._camera_uploads_policy_changed_details_validator,
     'data_placement_restriction_change_policy_details': EventDetails._data_placement_restriction_change_policy_details_validator,
     'data_placement_restriction_satisfy_policy_details': EventDetails._data_placement_restriction_satisfy_policy_details_validator,
+    'device_approvals_add_exception_details': EventDetails._device_approvals_add_exception_details_validator,
     'device_approvals_change_desktop_policy_details': EventDetails._device_approvals_change_desktop_policy_details_validator,
     'device_approvals_change_mobile_policy_details': EventDetails._device_approvals_change_mobile_policy_details_validator,
     'device_approvals_change_overage_action_details': EventDetails._device_approvals_change_overage_action_details_validator,
     'device_approvals_change_unlink_action_details': EventDetails._device_approvals_change_unlink_action_details_validator,
+    'device_approvals_remove_exception_details': EventDetails._device_approvals_remove_exception_details_validator,
     'directory_restrictions_add_members_details': EventDetails._directory_restrictions_add_members_details_validator,
     'directory_restrictions_remove_members_details': EventDetails._directory_restrictions_remove_members_details_validator,
     'emm_add_exception_details': EventDetails._emm_add_exception_details_validator,
@@ -73370,9 +88789,11 @@ EventDetails._tagmap = {
     'emm_remove_exception_details': EventDetails._emm_remove_exception_details_validator,
     'extended_version_history_change_policy_details': EventDetails._extended_version_history_change_policy_details_validator,
     'file_comments_change_policy_details': EventDetails._file_comments_change_policy_details_validator,
+    'file_locking_policy_changed_details': EventDetails._file_locking_policy_changed_details_validator,
     'file_requests_change_policy_details': EventDetails._file_requests_change_policy_details_validator,
     'file_requests_emails_enabled_details': EventDetails._file_requests_emails_enabled_details_validator,
     'file_requests_emails_restricted_to_team_only_details': EventDetails._file_requests_emails_restricted_to_team_only_details_validator,
+    'file_transfers_policy_changed_details': EventDetails._file_transfers_policy_changed_details_validator,
     'google_sso_change_policy_details': EventDetails._google_sso_change_policy_details_validator,
     'group_user_management_change_policy_details': EventDetails._group_user_management_change_policy_details_validator,
     'integration_policy_changed_details': EventDetails._integration_policy_changed_details_validator,
@@ -73392,23 +88813,31 @@ EventDetails._tagmap = {
     'paper_desktop_policy_changed_details': EventDetails._paper_desktop_policy_changed_details_validator,
     'paper_enabled_users_group_addition_details': EventDetails._paper_enabled_users_group_addition_details_validator,
     'paper_enabled_users_group_removal_details': EventDetails._paper_enabled_users_group_removal_details_validator,
+    'password_strength_requirements_change_policy_details': EventDetails._password_strength_requirements_change_policy_details_validator,
     'permanent_delete_change_policy_details': EventDetails._permanent_delete_change_policy_details_validator,
     'reseller_support_change_policy_details': EventDetails._reseller_support_change_policy_details_validator,
+    'rewind_policy_changed_details': EventDetails._rewind_policy_changed_details_validator,
     'sharing_change_folder_join_policy_details': EventDetails._sharing_change_folder_join_policy_details_validator,
     'sharing_change_link_policy_details': EventDetails._sharing_change_link_policy_details_validator,
     'sharing_change_member_policy_details': EventDetails._sharing_change_member_policy_details_validator,
     'showcase_change_download_policy_details': EventDetails._showcase_change_download_policy_details_validator,
     'showcase_change_enabled_policy_details': EventDetails._showcase_change_enabled_policy_details_validator,
     'showcase_change_external_sharing_policy_details': EventDetails._showcase_change_external_sharing_policy_details_validator,
+    'smarter_smart_sync_policy_changed_details': EventDetails._smarter_smart_sync_policy_changed_details_validator,
     'smart_sync_change_policy_details': EventDetails._smart_sync_change_policy_details_validator,
     'smart_sync_not_opt_out_details': EventDetails._smart_sync_not_opt_out_details_validator,
     'smart_sync_opt_out_details': EventDetails._smart_sync_opt_out_details_validator,
     'sso_change_policy_details': EventDetails._sso_change_policy_details_validator,
     'team_extensions_policy_changed_details': EventDetails._team_extensions_policy_changed_details_validator,
     'team_selective_sync_policy_changed_details': EventDetails._team_selective_sync_policy_changed_details_validator,
+    'team_sharing_whitelist_subjects_changed_details': EventDetails._team_sharing_whitelist_subjects_changed_details_validator,
+    'tfa_add_exception_details': EventDetails._tfa_add_exception_details_validator,
     'tfa_change_policy_details': EventDetails._tfa_change_policy_details_validator,
+    'tfa_remove_exception_details': EventDetails._tfa_remove_exception_details_validator,
     'two_account_change_policy_details': EventDetails._two_account_change_policy_details_validator,
     'viewer_info_policy_changed_details': EventDetails._viewer_info_policy_changed_details_validator,
+    'watermarking_policy_changed_details': EventDetails._watermarking_policy_changed_details_validator,
+    'web_sessions_change_active_session_limit_details': EventDetails._web_sessions_change_active_session_limit_details_validator,
     'web_sessions_change_fixed_length_policy_details': EventDetails._web_sessions_change_fixed_length_policy_details_validator,
     'web_sessions_change_idle_length_policy_details': EventDetails._web_sessions_change_idle_length_policy_details_validator,
     'team_merge_from_details': EventDetails._team_merge_from_details_validator,
@@ -73425,7 +88854,13 @@ EventDetails._tagmap = {
     'tfa_remove_backup_phone_details': EventDetails._tfa_remove_backup_phone_details_validator,
     'tfa_remove_security_key_details': EventDetails._tfa_remove_security_key_details_validator,
     'tfa_reset_details': EventDetails._tfa_reset_details_validator,
+    'changed_enterprise_admin_role_details': EventDetails._changed_enterprise_admin_role_details_validator,
+    'changed_enterprise_connected_team_status_details': EventDetails._changed_enterprise_connected_team_status_details_validator,
+    'ended_enterprise_admin_session_details': EventDetails._ended_enterprise_admin_session_details_validator,
+    'ended_enterprise_admin_session_deprecated_details': EventDetails._ended_enterprise_admin_session_deprecated_details_validator,
+    'enterprise_settings_locking_details': EventDetails._enterprise_settings_locking_details_validator,
     'guest_admin_change_status_details': EventDetails._guest_admin_change_status_details_validator,
+    'started_enterprise_admin_session_details': EventDetails._started_enterprise_admin_session_details_validator,
     'team_merge_request_accepted_details': EventDetails._team_merge_request_accepted_details_validator,
     'team_merge_request_accepted_shown_to_primary_team_details': EventDetails._team_merge_request_accepted_shown_to_primary_team_details_validator,
     'team_merge_request_accepted_shown_to_secondary_team_details': EventDetails._team_merge_request_accepted_shown_to_secondary_team_details_validator,
@@ -73497,6 +88932,7 @@ EventType._file_delete_validator = FileDeleteType_validator
 EventType._file_download_validator = FileDownloadType_validator
 EventType._file_edit_validator = FileEditType_validator
 EventType._file_get_copy_reference_validator = FileGetCopyReferenceType_validator
+EventType._file_locking_lock_status_changed_validator = FileLockingLockStatusChangedType_validator
 EventType._file_move_validator = FileMoveType_validator
 EventType._file_permanently_delete_validator = FilePermanentlyDeleteType_validator
 EventType._file_preview_validator = FilePreviewType_validator
@@ -73505,6 +88941,10 @@ EventType._file_restore_validator = FileRestoreType_validator
 EventType._file_revert_validator = FileRevertType_validator
 EventType._file_rollback_changes_validator = FileRollbackChangesType_validator
 EventType._file_save_copy_reference_validator = FileSaveCopyReferenceType_validator
+EventType._folder_overview_description_changed_validator = FolderOverviewDescriptionChangedType_validator
+EventType._folder_overview_item_pinned_validator = FolderOverviewItemPinnedType_validator
+EventType._folder_overview_item_unpinned_validator = FolderOverviewItemUnpinnedType_validator
+EventType._rewind_folder_validator = RewindFolderType_validator
 EventType._file_request_change_validator = FileRequestChangeType_validator
 EventType._file_request_close_validator = FileRequestCloseType_validator
 EventType._file_request_create_validator = FileRequestCreateType_validator
@@ -73523,6 +88963,17 @@ EventType._group_moved_validator = GroupMovedType_validator
 EventType._group_remove_external_id_validator = GroupRemoveExternalIdType_validator
 EventType._group_remove_member_validator = GroupRemoveMemberType_validator
 EventType._group_rename_validator = GroupRenameType_validator
+EventType._legal_holds_activate_a_hold_validator = LegalHoldsActivateAHoldType_validator
+EventType._legal_holds_add_members_validator = LegalHoldsAddMembersType_validator
+EventType._legal_holds_change_hold_details_validator = LegalHoldsChangeHoldDetailsType_validator
+EventType._legal_holds_change_hold_name_validator = LegalHoldsChangeHoldNameType_validator
+EventType._legal_holds_export_a_hold_validator = LegalHoldsExportAHoldType_validator
+EventType._legal_holds_export_cancelled_validator = LegalHoldsExportCancelledType_validator
+EventType._legal_holds_export_downloaded_validator = LegalHoldsExportDownloadedType_validator
+EventType._legal_holds_export_removed_validator = LegalHoldsExportRemovedType_validator
+EventType._legal_holds_release_a_hold_validator = LegalHoldsReleaseAHoldType_validator
+EventType._legal_holds_remove_members_validator = LegalHoldsRemoveMembersType_validator
+EventType._legal_holds_report_a_hold_validator = LegalHoldsReportAHoldType_validator
 EventType._emm_error_validator = EmmErrorType_validator
 EventType._guest_admin_signed_in_via_trusted_teams_validator = GuestAdminSignedInViaTrustedTeamsType_validator
 EventType._guest_admin_signed_out_via_trusted_teams_validator = GuestAdminSignedOutViaTrustedTeamsType_validator
@@ -73534,6 +88985,8 @@ EventType._reseller_support_session_start_validator = ResellerSupportSessionStar
 EventType._sign_in_as_session_end_validator = SignInAsSessionEndType_validator
 EventType._sign_in_as_session_start_validator = SignInAsSessionStartType_validator
 EventType._sso_error_validator = SsoErrorType_validator
+EventType._create_team_invite_link_validator = CreateTeamInviteLinkType_validator
+EventType._delete_team_invite_link_validator = DeleteTeamInviteLinkType_validator
 EventType._member_add_external_id_validator = MemberAddExternalIdType_validator
 EventType._member_add_name_validator = MemberAddNameType_validator
 EventType._member_change_admin_role_validator = MemberChangeAdminRoleType_validator
@@ -73543,15 +88996,28 @@ EventType._member_change_membership_type_validator = MemberChangeMembershipTypeT
 EventType._member_change_name_validator = MemberChangeNameType_validator
 EventType._member_change_status_validator = MemberChangeStatusType_validator
 EventType._member_delete_manual_contacts_validator = MemberDeleteManualContactsType_validator
+EventType._member_delete_profile_photo_validator = MemberDeleteProfilePhotoType_validator
 EventType._member_permanently_delete_account_contents_validator = MemberPermanentlyDeleteAccountContentsType_validator
 EventType._member_remove_external_id_validator = MemberRemoveExternalIdType_validator
+EventType._member_set_profile_photo_validator = MemberSetProfilePhotoType_validator
 EventType._member_space_limits_add_custom_quota_validator = MemberSpaceLimitsAddCustomQuotaType_validator
 EventType._member_space_limits_change_custom_quota_validator = MemberSpaceLimitsChangeCustomQuotaType_validator
 EventType._member_space_limits_change_status_validator = MemberSpaceLimitsChangeStatusType_validator
 EventType._member_space_limits_remove_custom_quota_validator = MemberSpaceLimitsRemoveCustomQuotaType_validator
 EventType._member_suggest_validator = MemberSuggestType_validator
 EventType._member_transfer_account_contents_validator = MemberTransferAccountContentsType_validator
+EventType._pending_secondary_email_added_validator = PendingSecondaryEmailAddedType_validator
+EventType._secondary_email_deleted_validator = SecondaryEmailDeletedType_validator
+EventType._secondary_email_verified_validator = SecondaryEmailVerifiedType_validator
 EventType._secondary_mails_policy_changed_validator = SecondaryMailsPolicyChangedType_validator
+EventType._binder_add_page_validator = BinderAddPageType_validator
+EventType._binder_add_section_validator = BinderAddSectionType_validator
+EventType._binder_remove_page_validator = BinderRemovePageType_validator
+EventType._binder_remove_section_validator = BinderRemoveSectionType_validator
+EventType._binder_rename_page_validator = BinderRenamePageType_validator
+EventType._binder_rename_section_validator = BinderRenameSectionType_validator
+EventType._binder_reorder_page_validator = BinderReorderPageType_validator
+EventType._binder_reorder_section_validator = BinderReorderSectionType_validator
 EventType._paper_content_add_member_validator = PaperContentAddMemberType_validator
 EventType._paper_content_add_to_folder_validator = PaperContentAddToFolderType_validator
 EventType._paper_content_archive_validator = PaperContentArchiveType_validator
@@ -73589,6 +89055,7 @@ EventType._paper_folder_change_subscription_validator = PaperFolderChangeSubscri
 EventType._paper_folder_deleted_validator = PaperFolderDeletedType_validator
 EventType._paper_folder_followed_validator = PaperFolderFollowedType_validator
 EventType._paper_folder_team_invite_validator = PaperFolderTeamInviteType_validator
+EventType._paper_published_link_change_permission_validator = PaperPublishedLinkChangePermissionType_validator
 EventType._paper_published_link_create_validator = PaperPublishedLinkCreateType_validator
 EventType._paper_published_link_disabled_validator = PaperPublishedLinkDisabledType_validator
 EventType._paper_published_link_view_validator = PaperPublishedLinkViewType_validator
@@ -73598,11 +89065,17 @@ EventType._password_reset_all_validator = PasswordResetAllType_validator
 EventType._emm_create_exceptions_report_validator = EmmCreateExceptionsReportType_validator
 EventType._emm_create_usage_report_validator = EmmCreateUsageReportType_validator
 EventType._export_members_report_validator = ExportMembersReportType_validator
+EventType._export_members_report_fail_validator = ExportMembersReportFailType_validator
 EventType._paper_admin_export_start_validator = PaperAdminExportStartType_validator
 EventType._smart_sync_create_admin_privilege_report_validator = SmartSyncCreateAdminPrivilegeReportType_validator
 EventType._team_activity_create_report_validator = TeamActivityCreateReportType_validator
 EventType._team_activity_create_report_fail_validator = TeamActivityCreateReportFailType_validator
 EventType._collection_share_validator = CollectionShareType_validator
+EventType._file_transfers_file_add_validator = FileTransfersFileAddType_validator
+EventType._file_transfers_transfer_delete_validator = FileTransfersTransferDeleteType_validator
+EventType._file_transfers_transfer_download_validator = FileTransfersTransferDownloadType_validator
+EventType._file_transfers_transfer_send_validator = FileTransfersTransferSendType_validator
+EventType._file_transfers_transfer_view_validator = FileTransfersTransferViewType_validator
 EventType._note_acl_invite_only_validator = NoteAclInviteOnlyType_validator
 EventType._note_acl_link_validator = NoteAclLinkType_validator
 EventType._note_acl_team_link_validator = NoteAclTeamLinkType_validator
@@ -73642,6 +89115,8 @@ EventType._shared_content_remove_link_expiry_validator = SharedContentRemoveLink
 EventType._shared_content_remove_link_password_validator = SharedContentRemoveLinkPasswordType_validator
 EventType._shared_content_remove_member_validator = SharedContentRemoveMemberType_validator
 EventType._shared_content_request_access_validator = SharedContentRequestAccessType_validator
+EventType._shared_content_restore_invitees_validator = SharedContentRestoreInviteesType_validator
+EventType._shared_content_restore_member_validator = SharedContentRestoreMemberType_validator
 EventType._shared_content_unshare_validator = SharedContentUnshareType_validator
 EventType._shared_content_view_validator = SharedContentViewType_validator
 EventType._shared_folder_change_link_policy_validator = SharedFolderChangeLinkPolicyType_validator
@@ -73662,6 +89137,15 @@ EventType._shared_link_create_validator = SharedLinkCreateType_validator
 EventType._shared_link_disable_validator = SharedLinkDisableType_validator
 EventType._shared_link_download_validator = SharedLinkDownloadType_validator
 EventType._shared_link_remove_expiry_validator = SharedLinkRemoveExpiryType_validator
+EventType._shared_link_settings_add_expiration_validator = SharedLinkSettingsAddExpirationType_validator
+EventType._shared_link_settings_add_password_validator = SharedLinkSettingsAddPasswordType_validator
+EventType._shared_link_settings_allow_download_disabled_validator = SharedLinkSettingsAllowDownloadDisabledType_validator
+EventType._shared_link_settings_allow_download_enabled_validator = SharedLinkSettingsAllowDownloadEnabledType_validator
+EventType._shared_link_settings_change_audience_validator = SharedLinkSettingsChangeAudienceType_validator
+EventType._shared_link_settings_change_expiration_validator = SharedLinkSettingsChangeExpirationType_validator
+EventType._shared_link_settings_change_password_validator = SharedLinkSettingsChangePasswordType_validator
+EventType._shared_link_settings_remove_expiration_validator = SharedLinkSettingsRemoveExpirationType_validator
+EventType._shared_link_settings_remove_password_validator = SharedLinkSettingsRemovePasswordType_validator
 EventType._shared_link_share_validator = SharedLinkShareType_validator
 EventType._shared_link_view_validator = SharedLinkViewType_validator
 EventType._shared_note_opened_validator = SharedNoteOpenedType_validator
@@ -73712,10 +89196,12 @@ EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
 EventType._camera_uploads_policy_changed_validator = CameraUploadsPolicyChangedType_validator
 EventType._data_placement_restriction_change_policy_validator = DataPlacementRestrictionChangePolicyType_validator
 EventType._data_placement_restriction_satisfy_policy_validator = DataPlacementRestrictionSatisfyPolicyType_validator
+EventType._device_approvals_add_exception_validator = DeviceApprovalsAddExceptionType_validator
 EventType._device_approvals_change_desktop_policy_validator = DeviceApprovalsChangeDesktopPolicyType_validator
 EventType._device_approvals_change_mobile_policy_validator = DeviceApprovalsChangeMobilePolicyType_validator
 EventType._device_approvals_change_overage_action_validator = DeviceApprovalsChangeOverageActionType_validator
 EventType._device_approvals_change_unlink_action_validator = DeviceApprovalsChangeUnlinkActionType_validator
+EventType._device_approvals_remove_exception_validator = DeviceApprovalsRemoveExceptionType_validator
 EventType._directory_restrictions_add_members_validator = DirectoryRestrictionsAddMembersType_validator
 EventType._directory_restrictions_remove_members_validator = DirectoryRestrictionsRemoveMembersType_validator
 EventType._emm_add_exception_validator = EmmAddExceptionType_validator
@@ -73723,9 +89209,11 @@ EventType._emm_change_policy_validator = EmmChangePolicyType_validator
 EventType._emm_remove_exception_validator = EmmRemoveExceptionType_validator
 EventType._extended_version_history_change_policy_validator = ExtendedVersionHistoryChangePolicyType_validator
 EventType._file_comments_change_policy_validator = FileCommentsChangePolicyType_validator
+EventType._file_locking_policy_changed_validator = FileLockingPolicyChangedType_validator
 EventType._file_requests_change_policy_validator = FileRequestsChangePolicyType_validator
 EventType._file_requests_emails_enabled_validator = FileRequestsEmailsEnabledType_validator
 EventType._file_requests_emails_restricted_to_team_only_validator = FileRequestsEmailsRestrictedToTeamOnlyType_validator
+EventType._file_transfers_policy_changed_validator = FileTransfersPolicyChangedType_validator
 EventType._google_sso_change_policy_validator = GoogleSsoChangePolicyType_validator
 EventType._group_user_management_change_policy_validator = GroupUserManagementChangePolicyType_validator
 EventType._integration_policy_changed_validator = IntegrationPolicyChangedType_validator
@@ -73745,23 +89233,31 @@ EventType._paper_default_folder_policy_changed_validator = PaperDefaultFolderPol
 EventType._paper_desktop_policy_changed_validator = PaperDesktopPolicyChangedType_validator
 EventType._paper_enabled_users_group_addition_validator = PaperEnabledUsersGroupAdditionType_validator
 EventType._paper_enabled_users_group_removal_validator = PaperEnabledUsersGroupRemovalType_validator
+EventType._password_strength_requirements_change_policy_validator = PasswordStrengthRequirementsChangePolicyType_validator
 EventType._permanent_delete_change_policy_validator = PermanentDeleteChangePolicyType_validator
 EventType._reseller_support_change_policy_validator = ResellerSupportChangePolicyType_validator
+EventType._rewind_policy_changed_validator = RewindPolicyChangedType_validator
 EventType._sharing_change_folder_join_policy_validator = SharingChangeFolderJoinPolicyType_validator
 EventType._sharing_change_link_policy_validator = SharingChangeLinkPolicyType_validator
 EventType._sharing_change_member_policy_validator = SharingChangeMemberPolicyType_validator
 EventType._showcase_change_download_policy_validator = ShowcaseChangeDownloadPolicyType_validator
 EventType._showcase_change_enabled_policy_validator = ShowcaseChangeEnabledPolicyType_validator
 EventType._showcase_change_external_sharing_policy_validator = ShowcaseChangeExternalSharingPolicyType_validator
+EventType._smarter_smart_sync_policy_changed_validator = SmarterSmartSyncPolicyChangedType_validator
 EventType._smart_sync_change_policy_validator = SmartSyncChangePolicyType_validator
 EventType._smart_sync_not_opt_out_validator = SmartSyncNotOptOutType_validator
 EventType._smart_sync_opt_out_validator = SmartSyncOptOutType_validator
 EventType._sso_change_policy_validator = SsoChangePolicyType_validator
 EventType._team_extensions_policy_changed_validator = TeamExtensionsPolicyChangedType_validator
 EventType._team_selective_sync_policy_changed_validator = TeamSelectiveSyncPolicyChangedType_validator
+EventType._team_sharing_whitelist_subjects_changed_validator = TeamSharingWhitelistSubjectsChangedType_validator
+EventType._tfa_add_exception_validator = TfaAddExceptionType_validator
 EventType._tfa_change_policy_validator = TfaChangePolicyType_validator
+EventType._tfa_remove_exception_validator = TfaRemoveExceptionType_validator
 EventType._two_account_change_policy_validator = TwoAccountChangePolicyType_validator
 EventType._viewer_info_policy_changed_validator = ViewerInfoPolicyChangedType_validator
+EventType._watermarking_policy_changed_validator = WatermarkingPolicyChangedType_validator
+EventType._web_sessions_change_active_session_limit_validator = WebSessionsChangeActiveSessionLimitType_validator
 EventType._web_sessions_change_fixed_length_policy_validator = WebSessionsChangeFixedLengthPolicyType_validator
 EventType._web_sessions_change_idle_length_policy_validator = WebSessionsChangeIdleLengthPolicyType_validator
 EventType._team_merge_from_validator = TeamMergeFromType_validator
@@ -73778,7 +89274,13 @@ EventType._tfa_change_status_validator = TfaChangeStatusType_validator
 EventType._tfa_remove_backup_phone_validator = TfaRemoveBackupPhoneType_validator
 EventType._tfa_remove_security_key_validator = TfaRemoveSecurityKeyType_validator
 EventType._tfa_reset_validator = TfaResetType_validator
+EventType._changed_enterprise_admin_role_validator = ChangedEnterpriseAdminRoleType_validator
+EventType._changed_enterprise_connected_team_status_validator = ChangedEnterpriseConnectedTeamStatusType_validator
+EventType._ended_enterprise_admin_session_validator = EndedEnterpriseAdminSessionType_validator
+EventType._ended_enterprise_admin_session_deprecated_validator = EndedEnterpriseAdminSessionDeprecatedType_validator
+EventType._enterprise_settings_locking_validator = EnterpriseSettingsLockingType_validator
 EventType._guest_admin_change_status_validator = GuestAdminChangeStatusType_validator
+EventType._started_enterprise_admin_session_validator = StartedEnterpriseAdminSessionType_validator
 EventType._team_merge_request_accepted_validator = TeamMergeRequestAcceptedType_validator
 EventType._team_merge_request_accepted_shown_to_primary_team_validator = TeamMergeRequestAcceptedShownToPrimaryTeamType_validator
 EventType._team_merge_request_accepted_shown_to_secondary_team_validator = TeamMergeRequestAcceptedShownToSecondaryTeamType_validator
@@ -73846,6 +89348,7 @@ EventType._tagmap = {
     'file_download': EventType._file_download_validator,
     'file_edit': EventType._file_edit_validator,
     'file_get_copy_reference': EventType._file_get_copy_reference_validator,
+    'file_locking_lock_status_changed': EventType._file_locking_lock_status_changed_validator,
     'file_move': EventType._file_move_validator,
     'file_permanently_delete': EventType._file_permanently_delete_validator,
     'file_preview': EventType._file_preview_validator,
@@ -73854,6 +89357,10 @@ EventType._tagmap = {
     'file_revert': EventType._file_revert_validator,
     'file_rollback_changes': EventType._file_rollback_changes_validator,
     'file_save_copy_reference': EventType._file_save_copy_reference_validator,
+    'folder_overview_description_changed': EventType._folder_overview_description_changed_validator,
+    'folder_overview_item_pinned': EventType._folder_overview_item_pinned_validator,
+    'folder_overview_item_unpinned': EventType._folder_overview_item_unpinned_validator,
+    'rewind_folder': EventType._rewind_folder_validator,
     'file_request_change': EventType._file_request_change_validator,
     'file_request_close': EventType._file_request_close_validator,
     'file_request_create': EventType._file_request_create_validator,
@@ -73872,6 +89379,17 @@ EventType._tagmap = {
     'group_remove_external_id': EventType._group_remove_external_id_validator,
     'group_remove_member': EventType._group_remove_member_validator,
     'group_rename': EventType._group_rename_validator,
+    'legal_holds_activate_a_hold': EventType._legal_holds_activate_a_hold_validator,
+    'legal_holds_add_members': EventType._legal_holds_add_members_validator,
+    'legal_holds_change_hold_details': EventType._legal_holds_change_hold_details_validator,
+    'legal_holds_change_hold_name': EventType._legal_holds_change_hold_name_validator,
+    'legal_holds_export_a_hold': EventType._legal_holds_export_a_hold_validator,
+    'legal_holds_export_cancelled': EventType._legal_holds_export_cancelled_validator,
+    'legal_holds_export_downloaded': EventType._legal_holds_export_downloaded_validator,
+    'legal_holds_export_removed': EventType._legal_holds_export_removed_validator,
+    'legal_holds_release_a_hold': EventType._legal_holds_release_a_hold_validator,
+    'legal_holds_remove_members': EventType._legal_holds_remove_members_validator,
+    'legal_holds_report_a_hold': EventType._legal_holds_report_a_hold_validator,
     'emm_error': EventType._emm_error_validator,
     'guest_admin_signed_in_via_trusted_teams': EventType._guest_admin_signed_in_via_trusted_teams_validator,
     'guest_admin_signed_out_via_trusted_teams': EventType._guest_admin_signed_out_via_trusted_teams_validator,
@@ -73883,6 +89401,8 @@ EventType._tagmap = {
     'sign_in_as_session_end': EventType._sign_in_as_session_end_validator,
     'sign_in_as_session_start': EventType._sign_in_as_session_start_validator,
     'sso_error': EventType._sso_error_validator,
+    'create_team_invite_link': EventType._create_team_invite_link_validator,
+    'delete_team_invite_link': EventType._delete_team_invite_link_validator,
     'member_add_external_id': EventType._member_add_external_id_validator,
     'member_add_name': EventType._member_add_name_validator,
     'member_change_admin_role': EventType._member_change_admin_role_validator,
@@ -73892,15 +89412,28 @@ EventType._tagmap = {
     'member_change_name': EventType._member_change_name_validator,
     'member_change_status': EventType._member_change_status_validator,
     'member_delete_manual_contacts': EventType._member_delete_manual_contacts_validator,
+    'member_delete_profile_photo': EventType._member_delete_profile_photo_validator,
     'member_permanently_delete_account_contents': EventType._member_permanently_delete_account_contents_validator,
     'member_remove_external_id': EventType._member_remove_external_id_validator,
+    'member_set_profile_photo': EventType._member_set_profile_photo_validator,
     'member_space_limits_add_custom_quota': EventType._member_space_limits_add_custom_quota_validator,
     'member_space_limits_change_custom_quota': EventType._member_space_limits_change_custom_quota_validator,
     'member_space_limits_change_status': EventType._member_space_limits_change_status_validator,
     'member_space_limits_remove_custom_quota': EventType._member_space_limits_remove_custom_quota_validator,
     'member_suggest': EventType._member_suggest_validator,
     'member_transfer_account_contents': EventType._member_transfer_account_contents_validator,
+    'pending_secondary_email_added': EventType._pending_secondary_email_added_validator,
+    'secondary_email_deleted': EventType._secondary_email_deleted_validator,
+    'secondary_email_verified': EventType._secondary_email_verified_validator,
     'secondary_mails_policy_changed': EventType._secondary_mails_policy_changed_validator,
+    'binder_add_page': EventType._binder_add_page_validator,
+    'binder_add_section': EventType._binder_add_section_validator,
+    'binder_remove_page': EventType._binder_remove_page_validator,
+    'binder_remove_section': EventType._binder_remove_section_validator,
+    'binder_rename_page': EventType._binder_rename_page_validator,
+    'binder_rename_section': EventType._binder_rename_section_validator,
+    'binder_reorder_page': EventType._binder_reorder_page_validator,
+    'binder_reorder_section': EventType._binder_reorder_section_validator,
     'paper_content_add_member': EventType._paper_content_add_member_validator,
     'paper_content_add_to_folder': EventType._paper_content_add_to_folder_validator,
     'paper_content_archive': EventType._paper_content_archive_validator,
@@ -73938,6 +89471,7 @@ EventType._tagmap = {
     'paper_folder_deleted': EventType._paper_folder_deleted_validator,
     'paper_folder_followed': EventType._paper_folder_followed_validator,
     'paper_folder_team_invite': EventType._paper_folder_team_invite_validator,
+    'paper_published_link_change_permission': EventType._paper_published_link_change_permission_validator,
     'paper_published_link_create': EventType._paper_published_link_create_validator,
     'paper_published_link_disabled': EventType._paper_published_link_disabled_validator,
     'paper_published_link_view': EventType._paper_published_link_view_validator,
@@ -73947,11 +89481,17 @@ EventType._tagmap = {
     'emm_create_exceptions_report': EventType._emm_create_exceptions_report_validator,
     'emm_create_usage_report': EventType._emm_create_usage_report_validator,
     'export_members_report': EventType._export_members_report_validator,
+    'export_members_report_fail': EventType._export_members_report_fail_validator,
     'paper_admin_export_start': EventType._paper_admin_export_start_validator,
     'smart_sync_create_admin_privilege_report': EventType._smart_sync_create_admin_privilege_report_validator,
     'team_activity_create_report': EventType._team_activity_create_report_validator,
     'team_activity_create_report_fail': EventType._team_activity_create_report_fail_validator,
     'collection_share': EventType._collection_share_validator,
+    'file_transfers_file_add': EventType._file_transfers_file_add_validator,
+    'file_transfers_transfer_delete': EventType._file_transfers_transfer_delete_validator,
+    'file_transfers_transfer_download': EventType._file_transfers_transfer_download_validator,
+    'file_transfers_transfer_send': EventType._file_transfers_transfer_send_validator,
+    'file_transfers_transfer_view': EventType._file_transfers_transfer_view_validator,
     'note_acl_invite_only': EventType._note_acl_invite_only_validator,
     'note_acl_link': EventType._note_acl_link_validator,
     'note_acl_team_link': EventType._note_acl_team_link_validator,
@@ -73991,6 +89531,8 @@ EventType._tagmap = {
     'shared_content_remove_link_password': EventType._shared_content_remove_link_password_validator,
     'shared_content_remove_member': EventType._shared_content_remove_member_validator,
     'shared_content_request_access': EventType._shared_content_request_access_validator,
+    'shared_content_restore_invitees': EventType._shared_content_restore_invitees_validator,
+    'shared_content_restore_member': EventType._shared_content_restore_member_validator,
     'shared_content_unshare': EventType._shared_content_unshare_validator,
     'shared_content_view': EventType._shared_content_view_validator,
     'shared_folder_change_link_policy': EventType._shared_folder_change_link_policy_validator,
@@ -74011,6 +89553,15 @@ EventType._tagmap = {
     'shared_link_disable': EventType._shared_link_disable_validator,
     'shared_link_download': EventType._shared_link_download_validator,
     'shared_link_remove_expiry': EventType._shared_link_remove_expiry_validator,
+    'shared_link_settings_add_expiration': EventType._shared_link_settings_add_expiration_validator,
+    'shared_link_settings_add_password': EventType._shared_link_settings_add_password_validator,
+    'shared_link_settings_allow_download_disabled': EventType._shared_link_settings_allow_download_disabled_validator,
+    'shared_link_settings_allow_download_enabled': EventType._shared_link_settings_allow_download_enabled_validator,
+    'shared_link_settings_change_audience': EventType._shared_link_settings_change_audience_validator,
+    'shared_link_settings_change_expiration': EventType._shared_link_settings_change_expiration_validator,
+    'shared_link_settings_change_password': EventType._shared_link_settings_change_password_validator,
+    'shared_link_settings_remove_expiration': EventType._shared_link_settings_remove_expiration_validator,
+    'shared_link_settings_remove_password': EventType._shared_link_settings_remove_password_validator,
     'shared_link_share': EventType._shared_link_share_validator,
     'shared_link_view': EventType._shared_link_view_validator,
     'shared_note_opened': EventType._shared_note_opened_validator,
@@ -74061,10 +89612,12 @@ EventType._tagmap = {
     'camera_uploads_policy_changed': EventType._camera_uploads_policy_changed_validator,
     'data_placement_restriction_change_policy': EventType._data_placement_restriction_change_policy_validator,
     'data_placement_restriction_satisfy_policy': EventType._data_placement_restriction_satisfy_policy_validator,
+    'device_approvals_add_exception': EventType._device_approvals_add_exception_validator,
     'device_approvals_change_desktop_policy': EventType._device_approvals_change_desktop_policy_validator,
     'device_approvals_change_mobile_policy': EventType._device_approvals_change_mobile_policy_validator,
     'device_approvals_change_overage_action': EventType._device_approvals_change_overage_action_validator,
     'device_approvals_change_unlink_action': EventType._device_approvals_change_unlink_action_validator,
+    'device_approvals_remove_exception': EventType._device_approvals_remove_exception_validator,
     'directory_restrictions_add_members': EventType._directory_restrictions_add_members_validator,
     'directory_restrictions_remove_members': EventType._directory_restrictions_remove_members_validator,
     'emm_add_exception': EventType._emm_add_exception_validator,
@@ -74072,9 +89625,11 @@ EventType._tagmap = {
     'emm_remove_exception': EventType._emm_remove_exception_validator,
     'extended_version_history_change_policy': EventType._extended_version_history_change_policy_validator,
     'file_comments_change_policy': EventType._file_comments_change_policy_validator,
+    'file_locking_policy_changed': EventType._file_locking_policy_changed_validator,
     'file_requests_change_policy': EventType._file_requests_change_policy_validator,
     'file_requests_emails_enabled': EventType._file_requests_emails_enabled_validator,
     'file_requests_emails_restricted_to_team_only': EventType._file_requests_emails_restricted_to_team_only_validator,
+    'file_transfers_policy_changed': EventType._file_transfers_policy_changed_validator,
     'google_sso_change_policy': EventType._google_sso_change_policy_validator,
     'group_user_management_change_policy': EventType._group_user_management_change_policy_validator,
     'integration_policy_changed': EventType._integration_policy_changed_validator,
@@ -74094,23 +89649,31 @@ EventType._tagmap = {
     'paper_desktop_policy_changed': EventType._paper_desktop_policy_changed_validator,
     'paper_enabled_users_group_addition': EventType._paper_enabled_users_group_addition_validator,
     'paper_enabled_users_group_removal': EventType._paper_enabled_users_group_removal_validator,
+    'password_strength_requirements_change_policy': EventType._password_strength_requirements_change_policy_validator,
     'permanent_delete_change_policy': EventType._permanent_delete_change_policy_validator,
     'reseller_support_change_policy': EventType._reseller_support_change_policy_validator,
+    'rewind_policy_changed': EventType._rewind_policy_changed_validator,
     'sharing_change_folder_join_policy': EventType._sharing_change_folder_join_policy_validator,
     'sharing_change_link_policy': EventType._sharing_change_link_policy_validator,
     'sharing_change_member_policy': EventType._sharing_change_member_policy_validator,
     'showcase_change_download_policy': EventType._showcase_change_download_policy_validator,
     'showcase_change_enabled_policy': EventType._showcase_change_enabled_policy_validator,
     'showcase_change_external_sharing_policy': EventType._showcase_change_external_sharing_policy_validator,
+    'smarter_smart_sync_policy_changed': EventType._smarter_smart_sync_policy_changed_validator,
     'smart_sync_change_policy': EventType._smart_sync_change_policy_validator,
     'smart_sync_not_opt_out': EventType._smart_sync_not_opt_out_validator,
     'smart_sync_opt_out': EventType._smart_sync_opt_out_validator,
     'sso_change_policy': EventType._sso_change_policy_validator,
     'team_extensions_policy_changed': EventType._team_extensions_policy_changed_validator,
     'team_selective_sync_policy_changed': EventType._team_selective_sync_policy_changed_validator,
+    'team_sharing_whitelist_subjects_changed': EventType._team_sharing_whitelist_subjects_changed_validator,
+    'tfa_add_exception': EventType._tfa_add_exception_validator,
     'tfa_change_policy': EventType._tfa_change_policy_validator,
+    'tfa_remove_exception': EventType._tfa_remove_exception_validator,
     'two_account_change_policy': EventType._two_account_change_policy_validator,
     'viewer_info_policy_changed': EventType._viewer_info_policy_changed_validator,
+    'watermarking_policy_changed': EventType._watermarking_policy_changed_validator,
+    'web_sessions_change_active_session_limit': EventType._web_sessions_change_active_session_limit_validator,
     'web_sessions_change_fixed_length_policy': EventType._web_sessions_change_fixed_length_policy_validator,
     'web_sessions_change_idle_length_policy': EventType._web_sessions_change_idle_length_policy_validator,
     'team_merge_from': EventType._team_merge_from_validator,
@@ -74127,7 +89690,13 @@ EventType._tagmap = {
     'tfa_remove_backup_phone': EventType._tfa_remove_backup_phone_validator,
     'tfa_remove_security_key': EventType._tfa_remove_security_key_validator,
     'tfa_reset': EventType._tfa_reset_validator,
+    'changed_enterprise_admin_role': EventType._changed_enterprise_admin_role_validator,
+    'changed_enterprise_connected_team_status': EventType._changed_enterprise_connected_team_status_validator,
+    'ended_enterprise_admin_session': EventType._ended_enterprise_admin_session_validator,
+    'ended_enterprise_admin_session_deprecated': EventType._ended_enterprise_admin_session_deprecated_validator,
+    'enterprise_settings_locking': EventType._enterprise_settings_locking_validator,
     'guest_admin_change_status': EventType._guest_admin_change_status_validator,
+    'started_enterprise_admin_session': EventType._started_enterprise_admin_session_validator,
     'team_merge_request_accepted': EventType._team_merge_request_accepted_validator,
     'team_merge_request_accepted_shown_to_primary_team': EventType._team_merge_request_accepted_shown_to_primary_team_validator,
     'team_merge_request_accepted_shown_to_secondary_team': EventType._team_merge_request_accepted_shown_to_secondary_team_validator,
@@ -74153,6 +89722,14 @@ EventType.other = EventType('other')
 
 ExportMembersReportDetails._all_field_names_ = set([])
 ExportMembersReportDetails._all_fields_ = []
+
+ExportMembersReportFailDetails._failure_reason_validator = team.TeamReportFailureReason_validator
+ExportMembersReportFailDetails._all_field_names_ = set(['failure_reason'])
+ExportMembersReportFailDetails._all_fields_ = [('failure_reason', ExportMembersReportFailDetails._failure_reason_validator)]
+
+ExportMembersReportFailType._description_validator = bv.String()
+ExportMembersReportFailType._all_field_names_ = set(['description'])
+ExportMembersReportFailType._all_fields_ = [('description', ExportMembersReportFailType._description_validator)]
 
 ExportMembersReportType._description_validator = bv.String()
 ExportMembersReportType._all_field_names_ = set(['description'])
@@ -74213,6 +89790,68 @@ FailureDetailsLogInfo._all_fields_ = [
     ('user_friendly_message', FailureDetailsLogInfo._user_friendly_message_validator),
     ('technical_error_message', FailureDetailsLogInfo._technical_error_message_validator),
 ]
+
+FedAdminRole._not_enterprise_admin_validator = bv.Void()
+FedAdminRole._enterprise_admin_validator = bv.Void()
+FedAdminRole._other_validator = bv.Void()
+FedAdminRole._tagmap = {
+    'not_enterprise_admin': FedAdminRole._not_enterprise_admin_validator,
+    'enterprise_admin': FedAdminRole._enterprise_admin_validator,
+    'other': FedAdminRole._other_validator,
+}
+
+FedAdminRole.not_enterprise_admin = FedAdminRole('not_enterprise_admin')
+FedAdminRole.enterprise_admin = FedAdminRole('enterprise_admin')
+FedAdminRole.other = FedAdminRole('other')
+
+FedExtraDetails._team_validator = TeamDetails_validator
+FedExtraDetails._organization_validator = OrganizationDetails_validator
+FedExtraDetails._other_validator = bv.Void()
+FedExtraDetails._tagmap = {
+    'team': FedExtraDetails._team_validator,
+    'organization': FedExtraDetails._organization_validator,
+    'other': FedExtraDetails._other_validator,
+}
+
+FedExtraDetails.other = FedExtraDetails('other')
+
+FedHandshakeAction._invited_validator = bv.Void()
+FedHandshakeAction._accepted_invite_validator = bv.Void()
+FedHandshakeAction._rejected_invite_validator = bv.Void()
+FedHandshakeAction._canceled_invite_validator = bv.Void()
+FedHandshakeAction._removed_team_validator = bv.Void()
+FedHandshakeAction._invite_expired_validator = bv.Void()
+FedHandshakeAction._other_validator = bv.Void()
+FedHandshakeAction._tagmap = {
+    'invited': FedHandshakeAction._invited_validator,
+    'accepted_invite': FedHandshakeAction._accepted_invite_validator,
+    'rejected_invite': FedHandshakeAction._rejected_invite_validator,
+    'canceled_invite': FedHandshakeAction._canceled_invite_validator,
+    'removed_team': FedHandshakeAction._removed_team_validator,
+    'invite_expired': FedHandshakeAction._invite_expired_validator,
+    'other': FedHandshakeAction._other_validator,
+}
+
+FedHandshakeAction.invited = FedHandshakeAction('invited')
+FedHandshakeAction.accepted_invite = FedHandshakeAction('accepted_invite')
+FedHandshakeAction.rejected_invite = FedHandshakeAction('rejected_invite')
+FedHandshakeAction.canceled_invite = FedHandshakeAction('canceled_invite')
+FedHandshakeAction.removed_team = FedHandshakeAction('removed_team')
+FedHandshakeAction.invite_expired = FedHandshakeAction('invite_expired')
+FedHandshakeAction.other = FedHandshakeAction('other')
+
+FederationStatusChangeAdditionalInfo._connected_team_name_validator = ConnectedTeamName_validator
+FederationStatusChangeAdditionalInfo._non_trusted_team_details_validator = NonTrustedTeamDetails_validator
+FederationStatusChangeAdditionalInfo._organization_name_validator = OrganizationName_validator
+FederationStatusChangeAdditionalInfo._other_validator = bv.Void()
+FederationStatusChangeAdditionalInfo._tagmap = {
+    'connected_team_name': FederationStatusChangeAdditionalInfo._connected_team_name_validator,
+    'non_trusted_team_details': FederationStatusChangeAdditionalInfo._non_trusted_team_details_validator,
+    'organization_name': FederationStatusChangeAdditionalInfo._organization_name_validator,
+    'other': FederationStatusChangeAdditionalInfo._other_validator,
+}
+
+FederationStatusChangeAdditionalInfo.other = FederationStatusChangeAdditionalInfo('other')
 
 FileAddCommentDetails._comment_text_validator = bv.Nullable(bv.String())
 FileAddCommentDetails._all_field_names_ = set(['comment_text'])
@@ -74351,6 +89990,36 @@ FileLikeCommentDetails._all_fields_ = [('comment_text', FileLikeCommentDetails._
 FileLikeCommentType._description_validator = bv.String()
 FileLikeCommentType._all_field_names_ = set(['description'])
 FileLikeCommentType._all_fields_ = [('description', FileLikeCommentType._description_validator)]
+
+FileLockingLockStatusChangedDetails._previous_value_validator = LockStatus_validator
+FileLockingLockStatusChangedDetails._new_value_validator = LockStatus_validator
+FileLockingLockStatusChangedDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+FileLockingLockStatusChangedDetails._all_fields_ = [
+    ('previous_value', FileLockingLockStatusChangedDetails._previous_value_validator),
+    ('new_value', FileLockingLockStatusChangedDetails._new_value_validator),
+]
+
+FileLockingLockStatusChangedType._description_validator = bv.String()
+FileLockingLockStatusChangedType._all_field_names_ = set(['description'])
+FileLockingLockStatusChangedType._all_fields_ = [('description', FileLockingLockStatusChangedType._description_validator)]
+
+FileLockingPolicyChangedDetails._new_value_validator = team_policies.FileLockingPolicyState_validator
+FileLockingPolicyChangedDetails._previous_value_validator = team_policies.FileLockingPolicyState_validator
+FileLockingPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+FileLockingPolicyChangedDetails._all_fields_ = [
+    ('new_value', FileLockingPolicyChangedDetails._new_value_validator),
+    ('previous_value', FileLockingPolicyChangedDetails._previous_value_validator),
+]
+
+FileLockingPolicyChangedType._description_validator = bv.String()
+FileLockingPolicyChangedType._all_field_names_ = set(['description'])
+FileLockingPolicyChangedType._all_fields_ = [('description', FileLockingPolicyChangedType._description_validator)]
 
 FileOrFolderLogInfo._path_validator = PathLogInfo_validator
 FileOrFolderLogInfo._display_name_validator = bv.Nullable(bv.String())
@@ -74587,6 +90256,74 @@ FileSaveCopyReferenceType._description_validator = bv.String()
 FileSaveCopyReferenceType._all_field_names_ = set(['description'])
 FileSaveCopyReferenceType._all_fields_ = [('description', FileSaveCopyReferenceType._description_validator)]
 
+FileTransfersFileAddDetails._file_transfer_id_validator = bv.String()
+FileTransfersFileAddDetails._all_field_names_ = set(['file_transfer_id'])
+FileTransfersFileAddDetails._all_fields_ = [('file_transfer_id', FileTransfersFileAddDetails._file_transfer_id_validator)]
+
+FileTransfersFileAddType._description_validator = bv.String()
+FileTransfersFileAddType._all_field_names_ = set(['description'])
+FileTransfersFileAddType._all_fields_ = [('description', FileTransfersFileAddType._description_validator)]
+
+FileTransfersPolicy._disabled_validator = bv.Void()
+FileTransfersPolicy._enabled_validator = bv.Void()
+FileTransfersPolicy._other_validator = bv.Void()
+FileTransfersPolicy._tagmap = {
+    'disabled': FileTransfersPolicy._disabled_validator,
+    'enabled': FileTransfersPolicy._enabled_validator,
+    'other': FileTransfersPolicy._other_validator,
+}
+
+FileTransfersPolicy.disabled = FileTransfersPolicy('disabled')
+FileTransfersPolicy.enabled = FileTransfersPolicy('enabled')
+FileTransfersPolicy.other = FileTransfersPolicy('other')
+
+FileTransfersPolicyChangedDetails._new_value_validator = FileTransfersPolicy_validator
+FileTransfersPolicyChangedDetails._previous_value_validator = FileTransfersPolicy_validator
+FileTransfersPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+FileTransfersPolicyChangedDetails._all_fields_ = [
+    ('new_value', FileTransfersPolicyChangedDetails._new_value_validator),
+    ('previous_value', FileTransfersPolicyChangedDetails._previous_value_validator),
+]
+
+FileTransfersPolicyChangedType._description_validator = bv.String()
+FileTransfersPolicyChangedType._all_field_names_ = set(['description'])
+FileTransfersPolicyChangedType._all_fields_ = [('description', FileTransfersPolicyChangedType._description_validator)]
+
+FileTransfersTransferDeleteDetails._file_transfer_id_validator = bv.String()
+FileTransfersTransferDeleteDetails._all_field_names_ = set(['file_transfer_id'])
+FileTransfersTransferDeleteDetails._all_fields_ = [('file_transfer_id', FileTransfersTransferDeleteDetails._file_transfer_id_validator)]
+
+FileTransfersTransferDeleteType._description_validator = bv.String()
+FileTransfersTransferDeleteType._all_field_names_ = set(['description'])
+FileTransfersTransferDeleteType._all_fields_ = [('description', FileTransfersTransferDeleteType._description_validator)]
+
+FileTransfersTransferDownloadDetails._file_transfer_id_validator = bv.String()
+FileTransfersTransferDownloadDetails._all_field_names_ = set(['file_transfer_id'])
+FileTransfersTransferDownloadDetails._all_fields_ = [('file_transfer_id', FileTransfersTransferDownloadDetails._file_transfer_id_validator)]
+
+FileTransfersTransferDownloadType._description_validator = bv.String()
+FileTransfersTransferDownloadType._all_field_names_ = set(['description'])
+FileTransfersTransferDownloadType._all_fields_ = [('description', FileTransfersTransferDownloadType._description_validator)]
+
+FileTransfersTransferSendDetails._file_transfer_id_validator = bv.String()
+FileTransfersTransferSendDetails._all_field_names_ = set(['file_transfer_id'])
+FileTransfersTransferSendDetails._all_fields_ = [('file_transfer_id', FileTransfersTransferSendDetails._file_transfer_id_validator)]
+
+FileTransfersTransferSendType._description_validator = bv.String()
+FileTransfersTransferSendType._all_field_names_ = set(['description'])
+FileTransfersTransferSendType._all_fields_ = [('description', FileTransfersTransferSendType._description_validator)]
+
+FileTransfersTransferViewDetails._file_transfer_id_validator = bv.String()
+FileTransfersTransferViewDetails._all_field_names_ = set(['file_transfer_id'])
+FileTransfersTransferViewDetails._all_fields_ = [('file_transfer_id', FileTransfersTransferViewDetails._file_transfer_id_validator)]
+
+FileTransfersTransferViewType._description_validator = bv.String()
+FileTransfersTransferViewType._all_field_names_ = set(['description'])
+FileTransfersTransferViewType._all_fields_ = [('description', FileTransfersTransferViewType._description_validator)]
+
 FileUnlikeCommentDetails._comment_text_validator = bv.Nullable(bv.String())
 FileUnlikeCommentDetails._all_field_names_ = set(['comment_text'])
 FileUnlikeCommentDetails._all_fields_ = [('comment_text', FileUnlikeCommentDetails._comment_text_validator)]
@@ -74605,6 +90342,44 @@ FileUnresolveCommentType._all_fields_ = [('description', FileUnresolveCommentTyp
 
 FolderLogInfo._all_field_names_ = FileOrFolderLogInfo._all_field_names_.union(set([]))
 FolderLogInfo._all_fields_ = FileOrFolderLogInfo._all_fields_ + []
+
+FolderOverviewDescriptionChangedDetails._folder_overview_location_asset_validator = bv.UInt64()
+FolderOverviewDescriptionChangedDetails._all_field_names_ = set(['folder_overview_location_asset'])
+FolderOverviewDescriptionChangedDetails._all_fields_ = [('folder_overview_location_asset', FolderOverviewDescriptionChangedDetails._folder_overview_location_asset_validator)]
+
+FolderOverviewDescriptionChangedType._description_validator = bv.String()
+FolderOverviewDescriptionChangedType._all_field_names_ = set(['description'])
+FolderOverviewDescriptionChangedType._all_fields_ = [('description', FolderOverviewDescriptionChangedType._description_validator)]
+
+FolderOverviewItemPinnedDetails._folder_overview_location_asset_validator = bv.UInt64()
+FolderOverviewItemPinnedDetails._pinned_items_asset_indices_validator = bv.List(bv.UInt64())
+FolderOverviewItemPinnedDetails._all_field_names_ = set([
+    'folder_overview_location_asset',
+    'pinned_items_asset_indices',
+])
+FolderOverviewItemPinnedDetails._all_fields_ = [
+    ('folder_overview_location_asset', FolderOverviewItemPinnedDetails._folder_overview_location_asset_validator),
+    ('pinned_items_asset_indices', FolderOverviewItemPinnedDetails._pinned_items_asset_indices_validator),
+]
+
+FolderOverviewItemPinnedType._description_validator = bv.String()
+FolderOverviewItemPinnedType._all_field_names_ = set(['description'])
+FolderOverviewItemPinnedType._all_fields_ = [('description', FolderOverviewItemPinnedType._description_validator)]
+
+FolderOverviewItemUnpinnedDetails._folder_overview_location_asset_validator = bv.UInt64()
+FolderOverviewItemUnpinnedDetails._pinned_items_asset_indices_validator = bv.List(bv.UInt64())
+FolderOverviewItemUnpinnedDetails._all_field_names_ = set([
+    'folder_overview_location_asset',
+    'pinned_items_asset_indices',
+])
+FolderOverviewItemUnpinnedDetails._all_fields_ = [
+    ('folder_overview_location_asset', FolderOverviewItemUnpinnedDetails._folder_overview_location_asset_validator),
+    ('pinned_items_asset_indices', FolderOverviewItemUnpinnedDetails._pinned_items_asset_indices_validator),
+]
+
+FolderOverviewItemUnpinnedType._description_validator = bv.String()
+FolderOverviewItemUnpinnedType._all_field_names_ = set(['description'])
+FolderOverviewItemUnpinnedType._all_fields_ = [('description', FolderOverviewItemUnpinnedType._description_validator)]
 
 GeoLocationLogInfo._city_validator = bv.Nullable(bv.String())
 GeoLocationLogInfo._region_validator = bv.Nullable(bv.String())
@@ -75006,18 +90781,46 @@ IntegrationPolicyChangedType._description_validator = bv.String()
 IntegrationPolicyChangedType._all_field_names_ = set(['description'])
 IntegrationPolicyChangedType._all_fields_ = [('description', IntegrationPolicyChangedType._description_validator)]
 
+InviteMethod._invite_link_validator = bv.Void()
+InviteMethod._other_validator = bv.Void()
+InviteMethod._tagmap = {
+    'invite_link': InviteMethod._invite_link_validator,
+    'other': InviteMethod._other_validator,
+}
+
+InviteMethod.invite_link = InviteMethod('invite_link')
+InviteMethod.other = InviteMethod('other')
+
 JoinTeamDetails._linked_apps_validator = bv.List(UserLinkedAppLogInfo_validator)
 JoinTeamDetails._linked_devices_validator = bv.List(LinkedDeviceLogInfo_validator)
 JoinTeamDetails._linked_shared_folders_validator = bv.List(FolderLogInfo_validator)
+JoinTeamDetails._was_linked_apps_truncated_validator = bv.Nullable(bv.Boolean())
+JoinTeamDetails._was_linked_devices_truncated_validator = bv.Nullable(bv.Boolean())
+JoinTeamDetails._was_linked_shared_folders_truncated_validator = bv.Nullable(bv.Boolean())
+JoinTeamDetails._has_linked_apps_validator = bv.Nullable(bv.Boolean())
+JoinTeamDetails._has_linked_devices_validator = bv.Nullable(bv.Boolean())
+JoinTeamDetails._has_linked_shared_folders_validator = bv.Nullable(bv.Boolean())
 JoinTeamDetails._all_field_names_ = set([
     'linked_apps',
     'linked_devices',
     'linked_shared_folders',
+    'was_linked_apps_truncated',
+    'was_linked_devices_truncated',
+    'was_linked_shared_folders_truncated',
+    'has_linked_apps',
+    'has_linked_devices',
+    'has_linked_shared_folders',
 ])
 JoinTeamDetails._all_fields_ = [
     ('linked_apps', JoinTeamDetails._linked_apps_validator),
     ('linked_devices', JoinTeamDetails._linked_devices_validator),
     ('linked_shared_folders', JoinTeamDetails._linked_shared_folders_validator),
+    ('was_linked_apps_truncated', JoinTeamDetails._was_linked_apps_truncated_validator),
+    ('was_linked_devices_truncated', JoinTeamDetails._was_linked_devices_truncated_validator),
+    ('was_linked_shared_folders_truncated', JoinTeamDetails._was_linked_shared_folders_truncated_validator),
+    ('has_linked_apps', JoinTeamDetails._has_linked_apps_validator),
+    ('has_linked_devices', JoinTeamDetails._has_linked_devices_validator),
+    ('has_linked_shared_folders', JoinTeamDetails._has_linked_shared_folders_validator),
 ]
 
 LegacyDeviceSessionLogInfo._session_info_validator = bv.Nullable(SessionLogInfo_validator)
@@ -75054,6 +90857,204 @@ LegacyDeviceSessionLogInfo._fields_ = [
 ]
 LegacyDeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._all_fields_ + LegacyDeviceSessionLogInfo._fields_
 
+LegalHoldsActivateAHoldDetails._legal_hold_id_validator = bv.String()
+LegalHoldsActivateAHoldDetails._name_validator = bv.String()
+LegalHoldsActivateAHoldDetails._start_date_validator = common.DropboxTimestamp_validator
+LegalHoldsActivateAHoldDetails._end_date_validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldsActivateAHoldDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+    'start_date',
+    'end_date',
+])
+LegalHoldsActivateAHoldDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsActivateAHoldDetails._legal_hold_id_validator),
+    ('name', LegalHoldsActivateAHoldDetails._name_validator),
+    ('start_date', LegalHoldsActivateAHoldDetails._start_date_validator),
+    ('end_date', LegalHoldsActivateAHoldDetails._end_date_validator),
+]
+
+LegalHoldsActivateAHoldType._description_validator = bv.String()
+LegalHoldsActivateAHoldType._all_field_names_ = set(['description'])
+LegalHoldsActivateAHoldType._all_fields_ = [('description', LegalHoldsActivateAHoldType._description_validator)]
+
+LegalHoldsAddMembersDetails._legal_hold_id_validator = bv.String()
+LegalHoldsAddMembersDetails._name_validator = bv.String()
+LegalHoldsAddMembersDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+])
+LegalHoldsAddMembersDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsAddMembersDetails._legal_hold_id_validator),
+    ('name', LegalHoldsAddMembersDetails._name_validator),
+]
+
+LegalHoldsAddMembersType._description_validator = bv.String()
+LegalHoldsAddMembersType._all_field_names_ = set(['description'])
+LegalHoldsAddMembersType._all_fields_ = [('description', LegalHoldsAddMembersType._description_validator)]
+
+LegalHoldsChangeHoldDetailsDetails._legal_hold_id_validator = bv.String()
+LegalHoldsChangeHoldDetailsDetails._name_validator = bv.String()
+LegalHoldsChangeHoldDetailsDetails._previous_value_validator = bv.String()
+LegalHoldsChangeHoldDetailsDetails._new_value_validator = bv.String()
+LegalHoldsChangeHoldDetailsDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+    'previous_value',
+    'new_value',
+])
+LegalHoldsChangeHoldDetailsDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsChangeHoldDetailsDetails._legal_hold_id_validator),
+    ('name', LegalHoldsChangeHoldDetailsDetails._name_validator),
+    ('previous_value', LegalHoldsChangeHoldDetailsDetails._previous_value_validator),
+    ('new_value', LegalHoldsChangeHoldDetailsDetails._new_value_validator),
+]
+
+LegalHoldsChangeHoldDetailsType._description_validator = bv.String()
+LegalHoldsChangeHoldDetailsType._all_field_names_ = set(['description'])
+LegalHoldsChangeHoldDetailsType._all_fields_ = [('description', LegalHoldsChangeHoldDetailsType._description_validator)]
+
+LegalHoldsChangeHoldNameDetails._legal_hold_id_validator = bv.String()
+LegalHoldsChangeHoldNameDetails._previous_value_validator = bv.String()
+LegalHoldsChangeHoldNameDetails._new_value_validator = bv.String()
+LegalHoldsChangeHoldNameDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'previous_value',
+    'new_value',
+])
+LegalHoldsChangeHoldNameDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsChangeHoldNameDetails._legal_hold_id_validator),
+    ('previous_value', LegalHoldsChangeHoldNameDetails._previous_value_validator),
+    ('new_value', LegalHoldsChangeHoldNameDetails._new_value_validator),
+]
+
+LegalHoldsChangeHoldNameType._description_validator = bv.String()
+LegalHoldsChangeHoldNameType._all_field_names_ = set(['description'])
+LegalHoldsChangeHoldNameType._all_fields_ = [('description', LegalHoldsChangeHoldNameType._description_validator)]
+
+LegalHoldsExportAHoldDetails._legal_hold_id_validator = bv.String()
+LegalHoldsExportAHoldDetails._name_validator = bv.String()
+LegalHoldsExportAHoldDetails._export_name_validator = bv.Nullable(bv.String())
+LegalHoldsExportAHoldDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+    'export_name',
+])
+LegalHoldsExportAHoldDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsExportAHoldDetails._legal_hold_id_validator),
+    ('name', LegalHoldsExportAHoldDetails._name_validator),
+    ('export_name', LegalHoldsExportAHoldDetails._export_name_validator),
+]
+
+LegalHoldsExportAHoldType._description_validator = bv.String()
+LegalHoldsExportAHoldType._all_field_names_ = set(['description'])
+LegalHoldsExportAHoldType._all_fields_ = [('description', LegalHoldsExportAHoldType._description_validator)]
+
+LegalHoldsExportCancelledDetails._legal_hold_id_validator = bv.String()
+LegalHoldsExportCancelledDetails._name_validator = bv.String()
+LegalHoldsExportCancelledDetails._export_name_validator = bv.String()
+LegalHoldsExportCancelledDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+    'export_name',
+])
+LegalHoldsExportCancelledDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsExportCancelledDetails._legal_hold_id_validator),
+    ('name', LegalHoldsExportCancelledDetails._name_validator),
+    ('export_name', LegalHoldsExportCancelledDetails._export_name_validator),
+]
+
+LegalHoldsExportCancelledType._description_validator = bv.String()
+LegalHoldsExportCancelledType._all_field_names_ = set(['description'])
+LegalHoldsExportCancelledType._all_fields_ = [('description', LegalHoldsExportCancelledType._description_validator)]
+
+LegalHoldsExportDownloadedDetails._legal_hold_id_validator = bv.String()
+LegalHoldsExportDownloadedDetails._name_validator = bv.String()
+LegalHoldsExportDownloadedDetails._export_name_validator = bv.String()
+LegalHoldsExportDownloadedDetails._part_validator = bv.Nullable(bv.String())
+LegalHoldsExportDownloadedDetails._file_name_validator = bv.Nullable(bv.String())
+LegalHoldsExportDownloadedDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+    'export_name',
+    'part',
+    'file_name',
+])
+LegalHoldsExportDownloadedDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsExportDownloadedDetails._legal_hold_id_validator),
+    ('name', LegalHoldsExportDownloadedDetails._name_validator),
+    ('export_name', LegalHoldsExportDownloadedDetails._export_name_validator),
+    ('part', LegalHoldsExportDownloadedDetails._part_validator),
+    ('file_name', LegalHoldsExportDownloadedDetails._file_name_validator),
+]
+
+LegalHoldsExportDownloadedType._description_validator = bv.String()
+LegalHoldsExportDownloadedType._all_field_names_ = set(['description'])
+LegalHoldsExportDownloadedType._all_fields_ = [('description', LegalHoldsExportDownloadedType._description_validator)]
+
+LegalHoldsExportRemovedDetails._legal_hold_id_validator = bv.String()
+LegalHoldsExportRemovedDetails._name_validator = bv.String()
+LegalHoldsExportRemovedDetails._export_name_validator = bv.String()
+LegalHoldsExportRemovedDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+    'export_name',
+])
+LegalHoldsExportRemovedDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsExportRemovedDetails._legal_hold_id_validator),
+    ('name', LegalHoldsExportRemovedDetails._name_validator),
+    ('export_name', LegalHoldsExportRemovedDetails._export_name_validator),
+]
+
+LegalHoldsExportRemovedType._description_validator = bv.String()
+LegalHoldsExportRemovedType._all_field_names_ = set(['description'])
+LegalHoldsExportRemovedType._all_fields_ = [('description', LegalHoldsExportRemovedType._description_validator)]
+
+LegalHoldsReleaseAHoldDetails._legal_hold_id_validator = bv.String()
+LegalHoldsReleaseAHoldDetails._name_validator = bv.String()
+LegalHoldsReleaseAHoldDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+])
+LegalHoldsReleaseAHoldDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsReleaseAHoldDetails._legal_hold_id_validator),
+    ('name', LegalHoldsReleaseAHoldDetails._name_validator),
+]
+
+LegalHoldsReleaseAHoldType._description_validator = bv.String()
+LegalHoldsReleaseAHoldType._all_field_names_ = set(['description'])
+LegalHoldsReleaseAHoldType._all_fields_ = [('description', LegalHoldsReleaseAHoldType._description_validator)]
+
+LegalHoldsRemoveMembersDetails._legal_hold_id_validator = bv.String()
+LegalHoldsRemoveMembersDetails._name_validator = bv.String()
+LegalHoldsRemoveMembersDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+])
+LegalHoldsRemoveMembersDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsRemoveMembersDetails._legal_hold_id_validator),
+    ('name', LegalHoldsRemoveMembersDetails._name_validator),
+]
+
+LegalHoldsRemoveMembersType._description_validator = bv.String()
+LegalHoldsRemoveMembersType._all_field_names_ = set(['description'])
+LegalHoldsRemoveMembersType._all_fields_ = [('description', LegalHoldsRemoveMembersType._description_validator)]
+
+LegalHoldsReportAHoldDetails._legal_hold_id_validator = bv.String()
+LegalHoldsReportAHoldDetails._name_validator = bv.String()
+LegalHoldsReportAHoldDetails._all_field_names_ = set([
+    'legal_hold_id',
+    'name',
+])
+LegalHoldsReportAHoldDetails._all_fields_ = [
+    ('legal_hold_id', LegalHoldsReportAHoldDetails._legal_hold_id_validator),
+    ('name', LegalHoldsReportAHoldDetails._name_validator),
+]
+
+LegalHoldsReportAHoldType._description_validator = bv.String()
+LegalHoldsReportAHoldType._all_field_names_ = set(['description'])
+LegalHoldsReportAHoldType._all_fields_ = [('description', LegalHoldsReportAHoldType._description_validator)]
+
 LinkedDeviceLogInfo._mobile_device_session_validator = MobileDeviceSessionLogInfo_validator
 LinkedDeviceLogInfo._desktop_device_session_validator = DesktopDeviceSessionLogInfo_validator
 LinkedDeviceLogInfo._web_device_session_validator = WebDeviceSessionLogInfo_validator
@@ -75068,6 +91069,19 @@ LinkedDeviceLogInfo._tagmap = {
 }
 
 LinkedDeviceLogInfo.other = LinkedDeviceLogInfo('other')
+
+LockStatus._locked_validator = bv.Void()
+LockStatus._unlocked_validator = bv.Void()
+LockStatus._other_validator = bv.Void()
+LockStatus._tagmap = {
+    'locked': LockStatus._locked_validator,
+    'unlocked': LockStatus._unlocked_validator,
+    'other': LockStatus._other_validator,
+}
+
+LockStatus.locked = LockStatus('locked')
+LockStatus.unlocked = LockStatus('unlocked')
+LockStatus.other = LockStatus('other')
 
 LoginFailDetails._is_emm_managed_validator = bv.Nullable(bv.Boolean())
 LoginFailDetails._login_method_validator = LoginMethod_validator
@@ -75091,12 +91105,18 @@ LoginMethod._password_validator = bv.Void()
 LoginMethod._two_factor_authentication_validator = bv.Void()
 LoginMethod._saml_validator = bv.Void()
 LoginMethod._google_oauth_validator = bv.Void()
+LoginMethod._web_session_validator = bv.Void()
+LoginMethod._qr_code_validator = bv.Void()
+LoginMethod._apple_oauth_validator = bv.Void()
 LoginMethod._other_validator = bv.Void()
 LoginMethod._tagmap = {
     'password': LoginMethod._password_validator,
     'two_factor_authentication': LoginMethod._two_factor_authentication_validator,
     'saml': LoginMethod._saml_validator,
     'google_oauth': LoginMethod._google_oauth_validator,
+    'web_session': LoginMethod._web_session_validator,
+    'qr_code': LoginMethod._qr_code_validator,
+    'apple_oauth': LoginMethod._apple_oauth_validator,
     'other': LoginMethod._other_validator,
 }
 
@@ -75104,6 +91124,9 @@ LoginMethod.password = LoginMethod('password')
 LoginMethod.two_factor_authentication = LoginMethod('two_factor_authentication')
 LoginMethod.saml = LoginMethod('saml')
 LoginMethod.google_oauth = LoginMethod('google_oauth')
+LoginMethod.web_session = LoginMethod('web_session')
+LoginMethod.qr_code = LoginMethod('qr_code')
+LoginMethod.apple_oauth = LoginMethod('apple_oauth')
 LoginMethod.other = LoginMethod('other')
 
 LoginSuccessDetails._is_emm_managed_validator = bv.Nullable(bv.Boolean())
@@ -75244,6 +91267,13 @@ MemberDeleteManualContactsType._description_validator = bv.String()
 MemberDeleteManualContactsType._all_field_names_ = set(['description'])
 MemberDeleteManualContactsType._all_fields_ = [('description', MemberDeleteManualContactsType._description_validator)]
 
+MemberDeleteProfilePhotoDetails._all_field_names_ = set([])
+MemberDeleteProfilePhotoDetails._all_fields_ = []
+
+MemberDeleteProfilePhotoType._description_validator = bv.String()
+MemberDeleteProfilePhotoType._all_field_names_ = set(['description'])
+MemberDeleteProfilePhotoType._all_fields_ = [('description', MemberDeleteProfilePhotoType._description_validator)]
+
 MemberPermanentlyDeleteAccountContentsDetails._all_field_names_ = set([])
 MemberPermanentlyDeleteAccountContentsDetails._all_fields_ = []
 
@@ -75308,6 +91338,13 @@ MemberRequestsPolicy.auto_accept = MemberRequestsPolicy('auto_accept')
 MemberRequestsPolicy.disabled = MemberRequestsPolicy('disabled')
 MemberRequestsPolicy.require_approval = MemberRequestsPolicy('require_approval')
 MemberRequestsPolicy.other = MemberRequestsPolicy('other')
+
+MemberSetProfilePhotoDetails._all_field_names_ = set([])
+MemberSetProfilePhotoDetails._all_fields_ = []
+
+MemberSetProfilePhotoType._description_validator = bv.String()
+MemberSetProfilePhotoType._all_field_names_ = set(['description'])
+MemberSetProfilePhotoType._all_fields_ = [('description', MemberSetProfilePhotoType._description_validator)]
 
 MemberSpaceLimitsAddCustomQuotaDetails._new_value_validator = bv.UInt64()
 MemberSpaceLimitsAddCustomQuotaDetails._all_field_names_ = set(['new_value'])
@@ -75527,13 +91564,16 @@ MobileSessionLogInfo._all_fields_ = SessionLogInfo._all_fields_ + MobileSessionL
 
 NamespaceRelativePathLogInfo._ns_id_validator = bv.Nullable(NamespaceId_validator)
 NamespaceRelativePathLogInfo._relative_path_validator = bv.Nullable(FilePath_validator)
+NamespaceRelativePathLogInfo._is_shared_namespace_validator = bv.Nullable(bv.Boolean())
 NamespaceRelativePathLogInfo._all_field_names_ = set([
     'ns_id',
     'relative_path',
+    'is_shared_namespace',
 ])
 NamespaceRelativePathLogInfo._all_fields_ = [
     ('ns_id', NamespaceRelativePathLogInfo._ns_id_validator),
     ('relative_path', NamespaceRelativePathLogInfo._relative_path_validator),
+    ('is_shared_namespace', NamespaceRelativePathLogInfo._is_shared_namespace_validator),
 ]
 
 NetworkControlChangePolicyDetails._new_value_validator = NetworkControlPolicy_validator
@@ -75597,6 +91637,10 @@ NonTeamMemberLogInfo._all_field_names_ = UserLogInfo._all_field_names_.union(Non
 NonTeamMemberLogInfo._fields_ = []
 NonTeamMemberLogInfo._all_fields_ = UserLogInfo._all_fields_ + NonTeamMemberLogInfo._fields_
 
+NonTrustedTeamDetails._team_validator = bv.String()
+NonTrustedTeamDetails._all_field_names_ = set(['team'])
+NonTrustedTeamDetails._all_fields_ = [('team', NonTrustedTeamDetails._team_validator)]
+
 NoteAclInviteOnlyDetails._all_field_names_ = set([])
 NoteAclInviteOnlyDetails._all_fields_ = []
 
@@ -75638,6 +91682,14 @@ OpenNoteSharedDetails._all_fields_ = []
 OpenNoteSharedType._description_validator = bv.String()
 OpenNoteSharedType._all_field_names_ = set(['description'])
 OpenNoteSharedType._all_fields_ = [('description', OpenNoteSharedType._description_validator)]
+
+OrganizationDetails._organization_validator = bv.String()
+OrganizationDetails._all_field_names_ = set(['organization'])
+OrganizationDetails._all_fields_ = [('organization', OrganizationDetails._organization_validator)]
+
+OrganizationName._organization_validator = bv.String()
+OrganizationName._all_field_names_ = set(['organization'])
+OrganizationName._all_fields_ = [('organization', OrganizationName._organization_validator)]
 
 OriginLogInfo._geo_location_validator = bv.Nullable(GeoLocationLogInfo_validator)
 OriginLogInfo._access_method_validator = AccessMethodLogInfo_validator
@@ -75777,8 +91829,8 @@ PaperContentPermanentlyDeleteType._all_field_names_ = set(['description'])
 PaperContentPermanentlyDeleteType._all_fields_ = [('description', PaperContentPermanentlyDeleteType._description_validator)]
 
 PaperContentRemoveFromFolderDetails._event_uuid_validator = bv.String()
-PaperContentRemoveFromFolderDetails._target_asset_index_validator = bv.UInt64()
-PaperContentRemoveFromFolderDetails._parent_asset_index_validator = bv.UInt64()
+PaperContentRemoveFromFolderDetails._target_asset_index_validator = bv.Nullable(bv.UInt64())
+PaperContentRemoveFromFolderDetails._parent_asset_index_validator = bv.Nullable(bv.UInt64())
 PaperContentRemoveFromFolderDetails._all_field_names_ = set([
     'event_uuid',
     'target_asset_index',
@@ -76258,6 +92310,24 @@ PaperMemberPolicy.only_team = PaperMemberPolicy('only_team')
 PaperMemberPolicy.team_and_explicitly_shared = PaperMemberPolicy('team_and_explicitly_shared')
 PaperMemberPolicy.other = PaperMemberPolicy('other')
 
+PaperPublishedLinkChangePermissionDetails._event_uuid_validator = bv.String()
+PaperPublishedLinkChangePermissionDetails._new_permission_level_validator = bv.String()
+PaperPublishedLinkChangePermissionDetails._previous_permission_level_validator = bv.String()
+PaperPublishedLinkChangePermissionDetails._all_field_names_ = set([
+    'event_uuid',
+    'new_permission_level',
+    'previous_permission_level',
+])
+PaperPublishedLinkChangePermissionDetails._all_fields_ = [
+    ('event_uuid', PaperPublishedLinkChangePermissionDetails._event_uuid_validator),
+    ('new_permission_level', PaperPublishedLinkChangePermissionDetails._new_permission_level_validator),
+    ('previous_permission_level', PaperPublishedLinkChangePermissionDetails._previous_permission_level_validator),
+]
+
+PaperPublishedLinkChangePermissionType._description_validator = bv.String()
+PaperPublishedLinkChangePermissionType._all_field_names_ = set(['description'])
+PaperPublishedLinkChangePermissionType._all_fields_ = [('description', PaperPublishedLinkChangePermissionType._description_validator)]
+
 PaperPublishedLinkCreateDetails._event_uuid_validator = bv.String()
 PaperPublishedLinkCreateDetails._all_field_names_ = set(['event_uuid'])
 PaperPublishedLinkCreateDetails._all_fields_ = [('event_uuid', PaperPublishedLinkCreateDetails._event_uuid_validator)]
@@ -76330,6 +92400,21 @@ PasswordResetType._description_validator = bv.String()
 PasswordResetType._all_field_names_ = set(['description'])
 PasswordResetType._all_fields_ = [('description', PasswordResetType._description_validator)]
 
+PasswordStrengthRequirementsChangePolicyDetails._previous_value_validator = team_policies.PasswordStrengthPolicy_validator
+PasswordStrengthRequirementsChangePolicyDetails._new_value_validator = team_policies.PasswordStrengthPolicy_validator
+PasswordStrengthRequirementsChangePolicyDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+PasswordStrengthRequirementsChangePolicyDetails._all_fields_ = [
+    ('previous_value', PasswordStrengthRequirementsChangePolicyDetails._previous_value_validator),
+    ('new_value', PasswordStrengthRequirementsChangePolicyDetails._new_value_validator),
+]
+
+PasswordStrengthRequirementsChangePolicyType._description_validator = bv.String()
+PasswordStrengthRequirementsChangePolicyType._all_field_names_ = set(['description'])
+PasswordStrengthRequirementsChangePolicyType._all_fields_ = [('description', PasswordStrengthRequirementsChangePolicyType._description_validator)]
+
 PathLogInfo._contextual_validator = bv.Nullable(FilePath_validator)
 PathLogInfo._namespace_relative_validator = NamespaceRelativePathLogInfo_validator
 PathLogInfo._all_field_names_ = set([
@@ -76340,6 +92425,14 @@ PathLogInfo._all_fields_ = [
     ('contextual', PathLogInfo._contextual_validator),
     ('namespace_relative', PathLogInfo._namespace_relative_validator),
 ]
+
+PendingSecondaryEmailAddedDetails._secondary_email_validator = EmailAddress_validator
+PendingSecondaryEmailAddedDetails._all_field_names_ = set(['secondary_email'])
+PendingSecondaryEmailAddedDetails._all_fields_ = [('secondary_email', PendingSecondaryEmailAddedDetails._secondary_email_validator)]
+
+PendingSecondaryEmailAddedType._description_validator = bv.String()
+PendingSecondaryEmailAddedType._all_field_names_ = set(['description'])
+PendingSecondaryEmailAddedType._all_fields_ = [('description', PendingSecondaryEmailAddedType._description_validator)]
 
 PermanentDeleteChangePolicyDetails._new_value_validator = ContentPermanentDeletePolicy_validator
 PermanentDeleteChangePolicyDetails._previous_value_validator = bv.Nullable(ContentPermanentDeletePolicy_validator)
@@ -76423,6 +92516,7 @@ QuickActionType._delete_shared_link_validator = bv.Void()
 QuickActionType._reset_password_validator = bv.Void()
 QuickActionType._restore_file_or_folder_validator = bv.Void()
 QuickActionType._unlink_app_validator = bv.Void()
+QuickActionType._unlink_device_validator = bv.Void()
 QuickActionType._unlink_session_validator = bv.Void()
 QuickActionType._other_validator = bv.Void()
 QuickActionType._tagmap = {
@@ -76430,6 +92524,7 @@ QuickActionType._tagmap = {
     'reset_password': QuickActionType._reset_password_validator,
     'restore_file_or_folder': QuickActionType._restore_file_or_folder_validator,
     'unlink_app': QuickActionType._unlink_app_validator,
+    'unlink_device': QuickActionType._unlink_device_validator,
     'unlink_session': QuickActionType._unlink_session_validator,
     'other': QuickActionType._other_validator,
 }
@@ -76438,6 +92533,7 @@ QuickActionType.delete_shared_link = QuickActionType('delete_shared_link')
 QuickActionType.reset_password = QuickActionType('reset_password')
 QuickActionType.restore_file_or_folder = QuickActionType('restore_file_or_folder')
 QuickActionType.unlink_app = QuickActionType('unlink_app')
+QuickActionType.unlink_device = QuickActionType('unlink_device')
 QuickActionType.unlink_session = QuickActionType('unlink_session')
 QuickActionType.other = QuickActionType('other')
 
@@ -76504,6 +92600,58 @@ ResellerSupportSessionStartDetails._all_fields_ = []
 ResellerSupportSessionStartType._description_validator = bv.String()
 ResellerSupportSessionStartType._all_field_names_ = set(['description'])
 ResellerSupportSessionStartType._all_fields_ = [('description', ResellerSupportSessionStartType._description_validator)]
+
+RewindFolderDetails._rewind_folder_target_ts_ms_validator = common.DropboxTimestamp_validator
+RewindFolderDetails._all_field_names_ = set(['rewind_folder_target_ts_ms'])
+RewindFolderDetails._all_fields_ = [('rewind_folder_target_ts_ms', RewindFolderDetails._rewind_folder_target_ts_ms_validator)]
+
+RewindFolderType._description_validator = bv.String()
+RewindFolderType._all_field_names_ = set(['description'])
+RewindFolderType._all_fields_ = [('description', RewindFolderType._description_validator)]
+
+RewindPolicy._admins_only_validator = bv.Void()
+RewindPolicy._everyone_validator = bv.Void()
+RewindPolicy._other_validator = bv.Void()
+RewindPolicy._tagmap = {
+    'admins_only': RewindPolicy._admins_only_validator,
+    'everyone': RewindPolicy._everyone_validator,
+    'other': RewindPolicy._other_validator,
+}
+
+RewindPolicy.admins_only = RewindPolicy('admins_only')
+RewindPolicy.everyone = RewindPolicy('everyone')
+RewindPolicy.other = RewindPolicy('other')
+
+RewindPolicyChangedDetails._new_value_validator = RewindPolicy_validator
+RewindPolicyChangedDetails._previous_value_validator = RewindPolicy_validator
+RewindPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+RewindPolicyChangedDetails._all_fields_ = [
+    ('new_value', RewindPolicyChangedDetails._new_value_validator),
+    ('previous_value', RewindPolicyChangedDetails._previous_value_validator),
+]
+
+RewindPolicyChangedType._description_validator = bv.String()
+RewindPolicyChangedType._all_field_names_ = set(['description'])
+RewindPolicyChangedType._all_fields_ = [('description', RewindPolicyChangedType._description_validator)]
+
+SecondaryEmailDeletedDetails._secondary_email_validator = EmailAddress_validator
+SecondaryEmailDeletedDetails._all_field_names_ = set(['secondary_email'])
+SecondaryEmailDeletedDetails._all_fields_ = [('secondary_email', SecondaryEmailDeletedDetails._secondary_email_validator)]
+
+SecondaryEmailDeletedType._description_validator = bv.String()
+SecondaryEmailDeletedType._all_field_names_ = set(['description'])
+SecondaryEmailDeletedType._all_fields_ = [('description', SecondaryEmailDeletedType._description_validator)]
+
+SecondaryEmailVerifiedDetails._secondary_email_validator = EmailAddress_validator
+SecondaryEmailVerifiedDetails._all_field_names_ = set(['secondary_email'])
+SecondaryEmailVerifiedDetails._all_fields_ = [('secondary_email', SecondaryEmailVerifiedDetails._secondary_email_validator)]
+
+SecondaryEmailVerifiedType._description_validator = bv.String()
+SecondaryEmailVerifiedType._all_field_names_ = set(['description'])
+SecondaryEmailVerifiedType._all_fields_ = [('description', SecondaryEmailVerifiedType._description_validator)]
 
 SecondaryMailsPolicy._disabled_validator = bv.Void()
 SecondaryMailsPolicy._enabled_validator = bv.Void()
@@ -77021,6 +93169,29 @@ SharedContentRequestAccessType._description_validator = bv.String()
 SharedContentRequestAccessType._all_field_names_ = set(['description'])
 SharedContentRequestAccessType._all_fields_ = [('description', SharedContentRequestAccessType._description_validator)]
 
+SharedContentRestoreInviteesDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedContentRestoreInviteesDetails._invitees_validator = bv.List(EmailAddress_validator)
+SharedContentRestoreInviteesDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'invitees',
+])
+SharedContentRestoreInviteesDetails._all_fields_ = [
+    ('shared_content_access_level', SharedContentRestoreInviteesDetails._shared_content_access_level_validator),
+    ('invitees', SharedContentRestoreInviteesDetails._invitees_validator),
+]
+
+SharedContentRestoreInviteesType._description_validator = bv.String()
+SharedContentRestoreInviteesType._all_field_names_ = set(['description'])
+SharedContentRestoreInviteesType._all_fields_ = [('description', SharedContentRestoreInviteesType._description_validator)]
+
+SharedContentRestoreMemberDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedContentRestoreMemberDetails._all_field_names_ = set(['shared_content_access_level'])
+SharedContentRestoreMemberDetails._all_fields_ = [('shared_content_access_level', SharedContentRestoreMemberDetails._shared_content_access_level_validator)]
+
+SharedContentRestoreMemberType._description_validator = bv.String()
+SharedContentRestoreMemberType._all_field_names_ = set(['description'])
+SharedContentRestoreMemberType._all_fields_ = [('description', SharedContentRestoreMemberType._description_validator)]
+
 SharedContentUnshareDetails._all_field_names_ = set([])
 SharedContentUnshareDetails._all_fields_ = []
 
@@ -77278,6 +93449,159 @@ SharedLinkRemoveExpiryType._description_validator = bv.String()
 SharedLinkRemoveExpiryType._all_field_names_ = set(['description'])
 SharedLinkRemoveExpiryType._all_fields_ = [('description', SharedLinkRemoveExpiryType._description_validator)]
 
+SharedLinkSettingsAddExpirationDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsAddExpirationDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsAddExpirationDetails._new_value_validator = bv.Nullable(common.DropboxTimestamp_validator)
+SharedLinkSettingsAddExpirationDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+    'new_value',
+])
+SharedLinkSettingsAddExpirationDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsAddExpirationDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsAddExpirationDetails._shared_content_link_validator),
+    ('new_value', SharedLinkSettingsAddExpirationDetails._new_value_validator),
+]
+
+SharedLinkSettingsAddExpirationType._description_validator = bv.String()
+SharedLinkSettingsAddExpirationType._all_field_names_ = set(['description'])
+SharedLinkSettingsAddExpirationType._all_fields_ = [('description', SharedLinkSettingsAddExpirationType._description_validator)]
+
+SharedLinkSettingsAddPasswordDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsAddPasswordDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsAddPasswordDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+])
+SharedLinkSettingsAddPasswordDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsAddPasswordDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsAddPasswordDetails._shared_content_link_validator),
+]
+
+SharedLinkSettingsAddPasswordType._description_validator = bv.String()
+SharedLinkSettingsAddPasswordType._all_field_names_ = set(['description'])
+SharedLinkSettingsAddPasswordType._all_fields_ = [('description', SharedLinkSettingsAddPasswordType._description_validator)]
+
+SharedLinkSettingsAllowDownloadDisabledDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsAllowDownloadDisabledDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsAllowDownloadDisabledDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+])
+SharedLinkSettingsAllowDownloadDisabledDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsAllowDownloadDisabledDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsAllowDownloadDisabledDetails._shared_content_link_validator),
+]
+
+SharedLinkSettingsAllowDownloadDisabledType._description_validator = bv.String()
+SharedLinkSettingsAllowDownloadDisabledType._all_field_names_ = set(['description'])
+SharedLinkSettingsAllowDownloadDisabledType._all_fields_ = [('description', SharedLinkSettingsAllowDownloadDisabledType._description_validator)]
+
+SharedLinkSettingsAllowDownloadEnabledDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsAllowDownloadEnabledDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsAllowDownloadEnabledDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+])
+SharedLinkSettingsAllowDownloadEnabledDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsAllowDownloadEnabledDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsAllowDownloadEnabledDetails._shared_content_link_validator),
+]
+
+SharedLinkSettingsAllowDownloadEnabledType._description_validator = bv.String()
+SharedLinkSettingsAllowDownloadEnabledType._all_field_names_ = set(['description'])
+SharedLinkSettingsAllowDownloadEnabledType._all_fields_ = [('description', SharedLinkSettingsAllowDownloadEnabledType._description_validator)]
+
+SharedLinkSettingsChangeAudienceDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsChangeAudienceDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsChangeAudienceDetails._new_value_validator = sharing.LinkAudience_validator
+SharedLinkSettingsChangeAudienceDetails._previous_value_validator = bv.Nullable(sharing.LinkAudience_validator)
+SharedLinkSettingsChangeAudienceDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+    'new_value',
+    'previous_value',
+])
+SharedLinkSettingsChangeAudienceDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsChangeAudienceDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsChangeAudienceDetails._shared_content_link_validator),
+    ('new_value', SharedLinkSettingsChangeAudienceDetails._new_value_validator),
+    ('previous_value', SharedLinkSettingsChangeAudienceDetails._previous_value_validator),
+]
+
+SharedLinkSettingsChangeAudienceType._description_validator = bv.String()
+SharedLinkSettingsChangeAudienceType._all_field_names_ = set(['description'])
+SharedLinkSettingsChangeAudienceType._all_fields_ = [('description', SharedLinkSettingsChangeAudienceType._description_validator)]
+
+SharedLinkSettingsChangeExpirationDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsChangeExpirationDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsChangeExpirationDetails._new_value_validator = bv.Nullable(common.DropboxTimestamp_validator)
+SharedLinkSettingsChangeExpirationDetails._previous_value_validator = bv.Nullable(common.DropboxTimestamp_validator)
+SharedLinkSettingsChangeExpirationDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+    'new_value',
+    'previous_value',
+])
+SharedLinkSettingsChangeExpirationDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsChangeExpirationDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsChangeExpirationDetails._shared_content_link_validator),
+    ('new_value', SharedLinkSettingsChangeExpirationDetails._new_value_validator),
+    ('previous_value', SharedLinkSettingsChangeExpirationDetails._previous_value_validator),
+]
+
+SharedLinkSettingsChangeExpirationType._description_validator = bv.String()
+SharedLinkSettingsChangeExpirationType._all_field_names_ = set(['description'])
+SharedLinkSettingsChangeExpirationType._all_fields_ = [('description', SharedLinkSettingsChangeExpirationType._description_validator)]
+
+SharedLinkSettingsChangePasswordDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsChangePasswordDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsChangePasswordDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+])
+SharedLinkSettingsChangePasswordDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsChangePasswordDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsChangePasswordDetails._shared_content_link_validator),
+]
+
+SharedLinkSettingsChangePasswordType._description_validator = bv.String()
+SharedLinkSettingsChangePasswordType._all_field_names_ = set(['description'])
+SharedLinkSettingsChangePasswordType._all_fields_ = [('description', SharedLinkSettingsChangePasswordType._description_validator)]
+
+SharedLinkSettingsRemoveExpirationDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsRemoveExpirationDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsRemoveExpirationDetails._previous_value_validator = bv.Nullable(common.DropboxTimestamp_validator)
+SharedLinkSettingsRemoveExpirationDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+    'previous_value',
+])
+SharedLinkSettingsRemoveExpirationDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsRemoveExpirationDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsRemoveExpirationDetails._shared_content_link_validator),
+    ('previous_value', SharedLinkSettingsRemoveExpirationDetails._previous_value_validator),
+]
+
+SharedLinkSettingsRemoveExpirationType._description_validator = bv.String()
+SharedLinkSettingsRemoveExpirationType._all_field_names_ = set(['description'])
+SharedLinkSettingsRemoveExpirationType._all_fields_ = [('description', SharedLinkSettingsRemoveExpirationType._description_validator)]
+
+SharedLinkSettingsRemovePasswordDetails._shared_content_access_level_validator = sharing.AccessLevel_validator
+SharedLinkSettingsRemovePasswordDetails._shared_content_link_validator = bv.Nullable(bv.String())
+SharedLinkSettingsRemovePasswordDetails._all_field_names_ = set([
+    'shared_content_access_level',
+    'shared_content_link',
+])
+SharedLinkSettingsRemovePasswordDetails._all_fields_ = [
+    ('shared_content_access_level', SharedLinkSettingsRemovePasswordDetails._shared_content_access_level_validator),
+    ('shared_content_link', SharedLinkSettingsRemovePasswordDetails._shared_content_link_validator),
+]
+
+SharedLinkSettingsRemovePasswordType._description_validator = bv.String()
+SharedLinkSettingsRemovePasswordType._all_field_names_ = set(['description'])
+SharedLinkSettingsRemovePasswordType._all_fields_ = [('description', SharedLinkSettingsRemovePasswordType._description_validator)]
+
 SharedLinkShareDetails._shared_link_owner_validator = bv.Nullable(UserLogInfo_validator)
 SharedLinkShareDetails._external_users_validator = bv.Nullable(bv.List(ExternalUserLogInfo_validator))
 SharedLinkShareDetails._all_field_names_ = set([
@@ -77400,15 +93724,18 @@ SharingLinkPolicy.other = SharingLinkPolicy('other')
 
 SharingMemberPolicy._allow_validator = bv.Void()
 SharingMemberPolicy._forbid_validator = bv.Void()
+SharingMemberPolicy._forbid_with_exclusions_validator = bv.Void()
 SharingMemberPolicy._other_validator = bv.Void()
 SharingMemberPolicy._tagmap = {
     'allow': SharingMemberPolicy._allow_validator,
     'forbid': SharingMemberPolicy._forbid_validator,
+    'forbid_with_exclusions': SharingMemberPolicy._forbid_with_exclusions_validator,
     'other': SharingMemberPolicy._other_validator,
 }
 
 SharingMemberPolicy.allow = SharingMemberPolicy('allow')
 SharingMemberPolicy.forbid = SharingMemberPolicy('forbid')
+SharingMemberPolicy.forbid_with_exclusions = SharingMemberPolicy('forbid_with_exclusions')
 SharingMemberPolicy.other = SharingMemberPolicy('other')
 
 ShmodelGroupShareDetails._all_field_names_ = set([])
@@ -77826,6 +94153,21 @@ SmartSyncOptOutType._description_validator = bv.String()
 SmartSyncOptOutType._all_field_names_ = set(['description'])
 SmartSyncOptOutType._all_fields_ = [('description', SmartSyncOptOutType._description_validator)]
 
+SmarterSmartSyncPolicyChangedDetails._previous_value_validator = team_policies.SmarterSmartSyncPolicyState_validator
+SmarterSmartSyncPolicyChangedDetails._new_value_validator = team_policies.SmarterSmartSyncPolicyState_validator
+SmarterSmartSyncPolicyChangedDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+SmarterSmartSyncPolicyChangedDetails._all_fields_ = [
+    ('previous_value', SmarterSmartSyncPolicyChangedDetails._previous_value_validator),
+    ('new_value', SmarterSmartSyncPolicyChangedDetails._new_value_validator),
+]
+
+SmarterSmartSyncPolicyChangedType._description_validator = bv.String()
+SmarterSmartSyncPolicyChangedType._all_field_names_ = set(['description'])
+SmarterSmartSyncPolicyChangedType._all_fields_ = [('description', SmarterSmartSyncPolicyChangedType._description_validator)]
+
 SpaceCapsType._hard_validator = bv.Void()
 SpaceCapsType._off_validator = bv.Void()
 SpaceCapsType._soft_validator = bv.Void()
@@ -77988,6 +94330,14 @@ SsoRemoveLogoutUrlType._description_validator = bv.String()
 SsoRemoveLogoutUrlType._all_field_names_ = set(['description'])
 SsoRemoveLogoutUrlType._all_fields_ = [('description', SsoRemoveLogoutUrlType._description_validator)]
 
+StartedEnterpriseAdminSessionDetails._federation_extra_details_validator = FedExtraDetails_validator
+StartedEnterpriseAdminSessionDetails._all_field_names_ = set(['federation_extra_details'])
+StartedEnterpriseAdminSessionDetails._all_fields_ = [('federation_extra_details', StartedEnterpriseAdminSessionDetails._federation_extra_details_validator)]
+
+StartedEnterpriseAdminSessionType._description_validator = bv.String()
+StartedEnterpriseAdminSessionType._all_field_names_ = set(['description'])
+StartedEnterpriseAdminSessionType._all_fields_ = [('description', StartedEnterpriseAdminSessionType._description_validator)]
+
 TeamActivityCreateReportDetails._start_date_validator = common.DropboxTimestamp_validator
 TeamActivityCreateReportDetails._end_date_validator = common.DropboxTimestamp_validator
 TeamActivityCreateReportDetails._all_field_names_ = set([
@@ -78010,6 +94360,10 @@ TeamActivityCreateReportFailType._all_fields_ = [('description', TeamActivityCre
 TeamActivityCreateReportType._description_validator = bv.String()
 TeamActivityCreateReportType._all_field_names_ = set(['description'])
 TeamActivityCreateReportType._all_fields_ = [('description', TeamActivityCreateReportType._description_validator)]
+
+TeamDetails._team_validator = bv.String()
+TeamDetails._all_field_names_ = set(['team'])
+TeamDetails._all_fields_ = [('team', TeamDetails._team_validator)]
 
 TeamEvent._timestamp_validator = common.DropboxTimestamp_validator
 TeamEvent._event_category_validator = EventCategory_validator
@@ -78126,21 +94480,32 @@ TeamFolderRenameType._description_validator = bv.String()
 TeamFolderRenameType._all_field_names_ = set(['description'])
 TeamFolderRenameType._all_fields_ = [('description', TeamFolderRenameType._description_validator)]
 
+TeamInviteDetails._invite_method_validator = InviteMethod_validator
+TeamInviteDetails._all_field_names_ = set(['invite_method'])
+TeamInviteDetails._all_fields_ = [('invite_method', TeamInviteDetails._invite_method_validator)]
+
 TeamLinkedAppLogInfo._field_names_ = set([])
 TeamLinkedAppLogInfo._all_field_names_ = AppLogInfo._all_field_names_.union(TeamLinkedAppLogInfo._field_names_)
 TeamLinkedAppLogInfo._fields_ = []
 TeamLinkedAppLogInfo._all_fields_ = AppLogInfo._all_fields_ + TeamLinkedAppLogInfo._fields_
 
+TeamLogInfo._display_name_validator = bv.String()
+TeamLogInfo._all_field_names_ = set(['display_name'])
+TeamLogInfo._all_fields_ = [('display_name', TeamLogInfo._display_name_validator)]
+
 TeamMemberLogInfo._team_member_id_validator = bv.Nullable(team_common.TeamMemberId_validator)
 TeamMemberLogInfo._member_external_id_validator = bv.Nullable(team_common.MemberExternalId_validator)
+TeamMemberLogInfo._team_validator = bv.Nullable(TeamLogInfo_validator)
 TeamMemberLogInfo._field_names_ = set([
     'team_member_id',
     'member_external_id',
+    'team',
 ])
 TeamMemberLogInfo._all_field_names_ = UserLogInfo._all_field_names_.union(TeamMemberLogInfo._field_names_)
 TeamMemberLogInfo._fields_ = [
     ('team_member_id', TeamMemberLogInfo._team_member_id_validator),
     ('member_external_id', TeamMemberLogInfo._member_external_id_validator),
+    ('team', TeamMemberLogInfo._team_validator),
 ]
 TeamMemberLogInfo._all_fields_ = UserLogInfo._all_fields_ + TeamMemberLogInfo._fields_
 
@@ -78522,12 +94887,34 @@ TeamSelectiveSyncSettingsChangedType._description_validator = bv.String()
 TeamSelectiveSyncSettingsChangedType._all_field_names_ = set(['description'])
 TeamSelectiveSyncSettingsChangedType._all_fields_ = [('description', TeamSelectiveSyncSettingsChangedType._description_validator)]
 
+TeamSharingWhitelistSubjectsChangedDetails._added_whitelist_subjects_validator = bv.List(bv.String())
+TeamSharingWhitelistSubjectsChangedDetails._removed_whitelist_subjects_validator = bv.List(bv.String())
+TeamSharingWhitelistSubjectsChangedDetails._all_field_names_ = set([
+    'added_whitelist_subjects',
+    'removed_whitelist_subjects',
+])
+TeamSharingWhitelistSubjectsChangedDetails._all_fields_ = [
+    ('added_whitelist_subjects', TeamSharingWhitelistSubjectsChangedDetails._added_whitelist_subjects_validator),
+    ('removed_whitelist_subjects', TeamSharingWhitelistSubjectsChangedDetails._removed_whitelist_subjects_validator),
+]
+
+TeamSharingWhitelistSubjectsChangedType._description_validator = bv.String()
+TeamSharingWhitelistSubjectsChangedType._all_field_names_ = set(['description'])
+TeamSharingWhitelistSubjectsChangedType._all_fields_ = [('description', TeamSharingWhitelistSubjectsChangedType._description_validator)]
+
 TfaAddBackupPhoneDetails._all_field_names_ = set([])
 TfaAddBackupPhoneDetails._all_fields_ = []
 
 TfaAddBackupPhoneType._description_validator = bv.String()
 TfaAddBackupPhoneType._all_field_names_ = set(['description'])
 TfaAddBackupPhoneType._all_fields_ = [('description', TfaAddBackupPhoneType._description_validator)]
+
+TfaAddExceptionDetails._all_field_names_ = set([])
+TfaAddExceptionDetails._all_fields_ = []
+
+TfaAddExceptionType._description_validator = bv.String()
+TfaAddExceptionType._all_field_names_ = set(['description'])
+TfaAddExceptionType._all_fields_ = [('description', TfaAddExceptionType._description_validator)]
 
 TfaAddSecurityKeyDetails._all_field_names_ = set([])
 TfaAddSecurityKeyDetails._all_fields_ = []
@@ -78602,6 +94989,13 @@ TfaRemoveBackupPhoneType._description_validator = bv.String()
 TfaRemoveBackupPhoneType._all_field_names_ = set(['description'])
 TfaRemoveBackupPhoneType._all_fields_ = [('description', TfaRemoveBackupPhoneType._description_validator)]
 
+TfaRemoveExceptionDetails._all_field_names_ = set([])
+TfaRemoveExceptionDetails._all_fields_ = []
+
+TfaRemoveExceptionType._description_validator = bv.String()
+TfaRemoveExceptionType._all_field_names_ = set(['description'])
+TfaRemoveExceptionType._all_fields_ = [('description', TfaRemoveExceptionType._description_validator)]
+
 TfaRemoveSecurityKeyDetails._all_field_names_ = set([])
 TfaRemoveSecurityKeyDetails._all_fields_ = []
 
@@ -78648,19 +95042,29 @@ TimeUnit.years = TimeUnit('years')
 TimeUnit.other = TimeUnit('other')
 
 TrustedNonTeamMemberLogInfo._trusted_non_team_member_type_validator = TrustedNonTeamMemberType_validator
-TrustedNonTeamMemberLogInfo._field_names_ = set(['trusted_non_team_member_type'])
+TrustedNonTeamMemberLogInfo._team_validator = bv.Nullable(TeamLogInfo_validator)
+TrustedNonTeamMemberLogInfo._field_names_ = set([
+    'trusted_non_team_member_type',
+    'team',
+])
 TrustedNonTeamMemberLogInfo._all_field_names_ = UserLogInfo._all_field_names_.union(TrustedNonTeamMemberLogInfo._field_names_)
-TrustedNonTeamMemberLogInfo._fields_ = [('trusted_non_team_member_type', TrustedNonTeamMemberLogInfo._trusted_non_team_member_type_validator)]
+TrustedNonTeamMemberLogInfo._fields_ = [
+    ('trusted_non_team_member_type', TrustedNonTeamMemberLogInfo._trusted_non_team_member_type_validator),
+    ('team', TrustedNonTeamMemberLogInfo._team_validator),
+]
 TrustedNonTeamMemberLogInfo._all_fields_ = UserLogInfo._all_fields_ + TrustedNonTeamMemberLogInfo._fields_
 
 TrustedNonTeamMemberType._multi_instance_admin_validator = bv.Void()
+TrustedNonTeamMemberType._enterprise_admin_validator = bv.Void()
 TrustedNonTeamMemberType._other_validator = bv.Void()
 TrustedNonTeamMemberType._tagmap = {
     'multi_instance_admin': TrustedNonTeamMemberType._multi_instance_admin_validator,
+    'enterprise_admin': TrustedNonTeamMemberType._enterprise_admin_validator,
     'other': TrustedNonTeamMemberType._other_validator,
 }
 
 TrustedNonTeamMemberType.multi_instance_admin = TrustedNonTeamMemberType('multi_instance_admin')
+TrustedNonTeamMemberType.enterprise_admin = TrustedNonTeamMemberType('enterprise_admin')
 TrustedNonTeamMemberType.other = TrustedNonTeamMemberType('other')
 
 TrustedTeamsRequestAction._invited_validator = bv.Void()
@@ -78768,6 +95172,34 @@ ViewerInfoPolicyChangedType._description_validator = bv.String()
 ViewerInfoPolicyChangedType._all_field_names_ = set(['description'])
 ViewerInfoPolicyChangedType._all_fields_ = [('description', ViewerInfoPolicyChangedType._description_validator)]
 
+WatermarkingPolicy._disabled_validator = bv.Void()
+WatermarkingPolicy._enabled_validator = bv.Void()
+WatermarkingPolicy._other_validator = bv.Void()
+WatermarkingPolicy._tagmap = {
+    'disabled': WatermarkingPolicy._disabled_validator,
+    'enabled': WatermarkingPolicy._enabled_validator,
+    'other': WatermarkingPolicy._other_validator,
+}
+
+WatermarkingPolicy.disabled = WatermarkingPolicy('disabled')
+WatermarkingPolicy.enabled = WatermarkingPolicy('enabled')
+WatermarkingPolicy.other = WatermarkingPolicy('other')
+
+WatermarkingPolicyChangedDetails._new_value_validator = WatermarkingPolicy_validator
+WatermarkingPolicyChangedDetails._previous_value_validator = WatermarkingPolicy_validator
+WatermarkingPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+WatermarkingPolicyChangedDetails._all_fields_ = [
+    ('new_value', WatermarkingPolicyChangedDetails._new_value_validator),
+    ('previous_value', WatermarkingPolicyChangedDetails._previous_value_validator),
+]
+
+WatermarkingPolicyChangedType._description_validator = bv.String()
+WatermarkingPolicyChangedType._all_field_names_ = set(['description'])
+WatermarkingPolicyChangedType._all_fields_ = [('description', WatermarkingPolicyChangedType._description_validator)]
+
 WebDeviceSessionLogInfo._session_info_validator = bv.Nullable(WebSessionLogInfo_validator)
 WebDeviceSessionLogInfo._user_agent_validator = bv.String()
 WebDeviceSessionLogInfo._os_validator = bv.String()
@@ -78791,6 +95223,21 @@ WebSessionLogInfo._field_names_ = set([])
 WebSessionLogInfo._all_field_names_ = SessionLogInfo._all_field_names_.union(WebSessionLogInfo._field_names_)
 WebSessionLogInfo._fields_ = []
 WebSessionLogInfo._all_fields_ = SessionLogInfo._all_fields_ + WebSessionLogInfo._fields_
+
+WebSessionsChangeActiveSessionLimitDetails._previous_value_validator = bv.String()
+WebSessionsChangeActiveSessionLimitDetails._new_value_validator = bv.String()
+WebSessionsChangeActiveSessionLimitDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+WebSessionsChangeActiveSessionLimitDetails._all_fields_ = [
+    ('previous_value', WebSessionsChangeActiveSessionLimitDetails._previous_value_validator),
+    ('new_value', WebSessionsChangeActiveSessionLimitDetails._new_value_validator),
+]
+
+WebSessionsChangeActiveSessionLimitType._description_validator = bv.String()
+WebSessionsChangeActiveSessionLimitType._all_field_names_ = set(['description'])
+WebSessionsChangeActiveSessionLimitType._all_fields_ = [('description', WebSessionsChangeActiveSessionLimitType._description_validator)]
 
 WebSessionsChangeFixedLengthPolicyDetails._new_value_validator = bv.Nullable(WebSessionsFixedLengthPolicy_validator)
 WebSessionsChangeFixedLengthPolicyDetails._previous_value_validator = bv.Nullable(WebSessionsFixedLengthPolicy_validator)

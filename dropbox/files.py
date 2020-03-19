@@ -3002,11 +3002,15 @@ class ExportError(bb.Union):
 
     :ivar files.ExportError.non_exportable: This file type cannot be exported.
         Use :meth:`dropbox.dropbox.Dropbox.files_download` instead.
+    :ivar files.ExportError.retry_error: The exportable content is not yet
+        available. Please retry later.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     non_exportable = None
+    # Attribute is overwritten below the class definition
+    retry_error = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -3036,6 +3040,14 @@ class ExportError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'non_exportable'
+
+    def is_retry_error(self):
+        """
+        Check if the union tag is ``retry_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'retry_error'
 
     def is_other(self):
         """
@@ -3333,6 +3345,432 @@ class ExportResult(bb.Struct):
 
 ExportResult_validator = bv.Struct(ExportResult)
 
+class FileCategory(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.FileCategory.image: jpg, png, gif, and more.
+    :ivar files.FileCategory.document: doc, docx, txt, and more.
+    :ivar files.FileCategory.pdf: pdf.
+    :ivar files.FileCategory.spreadsheet: xlsx, xls, csv, and more.
+    :ivar files.FileCategory.presentation: ppt, pptx, key, and more.
+    :ivar files.FileCategory.audio: mp3, wav, mid, and more.
+    :ivar files.FileCategory.video: mov, wmv, mp4, and more.
+    :ivar files.FileCategory.folder: dropbox folder.
+    :ivar files.FileCategory.paper: dropbox paper doc.
+    :ivar files.FileCategory.others: any file not in one of the categories
+        above.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    image = None
+    # Attribute is overwritten below the class definition
+    document = None
+    # Attribute is overwritten below the class definition
+    pdf = None
+    # Attribute is overwritten below the class definition
+    spreadsheet = None
+    # Attribute is overwritten below the class definition
+    presentation = None
+    # Attribute is overwritten below the class definition
+    audio = None
+    # Attribute is overwritten below the class definition
+    video = None
+    # Attribute is overwritten below the class definition
+    folder = None
+    # Attribute is overwritten below the class definition
+    paper = None
+    # Attribute is overwritten below the class definition
+    others = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_image(self):
+        """
+        Check if the union tag is ``image``.
+
+        :rtype: bool
+        """
+        return self._tag == 'image'
+
+    def is_document(self):
+        """
+        Check if the union tag is ``document``.
+
+        :rtype: bool
+        """
+        return self._tag == 'document'
+
+    def is_pdf(self):
+        """
+        Check if the union tag is ``pdf``.
+
+        :rtype: bool
+        """
+        return self._tag == 'pdf'
+
+    def is_spreadsheet(self):
+        """
+        Check if the union tag is ``spreadsheet``.
+
+        :rtype: bool
+        """
+        return self._tag == 'spreadsheet'
+
+    def is_presentation(self):
+        """
+        Check if the union tag is ``presentation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'presentation'
+
+    def is_audio(self):
+        """
+        Check if the union tag is ``audio``.
+
+        :rtype: bool
+        """
+        return self._tag == 'audio'
+
+    def is_video(self):
+        """
+        Check if the union tag is ``video``.
+
+        :rtype: bool
+        """
+        return self._tag == 'video'
+
+    def is_folder(self):
+        """
+        Check if the union tag is ``folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder'
+
+    def is_paper(self):
+        """
+        Check if the union tag is ``paper``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper'
+
+    def is_others(self):
+        """
+        Check if the union tag is ``others``.
+
+        :rtype: bool
+        """
+        return self._tag == 'others'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileCategory, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileCategory(%r, %r)' % (self._tag, self._value)
+
+FileCategory_validator = bv.Union(FileCategory)
+
+class FileLock(bb.Struct):
+    """
+    :ivar files.FileLock.content: The lock description.
+    """
+
+    __slots__ = [
+        '_content_value',
+        '_content_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 content=None):
+        self._content_value = None
+        self._content_present = False
+        if content is not None:
+            self.content = content
+
+    @property
+    def content(self):
+        """
+        The lock description.
+
+        :rtype: FileLockContent
+        """
+        if self._content_present:
+            return self._content_value
+        else:
+            raise AttributeError("missing required field 'content'")
+
+    @content.setter
+    def content(self, val):
+        self._content_validator.validate_type_only(val)
+        self._content_value = val
+        self._content_present = True
+
+    @content.deleter
+    def content(self):
+        self._content_value = None
+        self._content_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLock, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLock(content={!r})'.format(
+            self._content_value,
+        )
+
+FileLock_validator = bv.Struct(FileLock)
+
+class FileLockContent(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.FileLockContent.unlocked: Empty type to indicate no lock.
+    :ivar SingleUserLock FileLockContent.single_user: A lock held by a single
+        user.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unlocked = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def single_user(cls, val):
+        """
+        Create an instance of this class set to the ``single_user`` tag with
+        value ``val``.
+
+        :param SingleUserLock val:
+        :rtype: FileLockContent
+        """
+        return cls('single_user', val)
+
+    def is_unlocked(self):
+        """
+        Check if the union tag is ``unlocked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unlocked'
+
+    def is_single_user(self):
+        """
+        Check if the union tag is ``single_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'single_user'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_single_user(self):
+        """
+        A lock held by a single user.
+
+        Only call this if :meth:`is_single_user` is true.
+
+        :rtype: SingleUserLock
+        """
+        if not self.is_single_user():
+            raise AttributeError("tag 'single_user' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockContent, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLockContent(%r, %r)' % (self._tag, self._value)
+
+FileLockContent_validator = bv.Union(FileLockContent)
+
+class FileLockMetadata(bb.Struct):
+    """
+    :ivar files.FileLockMetadata.is_lockholder: True if caller holds the file
+        lock.
+    :ivar files.FileLockMetadata.lockholder_name: The display name of the lock
+        holder.
+    :ivar files.FileLockMetadata.lockholder_account_id: The account ID of the
+        lock holder if known.
+    :ivar files.FileLockMetadata.created: The timestamp of the lock was created.
+    """
+
+    __slots__ = [
+        '_is_lockholder_value',
+        '_is_lockholder_present',
+        '_lockholder_name_value',
+        '_lockholder_name_present',
+        '_lockholder_account_id_value',
+        '_lockholder_account_id_present',
+        '_created_value',
+        '_created_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 is_lockholder=None,
+                 lockholder_name=None,
+                 lockholder_account_id=None,
+                 created=None):
+        self._is_lockholder_value = None
+        self._is_lockholder_present = False
+        self._lockholder_name_value = None
+        self._lockholder_name_present = False
+        self._lockholder_account_id_value = None
+        self._lockholder_account_id_present = False
+        self._created_value = None
+        self._created_present = False
+        if is_lockholder is not None:
+            self.is_lockholder = is_lockholder
+        if lockholder_name is not None:
+            self.lockholder_name = lockholder_name
+        if lockholder_account_id is not None:
+            self.lockholder_account_id = lockholder_account_id
+        if created is not None:
+            self.created = created
+
+    @property
+    def is_lockholder(self):
+        """
+        True if caller holds the file lock.
+
+        :rtype: bool
+        """
+        if self._is_lockholder_present:
+            return self._is_lockholder_value
+        else:
+            return None
+
+    @is_lockholder.setter
+    def is_lockholder(self, val):
+        if val is None:
+            del self.is_lockholder
+            return
+        val = self._is_lockholder_validator.validate(val)
+        self._is_lockholder_value = val
+        self._is_lockholder_present = True
+
+    @is_lockholder.deleter
+    def is_lockholder(self):
+        self._is_lockholder_value = None
+        self._is_lockholder_present = False
+
+    @property
+    def lockholder_name(self):
+        """
+        The display name of the lock holder.
+
+        :rtype: str
+        """
+        if self._lockholder_name_present:
+            return self._lockholder_name_value
+        else:
+            return None
+
+    @lockholder_name.setter
+    def lockholder_name(self, val):
+        if val is None:
+            del self.lockholder_name
+            return
+        val = self._lockholder_name_validator.validate(val)
+        self._lockholder_name_value = val
+        self._lockholder_name_present = True
+
+    @lockholder_name.deleter
+    def lockholder_name(self):
+        self._lockholder_name_value = None
+        self._lockholder_name_present = False
+
+    @property
+    def lockholder_account_id(self):
+        """
+        The account ID of the lock holder if known.
+
+        :rtype: str
+        """
+        if self._lockholder_account_id_present:
+            return self._lockholder_account_id_value
+        else:
+            return None
+
+    @lockholder_account_id.setter
+    def lockholder_account_id(self, val):
+        if val is None:
+            del self.lockholder_account_id
+            return
+        val = self._lockholder_account_id_validator.validate(val)
+        self._lockholder_account_id_value = val
+        self._lockholder_account_id_present = True
+
+    @lockholder_account_id.deleter
+    def lockholder_account_id(self):
+        self._lockholder_account_id_value = None
+        self._lockholder_account_id_present = False
+
+    @property
+    def created(self):
+        """
+        The timestamp of the lock was created.
+
+        :rtype: datetime.datetime
+        """
+        if self._created_present:
+            return self._created_value
+        else:
+            return None
+
+    @created.setter
+    def created(self, val):
+        if val is None:
+            del self.created
+            return
+        val = self._created_validator.validate(val)
+        self._created_value = val
+        self._created_present = True
+
+    @created.deleter
+    def created(self):
+        self._created_value = None
+        self._created_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLockMetadata(is_lockholder={!r}, lockholder_name={!r}, lockholder_account_id={!r}, created={!r})'.format(
+            self._is_lockholder_value,
+            self._lockholder_name_value,
+            self._lockholder_account_id_value,
+            self._created_value,
+        )
+
+FileLockMetadata_validator = bv.Struct(FileLockMetadata)
+
 class FileMetadata(Metadata):
     """
     :ivar files.FileMetadata.id: A unique identifier for the file.
@@ -3376,6 +3814,8 @@ class FileMetadata(Metadata):
         field can be used to verify data integrity. For more information see our
         `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+    :ivar files.FileMetadata.file_lock_info: If present, the metadata associated
+        with the file's current lock.
     """
 
     __slots__ = [
@@ -3405,6 +3845,8 @@ class FileMetadata(Metadata):
         '_has_explicit_shared_members_present',
         '_content_hash_value',
         '_content_hash_present',
+        '_file_lock_info_value',
+        '_file_lock_info_present',
     ]
 
     _has_required_fields = True
@@ -3426,7 +3868,8 @@ class FileMetadata(Metadata):
                  export_info=None,
                  property_groups=None,
                  has_explicit_shared_members=None,
-                 content_hash=None):
+                 content_hash=None,
+                 file_lock_info=None):
         super(FileMetadata, self).__init__(name,
                                            path_lower,
                                            path_display,
@@ -3457,6 +3900,8 @@ class FileMetadata(Metadata):
         self._has_explicit_shared_members_present = False
         self._content_hash_value = None
         self._content_hash_present = False
+        self._file_lock_info_value = None
+        self._file_lock_info_present = False
         if id is not None:
             self.id = id
         if client_modified is not None:
@@ -3483,6 +3928,8 @@ class FileMetadata(Metadata):
             self.has_explicit_shared_members = has_explicit_shared_members
         if content_hash is not None:
             self.content_hash = content_hash
+        if file_lock_info is not None:
+            self.file_lock_info = file_lock_info
 
     @property
     def id(self):
@@ -3826,11 +4273,37 @@ class FileMetadata(Metadata):
         self._content_hash_value = None
         self._content_hash_present = False
 
+    @property
+    def file_lock_info(self):
+        """
+        If present, the metadata associated with the file's current lock.
+
+        :rtype: FileLockMetadata
+        """
+        if self._file_lock_info_present:
+            return self._file_lock_info_value
+        else:
+            return None
+
+    @file_lock_info.setter
+    def file_lock_info(self, val):
+        if val is None:
+            del self.file_lock_info
+            return
+        self._file_lock_info_validator.validate_type_only(val)
+        self._file_lock_info_value = val
+        self._file_lock_info_present = True
+
+    @file_lock_info.deleter
+    def file_lock_info(self):
+        self._file_lock_info_value = None
+        self._file_lock_info_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, symlink_info={!r}, sharing_info={!r}, is_downloadable={!r}, export_info={!r}, property_groups={!r}, has_explicit_shared_members={!r}, content_hash={!r})'.format(
+        return 'FileMetadata(name={!r}, id={!r}, client_modified={!r}, server_modified={!r}, rev={!r}, size={!r}, path_lower={!r}, path_display={!r}, parent_shared_folder_id={!r}, media_info={!r}, symlink_info={!r}, sharing_info={!r}, is_downloadable={!r}, export_info={!r}, property_groups={!r}, has_explicit_shared_members={!r}, content_hash={!r}, file_lock_info={!r})'.format(
             self._name_value,
             self._id_value,
             self._client_modified_value,
@@ -3848,6 +4321,7 @@ class FileMetadata(Metadata):
             self._property_groups_value,
             self._has_explicit_shared_members_value,
             self._content_hash_value,
+            self._file_lock_info_value,
         )
 
 FileMetadata_validator = bv.Struct(FileMetadata)
@@ -4001,6 +4475,53 @@ class FileSharingInfo(SharingInfo):
         )
 
 FileSharingInfo_validator = bv.Struct(FileSharingInfo)
+
+class FileStatus(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    active = None
+    # Attribute is overwritten below the class definition
+    deleted = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_active(self):
+        """
+        Check if the union tag is ``active``.
+
+        :rtype: bool
+        """
+        return self._tag == 'active'
+
+    def is_deleted(self):
+        """
+        Check if the union tag is ``deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'deleted'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileStatus(%r, %r)' % (self._tag, self._value)
+
+FileStatus_validator = bv.Union(FileStatus)
 
 class FolderMetadata(Metadata):
     """
@@ -5353,6 +5874,92 @@ class GpsCoordinates(bb.Struct):
 
 GpsCoordinates_validator = bv.Struct(GpsCoordinates)
 
+class HighlightSpan(bb.Struct):
+    """
+    :ivar files.HighlightSpan.highlight_str: String to be determined whether it
+        should be highlighted or not.
+    :ivar files.HighlightSpan.is_highlighted: The string should be highlighted
+        or not.
+    """
+
+    __slots__ = [
+        '_highlight_str_value',
+        '_highlight_str_present',
+        '_is_highlighted_value',
+        '_is_highlighted_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 highlight_str=None,
+                 is_highlighted=None):
+        self._highlight_str_value = None
+        self._highlight_str_present = False
+        self._is_highlighted_value = None
+        self._is_highlighted_present = False
+        if highlight_str is not None:
+            self.highlight_str = highlight_str
+        if is_highlighted is not None:
+            self.is_highlighted = is_highlighted
+
+    @property
+    def highlight_str(self):
+        """
+        String to be determined whether it should be highlighted or not.
+
+        :rtype: str
+        """
+        if self._highlight_str_present:
+            return self._highlight_str_value
+        else:
+            raise AttributeError("missing required field 'highlight_str'")
+
+    @highlight_str.setter
+    def highlight_str(self, val):
+        val = self._highlight_str_validator.validate(val)
+        self._highlight_str_value = val
+        self._highlight_str_present = True
+
+    @highlight_str.deleter
+    def highlight_str(self):
+        self._highlight_str_value = None
+        self._highlight_str_present = False
+
+    @property
+    def is_highlighted(self):
+        """
+        The string should be highlighted or not.
+
+        :rtype: bool
+        """
+        if self._is_highlighted_present:
+            return self._is_highlighted_value
+        else:
+            raise AttributeError("missing required field 'is_highlighted'")
+
+    @is_highlighted.setter
+    def is_highlighted(self, val):
+        val = self._is_highlighted_validator.validate(val)
+        self._is_highlighted_value = val
+        self._is_highlighted_present = True
+
+    @is_highlighted.deleter
+    def is_highlighted(self):
+        self._is_highlighted_value = None
+        self._is_highlighted_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(HighlightSpan, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'HighlightSpan(highlight_str={!r}, is_highlighted={!r})'.format(
+            self._highlight_str_value,
+            self._is_highlighted_value,
+        )
+
+HighlightSpan_validator = bv.Struct(HighlightSpan)
+
 class ListFolderArg(bb.Struct):
     """
     :ivar files.ListFolderArg.path: A unique identifier for the file.
@@ -5880,6 +6487,17 @@ class ListFolderError(bb.Union):
         """
         return cls('path', val)
 
+    @classmethod
+    def template_error(cls, val):
+        """
+        Create an instance of this class set to the ``template_error`` tag with
+        value ``val``.
+
+        :param file_properties.TemplateError val:
+        :rtype: ListFolderError
+        """
+        return cls('template_error', val)
+
     def is_path(self):
         """
         Check if the union tag is ``path``.
@@ -5887,6 +6505,14 @@ class ListFolderError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'path'
+
+    def is_template_error(self):
+        """
+        Check if the union tag is ``template_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'template_error'
 
     def is_other(self):
         """
@@ -5904,6 +6530,16 @@ class ListFolderError(bb.Union):
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def get_template_error(self):
+        """
+        Only call this if :meth:`is_template_error` is true.
+
+        :rtype: file_properties.TemplateError
+        """
+        if not self.is_template_error():
+            raise AttributeError("tag 'template_error' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -6684,6 +7320,549 @@ class ListRevisionsResult(bb.Struct):
 
 ListRevisionsResult_validator = bv.Struct(ListRevisionsResult)
 
+class LockConflictError(bb.Struct):
+    """
+    :ivar files.LockConflictError.lock: The lock that caused the conflict.
+    """
+
+    __slots__ = [
+        '_lock_value',
+        '_lock_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 lock=None):
+        self._lock_value = None
+        self._lock_present = False
+        if lock is not None:
+            self.lock = lock
+
+    @property
+    def lock(self):
+        """
+        The lock that caused the conflict.
+
+        :rtype: FileLock
+        """
+        if self._lock_present:
+            return self._lock_value
+        else:
+            raise AttributeError("missing required field 'lock'")
+
+    @lock.setter
+    def lock(self, val):
+        self._lock_validator.validate_type_only(val)
+        self._lock_value = val
+        self._lock_present = True
+
+    @lock.deleter
+    def lock(self):
+        self._lock_value = None
+        self._lock_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LockConflictError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LockConflictError(lock={!r})'.format(
+            self._lock_value,
+        )
+
+LockConflictError_validator = bv.Struct(LockConflictError)
+
+class LockFileArg(bb.Struct):
+    """
+    :ivar files.LockFileArg.path: Path in the user's Dropbox to a file.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None):
+        self._path_value = None
+        self._path_present = False
+        if path is not None:
+            self.path = path
+
+    @property
+    def path(self):
+        """
+        Path in the user's Dropbox to a file.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LockFileArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LockFileArg(path={!r})'.format(
+            self._path_value,
+        )
+
+LockFileArg_validator = bv.Struct(LockFileArg)
+
+class LockFileBatchArg(bb.Struct):
+    """
+    :ivar files.LockFileBatchArg.entries: List of 'entries'. Each 'entry'
+        contains a path of the file which will be locked or queried. Duplicate
+        path arguments in the batch are considered only once.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        List of 'entries'. Each 'entry' contains a path of the file which will
+        be locked or queried. Duplicate path arguments in the batch are
+        considered only once.
+
+        :rtype: list of [LockFileArg]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LockFileBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LockFileBatchArg(entries={!r})'.format(
+            self._entries_value,
+        )
+
+LockFileBatchArg_validator = bv.Struct(LockFileBatchArg)
+
+class LockFileBatchResult(FileOpsResult):
+    """
+    :ivar files.LockFileBatchResult.entries: Each Entry in the 'entries' will
+        have '.tag' with the operation status (e.g. success), the metadata for
+        the file and the lock state after the operation.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        super(LockFileBatchResult, self).__init__()
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        Each Entry in the 'entries' will have '.tag' with the operation status
+        (e.g. success), the metadata for the file and the lock state after the
+        operation.
+
+        :rtype: list of [LockFileResultEntry]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LockFileBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LockFileBatchResult(entries={!r})'.format(
+            self._entries_value,
+        )
+
+LockFileBatchResult_validator = bv.Struct(LockFileBatchResult)
+
+class LockFileError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar LookupError LockFileError.path_lookup: Could not find the specified
+        resource.
+    :ivar files.LockFileError.too_many_write_operations: There are too many
+        write operations in user's Dropbox. Please retry this request.
+    :ivar files.LockFileError.too_many_files: There are too many files in one
+        request. Please retry with fewer files.
+    :ivar files.LockFileError.no_write_permission: The user does not have
+        permissions to change the lock state or access the file.
+    :ivar files.LockFileError.cannot_be_locked: Item is a type that cannot be
+        locked.
+    :ivar files.LockFileError.file_not_shared: Requested file is not currently
+        shared.
+    :ivar LockConflictError LockFileError.lock_conflict: The user action
+        conflicts with an existing lock on the file.
+    :ivar files.LockFileError.internal_error: Something went wrong with the job
+        on Dropbox's end. You'll need to verify that the action you were taking
+        succeeded, and if not, try again. This should happen very rarely.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    too_many_write_operations = None
+    # Attribute is overwritten below the class definition
+    too_many_files = None
+    # Attribute is overwritten below the class definition
+    no_write_permission = None
+    # Attribute is overwritten below the class definition
+    cannot_be_locked = None
+    # Attribute is overwritten below the class definition
+    file_not_shared = None
+    # Attribute is overwritten below the class definition
+    internal_error = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def path_lookup(cls, val):
+        """
+        Create an instance of this class set to the ``path_lookup`` tag with
+        value ``val``.
+
+        :param LookupError val:
+        :rtype: LockFileError
+        """
+        return cls('path_lookup', val)
+
+    @classmethod
+    def lock_conflict(cls, val):
+        """
+        Create an instance of this class set to the ``lock_conflict`` tag with
+        value ``val``.
+
+        :param LockConflictError val:
+        :rtype: LockFileError
+        """
+        return cls('lock_conflict', val)
+
+    def is_path_lookup(self):
+        """
+        Check if the union tag is ``path_lookup``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path_lookup'
+
+    def is_too_many_write_operations(self):
+        """
+        Check if the union tag is ``too_many_write_operations``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_write_operations'
+
+    def is_too_many_files(self):
+        """
+        Check if the union tag is ``too_many_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_files'
+
+    def is_no_write_permission(self):
+        """
+        Check if the union tag is ``no_write_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_write_permission'
+
+    def is_cannot_be_locked(self):
+        """
+        Check if the union tag is ``cannot_be_locked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_be_locked'
+
+    def is_file_not_shared(self):
+        """
+        Check if the union tag is ``file_not_shared``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_not_shared'
+
+    def is_lock_conflict(self):
+        """
+        Check if the union tag is ``lock_conflict``.
+
+        :rtype: bool
+        """
+        return self._tag == 'lock_conflict'
+
+    def is_internal_error(self):
+        """
+        Check if the union tag is ``internal_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'internal_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path_lookup(self):
+        """
+        Could not find the specified resource.
+
+        Only call this if :meth:`is_path_lookup` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path_lookup():
+            raise AttributeError("tag 'path_lookup' not set")
+        return self._value
+
+    def get_lock_conflict(self):
+        """
+        The user action conflicts with an existing lock on the file.
+
+        Only call this if :meth:`is_lock_conflict` is true.
+
+        :rtype: LockConflictError
+        """
+        if not self.is_lock_conflict():
+            raise AttributeError("tag 'lock_conflict' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LockFileError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LockFileError(%r, %r)' % (self._tag, self._value)
+
+LockFileError_validator = bv.Union(LockFileError)
+
+class LockFileResult(bb.Struct):
+    """
+    :ivar files.LockFileResult.metadata: Metadata of the file.
+    :ivar files.LockFileResult.lock: The file lock state after the operation.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+        '_lock_value',
+        '_lock_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None,
+                 lock=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        self._lock_value = None
+        self._lock_present = False
+        if metadata is not None:
+            self.metadata = metadata
+        if lock is not None:
+            self.lock = lock
+
+    @property
+    def metadata(self):
+        """
+        Metadata of the file.
+
+        :rtype: Metadata
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    @property
+    def lock(self):
+        """
+        The file lock state after the operation.
+
+        :rtype: FileLock
+        """
+        if self._lock_present:
+            return self._lock_value
+        else:
+            raise AttributeError("missing required field 'lock'")
+
+    @lock.setter
+    def lock(self, val):
+        self._lock_validator.validate_type_only(val)
+        self._lock_value = val
+        self._lock_present = True
+
+    @lock.deleter
+    def lock(self):
+        self._lock_value = None
+        self._lock_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LockFileResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LockFileResult(metadata={!r}, lock={!r})'.format(
+            self._metadata_value,
+            self._lock_value,
+        )
+
+LockFileResult_validator = bv.Struct(LockFileResult)
+
+class LockFileResultEntry(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param LockFileResult val:
+        :rtype: LockFileResultEntry
+        """
+        return cls('success', val)
+
+    @classmethod
+    def failure(cls, val):
+        """
+        Create an instance of this class set to the ``failure`` tag with value
+        ``val``.
+
+        :param LockFileError val:
+        :rtype: LockFileResultEntry
+        """
+        return cls('failure', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_failure(self):
+        """
+        Check if the union tag is ``failure``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failure'
+
+    def get_success(self):
+        """
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: LockFileResult
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_failure(self):
+        """
+        Only call this if :meth:`is_failure` is true.
+
+        :rtype: LockFileError
+        """
+        if not self.is_failure():
+            raise AttributeError("tag 'failure' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LockFileResultEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LockFileResultEntry(%r, %r)' % (self._tag, self._value)
+
+LockFileResultEntry_validator = bv.Union(LockFileResultEntry)
+
 class LookupError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -7001,6 +8180,227 @@ class MediaMetadata(bb.Struct):
 
 MediaMetadata_validator = bv.StructTree(MediaMetadata)
 
+class MetadataV2(bb.Union):
+    """
+    Metadata for a file, folder or other resource types.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def metadata(cls, val):
+        """
+        Create an instance of this class set to the ``metadata`` tag with value
+        ``val``.
+
+        :param Metadata val:
+        :rtype: MetadataV2
+        """
+        return cls('metadata', val)
+
+    def is_metadata(self):
+        """
+        Check if the union tag is ``metadata``.
+
+        :rtype: bool
+        """
+        return self._tag == 'metadata'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_metadata(self):
+        """
+        Only call this if :meth:`is_metadata` is true.
+
+        :rtype: Metadata
+        """
+        if not self.is_metadata():
+            raise AttributeError("tag 'metadata' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MetadataV2, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MetadataV2(%r, %r)' % (self._tag, self._value)
+
+MetadataV2_validator = bv.Union(MetadataV2)
+
+class MinimalFileLinkMetadata(bb.Struct):
+    """
+    :ivar files.MinimalFileLinkMetadata.url: URL of the shared link.
+    :ivar files.MinimalFileLinkMetadata.id: Unique identifier for the linked
+        file.
+    :ivar files.MinimalFileLinkMetadata.path: Full path in the user's Dropbox.
+        This always starts with a slash. This field will only be present only if
+        the linked file is in the authenticated user's Dropbox.
+    :ivar files.MinimalFileLinkMetadata.rev: A unique identifier for the current
+        revision of a file. This field is the same rev as elsewhere in the API
+        and can be used to detect changes and avoid conflicts.
+    """
+
+    __slots__ = [
+        '_url_value',
+        '_url_present',
+        '_id_value',
+        '_id_present',
+        '_path_value',
+        '_path_present',
+        '_rev_value',
+        '_rev_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 url=None,
+                 rev=None,
+                 id=None,
+                 path=None):
+        self._url_value = None
+        self._url_present = False
+        self._id_value = None
+        self._id_present = False
+        self._path_value = None
+        self._path_present = False
+        self._rev_value = None
+        self._rev_present = False
+        if url is not None:
+            self.url = url
+        if id is not None:
+            self.id = id
+        if path is not None:
+            self.path = path
+        if rev is not None:
+            self.rev = rev
+
+    @property
+    def url(self):
+        """
+        URL of the shared link.
+
+        :rtype: str
+        """
+        if self._url_present:
+            return self._url_value
+        else:
+            raise AttributeError("missing required field 'url'")
+
+    @url.setter
+    def url(self, val):
+        val = self._url_validator.validate(val)
+        self._url_value = val
+        self._url_present = True
+
+    @url.deleter
+    def url(self):
+        self._url_value = None
+        self._url_present = False
+
+    @property
+    def id(self):
+        """
+        Unique identifier for the linked file.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            return None
+
+    @id.setter
+    def id(self, val):
+        if val is None:
+            del self.id
+            return
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def path(self):
+        """
+        Full path in the user's Dropbox. This always starts with a slash. This
+        field will only be present only if the linked file is in the
+        authenticated user's Dropbox.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            return None
+
+    @path.setter
+    def path(self, val):
+        if val is None:
+            del self.path
+            return
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def rev(self):
+        """
+        A unique identifier for the current revision of a file. This field is
+        the same rev as elsewhere in the API and can be used to detect changes
+        and avoid conflicts.
+
+        :rtype: str
+        """
+        if self._rev_present:
+            return self._rev_value
+        else:
+            raise AttributeError("missing required field 'rev'")
+
+    @rev.setter
+    def rev(self, val):
+        val = self._rev_validator.validate(val)
+        self._rev_value = val
+        self._rev_present = True
+
+    @rev.deleter
+    def rev(self):
+        self._rev_value = None
+        self._rev_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MinimalFileLinkMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MinimalFileLinkMetadata(url={!r}, rev={!r}, id={!r}, path={!r})'.format(
+            self._url_value,
+            self._rev_value,
+            self._id_value,
+            self._path_value,
+        )
+
+MinimalFileLinkMetadata_validator = bv.Struct(MinimalFileLinkMetadata)
+
 class RelocationBatchArgBase(bb.Struct):
     """
     :ivar files.RelocationBatchArgBase.entries: List of entries to be moved or
@@ -7150,6 +8550,91 @@ class MoveBatchArg(RelocationBatchArgBase):
         )
 
 MoveBatchArg_validator = bv.Struct(MoveBatchArg)
+
+class PathOrLink(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param str val:
+        :rtype: PathOrLink
+        """
+        return cls('path', val)
+
+    @classmethod
+    def link(cls, val):
+        """
+        Create an instance of this class set to the ``link`` tag with value
+        ``val``.
+
+        :param SharedLinkFileInfo val:
+        :rtype: PathOrLink
+        """
+        return cls('link', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_link(self):
+        """
+        Check if the union tag is ``link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'link'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: str
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def get_link(self):
+        """
+        Only call this if :meth:`is_link` is true.
+
+        :rtype: SharedLinkFileInfo
+        """
+        if not self.is_link():
+            raise AttributeError("tag 'link' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PathOrLink, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PathOrLink(%r, %r)' % (self._tag, self._value)
+
+PathOrLink_validator = bv.Union(PathOrLink)
 
 class PhotoMetadata(MediaMetadata):
     """
@@ -7354,6 +8839,103 @@ class PreviewError(bb.Union):
         return 'PreviewError(%r, %r)' % (self._tag, self._value)
 
 PreviewError_validator = bv.Union(PreviewError)
+
+class PreviewResult(bb.Struct):
+    """
+    :ivar files.PreviewResult.file_metadata: Metadata corresponding to the file
+        received as an argument. Will be populated if the endpoint is called
+        with a path (ReadPath).
+    :ivar files.PreviewResult.link_metadata: Minimal metadata corresponding to
+        the file received as an argument. Will be populated if the endpoint is
+        called using a shared link (SharedLinkFileInfo).
+    """
+
+    __slots__ = [
+        '_file_metadata_value',
+        '_file_metadata_present',
+        '_link_metadata_value',
+        '_link_metadata_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 file_metadata=None,
+                 link_metadata=None):
+        self._file_metadata_value = None
+        self._file_metadata_present = False
+        self._link_metadata_value = None
+        self._link_metadata_present = False
+        if file_metadata is not None:
+            self.file_metadata = file_metadata
+        if link_metadata is not None:
+            self.link_metadata = link_metadata
+
+    @property
+    def file_metadata(self):
+        """
+        Metadata corresponding to the file received as an argument. Will be
+        populated if the endpoint is called with a path (ReadPath).
+
+        :rtype: FileMetadata
+        """
+        if self._file_metadata_present:
+            return self._file_metadata_value
+        else:
+            return None
+
+    @file_metadata.setter
+    def file_metadata(self, val):
+        if val is None:
+            del self.file_metadata
+            return
+        self._file_metadata_validator.validate_type_only(val)
+        self._file_metadata_value = val
+        self._file_metadata_present = True
+
+    @file_metadata.deleter
+    def file_metadata(self):
+        self._file_metadata_value = None
+        self._file_metadata_present = False
+
+    @property
+    def link_metadata(self):
+        """
+        Minimal metadata corresponding to the file received as an argument. Will
+        be populated if the endpoint is called using a shared link
+        (SharedLinkFileInfo).
+
+        :rtype: MinimalFileLinkMetadata
+        """
+        if self._link_metadata_present:
+            return self._link_metadata_value
+        else:
+            return None
+
+    @link_metadata.setter
+    def link_metadata(self, val):
+        if val is None:
+            del self.link_metadata
+            return
+        self._link_metadata_validator.validate_type_only(val)
+        self._link_metadata_value = val
+        self._link_metadata_present = True
+
+    @link_metadata.deleter
+    def link_metadata(self):
+        self._link_metadata_value = None
+        self._link_metadata_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PreviewResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PreviewResult(file_metadata={!r}, link_metadata={!r})'.format(
+            self._file_metadata_value,
+            self._link_metadata_value,
+        )
+
+PreviewResult_validator = bv.Struct(PreviewResult)
 
 class RelocationPath(bb.Struct):
     """
@@ -9086,7 +10668,8 @@ class SaveUrlError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar files.SaveUrlError.download_failed: Failed downloading the given URL.
-        The url may be password-protected / the password provided was incorrect.
+        The URL may be  password-protected and the password provided was
+        incorrect,  or the link may be disabled.
     :ivar files.SaveUrlError.invalid_url: The given URL is invalid.
     :ivar files.SaveUrlError.not_found: The file where the URL is saved to no
         longer exists.
@@ -9512,6 +11095,17 @@ class SearchError(bb.Union):
         """
         return cls('path', val)
 
+    @classmethod
+    def invalid_argument(cls, val):
+        """
+        Create an instance of this class set to the ``invalid_argument`` tag
+        with value ``val``.
+
+        :param str val:
+        :rtype: SearchError
+        """
+        return cls('invalid_argument', val)
+
     def is_path(self):
         """
         Check if the union tag is ``path``.
@@ -9519,6 +11113,14 @@ class SearchError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'path'
+
+    def is_invalid_argument(self):
+        """
+        Check if the union tag is ``invalid_argument``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_argument'
 
     def is_other(self):
         """
@@ -9536,6 +11138,16 @@ class SearchError(bb.Union):
         """
         if not self.is_path():
             raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def get_invalid_argument(self):
+        """
+        Only call this if :meth:`is_invalid_argument` is true.
+
+        :rtype: str
+        """
+        if not self.is_invalid_argument():
+            raise AttributeError("tag 'invalid_argument' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -9687,6 +11299,96 @@ class SearchMatchType(bb.Union):
 
 SearchMatchType_validator = bv.Union(SearchMatchType)
 
+class SearchMatchV2(bb.Struct):
+    """
+    :ivar files.SearchMatchV2.metadata: The metadata for the matched file or
+        folder.
+    :ivar files.SearchMatchV2.highlight_spans: The list of HighlightSpan
+        determines which parts of the result should be highlighted.
+    """
+
+    __slots__ = [
+        '_metadata_value',
+        '_metadata_present',
+        '_highlight_spans_value',
+        '_highlight_spans_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 metadata=None,
+                 highlight_spans=None):
+        self._metadata_value = None
+        self._metadata_present = False
+        self._highlight_spans_value = None
+        self._highlight_spans_present = False
+        if metadata is not None:
+            self.metadata = metadata
+        if highlight_spans is not None:
+            self.highlight_spans = highlight_spans
+
+    @property
+    def metadata(self):
+        """
+        The metadata for the matched file or folder.
+
+        :rtype: MetadataV2
+        """
+        if self._metadata_present:
+            return self._metadata_value
+        else:
+            raise AttributeError("missing required field 'metadata'")
+
+    @metadata.setter
+    def metadata(self, val):
+        self._metadata_validator.validate_type_only(val)
+        self._metadata_value = val
+        self._metadata_present = True
+
+    @metadata.deleter
+    def metadata(self):
+        self._metadata_value = None
+        self._metadata_present = False
+
+    @property
+    def highlight_spans(self):
+        """
+        The list of HighlightSpan determines which parts of the result should be
+        highlighted.
+
+        :rtype: list of [HighlightSpan]
+        """
+        if self._highlight_spans_present:
+            return self._highlight_spans_value
+        else:
+            return None
+
+    @highlight_spans.setter
+    def highlight_spans(self, val):
+        if val is None:
+            del self.highlight_spans
+            return
+        val = self._highlight_spans_validator.validate(val)
+        self._highlight_spans_value = val
+        self._highlight_spans_present = True
+
+    @highlight_spans.deleter
+    def highlight_spans(self):
+        self._highlight_spans_value = None
+        self._highlight_spans_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchMatchV2, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SearchMatchV2(metadata={!r}, highlight_spans={!r})'.format(
+            self._metadata_value,
+            self._highlight_spans_value,
+        )
+
+SearchMatchV2_validator = bv.Struct(SearchMatchV2)
+
 class SearchMode(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -9739,6 +11441,236 @@ class SearchMode(bb.Union):
         return 'SearchMode(%r, %r)' % (self._tag, self._value)
 
 SearchMode_validator = bv.Union(SearchMode)
+
+class SearchOptions(bb.Struct):
+    """
+    :ivar files.SearchOptions.path: Scopes the search to a path in the user's
+        Dropbox. Searches the entire Dropbox if not specified.
+    :ivar files.SearchOptions.max_results: The maximum number of search results
+        to return.
+    :ivar files.SearchOptions.file_status: Restricts search to the given file
+        status.
+    :ivar files.SearchOptions.filename_only: Restricts search to only match on
+        filenames.
+    :ivar files.SearchOptions.file_extensions: Restricts search to only the
+        extensions specified. Only supported for active file search.
+    :ivar files.SearchOptions.file_categories: Restricts search to only the file
+        categories specified. Only supported for active file search.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+        '_max_results_value',
+        '_max_results_present',
+        '_file_status_value',
+        '_file_status_present',
+        '_filename_only_value',
+        '_filename_only_present',
+        '_file_extensions_value',
+        '_file_extensions_present',
+        '_file_categories_value',
+        '_file_categories_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 path=None,
+                 max_results=None,
+                 file_status=None,
+                 filename_only=None,
+                 file_extensions=None,
+                 file_categories=None):
+        self._path_value = None
+        self._path_present = False
+        self._max_results_value = None
+        self._max_results_present = False
+        self._file_status_value = None
+        self._file_status_present = False
+        self._filename_only_value = None
+        self._filename_only_present = False
+        self._file_extensions_value = None
+        self._file_extensions_present = False
+        self._file_categories_value = None
+        self._file_categories_present = False
+        if path is not None:
+            self.path = path
+        if max_results is not None:
+            self.max_results = max_results
+        if file_status is not None:
+            self.file_status = file_status
+        if filename_only is not None:
+            self.filename_only = filename_only
+        if file_extensions is not None:
+            self.file_extensions = file_extensions
+        if file_categories is not None:
+            self.file_categories = file_categories
+
+    @property
+    def path(self):
+        """
+        Scopes the search to a path in the user's Dropbox. Searches the entire
+        Dropbox if not specified.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            return None
+
+    @path.setter
+    def path(self, val):
+        if val is None:
+            del self.path
+            return
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def max_results(self):
+        """
+        The maximum number of search results to return.
+
+        :rtype: int
+        """
+        if self._max_results_present:
+            return self._max_results_value
+        else:
+            return 100
+
+    @max_results.setter
+    def max_results(self, val):
+        val = self._max_results_validator.validate(val)
+        self._max_results_value = val
+        self._max_results_present = True
+
+    @max_results.deleter
+    def max_results(self):
+        self._max_results_value = None
+        self._max_results_present = False
+
+    @property
+    def file_status(self):
+        """
+        Restricts search to the given file status.
+
+        :rtype: FileStatus
+        """
+        if self._file_status_present:
+            return self._file_status_value
+        else:
+            return FileStatus.active
+
+    @file_status.setter
+    def file_status(self, val):
+        self._file_status_validator.validate_type_only(val)
+        self._file_status_value = val
+        self._file_status_present = True
+
+    @file_status.deleter
+    def file_status(self):
+        self._file_status_value = None
+        self._file_status_present = False
+
+    @property
+    def filename_only(self):
+        """
+        Restricts search to only match on filenames.
+
+        :rtype: bool
+        """
+        if self._filename_only_present:
+            return self._filename_only_value
+        else:
+            return False
+
+    @filename_only.setter
+    def filename_only(self, val):
+        val = self._filename_only_validator.validate(val)
+        self._filename_only_value = val
+        self._filename_only_present = True
+
+    @filename_only.deleter
+    def filename_only(self):
+        self._filename_only_value = None
+        self._filename_only_present = False
+
+    @property
+    def file_extensions(self):
+        """
+        Restricts search to only the extensions specified. Only supported for
+        active file search.
+
+        :rtype: list of [str]
+        """
+        if self._file_extensions_present:
+            return self._file_extensions_value
+        else:
+            return None
+
+    @file_extensions.setter
+    def file_extensions(self, val):
+        if val is None:
+            del self.file_extensions
+            return
+        val = self._file_extensions_validator.validate(val)
+        self._file_extensions_value = val
+        self._file_extensions_present = True
+
+    @file_extensions.deleter
+    def file_extensions(self):
+        self._file_extensions_value = None
+        self._file_extensions_present = False
+
+    @property
+    def file_categories(self):
+        """
+        Restricts search to only the file categories specified. Only supported
+        for active file search.
+
+        :rtype: list of [FileCategory]
+        """
+        if self._file_categories_present:
+            return self._file_categories_value
+        else:
+            return None
+
+    @file_categories.setter
+    def file_categories(self, val):
+        if val is None:
+            del self.file_categories
+            return
+        val = self._file_categories_validator.validate(val)
+        self._file_categories_value = val
+        self._file_categories_present = True
+
+    @file_categories.deleter
+    def file_categories(self):
+        self._file_categories_value = None
+        self._file_categories_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchOptions, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SearchOptions(path={!r}, max_results={!r}, file_status={!r}, filename_only={!r}, file_extensions={!r}, file_categories={!r})'.format(
+            self._path_value,
+            self._max_results_value,
+            self._file_status_value,
+            self._filename_only_value,
+            self._file_extensions_value,
+            self._file_categories_value,
+        )
+
+SearchOptions_validator = bv.Struct(SearchOptions)
 
 class SearchResult(bb.Struct):
     """
@@ -9865,6 +11797,309 @@ class SearchResult(bb.Struct):
 
 SearchResult_validator = bv.Struct(SearchResult)
 
+class SearchV2Arg(bb.Struct):
+    """
+    :ivar files.SearchV2Arg.query: The string to search for. May match across
+        multiple fields based on the request arguments.
+    :ivar files.SearchV2Arg.options: Options for more targeted search results.
+    """
+
+    __slots__ = [
+        '_query_value',
+        '_query_present',
+        '_options_value',
+        '_options_present',
+        '_include_highlights_value',
+        '_include_highlights_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 query=None,
+                 options=None,
+                 include_highlights=None):
+        self._query_value = None
+        self._query_present = False
+        self._options_value = None
+        self._options_present = False
+        self._include_highlights_value = None
+        self._include_highlights_present = False
+        if query is not None:
+            self.query = query
+        if options is not None:
+            self.options = options
+        if include_highlights is not None:
+            self.include_highlights = include_highlights
+
+    @property
+    def query(self):
+        """
+        The string to search for. May match across multiple fields based on the
+        request arguments.
+
+        :rtype: str
+        """
+        if self._query_present:
+            return self._query_value
+        else:
+            raise AttributeError("missing required field 'query'")
+
+    @query.setter
+    def query(self, val):
+        val = self._query_validator.validate(val)
+        self._query_value = val
+        self._query_present = True
+
+    @query.deleter
+    def query(self):
+        self._query_value = None
+        self._query_present = False
+
+    @property
+    def options(self):
+        """
+        Options for more targeted search results.
+
+        :rtype: SearchOptions
+        """
+        if self._options_present:
+            return self._options_value
+        else:
+            return None
+
+    @options.setter
+    def options(self, val):
+        if val is None:
+            del self.options
+            return
+        self._options_validator.validate_type_only(val)
+        self._options_value = val
+        self._options_present = True
+
+    @options.deleter
+    def options(self):
+        self._options_value = None
+        self._options_present = False
+
+    @property
+    def include_highlights(self):
+        """
+        :rtype: bool
+        """
+        if self._include_highlights_present:
+            return self._include_highlights_value
+        else:
+            return False
+
+    @include_highlights.setter
+    def include_highlights(self, val):
+        val = self._include_highlights_validator.validate(val)
+        self._include_highlights_value = val
+        self._include_highlights_present = True
+
+    @include_highlights.deleter
+    def include_highlights(self):
+        self._include_highlights_value = None
+        self._include_highlights_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchV2Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SearchV2Arg(query={!r}, options={!r}, include_highlights={!r})'.format(
+            self._query_value,
+            self._options_value,
+            self._include_highlights_value,
+        )
+
+SearchV2Arg_validator = bv.Struct(SearchV2Arg)
+
+class SearchV2ContinueArg(bb.Struct):
+    """
+    :ivar files.SearchV2ContinueArg.cursor: The cursor returned by your last
+        call to :meth:`dropbox.dropbox.Dropbox.files_search`. Used to fetch the
+        next page of results.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = None
+        self._cursor_present = False
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def cursor(self):
+        """
+        The cursor returned by your last call to
+        :meth:`dropbox.dropbox.Dropbox.files_search`. Used to fetch the next
+        page of results.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            raise AttributeError("missing required field 'cursor'")
+
+    @cursor.setter
+    def cursor(self, val):
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchV2ContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SearchV2ContinueArg(cursor={!r})'.format(
+            self._cursor_value,
+        )
+
+SearchV2ContinueArg_validator = bv.Struct(SearchV2ContinueArg)
+
+class SearchV2Result(bb.Struct):
+    """
+    :ivar files.SearchV2Result.matches: A list (possibly empty) of matches for
+        the query.
+    :ivar files.SearchV2Result.has_more: Used for paging. If true, indicates
+        there is another page of results available that can be fetched by
+        calling :meth:`dropbox.dropbox.Dropbox.files_search_continue` with the
+        cursor.
+    :ivar files.SearchV2Result.cursor: Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.files_search_continue` to fetch the next
+        page of results.
+    """
+
+    __slots__ = [
+        '_matches_value',
+        '_matches_present',
+        '_has_more_value',
+        '_has_more_present',
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 matches=None,
+                 has_more=None,
+                 cursor=None):
+        self._matches_value = None
+        self._matches_present = False
+        self._has_more_value = None
+        self._has_more_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        if matches is not None:
+            self.matches = matches
+        if has_more is not None:
+            self.has_more = has_more
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def matches(self):
+        """
+        A list (possibly empty) of matches for the query.
+
+        :rtype: list of [SearchMatchV2]
+        """
+        if self._matches_present:
+            return self._matches_value
+        else:
+            raise AttributeError("missing required field 'matches'")
+
+    @matches.setter
+    def matches(self, val):
+        val = self._matches_validator.validate(val)
+        self._matches_value = val
+        self._matches_present = True
+
+    @matches.deleter
+    def matches(self):
+        self._matches_value = None
+        self._matches_present = False
+
+    @property
+    def has_more(self):
+        """
+        Used for paging. If true, indicates there is another page of results
+        available that can be fetched by calling
+        :meth:`dropbox.dropbox.Dropbox.files_search_continue` with the cursor.
+
+        :rtype: bool
+        """
+        if self._has_more_present:
+            return self._has_more_value
+        else:
+            raise AttributeError("missing required field 'has_more'")
+
+    @has_more.setter
+    def has_more(self, val):
+        val = self._has_more_validator.validate(val)
+        self._has_more_value = val
+        self._has_more_present = True
+
+    @has_more.deleter
+    def has_more(self):
+        self._has_more_value = None
+        self._has_more_present = False
+
+    @property
+    def cursor(self):
+        """
+        Pass the cursor into
+        :meth:`dropbox.dropbox.Dropbox.files_search_continue` to fetch the next
+        page of results.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SearchV2Result(matches={!r}, has_more={!r}, cursor={!r})'.format(
+            self._matches_value,
+            self._has_more_value,
+            self._cursor_value,
+        )
+
+SearchV2Result_validator = bv.Struct(SearchV2Result)
+
 class SharedLink(bb.Struct):
     """
     :ivar files.SharedLink.url: Shared link url.
@@ -9951,6 +12186,259 @@ class SharedLink(bb.Struct):
         )
 
 SharedLink_validator = bv.Struct(SharedLink)
+
+class SharedLinkFileInfo(bb.Struct):
+    """
+    :ivar files.SharedLinkFileInfo.url: The shared link corresponding to either
+        a file or shared link to a folder. If it is for a folder shared link, we
+        use the path param to determine for which file in the folder the view is
+        for.
+    :ivar files.SharedLinkFileInfo.path: The path corresponding to a file in a
+        shared link to a folder. Required for shared links to folders.
+    :ivar files.SharedLinkFileInfo.password: Password for the shared link.
+        Required for password-protected shared links to files  unless it can be
+        read from a cookie.
+    """
+
+    __slots__ = [
+        '_url_value',
+        '_url_present',
+        '_path_value',
+        '_path_present',
+        '_password_value',
+        '_password_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 url=None,
+                 path=None,
+                 password=None):
+        self._url_value = None
+        self._url_present = False
+        self._path_value = None
+        self._path_present = False
+        self._password_value = None
+        self._password_present = False
+        if url is not None:
+            self.url = url
+        if path is not None:
+            self.path = path
+        if password is not None:
+            self.password = password
+
+    @property
+    def url(self):
+        """
+        The shared link corresponding to either a file or shared link to a
+        folder. If it is for a folder shared link, we use the path param to
+        determine for which file in the folder the view is for.
+
+        :rtype: str
+        """
+        if self._url_present:
+            return self._url_value
+        else:
+            raise AttributeError("missing required field 'url'")
+
+    @url.setter
+    def url(self, val):
+        val = self._url_validator.validate(val)
+        self._url_value = val
+        self._url_present = True
+
+    @url.deleter
+    def url(self):
+        self._url_value = None
+        self._url_present = False
+
+    @property
+    def path(self):
+        """
+        The path corresponding to a file in a shared link to a folder. Required
+        for shared links to folders.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            return None
+
+    @path.setter
+    def path(self, val):
+        if val is None:
+            del self.path
+            return
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    @property
+    def password(self):
+        """
+        Password for the shared link. Required for password-protected shared
+        links to files  unless it can be read from a cookie.
+
+        :rtype: str
+        """
+        if self._password_present:
+            return self._password_value
+        else:
+            return None
+
+    @password.setter
+    def password(self, val):
+        if val is None:
+            del self.password
+            return
+        val = self._password_validator.validate(val)
+        self._password_value = val
+        self._password_present = True
+
+    @password.deleter
+    def password(self):
+        self._password_value = None
+        self._password_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkFileInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SharedLinkFileInfo(url={!r}, path={!r}, password={!r})'.format(
+            self._url_value,
+            self._path_value,
+            self._password_value,
+        )
+
+SharedLinkFileInfo_validator = bv.Struct(SharedLinkFileInfo)
+
+class SingleUserLock(bb.Struct):
+    """
+    :ivar files.SingleUserLock.created: The time the lock was created.
+    :ivar files.SingleUserLock.lock_holder_account_id: The account ID of the
+        lock holder if known.
+    :ivar files.SingleUserLock.lock_holder_team_id: The id of the team of the
+        account holder if it exists.
+    """
+
+    __slots__ = [
+        '_created_value',
+        '_created_present',
+        '_lock_holder_account_id_value',
+        '_lock_holder_account_id_present',
+        '_lock_holder_team_id_value',
+        '_lock_holder_team_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 created=None,
+                 lock_holder_account_id=None,
+                 lock_holder_team_id=None):
+        self._created_value = None
+        self._created_present = False
+        self._lock_holder_account_id_value = None
+        self._lock_holder_account_id_present = False
+        self._lock_holder_team_id_value = None
+        self._lock_holder_team_id_present = False
+        if created is not None:
+            self.created = created
+        if lock_holder_account_id is not None:
+            self.lock_holder_account_id = lock_holder_account_id
+        if lock_holder_team_id is not None:
+            self.lock_holder_team_id = lock_holder_team_id
+
+    @property
+    def created(self):
+        """
+        The time the lock was created.
+
+        :rtype: datetime.datetime
+        """
+        if self._created_present:
+            return self._created_value
+        else:
+            raise AttributeError("missing required field 'created'")
+
+    @created.setter
+    def created(self, val):
+        val = self._created_validator.validate(val)
+        self._created_value = val
+        self._created_present = True
+
+    @created.deleter
+    def created(self):
+        self._created_value = None
+        self._created_present = False
+
+    @property
+    def lock_holder_account_id(self):
+        """
+        The account ID of the lock holder if known.
+
+        :rtype: str
+        """
+        if self._lock_holder_account_id_present:
+            return self._lock_holder_account_id_value
+        else:
+            raise AttributeError("missing required field 'lock_holder_account_id'")
+
+    @lock_holder_account_id.setter
+    def lock_holder_account_id(self, val):
+        val = self._lock_holder_account_id_validator.validate(val)
+        self._lock_holder_account_id_value = val
+        self._lock_holder_account_id_present = True
+
+    @lock_holder_account_id.deleter
+    def lock_holder_account_id(self):
+        self._lock_holder_account_id_value = None
+        self._lock_holder_account_id_present = False
+
+    @property
+    def lock_holder_team_id(self):
+        """
+        The id of the team of the account holder if it exists.
+
+        :rtype: str
+        """
+        if self._lock_holder_team_id_present:
+            return self._lock_holder_team_id_value
+        else:
+            return None
+
+    @lock_holder_team_id.setter
+    def lock_holder_team_id(self, val):
+        if val is None:
+            del self.lock_holder_team_id
+            return
+        val = self._lock_holder_team_id_validator.validate(val)
+        self._lock_holder_team_id_value = val
+        self._lock_holder_team_id_present = True
+
+    @lock_holder_team_id.deleter
+    def lock_holder_team_id(self):
+        self._lock_holder_team_id_value = None
+        self._lock_holder_team_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SingleUserLock, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SingleUserLock(created={!r}, lock_holder_account_id={!r}, lock_holder_team_id={!r})'.format(
+            self._created_value,
+            self._lock_holder_account_id_value,
+            self._lock_holder_team_id_value,
+        )
+
+SingleUserLock_validator = bv.Struct(SingleUserLock)
 
 class SymlinkInfo(bb.Struct):
     """
@@ -10652,6 +13140,391 @@ class ThumbnailSize(bb.Union):
         return 'ThumbnailSize(%r, %r)' % (self._tag, self._value)
 
 ThumbnailSize_validator = bv.Union(ThumbnailSize)
+
+class ThumbnailV2Arg(bb.Struct):
+    """
+    :ivar files.ThumbnailV2Arg.resource: Information specifying which file to
+        preview. This could be a path to a file, a shared link pointing to a
+        file, or a shared link pointing to a folder, with a relative path.
+    :ivar files.ThumbnailV2Arg.format: The format for the thumbnail image, jpeg
+        (default) or png. For  images that are photos, jpeg should be preferred,
+        while png is  better for screenshots and digital arts.
+    :ivar files.ThumbnailV2Arg.size: The size for the thumbnail image.
+    :ivar files.ThumbnailV2Arg.mode: How to resize and crop the image to achieve
+        the desired size.
+    """
+
+    __slots__ = [
+        '_resource_value',
+        '_resource_present',
+        '_format_value',
+        '_format_present',
+        '_size_value',
+        '_size_present',
+        '_mode_value',
+        '_mode_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 resource=None,
+                 format=None,
+                 size=None,
+                 mode=None):
+        self._resource_value = None
+        self._resource_present = False
+        self._format_value = None
+        self._format_present = False
+        self._size_value = None
+        self._size_present = False
+        self._mode_value = None
+        self._mode_present = False
+        if resource is not None:
+            self.resource = resource
+        if format is not None:
+            self.format = format
+        if size is not None:
+            self.size = size
+        if mode is not None:
+            self.mode = mode
+
+    @property
+    def resource(self):
+        """
+        Information specifying which file to preview. This could be a path to a
+        file, a shared link pointing to a file, or a shared link pointing to a
+        folder, with a relative path.
+
+        :rtype: PathOrLink
+        """
+        if self._resource_present:
+            return self._resource_value
+        else:
+            raise AttributeError("missing required field 'resource'")
+
+    @resource.setter
+    def resource(self, val):
+        self._resource_validator.validate_type_only(val)
+        self._resource_value = val
+        self._resource_present = True
+
+    @resource.deleter
+    def resource(self):
+        self._resource_value = None
+        self._resource_present = False
+
+    @property
+    def format(self):
+        """
+        The format for the thumbnail image, jpeg (default) or png. For  images
+        that are photos, jpeg should be preferred, while png is  better for
+        screenshots and digital arts.
+
+        :rtype: ThumbnailFormat
+        """
+        if self._format_present:
+            return self._format_value
+        else:
+            return ThumbnailFormat.jpeg
+
+    @format.setter
+    def format(self, val):
+        self._format_validator.validate_type_only(val)
+        self._format_value = val
+        self._format_present = True
+
+    @format.deleter
+    def format(self):
+        self._format_value = None
+        self._format_present = False
+
+    @property
+    def size(self):
+        """
+        The size for the thumbnail image.
+
+        :rtype: ThumbnailSize
+        """
+        if self._size_present:
+            return self._size_value
+        else:
+            return ThumbnailSize.w64h64
+
+    @size.setter
+    def size(self, val):
+        self._size_validator.validate_type_only(val)
+        self._size_value = val
+        self._size_present = True
+
+    @size.deleter
+    def size(self):
+        self._size_value = None
+        self._size_present = False
+
+    @property
+    def mode(self):
+        """
+        How to resize and crop the image to achieve the desired size.
+
+        :rtype: ThumbnailMode
+        """
+        if self._mode_present:
+            return self._mode_value
+        else:
+            return ThumbnailMode.strict
+
+    @mode.setter
+    def mode(self, val):
+        self._mode_validator.validate_type_only(val)
+        self._mode_value = val
+        self._mode_present = True
+
+    @mode.deleter
+    def mode(self):
+        self._mode_value = None
+        self._mode_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ThumbnailV2Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ThumbnailV2Arg(resource={!r}, format={!r}, size={!r}, mode={!r})'.format(
+            self._resource_value,
+            self._format_value,
+            self._size_value,
+            self._mode_value,
+        )
+
+ThumbnailV2Arg_validator = bv.Struct(ThumbnailV2Arg)
+
+class ThumbnailV2Error(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar LookupError ThumbnailV2Error.path: An error occurred when downloading
+        metadata for the image.
+    :ivar files.ThumbnailV2Error.unsupported_extension: The file extension
+        doesn't allow conversion to a thumbnail.
+    :ivar files.ThumbnailV2Error.unsupported_image: The image cannot be
+        converted to a thumbnail.
+    :ivar files.ThumbnailV2Error.conversion_error: An error occurred during
+        thumbnail conversion.
+    :ivar files.ThumbnailV2Error.access_denied: Access to this shared link is
+        forbidden.
+    :ivar files.ThumbnailV2Error.not_found: The shared link does not exist.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unsupported_extension = None
+    # Attribute is overwritten below the class definition
+    unsupported_image = None
+    # Attribute is overwritten below the class definition
+    conversion_error = None
+    # Attribute is overwritten below the class definition
+    access_denied = None
+    # Attribute is overwritten below the class definition
+    not_found = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: ThumbnailV2Error
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_unsupported_extension(self):
+        """
+        Check if the union tag is ``unsupported_extension``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_extension'
+
+    def is_unsupported_image(self):
+        """
+        Check if the union tag is ``unsupported_image``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unsupported_image'
+
+    def is_conversion_error(self):
+        """
+        Check if the union tag is ``conversion_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'conversion_error'
+
+    def is_access_denied(self):
+        """
+        Check if the union tag is ``access_denied``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_denied'
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_path(self):
+        """
+        An error occurred when downloading metadata for the image.
+
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ThumbnailV2Error, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ThumbnailV2Error(%r, %r)' % (self._tag, self._value)
+
+ThumbnailV2Error_validator = bv.Union(ThumbnailV2Error)
+
+class UnlockFileArg(bb.Struct):
+    """
+    :ivar files.UnlockFileArg.path: Path in the user's Dropbox to a file.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None):
+        self._path_value = None
+        self._path_present = False
+        if path is not None:
+            self.path = path
+
+    @property
+    def path(self):
+        """
+        Path in the user's Dropbox to a file.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UnlockFileArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UnlockFileArg(path={!r})'.format(
+            self._path_value,
+        )
+
+UnlockFileArg_validator = bv.Struct(UnlockFileArg)
+
+class UnlockFileBatchArg(bb.Struct):
+    """
+    :ivar files.UnlockFileBatchArg.entries: List of 'entries'. Each 'entry'
+        contains a path of the file which will be unlocked. Duplicate path
+        arguments in the batch are considered only once.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        self._entries_value = None
+        self._entries_present = False
+        if entries is not None:
+            self.entries = entries
+
+    @property
+    def entries(self):
+        """
+        List of 'entries'. Each 'entry' contains a path of the file which will
+        be unlocked. Duplicate path arguments in the batch are considered only
+        once.
+
+        :rtype: list of [UnlockFileArg]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UnlockFileBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UnlockFileBatchArg(entries={!r})'.format(
+            self._entries_value,
+        )
+
+UnlockFileBatchArg_validator = bv.Struct(UnlockFileBatchArg)
 
 class UploadError(bb.Union):
     """
@@ -12251,6 +15124,7 @@ PathR_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?|(ns:[0-9]+(/.*)?)')
 PathROrId_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?|id:.*|(ns:[0-9]+(/.*)?)')
 ReadPath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/.*)?)')
 Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
+SearchV2Cursor_validator = bv.String(min_length=1)
 Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
 SharedLinkUrl_validator = bv.String()
 WritePath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
@@ -12616,14 +15490,17 @@ ExportArg._all_fields_ = [('path', ExportArg._path_validator)]
 
 ExportError._path_validator = LookupError_validator
 ExportError._non_exportable_validator = bv.Void()
+ExportError._retry_error_validator = bv.Void()
 ExportError._other_validator = bv.Void()
 ExportError._tagmap = {
     'path': ExportError._path_validator,
     'non_exportable': ExportError._non_exportable_validator,
+    'retry_error': ExportError._retry_error_validator,
     'other': ExportError._other_validator,
 }
 
 ExportError.non_exportable = ExportError('non_exportable')
+ExportError.retry_error = ExportError('retry_error')
 ExportError.other = ExportError('other')
 
 ExportInfo._export_as_validator = bv.Nullable(bv.String())
@@ -12655,6 +15532,76 @@ ExportResult._all_fields_ = [
     ('file_metadata', ExportResult._file_metadata_validator),
 ]
 
+FileCategory._image_validator = bv.Void()
+FileCategory._document_validator = bv.Void()
+FileCategory._pdf_validator = bv.Void()
+FileCategory._spreadsheet_validator = bv.Void()
+FileCategory._presentation_validator = bv.Void()
+FileCategory._audio_validator = bv.Void()
+FileCategory._video_validator = bv.Void()
+FileCategory._folder_validator = bv.Void()
+FileCategory._paper_validator = bv.Void()
+FileCategory._others_validator = bv.Void()
+FileCategory._other_validator = bv.Void()
+FileCategory._tagmap = {
+    'image': FileCategory._image_validator,
+    'document': FileCategory._document_validator,
+    'pdf': FileCategory._pdf_validator,
+    'spreadsheet': FileCategory._spreadsheet_validator,
+    'presentation': FileCategory._presentation_validator,
+    'audio': FileCategory._audio_validator,
+    'video': FileCategory._video_validator,
+    'folder': FileCategory._folder_validator,
+    'paper': FileCategory._paper_validator,
+    'others': FileCategory._others_validator,
+    'other': FileCategory._other_validator,
+}
+
+FileCategory.image = FileCategory('image')
+FileCategory.document = FileCategory('document')
+FileCategory.pdf = FileCategory('pdf')
+FileCategory.spreadsheet = FileCategory('spreadsheet')
+FileCategory.presentation = FileCategory('presentation')
+FileCategory.audio = FileCategory('audio')
+FileCategory.video = FileCategory('video')
+FileCategory.folder = FileCategory('folder')
+FileCategory.paper = FileCategory('paper')
+FileCategory.others = FileCategory('others')
+FileCategory.other = FileCategory('other')
+
+FileLock._content_validator = FileLockContent_validator
+FileLock._all_field_names_ = set(['content'])
+FileLock._all_fields_ = [('content', FileLock._content_validator)]
+
+FileLockContent._unlocked_validator = bv.Void()
+FileLockContent._single_user_validator = SingleUserLock_validator
+FileLockContent._other_validator = bv.Void()
+FileLockContent._tagmap = {
+    'unlocked': FileLockContent._unlocked_validator,
+    'single_user': FileLockContent._single_user_validator,
+    'other': FileLockContent._other_validator,
+}
+
+FileLockContent.unlocked = FileLockContent('unlocked')
+FileLockContent.other = FileLockContent('other')
+
+FileLockMetadata._is_lockholder_validator = bv.Nullable(bv.Boolean())
+FileLockMetadata._lockholder_name_validator = bv.Nullable(bv.String())
+FileLockMetadata._lockholder_account_id_validator = bv.Nullable(users_common.AccountId_validator)
+FileLockMetadata._created_validator = bv.Nullable(common.DropboxTimestamp_validator)
+FileLockMetadata._all_field_names_ = set([
+    'is_lockholder',
+    'lockholder_name',
+    'lockholder_account_id',
+    'created',
+])
+FileLockMetadata._all_fields_ = [
+    ('is_lockholder', FileLockMetadata._is_lockholder_validator),
+    ('lockholder_name', FileLockMetadata._lockholder_name_validator),
+    ('lockholder_account_id', FileLockMetadata._lockholder_account_id_validator),
+    ('created', FileLockMetadata._created_validator),
+]
+
 FileMetadata._id_validator = Id_validator
 FileMetadata._client_modified_validator = common.DropboxTimestamp_validator
 FileMetadata._server_modified_validator = common.DropboxTimestamp_validator
@@ -12668,6 +15615,7 @@ FileMetadata._export_info_validator = bv.Nullable(ExportInfo_validator)
 FileMetadata._property_groups_validator = bv.Nullable(bv.List(file_properties.PropertyGroup_validator))
 FileMetadata._has_explicit_shared_members_validator = bv.Nullable(bv.Boolean())
 FileMetadata._content_hash_validator = bv.Nullable(Sha256HexHash_validator)
+FileMetadata._file_lock_info_validator = bv.Nullable(FileLockMetadata_validator)
 FileMetadata._field_names_ = set([
     'id',
     'client_modified',
@@ -12682,6 +15630,7 @@ FileMetadata._field_names_ = set([
     'property_groups',
     'has_explicit_shared_members',
     'content_hash',
+    'file_lock_info',
 ])
 FileMetadata._all_field_names_ = Metadata._all_field_names_.union(FileMetadata._field_names_)
 FileMetadata._fields_ = [
@@ -12698,6 +15647,7 @@ FileMetadata._fields_ = [
     ('property_groups', FileMetadata._property_groups_validator),
     ('has_explicit_shared_members', FileMetadata._has_explicit_shared_members_validator),
     ('content_hash', FileMetadata._content_hash_validator),
+    ('file_lock_info', FileMetadata._file_lock_info_validator),
 ]
 FileMetadata._all_fields_ = Metadata._all_fields_ + FileMetadata._fields_
 
@@ -12715,6 +15665,19 @@ FileSharingInfo._all_fields_ = SharingInfo._all_fields_ + [
     ('parent_shared_folder_id', FileSharingInfo._parent_shared_folder_id_validator),
     ('modified_by', FileSharingInfo._modified_by_validator),
 ]
+
+FileStatus._active_validator = bv.Void()
+FileStatus._deleted_validator = bv.Void()
+FileStatus._other_validator = bv.Void()
+FileStatus._tagmap = {
+    'active': FileStatus._active_validator,
+    'deleted': FileStatus._deleted_validator,
+    'other': FileStatus._other_validator,
+}
+
+FileStatus.active = FileStatus('active')
+FileStatus.deleted = FileStatus('deleted')
+FileStatus.other = FileStatus('other')
 
 FolderMetadata._id_validator = Id_validator
 FolderMetadata._shared_folder_id_validator = bv.Nullable(common.SharedFolderId_validator)
@@ -12875,6 +15838,17 @@ GpsCoordinates._all_fields_ = [
     ('longitude', GpsCoordinates._longitude_validator),
 ]
 
+HighlightSpan._highlight_str_validator = bv.String()
+HighlightSpan._is_highlighted_validator = bv.Boolean()
+HighlightSpan._all_field_names_ = set([
+    'highlight_str',
+    'is_highlighted',
+])
+HighlightSpan._all_fields_ = [
+    ('highlight_str', HighlightSpan._highlight_str_validator),
+    ('is_highlighted', HighlightSpan._is_highlighted_validator),
+]
+
 ListFolderArg._path_validator = PathROrId_validator
 ListFolderArg._recursive_validator = bv.Boolean()
 ListFolderArg._include_media_info_validator = bv.Boolean()
@@ -12927,9 +15901,11 @@ ListFolderContinueError.reset = ListFolderContinueError('reset')
 ListFolderContinueError.other = ListFolderContinueError('other')
 
 ListFolderError._path_validator = LookupError_validator
+ListFolderError._template_error_validator = file_properties.TemplateError_validator
 ListFolderError._other_validator = bv.Void()
 ListFolderError._tagmap = {
     'path': ListFolderError._path_validator,
+    'template_error': ListFolderError._template_error_validator,
     'other': ListFolderError._other_validator,
 }
 
@@ -13035,6 +16011,69 @@ ListRevisionsResult._all_fields_ = [
     ('entries', ListRevisionsResult._entries_validator),
 ]
 
+LockConflictError._lock_validator = FileLock_validator
+LockConflictError._all_field_names_ = set(['lock'])
+LockConflictError._all_fields_ = [('lock', LockConflictError._lock_validator)]
+
+LockFileArg._path_validator = WritePathOrId_validator
+LockFileArg._all_field_names_ = set(['path'])
+LockFileArg._all_fields_ = [('path', LockFileArg._path_validator)]
+
+LockFileBatchArg._entries_validator = bv.List(LockFileArg_validator)
+LockFileBatchArg._all_field_names_ = set(['entries'])
+LockFileBatchArg._all_fields_ = [('entries', LockFileBatchArg._entries_validator)]
+
+LockFileBatchResult._entries_validator = bv.List(LockFileResultEntry_validator)
+LockFileBatchResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['entries']))
+LockFileBatchResult._all_fields_ = FileOpsResult._all_fields_ + [('entries', LockFileBatchResult._entries_validator)]
+
+LockFileError._path_lookup_validator = LookupError_validator
+LockFileError._too_many_write_operations_validator = bv.Void()
+LockFileError._too_many_files_validator = bv.Void()
+LockFileError._no_write_permission_validator = bv.Void()
+LockFileError._cannot_be_locked_validator = bv.Void()
+LockFileError._file_not_shared_validator = bv.Void()
+LockFileError._lock_conflict_validator = LockConflictError_validator
+LockFileError._internal_error_validator = bv.Void()
+LockFileError._other_validator = bv.Void()
+LockFileError._tagmap = {
+    'path_lookup': LockFileError._path_lookup_validator,
+    'too_many_write_operations': LockFileError._too_many_write_operations_validator,
+    'too_many_files': LockFileError._too_many_files_validator,
+    'no_write_permission': LockFileError._no_write_permission_validator,
+    'cannot_be_locked': LockFileError._cannot_be_locked_validator,
+    'file_not_shared': LockFileError._file_not_shared_validator,
+    'lock_conflict': LockFileError._lock_conflict_validator,
+    'internal_error': LockFileError._internal_error_validator,
+    'other': LockFileError._other_validator,
+}
+
+LockFileError.too_many_write_operations = LockFileError('too_many_write_operations')
+LockFileError.too_many_files = LockFileError('too_many_files')
+LockFileError.no_write_permission = LockFileError('no_write_permission')
+LockFileError.cannot_be_locked = LockFileError('cannot_be_locked')
+LockFileError.file_not_shared = LockFileError('file_not_shared')
+LockFileError.internal_error = LockFileError('internal_error')
+LockFileError.other = LockFileError('other')
+
+LockFileResult._metadata_validator = Metadata_validator
+LockFileResult._lock_validator = FileLock_validator
+LockFileResult._all_field_names_ = set([
+    'metadata',
+    'lock',
+])
+LockFileResult._all_fields_ = [
+    ('metadata', LockFileResult._metadata_validator),
+    ('lock', LockFileResult._lock_validator),
+]
+
+LockFileResultEntry._success_validator = LockFileResult_validator
+LockFileResultEntry._failure_validator = LockFileError_validator
+LockFileResultEntry._tagmap = {
+    'success': LockFileResultEntry._success_validator,
+    'failure': LockFileResultEntry._failure_validator,
+}
+
 LookupError._malformed_path_validator = MalformedPathError_validator
 LookupError._not_found_validator = bv.Void()
 LookupError._not_file_validator = bv.Void()
@@ -13094,6 +16133,32 @@ MediaMetadata._pytype_to_tag_and_subtype_ = {
 }
 MediaMetadata._is_catch_all_ = False
 
+MetadataV2._metadata_validator = Metadata_validator
+MetadataV2._other_validator = bv.Void()
+MetadataV2._tagmap = {
+    'metadata': MetadataV2._metadata_validator,
+    'other': MetadataV2._other_validator,
+}
+
+MetadataV2.other = MetadataV2('other')
+
+MinimalFileLinkMetadata._url_validator = bv.String()
+MinimalFileLinkMetadata._id_validator = bv.Nullable(Id_validator)
+MinimalFileLinkMetadata._path_validator = bv.Nullable(bv.String())
+MinimalFileLinkMetadata._rev_validator = Rev_validator
+MinimalFileLinkMetadata._all_field_names_ = set([
+    'url',
+    'id',
+    'path',
+    'rev',
+])
+MinimalFileLinkMetadata._all_fields_ = [
+    ('url', MinimalFileLinkMetadata._url_validator),
+    ('id', MinimalFileLinkMetadata._id_validator),
+    ('path', MinimalFileLinkMetadata._path_validator),
+    ('rev', MinimalFileLinkMetadata._rev_validator),
+]
+
 RelocationBatchArgBase._entries_validator = bv.List(RelocationPath_validator, min_items=1)
 RelocationBatchArgBase._autorename_validator = bv.Boolean()
 RelocationBatchArgBase._all_field_names_ = set([
@@ -13108,6 +16173,17 @@ RelocationBatchArgBase._all_fields_ = [
 MoveBatchArg._allow_ownership_transfer_validator = bv.Boolean()
 MoveBatchArg._all_field_names_ = RelocationBatchArgBase._all_field_names_.union(set(['allow_ownership_transfer']))
 MoveBatchArg._all_fields_ = RelocationBatchArgBase._all_fields_ + [('allow_ownership_transfer', MoveBatchArg._allow_ownership_transfer_validator)]
+
+PathOrLink._path_validator = ReadPath_validator
+PathOrLink._link_validator = SharedLinkFileInfo_validator
+PathOrLink._other_validator = bv.Void()
+PathOrLink._tagmap = {
+    'path': PathOrLink._path_validator,
+    'link': PathOrLink._link_validator,
+    'other': PathOrLink._other_validator,
+}
+
+PathOrLink.other = PathOrLink('other')
 
 PhotoMetadata._field_names_ = set([])
 PhotoMetadata._all_field_names_ = MediaMetadata._all_field_names_.union(PhotoMetadata._field_names_)
@@ -13139,6 +16215,17 @@ PreviewError._tagmap = {
 PreviewError.in_progress = PreviewError('in_progress')
 PreviewError.unsupported_extension = PreviewError('unsupported_extension')
 PreviewError.unsupported_content = PreviewError('unsupported_content')
+
+PreviewResult._file_metadata_validator = bv.Nullable(FileMetadata_validator)
+PreviewResult._link_metadata_validator = bv.Nullable(MinimalFileLinkMetadata_validator)
+PreviewResult._all_field_names_ = set([
+    'file_metadata',
+    'link_metadata',
+])
+PreviewResult._all_fields_ = [
+    ('file_metadata', PreviewResult._file_metadata_validator),
+    ('link_metadata', PreviewResult._link_metadata_validator),
+]
 
 RelocationPath._from_path_validator = WritePathOrId_validator
 RelocationPath._to_path_validator = WritePathOrId_validator
@@ -13421,9 +16508,11 @@ SearchArg._all_fields_ = [
 ]
 
 SearchError._path_validator = LookupError_validator
+SearchError._invalid_argument_validator = bv.Nullable(bv.String())
 SearchError._other_validator = bv.Void()
 SearchError._tagmap = {
     'path': SearchError._path_validator,
+    'invalid_argument': SearchError._invalid_argument_validator,
     'other': SearchError._other_validator,
 }
 
@@ -13453,6 +16542,17 @@ SearchMatchType.filename = SearchMatchType('filename')
 SearchMatchType.content = SearchMatchType('content')
 SearchMatchType.both = SearchMatchType('both')
 
+SearchMatchV2._metadata_validator = MetadataV2_validator
+SearchMatchV2._highlight_spans_validator = bv.Nullable(bv.List(HighlightSpan_validator))
+SearchMatchV2._all_field_names_ = set([
+    'metadata',
+    'highlight_spans',
+])
+SearchMatchV2._all_fields_ = [
+    ('metadata', SearchMatchV2._metadata_validator),
+    ('highlight_spans', SearchMatchV2._highlight_spans_validator),
+]
+
 SearchMode._filename_validator = bv.Void()
 SearchMode._filename_and_content_validator = bv.Void()
 SearchMode._deleted_filename_validator = bv.Void()
@@ -13465,6 +16565,29 @@ SearchMode._tagmap = {
 SearchMode.filename = SearchMode('filename')
 SearchMode.filename_and_content = SearchMode('filename_and_content')
 SearchMode.deleted_filename = SearchMode('deleted_filename')
+
+SearchOptions._path_validator = bv.Nullable(PathROrId_validator)
+SearchOptions._max_results_validator = bv.UInt64(min_value=1, max_value=1000)
+SearchOptions._file_status_validator = FileStatus_validator
+SearchOptions._filename_only_validator = bv.Boolean()
+SearchOptions._file_extensions_validator = bv.Nullable(bv.List(bv.String()))
+SearchOptions._file_categories_validator = bv.Nullable(bv.List(FileCategory_validator))
+SearchOptions._all_field_names_ = set([
+    'path',
+    'max_results',
+    'file_status',
+    'filename_only',
+    'file_extensions',
+    'file_categories',
+])
+SearchOptions._all_fields_ = [
+    ('path', SearchOptions._path_validator),
+    ('max_results', SearchOptions._max_results_validator),
+    ('file_status', SearchOptions._file_status_validator),
+    ('filename_only', SearchOptions._filename_only_validator),
+    ('file_extensions', SearchOptions._file_extensions_validator),
+    ('file_categories', SearchOptions._file_categories_validator),
+]
 
 SearchResult._matches_validator = bv.List(SearchMatch_validator)
 SearchResult._more_validator = bv.Boolean()
@@ -13480,6 +16603,38 @@ SearchResult._all_fields_ = [
     ('start', SearchResult._start_validator),
 ]
 
+SearchV2Arg._query_validator = bv.String()
+SearchV2Arg._options_validator = bv.Nullable(SearchOptions_validator)
+SearchV2Arg._include_highlights_validator = bv.Boolean()
+SearchV2Arg._all_field_names_ = set([
+    'query',
+    'options',
+    'include_highlights',
+])
+SearchV2Arg._all_fields_ = [
+    ('query', SearchV2Arg._query_validator),
+    ('options', SearchV2Arg._options_validator),
+    ('include_highlights', SearchV2Arg._include_highlights_validator),
+]
+
+SearchV2ContinueArg._cursor_validator = SearchV2Cursor_validator
+SearchV2ContinueArg._all_field_names_ = set(['cursor'])
+SearchV2ContinueArg._all_fields_ = [('cursor', SearchV2ContinueArg._cursor_validator)]
+
+SearchV2Result._matches_validator = bv.List(SearchMatchV2_validator)
+SearchV2Result._has_more_validator = bv.Boolean()
+SearchV2Result._cursor_validator = bv.Nullable(SearchV2Cursor_validator)
+SearchV2Result._all_field_names_ = set([
+    'matches',
+    'has_more',
+    'cursor',
+])
+SearchV2Result._all_fields_ = [
+    ('matches', SearchV2Result._matches_validator),
+    ('has_more', SearchV2Result._has_more_validator),
+    ('cursor', SearchV2Result._cursor_validator),
+]
+
 SharedLink._url_validator = SharedLinkUrl_validator
 SharedLink._password_validator = bv.Nullable(bv.String())
 SharedLink._all_field_names_ = set([
@@ -13489,6 +16644,34 @@ SharedLink._all_field_names_ = set([
 SharedLink._all_fields_ = [
     ('url', SharedLink._url_validator),
     ('password', SharedLink._password_validator),
+]
+
+SharedLinkFileInfo._url_validator = bv.String()
+SharedLinkFileInfo._path_validator = bv.Nullable(bv.String())
+SharedLinkFileInfo._password_validator = bv.Nullable(bv.String())
+SharedLinkFileInfo._all_field_names_ = set([
+    'url',
+    'path',
+    'password',
+])
+SharedLinkFileInfo._all_fields_ = [
+    ('url', SharedLinkFileInfo._url_validator),
+    ('path', SharedLinkFileInfo._path_validator),
+    ('password', SharedLinkFileInfo._password_validator),
+]
+
+SingleUserLock._created_validator = common.DropboxTimestamp_validator
+SingleUserLock._lock_holder_account_id_validator = users_common.AccountId_validator
+SingleUserLock._lock_holder_team_id_validator = bv.Nullable(bv.String())
+SingleUserLock._all_field_names_ = set([
+    'created',
+    'lock_holder_account_id',
+    'lock_holder_team_id',
+])
+SingleUserLock._all_fields_ = [
+    ('created', SingleUserLock._created_validator),
+    ('lock_holder_account_id', SingleUserLock._lock_holder_account_id_validator),
+    ('lock_holder_team_id', SingleUserLock._lock_holder_team_id_validator),
 ]
 
 SymlinkInfo._target_validator = bv.String()
@@ -13624,6 +16807,55 @@ ThumbnailSize.w640h480 = ThumbnailSize('w640h480')
 ThumbnailSize.w960h640 = ThumbnailSize('w960h640')
 ThumbnailSize.w1024h768 = ThumbnailSize('w1024h768')
 ThumbnailSize.w2048h1536 = ThumbnailSize('w2048h1536')
+
+ThumbnailV2Arg._resource_validator = PathOrLink_validator
+ThumbnailV2Arg._format_validator = ThumbnailFormat_validator
+ThumbnailV2Arg._size_validator = ThumbnailSize_validator
+ThumbnailV2Arg._mode_validator = ThumbnailMode_validator
+ThumbnailV2Arg._all_field_names_ = set([
+    'resource',
+    'format',
+    'size',
+    'mode',
+])
+ThumbnailV2Arg._all_fields_ = [
+    ('resource', ThumbnailV2Arg._resource_validator),
+    ('format', ThumbnailV2Arg._format_validator),
+    ('size', ThumbnailV2Arg._size_validator),
+    ('mode', ThumbnailV2Arg._mode_validator),
+]
+
+ThumbnailV2Error._path_validator = LookupError_validator
+ThumbnailV2Error._unsupported_extension_validator = bv.Void()
+ThumbnailV2Error._unsupported_image_validator = bv.Void()
+ThumbnailV2Error._conversion_error_validator = bv.Void()
+ThumbnailV2Error._access_denied_validator = bv.Void()
+ThumbnailV2Error._not_found_validator = bv.Void()
+ThumbnailV2Error._other_validator = bv.Void()
+ThumbnailV2Error._tagmap = {
+    'path': ThumbnailV2Error._path_validator,
+    'unsupported_extension': ThumbnailV2Error._unsupported_extension_validator,
+    'unsupported_image': ThumbnailV2Error._unsupported_image_validator,
+    'conversion_error': ThumbnailV2Error._conversion_error_validator,
+    'access_denied': ThumbnailV2Error._access_denied_validator,
+    'not_found': ThumbnailV2Error._not_found_validator,
+    'other': ThumbnailV2Error._other_validator,
+}
+
+ThumbnailV2Error.unsupported_extension = ThumbnailV2Error('unsupported_extension')
+ThumbnailV2Error.unsupported_image = ThumbnailV2Error('unsupported_image')
+ThumbnailV2Error.conversion_error = ThumbnailV2Error('conversion_error')
+ThumbnailV2Error.access_denied = ThumbnailV2Error('access_denied')
+ThumbnailV2Error.not_found = ThumbnailV2Error('not_found')
+ThumbnailV2Error.other = ThumbnailV2Error('other')
+
+UnlockFileArg._path_validator = WritePathOrId_validator
+UnlockFileArg._all_field_names_ = set(['path'])
+UnlockFileArg._all_fields_ = [('path', UnlockFileArg._path_validator)]
+
+UnlockFileBatchArg._entries_validator = bv.List(UnlockFileArg_validator)
+UnlockFileBatchArg._all_field_names_ = set(['entries'])
+UnlockFileBatchArg._all_fields_ = [('entries', UnlockFileBatchArg._entries_validator)]
 
 UploadError._path_validator = UploadWriteFailed_validator
 UploadError._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
@@ -14037,6 +17269,16 @@ export = bb.Route(
     {'host': u'content',
      'style': u'download'},
 )
+get_file_lock_batch = bb.Route(
+    'get_file_lock_batch',
+    1,
+    False,
+    LockFileBatchArg_validator,
+    LockFileBatchResult_validator,
+    LockFileError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 get_metadata = bb.Route(
     'get_metadata',
     1,
@@ -14084,6 +17326,16 @@ get_thumbnail = bb.Route(
     ThumbnailArg_validator,
     FileMetadata_validator,
     ThumbnailError_validator,
+    {'host': u'content',
+     'style': u'download'},
+)
+get_thumbnail_v2 = bb.Route(
+    'get_thumbnail',
+    2,
+    False,
+    ThumbnailV2Arg_validator,
+    PreviewResult_validator,
+    ThumbnailV2Error_validator,
     {'host': u'content',
      'style': u'download'},
 )
@@ -14147,6 +17399,16 @@ list_revisions = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+lock_file_batch = bb.Route(
+    'lock_file_batch',
+    1,
+    False,
+    LockFileBatchArg_validator,
+    LockFileBatchResult_validator,
+    LockFileError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 move_v2 = bb.Route(
     'move',
     2,
@@ -14180,7 +17442,7 @@ move_batch_v2 = bb.Route(
 move_batch = bb.Route(
     'move_batch',
     1,
-    False,
+    True,
     RelocationBatchArg_validator,
     RelocationBatchLaunch_validator,
     bv.Void(),
@@ -14200,7 +17462,7 @@ move_batch_check_v2 = bb.Route(
 move_batch_check = bb.Route(
     'move_batch/check',
     1,
-    False,
+    True,
     async_.PollArg_validator,
     RelocationBatchJobStatus_validator,
     async_.PollError_validator,
@@ -14310,10 +17572,40 @@ save_url_check_job_status = bb.Route(
 search = bb.Route(
     'search',
     1,
-    False,
+    True,
     SearchArg_validator,
     SearchResult_validator,
     SearchError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+search_v2 = bb.Route(
+    'search',
+    2,
+    False,
+    SearchV2Arg_validator,
+    SearchV2Result_validator,
+    SearchError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+search_continue_v2 = bb.Route(
+    'search/continue',
+    2,
+    False,
+    SearchV2ContinueArg_validator,
+    SearchV2Result_validator,
+    SearchError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+unlock_file_batch = bb.Route(
+    'unlock_file_batch',
+    1,
+    False,
+    UnlockFileBatchArg_validator,
+    LockFileBatchResult_validator,
+    LockFileError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -14410,17 +17702,20 @@ ROUTES = {
     'download': download,
     'download_zip': download_zip,
     'export': export,
+    'get_file_lock_batch': get_file_lock_batch,
     'get_metadata': get_metadata,
     'get_preview': get_preview,
     'get_temporary_link': get_temporary_link,
     'get_temporary_upload_link': get_temporary_upload_link,
     'get_thumbnail': get_thumbnail,
+    'get_thumbnail:2': get_thumbnail_v2,
     'get_thumbnail_batch': get_thumbnail_batch,
     'list_folder': list_folder,
     'list_folder/continue': list_folder_continue,
     'list_folder/get_latest_cursor': list_folder_get_latest_cursor,
     'list_folder/longpoll': list_folder_longpoll,
     'list_revisions': list_revisions,
+    'lock_file_batch': lock_file_batch,
     'move:2': move_v2,
     'move': move,
     'move_batch:2': move_batch_v2,
@@ -14438,6 +17733,9 @@ ROUTES = {
     'save_url': save_url,
     'save_url/check_job_status': save_url_check_job_status,
     'search': search,
+    'search:2': search_v2,
+    'search/continue:2': search_continue_v2,
+    'unlock_file_batch': unlock_file_batch,
     'upload': upload,
     'upload_session/append:2': upload_session_append_v2,
     'upload_session/append': upload_session_append,
