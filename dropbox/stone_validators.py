@@ -92,9 +92,8 @@ def generic_type_name(v):
         return type(v).__name__
 
 
-class Validator(object):
+class Validator(six.with_metaclass(ABCMeta, object)):
     """All primitive and composite data types should be a subclass of this."""
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def validate(self, val):

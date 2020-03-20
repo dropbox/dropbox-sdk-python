@@ -7,14 +7,17 @@ from abc import ABCMeta, abstractmethod
 import warnings
 
 from . import (
+    account,
     async_,
     auth,
+    check,
     common,
     contacts,
     file_properties,
     file_requests,
     files,
     paper,
+    secondary_emails,
     seen_state,
     sharing,
     team,
@@ -32,6 +35,31 @@ class DropboxBase(object):
     @abstractmethod
     def request(self, route, namespace, arg, arg_binary=None):
         pass
+
+    # ------------------------------------------
+    # Routes in account namespace
+
+    def account_set_profile_photo(self,
+                                  photo):
+        """
+        Sets a user's profile photo.
+
+        :param photo: Image to set as the user's new profile photo.
+        :type photo: :class:`dropbox.account.PhotoSourceArg`
+        :rtype: :class:`dropbox.account.SetProfilePhotoResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.account.SetProfilePhotoError`
+        """
+        arg = account.SetProfilePhotoArg(photo)
+        r = self.request(
+            account.set_profile_photo,
+            'account',
+            arg,
+            None,
+        )
+        return r
 
     # ------------------------------------------
     # Routes in auth namespace
@@ -76,6 +104,53 @@ class DropboxBase(object):
             None,
         )
         return None
+
+    # ------------------------------------------
+    # Routes in check namespace
+
+    def check_app(self,
+                  query=u''):
+        """
+        This endpoint performs App Authentication, validating the supplied app
+        key and secret, and returns the supplied string, to allow you to test
+        your code and connection to the Dropbox API. It has no other effect. If
+        you receive an HTTP 200 response with the supplied query, it indicates
+        at least part of the Dropbox API infrastructure is working and that the
+        app key and secret valid.
+
+        :param str query: The string that you'd like to be echoed back to you.
+        :rtype: :class:`dropbox.check.EchoResult`
+        """
+        arg = check.EchoArg(query)
+        r = self.request(
+            check.app,
+            'check',
+            arg,
+            None,
+        )
+        return r
+
+    def check_user(self,
+                   query=u''):
+        """
+        This endpoint performs User Authentication, validating the supplied
+        access token, and returns the supplied string, to allow you to test your
+        code and connection to the Dropbox API. It has no other effect. If you
+        receive an HTTP 200 response with the supplied query, it indicates at
+        least part of the Dropbox API infrastructure is working and that the
+        access token is valid.
+
+        :param str query: The string that you'd like to be echoed back to you.
+        :rtype: :class:`dropbox.check.EchoResult`
+        """
+        arg = check.EchoArg(query)
+        r = self.request(
+            check.user,
+            'check',
+            arg,
+            None,
+        )
+        return r
 
     # ------------------------------------------
     # Routes in contacts namespace
@@ -1354,6 +1429,29 @@ class DropboxBase(object):
         self._save_body_to_file(download_path, r[1])
         return r[0]
 
+    def files_get_file_lock_batch(self,
+                                  entries):
+        """
+        Return the lock metadata for the given list of paths.
+
+        :param list entries: List of 'entries'. Each 'entry' contains a path of
+            the file which will be locked or queried. Duplicate path arguments
+            in the batch are considered only once.
+        :rtype: :class:`dropbox.files.LockFileBatchResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.LockFileError`
+        """
+        arg = files.LockFileBatchArg(entries)
+        r = self.request(
+            files.get_file_lock_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_get_metadata(self,
                            path,
                            include_media_info=False,
@@ -1624,6 +1722,94 @@ class DropboxBase(object):
                                  mode)
         r = self.request(
             files.get_thumbnail,
+            'files',
+            arg,
+            None,
+        )
+        self._save_body_to_file(download_path, r[1])
+        return r[0]
+
+    def files_get_thumbnail_v2(self,
+                               resource,
+                               format=files.ThumbnailFormat.jpeg,
+                               size=files.ThumbnailSize.w64h64,
+                               mode=files.ThumbnailMode.strict):
+        """
+        Get a thumbnail for a file.
+
+        :param resource: Information specifying which file to preview. This
+            could be a path to a file, a shared link pointing to a file, or a
+            shared link pointing to a folder, with a relative path.
+        :type resource: :class:`dropbox.files.PathOrLink`
+        :param format: The format for the thumbnail image, jpeg (default) or
+            png. For  images that are photos, jpeg should be preferred, while
+            png is  better for screenshots and digital arts.
+        :type format: :class:`dropbox.files.ThumbnailFormat`
+        :param size: The size for the thumbnail image.
+        :type size: :class:`dropbox.files.ThumbnailSize`
+        :param mode: How to resize and crop the image to achieve the desired
+            size.
+        :type mode: :class:`dropbox.files.ThumbnailMode`
+        :rtype: (:class:`dropbox.files.PreviewResult`,
+                 :class:`requests.models.Response`)
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.ThumbnailV2Error`
+
+        If you do not consume the entire response body, then you must call close
+        on the response object, otherwise you will max out your available
+        connections. We recommend using the `contextlib.closing
+        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
+        context manager to ensure this.
+        """
+        arg = files.ThumbnailV2Arg(resource,
+                                   format,
+                                   size,
+                                   mode)
+        r = self.request(
+            files.get_thumbnail_v2,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_get_thumbnail_to_file_v2(self,
+                                       download_path,
+                                       resource,
+                                       format=files.ThumbnailFormat.jpeg,
+                                       size=files.ThumbnailSize.w64h64,
+                                       mode=files.ThumbnailMode.strict):
+        """
+        Get a thumbnail for a file.
+
+        :param str download_path: Path on local machine to save file.
+        :param resource: Information specifying which file to preview. This
+            could be a path to a file, a shared link pointing to a file, or a
+            shared link pointing to a folder, with a relative path.
+        :type resource: :class:`dropbox.files.PathOrLink`
+        :param format: The format for the thumbnail image, jpeg (default) or
+            png. For  images that are photos, jpeg should be preferred, while
+            png is  better for screenshots and digital arts.
+        :type format: :class:`dropbox.files.ThumbnailFormat`
+        :param size: The size for the thumbnail image.
+        :type size: :class:`dropbox.files.ThumbnailSize`
+        :param mode: How to resize and crop the image to achieve the desired
+            size.
+        :type mode: :class:`dropbox.files.ThumbnailMode`
+        :rtype: :class:`dropbox.files.PreviewResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.ThumbnailV2Error`
+        """
+        arg = files.ThumbnailV2Arg(resource,
+                                   format,
+                                   size,
+                                   mode)
+        r = self.request(
+            files.get_thumbnail_v2,
             'files',
             arg,
             None,
@@ -1913,6 +2099,32 @@ class DropboxBase(object):
         )
         return r
 
+    def files_lock_file_batch(self,
+                              entries):
+        """
+        Lock the files at the given paths. A locked file will be writable only
+        by the lock holder. A successful response indicates that the file has
+        been locked. Returns a list of the locked file paths and their metadata
+        after this operation.
+
+        :param list entries: List of 'entries'. Each 'entry' contains a path of
+            the file which will be locked or queried. Duplicate path arguments
+            in the batch are considered only once.
+        :rtype: :class:`dropbox.files.LockFileBatchResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.LockFileError`
+        """
+        arg = files.LockFileBatchArg(entries)
+        r = self.request(
+            files.lock_file_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_move_v2(self,
                       from_path,
                       to_path,
@@ -2031,9 +2243,8 @@ class DropboxBase(object):
                          allow_ownership_transfer=False):
         """
         Move multiple files or folders to different locations at once in the
-        user's Dropbox. This route is 'all or nothing', which means if one entry
-        fails, the whole transaction will abort. This route will return job ID
-        immediately and do the async moving job in background. Please use
+        user's Dropbox. This route will return job ID immediately and do the
+        async moving job in background. Please use
         :meth:`files_move_batch_check` to check the job status.
 
         :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
@@ -2046,6 +2257,10 @@ class DropboxBase(object):
             This does not apply to copies.
         :rtype: :class:`dropbox.files.RelocationBatchLaunch`
         """
+        warnings.warn(
+            'move_batch is deprecated. Use move_batch.',
+            DeprecationWarning,
+        )
         arg = files.RelocationBatchArg(entries,
                                        autorename,
                                        allow_shared_folder,
@@ -2095,6 +2310,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.PollError`
         """
+        warnings.warn(
+            'move_batch/check is deprecated. Use move_batch/check.',
+            DeprecationWarning,
+        )
         arg = async_.PollArg(async_job_id)
         r = self.request(
             files.move_batch_check,
@@ -2383,6 +2602,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.SearchError`
         """
+        warnings.warn(
+            'search is deprecated. Use search.',
+            DeprecationWarning,
+        )
         arg = files.SearchArg(path,
                               query,
                               start,
@@ -2390,6 +2613,91 @@ class DropboxBase(object):
                               mode)
         r = self.request(
             files.search,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_search_v2(self,
+                        query,
+                        options=None,
+                        include_highlights=False):
+        """
+        Searches for files and folders. Note: :meth:`files_search_v2` along with
+        :meth:`files_search_continue_v2` can only be used to retrieve a maximum
+        of 10,000 matches. Recent changes may not immediately be reflected in
+        search results due to a short delay in indexing. Duplicate results may
+        be returned across pages. Some results may not be returned.
+
+        :param str query: The string to search for. May match across multiple
+            fields based on the request arguments.
+        :param Nullable options: Options for more targeted search results.
+        :type include_highlights: bool
+        :rtype: :class:`dropbox.files.SearchV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.SearchError`
+        """
+        arg = files.SearchV2Arg(query,
+                                options,
+                                include_highlights)
+        r = self.request(
+            files.search_v2,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_search_continue_v2(self,
+                                 cursor):
+        """
+        Fetches the next page of search results returned from
+        :meth:`files_search_v2`. Note: :meth:`files_search_v2` along with
+        :meth:`files_search_continue_v2` can only be used to retrieve a maximum
+        of 10,000 matches. Recent changes may not immediately be reflected in
+        search results due to a short delay in indexing. Duplicate results may
+        be returned across pages. Some results may not be returned.
+
+        :param str cursor: The cursor returned by your last call to
+            :meth:`files_search_v2`. Used to fetch the next page of results.
+        :rtype: :class:`dropbox.files.SearchV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.SearchError`
+        """
+        arg = files.SearchV2ContinueArg(cursor)
+        r = self.request(
+            files.search_continue_v2,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_unlock_file_batch(self,
+                                entries):
+        """
+        Unlock the files at the given paths. A locked file can only be unlocked
+        by the lock holder or, if a business account, a team admin. A successful
+        response indicates that the file has been unlocked. Returns a list of
+        the unlocked file paths and their metadata after this operation.
+
+        :param list entries: List of 'entries'. Each 'entry' contains a path of
+            the file which will be unlocked. Duplicate path arguments in the
+            batch are considered only once.
+        :rtype: :class:`dropbox.files.LockFileBatchResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.LockFileError`
+        """
+        arg = files.UnlockFileBatchArg(entries)
+        r = self.request(
+            files.unlock_file_batch,
             'files',
             arg,
             None,
@@ -2675,8 +2983,15 @@ class DropboxBase(object):
     def paper_docs_archive(self,
                            doc_id):
         """
-        Marks the given Paper doc as archived. Note: This action can be
-        performed or undone by anyone with edit permissions to the doc.
+        Marks the given Paper doc as archived. This action can be performed or
+        undone by anyone with edit permissions to the doc. Note that this
+        endpoint will continue to work for content created by users on the older
+        version of Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. This endpoint will be
+        retired in September 2020. Refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for more information.
 
         :param str doc_id: The Paper doc ID.
         :rtype: None
@@ -2685,6 +3000,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/archive is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.RefPaperDoc(doc_id)
         r = self.request(
             paper.docs_archive,
@@ -2699,7 +3018,14 @@ class DropboxBase(object):
                           import_format,
                           parent_folder_id=None):
         """
-        Creates a new Paper doc with the provided content.
+        Creates a new Paper doc with the provided content. Note that this
+        endpoint will continue to work for content created by users on the older
+        version of Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. This endpoint will be
+        retired in September 2020. Refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for more information.
 
         :param bytes f: Contents to upload.
         :param Nullable parent_folder_id: The Paper folder ID where the Paper
@@ -2713,6 +3039,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.PaperDocCreateError`
         """
+        warnings.warn(
+            'docs/create is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.PaperDocCreateArgs(import_format,
                                        parent_folder_id)
         r = self.request(
@@ -2727,7 +3057,14 @@ class DropboxBase(object):
                             doc_id,
                             export_format):
         """
-        Exports and downloads Paper doc either as HTML or markdown.
+        Exports and downloads Paper doc either as HTML or markdown. Note that
+        this endpoint will continue to work for content created by users on the
+        older version of Paper. To check which version of Paper a user is on,
+        use /users/features/get_values. If the paper_as_files feature is
+        enabled, then the user is running the new version of Paper. Refer to the
+        `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :type export_format: :class:`dropbox.paper.ExportFormat`
         :rtype: (:class:`dropbox.paper.PaperDocExportResult`,
@@ -2743,6 +3080,10 @@ class DropboxBase(object):
         <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
         context manager to ensure this.
         """
+        warnings.warn(
+            'docs/download is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.PaperDocExport(doc_id,
                                    export_format)
         r = self.request(
@@ -2758,7 +3099,14 @@ class DropboxBase(object):
                                     doc_id,
                                     export_format):
         """
-        Exports and downloads Paper doc either as HTML or markdown.
+        Exports and downloads Paper doc either as HTML or markdown. Note that
+        this endpoint will continue to work for content created by users on the
+        older version of Paper. To check which version of Paper a user is on,
+        use /users/features/get_values. If the paper_as_files feature is
+        enabled, then the user is running the new version of Paper. Refer to the
+        `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param str download_path: Path on local machine to save file.
         :type export_format: :class:`dropbox.paper.ExportFormat`
@@ -2768,6 +3116,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/download is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.PaperDocExport(doc_id,
                                    export_format)
         r = self.request(
@@ -2786,7 +3138,14 @@ class DropboxBase(object):
         Lists the users who are explicitly invited to the Paper folder in which
         the Paper doc is contained. For private folders all users (including
         owner) shared on the folder are listed and for team folders all non-team
-        users shared on the folder are returned.
+        users shared on the folder are returned. Note that this endpoint will
+        continue to work for content created by users on the older version of
+        Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. Refer to the `Paper
+        Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param int limit: Size limit per batch. The maximum number of users that
             can be retrieved per batch is 1000. Higher value results in invalid
@@ -2797,6 +3156,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/folder_users/list is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.ListUsersOnFolderArgs(doc_id,
                                           limit)
         r = self.request(
@@ -2813,7 +3176,13 @@ class DropboxBase(object):
         """
         Once a cursor has been retrieved from
         :meth:`paper_docs_folder_users_list`, use this to paginate through all
-        users on the Paper folder.
+        users on the Paper folder. Note that this endpoint will continue to work
+        for content created by users on the older version of Paper. To check
+        which version of Paper a user is on, use /users/features/get_values. If
+        the paper_as_files feature is enabled, then the user is running the new
+        version of Paper. Refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param str cursor: The cursor obtained from
             :meth:`paper_docs_folder_users_list` or
@@ -2825,6 +3194,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.ListUsersCursorError`
         """
+        warnings.warn(
+            'docs/folder_users/list/continue is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.ListUsersOnFolderContinueArgs(doc_id,
                                                   cursor)
         r = self.request(
@@ -2842,8 +3215,15 @@ class DropboxBase(object):
         folder sharing policy; permissions for subfolders are set by the
         top-level folder.   - full 'filepath', i.e. the list of folders (both
         folderId and folderName) from     the root folder to the folder directly
-        containing the Paper doc.  Note: If the Paper doc is not in any folder
-        (aka unfiled) the response will be empty.
+        containing the Paper doc.  If the Paper doc is not in any folder (aka
+        unfiled) the response will be empty. Note that this endpoint will
+        continue to work for content created by users on the older version of
+        Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. Refer to the `Paper
+        Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param str doc_id: The Paper doc ID.
         :rtype: :class:`dropbox.paper.FoldersContainingPaperDoc`
@@ -2852,6 +3232,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/get_folder_info is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.RefPaperDoc(doc_id)
         r = self.request(
             paper.docs_get_folder_info,
@@ -2869,7 +3253,14 @@ class DropboxBase(object):
         """
         Return the list of all Paper docs according to the argument
         specifications. To iterate over through the full pagination, pass the
-        cursor to :meth:`paper_docs_list_continue`.
+        cursor to :meth:`paper_docs_list_continue`. Note that this endpoint will
+        continue to work for content created by users on the older version of
+        Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. Refer to the `Paper
+        Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param filter_by: Allows user to specify how the Paper docs should be
             filtered.
@@ -2884,6 +3275,10 @@ class DropboxBase(object):
             arguments error.
         :rtype: :class:`dropbox.paper.ListPaperDocsResponse`
         """
+        warnings.warn(
+            'docs/list is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.ListPaperDocsArgs(filter_by,
                                       sort_by,
                                       sort_order,
@@ -2900,7 +3295,14 @@ class DropboxBase(object):
                                  cursor):
         """
         Once a cursor has been retrieved from :meth:`paper_docs_list`, use this
-        to paginate through all Paper doc.
+        to paginate through all Paper doc. Note that this endpoint will continue
+        to work for content created by users on the older version of Paper. To
+        check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. Refer to the `Paper
+        Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param str cursor: The cursor obtained from :meth:`paper_docs_list` or
             :meth:`paper_docs_list_continue`. Allows for pagination.
@@ -2910,6 +3312,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.ListDocsCursorError`
         """
+        warnings.warn(
+            'docs/list/continue is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.ListPaperDocsContinueArgs(cursor)
         r = self.request(
             paper.docs_list_continue,
@@ -2923,8 +3329,14 @@ class DropboxBase(object):
                                       doc_id):
         """
         Permanently deletes the given Paper doc. This operation is final as the
-        doc cannot be recovered.  Note: This action can be performed only by the
-        doc owner.
+        doc cannot be recovered. This action can be performed only by the doc
+        owner. Note that this endpoint will continue to work for content created
+        by users on the older version of Paper. To check which version of Paper
+        a user is on, use /users/features/get_values. If the paper_as_files
+        feature is enabled, then the user is running the new version of Paper.
+        Refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param str doc_id: The Paper doc ID.
         :rtype: None
@@ -2933,6 +3345,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/permanently_delete is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.RefPaperDoc(doc_id)
         r = self.request(
             paper.docs_permanently_delete,
@@ -2945,7 +3361,14 @@ class DropboxBase(object):
     def paper_docs_sharing_policy_get(self,
                                       doc_id):
         """
-        Gets the default sharing policy for the given Paper doc.
+        Gets the default sharing policy for the given Paper doc. Note that this
+        endpoint will continue to work for content created by users on the older
+        version of Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. Refer to the `Paper
+        Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param str doc_id: The Paper doc ID.
         :rtype: :class:`dropbox.paper.SharingPolicy`
@@ -2954,6 +3377,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/sharing_policy/get is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.RefPaperDoc(doc_id)
         r = self.request(
             paper.docs_sharing_policy_get,
@@ -2969,9 +3396,15 @@ class DropboxBase(object):
         """
         Sets the default sharing policy for the given Paper doc. The default
         'team_sharing_policy' can be changed only by teams, omit this field for
-        personal accounts.  Note: 'public_sharing_policy' cannot be set to the
-        value 'disabled' because this setting can be changed only via the team
-        admin console.
+        personal accounts. The 'public_sharing_policy' policy can't be set to
+        the value 'disabled' because this setting can be changed only via the
+        team admin console. Note that this endpoint will continue to work for
+        content created by users on the older version of Paper. To check which
+        version of Paper a user is on, use /users/features/get_values. If the
+        paper_as_files feature is enabled, then the user is running the new
+        version of Paper. Refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param sharing_policy: The default sharing policy to be set for the
             Paper doc.
@@ -2982,6 +3415,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/sharing_policy/set is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.PaperDocSharingPolicy(doc_id,
                                           sharing_policy)
         r = self.request(
@@ -2999,7 +3436,14 @@ class DropboxBase(object):
                           revision,
                           import_format):
         """
-        Updates an existing Paper doc with the provided content.
+        Updates an existing Paper doc with the provided content. Note that this
+        endpoint will continue to work for content created by users on the older
+        version of Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. This endpoint will be
+        retired in September 2020. Refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for more information.
 
         :param bytes f: Contents to upload.
         :param doc_update_policy: The policy used for the current update call.
@@ -3015,6 +3459,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.PaperDocUpdateError`
         """
+        warnings.warn(
+            'docs/update is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.PaperDocUpdateArgs(doc_id,
                                        doc_update_policy,
                                        revision,
@@ -3034,8 +3482,15 @@ class DropboxBase(object):
                              quiet=False):
         """
         Allows an owner or editor to add users to a Paper doc or change their
-        permissions using their email address or Dropbox account ID.  Note: The
-        Doc owner's permissions cannot be changed.
+        permissions using their email address or Dropbox account ID. The doc
+        owner's permissions cannot be changed. Note that this endpoint will
+        continue to work for content created by users on the older version of
+        Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. Refer to the `Paper
+        Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param list members: User which should be added to the Paper doc.
             Specify only email address or Dropbox account ID.
@@ -3049,6 +3504,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/users/add is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.AddPaperDocUser(doc_id,
                                     members,
                                     custom_message,
@@ -3070,7 +3529,13 @@ class DropboxBase(object):
         This call excludes users who have been removed. The list is sorted by
         the date of the visit or the share date. The list will include both
         users, the explicitly shared ones as well as those who came in using the
-        Paper url link.
+        Paper url link. Note that this endpoint will continue to work for
+        content created by users on the older version of Paper. To check which
+        version of Paper a user is on, use /users/features/get_values. If the
+        paper_as_files feature is enabled, then the user is running the new
+        version of Paper. Refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param int limit: Size limit per batch. The maximum number of users that
             can be retrieved per batch is 1000. Higher value results in invalid
@@ -3084,6 +3549,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/users/list is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.ListUsersOnPaperDocArgs(doc_id,
                                             limit,
                                             filter_by)
@@ -3100,7 +3569,14 @@ class DropboxBase(object):
                                        cursor):
         """
         Once a cursor has been retrieved from :meth:`paper_docs_users_list`, use
-        this to paginate through all users on the Paper doc.
+        this to paginate through all users on the Paper doc. Note that this
+        endpoint will continue to work for content created by users on the older
+        version of Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. Refer to the `Paper
+        Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param str cursor: The cursor obtained from
             :meth:`paper_docs_users_list` or
@@ -3111,6 +3587,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.ListUsersCursorError`
         """
+        warnings.warn(
+            'docs/users/list/continue is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.ListUsersOnPaperDocContinueArgs(doc_id,
                                                     cursor)
         r = self.request(
@@ -3126,7 +3606,14 @@ class DropboxBase(object):
                                 member):
         """
         Allows an owner or editor to remove users from a Paper doc using their
-        email address or Dropbox account ID.  Note: Doc owner cannot be removed.
+        email address or Dropbox account ID. The doc owner cannot be removed.
+        Note that this endpoint will continue to work for content created by
+        users on the older version of Paper. To check which version of Paper a
+        user is on, use /users/features/get_values. If the paper_as_files
+        feature is enabled, then the user is running the new version of Paper.
+        Refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
 
         :param member: User which should be removed from the Paper doc. Specify
             only email address or Dropbox account ID.
@@ -3137,6 +3624,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.paper.DocLookupError`
         """
+        warnings.warn(
+            'docs/users/remove is deprecated.',
+            DeprecationWarning,
+        )
         arg = paper.RemovePaperDocUser(doc_id,
                                        member)
         r = self.request(
@@ -3146,6 +3637,52 @@ class DropboxBase(object):
             None,
         )
         return None
+
+    def paper_folders_create(self,
+                             name,
+                             parent_folder_id=None,
+                             is_team_folder=None):
+        """
+        Create a new Paper folder with the provided info. Note that this
+        endpoint will continue to work for content created by users on the older
+        version of Paper. To check which version of Paper a user is on, use
+        /users/features/get_values. If the paper_as_files feature is enabled,
+        then the user is running the new version of Paper. Refer to the `Paper
+        Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_
+        for migration information.
+
+        :param str name: The name of the new Paper folder.
+        :param Nullable parent_folder_id: The encrypted Paper folder Id where
+            the new Paper folder should be created. The API user has to have
+            write access to this folder or error is thrown. If not supplied, the
+            new folder will be created at top level.
+        :param Nullable is_team_folder: Whether the folder to be created should
+            be a team folder. This value will be ignored if parent_folder_id is
+            supplied, as the new folder will inherit the type (private or team
+            folder) from its parent. We will by default create a top-level
+            private folder if both parent_folder_id and is_team_folder are not
+            supplied.
+        :rtype: :class:`dropbox.paper.PaperFolderCreateResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.paper.PaperFolderCreateError`
+        """
+        warnings.warn(
+            'folders/create is deprecated.',
+            DeprecationWarning,
+        )
+        arg = paper.PaperFolderCreateArg(name,
+                                         parent_folder_id,
+                                         is_team_folder)
+        r = self.request(
+            paper.folders_create,
+            'paper',
+            arg,
+            None,
+        )
+        return r
 
     # ------------------------------------------
     # Routes in sharing namespace
@@ -4449,6 +4986,30 @@ class DropboxBase(object):
 
     # ------------------------------------------
     # Routes in users namespace
+
+    def users_features_get_values(self,
+                                  features):
+        """
+        Get a list of feature values that may be configured for the current
+        account.
+
+        :param list features: A list of features in
+            :class:`dropbox.users.UserFeature`. If the list is empty, this route
+            will return :class:`dropbox.users.UserFeaturesGetValuesBatchError`.
+        :rtype: :class:`dropbox.users.UserFeaturesGetValuesBatchResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.users.UserFeaturesGetValuesBatchError`
+        """
+        arg = users.UserFeaturesGetValuesBatchArg(features)
+        r = self.request(
+            users.features_get_values,
+            'users',
+            arg,
+            None,
+        )
+        return r
 
     def users_get_account(self,
                           account_id):

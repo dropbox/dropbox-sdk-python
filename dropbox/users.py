@@ -366,6 +366,73 @@ class BasicAccount(Account):
 
 BasicAccount_validator = bv.Struct(BasicAccount)
 
+class FileLockingValue(bb.Union):
+    """
+    The value for ``UserFeature.file_locking``.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar bool users.FileLockingValue.enabled: When this value is True, the user
+        can lock files in shared directories. When the value is False the user
+        can unlock the files they have locked or request to unlock files locked
+        by others.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def enabled(cls, val):
+        """
+        Create an instance of this class set to the ``enabled`` tag with value
+        ``val``.
+
+        :param bool val:
+        :rtype: FileLockingValue
+        """
+        return cls('enabled', val)
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_enabled(self):
+        """
+        When this value is True, the user can lock files in shared directories.
+        When the value is False the user can unlock the files they have locked
+        or request to unlock files locked by others.
+
+        Only call this if :meth:`is_enabled` is true.
+
+        :rtype: bool
+        """
+        if not self.is_enabled():
+            raise AttributeError("tag 'enabled' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockingValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'FileLockingValue(%r, %r)' % (self._tag, self._value)
+
+FileLockingValue_validator = bv.Union(FileLockingValue)
+
 class FullAccount(Account):
     """
     Detailed information about the current user's account.
@@ -1316,6 +1383,76 @@ class Name(bb.Struct):
 
 Name_validator = bv.Struct(Name)
 
+class PaperAsFilesValue(bb.Union):
+    """
+    The value for ``UserFeature.paper_as_files``.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar bool users.PaperAsFilesValue.enabled: When this value is true, the
+        user's Paper docs are accessible in Dropbox with the .paper extension
+        and must be accessed via the /files endpoints.  When this value is
+        false, the user's Paper docs are stored separate from Dropbox files and
+        folders and should be accessed via the /paper endpoints.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def enabled(cls, val):
+        """
+        Create an instance of this class set to the ``enabled`` tag with value
+        ``val``.
+
+        :param bool val:
+        :rtype: PaperAsFilesValue
+        """
+        return cls('enabled', val)
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_enabled(self):
+        """
+        When this value is true, the user's Paper docs are accessible in Dropbox
+        with the .paper extension and must be accessed via the /files endpoints.
+        When this value is false, the user's Paper docs are stored separate from
+        Dropbox files and folders and should be accessed via the /paper
+        endpoints.
+
+        Only call this if :meth:`is_enabled` is true.
+
+        :rtype: bool
+        """
+        if not self.is_enabled():
+            raise AttributeError("tag 'enabled' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperAsFilesValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PaperAsFilesValue(%r, %r)' % (self._tag, self._value)
+
+PaperAsFilesValue_validator = bv.Union(PaperAsFilesValue)
+
 class SpaceAllocation(bb.Union):
     """
     Space is allocated differently based on the type of account.
@@ -1510,6 +1647,9 @@ class TeamSpaceAllocation(bb.Struct):
     :ivar users.TeamSpaceAllocation.user_within_team_space_limit_type: The type
         of the space limit imposed on the team member (off, alert_only,
         stop_sync).
+    :ivar users.TeamSpaceAllocation.user_within_team_space_used_cached: An
+        accurate cached calculation of a team member's total space usage
+        (bytes).
     """
 
     __slots__ = [
@@ -1521,6 +1661,8 @@ class TeamSpaceAllocation(bb.Struct):
         '_user_within_team_space_allocated_present',
         '_user_within_team_space_limit_type_value',
         '_user_within_team_space_limit_type_present',
+        '_user_within_team_space_used_cached_value',
+        '_user_within_team_space_used_cached_present',
     ]
 
     _has_required_fields = True
@@ -1529,7 +1671,8 @@ class TeamSpaceAllocation(bb.Struct):
                  used=None,
                  allocated=None,
                  user_within_team_space_allocated=None,
-                 user_within_team_space_limit_type=None):
+                 user_within_team_space_limit_type=None,
+                 user_within_team_space_used_cached=None):
         self._used_value = None
         self._used_present = False
         self._allocated_value = None
@@ -1538,6 +1681,8 @@ class TeamSpaceAllocation(bb.Struct):
         self._user_within_team_space_allocated_present = False
         self._user_within_team_space_limit_type_value = None
         self._user_within_team_space_limit_type_present = False
+        self._user_within_team_space_used_cached_value = None
+        self._user_within_team_space_used_cached_present = False
         if used is not None:
             self.used = used
         if allocated is not None:
@@ -1546,6 +1691,8 @@ class TeamSpaceAllocation(bb.Struct):
             self.user_within_team_space_allocated = user_within_team_space_allocated
         if user_within_team_space_limit_type is not None:
             self.user_within_team_space_limit_type = user_within_team_space_limit_type
+        if user_within_team_space_used_cached is not None:
+            self.user_within_team_space_used_cached = user_within_team_space_used_cached
 
     @property
     def used(self):
@@ -1642,18 +1789,327 @@ class TeamSpaceAllocation(bb.Struct):
         self._user_within_team_space_limit_type_value = None
         self._user_within_team_space_limit_type_present = False
 
+    @property
+    def user_within_team_space_used_cached(self):
+        """
+        An accurate cached calculation of a team member's total space usage
+        (bytes).
+
+        :rtype: int
+        """
+        if self._user_within_team_space_used_cached_present:
+            return self._user_within_team_space_used_cached_value
+        else:
+            raise AttributeError("missing required field 'user_within_team_space_used_cached'")
+
+    @user_within_team_space_used_cached.setter
+    def user_within_team_space_used_cached(self, val):
+        val = self._user_within_team_space_used_cached_validator.validate(val)
+        self._user_within_team_space_used_cached_value = val
+        self._user_within_team_space_used_cached_present = True
+
+    @user_within_team_space_used_cached.deleter
+    def user_within_team_space_used_cached(self):
+        self._user_within_team_space_used_cached_value = None
+        self._user_within_team_space_used_cached_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamSpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'TeamSpaceAllocation(used={!r}, allocated={!r}, user_within_team_space_allocated={!r}, user_within_team_space_limit_type={!r})'.format(
+        return 'TeamSpaceAllocation(used={!r}, allocated={!r}, user_within_team_space_allocated={!r}, user_within_team_space_limit_type={!r}, user_within_team_space_used_cached={!r})'.format(
             self._used_value,
             self._allocated_value,
             self._user_within_team_space_allocated_value,
             self._user_within_team_space_limit_type_value,
+            self._user_within_team_space_used_cached_value,
         )
 
 TeamSpaceAllocation_validator = bv.Struct(TeamSpaceAllocation)
+
+class UserFeature(bb.Union):
+    """
+    A set of features that a Dropbox User account may have configured.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar users.UserFeature.paper_as_files: This feature contains information
+        about how the user's Paper files are stored.
+    :ivar users.UserFeature.file_locking: This feature allows users to lock
+        files in order to restrict other users from editing them.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    paper_as_files = None
+    # Attribute is overwritten below the class definition
+    file_locking = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_paper_as_files(self):
+        """
+        Check if the union tag is ``paper_as_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_as_files'
+
+    def is_file_locking(self):
+        """
+        Check if the union tag is ``file_locking``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_locking'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserFeature, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserFeature(%r, %r)' % (self._tag, self._value)
+
+UserFeature_validator = bv.Union(UserFeature)
+
+class UserFeatureValue(bb.Union):
+    """
+    Values that correspond to entries in :class:`UserFeature`.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def paper_as_files(cls, val):
+        """
+        Create an instance of this class set to the ``paper_as_files`` tag with
+        value ``val``.
+
+        :param PaperAsFilesValue val:
+        :rtype: UserFeatureValue
+        """
+        return cls('paper_as_files', val)
+
+    @classmethod
+    def file_locking(cls, val):
+        """
+        Create an instance of this class set to the ``file_locking`` tag with
+        value ``val``.
+
+        :param FileLockingValue val:
+        :rtype: UserFeatureValue
+        """
+        return cls('file_locking', val)
+
+    def is_paper_as_files(self):
+        """
+        Check if the union tag is ``paper_as_files``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_as_files'
+
+    def is_file_locking(self):
+        """
+        Check if the union tag is ``file_locking``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_locking'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_paper_as_files(self):
+        """
+        Only call this if :meth:`is_paper_as_files` is true.
+
+        :rtype: PaperAsFilesValue
+        """
+        if not self.is_paper_as_files():
+            raise AttributeError("tag 'paper_as_files' not set")
+        return self._value
+
+    def get_file_locking(self):
+        """
+        Only call this if :meth:`is_file_locking` is true.
+
+        :rtype: FileLockingValue
+        """
+        if not self.is_file_locking():
+            raise AttributeError("tag 'file_locking' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserFeatureValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserFeatureValue(%r, %r)' % (self._tag, self._value)
+
+UserFeatureValue_validator = bv.Union(UserFeatureValue)
+
+class UserFeaturesGetValuesBatchArg(bb.Struct):
+    """
+    :ivar users.UserFeaturesGetValuesBatchArg.features: A list of features in
+        :class:`UserFeature`. If the list is empty, this route will return
+        :class:`UserFeaturesGetValuesBatchError`.
+    """
+
+    __slots__ = [
+        '_features_value',
+        '_features_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 features=None):
+        self._features_value = None
+        self._features_present = False
+        if features is not None:
+            self.features = features
+
+    @property
+    def features(self):
+        """
+        A list of features in :class:`UserFeature`. If the list is empty, this
+        route will return :class:`UserFeaturesGetValuesBatchError`.
+
+        :rtype: list of [UserFeature]
+        """
+        if self._features_present:
+            return self._features_value
+        else:
+            raise AttributeError("missing required field 'features'")
+
+    @features.setter
+    def features(self, val):
+        val = self._features_validator.validate(val)
+        self._features_value = val
+        self._features_present = True
+
+    @features.deleter
+    def features(self):
+        self._features_value = None
+        self._features_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserFeaturesGetValuesBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserFeaturesGetValuesBatchArg(features={!r})'.format(
+            self._features_value,
+        )
+
+UserFeaturesGetValuesBatchArg_validator = bv.Struct(UserFeaturesGetValuesBatchArg)
+
+class UserFeaturesGetValuesBatchError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar users.UserFeaturesGetValuesBatchError.empty_features_list: At least
+        one :class:`UserFeature` must be included in the
+        :class:`UserFeaturesGetValuesBatchArg`.features list.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    empty_features_list = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_empty_features_list(self):
+        """
+        Check if the union tag is ``empty_features_list``.
+
+        :rtype: bool
+        """
+        return self._tag == 'empty_features_list'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserFeaturesGetValuesBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserFeaturesGetValuesBatchError(%r, %r)' % (self._tag, self._value)
+
+UserFeaturesGetValuesBatchError_validator = bv.Union(UserFeaturesGetValuesBatchError)
+
+class UserFeaturesGetValuesBatchResult(bb.Struct):
+
+    __slots__ = [
+        '_values_value',
+        '_values_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 values=None):
+        self._values_value = None
+        self._values_present = False
+        if values is not None:
+            self.values = values
+
+    @property
+    def values(self):
+        """
+        :rtype: list of [UserFeatureValue]
+        """
+        if self._values_present:
+            return self._values_value
+        else:
+            raise AttributeError("missing required field 'values'")
+
+    @values.setter
+    def values(self, val):
+        val = self._values_validator.validate(val)
+        self._values_value = val
+        self._values_present = True
+
+    @values.deleter
+    def values(self):
+        self._values_value = None
+        self._values_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserFeaturesGetValuesBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserFeaturesGetValuesBatchResult(values={!r})'.format(
+            self._values_value,
+        )
+
+UserFeaturesGetValuesBatchResult_validator = bv.Struct(UserFeaturesGetValuesBatchResult)
 
 GetAccountBatchResult_validator = bv.List(BasicAccount_validator)
 Account._account_id_validator = users_common.AccountId_validator
@@ -1689,6 +2145,15 @@ BasicAccount._all_fields_ = Account._all_fields_ + [
     ('is_teammate', BasicAccount._is_teammate_validator),
     ('team_member_id', BasicAccount._team_member_id_validator),
 ]
+
+FileLockingValue._enabled_validator = bv.Boolean()
+FileLockingValue._other_validator = bv.Void()
+FileLockingValue._tagmap = {
+    'enabled': FileLockingValue._enabled_validator,
+    'other': FileLockingValue._other_validator,
+}
+
+FileLockingValue.other = FileLockingValue('other')
 
 FullAccount._country_validator = bv.Nullable(bv.String(min_length=2, max_length=2))
 FullAccount._locale_validator = bv.String(min_length=2)
@@ -1792,6 +2257,15 @@ Name._all_fields_ = [
     ('abbreviated_name', Name._abbreviated_name_validator),
 ]
 
+PaperAsFilesValue._enabled_validator = bv.Boolean()
+PaperAsFilesValue._other_validator = bv.Void()
+PaperAsFilesValue._tagmap = {
+    'enabled': PaperAsFilesValue._enabled_validator,
+    'other': PaperAsFilesValue._other_validator,
+}
+
+PaperAsFilesValue.other = PaperAsFilesValue('other')
+
 SpaceAllocation._individual_validator = IndividualSpaceAllocation_validator
 SpaceAllocation._team_validator = TeamSpaceAllocation_validator
 SpaceAllocation._other_validator = bv.Void()
@@ -1818,19 +2292,74 @@ TeamSpaceAllocation._used_validator = bv.UInt64()
 TeamSpaceAllocation._allocated_validator = bv.UInt64()
 TeamSpaceAllocation._user_within_team_space_allocated_validator = bv.UInt64()
 TeamSpaceAllocation._user_within_team_space_limit_type_validator = team_common.MemberSpaceLimitType_validator
+TeamSpaceAllocation._user_within_team_space_used_cached_validator = bv.UInt64()
 TeamSpaceAllocation._all_field_names_ = set([
     'used',
     'allocated',
     'user_within_team_space_allocated',
     'user_within_team_space_limit_type',
+    'user_within_team_space_used_cached',
 ])
 TeamSpaceAllocation._all_fields_ = [
     ('used', TeamSpaceAllocation._used_validator),
     ('allocated', TeamSpaceAllocation._allocated_validator),
     ('user_within_team_space_allocated', TeamSpaceAllocation._user_within_team_space_allocated_validator),
     ('user_within_team_space_limit_type', TeamSpaceAllocation._user_within_team_space_limit_type_validator),
+    ('user_within_team_space_used_cached', TeamSpaceAllocation._user_within_team_space_used_cached_validator),
 ]
 
+UserFeature._paper_as_files_validator = bv.Void()
+UserFeature._file_locking_validator = bv.Void()
+UserFeature._other_validator = bv.Void()
+UserFeature._tagmap = {
+    'paper_as_files': UserFeature._paper_as_files_validator,
+    'file_locking': UserFeature._file_locking_validator,
+    'other': UserFeature._other_validator,
+}
+
+UserFeature.paper_as_files = UserFeature('paper_as_files')
+UserFeature.file_locking = UserFeature('file_locking')
+UserFeature.other = UserFeature('other')
+
+UserFeatureValue._paper_as_files_validator = PaperAsFilesValue_validator
+UserFeatureValue._file_locking_validator = FileLockingValue_validator
+UserFeatureValue._other_validator = bv.Void()
+UserFeatureValue._tagmap = {
+    'paper_as_files': UserFeatureValue._paper_as_files_validator,
+    'file_locking': UserFeatureValue._file_locking_validator,
+    'other': UserFeatureValue._other_validator,
+}
+
+UserFeatureValue.other = UserFeatureValue('other')
+
+UserFeaturesGetValuesBatchArg._features_validator = bv.List(UserFeature_validator)
+UserFeaturesGetValuesBatchArg._all_field_names_ = set(['features'])
+UserFeaturesGetValuesBatchArg._all_fields_ = [('features', UserFeaturesGetValuesBatchArg._features_validator)]
+
+UserFeaturesGetValuesBatchError._empty_features_list_validator = bv.Void()
+UserFeaturesGetValuesBatchError._other_validator = bv.Void()
+UserFeaturesGetValuesBatchError._tagmap = {
+    'empty_features_list': UserFeaturesGetValuesBatchError._empty_features_list_validator,
+    'other': UserFeaturesGetValuesBatchError._other_validator,
+}
+
+UserFeaturesGetValuesBatchError.empty_features_list = UserFeaturesGetValuesBatchError('empty_features_list')
+UserFeaturesGetValuesBatchError.other = UserFeaturesGetValuesBatchError('other')
+
+UserFeaturesGetValuesBatchResult._values_validator = bv.List(UserFeatureValue_validator)
+UserFeaturesGetValuesBatchResult._all_field_names_ = set(['values'])
+UserFeaturesGetValuesBatchResult._all_fields_ = [('values', UserFeaturesGetValuesBatchResult._values_validator)]
+
+features_get_values = bb.Route(
+    'features/get_values',
+    1,
+    False,
+    UserFeaturesGetValuesBatchArg_validator,
+    UserFeaturesGetValuesBatchResult_validator,
+    UserFeaturesGetValuesBatchError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 get_account = bb.Route(
     'get_account',
     1,
@@ -1873,6 +2402,7 @@ get_space_usage = bb.Route(
 )
 
 ROUTES = {
+    'features/get_values': features_get_values,
     'get_account': get_account,
     'get_account_batch': get_account_batch,
     'get_current_account': get_current_account,

@@ -7,14 +7,17 @@ from abc import ABCMeta, abstractmethod
 import warnings
 
 from . import (
+    account,
     async_,
     auth,
+    check,
     common,
     contacts,
     file_properties,
     file_requests,
     files,
     paper,
+    secondary_emails,
     seen_state,
     sharing,
     team,
@@ -34,7 +37,13 @@ class DropboxTeamBase(object):
         pass
 
     # ------------------------------------------
+    # Routes in account namespace
+
+    # ------------------------------------------
     # Routes in auth namespace
+
+    # ------------------------------------------
+    # Routes in check namespace
 
     # ------------------------------------------
     # Routes in contacts namespace
@@ -386,6 +395,7 @@ class DropboxTeamBase(object):
 
     def team_groups_create(self,
                            group_name,
+                           add_creator_as_owner=False,
                            group_external_id=None,
                            group_management_type=None):
         """
@@ -393,6 +403,8 @@ class DropboxTeamBase(object):
         member management.
 
         :param str group_name: Group name.
+        :param bool add_creator_as_owner: Automatically add the creator of the
+            group.
         :param Nullable group_external_id: The creator of a team can associate
             an arbitrary external ID to the group.
         :param Nullable group_management_type: Whether the team can be managed
@@ -404,6 +416,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.GroupCreateError`
         """
         arg = team.GroupCreateArg(group_name,
+                                  add_creator_as_owner,
                                   group_external_id,
                                   group_management_type)
         r = self.request(
@@ -705,6 +718,234 @@ class DropboxTeamBase(object):
                                    new_group_management_type)
         r = self.request(
             team.groups_update,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_create_policy(self,
+                                       name,
+                                       members,
+                                       description=None,
+                                       start_date=None,
+                                       end_date=None):
+        """
+        Creates new legal hold policy. Permission : Team member file access.
+
+        :param str name: Policy name.
+        :param Nullable description: A description of the legal hold policy.
+        :param list members: List of team members added to the hold.
+        :param Nullable start_date: start date of the legal hold policy.
+        :param Nullable end_date: end date of the legal hold policy.
+        :rtype: :class:`dropbox.team.LegalHoldPolicy`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsPolicyCreateError`
+        """
+        arg = team.LegalHoldsPolicyCreateArg(name,
+                                             members,
+                                             description,
+                                             start_date,
+                                             end_date)
+        r = self.request(
+            team.legal_holds_create_policy,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_export_policy(self,
+                                       id,
+                                       path):
+        """
+        Export everything for a single hold to a Dropbox file path. Permission :
+        Team member file access.
+
+        :param str id: The legal hold Id.
+        :param str path: The selected destination path in the team's Dropbox for
+            the export. The path must be a namespace path (see example) of a
+            namespace that's accessible to the application. To get the list of
+            accessible namespaces use the route :meth:`team_namespaces_list`.
+        :rtype: :class:`dropbox.team.LegalHoldsExportPolicyResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsExportPolicyError`
+        """
+        warnings.warn(
+            'legal_holds/export_policy is deprecated.',
+            DeprecationWarning,
+        )
+        arg = team.LegalHoldsPolicyExportArg(id,
+                                             path)
+        r = self.request(
+            team.legal_holds_export_policy,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_export_policy_job_status_check(self,
+                                                        async_job_id):
+        """
+        Returns the status of an asynchronous job for
+        :meth:`team_legal_holds_export_policy_job_status_check`. Permission :
+        Team member file access.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.team.ExportPolicyJobStatusResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.PollError`
+        """
+        warnings.warn(
+            'legal_holds/export_policy_job_status/check is deprecated.',
+            DeprecationWarning,
+        )
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            team.legal_holds_export_policy_job_status_check,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_get_policy(self,
+                                    id):
+        """
+        Gets a legal hold by Id. Permission : Team member file access.
+
+        :param str id: The legal hold Id.
+        :rtype: :class:`dropbox.team.LegalHoldPolicy`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsGetPolicyError`
+        """
+        arg = team.LegalHoldsGetPolicyArg(id)
+        r = self.request(
+            team.legal_holds_get_policy,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_list_held_revisions(self,
+                                             id):
+        """
+        :param str id: The legal hold Id.
+        :rtype: :class:`dropbox.team.LegalHoldsListHeldRevisionResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsListHeldRevisionsError`
+        """
+        arg = team.LegalHoldsListHeldRevisionsArg(id)
+        r = self.request(
+            team.legal_holds_list_held_revisions,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_list_held_revisions_continue(self,
+                                                      id,
+                                                      cursor=None):
+        """
+        :param str id: The legal hold Id.
+        :param Nullable cursor: cursor of list held revisions.
+        :rtype: :class:`dropbox.team.LegalHoldsListHeldRevisionResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsListHeldRevisionsError`
+        """
+        arg = team.LegalHoldsListHeldRevisionsContinueArg(id,
+                                                          cursor)
+        r = self.request(
+            team.legal_holds_list_held_revisions_continue,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_list_policies(self,
+                                       include_released=False):
+        """
+        Lists legal holds on a team. Permission : Team member file access.
+
+        :param bool include_released: Whether to return holds that were
+            released.
+        :rtype: :class:`dropbox.team.LegalHoldsListPoliciesResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsListPoliciesError`
+        """
+        arg = team.LegalHoldsListPoliciesArg(include_released)
+        r = self.request(
+            team.legal_holds_list_policies,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_release_policy(self,
+                                        id):
+        """
+        Releases a legal hold by Id. Permission : Team member file access.
+
+        :param str id: The legal hold Id.
+        :rtype: None
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsPolicyReleaseError`
+        """
+        arg = team.LegalHoldsPolicyReleaseArg(id)
+        r = self.request(
+            team.legal_holds_release_policy,
+            'team',
+            arg,
+            None,
+        )
+        return None
+
+    def team_legal_holds_update_policy(self,
+                                       id,
+                                       members,
+                                       name=None,
+                                       description=None):
+        """
+        Updates a legal hold. Permission : Team member file access.
+
+        :param str id: The legal hold Id.
+        :param Nullable name: Policy new name.
+        :param Nullable description: Policy new description.
+        :param list members: List of team members to apply the policy on.
+        :rtype: :class:`dropbox.team.LegalHoldPolicy`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsPolicyUpdateError`
+        """
+        arg = team.LegalHoldsPolicyUpdateArg(id,
+                                             members,
+                                             name,
+                                             description)
+        r = self.request(
+            team.legal_holds_update_policy,
             'team',
             arg,
             None,
@@ -1045,6 +1286,29 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_delete_profile_photo(self,
+                                          user):
+        """
+        Deletes a team member's profile photo. Permission : Team member
+        management.
+
+        :param user: Identity of the user whose profile photo will be deleted.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :rtype: :class:`dropbox.team.TeamMemberInfo`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersDeleteProfilePhotoError`
+        """
+        arg = team.MembersDeleteProfilePhotoArg(user)
+        r = self.request(
+            team.members_delete_profile_photo,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_get_info(self,
                               members):
         """
@@ -1204,7 +1468,8 @@ class DropboxTeamBase(object):
                             wipe_data=True,
                             transfer_dest_id=None,
                             transfer_admin_id=None,
-                            keep_account=False):
+                            keep_account=False,
+                            retain_team_shares=False):
         """
         Removes a member from a team. Permission : Team member management
         Exactly one of team_member_id, email, or external_id must be provided to
@@ -1215,7 +1480,7 @@ class DropboxTeamBase(object):
         recoverable on your team will return with
         ``MemberAddResult.user_already_on_team``. Accounts can have their files
         transferred via the admin console for a limited time, based on the
-        version history length associated with the team (120 days for most
+        version history length associated with the team (180 days for most
         teams). This endpoint may initiate an asynchronous job. To obtain the
         final result of the job, the client should periodically poll
         :meth:`team_members_remove_job_status_get`.
@@ -1229,8 +1494,15 @@ class DropboxTeamBase(object):
         :param bool keep_account: Downgrade the member to a Basic account. The
             user will retain the email address associated with their Dropbox
             account and data in their account that is not restricted to team
-            members. In order to keep the account the argument wipe_data should
-            be set to False.
+            members. In order to keep the account the argument ``wipe_data``
+            should be set to ``False``.
+        :param bool retain_team_shares: If provided, allows removed users to
+            keep access to folders already explicitly shared with them (not via
+            a group) when they are downgraded to a Basic account. Users will not
+            retain access to folders that do not allow external sharing. In
+            order to keep the sharing relationships, the arguments ``wipe_data``
+            should be set to ``False`` and ``keep_account`` should be set to
+            ``True``.
         :rtype: :class:`dropbox.team.LaunchEmptyResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1241,7 +1513,8 @@ class DropboxTeamBase(object):
                                     wipe_data,
                                     transfer_dest_id,
                                     transfer_admin_id,
-                                    keep_account)
+                                    keep_account,
+                                    retain_team_shares)
         r = self.request(
             team.members_remove,
             'team',
@@ -1268,6 +1541,70 @@ class DropboxTeamBase(object):
         arg = async_.PollArg(async_job_id)
         r = self.request(
             team.members_remove_job_status_get,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_secondary_emails_add(self,
+                                          new_secondary_emails):
+        """
+        Add secondary emails to users. Permission : Team member management.
+        Emails that are on verified domains will be verified automatically. For
+        each email address not on a verified domain a verification email will be
+        sent.
+
+        :param list new_secondary_emails: List of users and secondary emails to
+            add.
+        :rtype: :class:`dropbox.team.AddSecondaryEmailsResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.AddSecondaryEmailsError`
+        """
+        arg = team.AddSecondaryEmailsArg(new_secondary_emails)
+        r = self.request(
+            team.members_secondary_emails_add,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_secondary_emails_delete(self,
+                                             emails_to_delete):
+        """
+        Delete secondary emails from users Permission : Team member management.
+        Users will be notified of deletions of verified secondary emails at both
+        the secondary email and their primary email.
+
+        :param list emails_to_delete: List of users and their secondary emails
+            to delete.
+        :rtype: :class:`dropbox.team.DeleteSecondaryEmailsResult`
+        """
+        arg = team.DeleteSecondaryEmailsArg(emails_to_delete)
+        r = self.request(
+            team.members_secondary_emails_delete,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_secondary_emails_resend_verification_emails(self,
+                                                                 emails_to_resend):
+        """
+        Resend secondary email verification emails. Permission : Team member
+        management.
+
+        :param list emails_to_resend: List of users and secondary emails to
+            resend verification emails to.
+        :rtype: :class:`dropbox.team.ResendVerificationEmailResult`
+        """
+        arg = team.ResendVerificationEmailArg(emails_to_resend)
+        r = self.request(
+            team.members_secondary_emails_resend_verification_emails,
             'team',
             arg,
             None,
@@ -1362,6 +1699,33 @@ class DropboxTeamBase(object):
                                         new_is_directory_restricted)
         r = self.request(
             team.members_set_profile,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_set_profile_photo(self,
+                                       user,
+                                       photo):
+        """
+        Updates a team member's profile photo. Permission : Team member
+        management.
+
+        :param user: Identity of the user whose profile photo will be set.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :param photo: Image to set as the member's new profile photo.
+        :type photo: :class:`dropbox.team.PhotoSourceArg`
+        :rtype: :class:`dropbox.team.TeamMemberInfo`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSetProfilePhotoError`
+        """
+        arg = team.MembersSetProfilePhotoArg(user,
+                                             photo)
+        r = self.request(
+            team.members_set_profile_photo,
             'team',
             arg,
             None,
@@ -1592,7 +1956,9 @@ class DropboxTeamBase(object):
         """
         Retrieves reporting data about a team's user activity.
 
-        :param Nullable start_date: Optional starting date (inclusive).
+        :param Nullable start_date: Optional starting date (inclusive). If
+            start_date is None or too long ago, this field will  be set to 6
+            months ago.
         :param Nullable end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetActivityReport`
         :raises: :class:`.exceptions.ApiError`
@@ -1616,7 +1982,9 @@ class DropboxTeamBase(object):
         """
         Retrieves reporting data about a team's linked devices.
 
-        :param Nullable start_date: Optional starting date (inclusive).
+        :param Nullable start_date: Optional starting date (inclusive). If
+            start_date is None or too long ago, this field will  be set to 6
+            months ago.
         :param Nullable end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetDevicesReport`
         :raises: :class:`.exceptions.ApiError`
@@ -1640,7 +2008,9 @@ class DropboxTeamBase(object):
         """
         Retrieves reporting data about a team's membership.
 
-        :param Nullable start_date: Optional starting date (inclusive).
+        :param Nullable start_date: Optional starting date (inclusive). If
+            start_date is None or too long ago, this field will  be set to 6
+            months ago.
         :param Nullable end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetMembershipReport`
         :raises: :class:`.exceptions.ApiError`
@@ -1664,7 +2034,9 @@ class DropboxTeamBase(object):
         """
         Retrieves reporting data about a team's storage usage.
 
-        :param Nullable start_date: Optional starting date (inclusive).
+        :param Nullable start_date: Optional starting date (inclusive). If
+            start_date is None or too long ago, this field will  be set to 6
+            months ago.
         :param Nullable end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetStorageReport`
         :raises: :class:`.exceptions.ApiError`
@@ -1934,11 +2306,10 @@ class DropboxTeamBase(object):
                             time=None,
                             category=None):
         """
-        Retrieves team events. Events have a lifespan of two years. Events older
-        than two years will not be returned. Many attributes note 'may be
-        missing due to historical data gap'. Note that the file_operations
-        category and & analogous paper events are not available on all Dropbox
-        Business `plans </business/plans-comparison>`_. Use `features/get_values
+        Retrieves team events. Many attributes note 'may be missing due to
+        historical data gap'. Note that the file_operations category and &
+        analogous paper events are not available on all Dropbox Business `plans
+        </business/plans-comparison>`_. Use `features/get_values
         </developers/documentation/http/teams#team-features-get_values>`_ to
         check for this feature. Permission : Team Auditing.
 

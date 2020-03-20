@@ -5,6 +5,7 @@
 # pylint: skip-file
 """
 This namespace contains endpoints and data types for managing docs and folders in Dropbox Paper.
+New Paper users will see docs they create in their filesystem as '.paper' files alongside their other Dropbox content. The /paper endpoints are being deprecated and you'll need to use /files and /sharing endpoints to interact with their Paper content. Read more in the :link:`Paper Migration Guide https://www.dropbox.com/lp/developers/reference/paper-migration-guide`.
 """
 
 try:
@@ -609,7 +610,10 @@ class PaperApiBaseError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar paper.PaperApiBaseError.insufficient_permissions: Your account does
-        not have permissions to perform this action.
+        not have permissions to perform this action. This may be due to it only
+        having access to Paper as files in the Dropbox filesystem. For more
+        information, refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_.
     """
 
     _catch_all = 'other'
@@ -879,8 +883,8 @@ Folder_validator = bv.Struct(Folder)
 
 class FolderSharingPolicyType(bb.Union):
     """
-    The sharing policy of a Paper folder.  Note: The sharing policy of
-    subfolders is inherited from the root folder.
+    The sharing policy of a Paper folder. The sharing policy of subfolders is
+    inherited from the root folder.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -1095,11 +1099,11 @@ class ImportFormat(bb.Union):
     :ivar paper.ImportFormat.html: The provided data is interpreted as standard
         HTML.
     :ivar paper.ImportFormat.markdown: The provided data is interpreted as
-        markdown. Note: The first line of the provided document will be used as
-        the doc title.
+        markdown. The first line of the provided document will be used as the
+        doc title.
     :ivar paper.ImportFormat.plain_text: The provided data is interpreted as
-        plain text. Note: The first line of the provided document will be used
-        as the doc title.
+        plain text. The first line of the provided document will be used as the
+        doc title.
     """
 
     _catch_all = 'other'
@@ -2690,8 +2694,8 @@ class PaperDocCreateError(PaperApiBaseError):
     :ivar paper.PaperDocCreateError.doc_length_exceeded: The newly created Paper
         doc would be too large. Please split the content into multiple docs.
     :ivar paper.PaperDocCreateError.image_size_exceeded: The imported document
-        contains an image that is too large. The current limit is 1MB. Note:
-        This only applies to HTML with data uri.
+        contains an image that is too large. The current limit is 1MB. This only
+        applies to HTML with data URI.
     """
 
     # Attribute is overwritten below the class definition
@@ -3306,8 +3310,8 @@ class PaperDocUpdateError(DocLookupError):
     :ivar paper.PaperDocUpdateError.doc_length_exceeded: The newly created Paper
         doc would be too large, split the content into multiple docs.
     :ivar paper.PaperDocUpdateError.image_size_exceeded: The imported document
-        contains an image that is too large. The current limit is 1MB. Note:
-        This only applies to HTML with data uri.
+        contains an image that is too large. The current limit is 1MB. This only
+        applies to HTML with data URI.
     :ivar paper.PaperDocUpdateError.doc_archived: This operation is not allowed
         on archived Paper docs.
     :ivar paper.PaperDocUpdateError.doc_deleted: This operation is not allowed
@@ -3392,7 +3396,7 @@ class PaperDocUpdatePolicy(bb.Union):
     :ivar paper.PaperDocUpdatePolicy.append: The content will be appended to the
         doc.
     :ivar paper.PaperDocUpdatePolicy.prepend: The content will be prepended to
-        the doc. Note: the doc title will not be affected.
+        the doc. The doc title will not be affected.
     :ivar paper.PaperDocUpdatePolicy.overwrite_all: The document will be
         overwitten at the head with the provided content.
     """
@@ -3446,6 +3450,236 @@ class PaperDocUpdatePolicy(bb.Union):
         return 'PaperDocUpdatePolicy(%r, %r)' % (self._tag, self._value)
 
 PaperDocUpdatePolicy_validator = bv.Union(PaperDocUpdatePolicy)
+
+class PaperFolderCreateArg(bb.Struct):
+    """
+    :ivar paper.PaperFolderCreateArg.name: The name of the new Paper folder.
+    :ivar paper.PaperFolderCreateArg.parent_folder_id: The encrypted Paper
+        folder Id where the new Paper folder should be created. The API user has
+        to have write access to this folder or error is thrown. If not supplied,
+        the new folder will be created at top level.
+    :ivar paper.PaperFolderCreateArg.is_team_folder: Whether the folder to be
+        created should be a team folder. This value will be ignored if
+        parent_folder_id is supplied, as the new folder will inherit the type
+        (private or team folder) from its parent. We will by default create a
+        top-level private folder if both parent_folder_id and is_team_folder are
+        not supplied.
+    """
+
+    __slots__ = [
+        '_name_value',
+        '_name_present',
+        '_parent_folder_id_value',
+        '_parent_folder_id_present',
+        '_is_team_folder_value',
+        '_is_team_folder_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 name=None,
+                 parent_folder_id=None,
+                 is_team_folder=None):
+        self._name_value = None
+        self._name_present = False
+        self._parent_folder_id_value = None
+        self._parent_folder_id_present = False
+        self._is_team_folder_value = None
+        self._is_team_folder_present = False
+        if name is not None:
+            self.name = name
+        if parent_folder_id is not None:
+            self.parent_folder_id = parent_folder_id
+        if is_team_folder is not None:
+            self.is_team_folder = is_team_folder
+
+    @property
+    def name(self):
+        """
+        The name of the new Paper folder.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def parent_folder_id(self):
+        """
+        The encrypted Paper folder Id where the new Paper folder should be
+        created. The API user has to have write access to this folder or error
+        is thrown. If not supplied, the new folder will be created at top level.
+
+        :rtype: str
+        """
+        if self._parent_folder_id_present:
+            return self._parent_folder_id_value
+        else:
+            return None
+
+    @parent_folder_id.setter
+    def parent_folder_id(self, val):
+        if val is None:
+            del self.parent_folder_id
+            return
+        val = self._parent_folder_id_validator.validate(val)
+        self._parent_folder_id_value = val
+        self._parent_folder_id_present = True
+
+    @parent_folder_id.deleter
+    def parent_folder_id(self):
+        self._parent_folder_id_value = None
+        self._parent_folder_id_present = False
+
+    @property
+    def is_team_folder(self):
+        """
+        Whether the folder to be created should be a team folder. This value
+        will be ignored if parent_folder_id is supplied, as the new folder will
+        inherit the type (private or team folder) from its parent. We will by
+        default create a top-level private folder if both parent_folder_id and
+        is_team_folder are not supplied.
+
+        :rtype: bool
+        """
+        if self._is_team_folder_present:
+            return self._is_team_folder_value
+        else:
+            return None
+
+    @is_team_folder.setter
+    def is_team_folder(self, val):
+        if val is None:
+            del self.is_team_folder
+            return
+        val = self._is_team_folder_validator.validate(val)
+        self._is_team_folder_value = val
+        self._is_team_folder_present = True
+
+    @is_team_folder.deleter
+    def is_team_folder(self):
+        self._is_team_folder_value = None
+        self._is_team_folder_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperFolderCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PaperFolderCreateArg(name={!r}, parent_folder_id={!r}, is_team_folder={!r})'.format(
+            self._name_value,
+            self._parent_folder_id_value,
+            self._is_team_folder_value,
+        )
+
+PaperFolderCreateArg_validator = bv.Struct(PaperFolderCreateArg)
+
+class PaperFolderCreateError(PaperApiBaseError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar paper.PaperFolderCreateError.folder_not_found: The specified parent
+        Paper folder cannot be found.
+    :ivar paper.PaperFolderCreateError.invalid_folder_id: The folder id cannot
+        be decrypted to valid folder id.
+    """
+
+    # Attribute is overwritten below the class definition
+    folder_not_found = None
+    # Attribute is overwritten below the class definition
+    invalid_folder_id = None
+
+    def is_folder_not_found(self):
+        """
+        Check if the union tag is ``folder_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_not_found'
+
+    def is_invalid_folder_id(self):
+        """
+        Check if the union tag is ``invalid_folder_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_folder_id'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperFolderCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PaperFolderCreateError(%r, %r)' % (self._tag, self._value)
+
+PaperFolderCreateError_validator = bv.Union(PaperFolderCreateError)
+
+class PaperFolderCreateResult(bb.Struct):
+    """
+    :ivar paper.PaperFolderCreateResult.folder_id: Folder ID of the newly
+        created folder.
+    """
+
+    __slots__ = [
+        '_folder_id_value',
+        '_folder_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 folder_id=None):
+        self._folder_id_value = None
+        self._folder_id_present = False
+        if folder_id is not None:
+            self.folder_id = folder_id
+
+    @property
+    def folder_id(self):
+        """
+        Folder ID of the newly created folder.
+
+        :rtype: str
+        """
+        if self._folder_id_present:
+            return self._folder_id_value
+        else:
+            raise AttributeError("missing required field 'folder_id'")
+
+    @folder_id.setter
+    def folder_id(self, val):
+        val = self._folder_id_validator.validate(val)
+        self._folder_id_value = val
+        self._folder_id_present = True
+
+    @folder_id.deleter
+    def folder_id(self):
+        self._folder_id_value = None
+        self._folder_id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperFolderCreateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PaperFolderCreateResult(folder_id={!r})'.format(
+            self._folder_id_value,
+        )
+
+PaperFolderCreateResult_validator = bv.Struct(PaperFolderCreateResult)
 
 class RemovePaperDocUser(RefPaperDoc):
     """
@@ -4333,6 +4567,35 @@ PaperDocUpdatePolicy.prepend = PaperDocUpdatePolicy('prepend')
 PaperDocUpdatePolicy.overwrite_all = PaperDocUpdatePolicy('overwrite_all')
 PaperDocUpdatePolicy.other = PaperDocUpdatePolicy('other')
 
+PaperFolderCreateArg._name_validator = bv.String()
+PaperFolderCreateArg._parent_folder_id_validator = bv.Nullable(bv.String())
+PaperFolderCreateArg._is_team_folder_validator = bv.Nullable(bv.Boolean())
+PaperFolderCreateArg._all_field_names_ = set([
+    'name',
+    'parent_folder_id',
+    'is_team_folder',
+])
+PaperFolderCreateArg._all_fields_ = [
+    ('name', PaperFolderCreateArg._name_validator),
+    ('parent_folder_id', PaperFolderCreateArg._parent_folder_id_validator),
+    ('is_team_folder', PaperFolderCreateArg._is_team_folder_validator),
+]
+
+PaperFolderCreateError._folder_not_found_validator = bv.Void()
+PaperFolderCreateError._invalid_folder_id_validator = bv.Void()
+PaperFolderCreateError._tagmap = {
+    'folder_not_found': PaperFolderCreateError._folder_not_found_validator,
+    'invalid_folder_id': PaperFolderCreateError._invalid_folder_id_validator,
+}
+PaperFolderCreateError._tagmap.update(PaperApiBaseError._tagmap)
+
+PaperFolderCreateError.folder_not_found = PaperFolderCreateError('folder_not_found')
+PaperFolderCreateError.invalid_folder_id = PaperFolderCreateError('invalid_folder_id')
+
+PaperFolderCreateResult._folder_id_validator = bv.String()
+PaperFolderCreateResult._all_field_names_ = set(['folder_id'])
+PaperFolderCreateResult._all_fields_ = [('folder_id', PaperFolderCreateResult._folder_id_validator)]
+
 RemovePaperDocUser._member_validator = sharing.MemberSelector_validator
 RemovePaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['member']))
 RemovePaperDocUser._all_fields_ = RefPaperDoc._all_fields_ + [('member', RemovePaperDocUser._member_validator)]
@@ -4396,7 +4659,7 @@ UserOnPaperDocFilter.other = UserOnPaperDocFilter('other')
 docs_archive = bb.Route(
     'docs/archive',
     1,
-    False,
+    True,
     RefPaperDoc_validator,
     bv.Void(),
     DocLookupError_validator,
@@ -4406,7 +4669,7 @@ docs_archive = bb.Route(
 docs_create = bb.Route(
     'docs/create',
     1,
-    False,
+    True,
     PaperDocCreateArgs_validator,
     PaperDocCreateUpdateResult_validator,
     PaperDocCreateError_validator,
@@ -4416,7 +4679,7 @@ docs_create = bb.Route(
 docs_download = bb.Route(
     'docs/download',
     1,
-    False,
+    True,
     PaperDocExport_validator,
     PaperDocExportResult_validator,
     DocLookupError_validator,
@@ -4426,7 +4689,7 @@ docs_download = bb.Route(
 docs_folder_users_list = bb.Route(
     'docs/folder_users/list',
     1,
-    False,
+    True,
     ListUsersOnFolderArgs_validator,
     ListUsersOnFolderResponse_validator,
     DocLookupError_validator,
@@ -4436,7 +4699,7 @@ docs_folder_users_list = bb.Route(
 docs_folder_users_list_continue = bb.Route(
     'docs/folder_users/list/continue',
     1,
-    False,
+    True,
     ListUsersOnFolderContinueArgs_validator,
     ListUsersOnFolderResponse_validator,
     ListUsersCursorError_validator,
@@ -4446,7 +4709,7 @@ docs_folder_users_list_continue = bb.Route(
 docs_get_folder_info = bb.Route(
     'docs/get_folder_info',
     1,
-    False,
+    True,
     RefPaperDoc_validator,
     FoldersContainingPaperDoc_validator,
     DocLookupError_validator,
@@ -4456,7 +4719,7 @@ docs_get_folder_info = bb.Route(
 docs_list = bb.Route(
     'docs/list',
     1,
-    False,
+    True,
     ListPaperDocsArgs_validator,
     ListPaperDocsResponse_validator,
     bv.Void(),
@@ -4466,7 +4729,7 @@ docs_list = bb.Route(
 docs_list_continue = bb.Route(
     'docs/list/continue',
     1,
-    False,
+    True,
     ListPaperDocsContinueArgs_validator,
     ListPaperDocsResponse_validator,
     ListDocsCursorError_validator,
@@ -4476,7 +4739,7 @@ docs_list_continue = bb.Route(
 docs_permanently_delete = bb.Route(
     'docs/permanently_delete',
     1,
-    False,
+    True,
     RefPaperDoc_validator,
     bv.Void(),
     DocLookupError_validator,
@@ -4486,7 +4749,7 @@ docs_permanently_delete = bb.Route(
 docs_sharing_policy_get = bb.Route(
     'docs/sharing_policy/get',
     1,
-    False,
+    True,
     RefPaperDoc_validator,
     SharingPolicy_validator,
     DocLookupError_validator,
@@ -4496,7 +4759,7 @@ docs_sharing_policy_get = bb.Route(
 docs_sharing_policy_set = bb.Route(
     'docs/sharing_policy/set',
     1,
-    False,
+    True,
     PaperDocSharingPolicy_validator,
     bv.Void(),
     DocLookupError_validator,
@@ -4506,7 +4769,7 @@ docs_sharing_policy_set = bb.Route(
 docs_update = bb.Route(
     'docs/update',
     1,
-    False,
+    True,
     PaperDocUpdateArgs_validator,
     PaperDocCreateUpdateResult_validator,
     PaperDocUpdateError_validator,
@@ -4516,7 +4779,7 @@ docs_update = bb.Route(
 docs_users_add = bb.Route(
     'docs/users/add',
     1,
-    False,
+    True,
     AddPaperDocUser_validator,
     bv.List(AddPaperDocUserMemberResult_validator),
     DocLookupError_validator,
@@ -4526,7 +4789,7 @@ docs_users_add = bb.Route(
 docs_users_list = bb.Route(
     'docs/users/list',
     1,
-    False,
+    True,
     ListUsersOnPaperDocArgs_validator,
     ListUsersOnPaperDocResponse_validator,
     DocLookupError_validator,
@@ -4536,7 +4799,7 @@ docs_users_list = bb.Route(
 docs_users_list_continue = bb.Route(
     'docs/users/list/continue',
     1,
-    False,
+    True,
     ListUsersOnPaperDocContinueArgs_validator,
     ListUsersOnPaperDocResponse_validator,
     ListUsersCursorError_validator,
@@ -4546,10 +4809,20 @@ docs_users_list_continue = bb.Route(
 docs_users_remove = bb.Route(
     'docs/users/remove',
     1,
-    False,
+    True,
     RemovePaperDocUser_validator,
     bv.Void(),
     DocLookupError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+folders_create = bb.Route(
+    'folders/create',
+    1,
+    True,
+    PaperFolderCreateArg_validator,
+    PaperFolderCreateResult_validator,
+    PaperFolderCreateError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -4571,5 +4844,6 @@ ROUTES = {
     'docs/users/list': docs_users_list,
     'docs/users/list/continue': docs_users_list_continue,
     'docs/users/remove': docs_users_remove,
+    'folders/create': folders_create,
 }
 

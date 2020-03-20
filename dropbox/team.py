@@ -14,20 +14,24 @@ except (ImportError, SystemError, ValueError):
 
 try:
     from . import (
+        account,
         async_,
         common,
         file_properties,
         files,
+        secondary_emails,
         team_common,
         team_policies,
         users,
         users_common,
     )
 except (ImportError, SystemError, ValueError):
+    import account
     import async_
     import common
     import file_properties
     import files
+    import secondary_emails
     import team_common
     import team_policies
     import users
@@ -396,6 +400,497 @@ class ActiveWebSession(DeviceSession):
         )
 
 ActiveWebSession_validator = bv.Struct(ActiveWebSession)
+
+class AddSecondaryEmailResult(bb.Union):
+    """
+    Result of trying to add a secondary email to a user. 'success' is the only
+    value indicating that a secondary email was successfully added to a user.
+    The other values explain the type of error that occurred, and include the
+    email for which the error occured.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar secondary_emails.SecondaryEmail team.AddSecondaryEmailResult.success:
+        Describes a secondary email that was successfully added to a user.
+    :ivar str team.AddSecondaryEmailResult.unavailable: Secondary email is not
+        available to be claimed by the user.
+    :ivar str team.AddSecondaryEmailResult.already_pending: Secondary email is
+        already a pending email for the user.
+    :ivar str team.AddSecondaryEmailResult.already_owned_by_user: Secondary
+        email is already a verified email for the user.
+    :ivar str team.AddSecondaryEmailResult.reached_limit: User already has the
+        maximum number of secondary emails allowed.
+    :ivar str team.AddSecondaryEmailResult.transient_error: A transient error
+        occurred. Please try again later.
+    :ivar str team.AddSecondaryEmailResult.too_many_updates: An error occurred
+        due to conflicting updates. Please try again later.
+    :ivar str team.AddSecondaryEmailResult.unknown_error: An unknown error
+        occurred.
+    :ivar str team.AddSecondaryEmailResult.rate_limited: Too many emails are
+        being sent to this email address. Please try again later.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param secondary_emails.SecondaryEmail val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('success', val)
+
+    @classmethod
+    def unavailable(cls, val):
+        """
+        Create an instance of this class set to the ``unavailable`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('unavailable', val)
+
+    @classmethod
+    def already_pending(cls, val):
+        """
+        Create an instance of this class set to the ``already_pending`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('already_pending', val)
+
+    @classmethod
+    def already_owned_by_user(cls, val):
+        """
+        Create an instance of this class set to the ``already_owned_by_user``
+        tag with value ``val``.
+
+        :param str val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('already_owned_by_user', val)
+
+    @classmethod
+    def reached_limit(cls, val):
+        """
+        Create an instance of this class set to the ``reached_limit`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('reached_limit', val)
+
+    @classmethod
+    def transient_error(cls, val):
+        """
+        Create an instance of this class set to the ``transient_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('transient_error', val)
+
+    @classmethod
+    def too_many_updates(cls, val):
+        """
+        Create an instance of this class set to the ``too_many_updates`` tag
+        with value ``val``.
+
+        :param str val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('too_many_updates', val)
+
+    @classmethod
+    def unknown_error(cls, val):
+        """
+        Create an instance of this class set to the ``unknown_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('unknown_error', val)
+
+    @classmethod
+    def rate_limited(cls, val):
+        """
+        Create an instance of this class set to the ``rate_limited`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: AddSecondaryEmailResult
+        """
+        return cls('rate_limited', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_unavailable(self):
+        """
+        Check if the union tag is ``unavailable``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unavailable'
+
+    def is_already_pending(self):
+        """
+        Check if the union tag is ``already_pending``.
+
+        :rtype: bool
+        """
+        return self._tag == 'already_pending'
+
+    def is_already_owned_by_user(self):
+        """
+        Check if the union tag is ``already_owned_by_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'already_owned_by_user'
+
+    def is_reached_limit(self):
+        """
+        Check if the union tag is ``reached_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reached_limit'
+
+    def is_transient_error(self):
+        """
+        Check if the union tag is ``transient_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transient_error'
+
+    def is_too_many_updates(self):
+        """
+        Check if the union tag is ``too_many_updates``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_updates'
+
+    def is_unknown_error(self):
+        """
+        Check if the union tag is ``unknown_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown_error'
+
+    def is_rate_limited(self):
+        """
+        Check if the union tag is ``rate_limited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rate_limited'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        Describes a secondary email that was successfully added to a user.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: secondary_emails.SecondaryEmail
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_unavailable(self):
+        """
+        Secondary email is not available to be claimed by the user.
+
+        Only call this if :meth:`is_unavailable` is true.
+
+        :rtype: str
+        """
+        if not self.is_unavailable():
+            raise AttributeError("tag 'unavailable' not set")
+        return self._value
+
+    def get_already_pending(self):
+        """
+        Secondary email is already a pending email for the user.
+
+        Only call this if :meth:`is_already_pending` is true.
+
+        :rtype: str
+        """
+        if not self.is_already_pending():
+            raise AttributeError("tag 'already_pending' not set")
+        return self._value
+
+    def get_already_owned_by_user(self):
+        """
+        Secondary email is already a verified email for the user.
+
+        Only call this if :meth:`is_already_owned_by_user` is true.
+
+        :rtype: str
+        """
+        if not self.is_already_owned_by_user():
+            raise AttributeError("tag 'already_owned_by_user' not set")
+        return self._value
+
+    def get_reached_limit(self):
+        """
+        User already has the maximum number of secondary emails allowed.
+
+        Only call this if :meth:`is_reached_limit` is true.
+
+        :rtype: str
+        """
+        if not self.is_reached_limit():
+            raise AttributeError("tag 'reached_limit' not set")
+        return self._value
+
+    def get_transient_error(self):
+        """
+        A transient error occurred. Please try again later.
+
+        Only call this if :meth:`is_transient_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_transient_error():
+            raise AttributeError("tag 'transient_error' not set")
+        return self._value
+
+    def get_too_many_updates(self):
+        """
+        An error occurred due to conflicting updates. Please try again later.
+
+        Only call this if :meth:`is_too_many_updates` is true.
+
+        :rtype: str
+        """
+        if not self.is_too_many_updates():
+            raise AttributeError("tag 'too_many_updates' not set")
+        return self._value
+
+    def get_unknown_error(self):
+        """
+        An unknown error occurred.
+
+        Only call this if :meth:`is_unknown_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_unknown_error():
+            raise AttributeError("tag 'unknown_error' not set")
+        return self._value
+
+    def get_rate_limited(self):
+        """
+        Too many emails are being sent to this email address. Please try again
+        later.
+
+        Only call this if :meth:`is_rate_limited` is true.
+
+        :rtype: str
+        """
+        if not self.is_rate_limited():
+            raise AttributeError("tag 'rate_limited' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddSecondaryEmailResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AddSecondaryEmailResult(%r, %r)' % (self._tag, self._value)
+
+AddSecondaryEmailResult_validator = bv.Union(AddSecondaryEmailResult)
+
+class AddSecondaryEmailsArg(bb.Struct):
+    """
+    :ivar team.AddSecondaryEmailsArg.new_secondary_emails: List of users and
+        secondary emails to add.
+    """
+
+    __slots__ = [
+        '_new_secondary_emails_value',
+        '_new_secondary_emails_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_secondary_emails=None):
+        self._new_secondary_emails_value = None
+        self._new_secondary_emails_present = False
+        if new_secondary_emails is not None:
+            self.new_secondary_emails = new_secondary_emails
+
+    @property
+    def new_secondary_emails(self):
+        """
+        List of users and secondary emails to add.
+
+        :rtype: list of [UserSecondaryEmailsArg]
+        """
+        if self._new_secondary_emails_present:
+            return self._new_secondary_emails_value
+        else:
+            raise AttributeError("missing required field 'new_secondary_emails'")
+
+    @new_secondary_emails.setter
+    def new_secondary_emails(self, val):
+        val = self._new_secondary_emails_validator.validate(val)
+        self._new_secondary_emails_value = val
+        self._new_secondary_emails_present = True
+
+    @new_secondary_emails.deleter
+    def new_secondary_emails(self):
+        self._new_secondary_emails_value = None
+        self._new_secondary_emails_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddSecondaryEmailsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AddSecondaryEmailsArg(new_secondary_emails={!r})'.format(
+            self._new_secondary_emails_value,
+        )
+
+AddSecondaryEmailsArg_validator = bv.Struct(AddSecondaryEmailsArg)
+
+class AddSecondaryEmailsError(bb.Union):
+    """
+    Error returned when adding secondary emails fails.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.AddSecondaryEmailsError.secondary_emails_disabled: Secondary
+        emails are disabled for the team.
+    :ivar team.AddSecondaryEmailsError.too_many_emails: A maximum of 20
+        secondary emails can be added in a single call.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    secondary_emails_disabled = None
+    # Attribute is overwritten below the class definition
+    too_many_emails = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_secondary_emails_disabled(self):
+        """
+        Check if the union tag is ``secondary_emails_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_emails_disabled'
+
+    def is_too_many_emails(self):
+        """
+        Check if the union tag is ``too_many_emails``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_emails'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddSecondaryEmailsError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AddSecondaryEmailsError(%r, %r)' % (self._tag, self._value)
+
+AddSecondaryEmailsError_validator = bv.Union(AddSecondaryEmailsError)
+
+class AddSecondaryEmailsResult(bb.Struct):
+    """
+    :ivar team.AddSecondaryEmailsResult.results: List of users and secondary
+        email results.
+    """
+
+    __slots__ = [
+        '_results_value',
+        '_results_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 results=None):
+        self._results_value = None
+        self._results_present = False
+        if results is not None:
+            self.results = results
+
+    @property
+    def results(self):
+        """
+        List of users and secondary email results.
+
+        :rtype: list of [UserAddResult]
+        """
+        if self._results_present:
+            return self._results_value
+        else:
+            raise AttributeError("missing required field 'results'")
+
+    @results.setter
+    def results(self, val):
+        val = self._results_validator.validate(val)
+        self._results_value = val
+        self._results_present = True
+
+    @results.deleter
+    def results(self):
+        self._results_value = None
+        self._results_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddSecondaryEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AddSecondaryEmailsResult(results={!r})'.format(
+            self._results_value,
+        )
+
+AddSecondaryEmailsResult_validator = bv.Struct(AddSecondaryEmailsResult)
 
 class AdminTier(bb.Union):
     """
@@ -1052,7 +1547,9 @@ class DateRange(bb.Struct):
     """
     Input arguments that can be provided for most reports.
 
-    :ivar team.DateRange.start_date: Optional starting date (inclusive).
+    :ivar team.DateRange.start_date: Optional starting date (inclusive). If
+        start_date is None or too long ago, this field will  be set to 6 months
+        ago.
     :ivar team.DateRange.end_date: Optional ending date (exclusive).
     """
 
@@ -1080,7 +1577,8 @@ class DateRange(bb.Struct):
     @property
     def start_date(self):
         """
-        Optional starting date (inclusive).
+        Optional starting date (inclusive). If start_date is None or too long
+        ago, this field will  be set to 6 months ago.
 
         :rtype: datetime.datetime
         """
@@ -1168,6 +1666,239 @@ class DateRangeError(bb.Union):
         return 'DateRangeError(%r, %r)' % (self._tag, self._value)
 
 DateRangeError_validator = bv.Union(DateRangeError)
+
+class DeleteSecondaryEmailResult(bb.Union):
+    """
+    Result of trying to delete a secondary email address. 'success' is the only
+    value indicating that a secondary email was successfully deleted. The other
+    values explain the type of error that occurred, and include the email for
+    which the error occured.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar str team.DeleteSecondaryEmailResult.success: The secondary email was
+        successfully deleted.
+    :ivar str team.DeleteSecondaryEmailResult.not_found: The email address was
+        not found for the user.
+    :ivar str team.DeleteSecondaryEmailResult.cannot_remove_primary: The email
+        address is the primary email address of the user, and cannot be removed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param str val:
+        :rtype: DeleteSecondaryEmailResult
+        """
+        return cls('success', val)
+
+    @classmethod
+    def not_found(cls, val):
+        """
+        Create an instance of this class set to the ``not_found`` tag with value
+        ``val``.
+
+        :param str val:
+        :rtype: DeleteSecondaryEmailResult
+        """
+        return cls('not_found', val)
+
+    @classmethod
+    def cannot_remove_primary(cls, val):
+        """
+        Create an instance of this class set to the ``cannot_remove_primary``
+        tag with value ``val``.
+
+        :param str val:
+        :rtype: DeleteSecondaryEmailResult
+        """
+        return cls('cannot_remove_primary', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_cannot_remove_primary(self):
+        """
+        Check if the union tag is ``cannot_remove_primary``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_remove_primary'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        The secondary email was successfully deleted.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: str
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_not_found(self):
+        """
+        The email address was not found for the user.
+
+        Only call this if :meth:`is_not_found` is true.
+
+        :rtype: str
+        """
+        if not self.is_not_found():
+            raise AttributeError("tag 'not_found' not set")
+        return self._value
+
+    def get_cannot_remove_primary(self):
+        """
+        The email address is the primary email address of the user, and cannot
+        be removed.
+
+        Only call this if :meth:`is_cannot_remove_primary` is true.
+
+        :rtype: str
+        """
+        if not self.is_cannot_remove_primary():
+            raise AttributeError("tag 'cannot_remove_primary' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteSecondaryEmailResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeleteSecondaryEmailResult(%r, %r)' % (self._tag, self._value)
+
+DeleteSecondaryEmailResult_validator = bv.Union(DeleteSecondaryEmailResult)
+
+class DeleteSecondaryEmailsArg(bb.Struct):
+    """
+    :ivar team.DeleteSecondaryEmailsArg.emails_to_delete: List of users and
+        their secondary emails to delete.
+    """
+
+    __slots__ = [
+        '_emails_to_delete_value',
+        '_emails_to_delete_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 emails_to_delete=None):
+        self._emails_to_delete_value = None
+        self._emails_to_delete_present = False
+        if emails_to_delete is not None:
+            self.emails_to_delete = emails_to_delete
+
+    @property
+    def emails_to_delete(self):
+        """
+        List of users and their secondary emails to delete.
+
+        :rtype: list of [UserSecondaryEmailsArg]
+        """
+        if self._emails_to_delete_present:
+            return self._emails_to_delete_value
+        else:
+            raise AttributeError("missing required field 'emails_to_delete'")
+
+    @emails_to_delete.setter
+    def emails_to_delete(self, val):
+        val = self._emails_to_delete_validator.validate(val)
+        self._emails_to_delete_value = val
+        self._emails_to_delete_present = True
+
+    @emails_to_delete.deleter
+    def emails_to_delete(self):
+        self._emails_to_delete_value = None
+        self._emails_to_delete_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteSecondaryEmailsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeleteSecondaryEmailsArg(emails_to_delete={!r})'.format(
+            self._emails_to_delete_value,
+        )
+
+DeleteSecondaryEmailsArg_validator = bv.Struct(DeleteSecondaryEmailsArg)
+
+class DeleteSecondaryEmailsResult(bb.Struct):
+
+    __slots__ = [
+        '_results_value',
+        '_results_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 results=None):
+        self._results_value = None
+        self._results_present = False
+        if results is not None:
+            self.results = results
+
+    @property
+    def results(self):
+        """
+        :rtype: list of [UserDeleteResult]
+        """
+        if self._results_present:
+            return self._results_value
+        else:
+            raise AttributeError("missing required field 'results'")
+
+    @results.setter
+    def results(self, val):
+        val = self._results_validator.validate(val)
+        self._results_value = val
+        self._results_present = True
+
+    @results.deleter
+    def results(self):
+        self._results_value = None
+        self._results_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeleteSecondaryEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeleteSecondaryEmailsResult(results={!r})'.format(
+            self._results_value,
+        )
+
+DeleteSecondaryEmailsResult_validator = bv.Struct(DeleteSecondaryEmailsResult)
 
 class DesktopClientSession(DeviceSession):
     """
@@ -2298,6 +3029,106 @@ class ExcludedUsersUpdateStatus(bb.Union):
         return 'ExcludedUsersUpdateStatus(%r, %r)' % (self._tag, self._value)
 
 ExcludedUsersUpdateStatus_validator = bv.Union(ExcludedUsersUpdateStatus)
+
+class ExportPolicyJobStatus(async_.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.ExportPolicyJobStatus.complete: The asynchronous job has
+        finished. Returning the metadata of the newly created folder that
+        includes the exported hold.
+    :ivar team.ExportPolicyJobStatus.failed: The asynchronous job returned an
+        error.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    complete = None
+    # Attribute is overwritten below the class definition
+    failed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failed'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportPolicyJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportPolicyJobStatus(%r, %r)' % (self._tag, self._value)
+
+ExportPolicyJobStatus_validator = bv.Union(ExportPolicyJobStatus)
+
+class ExportPolicyJobStatusResult(bb.Struct):
+
+    __slots__ = [
+        '_status_value',
+        '_status_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 status=None):
+        self._status_value = None
+        self._status_present = False
+        if status is not None:
+            self.status = status
+
+    @property
+    def status(self):
+        """
+        :rtype: ExportPolicyJobStatus
+        """
+        if self._status_present:
+            return self._status_value
+        else:
+            raise AttributeError("missing required field 'status'")
+
+    @status.setter
+    def status(self, val):
+        self._status_validator.validate_type_only(val)
+        self._status_value = val
+        self._status_present = True
+
+    @status.deleter
+    def status(self):
+        self._status_value = None
+        self._status_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportPolicyJobStatusResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExportPolicyJobStatusResult(status={!r})'.format(
+            self._status_value,
+        )
+
+ExportPolicyJobStatusResult_validator = bv.Struct(ExportPolicyJobStatusResult)
 
 class Feature(bb.Union):
     """
@@ -3733,6 +4564,8 @@ GroupAccessType_validator = bv.Union(GroupAccessType)
 class GroupCreateArg(bb.Struct):
     """
     :ivar team.GroupCreateArg.group_name: Group name.
+    :ivar team.GroupCreateArg.add_creator_as_owner: Automatically add the
+        creator of the group.
     :ivar team.GroupCreateArg.group_external_id: The creator of a team can
         associate an arbitrary external ID to the group.
     :ivar team.GroupCreateArg.group_management_type: Whether the team can be
@@ -3742,6 +4575,8 @@ class GroupCreateArg(bb.Struct):
     __slots__ = [
         '_group_name_value',
         '_group_name_present',
+        '_add_creator_as_owner_value',
+        '_add_creator_as_owner_present',
         '_group_external_id_value',
         '_group_external_id_present',
         '_group_management_type_value',
@@ -3752,16 +4587,21 @@ class GroupCreateArg(bb.Struct):
 
     def __init__(self,
                  group_name=None,
+                 add_creator_as_owner=None,
                  group_external_id=None,
                  group_management_type=None):
         self._group_name_value = None
         self._group_name_present = False
+        self._add_creator_as_owner_value = None
+        self._add_creator_as_owner_present = False
         self._group_external_id_value = None
         self._group_external_id_present = False
         self._group_management_type_value = None
         self._group_management_type_present = False
         if group_name is not None:
             self.group_name = group_name
+        if add_creator_as_owner is not None:
+            self.add_creator_as_owner = add_creator_as_owner
         if group_external_id is not None:
             self.group_external_id = group_external_id
         if group_management_type is not None:
@@ -3789,6 +4629,29 @@ class GroupCreateArg(bb.Struct):
     def group_name(self):
         self._group_name_value = None
         self._group_name_present = False
+
+    @property
+    def add_creator_as_owner(self):
+        """
+        Automatically add the creator of the group.
+
+        :rtype: bool
+        """
+        if self._add_creator_as_owner_present:
+            return self._add_creator_as_owner_value
+        else:
+            return False
+
+    @add_creator_as_owner.setter
+    def add_creator_as_owner(self, val):
+        val = self._add_creator_as_owner_validator.validate(val)
+        self._add_creator_as_owner_value = val
+        self._add_creator_as_owner_present = True
+
+    @add_creator_as_owner.deleter
+    def add_creator_as_owner(self):
+        self._add_creator_as_owner_value = None
+        self._add_creator_as_owner_present = False
 
     @property
     def group_external_id(self):
@@ -3848,8 +4711,9 @@ class GroupCreateArg(bb.Struct):
         super(GroupCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'GroupCreateArg(group_name={!r}, group_external_id={!r}, group_management_type={!r})'.format(
+        return 'GroupCreateArg(group_name={!r}, add_creator_as_owner={!r}, group_external_id={!r}, group_management_type={!r})'.format(
             self._group_name_value,
+            self._add_creator_as_owner_value,
             self._group_external_id_value,
             self._group_management_type_value,
         )
@@ -4691,8 +5555,11 @@ class GroupMembersChangeResult(bb.Struct):
 
     :ivar team.GroupMembersChangeResult.group_info: The group info after member
         change operation has been performed.
-    :ivar team.GroupMembersChangeResult.async_job_id: An ID that can be used to
-        obtain the status of granting/revoking group-owned resources.
+    :ivar team.GroupMembersChangeResult.async_job_id: For legacy purposes
+        async_job_id will always return one space ' '. Formerly, it was an ID
+        that was used to obtain the status of granting/revoking group-owned
+        resources. It's no longer necessary because the async processing now
+        happens automatically.
     """
 
     __slots__ = [
@@ -4742,8 +5609,10 @@ class GroupMembersChangeResult(bb.Struct):
     @property
     def async_job_id(self):
         """
-        An ID that can be used to obtain the status of granting/revoking
-        group-owned resources.
+        For legacy purposes async_job_id will always return one space ' '.
+        Formerly, it was an ID that was used to obtain the status of
+        granting/revoking group-owned resources. It's no longer necessary
+        because the async processing now happens automatically.
 
         :rtype: str
         """
@@ -6478,6 +7347,2340 @@ class HasTeamSharedDropboxValue(bb.Union):
         return 'HasTeamSharedDropboxValue(%r, %r)' % (self._tag, self._value)
 
 HasTeamSharedDropboxValue_validator = bv.Union(HasTeamSharedDropboxValue)
+
+class LegalHoldHeldRevisionMetadata(bb.Struct):
+    """
+    :ivar team.LegalHoldHeldRevisionMetadata.new_filename: The held revision
+        filename.
+    :ivar team.LegalHoldHeldRevisionMetadata.original_revision_id: The id of the
+        held revision.
+    :ivar team.LegalHoldHeldRevisionMetadata.original_file_path: The original
+        path of the held revision.
+    :ivar team.LegalHoldHeldRevisionMetadata.server_modified: The last time the
+        file was modified on Dropbox.
+    :ivar team.LegalHoldHeldRevisionMetadata.author_member_id: The member id of
+        the revision's author.
+    :ivar team.LegalHoldHeldRevisionMetadata.author_member_status: The member
+        status of the revision's author.
+    :ivar team.LegalHoldHeldRevisionMetadata.author_email: The email address of
+        the held revision author.
+    :ivar team.LegalHoldHeldRevisionMetadata.file_type: The type of the held
+        revision's file.
+    :ivar team.LegalHoldHeldRevisionMetadata.size: The file size in bytes.
+    :ivar team.LegalHoldHeldRevisionMetadata.content_hash: A hash of the file
+        content. This field can be used to verify data integrity. For more
+        information see our `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+    """
+
+    __slots__ = [
+        '_new_filename_value',
+        '_new_filename_present',
+        '_original_revision_id_value',
+        '_original_revision_id_present',
+        '_original_file_path_value',
+        '_original_file_path_present',
+        '_server_modified_value',
+        '_server_modified_present',
+        '_author_member_id_value',
+        '_author_member_id_present',
+        '_author_member_status_value',
+        '_author_member_status_present',
+        '_author_email_value',
+        '_author_email_present',
+        '_file_type_value',
+        '_file_type_present',
+        '_size_value',
+        '_size_present',
+        '_content_hash_value',
+        '_content_hash_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_filename=None,
+                 original_revision_id=None,
+                 original_file_path=None,
+                 server_modified=None,
+                 author_member_id=None,
+                 author_member_status=None,
+                 author_email=None,
+                 file_type=None,
+                 size=None,
+                 content_hash=None):
+        self._new_filename_value = None
+        self._new_filename_present = False
+        self._original_revision_id_value = None
+        self._original_revision_id_present = False
+        self._original_file_path_value = None
+        self._original_file_path_present = False
+        self._server_modified_value = None
+        self._server_modified_present = False
+        self._author_member_id_value = None
+        self._author_member_id_present = False
+        self._author_member_status_value = None
+        self._author_member_status_present = False
+        self._author_email_value = None
+        self._author_email_present = False
+        self._file_type_value = None
+        self._file_type_present = False
+        self._size_value = None
+        self._size_present = False
+        self._content_hash_value = None
+        self._content_hash_present = False
+        if new_filename is not None:
+            self.new_filename = new_filename
+        if original_revision_id is not None:
+            self.original_revision_id = original_revision_id
+        if original_file_path is not None:
+            self.original_file_path = original_file_path
+        if server_modified is not None:
+            self.server_modified = server_modified
+        if author_member_id is not None:
+            self.author_member_id = author_member_id
+        if author_member_status is not None:
+            self.author_member_status = author_member_status
+        if author_email is not None:
+            self.author_email = author_email
+        if file_type is not None:
+            self.file_type = file_type
+        if size is not None:
+            self.size = size
+        if content_hash is not None:
+            self.content_hash = content_hash
+
+    @property
+    def new_filename(self):
+        """
+        The held revision filename.
+
+        :rtype: str
+        """
+        if self._new_filename_present:
+            return self._new_filename_value
+        else:
+            raise AttributeError("missing required field 'new_filename'")
+
+    @new_filename.setter
+    def new_filename(self, val):
+        val = self._new_filename_validator.validate(val)
+        self._new_filename_value = val
+        self._new_filename_present = True
+
+    @new_filename.deleter
+    def new_filename(self):
+        self._new_filename_value = None
+        self._new_filename_present = False
+
+    @property
+    def original_revision_id(self):
+        """
+        The id of the held revision.
+
+        :rtype: str
+        """
+        if self._original_revision_id_present:
+            return self._original_revision_id_value
+        else:
+            raise AttributeError("missing required field 'original_revision_id'")
+
+    @original_revision_id.setter
+    def original_revision_id(self, val):
+        val = self._original_revision_id_validator.validate(val)
+        self._original_revision_id_value = val
+        self._original_revision_id_present = True
+
+    @original_revision_id.deleter
+    def original_revision_id(self):
+        self._original_revision_id_value = None
+        self._original_revision_id_present = False
+
+    @property
+    def original_file_path(self):
+        """
+        The original path of the held revision.
+
+        :rtype: str
+        """
+        if self._original_file_path_present:
+            return self._original_file_path_value
+        else:
+            raise AttributeError("missing required field 'original_file_path'")
+
+    @original_file_path.setter
+    def original_file_path(self, val):
+        val = self._original_file_path_validator.validate(val)
+        self._original_file_path_value = val
+        self._original_file_path_present = True
+
+    @original_file_path.deleter
+    def original_file_path(self):
+        self._original_file_path_value = None
+        self._original_file_path_present = False
+
+    @property
+    def server_modified(self):
+        """
+        The last time the file was modified on Dropbox.
+
+        :rtype: datetime.datetime
+        """
+        if self._server_modified_present:
+            return self._server_modified_value
+        else:
+            raise AttributeError("missing required field 'server_modified'")
+
+    @server_modified.setter
+    def server_modified(self, val):
+        val = self._server_modified_validator.validate(val)
+        self._server_modified_value = val
+        self._server_modified_present = True
+
+    @server_modified.deleter
+    def server_modified(self):
+        self._server_modified_value = None
+        self._server_modified_present = False
+
+    @property
+    def author_member_id(self):
+        """
+        The member id of the revision's author.
+
+        :rtype: str
+        """
+        if self._author_member_id_present:
+            return self._author_member_id_value
+        else:
+            raise AttributeError("missing required field 'author_member_id'")
+
+    @author_member_id.setter
+    def author_member_id(self, val):
+        val = self._author_member_id_validator.validate(val)
+        self._author_member_id_value = val
+        self._author_member_id_present = True
+
+    @author_member_id.deleter
+    def author_member_id(self):
+        self._author_member_id_value = None
+        self._author_member_id_present = False
+
+    @property
+    def author_member_status(self):
+        """
+        The member status of the revision's author.
+
+        :rtype: TeamMemberStatus
+        """
+        if self._author_member_status_present:
+            return self._author_member_status_value
+        else:
+            raise AttributeError("missing required field 'author_member_status'")
+
+    @author_member_status.setter
+    def author_member_status(self, val):
+        self._author_member_status_validator.validate_type_only(val)
+        self._author_member_status_value = val
+        self._author_member_status_present = True
+
+    @author_member_status.deleter
+    def author_member_status(self):
+        self._author_member_status_value = None
+        self._author_member_status_present = False
+
+    @property
+    def author_email(self):
+        """
+        The email address of the held revision author.
+
+        :rtype: str
+        """
+        if self._author_email_present:
+            return self._author_email_value
+        else:
+            raise AttributeError("missing required field 'author_email'")
+
+    @author_email.setter
+    def author_email(self, val):
+        val = self._author_email_validator.validate(val)
+        self._author_email_value = val
+        self._author_email_present = True
+
+    @author_email.deleter
+    def author_email(self):
+        self._author_email_value = None
+        self._author_email_present = False
+
+    @property
+    def file_type(self):
+        """
+        The type of the held revision's file.
+
+        :rtype: str
+        """
+        if self._file_type_present:
+            return self._file_type_value
+        else:
+            raise AttributeError("missing required field 'file_type'")
+
+    @file_type.setter
+    def file_type(self, val):
+        val = self._file_type_validator.validate(val)
+        self._file_type_value = val
+        self._file_type_present = True
+
+    @file_type.deleter
+    def file_type(self):
+        self._file_type_value = None
+        self._file_type_present = False
+
+    @property
+    def size(self):
+        """
+        The file size in bytes.
+
+        :rtype: int
+        """
+        if self._size_present:
+            return self._size_value
+        else:
+            raise AttributeError("missing required field 'size'")
+
+    @size.setter
+    def size(self, val):
+        val = self._size_validator.validate(val)
+        self._size_value = val
+        self._size_present = True
+
+    @size.deleter
+    def size(self):
+        self._size_value = None
+        self._size_present = False
+
+    @property
+    def content_hash(self):
+        """
+        A hash of the file content. This field can be used to verify data
+        integrity. For more information see our `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+
+        :rtype: str
+        """
+        if self._content_hash_present:
+            return self._content_hash_value
+        else:
+            raise AttributeError("missing required field 'content_hash'")
+
+    @content_hash.setter
+    def content_hash(self, val):
+        val = self._content_hash_validator.validate(val)
+        self._content_hash_value = val
+        self._content_hash_present = True
+
+    @content_hash.deleter
+    def content_hash(self):
+        self._content_hash_value = None
+        self._content_hash_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldHeldRevisionMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldHeldRevisionMetadata(new_filename={!r}, original_revision_id={!r}, original_file_path={!r}, server_modified={!r}, author_member_id={!r}, author_member_status={!r}, author_email={!r}, file_type={!r}, size={!r}, content_hash={!r})'.format(
+            self._new_filename_value,
+            self._original_revision_id_value,
+            self._original_file_path_value,
+            self._server_modified_value,
+            self._author_member_id_value,
+            self._author_member_status_value,
+            self._author_email_value,
+            self._file_type_value,
+            self._size_value,
+            self._content_hash_value,
+        )
+
+LegalHoldHeldRevisionMetadata_validator = bv.Struct(LegalHoldHeldRevisionMetadata)
+
+class LegalHoldPolicy(bb.Struct):
+    """
+    :ivar team.LegalHoldPolicy.id: The legal hold id.
+    :ivar team.LegalHoldPolicy.name: Policy name.
+    :ivar team.LegalHoldPolicy.description: A description of the legal hold
+        policy.
+    :ivar team.LegalHoldPolicy.activation_time: The time at which the legal hold
+        was activated.
+    :ivar team.LegalHoldPolicy.start_date: start date of the legal hold policy.
+    :ivar team.LegalHoldPolicy.end_date: end date of the legal hold policy.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_name_value',
+        '_name_present',
+        '_description_value',
+        '_description_present',
+        '_activation_time_value',
+        '_activation_time_present',
+        '_members_value',
+        '_members_present',
+        '_status_value',
+        '_status_present',
+        '_start_date_value',
+        '_start_date_present',
+        '_end_date_value',
+        '_end_date_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 name=None,
+                 members=None,
+                 status=None,
+                 start_date=None,
+                 description=None,
+                 activation_time=None,
+                 end_date=None):
+        self._id_value = None
+        self._id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._description_value = None
+        self._description_present = False
+        self._activation_time_value = None
+        self._activation_time_present = False
+        self._members_value = None
+        self._members_present = False
+        self._status_value = None
+        self._status_present = False
+        self._start_date_value = None
+        self._start_date_present = False
+        self._end_date_value = None
+        self._end_date_present = False
+        if id is not None:
+            self.id = id
+        if name is not None:
+            self.name = name
+        if description is not None:
+            self.description = description
+        if activation_time is not None:
+            self.activation_time = activation_time
+        if members is not None:
+            self.members = members
+        if status is not None:
+            self.status = status
+        if start_date is not None:
+            self.start_date = start_date
+        if end_date is not None:
+            self.end_date = end_date
+
+    @property
+    def id(self):
+        """
+        The legal hold id.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def name(self):
+        """
+        Policy name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def description(self):
+        """
+        A description of the legal hold policy.
+
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            return None
+
+    @description.setter
+    def description(self, val):
+        if val is None:
+            del self.description
+            return
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    @property
+    def activation_time(self):
+        """
+        The time at which the legal hold was activated.
+
+        :rtype: datetime.datetime
+        """
+        if self._activation_time_present:
+            return self._activation_time_value
+        else:
+            return None
+
+    @activation_time.setter
+    def activation_time(self, val):
+        if val is None:
+            del self.activation_time
+            return
+        val = self._activation_time_validator.validate(val)
+        self._activation_time_value = val
+        self._activation_time_present = True
+
+    @activation_time.deleter
+    def activation_time(self):
+        self._activation_time_value = None
+        self._activation_time_present = False
+
+    @property
+    def members(self):
+        """
+        :rtype: MembersInfo
+        """
+        if self._members_present:
+            return self._members_value
+        else:
+            raise AttributeError("missing required field 'members'")
+
+    @members.setter
+    def members(self, val):
+        self._members_validator.validate_type_only(val)
+        self._members_value = val
+        self._members_present = True
+
+    @members.deleter
+    def members(self):
+        self._members_value = None
+        self._members_present = False
+
+    @property
+    def status(self):
+        """
+        :rtype: LegalHoldStatus
+        """
+        if self._status_present:
+            return self._status_value
+        else:
+            raise AttributeError("missing required field 'status'")
+
+    @status.setter
+    def status(self, val):
+        self._status_validator.validate_type_only(val)
+        self._status_value = val
+        self._status_present = True
+
+    @status.deleter
+    def status(self):
+        self._status_value = None
+        self._status_present = False
+
+    @property
+    def start_date(self):
+        """
+        start date of the legal hold policy.
+
+        :rtype: datetime.datetime
+        """
+        if self._start_date_present:
+            return self._start_date_value
+        else:
+            raise AttributeError("missing required field 'start_date'")
+
+    @start_date.setter
+    def start_date(self, val):
+        val = self._start_date_validator.validate(val)
+        self._start_date_value = val
+        self._start_date_present = True
+
+    @start_date.deleter
+    def start_date(self):
+        self._start_date_value = None
+        self._start_date_present = False
+
+    @property
+    def end_date(self):
+        """
+        end date of the legal hold policy.
+
+        :rtype: datetime.datetime
+        """
+        if self._end_date_present:
+            return self._end_date_value
+        else:
+            return None
+
+    @end_date.setter
+    def end_date(self, val):
+        if val is None:
+            del self.end_date
+            return
+        val = self._end_date_validator.validate(val)
+        self._end_date_value = val
+        self._end_date_present = True
+
+    @end_date.deleter
+    def end_date(self):
+        self._end_date_value = None
+        self._end_date_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldPolicy(id={!r}, name={!r}, members={!r}, status={!r}, start_date={!r}, description={!r}, activation_time={!r}, end_date={!r})'.format(
+            self._id_value,
+            self._name_value,
+            self._members_value,
+            self._status_value,
+            self._start_date_value,
+            self._description_value,
+            self._activation_time_value,
+            self._end_date_value,
+        )
+
+LegalHoldPolicy_validator = bv.Struct(LegalHoldPolicy)
+
+class LegalHoldStatus(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.LegalHoldStatus.active: The legal hold policy is active.
+    :ivar team.LegalHoldStatus.released: The legal hold policy was released.
+    :ivar team.LegalHoldStatus.activating: The legal hold policy is activating.
+    :ivar team.LegalHoldStatus.updating: The legal hold policy is updating.
+    :ivar team.LegalHoldStatus.exporting: The legal hold policy is exporting.
+    :ivar team.LegalHoldStatus.releasing: The legal hold policy is releasing.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    active = None
+    # Attribute is overwritten below the class definition
+    released = None
+    # Attribute is overwritten below the class definition
+    activating = None
+    # Attribute is overwritten below the class definition
+    updating = None
+    # Attribute is overwritten below the class definition
+    exporting = None
+    # Attribute is overwritten below the class definition
+    releasing = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_active(self):
+        """
+        Check if the union tag is ``active``.
+
+        :rtype: bool
+        """
+        return self._tag == 'active'
+
+    def is_released(self):
+        """
+        Check if the union tag is ``released``.
+
+        :rtype: bool
+        """
+        return self._tag == 'released'
+
+    def is_activating(self):
+        """
+        Check if the union tag is ``activating``.
+
+        :rtype: bool
+        """
+        return self._tag == 'activating'
+
+    def is_updating(self):
+        """
+        Check if the union tag is ``updating``.
+
+        :rtype: bool
+        """
+        return self._tag == 'updating'
+
+    def is_exporting(self):
+        """
+        Check if the union tag is ``exporting``.
+
+        :rtype: bool
+        """
+        return self._tag == 'exporting'
+
+    def is_releasing(self):
+        """
+        Check if the union tag is ``releasing``.
+
+        :rtype: bool
+        """
+        return self._tag == 'releasing'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldStatus(%r, %r)' % (self._tag, self._value)
+
+LegalHoldStatus_validator = bv.Union(LegalHoldStatus)
+
+class LegalHoldsError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.LegalHoldsError.unknown_legal_hold_error: There has been an
+        unknown legal hold error.
+    :ivar team.LegalHoldsError.insufficient_permissions: You don't have
+        permissions to perform this action.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unknown_legal_hold_error = None
+    # Attribute is overwritten below the class definition
+    insufficient_permissions = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_unknown_legal_hold_error(self):
+        """
+        Check if the union tag is ``unknown_legal_hold_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown_legal_hold_error'
+
+    def is_insufficient_permissions(self):
+        """
+        Check if the union tag is ``insufficient_permissions``.
+
+        :rtype: bool
+        """
+        return self._tag == 'insufficient_permissions'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsError_validator = bv.Union(LegalHoldsError)
+
+class LegalHoldsExportPolicyError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.LegalHoldsExportPolicyError.invalid_path: The path provided is
+        invalid.
+    :ivar
+        team.LegalHoldsExportPolicyError.legal_hold_performing_another_operation:
+        Legal hold is currently performing another operation.
+    :ivar team.LegalHoldsExportPolicyError.unknown_legal_hold_error: There has
+        been an unknown legal hold error.
+    :ivar team.LegalHoldsExportPolicyError.transient_error: Temporary
+        infrastructure failure, please retry.
+    :ivar team.LegalHoldsExportPolicyError.insufficient_quota: The current team
+        does not have enough space to export the legal hold policy.
+    :ivar team.LegalHoldsExportPolicyError.legal_hold_export_still_empty: The
+        legal hold is not holding any revisions yet
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_path = None
+    # Attribute is overwritten below the class definition
+    legal_hold_performing_another_operation = None
+    # Attribute is overwritten below the class definition
+    unknown_legal_hold_error = None
+    # Attribute is overwritten below the class definition
+    transient_error = None
+    # Attribute is overwritten below the class definition
+    insufficient_quota = None
+    # Attribute is overwritten below the class definition
+    legal_hold_export_still_empty = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invalid_path(self):
+        """
+        Check if the union tag is ``invalid_path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_path'
+
+    def is_legal_hold_performing_another_operation(self):
+        """
+        Check if the union tag is ``legal_hold_performing_another_operation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_performing_another_operation'
+
+    def is_unknown_legal_hold_error(self):
+        """
+        Check if the union tag is ``unknown_legal_hold_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown_legal_hold_error'
+
+    def is_transient_error(self):
+        """
+        Check if the union tag is ``transient_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transient_error'
+
+    def is_insufficient_quota(self):
+        """
+        Check if the union tag is ``insufficient_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'insufficient_quota'
+
+    def is_legal_hold_export_still_empty(self):
+        """
+        Check if the union tag is ``legal_hold_export_still_empty``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_export_still_empty'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportPolicyError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportPolicyError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsExportPolicyError_validator = bv.Union(LegalHoldsExportPolicyError)
+
+class LegalHoldsExportPolicyResult(bb.Struct):
+    """
+    :ivar team.LegalHoldsExportPolicyResult.async_job_id: Pass the given ID into
+        :meth:`dropbox.dropbox.Dropbox.team_legal_holds_export_policy_job_status_check`
+        to obtain the status of the export policy job status.
+    :ivar team.LegalHoldsExportPolicyResult.export_folder_metadata: Metadata for
+        the newly created folder that will eventually, once the export policy
+        job completes, include the hold's export.
+    """
+
+    __slots__ = [
+        '_async_job_id_value',
+        '_async_job_id_present',
+        '_export_folder_metadata_value',
+        '_export_folder_metadata_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 async_job_id=None,
+                 export_folder_metadata=None):
+        self._async_job_id_value = None
+        self._async_job_id_present = False
+        self._export_folder_metadata_value = None
+        self._export_folder_metadata_present = False
+        if async_job_id is not None:
+            self.async_job_id = async_job_id
+        if export_folder_metadata is not None:
+            self.export_folder_metadata = export_folder_metadata
+
+    @property
+    def async_job_id(self):
+        """
+        Pass the given ID into
+        :meth:`dropbox.dropbox.Dropbox.team_legal_holds_export_policy_job_status_check`
+        to obtain the status of the export policy job status.
+
+        :rtype: str
+        """
+        if self._async_job_id_present:
+            return self._async_job_id_value
+        else:
+            raise AttributeError("missing required field 'async_job_id'")
+
+    @async_job_id.setter
+    def async_job_id(self, val):
+        val = self._async_job_id_validator.validate(val)
+        self._async_job_id_value = val
+        self._async_job_id_present = True
+
+    @async_job_id.deleter
+    def async_job_id(self):
+        self._async_job_id_value = None
+        self._async_job_id_present = False
+
+    @property
+    def export_folder_metadata(self):
+        """
+        Metadata for the newly created folder that will eventually, once the
+        export policy job completes, include the hold's export.
+
+        :rtype: files.FolderMetadata
+        """
+        if self._export_folder_metadata_present:
+            return self._export_folder_metadata_value
+        else:
+            raise AttributeError("missing required field 'export_folder_metadata'")
+
+    @export_folder_metadata.setter
+    def export_folder_metadata(self, val):
+        self._export_folder_metadata_validator.validate_type_only(val)
+        self._export_folder_metadata_value = val
+        self._export_folder_metadata_present = True
+
+    @export_folder_metadata.deleter
+    def export_folder_metadata(self):
+        self._export_folder_metadata_value = None
+        self._export_folder_metadata_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsExportPolicyResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsExportPolicyResult(async_job_id={!r}, export_folder_metadata={!r})'.format(
+            self._async_job_id_value,
+            self._export_folder_metadata_value,
+        )
+
+LegalHoldsExportPolicyResult_validator = bv.Struct(LegalHoldsExportPolicyResult)
+
+class LegalHoldsGetPolicyArg(bb.Struct):
+    """
+    :ivar team.LegalHoldsGetPolicyArg.id: The legal hold Id.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None):
+        self._id_value = None
+        self._id_present = False
+        if id is not None:
+            self.id = id
+
+    @property
+    def id(self):
+        """
+        The legal hold Id.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsGetPolicyArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsGetPolicyArg(id={!r})'.format(
+            self._id_value,
+        )
+
+LegalHoldsGetPolicyArg_validator = bv.Struct(LegalHoldsGetPolicyArg)
+
+class LegalHoldsGetPolicyError(LegalHoldsError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.LegalHoldsGetPolicyError.legal_hold_policy_not_found: Legal hold
+        policy does not exist for ``LegalHoldsGetPolicyArg.id``.
+    """
+
+    # Attribute is overwritten below the class definition
+    legal_hold_policy_not_found = None
+
+    def is_legal_hold_policy_not_found(self):
+        """
+        Check if the union tag is ``legal_hold_policy_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_policy_not_found'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsGetPolicyError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsGetPolicyError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsGetPolicyError_validator = bv.Union(LegalHoldsGetPolicyError)
+
+class LegalHoldsListHeldRevisionResult(bb.Struct):
+    """
+    :ivar team.LegalHoldsListHeldRevisionResult.entries: Entries list.
+    :ivar team.LegalHoldsListHeldRevisionResult.cursor: List held revisions
+        cursor.
+    :ivar team.LegalHoldsListHeldRevisionResult.has_more: Has more.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_entries_present',
+        '_cursor_value',
+        '_cursor_present',
+        '_has_more_value',
+        '_has_more_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None,
+                 has_more=None,
+                 cursor=None):
+        self._entries_value = None
+        self._entries_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        self._has_more_value = None
+        self._has_more_present = False
+        if entries is not None:
+            self.entries = entries
+        if cursor is not None:
+            self.cursor = cursor
+        if has_more is not None:
+            self.has_more = has_more
+
+    @property
+    def entries(self):
+        """
+        Entries list.
+
+        :rtype: list of [LegalHoldHeldRevisionMetadata]
+        """
+        if self._entries_present:
+            return self._entries_value
+        else:
+            raise AttributeError("missing required field 'entries'")
+
+    @entries.setter
+    def entries(self, val):
+        val = self._entries_validator.validate(val)
+        self._entries_value = val
+        self._entries_present = True
+
+    @entries.deleter
+    def entries(self):
+        self._entries_value = None
+        self._entries_present = False
+
+    @property
+    def cursor(self):
+        """
+        List held revisions cursor.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    @property
+    def has_more(self):
+        """
+        Has more.
+
+        :rtype: bool
+        """
+        if self._has_more_present:
+            return self._has_more_value
+        else:
+            raise AttributeError("missing required field 'has_more'")
+
+    @has_more.setter
+    def has_more(self, val):
+        val = self._has_more_validator.validate(val)
+        self._has_more_value = val
+        self._has_more_present = True
+
+    @has_more.deleter
+    def has_more(self):
+        self._has_more_value = None
+        self._has_more_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsListHeldRevisionResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsListHeldRevisionResult(entries={!r}, has_more={!r}, cursor={!r})'.format(
+            self._entries_value,
+            self._has_more_value,
+            self._cursor_value,
+        )
+
+LegalHoldsListHeldRevisionResult_validator = bv.Struct(LegalHoldsListHeldRevisionResult)
+
+class LegalHoldsListHeldRevisionsArg(bb.Struct):
+    """
+    :ivar team.LegalHoldsListHeldRevisionsArg.id: The legal hold Id.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None):
+        self._id_value = None
+        self._id_present = False
+        if id is not None:
+            self.id = id
+
+    @property
+    def id(self):
+        """
+        The legal hold Id.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsListHeldRevisionsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsListHeldRevisionsArg(id={!r})'.format(
+            self._id_value,
+        )
+
+LegalHoldsListHeldRevisionsArg_validator = bv.Struct(LegalHoldsListHeldRevisionsArg)
+
+class LegalHoldsListHeldRevisionsContinueArg(bb.Struct):
+    """
+    :ivar team.LegalHoldsListHeldRevisionsContinueArg.id: The legal hold Id.
+    :ivar team.LegalHoldsListHeldRevisionsContinueArg.cursor: cursor of list
+        held revisions.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_cursor_value',
+        '_cursor_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 cursor=None):
+        self._id_value = None
+        self._id_present = False
+        self._cursor_value = None
+        self._cursor_present = False
+        if id is not None:
+            self.id = id
+        if cursor is not None:
+            self.cursor = cursor
+
+    @property
+    def id(self):
+        """
+        The legal hold Id.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def cursor(self):
+        """
+        cursor of list held revisions.
+
+        :rtype: str
+        """
+        if self._cursor_present:
+            return self._cursor_value
+        else:
+            return None
+
+    @cursor.setter
+    def cursor(self, val):
+        if val is None:
+            del self.cursor
+            return
+        val = self._cursor_validator.validate(val)
+        self._cursor_value = val
+        self._cursor_present = True
+
+    @cursor.deleter
+    def cursor(self):
+        self._cursor_value = None
+        self._cursor_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsListHeldRevisionsContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsListHeldRevisionsContinueArg(id={!r}, cursor={!r})'.format(
+            self._id_value,
+            self._cursor_value,
+        )
+
+LegalHoldsListHeldRevisionsContinueArg_validator = bv.Struct(LegalHoldsListHeldRevisionsContinueArg)
+
+class LegalHoldsListHeldRevisionsContinueError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar
+        team.LegalHoldsListHeldRevisionsContinueError.unknown_legal_hold_error:
+        There has been an unknown legal hold error.
+    :ivar team.LegalHoldsListHeldRevisionsContinueError.transient_error:
+        Temporary infrastructure failure, please retry.
+    :ivar team.LegalHoldsListHeldRevisionsContinueError.reset: Indicates that
+        the cursor has been invalidated. Call
+        :meth:`dropbox.dropbox.Dropbox.team_legal_holds_list_held_revisions_continue`
+        again with an empty cursor to obtain a new cursor.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unknown_legal_hold_error = None
+    # Attribute is overwritten below the class definition
+    transient_error = None
+    # Attribute is overwritten below the class definition
+    reset = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_unknown_legal_hold_error(self):
+        """
+        Check if the union tag is ``unknown_legal_hold_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown_legal_hold_error'
+
+    def is_transient_error(self):
+        """
+        Check if the union tag is ``transient_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transient_error'
+
+    def is_reset(self):
+        """
+        Check if the union tag is ``reset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reset'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsListHeldRevisionsContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsListHeldRevisionsContinueError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsListHeldRevisionsContinueError_validator = bv.Union(LegalHoldsListHeldRevisionsContinueError)
+
+class LegalHoldsListHeldRevisionsError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.LegalHoldsListHeldRevisionsError.unknown_legal_hold_error: There
+        has been an unknown legal hold error.
+    :ivar team.LegalHoldsListHeldRevisionsError.transient_error: Temporary
+        infrastructure failure, please retry.
+    :ivar team.LegalHoldsListHeldRevisionsError.legal_hold_still_empty: The
+        legal hold is not holding any revisions yet
+    :ivar team.LegalHoldsListHeldRevisionsError.inactive_legal_hold: Trying to
+        list revisions for an inactive legal hold.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unknown_legal_hold_error = None
+    # Attribute is overwritten below the class definition
+    transient_error = None
+    # Attribute is overwritten below the class definition
+    legal_hold_still_empty = None
+    # Attribute is overwritten below the class definition
+    inactive_legal_hold = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_unknown_legal_hold_error(self):
+        """
+        Check if the union tag is ``unknown_legal_hold_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown_legal_hold_error'
+
+    def is_transient_error(self):
+        """
+        Check if the union tag is ``transient_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transient_error'
+
+    def is_legal_hold_still_empty(self):
+        """
+        Check if the union tag is ``legal_hold_still_empty``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_still_empty'
+
+    def is_inactive_legal_hold(self):
+        """
+        Check if the union tag is ``inactive_legal_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'inactive_legal_hold'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsListHeldRevisionsError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsListHeldRevisionsError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsListHeldRevisionsError_validator = bv.Union(LegalHoldsListHeldRevisionsError)
+
+class LegalHoldsListPoliciesArg(bb.Struct):
+    """
+    :ivar team.LegalHoldsListPoliciesArg.include_released: Whether to return
+        holds that were released.
+    """
+
+    __slots__ = [
+        '_include_released_value',
+        '_include_released_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 include_released=None):
+        self._include_released_value = None
+        self._include_released_present = False
+        if include_released is not None:
+            self.include_released = include_released
+
+    @property
+    def include_released(self):
+        """
+        Whether to return holds that were released.
+
+        :rtype: bool
+        """
+        if self._include_released_present:
+            return self._include_released_value
+        else:
+            return False
+
+    @include_released.setter
+    def include_released(self, val):
+        val = self._include_released_validator.validate(val)
+        self._include_released_value = val
+        self._include_released_present = True
+
+    @include_released.deleter
+    def include_released(self):
+        self._include_released_value = None
+        self._include_released_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsListPoliciesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsListPoliciesArg(include_released={!r})'.format(
+            self._include_released_value,
+        )
+
+LegalHoldsListPoliciesArg_validator = bv.Struct(LegalHoldsListPoliciesArg)
+
+class LegalHoldsListPoliciesError(LegalHoldsError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.LegalHoldsListPoliciesError.transient_error: Temporary
+        infrastructure failure, please retry.
+    """
+
+    # Attribute is overwritten below the class definition
+    transient_error = None
+
+    def is_transient_error(self):
+        """
+        Check if the union tag is ``transient_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transient_error'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsListPoliciesError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsListPoliciesError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsListPoliciesError_validator = bv.Union(LegalHoldsListPoliciesError)
+
+class LegalHoldsListPoliciesResult(bb.Struct):
+
+    __slots__ = [
+        '_policies_value',
+        '_policies_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 policies=None):
+        self._policies_value = None
+        self._policies_present = False
+        if policies is not None:
+            self.policies = policies
+
+    @property
+    def policies(self):
+        """
+        :rtype: list of [LegalHoldPolicy]
+        """
+        if self._policies_present:
+            return self._policies_value
+        else:
+            raise AttributeError("missing required field 'policies'")
+
+    @policies.setter
+    def policies(self, val):
+        val = self._policies_validator.validate(val)
+        self._policies_value = val
+        self._policies_present = True
+
+    @policies.deleter
+    def policies(self):
+        self._policies_value = None
+        self._policies_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsListPoliciesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsListPoliciesResult(policies={!r})'.format(
+            self._policies_value,
+        )
+
+LegalHoldsListPoliciesResult_validator = bv.Struct(LegalHoldsListPoliciesResult)
+
+class LegalHoldsPolicyCreateArg(bb.Struct):
+    """
+    :ivar team.LegalHoldsPolicyCreateArg.name: Policy name.
+    :ivar team.LegalHoldsPolicyCreateArg.description: A description of the legal
+        hold policy.
+    :ivar team.LegalHoldsPolicyCreateArg.members: List of team members added to
+        the hold.
+    :ivar team.LegalHoldsPolicyCreateArg.start_date: start date of the legal
+        hold policy.
+    :ivar team.LegalHoldsPolicyCreateArg.end_date: end date of the legal hold
+        policy.
+    """
+
+    __slots__ = [
+        '_name_value',
+        '_name_present',
+        '_description_value',
+        '_description_present',
+        '_members_value',
+        '_members_present',
+        '_start_date_value',
+        '_start_date_present',
+        '_end_date_value',
+        '_end_date_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 name=None,
+                 members=None,
+                 description=None,
+                 start_date=None,
+                 end_date=None):
+        self._name_value = None
+        self._name_present = False
+        self._description_value = None
+        self._description_present = False
+        self._members_value = None
+        self._members_present = False
+        self._start_date_value = None
+        self._start_date_present = False
+        self._end_date_value = None
+        self._end_date_present = False
+        if name is not None:
+            self.name = name
+        if description is not None:
+            self.description = description
+        if members is not None:
+            self.members = members
+        if start_date is not None:
+            self.start_date = start_date
+        if end_date is not None:
+            self.end_date = end_date
+
+    @property
+    def name(self):
+        """
+        Policy name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def description(self):
+        """
+        A description of the legal hold policy.
+
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            return None
+
+    @description.setter
+    def description(self, val):
+        if val is None:
+            del self.description
+            return
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    @property
+    def members(self):
+        """
+        List of team members added to the hold.
+
+        :rtype: list of [str]
+        """
+        if self._members_present:
+            return self._members_value
+        else:
+            raise AttributeError("missing required field 'members'")
+
+    @members.setter
+    def members(self, val):
+        val = self._members_validator.validate(val)
+        self._members_value = val
+        self._members_present = True
+
+    @members.deleter
+    def members(self):
+        self._members_value = None
+        self._members_present = False
+
+    @property
+    def start_date(self):
+        """
+        start date of the legal hold policy.
+
+        :rtype: datetime.datetime
+        """
+        if self._start_date_present:
+            return self._start_date_value
+        else:
+            return None
+
+    @start_date.setter
+    def start_date(self, val):
+        if val is None:
+            del self.start_date
+            return
+        val = self._start_date_validator.validate(val)
+        self._start_date_value = val
+        self._start_date_present = True
+
+    @start_date.deleter
+    def start_date(self):
+        self._start_date_value = None
+        self._start_date_present = False
+
+    @property
+    def end_date(self):
+        """
+        end date of the legal hold policy.
+
+        :rtype: datetime.datetime
+        """
+        if self._end_date_present:
+            return self._end_date_value
+        else:
+            return None
+
+    @end_date.setter
+    def end_date(self, val):
+        if val is None:
+            del self.end_date
+            return
+        val = self._end_date_validator.validate(val)
+        self._end_date_value = val
+        self._end_date_present = True
+
+    @end_date.deleter
+    def end_date(self):
+        self._end_date_value = None
+        self._end_date_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsPolicyCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsPolicyCreateArg(name={!r}, members={!r}, description={!r}, start_date={!r}, end_date={!r})'.format(
+            self._name_value,
+            self._members_value,
+            self._description_value,
+            self._start_date_value,
+            self._end_date_value,
+        )
+
+LegalHoldsPolicyCreateArg_validator = bv.Struct(LegalHoldsPolicyCreateArg)
+
+class LegalHoldsPolicyCreateError(LegalHoldsError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.LegalHoldsPolicyCreateError.start_date_is_later_than_end_date:
+        Start date must be earlier than end date.
+    :ivar team.LegalHoldsPolicyCreateError.empty_members_list: The users list
+        must have at least one user.
+    :ivar team.LegalHoldsPolicyCreateError.invalid_members: Some members in the
+        members list are not valid to be placed under legal hold.
+    :ivar
+        team.LegalHoldsPolicyCreateError.number_of_users_on_hold_is_greater_than_hold_limitation:
+        You cannot add more than 5 users in a legal hold.
+    :ivar team.LegalHoldsPolicyCreateError.transient_error: Temporary
+        infrastructure failure, please retry.
+    :ivar team.LegalHoldsPolicyCreateError.name_must_be_unique: The name
+        provided is already in use by another legal hold.
+    """
+
+    # Attribute is overwritten below the class definition
+    start_date_is_later_than_end_date = None
+    # Attribute is overwritten below the class definition
+    empty_members_list = None
+    # Attribute is overwritten below the class definition
+    invalid_members = None
+    # Attribute is overwritten below the class definition
+    number_of_users_on_hold_is_greater_than_hold_limitation = None
+    # Attribute is overwritten below the class definition
+    transient_error = None
+    # Attribute is overwritten below the class definition
+    name_must_be_unique = None
+
+    def is_start_date_is_later_than_end_date(self):
+        """
+        Check if the union tag is ``start_date_is_later_than_end_date``.
+
+        :rtype: bool
+        """
+        return self._tag == 'start_date_is_later_than_end_date'
+
+    def is_empty_members_list(self):
+        """
+        Check if the union tag is ``empty_members_list``.
+
+        :rtype: bool
+        """
+        return self._tag == 'empty_members_list'
+
+    def is_invalid_members(self):
+        """
+        Check if the union tag is ``invalid_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_members'
+
+    def is_number_of_users_on_hold_is_greater_than_hold_limitation(self):
+        """
+        Check if the union tag is ``number_of_users_on_hold_is_greater_than_hold_limitation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'number_of_users_on_hold_is_greater_than_hold_limitation'
+
+    def is_transient_error(self):
+        """
+        Check if the union tag is ``transient_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transient_error'
+
+    def is_name_must_be_unique(self):
+        """
+        Check if the union tag is ``name_must_be_unique``.
+
+        :rtype: bool
+        """
+        return self._tag == 'name_must_be_unique'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsPolicyCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsPolicyCreateError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsPolicyCreateError_validator = bv.Union(LegalHoldsPolicyCreateError)
+
+class LegalHoldsPolicyExportArg(bb.Struct):
+    """
+    :ivar team.LegalHoldsPolicyExportArg.id: The legal hold Id.
+    :ivar team.LegalHoldsPolicyExportArg.path: The selected destination path in
+        the team's Dropbox for the export. The path must be a namespace path
+        (see example) of a namespace that's accessible to the application. To
+        get the list of accessible namespaces use the route
+        :meth:`dropbox.dropbox.Dropbox.team_namespaces_list`.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_path_value',
+        '_path_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 path=None):
+        self._id_value = None
+        self._id_present = False
+        self._path_value = None
+        self._path_present = False
+        if id is not None:
+            self.id = id
+        if path is not None:
+            self.path = path
+
+    @property
+    def id(self):
+        """
+        The legal hold Id.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def path(self):
+        """
+        The selected destination path in the team's Dropbox for the export. The
+        path must be a namespace path (see example) of a namespace that's
+        accessible to the application. To get the list of accessible namespaces
+        use the route :meth:`dropbox.dropbox.Dropbox.team_namespaces_list`.
+
+        :rtype: str
+        """
+        if self._path_present:
+            return self._path_value
+        else:
+            raise AttributeError("missing required field 'path'")
+
+    @path.setter
+    def path(self, val):
+        val = self._path_validator.validate(val)
+        self._path_value = val
+        self._path_present = True
+
+    @path.deleter
+    def path(self):
+        self._path_value = None
+        self._path_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsPolicyExportArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsPolicyExportArg(id={!r}, path={!r})'.format(
+            self._id_value,
+            self._path_value,
+        )
+
+LegalHoldsPolicyExportArg_validator = bv.Struct(LegalHoldsPolicyExportArg)
+
+class LegalHoldsPolicyReleaseArg(bb.Struct):
+    """
+    :ivar team.LegalHoldsPolicyReleaseArg.id: The legal hold Id.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None):
+        self._id_value = None
+        self._id_present = False
+        if id is not None:
+            self.id = id
+
+    @property
+    def id(self):
+        """
+        The legal hold Id.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsPolicyReleaseArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsPolicyReleaseArg(id={!r})'.format(
+            self._id_value,
+        )
+
+LegalHoldsPolicyReleaseArg_validator = bv.Struct(LegalHoldsPolicyReleaseArg)
+
+class LegalHoldsPolicyReleaseError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar
+        team.LegalHoldsPolicyReleaseError.legal_hold_performing_another_operation:
+        Legal hold is currently performing another operation.
+    :ivar team.LegalHoldsPolicyReleaseError.legal_hold_already_releasing: Legal
+        hold is currently performing a release or is already released.
+    :ivar team.LegalHoldsPolicyReleaseError.legal_hold_policy_not_found: Legal
+        hold policy does not exist for ``LegalHoldsPolicyReleaseArg.id``.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    legal_hold_performing_another_operation = None
+    # Attribute is overwritten below the class definition
+    legal_hold_already_releasing = None
+    # Attribute is overwritten below the class definition
+    legal_hold_policy_not_found = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_legal_hold_performing_another_operation(self):
+        """
+        Check if the union tag is ``legal_hold_performing_another_operation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_performing_another_operation'
+
+    def is_legal_hold_already_releasing(self):
+        """
+        Check if the union tag is ``legal_hold_already_releasing``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_already_releasing'
+
+    def is_legal_hold_policy_not_found(self):
+        """
+        Check if the union tag is ``legal_hold_policy_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_policy_not_found'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsPolicyReleaseError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsPolicyReleaseError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsPolicyReleaseError_validator = bv.Union(LegalHoldsPolicyReleaseError)
+
+class LegalHoldsPolicyUpdateArg(bb.Struct):
+    """
+    :ivar team.LegalHoldsPolicyUpdateArg.id: The legal hold Id.
+    :ivar team.LegalHoldsPolicyUpdateArg.name: Policy new name.
+    :ivar team.LegalHoldsPolicyUpdateArg.description: Policy new description.
+    :ivar team.LegalHoldsPolicyUpdateArg.members: List of team members to apply
+        the policy on.
+    """
+
+    __slots__ = [
+        '_id_value',
+        '_id_present',
+        '_name_value',
+        '_name_present',
+        '_description_value',
+        '_description_present',
+        '_members_value',
+        '_members_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 id=None,
+                 members=None,
+                 name=None,
+                 description=None):
+        self._id_value = None
+        self._id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._description_value = None
+        self._description_present = False
+        self._members_value = None
+        self._members_present = False
+        if id is not None:
+            self.id = id
+        if name is not None:
+            self.name = name
+        if description is not None:
+            self.description = description
+        if members is not None:
+            self.members = members
+
+    @property
+    def id(self):
+        """
+        The legal hold Id.
+
+        :rtype: str
+        """
+        if self._id_present:
+            return self._id_value
+        else:
+            raise AttributeError("missing required field 'id'")
+
+    @id.setter
+    def id(self, val):
+        val = self._id_validator.validate(val)
+        self._id_value = val
+        self._id_present = True
+
+    @id.deleter
+    def id(self):
+        self._id_value = None
+        self._id_present = False
+
+    @property
+    def name(self):
+        """
+        Policy new name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            return None
+
+    @name.setter
+    def name(self, val):
+        if val is None:
+            del self.name
+            return
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def description(self):
+        """
+        Policy new description.
+
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            return None
+
+    @description.setter
+    def description(self, val):
+        if val is None:
+            del self.description
+            return
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    @property
+    def members(self):
+        """
+        List of team members to apply the policy on.
+
+        :rtype: list of [str]
+        """
+        if self._members_present:
+            return self._members_value
+        else:
+            raise AttributeError("missing required field 'members'")
+
+    @members.setter
+    def members(self, val):
+        val = self._members_validator.validate(val)
+        self._members_value = val
+        self._members_present = True
+
+    @members.deleter
+    def members(self):
+        self._members_value = None
+        self._members_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsPolicyUpdateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsPolicyUpdateArg(id={!r}, members={!r}, name={!r}, description={!r})'.format(
+            self._id_value,
+            self._members_value,
+            self._name_value,
+            self._description_value,
+        )
+
+LegalHoldsPolicyUpdateArg_validator = bv.Struct(LegalHoldsPolicyUpdateArg)
+
+class LegalHoldsPolicyUpdateError(LegalHoldsError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.LegalHoldsPolicyUpdateError.inactive_legal_hold: Trying to
+        release an inactive legal hold.
+    :ivar
+        team.LegalHoldsPolicyUpdateError.legal_hold_performing_another_operation:
+        Legal hold is currently performing another operation.
+    :ivar team.LegalHoldsPolicyUpdateError.invalid_members: Some members in the
+        members list are not valid to be placed under legal hold.
+    :ivar
+        team.LegalHoldsPolicyUpdateError.number_of_users_on_hold_is_greater_than_hold_limitation:
+        You cannot add more than 5 users in a legal hold.
+    :ivar team.LegalHoldsPolicyUpdateError.empty_members_list: The users list
+        must have at least one user.
+    :ivar team.LegalHoldsPolicyUpdateError.name_must_be_unique: The name
+        provided is already in use by another legal hold.
+    :ivar team.LegalHoldsPolicyUpdateError.legal_hold_policy_not_found: Legal
+        hold policy does not exist for ``LegalHoldsPolicyUpdateArg.id``.
+    """
+
+    # Attribute is overwritten below the class definition
+    inactive_legal_hold = None
+    # Attribute is overwritten below the class definition
+    legal_hold_performing_another_operation = None
+    # Attribute is overwritten below the class definition
+    invalid_members = None
+    # Attribute is overwritten below the class definition
+    number_of_users_on_hold_is_greater_than_hold_limitation = None
+    # Attribute is overwritten below the class definition
+    empty_members_list = None
+    # Attribute is overwritten below the class definition
+    name_must_be_unique = None
+    # Attribute is overwritten below the class definition
+    legal_hold_policy_not_found = None
+
+    def is_inactive_legal_hold(self):
+        """
+        Check if the union tag is ``inactive_legal_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'inactive_legal_hold'
+
+    def is_legal_hold_performing_another_operation(self):
+        """
+        Check if the union tag is ``legal_hold_performing_another_operation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_performing_another_operation'
+
+    def is_invalid_members(self):
+        """
+        Check if the union tag is ``invalid_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_members'
+
+    def is_number_of_users_on_hold_is_greater_than_hold_limitation(self):
+        """
+        Check if the union tag is ``number_of_users_on_hold_is_greater_than_hold_limitation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'number_of_users_on_hold_is_greater_than_hold_limitation'
+
+    def is_empty_members_list(self):
+        """
+        Check if the union tag is ``empty_members_list``.
+
+        :rtype: bool
+        """
+        return self._tag == 'empty_members_list'
+
+    def is_name_must_be_unique(self):
+        """
+        Check if the union tag is ``name_must_be_unique``.
+
+        :rtype: bool
+        """
+        return self._tag == 'name_must_be_unique'
+
+    def is_legal_hold_policy_not_found(self):
+        """
+        Check if the union tag is ``legal_hold_policy_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_hold_policy_not_found'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LegalHoldsPolicyUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'LegalHoldsPolicyUpdateError(%r, %r)' % (self._tag, self._value)
+
+LegalHoldsPolicyUpdateError_validator = bv.Union(LegalHoldsPolicyUpdateError)
 
 class ListMemberAppsArg(bb.Struct):
     """
@@ -9135,17 +12338,21 @@ class MemberProfile(bb.Struct):
     :ivar team.MemberProfile.email: Email address of user.
     :ivar team.MemberProfile.email_verified: Is true if the user's email is
         verified to be owned by the user.
+    :ivar team.MemberProfile.secondary_emails: Secondary emails of a user.
     :ivar team.MemberProfile.status: The user's status as a member of a specific
         team.
     :ivar team.MemberProfile.name: Representations for a person's name.
     :ivar team.MemberProfile.membership_type: The user's membership type: full
         (normal team member) vs limited (does not use a license; no access to
         the team's shared quota).
+    :ivar team.MemberProfile.invited_on: The date and time the user was invited
+        to the team (contains value only when the member's status matches
+        ``TeamMemberStatus.invited``).
     :ivar team.MemberProfile.joined_on: The date and time the user joined as a
         member of a specific team.
     :ivar team.MemberProfile.suspended_on: The date and time the user was
         suspended from the team (contains value only when the member's status
-        matches ``TeamMemberStatus.suspended``.
+        matches ``TeamMemberStatus.suspended``).
     :ivar team.MemberProfile.persistent_id: Persistent ID that a team can attach
         to the user. The persistent ID is unique ID to be used for SAML
         authentication.
@@ -9166,12 +12373,16 @@ class MemberProfile(bb.Struct):
         '_email_present',
         '_email_verified_value',
         '_email_verified_present',
+        '_secondary_emails_value',
+        '_secondary_emails_present',
         '_status_value',
         '_status_present',
         '_name_value',
         '_name_present',
         '_membership_type_value',
         '_membership_type_present',
+        '_invited_on_value',
+        '_invited_on_present',
         '_joined_on_value',
         '_joined_on_present',
         '_suspended_on_value',
@@ -9195,6 +12406,8 @@ class MemberProfile(bb.Struct):
                  membership_type=None,
                  external_id=None,
                  account_id=None,
+                 secondary_emails=None,
+                 invited_on=None,
                  joined_on=None,
                  suspended_on=None,
                  persistent_id=None,
@@ -9210,12 +12423,16 @@ class MemberProfile(bb.Struct):
         self._email_present = False
         self._email_verified_value = None
         self._email_verified_present = False
+        self._secondary_emails_value = None
+        self._secondary_emails_present = False
         self._status_value = None
         self._status_present = False
         self._name_value = None
         self._name_present = False
         self._membership_type_value = None
         self._membership_type_present = False
+        self._invited_on_value = None
+        self._invited_on_present = False
         self._joined_on_value = None
         self._joined_on_present = False
         self._suspended_on_value = None
@@ -9236,12 +12453,16 @@ class MemberProfile(bb.Struct):
             self.email = email
         if email_verified is not None:
             self.email_verified = email_verified
+        if secondary_emails is not None:
+            self.secondary_emails = secondary_emails
         if status is not None:
             self.status = status
         if name is not None:
             self.name = name
         if membership_type is not None:
             self.membership_type = membership_type
+        if invited_on is not None:
+            self.invited_on = invited_on
         if joined_on is not None:
             self.joined_on = joined_on
         if suspended_on is not None:
@@ -9377,6 +12598,32 @@ class MemberProfile(bb.Struct):
         self._email_verified_present = False
 
     @property
+    def secondary_emails(self):
+        """
+        Secondary emails of a user.
+
+        :rtype: list of [secondary_emails.SecondaryEmail]
+        """
+        if self._secondary_emails_present:
+            return self._secondary_emails_value
+        else:
+            return None
+
+    @secondary_emails.setter
+    def secondary_emails(self, val):
+        if val is None:
+            del self.secondary_emails
+            return
+        val = self._secondary_emails_validator.validate(val)
+        self._secondary_emails_value = val
+        self._secondary_emails_present = True
+
+    @secondary_emails.deleter
+    def secondary_emails(self):
+        self._secondary_emails_value = None
+        self._secondary_emails_present = False
+
+    @property
     def status(self):
         """
         The user's status as a member of a specific team.
@@ -9447,6 +12694,33 @@ class MemberProfile(bb.Struct):
         self._membership_type_present = False
 
     @property
+    def invited_on(self):
+        """
+        The date and time the user was invited to the team (contains value only
+        when the member's status matches ``TeamMemberStatus.invited``).
+
+        :rtype: datetime.datetime
+        """
+        if self._invited_on_present:
+            return self._invited_on_value
+        else:
+            return None
+
+    @invited_on.setter
+    def invited_on(self, val):
+        if val is None:
+            del self.invited_on
+            return
+        val = self._invited_on_validator.validate(val)
+        self._invited_on_value = val
+        self._invited_on_present = True
+
+    @invited_on.deleter
+    def invited_on(self):
+        self._invited_on_value = None
+        self._invited_on_present = False
+
+    @property
     def joined_on(self):
         """
         The date and time the user joined as a member of a specific team.
@@ -9476,7 +12750,7 @@ class MemberProfile(bb.Struct):
     def suspended_on(self):
         """
         The date and time the user was suspended from the team (contains value
-        only when the member's status matches ``TeamMemberStatus.suspended``.
+        only when the member's status matches ``TeamMemberStatus.suspended``).
 
         :rtype: datetime.datetime
         """
@@ -9582,7 +12856,7 @@ class MemberProfile(bb.Struct):
         super(MemberProfile, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, suspended_on={!r}, persistent_id={!r}, is_directory_restricted={!r}, profile_photo_url={!r})'.format(
+        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r}, secondary_emails={!r}, invited_on={!r}, joined_on={!r}, suspended_on={!r}, persistent_id={!r}, is_directory_restricted={!r}, profile_photo_url={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -9591,6 +12865,8 @@ class MemberProfile(bb.Struct):
             self._membership_type_value,
             self._external_id_value,
             self._account_id_value,
+            self._secondary_emails_value,
+            self._invited_on_value,
             self._joined_on_value,
             self._suspended_on_value,
             self._persistent_id_value,
@@ -10123,6 +13399,99 @@ class MembersDeactivateError(UserSelectorError):
 
 MembersDeactivateError_validator = bv.Union(MembersDeactivateError)
 
+class MembersDeleteProfilePhotoArg(bb.Struct):
+    """
+    :ivar team.MembersDeleteProfilePhotoArg.user: Identity of the user whose
+        profile photo will be deleted.
+    """
+
+    __slots__ = [
+        '_user_value',
+        '_user_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user=None):
+        self._user_value = None
+        self._user_present = False
+        if user is not None:
+            self.user = user
+
+    @property
+    def user(self):
+        """
+        Identity of the user whose profile photo will be deleted.
+
+        :rtype: UserSelectorArg
+        """
+        if self._user_present:
+            return self._user_value
+        else:
+            raise AttributeError("missing required field 'user'")
+
+    @user.setter
+    def user(self, val):
+        self._user_validator.validate_type_only(val)
+        self._user_value = val
+        self._user_present = True
+
+    @user.deleter
+    def user(self):
+        self._user_value = None
+        self._user_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersDeleteProfilePhotoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MembersDeleteProfilePhotoArg(user={!r})'.format(
+            self._user_value,
+        )
+
+MembersDeleteProfilePhotoArg_validator = bv.Struct(MembersDeleteProfilePhotoArg)
+
+class MembersDeleteProfilePhotoError(MemberSelectorError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.MembersDeleteProfilePhotoError.set_profile_disallowed: Modifying
+        deleted users is not allowed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    set_profile_disallowed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_set_profile_disallowed(self):
+        """
+        Check if the union tag is ``set_profile_disallowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'set_profile_disallowed'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersDeleteProfilePhotoError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MembersDeleteProfilePhotoError(%r, %r)' % (self._tag, self._value)
+
+MembersDeleteProfilePhotoError_validator = bv.Union(MembersDeleteProfilePhotoError)
+
 class MembersGetInfoArgs(bb.Struct):
     """
     :ivar team.MembersGetInfoArgs.members: List of team members.
@@ -10293,6 +13662,92 @@ class MembersGetInfoItem(bb.Union):
         return 'MembersGetInfoItem(%r, %r)' % (self._tag, self._value)
 
 MembersGetInfoItem_validator = bv.Union(MembersGetInfoItem)
+
+class MembersInfo(bb.Struct):
+    """
+    :ivar team.MembersInfo.team_member_ids: Team member IDs of the users under
+        this hold.
+    :ivar team.MembersInfo.permanently_deleted_users: The number of permanently
+        deleted users that were under this hold.
+    """
+
+    __slots__ = [
+        '_team_member_ids_value',
+        '_team_member_ids_present',
+        '_permanently_deleted_users_value',
+        '_permanently_deleted_users_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_member_ids=None,
+                 permanently_deleted_users=None):
+        self._team_member_ids_value = None
+        self._team_member_ids_present = False
+        self._permanently_deleted_users_value = None
+        self._permanently_deleted_users_present = False
+        if team_member_ids is not None:
+            self.team_member_ids = team_member_ids
+        if permanently_deleted_users is not None:
+            self.permanently_deleted_users = permanently_deleted_users
+
+    @property
+    def team_member_ids(self):
+        """
+        Team member IDs of the users under this hold.
+
+        :rtype: list of [str]
+        """
+        if self._team_member_ids_present:
+            return self._team_member_ids_value
+        else:
+            raise AttributeError("missing required field 'team_member_ids'")
+
+    @team_member_ids.setter
+    def team_member_ids(self, val):
+        val = self._team_member_ids_validator.validate(val)
+        self._team_member_ids_value = val
+        self._team_member_ids_present = True
+
+    @team_member_ids.deleter
+    def team_member_ids(self):
+        self._team_member_ids_value = None
+        self._team_member_ids_present = False
+
+    @property
+    def permanently_deleted_users(self):
+        """
+        The number of permanently deleted users that were under this hold.
+
+        :rtype: int
+        """
+        if self._permanently_deleted_users_present:
+            return self._permanently_deleted_users_value
+        else:
+            raise AttributeError("missing required field 'permanently_deleted_users'")
+
+    @permanently_deleted_users.setter
+    def permanently_deleted_users(self, val):
+        val = self._permanently_deleted_users_validator.validate(val)
+        self._permanently_deleted_users_value = val
+        self._permanently_deleted_users_present = True
+
+    @permanently_deleted_users.deleter
+    def permanently_deleted_users(self):
+        self._permanently_deleted_users_value = None
+        self._permanently_deleted_users_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MembersInfo(team_member_ids={!r}, permanently_deleted_users={!r})'.format(
+            self._team_member_ids_value,
+            self._permanently_deleted_users_value,
+        )
+
+MembersInfo_validator = bv.Struct(MembersInfo)
 
 class MembersListArg(bb.Struct):
     """
@@ -10754,8 +14209,14 @@ class MembersRemoveArg(MembersDeactivateArg):
     :ivar team.MembersRemoveArg.keep_account: Downgrade the member to a Basic
         account. The user will retain the email address associated with their
         Dropbox  account and data in their account that is not restricted to
-        team members. In order to keep the account the argument wipe_data should
-        be set to False.
+        team members. In order to keep the account the argument ``wipe_data``
+        should be set to ``False``.
+    :ivar team.MembersRemoveArg.retain_team_shares: If provided, allows removed
+        users to keep access to folders already explicitly shared with them (not
+        via a group) when they are downgraded to a Basic account. Users will not
+        retain access to folders that do not allow external sharing. In order to
+        keep the sharing relationships, the arguments ``wipe_data`` should be
+        set to ``False`` and ``keep_account`` should be set to ``True``.
     """
 
     __slots__ = [
@@ -10765,6 +14226,8 @@ class MembersRemoveArg(MembersDeactivateArg):
         '_transfer_admin_id_present',
         '_keep_account_value',
         '_keep_account_present',
+        '_retain_team_shares_value',
+        '_retain_team_shares_present',
     ]
 
     _has_required_fields = True
@@ -10774,7 +14237,8 @@ class MembersRemoveArg(MembersDeactivateArg):
                  wipe_data=None,
                  transfer_dest_id=None,
                  transfer_admin_id=None,
-                 keep_account=None):
+                 keep_account=None,
+                 retain_team_shares=None):
         super(MembersRemoveArg, self).__init__(user,
                                                wipe_data)
         self._transfer_dest_id_value = None
@@ -10783,12 +14247,16 @@ class MembersRemoveArg(MembersDeactivateArg):
         self._transfer_admin_id_present = False
         self._keep_account_value = None
         self._keep_account_present = False
+        self._retain_team_shares_value = None
+        self._retain_team_shares_present = False
         if transfer_dest_id is not None:
             self.transfer_dest_id = transfer_dest_id
         if transfer_admin_id is not None:
             self.transfer_admin_id = transfer_admin_id
         if keep_account is not None:
             self.keep_account = keep_account
+        if retain_team_shares is not None:
+            self.retain_team_shares = retain_team_shares
 
     @property
     def transfer_dest_id(self):
@@ -10851,7 +14319,7 @@ class MembersRemoveArg(MembersDeactivateArg):
         Downgrade the member to a Basic account. The user will retain the email
         address associated with their Dropbox  account and data in their account
         that is not restricted to team members. In order to keep the account the
-        argument wipe_data should be set to False.
+        argument ``wipe_data`` should be set to ``False``.
 
         :rtype: bool
         """
@@ -10871,16 +14339,45 @@ class MembersRemoveArg(MembersDeactivateArg):
         self._keep_account_value = None
         self._keep_account_present = False
 
+    @property
+    def retain_team_shares(self):
+        """
+        If provided, allows removed users to keep access to folders already
+        explicitly shared with them (not via a group) when they are downgraded
+        to a Basic account. Users will not retain access to folders that do not
+        allow external sharing. In order to keep the sharing relationships, the
+        arguments ``wipe_data`` should be set to ``False`` and ``keep_account``
+        should be set to ``True``.
+
+        :rtype: bool
+        """
+        if self._retain_team_shares_present:
+            return self._retain_team_shares_value
+        else:
+            return False
+
+    @retain_team_shares.setter
+    def retain_team_shares(self, val):
+        val = self._retain_team_shares_validator.validate(val)
+        self._retain_team_shares_value = val
+        self._retain_team_shares_present = True
+
+    @retain_team_shares.deleter
+    def retain_team_shares(self):
+        self._retain_team_shares_value = None
+        self._retain_team_shares_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersRemoveArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'MembersRemoveArg(user={!r}, wipe_data={!r}, transfer_dest_id={!r}, transfer_admin_id={!r}, keep_account={!r})'.format(
+        return 'MembersRemoveArg(user={!r}, wipe_data={!r}, transfer_dest_id={!r}, transfer_admin_id={!r}, keep_account={!r}, retain_team_shares={!r})'.format(
             self._user_value,
             self._wipe_data_value,
             self._transfer_dest_id_value,
             self._transfer_admin_id_value,
             self._keep_account_value,
+            self._retain_team_shares_value,
         )
 
 MembersRemoveArg_validator = bv.Struct(MembersRemoveArg)
@@ -11025,11 +14522,29 @@ class MembersRemoveError(MembersTransferFilesError):
         account and transfer the data to another user at the same time.
     :ivar team.MembersRemoveError.cannot_keep_account_and_delete_data: Cannot
         keep account and delete the data at the same time. To keep the account
-        the argument wipe_data should be set to False.
+        the argument wipe_data should be set to ``False``.
     :ivar team.MembersRemoveError.email_address_too_long_to_be_disabled: The
         email address of the user is too long to be disabled.
     :ivar team.MembersRemoveError.cannot_keep_invited_user_account: Cannot keep
         account of an invited user.
+    :ivar team.MembersRemoveError.cannot_retain_shares_when_data_wiped: Cannot
+        retain team shares when the user's data is marked for deletion on their
+        linked devices. The argument wipe_data should be set to ``False``.
+    :ivar team.MembersRemoveError.cannot_retain_shares_when_no_account_kept: The
+        user's account must be kept in order to retain team shares. The argument
+        keep_account should be set to ``True``.
+    :ivar
+        team.MembersRemoveError.cannot_retain_shares_when_team_external_sharing_off:
+        Externally sharing files, folders, and links must be enabled in team
+        settings in order to retain team shares for the user.
+    :ivar team.MembersRemoveError.cannot_keep_account: Only a team admin, can
+        convert this account to a Basic account.
+    :ivar team.MembersRemoveError.cannot_keep_account_under_legal_hold: This
+        user content is currently being held. To convert this member's account
+        to a Basic account, you'll first need to remove them from the hold.
+    :ivar team.MembersRemoveError.cannot_keep_account_required_to_sign_tos: To
+        convert this member to a Basic account, they'll first need to sign in to
+        Dropbox and agree to the terms of service.
     """
 
     # Attribute is overwritten below the class definition
@@ -11042,6 +14557,18 @@ class MembersRemoveError(MembersTransferFilesError):
     email_address_too_long_to_be_disabled = None
     # Attribute is overwritten below the class definition
     cannot_keep_invited_user_account = None
+    # Attribute is overwritten below the class definition
+    cannot_retain_shares_when_data_wiped = None
+    # Attribute is overwritten below the class definition
+    cannot_retain_shares_when_no_account_kept = None
+    # Attribute is overwritten below the class definition
+    cannot_retain_shares_when_team_external_sharing_off = None
+    # Attribute is overwritten below the class definition
+    cannot_keep_account = None
+    # Attribute is overwritten below the class definition
+    cannot_keep_account_under_legal_hold = None
+    # Attribute is overwritten below the class definition
+    cannot_keep_account_required_to_sign_tos = None
 
     def is_remove_last_admin(self):
         """
@@ -11082,6 +14609,54 @@ class MembersRemoveError(MembersTransferFilesError):
         :rtype: bool
         """
         return self._tag == 'cannot_keep_invited_user_account'
+
+    def is_cannot_retain_shares_when_data_wiped(self):
+        """
+        Check if the union tag is ``cannot_retain_shares_when_data_wiped``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_retain_shares_when_data_wiped'
+
+    def is_cannot_retain_shares_when_no_account_kept(self):
+        """
+        Check if the union tag is ``cannot_retain_shares_when_no_account_kept``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_retain_shares_when_no_account_kept'
+
+    def is_cannot_retain_shares_when_team_external_sharing_off(self):
+        """
+        Check if the union tag is ``cannot_retain_shares_when_team_external_sharing_off``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_retain_shares_when_team_external_sharing_off'
+
+    def is_cannot_keep_account(self):
+        """
+        Check if the union tag is ``cannot_keep_account``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_keep_account'
+
+    def is_cannot_keep_account_under_legal_hold(self):
+        """
+        Check if the union tag is ``cannot_keep_account_under_legal_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_keep_account_under_legal_hold'
+
+    def is_cannot_keep_account_required_to_sign_tos(self):
+        """
+        Check if the union tag is ``cannot_keep_account_required_to_sign_tos``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_keep_account_required_to_sign_tos'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersRemoveError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -11773,6 +15348,161 @@ class MembersSetProfileError(MemberSelectorError):
         return 'MembersSetProfileError(%r, %r)' % (self._tag, self._value)
 
 MembersSetProfileError_validator = bv.Union(MembersSetProfileError)
+
+class MembersSetProfilePhotoArg(bb.Struct):
+    """
+    :ivar team.MembersSetProfilePhotoArg.user: Identity of the user whose
+        profile photo will be set.
+    :ivar team.MembersSetProfilePhotoArg.photo: Image to set as the member's new
+        profile photo.
+    """
+
+    __slots__ = [
+        '_user_value',
+        '_user_present',
+        '_photo_value',
+        '_photo_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user=None,
+                 photo=None):
+        self._user_value = None
+        self._user_present = False
+        self._photo_value = None
+        self._photo_present = False
+        if user is not None:
+            self.user = user
+        if photo is not None:
+            self.photo = photo
+
+    @property
+    def user(self):
+        """
+        Identity of the user whose profile photo will be set.
+
+        :rtype: UserSelectorArg
+        """
+        if self._user_present:
+            return self._user_value
+        else:
+            raise AttributeError("missing required field 'user'")
+
+    @user.setter
+    def user(self, val):
+        self._user_validator.validate_type_only(val)
+        self._user_value = val
+        self._user_present = True
+
+    @user.deleter
+    def user(self):
+        self._user_value = None
+        self._user_present = False
+
+    @property
+    def photo(self):
+        """
+        Image to set as the member's new profile photo.
+
+        :rtype: account.PhotoSourceArg
+        """
+        if self._photo_present:
+            return self._photo_value
+        else:
+            raise AttributeError("missing required field 'photo'")
+
+    @photo.setter
+    def photo(self, val):
+        self._photo_validator.validate_type_only(val)
+        self._photo_value = val
+        self._photo_present = True
+
+    @photo.deleter
+    def photo(self):
+        self._photo_value = None
+        self._photo_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetProfilePhotoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MembersSetProfilePhotoArg(user={!r}, photo={!r})'.format(
+            self._user_value,
+            self._photo_value,
+        )
+
+MembersSetProfilePhotoArg_validator = bv.Struct(MembersSetProfilePhotoArg)
+
+class MembersSetProfilePhotoError(MemberSelectorError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.MembersSetProfilePhotoError.set_profile_disallowed: Modifying
+        deleted users is not allowed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    set_profile_disallowed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def photo_error(cls, val):
+        """
+        Create an instance of this class set to the ``photo_error`` tag with
+        value ``val``.
+
+        :param account.SetProfilePhotoError val:
+        :rtype: MembersSetProfilePhotoError
+        """
+        return cls('photo_error', val)
+
+    def is_set_profile_disallowed(self):
+        """
+        Check if the union tag is ``set_profile_disallowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'set_profile_disallowed'
+
+    def is_photo_error(self):
+        """
+        Check if the union tag is ``photo_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'photo_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_photo_error(self):
+        """
+        Only call this if :meth:`is_photo_error` is true.
+
+        :rtype: account.SetProfilePhotoError
+        """
+        if not self.is_photo_error():
+            raise AttributeError("tag 'photo_error' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetProfilePhotoError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MembersSetProfilePhotoError(%r, %r)' % (self._tag, self._value)
+
+MembersSetProfilePhotoError_validator = bv.Union(MembersSetProfilePhotoError)
 
 class MembersSuspendError(MembersDeactivateError):
     """
@@ -12693,6 +16423,243 @@ class RemovedStatus(bb.Struct):
         )
 
 RemovedStatus_validator = bv.Struct(RemovedStatus)
+
+class ResendSecondaryEmailResult(bb.Union):
+    """
+    Result of trying to resend verification email to a secondary email address.
+    'success' is the only value indicating that a verification email was
+    successfully sent. The other values explain the type of error that occurred,
+    and include the email for which the error occured.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar str team.ResendSecondaryEmailResult.success: A verification email was
+        successfully sent to the secondary email address.
+    :ivar str team.ResendSecondaryEmailResult.not_pending: This secondary email
+        address is not pending for the user.
+    :ivar str team.ResendSecondaryEmailResult.rate_limited: Too many emails are
+        being sent to this email address. Please try again later.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param str val:
+        :rtype: ResendSecondaryEmailResult
+        """
+        return cls('success', val)
+
+    @classmethod
+    def not_pending(cls, val):
+        """
+        Create an instance of this class set to the ``not_pending`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: ResendSecondaryEmailResult
+        """
+        return cls('not_pending', val)
+
+    @classmethod
+    def rate_limited(cls, val):
+        """
+        Create an instance of this class set to the ``rate_limited`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: ResendSecondaryEmailResult
+        """
+        return cls('rate_limited', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_not_pending(self):
+        """
+        Check if the union tag is ``not_pending``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_pending'
+
+    def is_rate_limited(self):
+        """
+        Check if the union tag is ``rate_limited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rate_limited'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        A verification email was successfully sent to the secondary email
+        address.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: str
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_not_pending(self):
+        """
+        This secondary email address is not pending for the user.
+
+        Only call this if :meth:`is_not_pending` is true.
+
+        :rtype: str
+        """
+        if not self.is_not_pending():
+            raise AttributeError("tag 'not_pending' not set")
+        return self._value
+
+    def get_rate_limited(self):
+        """
+        Too many emails are being sent to this email address. Please try again
+        later.
+
+        Only call this if :meth:`is_rate_limited` is true.
+
+        :rtype: str
+        """
+        if not self.is_rate_limited():
+            raise AttributeError("tag 'rate_limited' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ResendSecondaryEmailResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ResendSecondaryEmailResult(%r, %r)' % (self._tag, self._value)
+
+ResendSecondaryEmailResult_validator = bv.Union(ResendSecondaryEmailResult)
+
+class ResendVerificationEmailArg(bb.Struct):
+    """
+    :ivar team.ResendVerificationEmailArg.emails_to_resend: List of users and
+        secondary emails to resend verification emails to.
+    """
+
+    __slots__ = [
+        '_emails_to_resend_value',
+        '_emails_to_resend_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 emails_to_resend=None):
+        self._emails_to_resend_value = None
+        self._emails_to_resend_present = False
+        if emails_to_resend is not None:
+            self.emails_to_resend = emails_to_resend
+
+    @property
+    def emails_to_resend(self):
+        """
+        List of users and secondary emails to resend verification emails to.
+
+        :rtype: list of [UserSecondaryEmailsArg]
+        """
+        if self._emails_to_resend_present:
+            return self._emails_to_resend_value
+        else:
+            raise AttributeError("missing required field 'emails_to_resend'")
+
+    @emails_to_resend.setter
+    def emails_to_resend(self, val):
+        val = self._emails_to_resend_validator.validate(val)
+        self._emails_to_resend_value = val
+        self._emails_to_resend_present = True
+
+    @emails_to_resend.deleter
+    def emails_to_resend(self):
+        self._emails_to_resend_value = None
+        self._emails_to_resend_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ResendVerificationEmailArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ResendVerificationEmailArg(emails_to_resend={!r})'.format(
+            self._emails_to_resend_value,
+        )
+
+ResendVerificationEmailArg_validator = bv.Struct(ResendVerificationEmailArg)
+
+class ResendVerificationEmailResult(bb.Struct):
+    """
+    List of users and resend results.
+    """
+
+    __slots__ = [
+        '_results_value',
+        '_results_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 results=None):
+        self._results_value = None
+        self._results_present = False
+        if results is not None:
+            self.results = results
+
+    @property
+    def results(self):
+        """
+        :rtype: list of [UserResendResult]
+        """
+        if self._results_present:
+            return self._results_value
+        else:
+            raise AttributeError("missing required field 'results'")
+
+    @results.setter
+    def results(self, val):
+        val = self._results_validator.validate(val)
+        self._results_value = val
+        self._results_present = True
+
+    @results.deleter
+    def results(self):
+        self._results_value = None
+        self._results_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ResendVerificationEmailResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ResendVerificationEmailResult(results={!r})'.format(
+            self._results_value,
+        )
+
+ResendVerificationEmailResult_validator = bv.Struct(ResendVerificationEmailResult)
 
 class RevokeDesktopClientArg(DeviceSessionArg):
     """
@@ -15612,6 +19579,8 @@ class TeamMemberProfile(MemberProfile):
                  member_folder_id=None,
                  external_id=None,
                  account_id=None,
+                 secondary_emails=None,
+                 invited_on=None,
                  joined_on=None,
                  suspended_on=None,
                  persistent_id=None,
@@ -15625,6 +19594,8 @@ class TeamMemberProfile(MemberProfile):
                                                 membership_type,
                                                 external_id,
                                                 account_id,
+                                                secondary_emails,
+                                                invited_on,
                                                 joined_on,
                                                 suspended_on,
                                                 persistent_id,
@@ -15689,7 +19660,7 @@ class TeamMemberProfile(MemberProfile):
         super(TeamMemberProfile, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, member_folder_id={!r}, external_id={!r}, account_id={!r}, joined_on={!r}, suspended_on={!r}, persistent_id={!r}, is_directory_restricted={!r}, profile_photo_url={!r})'.format(
+        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, member_folder_id={!r}, external_id={!r}, account_id={!r}, secondary_emails={!r}, invited_on={!r}, joined_on={!r}, suspended_on={!r}, persistent_id={!r}, is_directory_restricted={!r}, profile_photo_url={!r})'.format(
             self._team_member_id_value,
             self._email_value,
             self._email_verified_value,
@@ -15700,6 +19671,8 @@ class TeamMemberProfile(MemberProfile):
             self._member_folder_id_value,
             self._external_id_value,
             self._account_id_value,
+            self._secondary_emails_value,
+            self._invited_on_value,
             self._joined_on_value,
             self._suspended_on_value,
             self._persistent_id_value,
@@ -16399,6 +20372,172 @@ class UploadApiRateLimitValue(bb.Union):
 
 UploadApiRateLimitValue_validator = bv.Union(UploadApiRateLimitValue)
 
+class UserAddResult(bb.Union):
+    """
+    Result of trying to add secondary emails to a user. 'success' is the only
+    value indicating that a user was successfully retrieved for adding secondary
+    emails. The other values explain the type of error that occurred, and
+    include the user for which the error occured.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UserSecondaryEmailsResult UserAddResult.success: Describes a user and
+        the results for each attempt to add a secondary email.
+    :ivar UserSelectorArg UserAddResult.invalid_user: Specified user is not a
+        valid target for adding secondary emails.
+    :ivar UserSelectorArg UserAddResult.unverified: Secondary emails can only be
+        added to verified users.
+    :ivar UserSelectorArg UserAddResult.placeholder_user: Secondary emails
+        cannot be added to placeholder users.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param UserSecondaryEmailsResult val:
+        :rtype: UserAddResult
+        """
+        return cls('success', val)
+
+    @classmethod
+    def invalid_user(cls, val):
+        """
+        Create an instance of this class set to the ``invalid_user`` tag with
+        value ``val``.
+
+        :param UserSelectorArg val:
+        :rtype: UserAddResult
+        """
+        return cls('invalid_user', val)
+
+    @classmethod
+    def unverified(cls, val):
+        """
+        Create an instance of this class set to the ``unverified`` tag with
+        value ``val``.
+
+        :param UserSelectorArg val:
+        :rtype: UserAddResult
+        """
+        return cls('unverified', val)
+
+    @classmethod
+    def placeholder_user(cls, val):
+        """
+        Create an instance of this class set to the ``placeholder_user`` tag
+        with value ``val``.
+
+        :param UserSelectorArg val:
+        :rtype: UserAddResult
+        """
+        return cls('placeholder_user', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_invalid_user(self):
+        """
+        Check if the union tag is ``invalid_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_user'
+
+    def is_unverified(self):
+        """
+        Check if the union tag is ``unverified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unverified'
+
+    def is_placeholder_user(self):
+        """
+        Check if the union tag is ``placeholder_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'placeholder_user'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        Describes a user and the results for each attempt to add a secondary
+        email.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: UserSecondaryEmailsResult
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_invalid_user(self):
+        """
+        Specified user is not a valid target for adding secondary emails.
+
+        Only call this if :meth:`is_invalid_user` is true.
+
+        :rtype: UserSelectorArg
+        """
+        if not self.is_invalid_user():
+            raise AttributeError("tag 'invalid_user' not set")
+        return self._value
+
+    def get_unverified(self):
+        """
+        Secondary emails can only be added to verified users.
+
+        Only call this if :meth:`is_unverified` is true.
+
+        :rtype: UserSelectorArg
+        """
+        if not self.is_unverified():
+            raise AttributeError("tag 'unverified' not set")
+        return self._value
+
+    def get_placeholder_user(self):
+        """
+        Secondary emails cannot be added to placeholder users.
+
+        Only call this if :meth:`is_placeholder_user` is true.
+
+        :rtype: UserSelectorArg
+        """
+        if not self.is_placeholder_user():
+            raise AttributeError("tag 'placeholder_user' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserAddResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserAddResult(%r, %r)' % (self._tag, self._value)
+
+UserAddResult_validator = bv.Union(UserAddResult)
+
 class UserCustomQuotaArg(bb.Struct):
     """
     User and their required custom quota in GB (1 TB = 1024 GB).
@@ -16560,6 +20699,513 @@ class UserCustomQuotaResult(bb.Struct):
         )
 
 UserCustomQuotaResult_validator = bv.Struct(UserCustomQuotaResult)
+
+class UserDeleteEmailsResult(bb.Struct):
+
+    __slots__ = [
+        '_user_value',
+        '_user_present',
+        '_results_value',
+        '_results_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user=None,
+                 results=None):
+        self._user_value = None
+        self._user_present = False
+        self._results_value = None
+        self._results_present = False
+        if user is not None:
+            self.user = user
+        if results is not None:
+            self.results = results
+
+    @property
+    def user(self):
+        """
+        :rtype: UserSelectorArg
+        """
+        if self._user_present:
+            return self._user_value
+        else:
+            raise AttributeError("missing required field 'user'")
+
+    @user.setter
+    def user(self, val):
+        self._user_validator.validate_type_only(val)
+        self._user_value = val
+        self._user_present = True
+
+    @user.deleter
+    def user(self):
+        self._user_value = None
+        self._user_present = False
+
+    @property
+    def results(self):
+        """
+        :rtype: list of [DeleteSecondaryEmailResult]
+        """
+        if self._results_present:
+            return self._results_value
+        else:
+            raise AttributeError("missing required field 'results'")
+
+    @results.setter
+    def results(self, val):
+        val = self._results_validator.validate(val)
+        self._results_value = val
+        self._results_present = True
+
+    @results.deleter
+    def results(self):
+        self._results_value = None
+        self._results_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserDeleteEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserDeleteEmailsResult(user={!r}, results={!r})'.format(
+            self._user_value,
+            self._results_value,
+        )
+
+UserDeleteEmailsResult_validator = bv.Struct(UserDeleteEmailsResult)
+
+class UserDeleteResult(bb.Union):
+    """
+    Result of trying to delete a user's secondary emails. 'success' is the only
+    value indicating that a user was successfully retrieved for deleting
+    secondary emails. The other values explain the type of error that occurred,
+    and include the user for which the error occured.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UserDeleteEmailsResult UserDeleteResult.success: Describes a user and
+        the results for each attempt to delete a secondary email.
+    :ivar UserSelectorArg UserDeleteResult.invalid_user: Specified user is not a
+        valid target for deleting secondary emails.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param UserDeleteEmailsResult val:
+        :rtype: UserDeleteResult
+        """
+        return cls('success', val)
+
+    @classmethod
+    def invalid_user(cls, val):
+        """
+        Create an instance of this class set to the ``invalid_user`` tag with
+        value ``val``.
+
+        :param UserSelectorArg val:
+        :rtype: UserDeleteResult
+        """
+        return cls('invalid_user', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_invalid_user(self):
+        """
+        Check if the union tag is ``invalid_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_user'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        Describes a user and the results for each attempt to delete a secondary
+        email.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: UserDeleteEmailsResult
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_invalid_user(self):
+        """
+        Specified user is not a valid target for deleting secondary emails.
+
+        Only call this if :meth:`is_invalid_user` is true.
+
+        :rtype: UserSelectorArg
+        """
+        if not self.is_invalid_user():
+            raise AttributeError("tag 'invalid_user' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserDeleteResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserDeleteResult(%r, %r)' % (self._tag, self._value)
+
+UserDeleteResult_validator = bv.Union(UserDeleteResult)
+
+class UserResendEmailsResult(bb.Struct):
+
+    __slots__ = [
+        '_user_value',
+        '_user_present',
+        '_results_value',
+        '_results_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user=None,
+                 results=None):
+        self._user_value = None
+        self._user_present = False
+        self._results_value = None
+        self._results_present = False
+        if user is not None:
+            self.user = user
+        if results is not None:
+            self.results = results
+
+    @property
+    def user(self):
+        """
+        :rtype: UserSelectorArg
+        """
+        if self._user_present:
+            return self._user_value
+        else:
+            raise AttributeError("missing required field 'user'")
+
+    @user.setter
+    def user(self, val):
+        self._user_validator.validate_type_only(val)
+        self._user_value = val
+        self._user_present = True
+
+    @user.deleter
+    def user(self):
+        self._user_value = None
+        self._user_present = False
+
+    @property
+    def results(self):
+        """
+        :rtype: list of [ResendSecondaryEmailResult]
+        """
+        if self._results_present:
+            return self._results_value
+        else:
+            raise AttributeError("missing required field 'results'")
+
+    @results.setter
+    def results(self, val):
+        val = self._results_validator.validate(val)
+        self._results_value = val
+        self._results_present = True
+
+    @results.deleter
+    def results(self):
+        self._results_value = None
+        self._results_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserResendEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserResendEmailsResult(user={!r}, results={!r})'.format(
+            self._user_value,
+            self._results_value,
+        )
+
+UserResendEmailsResult_validator = bv.Struct(UserResendEmailsResult)
+
+class UserResendResult(bb.Union):
+    """
+    Result of trying to resend verification emails to a user. 'success' is the
+    only value indicating that a user was successfully retrieved for sending
+    verification emails. The other values explain the type of error that
+    occurred, and include the user for which the error occured.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UserResendEmailsResult UserResendResult.success: Describes a user and
+        the results for each attempt to resend verification emails.
+    :ivar UserSelectorArg UserResendResult.invalid_user: Specified user is not a
+        valid target for resending verification emails.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param UserResendEmailsResult val:
+        :rtype: UserResendResult
+        """
+        return cls('success', val)
+
+    @classmethod
+    def invalid_user(cls, val):
+        """
+        Create an instance of this class set to the ``invalid_user`` tag with
+        value ``val``.
+
+        :param UserSelectorArg val:
+        :rtype: UserResendResult
+        """
+        return cls('invalid_user', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_invalid_user(self):
+        """
+        Check if the union tag is ``invalid_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_user'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        Describes a user and the results for each attempt to resend verification
+        emails.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: UserResendEmailsResult
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def get_invalid_user(self):
+        """
+        Specified user is not a valid target for resending verification emails.
+
+        Only call this if :meth:`is_invalid_user` is true.
+
+        :rtype: UserSelectorArg
+        """
+        if not self.is_invalid_user():
+            raise AttributeError("tag 'invalid_user' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserResendResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserResendResult(%r, %r)' % (self._tag, self._value)
+
+UserResendResult_validator = bv.Union(UserResendResult)
+
+class UserSecondaryEmailsArg(bb.Struct):
+    """
+    User and a list of secondary emails.
+    """
+
+    __slots__ = [
+        '_user_value',
+        '_user_present',
+        '_secondary_emails_value',
+        '_secondary_emails_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user=None,
+                 secondary_emails=None):
+        self._user_value = None
+        self._user_present = False
+        self._secondary_emails_value = None
+        self._secondary_emails_present = False
+        if user is not None:
+            self.user = user
+        if secondary_emails is not None:
+            self.secondary_emails = secondary_emails
+
+    @property
+    def user(self):
+        """
+        :rtype: UserSelectorArg
+        """
+        if self._user_present:
+            return self._user_value
+        else:
+            raise AttributeError("missing required field 'user'")
+
+    @user.setter
+    def user(self, val):
+        self._user_validator.validate_type_only(val)
+        self._user_value = val
+        self._user_present = True
+
+    @user.deleter
+    def user(self):
+        self._user_value = None
+        self._user_present = False
+
+    @property
+    def secondary_emails(self):
+        """
+        :rtype: list of [str]
+        """
+        if self._secondary_emails_present:
+            return self._secondary_emails_value
+        else:
+            raise AttributeError("missing required field 'secondary_emails'")
+
+    @secondary_emails.setter
+    def secondary_emails(self, val):
+        val = self._secondary_emails_validator.validate(val)
+        self._secondary_emails_value = val
+        self._secondary_emails_present = True
+
+    @secondary_emails.deleter
+    def secondary_emails(self):
+        self._secondary_emails_value = None
+        self._secondary_emails_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserSecondaryEmailsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserSecondaryEmailsArg(user={!r}, secondary_emails={!r})'.format(
+            self._user_value,
+            self._secondary_emails_value,
+        )
+
+UserSecondaryEmailsArg_validator = bv.Struct(UserSecondaryEmailsArg)
+
+class UserSecondaryEmailsResult(bb.Struct):
+
+    __slots__ = [
+        '_user_value',
+        '_user_present',
+        '_results_value',
+        '_results_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user=None,
+                 results=None):
+        self._user_value = None
+        self._user_present = False
+        self._results_value = None
+        self._results_present = False
+        if user is not None:
+            self.user = user
+        if results is not None:
+            self.results = results
+
+    @property
+    def user(self):
+        """
+        :rtype: UserSelectorArg
+        """
+        if self._user_present:
+            return self._user_value
+        else:
+            raise AttributeError("missing required field 'user'")
+
+    @user.setter
+    def user(self, val):
+        self._user_validator.validate_type_only(val)
+        self._user_value = val
+        self._user_present = True
+
+    @user.deleter
+    def user(self):
+        self._user_value = None
+        self._user_present = False
+
+    @property
+    def results(self):
+        """
+        :rtype: list of [AddSecondaryEmailResult]
+        """
+        if self._results_present:
+            return self._results_value
+        else:
+            raise AttributeError("missing required field 'results'")
+
+    @results.setter
+    def results(self, val):
+        val = self._results_validator.validate(val)
+        self._results_value = val
+        self._results_present = True
+
+    @results.deleter
+    def results(self):
+        self._results_value = None
+        self._results_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserSecondaryEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UserSecondaryEmailsResult(user={!r}, results={!r})'.format(
+            self._user_value,
+            self._results_value,
+        )
+
+UserSecondaryEmailsResult_validator = bv.Struct(UserSecondaryEmailsResult)
 
 class UserSelectorArg(bb.Union):
     """
@@ -16788,8 +21434,23 @@ class UsersSelectorArg(bb.Union):
 UsersSelectorArg_validator = bv.Union(UsersSelectorArg)
 
 GroupsGetInfoResult_validator = bv.List(GroupsGetInfoItem_validator)
+LegalHoldId_validator = bv.String(pattern=u'^pid_dbhid:.+')
+LegalHoldPolicyDescription_validator = bv.String(max_length=501)
+LegalHoldPolicyName_validator = bv.String(max_length=140)
+LegalHoldsGetPolicyResult_validator = LegalHoldPolicy_validator
+LegalHoldsGetPolicyResult = LegalHoldPolicy
+LegalHoldsPolicyCreateResult_validator = LegalHoldPolicy_validator
+LegalHoldsPolicyCreateResult = LegalHoldPolicy
+LegalHoldsPolicyUpdateResult_validator = LegalHoldPolicy_validator
+LegalHoldsPolicyUpdateResult = LegalHoldPolicy
+ListHeldRevisionCursor_validator = bv.String(min_length=1)
 MembersGetInfoResult_validator = bv.List(MembersGetInfoItem_validator)
+NSpath_validator = bv.String(pattern=u'(ns:[0-9]+(/.*)?)')
 NumberPerDay_validator = bv.List(bv.Nullable(bv.UInt64()))
+Path_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?')
+SecondaryEmail_validator = secondary_emails.SecondaryEmail_validator
+SecondaryEmail = secondary_emails.SecondaryEmail
+UserId_validator = bv.UInt64()
 UserQuota_validator = bv.UInt32(min_value=15)
 DeviceSession._session_id_validator = bv.String()
 DeviceSession._ip_address_validator = bv.Nullable(bv.String())
@@ -16827,6 +21488,52 @@ ActiveWebSession._all_fields_ = DeviceSession._all_fields_ + [
     ('browser', ActiveWebSession._browser_validator),
     ('expires', ActiveWebSession._expires_validator),
 ]
+
+AddSecondaryEmailResult._success_validator = SecondaryEmail_validator
+AddSecondaryEmailResult._unavailable_validator = common.EmailAddress_validator
+AddSecondaryEmailResult._already_pending_validator = common.EmailAddress_validator
+AddSecondaryEmailResult._already_owned_by_user_validator = common.EmailAddress_validator
+AddSecondaryEmailResult._reached_limit_validator = common.EmailAddress_validator
+AddSecondaryEmailResult._transient_error_validator = common.EmailAddress_validator
+AddSecondaryEmailResult._too_many_updates_validator = common.EmailAddress_validator
+AddSecondaryEmailResult._unknown_error_validator = common.EmailAddress_validator
+AddSecondaryEmailResult._rate_limited_validator = common.EmailAddress_validator
+AddSecondaryEmailResult._other_validator = bv.Void()
+AddSecondaryEmailResult._tagmap = {
+    'success': AddSecondaryEmailResult._success_validator,
+    'unavailable': AddSecondaryEmailResult._unavailable_validator,
+    'already_pending': AddSecondaryEmailResult._already_pending_validator,
+    'already_owned_by_user': AddSecondaryEmailResult._already_owned_by_user_validator,
+    'reached_limit': AddSecondaryEmailResult._reached_limit_validator,
+    'transient_error': AddSecondaryEmailResult._transient_error_validator,
+    'too_many_updates': AddSecondaryEmailResult._too_many_updates_validator,
+    'unknown_error': AddSecondaryEmailResult._unknown_error_validator,
+    'rate_limited': AddSecondaryEmailResult._rate_limited_validator,
+    'other': AddSecondaryEmailResult._other_validator,
+}
+
+AddSecondaryEmailResult.other = AddSecondaryEmailResult('other')
+
+AddSecondaryEmailsArg._new_secondary_emails_validator = bv.List(UserSecondaryEmailsArg_validator)
+AddSecondaryEmailsArg._all_field_names_ = set(['new_secondary_emails'])
+AddSecondaryEmailsArg._all_fields_ = [('new_secondary_emails', AddSecondaryEmailsArg._new_secondary_emails_validator)]
+
+AddSecondaryEmailsError._secondary_emails_disabled_validator = bv.Void()
+AddSecondaryEmailsError._too_many_emails_validator = bv.Void()
+AddSecondaryEmailsError._other_validator = bv.Void()
+AddSecondaryEmailsError._tagmap = {
+    'secondary_emails_disabled': AddSecondaryEmailsError._secondary_emails_disabled_validator,
+    'too_many_emails': AddSecondaryEmailsError._too_many_emails_validator,
+    'other': AddSecondaryEmailsError._other_validator,
+}
+
+AddSecondaryEmailsError.secondary_emails_disabled = AddSecondaryEmailsError('secondary_emails_disabled')
+AddSecondaryEmailsError.too_many_emails = AddSecondaryEmailsError('too_many_emails')
+AddSecondaryEmailsError.other = AddSecondaryEmailsError('other')
+
+AddSecondaryEmailsResult._results_validator = bv.List(UserAddResult_validator)
+AddSecondaryEmailsResult._all_field_names_ = set(['results'])
+AddSecondaryEmailsResult._all_fields_ = [('results', AddSecondaryEmailsResult._results_validator)]
 
 AdminTier._team_admin_validator = bv.Void()
 AdminTier._user_management_admin_validator = bv.Void()
@@ -16926,6 +21633,27 @@ DateRangeError._tagmap = {
 }
 
 DateRangeError.other = DateRangeError('other')
+
+DeleteSecondaryEmailResult._success_validator = common.EmailAddress_validator
+DeleteSecondaryEmailResult._not_found_validator = common.EmailAddress_validator
+DeleteSecondaryEmailResult._cannot_remove_primary_validator = common.EmailAddress_validator
+DeleteSecondaryEmailResult._other_validator = bv.Void()
+DeleteSecondaryEmailResult._tagmap = {
+    'success': DeleteSecondaryEmailResult._success_validator,
+    'not_found': DeleteSecondaryEmailResult._not_found_validator,
+    'cannot_remove_primary': DeleteSecondaryEmailResult._cannot_remove_primary_validator,
+    'other': DeleteSecondaryEmailResult._other_validator,
+}
+
+DeleteSecondaryEmailResult.other = DeleteSecondaryEmailResult('other')
+
+DeleteSecondaryEmailsArg._emails_to_delete_validator = bv.List(UserSecondaryEmailsArg_validator)
+DeleteSecondaryEmailsArg._all_field_names_ = set(['emails_to_delete'])
+DeleteSecondaryEmailsArg._all_fields_ = [('emails_to_delete', DeleteSecondaryEmailsArg._emails_to_delete_validator)]
+
+DeleteSecondaryEmailsResult._results_validator = bv.List(UserDeleteResult_validator)
+DeleteSecondaryEmailsResult._all_field_names_ = set(['results'])
+DeleteSecondaryEmailsResult._all_fields_ = [('results', DeleteSecondaryEmailsResult._results_validator)]
 
 DesktopClientSession._host_name_validator = bv.String()
 DesktopClientSession._client_type_validator = DesktopPlatform_validator
@@ -17072,6 +21800,24 @@ ExcludedUsersUpdateStatus._tagmap = {
 
 ExcludedUsersUpdateStatus.success = ExcludedUsersUpdateStatus('success')
 ExcludedUsersUpdateStatus.other = ExcludedUsersUpdateStatus('other')
+
+ExportPolicyJobStatus._complete_validator = bv.Void()
+ExportPolicyJobStatus._failed_validator = bv.Void()
+ExportPolicyJobStatus._other_validator = bv.Void()
+ExportPolicyJobStatus._tagmap = {
+    'complete': ExportPolicyJobStatus._complete_validator,
+    'failed': ExportPolicyJobStatus._failed_validator,
+    'other': ExportPolicyJobStatus._other_validator,
+}
+ExportPolicyJobStatus._tagmap.update(async_.PollResultBase._tagmap)
+
+ExportPolicyJobStatus.complete = ExportPolicyJobStatus('complete')
+ExportPolicyJobStatus.failed = ExportPolicyJobStatus('failed')
+ExportPolicyJobStatus.other = ExportPolicyJobStatus('other')
+
+ExportPolicyJobStatusResult._status_validator = ExportPolicyJobStatus_validator
+ExportPolicyJobStatusResult._all_field_names_ = set(['status'])
+ExportPolicyJobStatusResult._all_fields_ = [('status', ExportPolicyJobStatusResult._status_validator)]
 
 Feature._upload_api_rate_limit_validator = bv.Void()
 Feature._has_team_shared_dropbox_validator = bv.Void()
@@ -17237,15 +21983,18 @@ GroupAccessType.member = GroupAccessType('member')
 GroupAccessType.owner = GroupAccessType('owner')
 
 GroupCreateArg._group_name_validator = bv.String()
+GroupCreateArg._add_creator_as_owner_validator = bv.Boolean()
 GroupCreateArg._group_external_id_validator = bv.Nullable(team_common.GroupExternalId_validator)
 GroupCreateArg._group_management_type_validator = bv.Nullable(team_common.GroupManagementType_validator)
 GroupCreateArg._all_field_names_ = set([
     'group_name',
+    'add_creator_as_owner',
     'group_external_id',
     'group_management_type',
 ])
 GroupCreateArg._all_fields_ = [
     ('group_name', GroupCreateArg._group_name_validator),
+    ('add_creator_as_owner', GroupCreateArg._add_creator_as_owner_validator),
     ('group_external_id', GroupCreateArg._group_external_id_validator),
     ('group_management_type', GroupCreateArg._group_management_type_validator),
 ]
@@ -17611,6 +22360,353 @@ HasTeamSharedDropboxValue._tagmap = {
 
 HasTeamSharedDropboxValue.other = HasTeamSharedDropboxValue('other')
 
+LegalHoldHeldRevisionMetadata._new_filename_validator = bv.String()
+LegalHoldHeldRevisionMetadata._original_revision_id_validator = files.Rev_validator
+LegalHoldHeldRevisionMetadata._original_file_path_validator = Path_validator
+LegalHoldHeldRevisionMetadata._server_modified_validator = common.DropboxTimestamp_validator
+LegalHoldHeldRevisionMetadata._author_member_id_validator = team_common.TeamMemberId_validator
+LegalHoldHeldRevisionMetadata._author_member_status_validator = TeamMemberStatus_validator
+LegalHoldHeldRevisionMetadata._author_email_validator = common.EmailAddress_validator
+LegalHoldHeldRevisionMetadata._file_type_validator = bv.String()
+LegalHoldHeldRevisionMetadata._size_validator = bv.UInt64()
+LegalHoldHeldRevisionMetadata._content_hash_validator = files.Sha256HexHash_validator
+LegalHoldHeldRevisionMetadata._all_field_names_ = set([
+    'new_filename',
+    'original_revision_id',
+    'original_file_path',
+    'server_modified',
+    'author_member_id',
+    'author_member_status',
+    'author_email',
+    'file_type',
+    'size',
+    'content_hash',
+])
+LegalHoldHeldRevisionMetadata._all_fields_ = [
+    ('new_filename', LegalHoldHeldRevisionMetadata._new_filename_validator),
+    ('original_revision_id', LegalHoldHeldRevisionMetadata._original_revision_id_validator),
+    ('original_file_path', LegalHoldHeldRevisionMetadata._original_file_path_validator),
+    ('server_modified', LegalHoldHeldRevisionMetadata._server_modified_validator),
+    ('author_member_id', LegalHoldHeldRevisionMetadata._author_member_id_validator),
+    ('author_member_status', LegalHoldHeldRevisionMetadata._author_member_status_validator),
+    ('author_email', LegalHoldHeldRevisionMetadata._author_email_validator),
+    ('file_type', LegalHoldHeldRevisionMetadata._file_type_validator),
+    ('size', LegalHoldHeldRevisionMetadata._size_validator),
+    ('content_hash', LegalHoldHeldRevisionMetadata._content_hash_validator),
+]
+
+LegalHoldPolicy._id_validator = LegalHoldId_validator
+LegalHoldPolicy._name_validator = LegalHoldPolicyName_validator
+LegalHoldPolicy._description_validator = bv.Nullable(LegalHoldPolicyDescription_validator)
+LegalHoldPolicy._activation_time_validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldPolicy._members_validator = MembersInfo_validator
+LegalHoldPolicy._status_validator = LegalHoldStatus_validator
+LegalHoldPolicy._start_date_validator = common.DropboxTimestamp_validator
+LegalHoldPolicy._end_date_validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldPolicy._all_field_names_ = set([
+    'id',
+    'name',
+    'description',
+    'activation_time',
+    'members',
+    'status',
+    'start_date',
+    'end_date',
+])
+LegalHoldPolicy._all_fields_ = [
+    ('id', LegalHoldPolicy._id_validator),
+    ('name', LegalHoldPolicy._name_validator),
+    ('description', LegalHoldPolicy._description_validator),
+    ('activation_time', LegalHoldPolicy._activation_time_validator),
+    ('members', LegalHoldPolicy._members_validator),
+    ('status', LegalHoldPolicy._status_validator),
+    ('start_date', LegalHoldPolicy._start_date_validator),
+    ('end_date', LegalHoldPolicy._end_date_validator),
+]
+
+LegalHoldStatus._active_validator = bv.Void()
+LegalHoldStatus._released_validator = bv.Void()
+LegalHoldStatus._activating_validator = bv.Void()
+LegalHoldStatus._updating_validator = bv.Void()
+LegalHoldStatus._exporting_validator = bv.Void()
+LegalHoldStatus._releasing_validator = bv.Void()
+LegalHoldStatus._other_validator = bv.Void()
+LegalHoldStatus._tagmap = {
+    'active': LegalHoldStatus._active_validator,
+    'released': LegalHoldStatus._released_validator,
+    'activating': LegalHoldStatus._activating_validator,
+    'updating': LegalHoldStatus._updating_validator,
+    'exporting': LegalHoldStatus._exporting_validator,
+    'releasing': LegalHoldStatus._releasing_validator,
+    'other': LegalHoldStatus._other_validator,
+}
+
+LegalHoldStatus.active = LegalHoldStatus('active')
+LegalHoldStatus.released = LegalHoldStatus('released')
+LegalHoldStatus.activating = LegalHoldStatus('activating')
+LegalHoldStatus.updating = LegalHoldStatus('updating')
+LegalHoldStatus.exporting = LegalHoldStatus('exporting')
+LegalHoldStatus.releasing = LegalHoldStatus('releasing')
+LegalHoldStatus.other = LegalHoldStatus('other')
+
+LegalHoldsError._unknown_legal_hold_error_validator = bv.Void()
+LegalHoldsError._insufficient_permissions_validator = bv.Void()
+LegalHoldsError._other_validator = bv.Void()
+LegalHoldsError._tagmap = {
+    'unknown_legal_hold_error': LegalHoldsError._unknown_legal_hold_error_validator,
+    'insufficient_permissions': LegalHoldsError._insufficient_permissions_validator,
+    'other': LegalHoldsError._other_validator,
+}
+
+LegalHoldsError.unknown_legal_hold_error = LegalHoldsError('unknown_legal_hold_error')
+LegalHoldsError.insufficient_permissions = LegalHoldsError('insufficient_permissions')
+LegalHoldsError.other = LegalHoldsError('other')
+
+LegalHoldsExportPolicyError._invalid_path_validator = bv.Void()
+LegalHoldsExportPolicyError._legal_hold_performing_another_operation_validator = bv.Void()
+LegalHoldsExportPolicyError._unknown_legal_hold_error_validator = bv.Void()
+LegalHoldsExportPolicyError._transient_error_validator = bv.Void()
+LegalHoldsExportPolicyError._insufficient_quota_validator = bv.Void()
+LegalHoldsExportPolicyError._legal_hold_export_still_empty_validator = bv.Void()
+LegalHoldsExportPolicyError._other_validator = bv.Void()
+LegalHoldsExportPolicyError._tagmap = {
+    'invalid_path': LegalHoldsExportPolicyError._invalid_path_validator,
+    'legal_hold_performing_another_operation': LegalHoldsExportPolicyError._legal_hold_performing_another_operation_validator,
+    'unknown_legal_hold_error': LegalHoldsExportPolicyError._unknown_legal_hold_error_validator,
+    'transient_error': LegalHoldsExportPolicyError._transient_error_validator,
+    'insufficient_quota': LegalHoldsExportPolicyError._insufficient_quota_validator,
+    'legal_hold_export_still_empty': LegalHoldsExportPolicyError._legal_hold_export_still_empty_validator,
+    'other': LegalHoldsExportPolicyError._other_validator,
+}
+
+LegalHoldsExportPolicyError.invalid_path = LegalHoldsExportPolicyError('invalid_path')
+LegalHoldsExportPolicyError.legal_hold_performing_another_operation = LegalHoldsExportPolicyError('legal_hold_performing_another_operation')
+LegalHoldsExportPolicyError.unknown_legal_hold_error = LegalHoldsExportPolicyError('unknown_legal_hold_error')
+LegalHoldsExportPolicyError.transient_error = LegalHoldsExportPolicyError('transient_error')
+LegalHoldsExportPolicyError.insufficient_quota = LegalHoldsExportPolicyError('insufficient_quota')
+LegalHoldsExportPolicyError.legal_hold_export_still_empty = LegalHoldsExportPolicyError('legal_hold_export_still_empty')
+LegalHoldsExportPolicyError.other = LegalHoldsExportPolicyError('other')
+
+LegalHoldsExportPolicyResult._async_job_id_validator = async_.AsyncJobId_validator
+LegalHoldsExportPolicyResult._export_folder_metadata_validator = files.FolderMetadata_validator
+LegalHoldsExportPolicyResult._all_field_names_ = set([
+    'async_job_id',
+    'export_folder_metadata',
+])
+LegalHoldsExportPolicyResult._all_fields_ = [
+    ('async_job_id', LegalHoldsExportPolicyResult._async_job_id_validator),
+    ('export_folder_metadata', LegalHoldsExportPolicyResult._export_folder_metadata_validator),
+]
+
+LegalHoldsGetPolicyArg._id_validator = LegalHoldId_validator
+LegalHoldsGetPolicyArg._all_field_names_ = set(['id'])
+LegalHoldsGetPolicyArg._all_fields_ = [('id', LegalHoldsGetPolicyArg._id_validator)]
+
+LegalHoldsGetPolicyError._legal_hold_policy_not_found_validator = bv.Void()
+LegalHoldsGetPolicyError._tagmap = {
+    'legal_hold_policy_not_found': LegalHoldsGetPolicyError._legal_hold_policy_not_found_validator,
+}
+LegalHoldsGetPolicyError._tagmap.update(LegalHoldsError._tagmap)
+
+LegalHoldsGetPolicyError.legal_hold_policy_not_found = LegalHoldsGetPolicyError('legal_hold_policy_not_found')
+
+LegalHoldsListHeldRevisionResult._entries_validator = bv.List(LegalHoldHeldRevisionMetadata_validator)
+LegalHoldsListHeldRevisionResult._cursor_validator = bv.Nullable(ListHeldRevisionCursor_validator)
+LegalHoldsListHeldRevisionResult._has_more_validator = bv.Boolean()
+LegalHoldsListHeldRevisionResult._all_field_names_ = set([
+    'entries',
+    'cursor',
+    'has_more',
+])
+LegalHoldsListHeldRevisionResult._all_fields_ = [
+    ('entries', LegalHoldsListHeldRevisionResult._entries_validator),
+    ('cursor', LegalHoldsListHeldRevisionResult._cursor_validator),
+    ('has_more', LegalHoldsListHeldRevisionResult._has_more_validator),
+]
+
+LegalHoldsListHeldRevisionsArg._id_validator = LegalHoldId_validator
+LegalHoldsListHeldRevisionsArg._all_field_names_ = set(['id'])
+LegalHoldsListHeldRevisionsArg._all_fields_ = [('id', LegalHoldsListHeldRevisionsArg._id_validator)]
+
+LegalHoldsListHeldRevisionsContinueArg._id_validator = LegalHoldId_validator
+LegalHoldsListHeldRevisionsContinueArg._cursor_validator = bv.Nullable(ListHeldRevisionCursor_validator)
+LegalHoldsListHeldRevisionsContinueArg._all_field_names_ = set([
+    'id',
+    'cursor',
+])
+LegalHoldsListHeldRevisionsContinueArg._all_fields_ = [
+    ('id', LegalHoldsListHeldRevisionsContinueArg._id_validator),
+    ('cursor', LegalHoldsListHeldRevisionsContinueArg._cursor_validator),
+]
+
+LegalHoldsListHeldRevisionsContinueError._unknown_legal_hold_error_validator = bv.Void()
+LegalHoldsListHeldRevisionsContinueError._transient_error_validator = bv.Void()
+LegalHoldsListHeldRevisionsContinueError._reset_validator = bv.Void()
+LegalHoldsListHeldRevisionsContinueError._other_validator = bv.Void()
+LegalHoldsListHeldRevisionsContinueError._tagmap = {
+    'unknown_legal_hold_error': LegalHoldsListHeldRevisionsContinueError._unknown_legal_hold_error_validator,
+    'transient_error': LegalHoldsListHeldRevisionsContinueError._transient_error_validator,
+    'reset': LegalHoldsListHeldRevisionsContinueError._reset_validator,
+    'other': LegalHoldsListHeldRevisionsContinueError._other_validator,
+}
+
+LegalHoldsListHeldRevisionsContinueError.unknown_legal_hold_error = LegalHoldsListHeldRevisionsContinueError('unknown_legal_hold_error')
+LegalHoldsListHeldRevisionsContinueError.transient_error = LegalHoldsListHeldRevisionsContinueError('transient_error')
+LegalHoldsListHeldRevisionsContinueError.reset = LegalHoldsListHeldRevisionsContinueError('reset')
+LegalHoldsListHeldRevisionsContinueError.other = LegalHoldsListHeldRevisionsContinueError('other')
+
+LegalHoldsListHeldRevisionsError._unknown_legal_hold_error_validator = bv.Void()
+LegalHoldsListHeldRevisionsError._transient_error_validator = bv.Void()
+LegalHoldsListHeldRevisionsError._legal_hold_still_empty_validator = bv.Void()
+LegalHoldsListHeldRevisionsError._inactive_legal_hold_validator = bv.Void()
+LegalHoldsListHeldRevisionsError._other_validator = bv.Void()
+LegalHoldsListHeldRevisionsError._tagmap = {
+    'unknown_legal_hold_error': LegalHoldsListHeldRevisionsError._unknown_legal_hold_error_validator,
+    'transient_error': LegalHoldsListHeldRevisionsError._transient_error_validator,
+    'legal_hold_still_empty': LegalHoldsListHeldRevisionsError._legal_hold_still_empty_validator,
+    'inactive_legal_hold': LegalHoldsListHeldRevisionsError._inactive_legal_hold_validator,
+    'other': LegalHoldsListHeldRevisionsError._other_validator,
+}
+
+LegalHoldsListHeldRevisionsError.unknown_legal_hold_error = LegalHoldsListHeldRevisionsError('unknown_legal_hold_error')
+LegalHoldsListHeldRevisionsError.transient_error = LegalHoldsListHeldRevisionsError('transient_error')
+LegalHoldsListHeldRevisionsError.legal_hold_still_empty = LegalHoldsListHeldRevisionsError('legal_hold_still_empty')
+LegalHoldsListHeldRevisionsError.inactive_legal_hold = LegalHoldsListHeldRevisionsError('inactive_legal_hold')
+LegalHoldsListHeldRevisionsError.other = LegalHoldsListHeldRevisionsError('other')
+
+LegalHoldsListPoliciesArg._include_released_validator = bv.Boolean()
+LegalHoldsListPoliciesArg._all_field_names_ = set(['include_released'])
+LegalHoldsListPoliciesArg._all_fields_ = [('include_released', LegalHoldsListPoliciesArg._include_released_validator)]
+
+LegalHoldsListPoliciesError._transient_error_validator = bv.Void()
+LegalHoldsListPoliciesError._tagmap = {
+    'transient_error': LegalHoldsListPoliciesError._transient_error_validator,
+}
+LegalHoldsListPoliciesError._tagmap.update(LegalHoldsError._tagmap)
+
+LegalHoldsListPoliciesError.transient_error = LegalHoldsListPoliciesError('transient_error')
+
+LegalHoldsListPoliciesResult._policies_validator = bv.List(LegalHoldPolicy_validator)
+LegalHoldsListPoliciesResult._all_field_names_ = set(['policies'])
+LegalHoldsListPoliciesResult._all_fields_ = [('policies', LegalHoldsListPoliciesResult._policies_validator)]
+
+LegalHoldsPolicyCreateArg._name_validator = LegalHoldPolicyName_validator
+LegalHoldsPolicyCreateArg._description_validator = bv.Nullable(LegalHoldPolicyDescription_validator)
+LegalHoldsPolicyCreateArg._members_validator = bv.List(team_common.TeamMemberId_validator)
+LegalHoldsPolicyCreateArg._start_date_validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldsPolicyCreateArg._end_date_validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldsPolicyCreateArg._all_field_names_ = set([
+    'name',
+    'description',
+    'members',
+    'start_date',
+    'end_date',
+])
+LegalHoldsPolicyCreateArg._all_fields_ = [
+    ('name', LegalHoldsPolicyCreateArg._name_validator),
+    ('description', LegalHoldsPolicyCreateArg._description_validator),
+    ('members', LegalHoldsPolicyCreateArg._members_validator),
+    ('start_date', LegalHoldsPolicyCreateArg._start_date_validator),
+    ('end_date', LegalHoldsPolicyCreateArg._end_date_validator),
+]
+
+LegalHoldsPolicyCreateError._start_date_is_later_than_end_date_validator = bv.Void()
+LegalHoldsPolicyCreateError._empty_members_list_validator = bv.Void()
+LegalHoldsPolicyCreateError._invalid_members_validator = bv.Void()
+LegalHoldsPolicyCreateError._number_of_users_on_hold_is_greater_than_hold_limitation_validator = bv.Void()
+LegalHoldsPolicyCreateError._transient_error_validator = bv.Void()
+LegalHoldsPolicyCreateError._name_must_be_unique_validator = bv.Void()
+LegalHoldsPolicyCreateError._tagmap = {
+    'start_date_is_later_than_end_date': LegalHoldsPolicyCreateError._start_date_is_later_than_end_date_validator,
+    'empty_members_list': LegalHoldsPolicyCreateError._empty_members_list_validator,
+    'invalid_members': LegalHoldsPolicyCreateError._invalid_members_validator,
+    'number_of_users_on_hold_is_greater_than_hold_limitation': LegalHoldsPolicyCreateError._number_of_users_on_hold_is_greater_than_hold_limitation_validator,
+    'transient_error': LegalHoldsPolicyCreateError._transient_error_validator,
+    'name_must_be_unique': LegalHoldsPolicyCreateError._name_must_be_unique_validator,
+}
+LegalHoldsPolicyCreateError._tagmap.update(LegalHoldsError._tagmap)
+
+LegalHoldsPolicyCreateError.start_date_is_later_than_end_date = LegalHoldsPolicyCreateError('start_date_is_later_than_end_date')
+LegalHoldsPolicyCreateError.empty_members_list = LegalHoldsPolicyCreateError('empty_members_list')
+LegalHoldsPolicyCreateError.invalid_members = LegalHoldsPolicyCreateError('invalid_members')
+LegalHoldsPolicyCreateError.number_of_users_on_hold_is_greater_than_hold_limitation = LegalHoldsPolicyCreateError('number_of_users_on_hold_is_greater_than_hold_limitation')
+LegalHoldsPolicyCreateError.transient_error = LegalHoldsPolicyCreateError('transient_error')
+LegalHoldsPolicyCreateError.name_must_be_unique = LegalHoldsPolicyCreateError('name_must_be_unique')
+
+LegalHoldsPolicyExportArg._id_validator = LegalHoldId_validator
+LegalHoldsPolicyExportArg._path_validator = NSpath_validator
+LegalHoldsPolicyExportArg._all_field_names_ = set([
+    'id',
+    'path',
+])
+LegalHoldsPolicyExportArg._all_fields_ = [
+    ('id', LegalHoldsPolicyExportArg._id_validator),
+    ('path', LegalHoldsPolicyExportArg._path_validator),
+]
+
+LegalHoldsPolicyReleaseArg._id_validator = LegalHoldId_validator
+LegalHoldsPolicyReleaseArg._all_field_names_ = set(['id'])
+LegalHoldsPolicyReleaseArg._all_fields_ = [('id', LegalHoldsPolicyReleaseArg._id_validator)]
+
+LegalHoldsPolicyReleaseError._legal_hold_performing_another_operation_validator = bv.Void()
+LegalHoldsPolicyReleaseError._legal_hold_already_releasing_validator = bv.Void()
+LegalHoldsPolicyReleaseError._legal_hold_policy_not_found_validator = bv.Void()
+LegalHoldsPolicyReleaseError._other_validator = bv.Void()
+LegalHoldsPolicyReleaseError._tagmap = {
+    'legal_hold_performing_another_operation': LegalHoldsPolicyReleaseError._legal_hold_performing_another_operation_validator,
+    'legal_hold_already_releasing': LegalHoldsPolicyReleaseError._legal_hold_already_releasing_validator,
+    'legal_hold_policy_not_found': LegalHoldsPolicyReleaseError._legal_hold_policy_not_found_validator,
+    'other': LegalHoldsPolicyReleaseError._other_validator,
+}
+
+LegalHoldsPolicyReleaseError.legal_hold_performing_another_operation = LegalHoldsPolicyReleaseError('legal_hold_performing_another_operation')
+LegalHoldsPolicyReleaseError.legal_hold_already_releasing = LegalHoldsPolicyReleaseError('legal_hold_already_releasing')
+LegalHoldsPolicyReleaseError.legal_hold_policy_not_found = LegalHoldsPolicyReleaseError('legal_hold_policy_not_found')
+LegalHoldsPolicyReleaseError.other = LegalHoldsPolicyReleaseError('other')
+
+LegalHoldsPolicyUpdateArg._id_validator = LegalHoldId_validator
+LegalHoldsPolicyUpdateArg._name_validator = bv.Nullable(LegalHoldPolicyName_validator)
+LegalHoldsPolicyUpdateArg._description_validator = bv.Nullable(LegalHoldPolicyDescription_validator)
+LegalHoldsPolicyUpdateArg._members_validator = bv.List(team_common.TeamMemberId_validator)
+LegalHoldsPolicyUpdateArg._all_field_names_ = set([
+    'id',
+    'name',
+    'description',
+    'members',
+])
+LegalHoldsPolicyUpdateArg._all_fields_ = [
+    ('id', LegalHoldsPolicyUpdateArg._id_validator),
+    ('name', LegalHoldsPolicyUpdateArg._name_validator),
+    ('description', LegalHoldsPolicyUpdateArg._description_validator),
+    ('members', LegalHoldsPolicyUpdateArg._members_validator),
+]
+
+LegalHoldsPolicyUpdateError._inactive_legal_hold_validator = bv.Void()
+LegalHoldsPolicyUpdateError._legal_hold_performing_another_operation_validator = bv.Void()
+LegalHoldsPolicyUpdateError._invalid_members_validator = bv.Void()
+LegalHoldsPolicyUpdateError._number_of_users_on_hold_is_greater_than_hold_limitation_validator = bv.Void()
+LegalHoldsPolicyUpdateError._empty_members_list_validator = bv.Void()
+LegalHoldsPolicyUpdateError._name_must_be_unique_validator = bv.Void()
+LegalHoldsPolicyUpdateError._legal_hold_policy_not_found_validator = bv.Void()
+LegalHoldsPolicyUpdateError._tagmap = {
+    'inactive_legal_hold': LegalHoldsPolicyUpdateError._inactive_legal_hold_validator,
+    'legal_hold_performing_another_operation': LegalHoldsPolicyUpdateError._legal_hold_performing_another_operation_validator,
+    'invalid_members': LegalHoldsPolicyUpdateError._invalid_members_validator,
+    'number_of_users_on_hold_is_greater_than_hold_limitation': LegalHoldsPolicyUpdateError._number_of_users_on_hold_is_greater_than_hold_limitation_validator,
+    'empty_members_list': LegalHoldsPolicyUpdateError._empty_members_list_validator,
+    'name_must_be_unique': LegalHoldsPolicyUpdateError._name_must_be_unique_validator,
+    'legal_hold_policy_not_found': LegalHoldsPolicyUpdateError._legal_hold_policy_not_found_validator,
+}
+LegalHoldsPolicyUpdateError._tagmap.update(LegalHoldsError._tagmap)
+
+LegalHoldsPolicyUpdateError.inactive_legal_hold = LegalHoldsPolicyUpdateError('inactive_legal_hold')
+LegalHoldsPolicyUpdateError.legal_hold_performing_another_operation = LegalHoldsPolicyUpdateError('legal_hold_performing_another_operation')
+LegalHoldsPolicyUpdateError.invalid_members = LegalHoldsPolicyUpdateError('invalid_members')
+LegalHoldsPolicyUpdateError.number_of_users_on_hold_is_greater_than_hold_limitation = LegalHoldsPolicyUpdateError('number_of_users_on_hold_is_greater_than_hold_limitation')
+LegalHoldsPolicyUpdateError.empty_members_list = LegalHoldsPolicyUpdateError('empty_members_list')
+LegalHoldsPolicyUpdateError.name_must_be_unique = LegalHoldsPolicyUpdateError('name_must_be_unique')
+LegalHoldsPolicyUpdateError.legal_hold_policy_not_found = LegalHoldsPolicyUpdateError('legal_hold_policy_not_found')
+
 ListMemberAppsArg._team_member_id_validator = bv.String()
 ListMemberAppsArg._all_field_names_ = set(['team_member_id'])
 ListMemberAppsArg._all_fields_ = [('team_member_id', ListMemberAppsArg._team_member_id_validator)]
@@ -17906,9 +23002,11 @@ MemberProfile._external_id_validator = bv.Nullable(bv.String())
 MemberProfile._account_id_validator = bv.Nullable(users_common.AccountId_validator)
 MemberProfile._email_validator = bv.String()
 MemberProfile._email_verified_validator = bv.Boolean()
+MemberProfile._secondary_emails_validator = bv.Nullable(bv.List(secondary_emails.SecondaryEmail_validator))
 MemberProfile._status_validator = TeamMemberStatus_validator
 MemberProfile._name_validator = users.Name_validator
 MemberProfile._membership_type_validator = TeamMembershipType_validator
+MemberProfile._invited_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
 MemberProfile._joined_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
 MemberProfile._suspended_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
 MemberProfile._persistent_id_validator = bv.Nullable(bv.String())
@@ -17920,9 +23018,11 @@ MemberProfile._all_field_names_ = set([
     'account_id',
     'email',
     'email_verified',
+    'secondary_emails',
     'status',
     'name',
     'membership_type',
+    'invited_on',
     'joined_on',
     'suspended_on',
     'persistent_id',
@@ -17935,9 +23035,11 @@ MemberProfile._all_fields_ = [
     ('account_id', MemberProfile._account_id_validator),
     ('email', MemberProfile._email_validator),
     ('email_verified', MemberProfile._email_verified_validator),
+    ('secondary_emails', MemberProfile._secondary_emails_validator),
     ('status', MemberProfile._status_validator),
     ('name', MemberProfile._name_validator),
     ('membership_type', MemberProfile._membership_type_validator),
+    ('invited_on', MemberProfile._invited_on_validator),
     ('joined_on', MemberProfile._joined_on_validator),
     ('suspended_on', MemberProfile._suspended_on_validator),
     ('persistent_id', MemberProfile._persistent_id_validator),
@@ -18015,6 +23117,21 @@ MembersDeactivateError._tagmap.update(UserSelectorError._tagmap)
 MembersDeactivateError.user_not_in_team = MembersDeactivateError('user_not_in_team')
 MembersDeactivateError.other = MembersDeactivateError('other')
 
+MembersDeleteProfilePhotoArg._user_validator = UserSelectorArg_validator
+MembersDeleteProfilePhotoArg._all_field_names_ = set(['user'])
+MembersDeleteProfilePhotoArg._all_fields_ = [('user', MembersDeleteProfilePhotoArg._user_validator)]
+
+MembersDeleteProfilePhotoError._set_profile_disallowed_validator = bv.Void()
+MembersDeleteProfilePhotoError._other_validator = bv.Void()
+MembersDeleteProfilePhotoError._tagmap = {
+    'set_profile_disallowed': MembersDeleteProfilePhotoError._set_profile_disallowed_validator,
+    'other': MembersDeleteProfilePhotoError._other_validator,
+}
+MembersDeleteProfilePhotoError._tagmap.update(MemberSelectorError._tagmap)
+
+MembersDeleteProfilePhotoError.set_profile_disallowed = MembersDeleteProfilePhotoError('set_profile_disallowed')
+MembersDeleteProfilePhotoError.other = MembersDeleteProfilePhotoError('other')
+
 MembersGetInfoArgs._members_validator = bv.List(UserSelectorArg_validator)
 MembersGetInfoArgs._all_field_names_ = set(['members'])
 MembersGetInfoArgs._all_fields_ = [('members', MembersGetInfoArgs._members_validator)]
@@ -18032,6 +23149,17 @@ MembersGetInfoItem._tagmap = {
     'id_not_found': MembersGetInfoItem._id_not_found_validator,
     'member_info': MembersGetInfoItem._member_info_validator,
 }
+
+MembersInfo._team_member_ids_validator = bv.List(team_common.TeamMemberId_validator)
+MembersInfo._permanently_deleted_users_validator = bv.UInt64()
+MembersInfo._all_field_names_ = set([
+    'team_member_ids',
+    'permanently_deleted_users',
+])
+MembersInfo._all_fields_ = [
+    ('team_member_ids', MembersInfo._team_member_ids_validator),
+    ('permanently_deleted_users', MembersInfo._permanently_deleted_users_validator),
+]
 
 MembersListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
 MembersListArg._include_removed_validator = bv.Boolean()
@@ -18103,15 +23231,18 @@ MembersRecoverError.other = MembersRecoverError('other')
 MembersRemoveArg._transfer_dest_id_validator = bv.Nullable(UserSelectorArg_validator)
 MembersRemoveArg._transfer_admin_id_validator = bv.Nullable(UserSelectorArg_validator)
 MembersRemoveArg._keep_account_validator = bv.Boolean()
+MembersRemoveArg._retain_team_shares_validator = bv.Boolean()
 MembersRemoveArg._all_field_names_ = MembersDeactivateArg._all_field_names_.union(set([
     'transfer_dest_id',
     'transfer_admin_id',
     'keep_account',
+    'retain_team_shares',
 ]))
 MembersRemoveArg._all_fields_ = MembersDeactivateArg._all_fields_ + [
     ('transfer_dest_id', MembersRemoveArg._transfer_dest_id_validator),
     ('transfer_admin_id', MembersRemoveArg._transfer_admin_id_validator),
     ('keep_account', MembersRemoveArg._keep_account_validator),
+    ('retain_team_shares', MembersRemoveArg._retain_team_shares_validator),
 ]
 
 MembersTransferFilesError._removed_and_transfer_dest_should_differ_validator = bv.Void()
@@ -18151,12 +23282,24 @@ MembersRemoveError._cannot_keep_account_and_transfer_validator = bv.Void()
 MembersRemoveError._cannot_keep_account_and_delete_data_validator = bv.Void()
 MembersRemoveError._email_address_too_long_to_be_disabled_validator = bv.Void()
 MembersRemoveError._cannot_keep_invited_user_account_validator = bv.Void()
+MembersRemoveError._cannot_retain_shares_when_data_wiped_validator = bv.Void()
+MembersRemoveError._cannot_retain_shares_when_no_account_kept_validator = bv.Void()
+MembersRemoveError._cannot_retain_shares_when_team_external_sharing_off_validator = bv.Void()
+MembersRemoveError._cannot_keep_account_validator = bv.Void()
+MembersRemoveError._cannot_keep_account_under_legal_hold_validator = bv.Void()
+MembersRemoveError._cannot_keep_account_required_to_sign_tos_validator = bv.Void()
 MembersRemoveError._tagmap = {
     'remove_last_admin': MembersRemoveError._remove_last_admin_validator,
     'cannot_keep_account_and_transfer': MembersRemoveError._cannot_keep_account_and_transfer_validator,
     'cannot_keep_account_and_delete_data': MembersRemoveError._cannot_keep_account_and_delete_data_validator,
     'email_address_too_long_to_be_disabled': MembersRemoveError._email_address_too_long_to_be_disabled_validator,
     'cannot_keep_invited_user_account': MembersRemoveError._cannot_keep_invited_user_account_validator,
+    'cannot_retain_shares_when_data_wiped': MembersRemoveError._cannot_retain_shares_when_data_wiped_validator,
+    'cannot_retain_shares_when_no_account_kept': MembersRemoveError._cannot_retain_shares_when_no_account_kept_validator,
+    'cannot_retain_shares_when_team_external_sharing_off': MembersRemoveError._cannot_retain_shares_when_team_external_sharing_off_validator,
+    'cannot_keep_account': MembersRemoveError._cannot_keep_account_validator,
+    'cannot_keep_account_under_legal_hold': MembersRemoveError._cannot_keep_account_under_legal_hold_validator,
+    'cannot_keep_account_required_to_sign_tos': MembersRemoveError._cannot_keep_account_required_to_sign_tos_validator,
 }
 MembersRemoveError._tagmap.update(MembersTransferFilesError._tagmap)
 
@@ -18165,6 +23308,12 @@ MembersRemoveError.cannot_keep_account_and_transfer = MembersRemoveError('cannot
 MembersRemoveError.cannot_keep_account_and_delete_data = MembersRemoveError('cannot_keep_account_and_delete_data')
 MembersRemoveError.email_address_too_long_to_be_disabled = MembersRemoveError('email_address_too_long_to_be_disabled')
 MembersRemoveError.cannot_keep_invited_user_account = MembersRemoveError('cannot_keep_invited_user_account')
+MembersRemoveError.cannot_retain_shares_when_data_wiped = MembersRemoveError('cannot_retain_shares_when_data_wiped')
+MembersRemoveError.cannot_retain_shares_when_no_account_kept = MembersRemoveError('cannot_retain_shares_when_no_account_kept')
+MembersRemoveError.cannot_retain_shares_when_team_external_sharing_off = MembersRemoveError('cannot_retain_shares_when_team_external_sharing_off')
+MembersRemoveError.cannot_keep_account = MembersRemoveError('cannot_keep_account')
+MembersRemoveError.cannot_keep_account_under_legal_hold = MembersRemoveError('cannot_keep_account_under_legal_hold')
+MembersRemoveError.cannot_keep_account_required_to_sign_tos = MembersRemoveError('cannot_keep_account_required_to_sign_tos')
 
 MembersSendWelcomeError._other_validator = bv.Void()
 MembersSendWelcomeError._tagmap = {
@@ -18276,6 +23425,30 @@ MembersSetProfileError.persistent_id_disabled = MembersSetProfileError('persiste
 MembersSetProfileError.persistent_id_used_by_other_user = MembersSetProfileError('persistent_id_used_by_other_user')
 MembersSetProfileError.directory_restricted_off = MembersSetProfileError('directory_restricted_off')
 MembersSetProfileError.other = MembersSetProfileError('other')
+
+MembersSetProfilePhotoArg._user_validator = UserSelectorArg_validator
+MembersSetProfilePhotoArg._photo_validator = account.PhotoSourceArg_validator
+MembersSetProfilePhotoArg._all_field_names_ = set([
+    'user',
+    'photo',
+])
+MembersSetProfilePhotoArg._all_fields_ = [
+    ('user', MembersSetProfilePhotoArg._user_validator),
+    ('photo', MembersSetProfilePhotoArg._photo_validator),
+]
+
+MembersSetProfilePhotoError._set_profile_disallowed_validator = bv.Void()
+MembersSetProfilePhotoError._photo_error_validator = account.SetProfilePhotoError_validator
+MembersSetProfilePhotoError._other_validator = bv.Void()
+MembersSetProfilePhotoError._tagmap = {
+    'set_profile_disallowed': MembersSetProfilePhotoError._set_profile_disallowed_validator,
+    'photo_error': MembersSetProfilePhotoError._photo_error_validator,
+    'other': MembersSetProfilePhotoError._other_validator,
+}
+MembersSetProfilePhotoError._tagmap.update(MemberSelectorError._tagmap)
+
+MembersSetProfilePhotoError.set_profile_disallowed = MembersSetProfilePhotoError('set_profile_disallowed')
+MembersSetProfilePhotoError.other = MembersSetProfilePhotoError('other')
 
 MembersSuspendError._suspend_inactive_user_validator = bv.Void()
 MembersSuspendError._suspend_last_admin_validator = bv.Void()
@@ -18422,6 +23595,27 @@ RemovedStatus._all_fields_ = [
     ('is_recoverable', RemovedStatus._is_recoverable_validator),
     ('is_disconnected', RemovedStatus._is_disconnected_validator),
 ]
+
+ResendSecondaryEmailResult._success_validator = common.EmailAddress_validator
+ResendSecondaryEmailResult._not_pending_validator = common.EmailAddress_validator
+ResendSecondaryEmailResult._rate_limited_validator = common.EmailAddress_validator
+ResendSecondaryEmailResult._other_validator = bv.Void()
+ResendSecondaryEmailResult._tagmap = {
+    'success': ResendSecondaryEmailResult._success_validator,
+    'not_pending': ResendSecondaryEmailResult._not_pending_validator,
+    'rate_limited': ResendSecondaryEmailResult._rate_limited_validator,
+    'other': ResendSecondaryEmailResult._other_validator,
+}
+
+ResendSecondaryEmailResult.other = ResendSecondaryEmailResult('other')
+
+ResendVerificationEmailArg._emails_to_resend_validator = bv.List(UserSecondaryEmailsArg_validator)
+ResendVerificationEmailArg._all_field_names_ = set(['emails_to_resend'])
+ResendVerificationEmailArg._all_fields_ = [('emails_to_resend', ResendVerificationEmailArg._emails_to_resend_validator)]
+
+ResendVerificationEmailResult._results_validator = bv.List(UserResendResult_validator)
+ResendVerificationEmailResult._all_field_names_ = set(['results'])
+ResendVerificationEmailResult._all_fields_ = [('results', ResendVerificationEmailResult._results_validator)]
 
 RevokeDesktopClientArg._delete_on_unlink_validator = bv.Boolean()
 RevokeDesktopClientArg._all_field_names_ = DeviceSessionArg._all_field_names_.union(set(['delete_on_unlink']))
@@ -18926,6 +24120,21 @@ UploadApiRateLimitValue._tagmap = {
 UploadApiRateLimitValue.unlimited = UploadApiRateLimitValue('unlimited')
 UploadApiRateLimitValue.other = UploadApiRateLimitValue('other')
 
+UserAddResult._success_validator = UserSecondaryEmailsResult_validator
+UserAddResult._invalid_user_validator = UserSelectorArg_validator
+UserAddResult._unverified_validator = UserSelectorArg_validator
+UserAddResult._placeholder_user_validator = UserSelectorArg_validator
+UserAddResult._other_validator = bv.Void()
+UserAddResult._tagmap = {
+    'success': UserAddResult._success_validator,
+    'invalid_user': UserAddResult._invalid_user_validator,
+    'unverified': UserAddResult._unverified_validator,
+    'placeholder_user': UserAddResult._placeholder_user_validator,
+    'other': UserAddResult._other_validator,
+}
+
+UserAddResult.other = UserAddResult('other')
+
 UserCustomQuotaArg._user_validator = UserSelectorArg_validator
 UserCustomQuotaArg._quota_gb_validator = UserQuota_validator
 UserCustomQuotaArg._all_field_names_ = set([
@@ -18946,6 +24155,72 @@ UserCustomQuotaResult._all_field_names_ = set([
 UserCustomQuotaResult._all_fields_ = [
     ('user', UserCustomQuotaResult._user_validator),
     ('quota_gb', UserCustomQuotaResult._quota_gb_validator),
+]
+
+UserDeleteEmailsResult._user_validator = UserSelectorArg_validator
+UserDeleteEmailsResult._results_validator = bv.List(DeleteSecondaryEmailResult_validator)
+UserDeleteEmailsResult._all_field_names_ = set([
+    'user',
+    'results',
+])
+UserDeleteEmailsResult._all_fields_ = [
+    ('user', UserDeleteEmailsResult._user_validator),
+    ('results', UserDeleteEmailsResult._results_validator),
+]
+
+UserDeleteResult._success_validator = UserDeleteEmailsResult_validator
+UserDeleteResult._invalid_user_validator = UserSelectorArg_validator
+UserDeleteResult._other_validator = bv.Void()
+UserDeleteResult._tagmap = {
+    'success': UserDeleteResult._success_validator,
+    'invalid_user': UserDeleteResult._invalid_user_validator,
+    'other': UserDeleteResult._other_validator,
+}
+
+UserDeleteResult.other = UserDeleteResult('other')
+
+UserResendEmailsResult._user_validator = UserSelectorArg_validator
+UserResendEmailsResult._results_validator = bv.List(ResendSecondaryEmailResult_validator)
+UserResendEmailsResult._all_field_names_ = set([
+    'user',
+    'results',
+])
+UserResendEmailsResult._all_fields_ = [
+    ('user', UserResendEmailsResult._user_validator),
+    ('results', UserResendEmailsResult._results_validator),
+]
+
+UserResendResult._success_validator = UserResendEmailsResult_validator
+UserResendResult._invalid_user_validator = UserSelectorArg_validator
+UserResendResult._other_validator = bv.Void()
+UserResendResult._tagmap = {
+    'success': UserResendResult._success_validator,
+    'invalid_user': UserResendResult._invalid_user_validator,
+    'other': UserResendResult._other_validator,
+}
+
+UserResendResult.other = UserResendResult('other')
+
+UserSecondaryEmailsArg._user_validator = UserSelectorArg_validator
+UserSecondaryEmailsArg._secondary_emails_validator = bv.List(common.EmailAddress_validator)
+UserSecondaryEmailsArg._all_field_names_ = set([
+    'user',
+    'secondary_emails',
+])
+UserSecondaryEmailsArg._all_fields_ = [
+    ('user', UserSecondaryEmailsArg._user_validator),
+    ('secondary_emails', UserSecondaryEmailsArg._secondary_emails_validator),
+]
+
+UserSecondaryEmailsResult._user_validator = UserSelectorArg_validator
+UserSecondaryEmailsResult._results_validator = bv.List(AddSecondaryEmailResult_validator)
+UserSecondaryEmailsResult._all_field_names_ = set([
+    'user',
+    'results',
+])
+UserSecondaryEmailsResult._all_fields_ = [
+    ('user', UserSecondaryEmailsResult._user_validator),
+    ('results', UserSecondaryEmailsResult._results_validator),
 ]
 
 UserSelectorArg._team_member_id_validator = team_common.TeamMemberId_validator
@@ -19156,6 +24431,96 @@ groups_update = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+legal_holds_create_policy = bb.Route(
+    'legal_holds/create_policy',
+    1,
+    False,
+    LegalHoldsPolicyCreateArg_validator,
+    LegalHoldsPolicyCreateResult_validator,
+    LegalHoldsPolicyCreateError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+legal_holds_export_policy = bb.Route(
+    'legal_holds/export_policy',
+    1,
+    True,
+    LegalHoldsPolicyExportArg_validator,
+    LegalHoldsExportPolicyResult_validator,
+    LegalHoldsExportPolicyError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+legal_holds_export_policy_job_status_check = bb.Route(
+    'legal_holds/export_policy_job_status/check',
+    1,
+    True,
+    async_.PollArg_validator,
+    ExportPolicyJobStatusResult_validator,
+    async_.PollError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+legal_holds_get_policy = bb.Route(
+    'legal_holds/get_policy',
+    1,
+    False,
+    LegalHoldsGetPolicyArg_validator,
+    LegalHoldsGetPolicyResult_validator,
+    LegalHoldsGetPolicyError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+legal_holds_list_held_revisions = bb.Route(
+    'legal_holds/list_held_revisions',
+    1,
+    False,
+    LegalHoldsListHeldRevisionsArg_validator,
+    LegalHoldsListHeldRevisionResult_validator,
+    LegalHoldsListHeldRevisionsError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+legal_holds_list_held_revisions_continue = bb.Route(
+    'legal_holds/list_held_revisions_continue',
+    1,
+    False,
+    LegalHoldsListHeldRevisionsContinueArg_validator,
+    LegalHoldsListHeldRevisionResult_validator,
+    LegalHoldsListHeldRevisionsError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+legal_holds_list_policies = bb.Route(
+    'legal_holds/list_policies',
+    1,
+    False,
+    LegalHoldsListPoliciesArg_validator,
+    LegalHoldsListPoliciesResult_validator,
+    LegalHoldsListPoliciesError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+legal_holds_release_policy = bb.Route(
+    'legal_holds/release_policy',
+    1,
+    False,
+    LegalHoldsPolicyReleaseArg_validator,
+    bv.Void(),
+    LegalHoldsPolicyReleaseError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+legal_holds_update_policy = bb.Route(
+    'legal_holds/update_policy',
+    1,
+    False,
+    LegalHoldsPolicyUpdateArg_validator,
+    LegalHoldsPolicyUpdateResult_validator,
+    LegalHoldsPolicyUpdateError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 linked_apps_list_member_linked_apps = bb.Route(
     'linked_apps/list_member_linked_apps',
     1,
@@ -19296,6 +24661,16 @@ members_add_job_status_get = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+members_delete_profile_photo = bb.Route(
+    'members/delete_profile_photo',
+    1,
+    False,
+    MembersDeleteProfilePhotoArg_validator,
+    TeamMemberInfo_validator,
+    MembersDeleteProfilePhotoError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
 members_get_info = bb.Route(
     'members/get_info',
     1,
@@ -19376,6 +24751,36 @@ members_remove_job_status_get = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
+members_secondary_emails_add = bb.Route(
+    'members/secondary_emails/add',
+    1,
+    False,
+    AddSecondaryEmailsArg_validator,
+    AddSecondaryEmailsResult_validator,
+    AddSecondaryEmailsError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+members_secondary_emails_delete = bb.Route(
+    'members/secondary_emails/delete',
+    1,
+    False,
+    DeleteSecondaryEmailsArg_validator,
+    DeleteSecondaryEmailsResult_validator,
+    bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
+members_secondary_emails_resend_verification_emails = bb.Route(
+    'members/secondary_emails/resend_verification_emails',
+    1,
+    False,
+    ResendVerificationEmailArg_validator,
+    ResendVerificationEmailResult_validator,
+    bv.Void(),
+    {'host': u'api',
+     'style': u'rpc'},
+)
 members_send_welcome_email = bb.Route(
     'members/send_welcome_email',
     1,
@@ -19403,6 +24808,16 @@ members_set_profile = bb.Route(
     MembersSetProfileArg_validator,
     TeamMemberInfo_validator,
     MembersSetProfileError_validator,
+    {'host': u'api',
+     'style': u'rpc'},
+)
+members_set_profile_photo = bb.Route(
+    'members/set_profile_photo',
+    1,
+    False,
+    MembersSetProfilePhotoArg_validator,
+    TeamMemberInfo_validator,
+    MembersSetProfilePhotoError_validator,
     {'host': u'api',
      'style': u'rpc'},
 )
@@ -19657,6 +25072,15 @@ ROUTES = {
     'groups/members/remove': groups_members_remove,
     'groups/members/set_access_type': groups_members_set_access_type,
     'groups/update': groups_update,
+    'legal_holds/create_policy': legal_holds_create_policy,
+    'legal_holds/export_policy': legal_holds_export_policy,
+    'legal_holds/export_policy_job_status/check': legal_holds_export_policy_job_status_check,
+    'legal_holds/get_policy': legal_holds_get_policy,
+    'legal_holds/list_held_revisions': legal_holds_list_held_revisions,
+    'legal_holds/list_held_revisions_continue': legal_holds_list_held_revisions_continue,
+    'legal_holds/list_policies': legal_holds_list_policies,
+    'legal_holds/release_policy': legal_holds_release_policy,
+    'legal_holds/update_policy': legal_holds_update_policy,
     'linked_apps/list_member_linked_apps': linked_apps_list_member_linked_apps,
     'linked_apps/list_members_linked_apps': linked_apps_list_members_linked_apps,
     'linked_apps/list_team_linked_apps': linked_apps_list_team_linked_apps,
@@ -19671,6 +25095,7 @@ ROUTES = {
     'member_space_limits/set_custom_quota': member_space_limits_set_custom_quota,
     'members/add': members_add,
     'members/add/job_status/get': members_add_job_status_get,
+    'members/delete_profile_photo': members_delete_profile_photo,
     'members/get_info': members_get_info,
     'members/list': members_list,
     'members/list/continue': members_list_continue,
@@ -19679,9 +25104,13 @@ ROUTES = {
     'members/recover': members_recover,
     'members/remove': members_remove,
     'members/remove/job_status/get': members_remove_job_status_get,
+    'members/secondary_emails/add': members_secondary_emails_add,
+    'members/secondary_emails/delete': members_secondary_emails_delete,
+    'members/secondary_emails/resend_verification_emails': members_secondary_emails_resend_verification_emails,
     'members/send_welcome_email': members_send_welcome_email,
     'members/set_admin_permissions': members_set_admin_permissions,
     'members/set_profile': members_set_profile,
+    'members/set_profile_photo': members_set_profile_photo,
     'members/suspend': members_suspend,
     'members/unsuspend': members_unsuspend,
     'namespaces/list': namespaces_list,
