@@ -14,6 +14,7 @@ import base64
 import os
 import six
 import urllib
+from datetime import datetime, timedelta
 
 from .session import (
     API_HOST,
@@ -28,27 +29,41 @@ else:
     url_path_quote = urllib.quote  # pylint: disable=no-member,useless-suppression
     url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
 
+TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
 
 class OAuth2FlowNoRedirectResult(object):
     """
     Authorization information for an OAuth2Flow performed with no redirect.
     """
 
-    def __init__(self, access_token, account_id, user_id):
+    def __init__(self, access_token, refresh_token, expiration, account_id, user_id):
         """
         Args:
             access_token (str): Token to be used to authenticate later
                 requests.
+            refresh_token (str): Token to be used to acquire new access token
+                when existing one expires
+            expiration (int, datetime): Either the number of seconds from now that the token expires
+                in or the datetime at which the token expires
             account_id (str): The Dropbox user's account ID.
             user_id (str): Deprecated (use account_id instead).
         """
         self.access_token = access_token
+        if not expiration:
+            self.expires_at = None
+        elif isinstance(expiration, datetime):
+            self.expires_at = expiration
+        else:
+            self.expires_at = datetime.utcnow() + timedelta(seconds=int(expiration))
+        self.refresh_token = refresh_token
         self.account_id = account_id
         self.user_id = user_id
 
     def __repr__(self):
-        return 'OAuth2FlowNoRedirectResult(%r, %r, %r)' % (
+        return 'OAuth2FlowNoRedirectResult(%s, %s, %s, %s, %s)' % (
             self.access_token,
+            self.expires_at,
+            self.refresh_token,
             self.account_id,
             self.user_id,
         )
@@ -59,7 +74,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
     Authorization information for an OAuth2Flow with redirect.
     """
 
-    def __init__(self, access_token, account_id, user_id, url_state):
+    def __init__(self, access_token, refresh_token, expires_in, account_id, user_id, url_state):
         """
         Same as OAuth2FlowNoRedirectResult but with url_state.
 
@@ -68,18 +83,20 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
                 :meth:`DropboxOAuth2Flow.start`.
         """
         super(OAuth2FlowResult, self).__init__(
-            access_token, account_id, user_id)
+            access_token, refresh_token, expires_in, account_id, user_id)
         self.url_state = url_state
 
     @classmethod
     def from_no_redirect_result(cls, result, url_state):
         assert isinstance(result, OAuth2FlowNoRedirectResult)
         return cls(
-            result.access_token, result.account_id, result.user_id, url_state)
+            result.access_token, result.refresh_token, result.expires_at, result.account_id, result.user_id, url_state)
 
     def __repr__(self):
-        return 'OAuth2FlowResult(%r, %r, %r, %r)' % (
+        return 'OAuth2FlowResult(%s, %s, %s, %s, %s, %s)' % (
             self.access_token,
+            self.refresh_token,
+            self.expires_at,
             self.account_id,
             self.user_id,
             self.url_state,
@@ -88,19 +105,24 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 
 class DropboxOAuth2FlowBase(object):
 
-    def __init__(self, consumer_key, consumer_secret, locale=None):
+    def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy'):
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
         self.locale = locale
+        self.token_access_type = token_access_type
         self.requests_session = pinned_session()
 
-    def _get_authorize_url(self, redirect_uri, state):
+    def _get_authorize_url(self, redirect_uri, state, token_access_type):
         params = dict(response_type='code',
                       client_id=self.consumer_key)
         if redirect_uri is not None:
             params['redirect_uri'] = redirect_uri
         if state is not None:
             params['state'] = state
+        if token_access_type is not None:
+            assert token_access_type in TOKEN_ACCESS_TYPES
+            if token_access_type != 'legacy':
+                params['token_access_type'] = token_access_type
 
         return self.build_url('/oauth2/authorize', params, WEB_HOST)
 
@@ -127,10 +149,23 @@ class DropboxOAuth2FlowBase(object):
             account_id = d['account_id']
 
         access_token = d['access_token']
+
+        if 'refresh_token' in d:
+            refresh_token = d['refresh_token']
+        else:
+            refresh_token = ""
+
+        if 'expires_in' in d:
+            expires_in = d['expires_in']
+        else:
+            expires_in = None
+
         uid = d['uid']
 
         return OAuth2FlowNoRedirectResult(
             access_token,
+            refresh_token,
+            expires_in,
             account_id,
             uid)
 
@@ -203,7 +238,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         dbx = Dropbox(oauth_result.access_token)
     """
 
-    def __init__(self, consumer_key, consumer_secret, locale=None):  # noqa: E501; pylint: disable=useless-super-delegation
+    def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy'):  # noqa: E501; pylint: disable=useless-super-delegation
         """
         Construct an instance.
 
@@ -214,12 +249,18 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             example "en" or "en_US". Some API calls return localized data and
             error messages; this setting tells the server which locale to use.
             By default, the server uses "en_US".
+        :param str token_access_type: the type of token to be requested.
+            From the following enum:
+            legacy - creates one long-lived token with no expiration
+            online - create one short-lived token with a 4hr expiration
+            offline - create one short-lived token with a 4hr expiration with a refresh token
         """
         # pylint: disable=useless-super-delegation
         super(DropboxOAuth2FlowNoRedirect, self).__init__(
             consumer_key,
             consumer_secret,
             locale,
+            token_access_type,
         )
 
     def start(self):
@@ -231,7 +272,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             access the user's Dropbox account. Tell the user to visit this URL
             and approve your app.
         """
-        return self._get_authorize_url(None, None)
+        return self._get_authorize_url(None, None, self.token_access_type)
 
     def finish(self, code):
         """
@@ -293,7 +334,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
     """
 
     def __init__(self, consumer_key, consumer_secret, redirect_uri, session,
-                 csrf_token_session_key, locale=None):
+                 csrf_token_session_key, locale=None, token_access_type='legacy'):
         """
         Construct an instance.
 
@@ -312,8 +353,13 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             example "en" or "en_US". Some API calls return localized data and
             error messages; this setting tells the server which locale to use.
             By default, the server uses "en_US".
+        :param str token_access_type: the type of token to be requested.
+            From the following enum:
+            legacy - creates one long-lived token with no expiration
+            online - create one short-lived token with a 4hr expiration
+            offline - create one short-lived token with a 4hr expiration with a refresh token
         """
-        super(DropboxOAuth2Flow, self).__init__(consumer_key, consumer_secret, locale)
+        super(DropboxOAuth2Flow, self).__init__(consumer_key, consumer_secret, locale, token_access_type)
         self.redirect_uri = redirect_uri
         self.session = session
         self.csrf_token_session_key = csrf_token_session_key
@@ -347,7 +393,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             state += "|" + url_state
         self.session[self.csrf_token_session_key] = csrf_token
 
-        return self._get_authorize_url(self.redirect_uri, state)
+        return self._get_authorize_url(self.redirect_uri, state, self.token_access_type)
 
     def finish(self, query_params):
         """

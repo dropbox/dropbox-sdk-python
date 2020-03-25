@@ -56,6 +56,13 @@ def dbx_from_env(f):
         return f(self, *args, **kwargs)
     return wrapped
 
+def refresh_dbx_from_env(f):
+    @functools.wraps(f)
+    def wrapped(self, *args, **kwargs):
+        refresh_token = _token_from_env_or_die("DROPBOX_REFRESH_TOKEN")
+        args += (Dropbox(oauth2_refresh_token=refresh_token))
+        return f(self, *args, **kwargs)
+
 def dbx_team_from_env(f):
     @functools.wraps(f)
     def wrapped(self, *args, **kwargs):
@@ -78,7 +85,7 @@ class TestDropbox(unittest.TestCase):
 
         six.assertRegex(
             self,
-            flow_obj._get_authorize_url('http://localhost/redirect', 'state'),
+            flow_obj._get_authorize_url('http://localhost/redirect', 'state', 'legacy'),
             r'^https://{}/oauth2/authorize\?'.format(re.escape(session.WEB_HOST)),
         )
 
@@ -104,6 +111,10 @@ class TestDropbox(unittest.TestCase):
         with self.assertRaises(AuthError) as cm:
             invalid_token_dbx.files_list_folder('')
         self.assertTrue(cm.exception.error.is_invalid_access_token())
+
+    @refresh_dbx_from_env
+    def test_refresh(self, dbx):
+        dbx.users_get_current_account()
 
     @dbx_from_env
     def test_rpc(self, dbx):
