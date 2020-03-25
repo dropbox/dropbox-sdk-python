@@ -17,9 +17,10 @@ REFRESH_TOKEN = 'dummy_refresh_token'
 EXPIRES_IN = 14400
 ACCOUNT_ID = 'dummy_account_id'
 USER_ID = 'dummy_user_id'
+SCOPE_LIST = 'files.metadata'
 EXPIRATION = datetime.utcnow() + timedelta(seconds=EXPIRES_IN)
 
-EXPIRATION_BUFFER = timedelta(minutes=1)
+EXPIRATION_BUFFER = timedelta(minutes=5)
 
 class TestOAuth:
 
@@ -60,9 +61,38 @@ class TestOAuth:
         assert 'response_type=code' in offline_authorization_url
         assert 'token_access_type=offline' in offline_authorization_url
 
+    def test_authorization_url_with_scopes_and_granted(self):
+        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
+                                     'dummy_session', 'dbx-auth-csrf-token')
+
+        scopes = ['account_info.read', 'files.metadata.read']
+        scope_authorization_url = flow_obj._get_authorize_url(None, None, 'offline', scopes, 'user')
+        assert scope_authorization_url.startswith('https://{}/oauth2/authorize?'
+                .format(session.WEB_HOST))
+        assert 'client_id={}'.format(APP_KEY) in scope_authorization_url
+        assert 'response_type=code' in scope_authorization_url
+        assert 'token_access_type=offline' in scope_authorization_url
+        assert 'scope=account_info.read+files.metadata.read' in scope_authorization_url
+        assert 'include_granted_scopes=user' in scope_authorization_url
+
+    def test_authorization_url_with_scopes(self):
+        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
+                                     'dummy_session', 'dbx-auth-csrf-token')
+
+        scopes = ['account_info.read', 'files.metadata.read']
+        scope_authorization_url = flow_obj._get_authorize_url(None, None, 'offline', scopes)
+        assert scope_authorization_url.startswith('https://{}/oauth2/authorize?'
+                                                  .format(session.WEB_HOST))
+        assert 'client_id={}'.format(APP_KEY) in scope_authorization_url
+        assert 'response_type=code' in scope_authorization_url
+        assert 'token_access_type=offline' in scope_authorization_url
+        assert 'scope=account_info.read+files.metadata.read' in scope_authorization_url
+        assert 'include_granted_scopes' not in scope_authorization_url
+
     def test_OAuth2FlowNoRedirectResult_legacy(self):
         # Test legacy result
-        result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID, None, None)
+        result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID, None, None,
+                                                SCOPE_LIST)
         assert result_obj.access_token == ACCESS_TOKEN
         assert not result_obj.refresh_token
         assert not result_obj.expires_at
@@ -70,16 +100,18 @@ class TestOAuth:
     def test_OAuth2FlowNoRedirectResult_offline(self):
         # Test offline result
         result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID,
-                                                REFRESH_TOKEN, EXPIRES_IN)
+                                                REFRESH_TOKEN, EXPIRES_IN, SCOPE_LIST)
         assert result_obj.access_token == ACCESS_TOKEN
         assert result_obj.refresh_token == REFRESH_TOKEN
         assert abs(result_obj.expires_at - EXPIRATION) < EXPIRATION_BUFFER
         assert result_obj.account_id == ACCOUNT_ID
         assert result_obj.user_id == USER_ID
+        assert result_obj.scope_list == SCOPE_LIST
 
     def test_OAuth2FlowNoRedirectResult_online(self):
         # Test online result
-        result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID, None, EXPIRES_IN)
+        result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID, None, EXPIRES_IN,
+                                                SCOPE_LIST)
         assert result_obj.access_token == ACCESS_TOKEN
         assert not result_obj.refresh_token
         assert abs(result_obj.expires_at - EXPIRATION) < EXPIRATION_BUFFER
@@ -87,7 +119,7 @@ class TestOAuth:
     def test_OAuth2FlowNoRedirectResult_copy(self):
         # Test constructor for copying object
         result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID,
-                                                REFRESH_TOKEN, EXPIRATION)
+                                                REFRESH_TOKEN, EXPIRATION, SCOPE_LIST)
         assert result_obj.expires_at == EXPIRATION
 
 class TestClient:

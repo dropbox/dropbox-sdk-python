@@ -30,6 +30,7 @@ else:
     url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
 
 TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
+INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
 
 class OAuth2FlowNoRedirectResult(object):
     """
@@ -39,17 +40,22 @@ class OAuth2FlowNoRedirectResult(object):
     in using them, please contact Dropbox support
     """
 
-    def __init__(self, access_token, account_id, user_id, refresh_token, expiration):
+    def __init__(self, access_token, account_id, user_id, refresh_token, expiration, scope_list):
         """
         Args:
             access_token (str): Token to be used to authenticate later
                 requests.
+            refresh_token (str): Token to be used to acquire new access token
+                when existing one expires
+            expiration (int, datetime): Either the number of seconds from now that the token expires
+                in or the datetime at which the token expires
             account_id (str): The Dropbox user's account ID.
             user_id (str): Deprecated (use account_id instead).
             refresh_token (str): Token to be used to acquire new access token
                 when existing one expires
             expiration (int, datetime): Either the number of seconds from now that the token expires
                 in or the datetime at which the token expires
+            scope_list (list): list of scopes to request in base oauth flow.
         """
         self.access_token = access_token
         if not expiration:
@@ -61,14 +67,16 @@ class OAuth2FlowNoRedirectResult(object):
         self.refresh_token = refresh_token
         self.account_id = account_id
         self.user_id = user_id
+        self.scope_list = scope_list
 
     def __repr__(self):
-        return 'OAuth2FlowNoRedirectResult(%s, %s, %s, %s, %s)' % (
+        return 'OAuth2FlowNoRedirectResult(%s, %s, %s, %s, %s, %s)' % (
             self.access_token,
             self.account_id,
             self.user_id,
             self.refresh_token,
             self.expires_at,
+            self.scope_list,
         )
 
 
@@ -77,7 +85,8 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
     Authorization information for an OAuth2Flow with redirect.
     """
 
-    def __init__(self, access_token, account_id, user_id, url_state, refresh_token, expires_in):
+    def __init__(self, access_token, account_id, user_id, url_state, refresh_token,
+                 expires_in, scope_list):
         """
         Same as OAuth2FlowNoRedirectResult but with url_state.
 
@@ -86,20 +95,23 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
                 :meth:`DropboxOAuth2Flow.start`.
         """
         super(OAuth2FlowResult, self).__init__(
-            access_token, account_id, user_id, refresh_token, expires_in)
+            access_token, account_id, user_id, refresh_token, expires_in, scope_list)
         self.url_state = url_state
 
     @classmethod
     def from_no_redirect_result(cls, result, url_state):
         assert isinstance(result, OAuth2FlowNoRedirectResult)
         return cls(result.access_token, result.account_id, result.user_id,
-                   url_state, result.refresh_token, result.expires_at)
+                   url_state, result.refresh_token, result.expires_at, result.scope_list)
 
     def __repr__(self):
-        return 'OAuth2FlowResult(%s, %s, %s, %s, %s, %s)' % (
+        return 'OAuth2FlowResult(%s, %s, %s, %s, %s, %s, %s, %s, %s)' % (
             self.access_token,
+            self.refresh_token,
+            self.expires_at,
             self.account_id,
             self.user_id,
+            self.scope_list,
             self.url_state,
             self.refresh_token,
             self.expires_at,
@@ -108,14 +120,22 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 
 class DropboxOAuth2FlowBase(object):
 
-    def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy'):
+    def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy',
+                 scope_list=None, include_granted_scopes=None):
+        if scope_list is not None:
+            assert isinstance(scope_list, list), \
+                "Scope list must be of type list"
+
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
         self.locale = locale
         self.token_access_type = token_access_type
         self.requests_session = pinned_session()
+        self.scope_list = scope_list
+        self.include_granted_scopes = include_granted_scopes
 
-    def _get_authorize_url(self, redirect_uri, state, token_access_type):
+    def _get_authorize_url(self, redirect_uri, state, token_access_type, scope_list=None,
+                           include_granted_scopes=None):
         params = dict(response_type='code',
                       client_id=self.consumer_key)
         if redirect_uri is not None:
@@ -126,6 +146,12 @@ class DropboxOAuth2FlowBase(object):
             assert token_access_type in TOKEN_ACCESS_TYPES
             if token_access_type != 'legacy':
                 params['token_access_type'] = token_access_type
+
+        if scope_list is not None:
+            params['scope'] = " ".join(scope_list)
+        if include_granted_scopes is not None:
+            assert include_granted_scopes in INCLUDE_GRANTED_SCOPES_TYPES
+            params['include_granted_scopes'] = str(include_granted_scopes)
 
         return self.build_url('/oauth2/authorize', params, WEB_HOST)
 
@@ -163,6 +189,11 @@ class DropboxOAuth2FlowBase(object):
         else:
             expires_in = None
 
+        if 'scope' in d:
+            scope_list = d
+        else:
+            scope_list = None
+
         uid = d['uid']
 
         return OAuth2FlowNoRedirectResult(
@@ -171,7 +202,7 @@ class DropboxOAuth2FlowBase(object):
             uid,
             refresh_token,
             expires_in,
-        )
+            scope_list)
 
     def build_path(self, target, params=None):
         """Build the path component for an API URL.
@@ -228,21 +259,23 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         auth_flow = DropboxOAuth2FlowNoRedirect(APP_KEY, APP_SECRET)
 
         authorize_url = auth_flow.start()
-        print "1. Go to: " + authorize_url
-        print "2. Click \\"Allow\\" (you might have to log in first)."
-        print "3. Copy the authorization code."
+        print("1. Go to: " + authorize_url)
+        print("2. Click \\"Allow\\" (you might have to log in first).")
+        print("3. Copy the authorization code.")
         auth_code = raw_input("Enter the authorization code here: ").strip()
 
         try:
             oauth_result = auth_flow.finish(auth_code)
-        except Exception, e:
+        except Exception as e:
             print('Error: %s' % (e,))
             return
 
         dbx = Dropbox(oauth_result.access_token)
     """
 
-    def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy'):  # noqa: E501; pylint: disable=useless-super-delegation
+    def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy',
+                 scope_list=None, include_granted_scopes=None):
+        # noqa: E501; pylint: disable=useless-super-delegation
         """
         Construct an instance.
 
@@ -258,12 +291,21 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             legacy - creates one long-lived token with no expiration
             online - create one short-lived token with an expiration
             offline - create one short-lived token with an expiration with a refresh token
+        :param list scope_list: list of scopes to request in base oauth flow.  If left blank,
+            will default to all scopes for app
+        :param str include_granted_scopes: which scopes to include from previous grants
+            From the following enum:
+            user - include user scopes in the grant
+            team - include team scopes in the grant
+            Note: if this user has never linked the app, include_granted_scopes must be None
         """
         super(DropboxOAuth2FlowNoRedirect, self).__init__(
             consumer_key,
             consumer_secret,
             locale,
             token_access_type,
+            scope_list,
+            include_granted_scopes,
         )
 
     def start(self):
@@ -275,7 +317,8 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             access the user's Dropbox account. Tell the user to visit this URL
             and approve your app.
         """
-        return self._get_authorize_url(None, None, self.token_access_type)
+        return self._get_authorize_url(None, None, self.token_access_type, self.scope_list,
+                                       self.include_granted_scopes)
 
     def finish(self, code):
         """
@@ -337,7 +380,8 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
     """
 
     def __init__(self, consumer_key, consumer_secret, redirect_uri, session,
-                 csrf_token_session_key, locale=None, token_access_type='legacy'):
+                 csrf_token_session_key, locale=None, token_access_type='legacy',
+                 scope_list=None, include_granted_scopes=None):
         """
         Construct an instance.
 
@@ -361,9 +405,17 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             legacy - creates one long-lived token with no expiration
             online - create one short-lived token with an expiration
             offline - create one short-lived token with an expiration with a refresh token
+        :param list scope_list: list of scopes to request in base oauth flow.  If left blank,
+            will default to all scopes for app
+        :param str include_granted_scopes: which scopes to include from previous grants
+            From the following enum:
+            user - include user scopes in the grant
+            team - include team scopes in the grant
+            Note: if this user has never linked the app, include_granted_scopes must be None
         """
-        super(DropboxOAuth2Flow, self).__init__(consumer_key, consumer_secret,
-                                                locale, token_access_type)
+        super(DropboxOAuth2Flow, self).__init__(consumer_key, consumer_secret, locale,
+                                                token_access_type, scope_list,
+                                                include_granted_scopes)
         self.redirect_uri = redirect_uri
         self.session = session
         self.csrf_token_session_key = csrf_token_session_key
@@ -397,7 +449,8 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             state += "|" + url_state
         self.session[self.csrf_token_session_key] = csrf_token
 
-        return self._get_authorize_url(self.redirect_uri, state, self.token_access_type)
+        return self._get_authorize_url(self.redirect_uri, state, self.token_access_type,
+                                       self.scope_list, self.include_granted_scopes)
 
     def finish(self, query_params):
         """
