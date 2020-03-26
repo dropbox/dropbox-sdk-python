@@ -34,19 +34,22 @@ TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
 class OAuth2FlowNoRedirectResult(object):
     """
     Authorization information for an OAuth2Flow performed with no redirect.
+
+    Currently refresh_token and expiration are both beta features, if you are interested
+    in using them, please contact Dropbox support
     """
 
-    def __init__(self, access_token, refresh_token, expiration, account_id, user_id):
+    def __init__(self, access_token, account_id, user_id, refresh_token, expiration):
         """
         Args:
             access_token (str): Token to be used to authenticate later
                 requests.
+            account_id (str): The Dropbox user's account ID.
+            user_id (str): Deprecated (use account_id instead).
             refresh_token (str): Token to be used to acquire new access token
                 when existing one expires
             expiration (int, datetime): Either the number of seconds from now that the token expires
                 in or the datetime at which the token expires
-            account_id (str): The Dropbox user's account ID.
-            user_id (str): Deprecated (use account_id instead).
         """
         self.access_token = access_token
         if not expiration:
@@ -62,10 +65,10 @@ class OAuth2FlowNoRedirectResult(object):
     def __repr__(self):
         return 'OAuth2FlowNoRedirectResult(%s, %s, %s, %s, %s)' % (
             self.access_token,
-            self.expires_at,
-            self.refresh_token,
             self.account_id,
             self.user_id,
+            self.refresh_token,
+            self.expires_at,
         )
 
 
@@ -74,7 +77,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
     Authorization information for an OAuth2Flow with redirect.
     """
 
-    def __init__(self, access_token, refresh_token, expires_in, account_id, user_id, url_state):
+    def __init__(self, access_token, account_id, user_id, url_state, refresh_token, expires_in):
         """
         Same as OAuth2FlowNoRedirectResult but with url_state.
 
@@ -83,23 +86,23 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
                 :meth:`DropboxOAuth2Flow.start`.
         """
         super(OAuth2FlowResult, self).__init__(
-            access_token, refresh_token, expires_in, account_id, user_id)
+            access_token, account_id, user_id, refresh_token, expires_in)
         self.url_state = url_state
 
     @classmethod
     def from_no_redirect_result(cls, result, url_state):
         assert isinstance(result, OAuth2FlowNoRedirectResult)
-        return cls(
-            result.access_token, result.refresh_token, result.expires_at, result.account_id, result.user_id, url_state)
+        return cls(result.access_token, result.account_id, result.user_id,
+                   url_state, result.refresh_token, result.expires_at)
 
     def __repr__(self):
         return 'OAuth2FlowResult(%s, %s, %s, %s, %s, %s)' % (
             self.access_token,
-            self.refresh_token,
-            self.expires_at,
             self.account_id,
             self.user_id,
             self.url_state,
+            self.refresh_token,
+            self.expires_at,
         )
 
 
@@ -252,10 +255,9 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         :param str token_access_type: the type of token to be requested.
             From the following enum:
             legacy - creates one long-lived token with no expiration
-            online - create one short-lived token with a 4hr expiration
-            offline - create one short-lived token with a 4hr expiration with a refresh token
+            online - create one short-lived token with an expiration
+            offline - create one short-lived token with an expiration with a refresh token
         """
-        # pylint: disable=useless-super-delegation
         super(DropboxOAuth2FlowNoRedirect, self).__init__(
             consumer_key,
             consumer_secret,
@@ -356,10 +358,11 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         :param str token_access_type: the type of token to be requested.
             From the following enum:
             legacy - creates one long-lived token with no expiration
-            online - create one short-lived token with a 4hr expiration
-            offline - create one short-lived token with a 4hr expiration with a refresh token
+            online - create one short-lived token with an expiration
+            offline - create one short-lived token with an expiration with a refresh token
         """
-        super(DropboxOAuth2Flow, self).__init__(consumer_key, consumer_secret, locale, token_access_type)
+        super(DropboxOAuth2Flow, self).__init__(consumer_key, consumer_secret,
+                                                locale, token_access_type)
         self.redirect_uri = redirect_uri
         self.session = session
         self.csrf_token_session_key = csrf_token_session_key

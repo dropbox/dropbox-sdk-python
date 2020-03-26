@@ -62,6 +62,7 @@ def refresh_dbx_from_env(f):
         refresh_token = _token_from_env_or_die("DROPBOX_REFRESH_TOKEN")
         args += (Dropbox(oauth2_refresh_token=refresh_token))
         return f(self, *args, **kwargs)
+    return wrapped
 
 def dbx_team_from_env(f):
     @functools.wraps(f)

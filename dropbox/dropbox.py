@@ -132,16 +132,16 @@ class _DropboxTransport(object):
 
     def __init__(self,
                  oauth2_access_token=None,
-                 oauth2_refresh_token=None,
-                 oauth2_access_token_expiration=None,
-                 app_key=None,
-                 app_secret=None,
                  max_retries_on_error=4,
                  max_retries_on_rate_limit=None,
                  user_agent=None,
                  session=None,
                  headers=None,
-                 timeout=_DEFAULT_TIMEOUT):
+                 timeout=_DEFAULT_TIMEOUT,
+                 oauth2_refresh_token=None,
+                 oauth2_access_token_expiration=None,
+                 app_key=None,
+                 app_secret=None):
         """
         :param str oauth2_access_token: OAuth2 access token for making client
             requests.
@@ -175,7 +175,7 @@ class _DropboxTransport(object):
 
         if oauth2_refresh_token:
             assert app_key and app_secret, \
-            "app_key and app_secret are required to refresh tokens"
+                "app_key and app_secret are required to refresh tokens"
 
         self._oauth2_access_token = oauth2_access_token
         self._oauth2_refresh_token = oauth2_refresh_token
@@ -209,8 +209,6 @@ class _DropboxTransport(object):
                           HOST_NOTIFY: API_NOTIFICATION_HOST}
 
         self._timeout = timeout
-
-        self._check_and_refresh_access_token()
 
     def clone(
             self,
@@ -277,7 +275,7 @@ class _DropboxTransport(object):
         :return: The route's result.
         """
 
-        self._check_and_refresh_access_token()
+        self.check_and_refresh_access_token()
 
         host = route.attrs['host'] or 'api'
         route_name = namespace + '/' + route.name
@@ -331,7 +329,7 @@ class _DropboxTransport(object):
         else:
             return deserialized_result
 
-    def _check_and_refresh_access_token(self):
+    def check_and_refresh_access_token(self):
         """
         Checks if access token needs to be refreshed and refreshes if possible
 
@@ -339,13 +337,13 @@ class _DropboxTransport(object):
         """
         can_refresh = self._oauth2_refresh_token and self._app_key and self._app_secret
         needs_refresh = self._oauth2_access_token_expiration and \
-                        (datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION_BUFFER)) >= \
-                        self._oauth2_access_token_expiration
+            (datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION_BUFFER)) >= \
+            self._oauth2_access_token_expiration
         needs_token = not self._oauth2_access_token
         if (needs_refresh or needs_token) and can_refresh:
-            self._refresh_access_token()
+            self.refresh_access_token()
 
-    def _refresh_access_token(self):
+    def refresh_access_token(self, host=API_HOST):
         """
         Refreshes an access token via refresh token if available
 
@@ -353,23 +351,31 @@ class _DropboxTransport(object):
         """
 
         if not (self._oauth2_refresh_token and self._app_key and self._app_secret):
-            self._logger.warning('Unable to refresh access token without refresh token, app key, and app secret')
+            self._logger.warning('Unable to refresh access token without \
+                refresh token, app key, and app secret')
             return
 
         self._logger.info('Refreshing access token.')
-        url = "https://api.dropboxapi.com/oauth2/token"
+        url = "https://{}/oauth2/token".format(host)
         body = {'grant_type': 'refresh_token',
-                  'refresh_token': self._oauth2_refresh_token,
-                  'client_id': self._app_key,
-                  'client_secret': self._app_secret,
+                'refresh_token': self._oauth2_refresh_token,
+                'client_id': self._app_key,
+                'client_secret': self._app_secret,
                 }
 
         res = self._session.post(url, data=body)
+        print(res)
+        if res.status_code == 400 and res.json()['error'] == 'invalid_grant':
+            request_id = res.headers.get('x-dropbox-request-id')
+            err = stone_serializers.json_compat_obj_decode(
+                AuthError_validator, 'invalid_access_token')
+            raise AuthError(request_id, err)
         res.raise_for_status()
 
         token_content = res.json()
         self._oauth2_access_token = token_content["access_token"]
-        self._oauth2_access_token_expiration = datetime.utcnow() + timedelta(seconds=int(token_content["expires_in"]))
+        self._oauth2_access_token_expiration = datetime.utcnow() + \
+            timedelta(seconds=int(token_content["expires_in"]))
 
     def request_json_object(self,
                             host,
@@ -442,8 +448,8 @@ class _DropboxTransport(object):
                         raise
                     else:
                         self._logger.info(
-                            'ExpiredCredentials status_code=%s: Refreshing and Retrying in %.1f seconds',
-                            e.status_code, backoff)
+                            'ExpiredCredentials status_code=%s: Refreshing and Retrying',
+                            e.status_code)
                         self.refresh_access_token()
                         has_refreshed = True
                 else:
@@ -685,8 +691,8 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
         new_headers[select_header_name] = team_member_id
         return Dropbox(
             self._oauth2_access_token,
-            self._oauth2_refresh_token,
-            self._oauth2_access_token_expiration,
+            oauth2_refresh_token=self._oauth2_refresh_token,
+            oauth2_access_token_expiration=self._oauth2_access_token_expiration,
             max_retries_on_error=self._max_retries_on_error,
             max_retries_on_rate_limit=self._max_retries_on_rate_limit,
             timeout=self._timeout,
