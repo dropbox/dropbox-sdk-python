@@ -19,7 +19,7 @@ ACCOUNT_ID = 'dummy_account_id'
 USER_ID = 'dummy_user_id'
 EXPIRATION = datetime.utcnow() + timedelta(seconds=EXPIRES_IN)
 
-EXPIRATION_BUFFER = timedelta(seconds=20)
+EXPIRATION_BUFFER = timedelta(minutes=1)
 
 class TestOAuth:
 

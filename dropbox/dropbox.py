@@ -213,16 +213,16 @@ class _DropboxTransport(object):
     def clone(
             self,
             oauth2_access_token=None,
-            oauth2_refresh_token=None,
-            oauth2_access_token_expiration=None,
-            app_key=None,
-            app_secret=None,
             max_retries_on_error=None,
             max_retries_on_rate_limit=None,
             user_agent=None,
             session=None,
             headers=None,
-            timeout=None):
+            timeout=None,
+            oauth2_refresh_token=None,
+            oauth2_access_token_expiration=None,
+            app_key=None,
+            app_secret=None):
         """
         Creates a new copy of the Dropbox client with the same defaults unless modified by
         arguments to clone()
@@ -235,16 +235,16 @@ class _DropboxTransport(object):
 
         return self.__class__(
             oauth2_access_token or self._oauth2_access_token,
-            oauth2_refresh_token or self._oauth2_refresh_token,
-            oauth2_access_token_expiration or self._oauth2_access_token_expiration,
-            app_key or self._app_key,
-            app_secret or self._app_secret,
             max_retries_on_error or self._max_retries_on_error,
             max_retries_on_rate_limit or self._max_retries_on_rate_limit,
             user_agent or self._user_agent,
             session or self._session,
             headers or self._headers,
-            timeout or self._timeout
+            timeout or self._timeout,
+            oauth2_refresh_token or self._oauth2_refresh_token,
+            oauth2_access_token_expiration or self._oauth2_access_token_expiration,
+            app_key or self._app_key,
+            app_secret or self._app_secret,
         )
 
     def request(self,
@@ -364,7 +364,6 @@ class _DropboxTransport(object):
                 }
 
         res = self._session.post(url, data=body)
-        print(res)
         if res.status_code == 400 and res.json()['error'] == 'invalid_grant':
             request_id = res.headers.get('x-dropbox-request-id')
             err = stone_serializers.json_compat_obj_decode(
