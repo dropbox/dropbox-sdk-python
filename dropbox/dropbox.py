@@ -17,6 +17,7 @@ import time
 import requests
 import six
 
+from datetime import datetime, timedelta
 from . import files, stone_serializers
 from .auth import (
     AuthError_validator,
@@ -50,6 +51,7 @@ from .session import (
 
 PATH_ROOT_HEADER = 'Dropbox-API-Path-Root'
 HTTP_STATUS_INVALID_PATH_ROOT = 422
+TOKEN_EXPIRATION_BUFFER = 300
 
 class RouteResult(object):
     """The successful result of a call to a route."""
@@ -129,17 +131,22 @@ class _DropboxTransport(object):
     _DEFAULT_TIMEOUT = 100
 
     def __init__(self,
-                 oauth2_access_token,
+                 oauth2_access_token=None,
                  max_retries_on_error=4,
                  max_retries_on_rate_limit=None,
                  user_agent=None,
                  session=None,
                  headers=None,
-                 timeout=_DEFAULT_TIMEOUT):
+                 timeout=_DEFAULT_TIMEOUT,
+                 oauth2_refresh_token=None,
+                 oauth2_access_token_expiration=None,
+                 app_key=None,
+                 app_secret=None):
         """
         :param str oauth2_access_token: OAuth2 access token for making client
             requests.
-
+        :param str oauth2_refresh_token: OAuth2 refresh token for refreshing access token
+        :param datetime oauth2_access_token_expiration: Expiration for oauth2_access_token
         :param int max_retries_on_error: On 5xx errors, the number of times to
             retry.
         :param Optional[int] max_retries_on_rate_limit: On 429 errors, the
@@ -159,11 +166,23 @@ class _DropboxTransport(object):
             connection. If `None`, client will wait forever. Defaults
             to 30 seconds.
         """
-        assert len(oauth2_access_token) > 0, \
-            'OAuth2 access token cannot be empty.'
+
+        assert oauth2_access_token or oauth2_refresh_token, \
+            'OAuth2 access token or refresh token must be set'
+
         assert headers is None or isinstance(headers, dict), \
             'Expected dict, got %r' % headers
+
+        if oauth2_refresh_token:
+            assert app_key and app_secret, \
+                "app_key and app_secret are required to refresh tokens"
+
         self._oauth2_access_token = oauth2_access_token
+        self._oauth2_refresh_token = oauth2_refresh_token
+        self._oauth2_access_token_expiration = oauth2_access_token_expiration
+
+        self._app_key = app_key
+        self._app_secret = app_secret
 
         self._max_retries_on_error = max_retries_on_error
         self._max_retries_on_rate_limit = max_retries_on_rate_limit
@@ -199,14 +218,18 @@ class _DropboxTransport(object):
             user_agent=None,
             session=None,
             headers=None,
-            timeout=None):
+            timeout=None,
+            oauth2_refresh_token=None,
+            oauth2_access_token_expiration=None,
+            app_key=None,
+            app_secret=None):
         """
         Creates a new copy of the Dropbox client with the same defaults unless modified by
         arguments to clone()
 
         See constructor for original parameter descriptions.
 
-        :return: New instance of Dropbox clent
+        :return: New instance of Dropbox client
         :rtype: Dropbox
         """
 
@@ -217,7 +240,11 @@ class _DropboxTransport(object):
             user_agent or self._user_agent,
             session or self._session,
             headers or self._headers,
-            timeout or self._timeout
+            timeout or self._timeout,
+            oauth2_refresh_token or self._oauth2_refresh_token,
+            oauth2_access_token_expiration or self._oauth2_access_token_expiration,
+            app_key or self._app_key,
+            app_secret or self._app_secret,
         )
 
     def request(self,
@@ -247,6 +274,9 @@ class _DropboxTransport(object):
             Dropbox object.  Defaults to `None`.
         :return: The route's result.
         """
+
+        self.check_and_refresh_access_token()
+
         host = route.attrs['host'] or 'api'
         route_name = namespace + '/' + route.name
         if route.version > 1:
@@ -298,6 +328,53 @@ class _DropboxTransport(object):
             return (deserialized_result, res.http_resp)
         else:
             return deserialized_result
+
+    def check_and_refresh_access_token(self):
+        """
+        Checks if access token needs to be refreshed and refreshes if possible
+
+        :return:
+        """
+        can_refresh = self._oauth2_refresh_token and self._app_key and self._app_secret
+        needs_refresh = self._oauth2_access_token_expiration and \
+            (datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION_BUFFER)) >= \
+            self._oauth2_access_token_expiration
+        needs_token = not self._oauth2_access_token
+        if (needs_refresh or needs_token) and can_refresh:
+            self.refresh_access_token()
+
+    def refresh_access_token(self, host=API_HOST):
+        """
+        Refreshes an access token via refresh token if available
+
+        :return:
+        """
+
+        if not (self._oauth2_refresh_token and self._app_key and self._app_secret):
+            self._logger.warning('Unable to refresh access token without \
+                refresh token, app key, and app secret')
+            return
+
+        self._logger.info('Refreshing access token.')
+        url = "https://{}/oauth2/token".format(host)
+        body = {'grant_type': 'refresh_token',
+                'refresh_token': self._oauth2_refresh_token,
+                'client_id': self._app_key,
+                'client_secret': self._app_secret,
+                }
+
+        res = self._session.post(url, data=body)
+        if res.status_code == 400 and res.json()['error'] == 'invalid_grant':
+            request_id = res.headers.get('x-dropbox-request-id')
+            err = stone_serializers.json_compat_obj_decode(
+                AuthError_validator, 'invalid_access_token')
+            raise AuthError(request_id, err)
+        res.raise_for_status()
+
+        token_content = res.json()
+        self._oauth2_access_token = token_content["access_token"]
+        self._oauth2_access_token_expiration = datetime.utcnow() + \
+            timedelta(seconds=int(token_content["expires_in"]))
 
     def request_json_object(self,
                             host,
@@ -354,6 +431,7 @@ class _DropboxTransport(object):
         """
         attempt = 0
         rate_limit_errors = 0
+        has_refreshed = False
         while True:
             self._logger.info('Request to %s', route_name)
             try:
@@ -363,6 +441,18 @@ class _DropboxTransport(object):
                                                 request_json_arg,
                                                 request_binary,
                                                 timeout=timeout)
+            except AuthError as e:
+                if e.error and e.error.is_expired_access_token():
+                    if has_refreshed:
+                        raise
+                    else:
+                        self._logger.info(
+                            'ExpiredCredentials status_code=%s: Refreshing and Retrying',
+                            e.status_code)
+                        self.refresh_access_token()
+                        has_refreshed = True
+                else:
+                    raise
             except InternalServerError as e:
                 attempt += 1
                 if attempt <= self._max_retries_on_error:
@@ -600,6 +690,8 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
         new_headers[select_header_name] = team_member_id
         return Dropbox(
             self._oauth2_access_token,
+            oauth2_refresh_token=self._oauth2_refresh_token,
+            oauth2_access_token_expiration=self._oauth2_access_token_expiration,
             max_retries_on_error=self._max_retries_on_error,
             max_retries_on_rate_limit=self._max_retries_on_rate_limit,
             timeout=self._timeout,
