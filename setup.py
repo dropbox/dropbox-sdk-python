@@ -26,7 +26,7 @@ version = eval(line.split('=', 1)[1].strip())  # pylint: disable=eval-used
 
 install_reqs = [
     'requests >= 2.16.2',
-    'six >= 1.3.0',
+    'six >= 1.12.0',
 ]
 
 setup_requires = [
