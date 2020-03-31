@@ -6,8 +6,7 @@ from dropbox import DropboxOAuth2FlowNoRedirect
 APP_KEY = ""
 APP_SECRET = ""
 
-auth_flow = DropboxOAuth2FlowNoRedirect(APP_KEY, APP_SECRET, scope_list=['files.metadata.read'],
-                                        token_access_type='offline')
+auth_flow = DropboxOAuth2FlowNoRedirect(APP_KEY, APP_SECRET)
 
 authorize_url = auth_flow.start()
 print("1. Go to: " + authorize_url)
@@ -21,6 +20,6 @@ try:
 except Exception as e:
     print('Error: %s' % (e,))
 
-dbx = dropbox.Dropbox(oauth2_refresh_token=oauth_result.refresh_token,
+dbx = dropbox.Dropbox(oauth2_access_token=oauth_result.access_token,
                       app_key=APP_KEY, app_secret=APP_SECRET)
 dbx.users_get_current_account()

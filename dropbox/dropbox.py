@@ -142,7 +142,7 @@ class _DropboxTransport(object):
                  oauth2_access_token_expiration=None,
                  app_key=None,
                  app_secret=None,
-                 default_scope_list=None,):
+                 scope=None,):
         """
         :param str oauth2_access_token: OAuth2 access token for making client
             requests.
@@ -168,7 +168,7 @@ class _DropboxTransport(object):
         :param datetime oauth2_access_token_expiration: Expiration for oauth2_access_token
         :param str app_key: application key of requesting application; used for token refresh
         :param str app_secret: application secret of requesting application; used for token refresh
-        :param list default_scope_list: list of scopes to request on refresh.  If left blank,
+        :param list scope: list of scopes to request on refresh.  If left blank,
             refresh will request all available scopes for application
         """
 
@@ -182,8 +182,8 @@ class _DropboxTransport(object):
             assert app_key and app_secret, \
                 "app_key and app_secret are required to refresh tokens"
 
-        if default_scope_list is not None:
-            assert isinstance(default_scope_list, list), \
+        if scope is not None:
+            assert not scope or isinstance(scope, list), \
                 "Scope list must be of type list"
 
         self._oauth2_access_token = oauth2_access_token
@@ -192,7 +192,7 @@ class _DropboxTransport(object):
 
         self._app_key = app_key
         self._app_secret = app_secret
-        self._default_scope_list = default_scope_list
+        self._scope = scope
 
         self._max_retries_on_error = max_retries_on_error
         self._max_retries_on_rate_limit = max_retries_on_rate_limit
@@ -233,7 +233,7 @@ class _DropboxTransport(object):
             oauth2_access_token_expiration=None,
             app_key=None,
             app_secret=None,
-            default_scope_list=None):
+            scope=None):
         """
         Creates a new copy of the Dropbox client with the same defaults unless modified by
         arguments to clone()
@@ -256,7 +256,7 @@ class _DropboxTransport(object):
             oauth2_access_token_expiration or self._oauth2_access_token_expiration,
             app_key or self._app_key,
             app_secret or self._app_secret,
-            default_scope_list or self._default_scope_list
+            scope or self._scope
         )
 
     def request(self,
@@ -352,19 +352,19 @@ class _DropboxTransport(object):
             self._oauth2_access_token_expiration
         needs_token = not self._oauth2_access_token
         if (needs_refresh or needs_token) and can_refresh:
-            self.refresh_access_token(scope_list=self._default_scope_list)
+            self.refresh_access_token(scope=self._scope)
 
-    def refresh_access_token(self, host=API_HOST, scope_list=None):
+    def refresh_access_token(self, host=API_HOST, scope=None):
         """
         Refreshes an access token via refresh token if available
 
         :param host: host to hit token endpoint with
-        :param scope_list: list of permission scopes for access token
+        :param scope: list of permission scopes for access token
         :return:
         """
 
-        if scope_list is not None:
-            assert isinstance(scope_list, list), \
+        if scope is not None:
+            assert not scope or isinstance(scope, list), \
                 "Scope list must be of type list"
 
         if not (self._oauth2_refresh_token and self._app_key and self._app_secret):
@@ -379,8 +379,8 @@ class _DropboxTransport(object):
                 'client_id': self._app_key,
                 'client_secret': self._app_secret,
                 }
-        if scope_list:
-            scope = " ".join(scope_list)
+        if scope:
+            scope = " ".join(scope)
             body['scope'] = scope
 
         res = self._session.post(url, data=body)
