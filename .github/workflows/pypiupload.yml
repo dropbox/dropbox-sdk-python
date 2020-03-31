@@ -33,8 +33,8 @@ jobs:
       if: ${{ matrix.python-version }} == '3.x'
     - name: Publish
       env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.pypi_secret }}
       run: |
         twine check dist/*
         twine upload dist/*
