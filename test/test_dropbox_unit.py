@@ -24,6 +24,68 @@ EXPIRATION_BUFFER = timedelta(minutes=5)
 
 class TestOAuth:
 
+    def test_authorization_url(self):
+        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
+                                     'dummy_session', 'dbx-auth-csrf-token')
+        for redirect_uri in [None, 'localhost']:
+            for state in [None, 'state']:
+                for token_access_type in [None, 'legacy', 'offline', 'online']:
+                    for scope in [None, SCOPE_LIST]:
+                        for include_granted_scopes in [None, 'user', 'team']:
+                            for code_challenge_method in [None, 'plain', 'S256']:
+                                for code_challenge in [None, 'mychallenge']:
+                                    authorization_url = \
+                                        flow_obj._get_authorize_url(redirect_uri, state,
+                                                                    token_access_type, scope,
+                                                                    include_granted_scopes,
+                                                                    code_challenge,
+                                                                    code_challenge_method)
+                                    assert authorization_url\
+                                        .startswith('https://{}/oauth2/authorize?'
+                                                    .format(session.WEB_HOST))
+                                    assert 'client_id={}'.format(APP_KEY) in authorization_url
+                                    assert 'response_type=code' in authorization_url
+
+                                    if redirect_uri:
+                                        assert 'redirect_uri={}'.format(redirect_uri) \
+                                            in authorization_url
+                                    else:
+                                        assert 'redirect_uri' not in authorization_url
+
+                                    if state:
+                                        assert 'state={}'.format(state) in authorization_url
+                                    else:
+                                        assert 'state' not in authorization_url
+
+                                    if token_access_type and token_access_type != 'legacy':
+                                        assert 'token_access_type={}'.format(token_access_type) \
+                                            in authorization_url
+                                    else:
+                                        assert 'token_access_type' not in authorization_url
+
+                                    if scope:
+                                        assert 'scope={}'.format("+".join(scope)) \
+                                               in authorization_url
+                                    else:
+                                        assert 'scope' not in authorization_url
+
+                                    if include_granted_scopes and scope:
+                                        assert 'include_granted_scopes={}'\
+                                            .format(include_granted_scopes)\
+                                            in authorization_url
+                                    else:
+                                        assert 'include_granted_scopes' not in authorization_url
+
+                                    if code_challenge_method and code_challenge:
+                                        assert 'code_challenge_method={}'.format(
+                                            code_challenge_method)\
+                                            in authorization_url
+                                        assert 'code_challenge={}'.format(code_challenge)\
+                                            in authorization_url
+                                    else:
+                                        assert 'code_challenge_method' not in authorization_url
+                                        assert 'code_challenge' not in authorization_url
+
     def test_authorization_url_legacy_default(self):
         flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
                                      'dummy_session', 'dbx-auth-csrf-token')

@@ -1,3 +1,5 @@
+import hashlib
+
 __all__ = [
     'BadRequestException',
     'BadStateException',
@@ -14,6 +16,7 @@ import base64
 import os
 import six
 import urllib
+import re
 from datetime import datetime, timedelta
 
 from .session import (
@@ -31,6 +34,8 @@ else:
 
 TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
 INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
+PKCE_CODE_CHALLENGE_METHOD_TYPES = ['S256', 'plain']
+PKCE_VERIFIER_LENGTH = 128
 
 class OAuth2FlowNoRedirectResult(object):
     """
@@ -95,7 +100,12 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
                 :meth:`DropboxOAuth2Flow.start`.
         """
         super(OAuth2FlowResult, self).__init__(
-            access_token, account_id, user_id, refresh_token, expires_in, scope)
+            access_token=access_token,
+            account_id=account_id,
+            user_id=user_id,
+            refresh_token=refresh_token,
+            expires_in=expires_in,
+            scope=scope)
         self.url_state = url_state
 
     @classmethod
@@ -120,11 +130,18 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 
 class DropboxOAuth2FlowBase(object):
 
-    def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy',
-                 scope=None, include_granted_scopes=None):
+    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
+                 scope=None, include_granted_scopes=None, pkce_method=None):
         if scope is not None:
             assert len(scope) > 0 and isinstance(scope, list), \
                 "Scope list must be of type list"
+        if pkce_method is not None:
+            assert pkce_method in PKCE_CODE_CHALLENGE_METHOD_TYPES
+        if token_access_type is not None:
+            assert token_access_type in TOKEN_ACCESS_TYPES
+
+        assert pkce_method or consumer_secret, \
+            "must pass in consumer secret or pkce method"
 
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
@@ -134,8 +151,20 @@ class DropboxOAuth2FlowBase(object):
         self.scope = scope
         self.include_granted_scopes = include_granted_scopes
 
+        self.pkce_method = pkce_method
+        if pkce_method:
+            self.code_verifier = _generate_pkce_code_verifier()
+            if pkce_method == 'S256':
+                self.code_challenge = _generate_pkce_code_challenge(self.code_verifier)
+            else:
+                self.code_challenge = self.code_verifier
+        else:
+            self.code_verifier = None
+            self.code_challenge = None
+
     def _get_authorize_url(self, redirect_uri, state, token_access_type, scope=None,
-                           include_granted_scopes=None):
+                           include_granted_scopes=None, code_challenge=None,
+                           code_challenge_method=None):
         params = dict(response_type='code',
                       client_id=self.consumer_key)
         if redirect_uri is not None:
@@ -146,22 +175,29 @@ class DropboxOAuth2FlowBase(object):
             assert token_access_type in TOKEN_ACCESS_TYPES
             if token_access_type != 'legacy':
                 params['token_access_type'] = token_access_type
+        if code_challenge and code_challenge_method:
+            assert code_challenge_method in PKCE_CODE_CHALLENGE_METHOD_TYPES
+            params['code_challenge'] = code_challenge
+            params['code_challenge_method'] = code_challenge_method
 
         if scope is not None:
             params['scope'] = " ".join(scope)
-        if include_granted_scopes is not None:
-            assert include_granted_scopes in INCLUDE_GRANTED_SCOPES_TYPES
-            params['include_granted_scopes'] = str(include_granted_scopes)
+            if include_granted_scopes is not None:
+                assert include_granted_scopes in INCLUDE_GRANTED_SCOPES_TYPES
+                params['include_granted_scopes'] = include_granted_scopes
 
         return self.build_url('/oauth2/authorize', params, WEB_HOST)
 
-    def _finish(self, code, redirect_uri):
+    def _finish(self, code, redirect_uri, code_verifier):
         url = self.build_url('/oauth2/token')
         params = {'grant_type': 'authorization_code',
                   'code': code,
                   'client_id': self.consumer_key,
-                  'client_secret': self.consumer_secret,
                   }
+        if code_verifier:
+            params['code_verifier'] = code_verifier
+        else:
+            params['client_secret'] = self.consumer_secret
         if self.locale is not None:
             params['locale'] = self.locale
         if redirect_uri is not None:
@@ -273,9 +309,8 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         dbx = Dropbox(oauth_result.access_token)
     """
 
-    def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy',
-                 scope=None, include_granted_scopes=None):
-        # noqa: E501; pylint: disable=useless-super-delegation
+    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
+                 scope=None, include_granted_scopes=None, pkce_method=None):  # noqa: E501;
         """
         Construct an instance.
 
@@ -298,14 +333,19 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             user - include user scopes in the grant
             team - include team scopes in the grant
             Note: if this user has never linked the app, include_granted_scopes must be None
+        :param str pkce_method: method for code_challenge generation if using PKCE
+            From the following enum:
+            S256 - use SHA256 to generate the code_challenge
+            plain - do not generate the code_challenge, use the code_verifier
         """
         super(DropboxOAuth2FlowNoRedirect, self).__init__(
-            consumer_key,
-            consumer_secret,
-            locale,
-            token_access_type,
-            scope,
-            include_granted_scopes,
+            consumer_key=consumer_key,
+            consumer_secret=consumer_secret,
+            locale=locale,
+            token_access_type=token_access_type,
+            scope=scope,
+            include_granted_scopes=include_granted_scopes,
+            pkce_method=pkce_method,
         )
 
     def start(self):
@@ -317,8 +357,11 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             access the user's Dropbox account. Tell the user to visit this URL
             and approve your app.
         """
-        return self._get_authorize_url(None, None, self.token_access_type, self.scope,
-                                       self.include_granted_scopes)
+        return self._get_authorize_url(None, None, self.token_access_type,
+                                       scope=self.scope,
+                                       include_granted_scopes=self.include_granted_scopes,
+                                       code_challenge=self.code_challenge,
+                                       code_challenge_method=self.pkce_method)
 
     def finish(self, code):
         """
@@ -331,7 +374,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         :rtype: OAuth2FlowNoRedirectResult
         :raises: The same exceptions as :meth:`DropboxOAuth2Flow.finish()`.
         """
-        return self._finish(code, None)
+        return self._finish(code, None, self.code_verifier)
 
 
 class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
@@ -379,9 +422,10 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
     """
 
-    def __init__(self, consumer_key, consumer_secret, redirect_uri, session,
-                 csrf_token_session_key, locale=None, token_access_type='legacy',
-                 scope=None, include_granted_scopes=None):
+    def __init__(self, consumer_key, redirect_uri, session,
+                 csrf_token_session_key, consumer_secret=None, locale=None,
+                 token_access_type='legacy', scope=None,
+                include_granted_scopes=None, pkce_method=None):
         """
         Construct an instance.
 
@@ -412,10 +456,19 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             user - include user scopes in the grant
             team - include team scopes in the grant
             Note: if this user has never linked the app, include_granted_scopes must be None
+        :param str pkce_method: method for code_challenge generation if using PKCE
+            From the following enum:
+            S256 - use SHA256 to generate the code_challenge
+            plain - do not generate the code_challenge, use the code_verifier
         """
-        super(DropboxOAuth2Flow, self).__init__(consumer_key, consumer_secret, locale,
-                                                token_access_type, scope,
-                                                include_granted_scopes)
+        super(DropboxOAuth2Flow, self).__init__(
+            consumer_key=consumer_key,
+            consumer_secret=consumer_secret,
+            locale=locale,
+            token_access_type=token_access_type,
+            scope=scope,
+            include_granted_scopes=include_granted_scopes,
+            pkce_method=pkce_method)
         self.redirect_uri = redirect_uri
         self.session = session
         self.csrf_token_session_key = csrf_token_session_key
@@ -450,7 +503,10 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         self.session[self.csrf_token_session_key] = csrf_token
 
         return self._get_authorize_url(self.redirect_uri, state, self.token_access_type,
-                                       self.scope, self.include_granted_scopes)
+                                       scope=self.scope,
+                                       include_granted_scopes=self.include_granted_scopes,
+                                       code_challenge=self.code_challenge,
+                                       code_challenge_method=self.pkce_method)
 
     def finish(self, query_params):
         """
@@ -534,7 +590,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
         # If everything went ok, make the network call to get an access token.
 
-        no_redirect_result = self._finish(code, self.redirect_uri)
+        no_redirect_result = self._finish(code, self.redirect_uri, self.code_verifier)
         return OAuth2FlowResult.from_no_redirect_result(
             no_redirect_result, url_state)
 
@@ -616,3 +672,16 @@ def _params_to_urlencoded(params):
 
     utf8_params = {encode(k): encode(v) for k, v in six.iteritems(params)}
     return url_encode(utf8_params)
+
+def _generate_pkce_code_verifier():
+    code_verifier = base64.urlsafe_b64encode(os.urandom(PKCE_VERIFIER_LENGTH)).decode('utf-8')
+    code_verifier = re.sub('[^a-zA-Z0-9]+', '', code_verifier)
+    if len(code_verifier) > PKCE_VERIFIER_LENGTH:
+        code_verifier = code_verifier[:128]
+    return code_verifier
+
+def _generate_pkce_code_challenge(code_verifier):
+    code_challenge = hashlib.sha256(code_verifier.encode('utf-8')).digest()
+    code_challenge = base64.urlsafe_b64encode(code_challenge).decode('utf-8')
+    code_challenge = code_challenge.replace('=', '')
+    return code_challenge

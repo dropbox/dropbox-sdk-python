@@ -19,6 +19,7 @@ try:
     print(oauth_result)
 except Exception as e:
     print('Error: %s' % (e,))
+    exit(1)
 
 dbx = dropbox.Dropbox(oauth2_access_token=oauth_result.access_token,
                       app_key=APP_KEY, app_secret=APP_SECRET)
