@@ -183,7 +183,7 @@ class _DropboxTransport(object):
                 "app_key and app_secret are required to refresh tokens"
 
         if scope is not None:
-            assert not scope or isinstance(scope, list), \
+            assert len(scope) > 0 and isinstance(scope, list), \
                 "Scope list must be of type list"
 
         self._oauth2_access_token = oauth2_access_token
@@ -364,7 +364,7 @@ class _DropboxTransport(object):
         """
 
         if scope is not None:
-            assert not scope or isinstance(scope, list), \
+            assert len(scope) > 0 and isinstance(scope, list), \
                 "Scope list must be of type list"
 
         if not (self._oauth2_refresh_token and self._app_key and self._app_secret):

@@ -123,7 +123,7 @@ class DropboxOAuth2FlowBase(object):
     def __init__(self, consumer_key, consumer_secret, locale=None, token_access_type='legacy',
                  scope=None, include_granted_scopes=None):
         if scope is not None:
-            assert not scope or isinstance(scope, list), \
+            assert len(scope) > 0 and isinstance(scope, list), \
                 "Scope list must be of type list"
 
         self.consumer_key = consumer_key
