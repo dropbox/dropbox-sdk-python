@@ -120,6 +120,14 @@ class TestDropbox(unittest.TestCase):
     def test_refresh(self, dbx):
         dbx.users_get_current_account()
 
+    @refresh_dbx_from_env
+    def test_downscope(self, dbx):
+        dbx.users_get_current_account()
+        dbx.refresh_access_token(scope=['files.metadata.read'])
+        with self.assertRaises(AuthError):
+            # Should fail because downscoped to not include needed scope
+            dbx.users_get_current_account()
+
     @dbx_from_env
     def test_rpc(self, dbx):
         dbx.files_list_folder('')
