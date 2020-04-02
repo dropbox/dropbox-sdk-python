@@ -34,7 +34,6 @@ else:
 
 TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
 INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
-PKCE_CODE_CHALLENGE_METHOD_TYPES = ['S256', 'plain']
 PKCE_VERIFIER_LENGTH = 128
 
 class OAuth2FlowNoRedirectResult(object):
@@ -131,17 +130,16 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 class DropboxOAuth2FlowBase(object):
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
-                 scope=None, include_granted_scopes=None, pkce_method=None):
-        if scope is not None:
-            assert len(scope) > 0 and isinstance(scope, list), \
-                "Scope list must be of type list"
-        if pkce_method is not None:
-            assert pkce_method in PKCE_CODE_CHALLENGE_METHOD_TYPES
-        if token_access_type is not None:
-            assert token_access_type in TOKEN_ACCESS_TYPES
-
-        assert pkce_method or consumer_secret, \
-            "must pass in consumer secret or pkce method"
+                 scope=None, include_granted_scopes=None, use_pkce=False):
+        if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
+            raise BadInputException("Scope list must be of type list")
+        if token_access_type is not None and token_access_type not in TOKEN_ACCESS_TYPES:
+            raise BadInputException("Token access type must be from the following enum: {}".format(
+                TOKEN_ACCESS_TYPES))
+        if not (use_pkce or consumer_secret):
+            raise BadInputException("Must pass in either consumer secret or use PKCE")
+        if include_granted_scopes and not scope:
+            raise BadInputException("Must pass in scope to pass include_granted_scopes")
 
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
@@ -151,20 +149,15 @@ class DropboxOAuth2FlowBase(object):
         self.scope = scope
         self.include_granted_scopes = include_granted_scopes
 
-        self.pkce_method = pkce_method
-        if pkce_method:
+        if use_pkce:
             self.code_verifier = _generate_pkce_code_verifier()
-            if pkce_method == 'S256':
-                self.code_challenge = _generate_pkce_code_challenge(self.code_verifier)
-            else:
-                self.code_challenge = self.code_verifier
+            self.code_challenge = _generate_pkce_code_challenge(self.code_verifier)
         else:
             self.code_verifier = None
             self.code_challenge = None
 
     def _get_authorize_url(self, redirect_uri, state, token_access_type, scope=None,
-                           include_granted_scopes=None, code_challenge=None,
-                           code_challenge_method=None):
+                           include_granted_scopes=None, code_challenge=None):
         params = dict(response_type='code',
                       client_id=self.consumer_key)
         if redirect_uri is not None:
@@ -175,10 +168,9 @@ class DropboxOAuth2FlowBase(object):
             assert token_access_type in TOKEN_ACCESS_TYPES
             if token_access_type != 'legacy':
                 params['token_access_type'] = token_access_type
-        if code_challenge and code_challenge_method:
-            assert code_challenge_method in PKCE_CODE_CHALLENGE_METHOD_TYPES
+        if code_challenge:
             params['code_challenge'] = code_challenge
-            params['code_challenge_method'] = code_challenge_method
+            params['code_challenge_method'] = 'S256'
 
         if scope is not None:
             params['scope'] = " ".join(scope)
@@ -310,7 +302,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
     """
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
-                 scope=None, include_granted_scopes=None, pkce_method=None):  # noqa: E501;
+                 scope=None, include_granted_scopes=None, use_pkce=False):  # noqa: E501;
         """
         Construct an instance.
 
@@ -333,10 +325,9 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             user - include user scopes in the grant
             team - include team scopes in the grant
             Note: if this user has never linked the app, include_granted_scopes must be None
-        :param str pkce_method: method for code_challenge generation if using PKCE
-            From the following enum:
-            S256 - use SHA256 to generate the code_challenge
-            plain - do not generate the code_challenge, use the code_verifier
+        :param bool use_pkce: Whether or not to use Sha256 based PKCE. PKCE should be only use on
+            client apps which doesn't call your server. It is less secure than non-PKCE flow but
+            can be used if you are unable to safely retrieve your app secret
         """
         super(DropboxOAuth2FlowNoRedirect, self).__init__(
             consumer_key=consumer_key,
@@ -345,7 +336,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             token_access_type=token_access_type,
             scope=scope,
             include_granted_scopes=include_granted_scopes,
-            pkce_method=pkce_method,
+            use_pkce=use_pkce,
         )
 
     def start(self):
@@ -360,8 +351,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         return self._get_authorize_url(None, None, self.token_access_type,
                                        scope=self.scope,
                                        include_granted_scopes=self.include_granted_scopes,
-                                       code_challenge=self.code_challenge,
-                                       code_challenge_method=self.pkce_method)
+                                       code_challenge=self.code_challenge)
 
     def finish(self, code):
         """
@@ -425,7 +415,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
     def __init__(self, consumer_key, redirect_uri, session,
                  csrf_token_session_key, consumer_secret=None, locale=None,
                  token_access_type='legacy', scope=None,
-                include_granted_scopes=None, pkce_method=None):
+                include_granted_scopes=None, use_pkce=False):
         """
         Construct an instance.
 
@@ -456,10 +446,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             user - include user scopes in the grant
             team - include team scopes in the grant
             Note: if this user has never linked the app, include_granted_scopes must be None
-        :param str pkce_method: method for code_challenge generation if using PKCE
-            From the following enum:
-            S256 - use SHA256 to generate the code_challenge
-            plain - do not generate the code_challenge, use the code_verifier
+        :param bool use_pkce: Whether or not to use Sha256 based PKCE
         """
         super(DropboxOAuth2Flow, self).__init__(
             consumer_key=consumer_key,
@@ -468,7 +455,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             token_access_type=token_access_type,
             scope=scope,
             include_granted_scopes=include_granted_scopes,
-            pkce_method=pkce_method)
+            use_pkce=use_pkce)
         self.redirect_uri = redirect_uri
         self.session = session
         self.csrf_token_session_key = csrf_token_session_key
@@ -505,8 +492,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         return self._get_authorize_url(self.redirect_uri, state, self.token_access_type,
                                        scope=self.scope,
                                        include_granted_scopes=self.include_granted_scopes,
-                                       code_challenge=self.code_challenge,
-                                       code_challenge_method=self.pkce_method)
+                                       code_challenge=self.code_challenge)
 
     def finish(self, query_params):
         """
@@ -640,6 +626,16 @@ class ProviderException(Exception):
 
     The recommended action is to log the error, tell the user something went
     wrong, and let them try again.
+    """
+    pass
+
+
+class BadInputException(Exception):
+    """
+    Thrown if incorrect types/values are used
+
+    This should only ever be thrown during testing, app should have validation of input prior to
+    reaching this point
     """
     pass
 
