@@ -168,23 +168,22 @@ class _DropboxTransport(object):
         :param datetime oauth2_access_token_expiration: Expiration for oauth2_access_token
         :param str app_key: application key of requesting application; used for token refresh
         :param str app_secret: application secret of requesting application; used for token refresh
+            Not required if PKCE was used to authorize the token
         :param list scope: list of scopes to request on refresh.  If left blank,
             refresh will request all available scopes for application
         """
 
-        assert oauth2_access_token or oauth2_refresh_token, \
-            'OAuth2 access token or refresh token must be set'
+        if not (oauth2_access_token or oauth2_refresh_token):
+            raise BadInputException('OAuth2 access token or refresh token must be set')
 
-        assert headers is None or isinstance(headers, dict), \
-            'Expected dict, got %r' % headers
+        if headers is not None and not isinstance(headers, dict):
+            raise BadInputException('Expected dict, got {}'.format(headers))
 
-        if oauth2_refresh_token:
-            assert app_key and app_secret, \
-                "app_key and app_secret are required to refresh tokens"
+        if oauth2_refresh_token and not app_key:
+            raise BadInputException("app_key is required to refresh tokens")
 
-        if scope is not None:
-            assert len(scope) > 0 and isinstance(scope, list), \
-                "Scope list must be of type list"
+        if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
+            raise BadInputException("Scope list must be of type list")
 
         self._oauth2_access_token = oauth2_access_token
         self._oauth2_refresh_token = oauth2_refresh_token
@@ -197,8 +196,9 @@ class _DropboxTransport(object):
         self._max_retries_on_error = max_retries_on_error
         self._max_retries_on_rate_limit = max_retries_on_rate_limit
         if session:
-            assert isinstance(session, requests.sessions.Session), \
-                'Expected requests.sessions.Session, got %r' % session
+            if not isinstance(session, requests.sessions.Session):
+                raise BadInputException('Expected requests.sessions.Session, got {}'
+                                        .format(session))
             self._session = session
         else:
             self._session = create_session()
@@ -346,7 +346,7 @@ class _DropboxTransport(object):
         Checks if access token needs to be refreshed and refreshes if possible
         :return:
         """
-        can_refresh = self._oauth2_refresh_token and self._app_key and self._app_secret
+        can_refresh = self._oauth2_refresh_token and self._app_key
         needs_refresh = self._oauth2_access_token_expiration and \
             (datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION_BUFFER)) >= \
             self._oauth2_access_token_expiration
@@ -363,13 +363,12 @@ class _DropboxTransport(object):
         :return:
         """
 
-        if scope is not None:
-            assert len(scope) > 0 and isinstance(scope, list), \
-                "Scope list must be of type list"
+        if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
+            raise BadInputException("Scope list must be of type list")
 
-        if not (self._oauth2_refresh_token and self._app_key and self._app_secret):
+        if not (self._oauth2_refresh_token and self._app_key):
             self._logger.warning('Unable to refresh access token without \
-                refresh token, app key, and app secret')
+                refresh token and app key')
             return
 
         self._logger.info('Refreshing access token.')
@@ -377,8 +376,9 @@ class _DropboxTransport(object):
         body = {'grant_type': 'refresh_token',
                 'refresh_token': self._oauth2_refresh_token,
                 'client_id': self._app_key,
-                'client_secret': self._app_secret,
                 }
+        if self._app_secret:
+            body['client_secret'] = self._app_secret
         if scope:
             scope = " ".join(scope)
             body['scope'] = scope
@@ -719,3 +719,12 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
             session=self._session,
             headers=new_headers,
         )
+
+class BadInputException(Exception):
+    """
+    Thrown if incorrect types/values are used
+
+    This should only ever be thrown during testing, app should have validation of input prior to
+    reaching this point
+    """
+    pass
