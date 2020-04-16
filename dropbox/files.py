@@ -10885,10 +10885,11 @@ class SearchArg(bb.Struct):
     """
     :ivar files.SearchArg.path: The path in the user's Dropbox to search. Should
         probably be a folder.
-    :ivar files.SearchArg.query: The string to search for. The search string is
-        split on spaces into multiple tokens. For file name searching, the last
-        token is used for prefix matching (i.e. "bat c" matches "bat cave" but
-        not "batman car").
+    :ivar files.SearchArg.query: The string to search for. Query string may be
+        rewritten to improve relevance of results. The string is split on spaces
+        into multiple tokens. For file name searching, the last token is used
+        for prefix matching (i.e. "bat c" matches "bat cave" but not "batman
+        car").
     :ivar files.SearchArg.start: The starting index within the search results
         (used for paging).
     :ivar files.SearchArg.max_results: The maximum number of search results to
@@ -10966,9 +10967,10 @@ class SearchArg(bb.Struct):
     @property
     def query(self):
         """
-        The string to search for. The search string is split on spaces into
-        multiple tokens. For file name searching, the last token is used for
-        prefix matching (i.e. "bat c" matches "bat cave" but not "batman car").
+        The string to search for. Query string may be rewritten to improve
+        relevance of results. The string is split on spaces into multiple
+        tokens. For file name searching, the last token is used for prefix
+        matching (i.e. "bat c" matches "bat cave" but not "batman car").
 
         :rtype: str
         """
@@ -11800,7 +11802,8 @@ SearchResult_validator = bv.Struct(SearchResult)
 class SearchV2Arg(bb.Struct):
     """
     :ivar files.SearchV2Arg.query: The string to search for. May match across
-        multiple fields based on the request arguments.
+        multiple fields based on the request arguments. Query string may be
+        rewritten to improve relevance of results.
     :ivar files.SearchV2Arg.options: Options for more targeted search results.
     """
 
@@ -11836,7 +11839,8 @@ class SearchV2Arg(bb.Struct):
     def query(self):
         """
         The string to search for. May match across multiple fields based on the
-        request arguments.
+        request arguments. Query string may be rewritten to improve relevance of
+        results.
 
         :rtype: str
         """
