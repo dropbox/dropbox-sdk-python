@@ -27,10 +27,9 @@ jobs:
     - name: Build
       run: |
         python setup.py bdist_wheel
-    - name: Build Sources
+    - name: Build Sources (3.x)
+      run: python setup.py sdist
       if: matrix.python-version == '3.x'
-      run: |
-        python setup.py sdist
     - name: Publish
       env:
         TWINE_USERNAME: __token__

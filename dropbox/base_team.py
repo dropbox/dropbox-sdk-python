@@ -11,6 +11,7 @@ from . import (
     async_,
     auth,
     check,
+    cloud_docs,
     common,
     contacts,
     file_properties,
@@ -44,6 +45,9 @@ class DropboxTeamBase(object):
 
     # ------------------------------------------
     # Routes in check namespace
+
+    # ------------------------------------------
+    # Routes in cloud_docs namespace
 
     # ------------------------------------------
     # Routes in contacts namespace
@@ -751,66 +755,6 @@ class DropboxTeamBase(object):
                                              end_date)
         r = self.request(
             team.legal_holds_create_policy,
-            'team',
-            arg,
-            None,
-        )
-        return r
-
-    def team_legal_holds_export_policy(self,
-                                       id,
-                                       path):
-        """
-        Export everything for a single hold to a Dropbox file path. Permission :
-        Team member file access.
-
-        :param str id: The legal hold Id.
-        :param str path: The selected destination path in the team's Dropbox for
-            the export. The path must be a namespace path (see example) of a
-            namespace that's accessible to the application. To get the list of
-            accessible namespaces use the route :meth:`team_namespaces_list`.
-        :rtype: :class:`dropbox.team.LegalHoldsExportPolicyResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.team.LegalHoldsExportPolicyError`
-        """
-        warnings.warn(
-            'legal_holds/export_policy is deprecated.',
-            DeprecationWarning,
-        )
-        arg = team.LegalHoldsPolicyExportArg(id,
-                                             path)
-        r = self.request(
-            team.legal_holds_export_policy,
-            'team',
-            arg,
-            None,
-        )
-        return r
-
-    def team_legal_holds_export_policy_job_status_check(self,
-                                                        async_job_id):
-        """
-        Returns the status of an asynchronous job for
-        :meth:`team_legal_holds_export_policy_job_status_check`. Permission :
-        Team member file access.
-
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
-        :rtype: :class:`dropbox.team.ExportPolicyJobStatusResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.team.PollError`
-        """
-        warnings.warn(
-            'legal_holds/export_policy_job_status/check is deprecated.',
-            DeprecationWarning,
-        )
-        arg = async_.PollArg(async_job_id)
-        r = self.request(
-            team.legal_holds_export_policy_job_status_check,
             'team',
             arg,
             None,
@@ -2306,10 +2250,15 @@ class DropboxTeamBase(object):
                             time=None,
                             category=None):
         """
-        Retrieves team events. Many attributes note 'may be missing due to
-        historical data gap'. Note that the file_operations category and &
-        analogous paper events are not available on all Dropbox Business `plans
-        </business/plans-comparison>`_. Use `features/get_values
+        Retrieves team events. If the result's ``GetTeamEventsResult.has_more``
+        field is ``True``, call :meth:`team_log_get_events_continue` with the
+        returned cursor to retrieve more entries. If end_time is not specified
+        in your request, you may use the returned cursor to poll
+        :meth:`team_log_get_events_continue` for new events. Many attributes
+        note 'may be missing due to historical data gap'. Note that the
+        file_operations category and & analogous paper events are not available
+        on all Dropbox Business `plans </business/plans-comparison>`_. Use
+        `features/get_values
         </developers/documentation/http/teams#team-features-get_values>`_ to
         check for this feature. Permission : Team Auditing.
 

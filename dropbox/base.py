@@ -11,6 +11,7 @@ from . import (
     async_,
     auth,
     check,
+    cloud_docs,
     common,
     contacts,
     file_properties,
@@ -153,6 +154,194 @@ class DropboxBase(object):
         return r
 
     # ------------------------------------------
+    # Routes in cloud_docs namespace
+
+    def cloud_docs_get_content(self,
+                               file_id):
+        """
+        Fetch the binary content of the requested document. This route requires
+        Cloud Docs auth. Please make a request to cloud_docs/authorize and
+        supply that token in the Authorization header.
+
+        :type file_id: str
+        :rtype: (None,
+                 :class:`requests.models.Response`)
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.cloud_docs.CloudDocsAccessError`
+
+        If you do not consume the entire response body, then you must call close
+        on the response object, otherwise you will max out your available
+        connections. We recommend using the `contextlib.closing
+        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
+        context manager to ensure this.
+        """
+        arg = cloud_docs.GetContentArg(file_id)
+        r = self.request(
+            cloud_docs.get_content,
+            'cloud_docs',
+            arg,
+            None,
+        )
+        return None
+
+    def cloud_docs_get_content_to_file(self,
+                                       download_path,
+                                       file_id):
+        """
+        Fetch the binary content of the requested document. This route requires
+        Cloud Docs auth. Please make a request to cloud_docs/authorize and
+        supply that token in the Authorization header.
+
+        :param str download_path: Path on local machine to save file.
+        :type file_id: str
+        :rtype: None
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.cloud_docs.CloudDocsAccessError`
+        """
+        arg = cloud_docs.GetContentArg(file_id)
+        r = self.request(
+            cloud_docs.get_content,
+            'cloud_docs',
+            arg,
+            None,
+        )
+        self._save_body_to_file(download_path, r[1])
+        return None
+
+    def cloud_docs_get_metadata(self,
+                                file_id=u''):
+        """
+        Fetches metadata associated with a Cloud Doc and user. This route
+        requires Cloud Docs auth. Please make a request to cloud_docs/authorize
+        and supply that token in the Authorization header.
+
+        :param str file_id: API ID ("id:...") associated with the Cloud Doc.
+        :rtype: :class:`dropbox.cloud_docs.GetMetadataResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.cloud_docs.GetMetadataError`
+        """
+        arg = cloud_docs.GetMetadataArg(file_id)
+        r = self.request(
+            cloud_docs.get_metadata,
+            'cloud_docs',
+            arg,
+            None,
+        )
+        return r
+
+    def cloud_docs_lock(self,
+                        file_id=u''):
+        """
+        Lock a Cloud Doc. This route requires Cloud Docs auth. Please make a
+        request to cloud_docs/authorize and supply that token in the
+        Authorization header.
+
+        :param str file_id: The API ID ("id:...") associated with the Cloud Doc
+        :rtype: :class:`dropbox.cloud_docs.LockResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.cloud_docs.LockingError`
+        """
+        arg = cloud_docs.LockArg(file_id)
+        r = self.request(
+            cloud_docs.lock,
+            'cloud_docs',
+            arg,
+            None,
+        )
+        return r
+
+    def cloud_docs_rename(self,
+                          file_id=u'',
+                          title=u''):
+        """
+        Update the title of a Cloud Doc. This route requires Cloud Docs auth.
+        Please make a request to cloud_docs/authorize and supply that token in
+        the Authorization header.
+
+        :param str file_id: The API ID ("id:...") associated with the Cloud Doc
+        :param str title: The new title of the doc, excluding extension
+        :rtype: :class:`dropbox.cloud_docs.RenameResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.cloud_docs.RenameError`
+        """
+        arg = cloud_docs.RenameArg(file_id,
+                                   title)
+        r = self.request(
+            cloud_docs.rename,
+            'cloud_docs',
+            arg,
+            None,
+        )
+        return r
+
+    def cloud_docs_unlock(self,
+                          file_id=u''):
+        """
+        Unlock a Cloud Doc. This route requires Cloud Docs auth. Please make a
+        request to cloud_docs/authorize and supply that token in the
+        Authorization header.
+
+        :param str file_id: The API ID ("id:...") associated with the Cloud Doc
+        :rtype: :class:`dropbox.cloud_docs.UnlockResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.cloud_docs.LockingError`
+        """
+        arg = cloud_docs.UnlockArg(file_id)
+        r = self.request(
+            cloud_docs.unlock,
+            'cloud_docs',
+            arg,
+            None,
+        )
+        return r
+
+    def cloud_docs_update_content(self,
+                                  f,
+                                  file_id,
+                                  actor_tokens,
+                                  additional_contents=None):
+        """
+        Update the contents of a Cloud Doc. This should be called for files with
+        a max size of 150MB. This route requires Cloud Docs auth. Please make a
+        request to cloud_docs/authorize and supply that token in the
+        Authorization header.
+
+        :param bytes f: Contents to upload.
+        :type file_id: str
+        :param list actor_tokens: A list of auth_tokens, one for each editor who
+            made changes to the document since the last call to update_content.
+        :param Nullable additional_contents: Currently, this will always be
+            empty until we implement upload_additional_content.
+        :rtype: :class:`dropbox.cloud_docs.UpdateContentResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.cloud_docs.UpdateContentError`
+        """
+        arg = cloud_docs.UpdateContentArg(file_id,
+                                          actor_tokens,
+                                          additional_contents)
+        r = self.request(
+            cloud_docs.update_content,
+            'cloud_docs',
+            arg,
+            f,
+        )
+        return r
+
+    # ------------------------------------------
     # Routes in contacts namespace
 
     def contacts_delete_manual_contacts(self):
@@ -207,7 +396,8 @@ class DropboxBase(object):
 
         :param str path: A unique identifier for the file or folder.
         :param list property_groups: The property groups which are to be added
-            to a Dropbox file.
+            to a Dropbox file. No two groups in the input should  refer to the
+            same template.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -237,7 +427,8 @@ class DropboxBase(object):
 
         :param str path: A unique identifier for the file or folder.
         :param list property_groups: The property groups "snapshot" updates to
-            force apply.
+            force apply. No two groups in the input should  refer to the same
+            template.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -2133,7 +2324,8 @@ class DropboxBase(object):
                       allow_ownership_transfer=False):
         """
         Move a file or folder to a different location in the user's Dropbox. If
-        the source path is a folder all its contents will be moved.
+        the source path is a folder all its contents will be moved. Note that we
+        do not currently support case-only renaming.
 
         :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
             contents in shared folder, otherwise
@@ -2213,8 +2405,9 @@ class DropboxBase(object):
                             allow_ownership_transfer=False):
         """
         Move multiple files or folders to different locations at once in the
-        user's Dropbox. This route will replace :meth:`files_move_batch`. The
-        main difference is this route will return status for each entry, while
+        user's Dropbox. Note that we do not currently support case-only
+        renaming. This route will replace :meth:`files_move_batch`. The main
+        difference is this route will return status for each entry, while
         :meth:`files_move_batch` raises failure if any entry fails. This route
         will either finish synchronously, or return a job ID and do the async
         move job in background. Please use :meth:`files_move_batch_check_v2` to
@@ -2357,7 +2550,8 @@ class DropboxBase(object):
         """
         :param str path: A unique identifier for the file or folder.
         :param list property_groups: The property groups which are to be added
-            to a Dropbox file.
+            to a Dropbox file. No two groups in the input should  refer to the
+            same template.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -2384,7 +2578,8 @@ class DropboxBase(object):
         """
         :param str path: A unique identifier for the file or folder.
         :param list property_groups: The property groups "snapshot" updates to
-            force apply.
+            force apply. No two groups in the input should  refer to the same
+            template.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -2585,10 +2780,11 @@ class DropboxBase(object):
 
         :param str path: The path in the user's Dropbox to search. Should
             probably be a folder.
-        :param str query: The string to search for. The search string is split
-            on spaces into multiple tokens. For file name searching, the last
-            token is used for prefix matching (i.e. "bat c" matches "bat cave"
-            but not "batman car").
+        :param str query: The string to search for. Query string may be
+            rewritten to improve relevance of results. The string is split on
+            spaces into multiple tokens. For file name searching, the last token
+            is used for prefix matching (i.e. "bat c" matches "bat cave" but not
+            "batman car").
         :param int start: The starting index within the search results (used for
             paging).
         :param int max_results: The maximum number of search results to return.
@@ -2631,7 +2827,8 @@ class DropboxBase(object):
         be returned across pages. Some results may not be returned.
 
         :param str query: The string to search for. May match across multiple
-            fields based on the request arguments.
+            fields based on the request arguments. Query string may be rewritten
+            to improve relevance of results.
         :param Nullable options: Options for more targeted search results.
         :type include_highlights: bool
         :rtype: :class:`dropbox.files.SearchV2Result`

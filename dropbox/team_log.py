@@ -1031,6 +1031,188 @@ class AccountCaptureRelinquishAccountType(bb.Struct):
 
 AccountCaptureRelinquishAccountType_validator = bv.Struct(AccountCaptureRelinquishAccountType)
 
+class AccountLockOrUnlockedDetails(bb.Struct):
+    """
+    Unlocked/locked account after failed sign in attempts.
+
+    :ivar team_log.AccountLockOrUnlockedDetails.previous_value: The previous
+        account status.
+    :ivar team_log.AccountLockOrUnlockedDetails.new_value: The new account
+        status.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def previous_value(self):
+        """
+        The previous account status.
+
+        :rtype: AccountState
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        The new account status.
+
+        :rtype: AccountState
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AccountLockOrUnlockedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AccountLockOrUnlockedDetails(previous_value={!r}, new_value={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+AccountLockOrUnlockedDetails_validator = bv.Struct(AccountLockOrUnlockedDetails)
+
+class AccountLockOrUnlockedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AccountLockOrUnlockedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AccountLockOrUnlockedType(description={!r})'.format(
+            self._description_value,
+        )
+
+AccountLockOrUnlockedType_validator = bv.Struct(AccountLockOrUnlockedType)
+
+class AccountState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    locked = None
+    # Attribute is overwritten below the class definition
+    unlocked = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_locked(self):
+        """
+        Check if the union tag is ``locked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'locked'
+
+    def is_unlocked(self):
+        """
+        Check if the union tag is ``unlocked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unlocked'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AccountState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AccountState(%r, %r)' % (self._tag, self._value)
+
+AccountState_validator = bv.Union(AccountState)
+
 class ActionDetails(bb.Union):
     """
     Additional information indicating the action taken that caused status
@@ -11423,6 +11605,17 @@ class EventDetails(bb.Union):
         return cls('legal_holds_report_a_hold_details', val)
 
     @classmethod
+    def account_lock_or_unlocked_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``account_lock_or_unlocked_details`` tag with value ``val``.
+
+        :param AccountLockOrUnlockedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('account_lock_or_unlocked_details', val)
+
+    @classmethod
     def emm_error_details(cls, val):
         """
         Create an instance of this class set to the ``emm_error_details`` tag
@@ -12439,6 +12632,94 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('export_members_report_fail_details', val)
+
+    @classmethod
+    def no_expiration_link_gen_create_report_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_expiration_link_gen_create_report_details`` tag with value ``val``.
+
+        :param NoExpirationLinkGenCreateReportDetails val:
+        :rtype: EventDetails
+        """
+        return cls('no_expiration_link_gen_create_report_details', val)
+
+    @classmethod
+    def no_expiration_link_gen_report_failed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_expiration_link_gen_report_failed_details`` tag with value ``val``.
+
+        :param NoExpirationLinkGenReportFailedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('no_expiration_link_gen_report_failed_details', val)
+
+    @classmethod
+    def no_password_link_gen_create_report_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_password_link_gen_create_report_details`` tag with value ``val``.
+
+        :param NoPasswordLinkGenCreateReportDetails val:
+        :rtype: EventDetails
+        """
+        return cls('no_password_link_gen_create_report_details', val)
+
+    @classmethod
+    def no_password_link_gen_report_failed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_password_link_gen_report_failed_details`` tag with value ``val``.
+
+        :param NoPasswordLinkGenReportFailedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('no_password_link_gen_report_failed_details', val)
+
+    @classmethod
+    def no_password_link_view_create_report_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_password_link_view_create_report_details`` tag with value ``val``.
+
+        :param NoPasswordLinkViewCreateReportDetails val:
+        :rtype: EventDetails
+        """
+        return cls('no_password_link_view_create_report_details', val)
+
+    @classmethod
+    def no_password_link_view_report_failed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_password_link_view_report_failed_details`` tag with value ``val``.
+
+        :param NoPasswordLinkViewReportFailedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('no_password_link_view_report_failed_details', val)
+
+    @classmethod
+    def outdated_link_view_create_report_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``outdated_link_view_create_report_details`` tag with value ``val``.
+
+        :param OutdatedLinkViewCreateReportDetails val:
+        :rtype: EventDetails
+        """
+        return cls('outdated_link_view_create_report_details', val)
+
+    @classmethod
+    def outdated_link_view_report_failed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``outdated_link_view_report_failed_details`` tag with value ``val``.
+
+        :param OutdatedLinkViewReportFailedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('outdated_link_view_report_failed_details', val)
 
     @classmethod
     def paper_admin_export_start_details(cls, val):
@@ -14132,6 +14413,17 @@ class EventDetails(bb.Union):
         return cls('member_requests_change_policy_details', val)
 
     @classmethod
+    def member_send_invite_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_send_invite_policy_changed_details`` tag with value ``val``.
+
+        :param MemberSendInvitePolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_send_invite_policy_changed_details', val)
+
+    @classmethod
     def member_space_limits_add_exception_details(cls, val):
         """
         Create an instance of this class set to the
@@ -15766,6 +16058,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'legal_holds_report_a_hold_details'
 
+    def is_account_lock_or_unlocked_details(self):
+        """
+        Check if the union tag is ``account_lock_or_unlocked_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_lock_or_unlocked_details'
+
     def is_emm_error_details(self):
         """
         Check if the union tag is ``emm_error_details``.
@@ -16501,6 +16801,70 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'export_members_report_fail_details'
+
+    def is_no_expiration_link_gen_create_report_details(self):
+        """
+        Check if the union tag is ``no_expiration_link_gen_create_report_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_expiration_link_gen_create_report_details'
+
+    def is_no_expiration_link_gen_report_failed_details(self):
+        """
+        Check if the union tag is ``no_expiration_link_gen_report_failed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_expiration_link_gen_report_failed_details'
+
+    def is_no_password_link_gen_create_report_details(self):
+        """
+        Check if the union tag is ``no_password_link_gen_create_report_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_gen_create_report_details'
+
+    def is_no_password_link_gen_report_failed_details(self):
+        """
+        Check if the union tag is ``no_password_link_gen_report_failed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_gen_report_failed_details'
+
+    def is_no_password_link_view_create_report_details(self):
+        """
+        Check if the union tag is ``no_password_link_view_create_report_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_view_create_report_details'
+
+    def is_no_password_link_view_report_failed_details(self):
+        """
+        Check if the union tag is ``no_password_link_view_report_failed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_view_report_failed_details'
+
+    def is_outdated_link_view_create_report_details(self):
+        """
+        Check if the union tag is ``outdated_link_view_create_report_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'outdated_link_view_create_report_details'
+
+    def is_outdated_link_view_report_failed_details(self):
+        """
+        Check if the union tag is ``outdated_link_view_report_failed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'outdated_link_view_report_failed_details'
 
     def is_paper_admin_export_start_details(self):
         """
@@ -17717,6 +18081,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_requests_change_policy_details'
+
+    def is_member_send_invite_policy_changed_details(self):
+        """
+        Check if the union tag is ``member_send_invite_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_send_invite_policy_changed_details'
 
     def is_member_space_limits_add_exception_details(self):
         """
@@ -19272,6 +19644,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'legal_holds_report_a_hold_details' not set")
         return self._value
 
+    def get_account_lock_or_unlocked_details(self):
+        """
+        Only call this if :meth:`is_account_lock_or_unlocked_details` is true.
+
+        :rtype: AccountLockOrUnlockedDetails
+        """
+        if not self.is_account_lock_or_unlocked_details():
+            raise AttributeError("tag 'account_lock_or_unlocked_details' not set")
+        return self._value
+
     def get_emm_error_details(self):
         """
         Only call this if :meth:`is_emm_error_details` is true.
@@ -20190,6 +20572,86 @@ class EventDetails(bb.Union):
         """
         if not self.is_export_members_report_fail_details():
             raise AttributeError("tag 'export_members_report_fail_details' not set")
+        return self._value
+
+    def get_no_expiration_link_gen_create_report_details(self):
+        """
+        Only call this if :meth:`is_no_expiration_link_gen_create_report_details` is true.
+
+        :rtype: NoExpirationLinkGenCreateReportDetails
+        """
+        if not self.is_no_expiration_link_gen_create_report_details():
+            raise AttributeError("tag 'no_expiration_link_gen_create_report_details' not set")
+        return self._value
+
+    def get_no_expiration_link_gen_report_failed_details(self):
+        """
+        Only call this if :meth:`is_no_expiration_link_gen_report_failed_details` is true.
+
+        :rtype: NoExpirationLinkGenReportFailedDetails
+        """
+        if not self.is_no_expiration_link_gen_report_failed_details():
+            raise AttributeError("tag 'no_expiration_link_gen_report_failed_details' not set")
+        return self._value
+
+    def get_no_password_link_gen_create_report_details(self):
+        """
+        Only call this if :meth:`is_no_password_link_gen_create_report_details` is true.
+
+        :rtype: NoPasswordLinkGenCreateReportDetails
+        """
+        if not self.is_no_password_link_gen_create_report_details():
+            raise AttributeError("tag 'no_password_link_gen_create_report_details' not set")
+        return self._value
+
+    def get_no_password_link_gen_report_failed_details(self):
+        """
+        Only call this if :meth:`is_no_password_link_gen_report_failed_details` is true.
+
+        :rtype: NoPasswordLinkGenReportFailedDetails
+        """
+        if not self.is_no_password_link_gen_report_failed_details():
+            raise AttributeError("tag 'no_password_link_gen_report_failed_details' not set")
+        return self._value
+
+    def get_no_password_link_view_create_report_details(self):
+        """
+        Only call this if :meth:`is_no_password_link_view_create_report_details` is true.
+
+        :rtype: NoPasswordLinkViewCreateReportDetails
+        """
+        if not self.is_no_password_link_view_create_report_details():
+            raise AttributeError("tag 'no_password_link_view_create_report_details' not set")
+        return self._value
+
+    def get_no_password_link_view_report_failed_details(self):
+        """
+        Only call this if :meth:`is_no_password_link_view_report_failed_details` is true.
+
+        :rtype: NoPasswordLinkViewReportFailedDetails
+        """
+        if not self.is_no_password_link_view_report_failed_details():
+            raise AttributeError("tag 'no_password_link_view_report_failed_details' not set")
+        return self._value
+
+    def get_outdated_link_view_create_report_details(self):
+        """
+        Only call this if :meth:`is_outdated_link_view_create_report_details` is true.
+
+        :rtype: OutdatedLinkViewCreateReportDetails
+        """
+        if not self.is_outdated_link_view_create_report_details():
+            raise AttributeError("tag 'outdated_link_view_create_report_details' not set")
+        return self._value
+
+    def get_outdated_link_view_report_failed_details(self):
+        """
+        Only call this if :meth:`is_outdated_link_view_report_failed_details` is true.
+
+        :rtype: OutdatedLinkViewReportFailedDetails
+        """
+        if not self.is_outdated_link_view_report_failed_details():
+            raise AttributeError("tag 'outdated_link_view_report_failed_details' not set")
         return self._value
 
     def get_paper_admin_export_start_details(self):
@@ -21712,6 +22174,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'member_requests_change_policy_details' not set")
         return self._value
 
+    def get_member_send_invite_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_member_send_invite_policy_changed_details` is true.
+
+        :rtype: MemberSendInvitePolicyChangedDetails
+        """
+        if not self.is_member_send_invite_policy_changed_details():
+            raise AttributeError("tag 'member_send_invite_policy_changed_details' not set")
+        return self._value
+
     def get_member_space_limits_add_exception_details(self):
         """
         Only call this if :meth:`is_member_space_limits_add_exception_details` is true.
@@ -22743,6 +23215,8 @@ class EventType(bb.Union):
         (legal_holds) Removed members from a hold
     :ivar LegalHoldsReportAHoldType EventType.legal_holds_report_a_hold:
         (legal_holds) Created a summary report for a hold
+    :ivar AccountLockOrUnlockedType EventType.account_lock_or_unlocked: (logins)
+        Unlocked/locked account after failed sign in attempts
     :ivar EmmErrorType EventType.emm_error: (logins) Failed to sign in via EMM
         (deprecated, replaced by 'Failed to sign in')
     :ivar GuestAdminSignedInViaTrustedTeamsType
@@ -22945,6 +23419,30 @@ class EventType(bb.Union):
         Created member data report
     :ivar ExportMembersReportFailType EventType.export_members_report_fail:
         (reports) Failed to create members data report
+    :ivar NoExpirationLinkGenCreateReportType
+        EventType.no_expiration_link_gen_create_report: (reports) Report
+        created: Links created with no expiration
+    :ivar NoExpirationLinkGenReportFailedType
+        EventType.no_expiration_link_gen_report_failed: (reports) Couldn't
+        create report: Links created with no expiration
+    :ivar NoPasswordLinkGenCreateReportType
+        EventType.no_password_link_gen_create_report: (reports) Report created:
+        Links created without passwords
+    :ivar NoPasswordLinkGenReportFailedType
+        EventType.no_password_link_gen_report_failed: (reports) Couldn't create
+        report: Links created without passwords
+    :ivar NoPasswordLinkViewCreateReportType
+        EventType.no_password_link_view_create_report: (reports) Report created:
+        Views of links without passwords
+    :ivar NoPasswordLinkViewReportFailedType
+        EventType.no_password_link_view_report_failed: (reports) Couldn't create
+        report: Views of links without passwords
+    :ivar OutdatedLinkViewCreateReportType
+        EventType.outdated_link_view_create_report: (reports) Report created:
+        Views of old links
+    :ivar OutdatedLinkViewReportFailedType
+        EventType.outdated_link_view_report_failed: (reports) Couldn't create
+        report: Views of old links
     :ivar PaperAdminExportStartType EventType.paper_admin_export_start:
         (reports) Exported all team Paper docs
     :ivar SmartSyncCreateAdminPrivilegeReportType
@@ -23316,6 +23814,9 @@ class EventType(bb.Union):
     :ivar MemberRequestsChangePolicyType
         EventType.member_requests_change_policy: (team_policies) Changed whether
         users can find team when not invited
+    :ivar MemberSendInvitePolicyChangedType
+        EventType.member_send_invite_policy_changed: (team_policies) Changed
+        member send invite policy for team
     :ivar MemberSpaceLimitsAddExceptionType
         EventType.member_space_limits_add_exception: (team_policies) Added
         members to member space limit exception list
@@ -24530,6 +25031,17 @@ class EventType(bb.Union):
         return cls('legal_holds_report_a_hold', val)
 
     @classmethod
+    def account_lock_or_unlocked(cls, val):
+        """
+        Create an instance of this class set to the ``account_lock_or_unlocked``
+        tag with value ``val``.
+
+        :param AccountLockOrUnlockedType val:
+        :rtype: EventType
+        """
+        return cls('account_lock_or_unlocked', val)
+
+    @classmethod
     def emm_error(cls, val):
         """
         Create an instance of this class set to the ``emm_error`` tag with value
@@ -25540,6 +26052,94 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('export_members_report_fail', val)
+
+    @classmethod
+    def no_expiration_link_gen_create_report(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_expiration_link_gen_create_report`` tag with value ``val``.
+
+        :param NoExpirationLinkGenCreateReportType val:
+        :rtype: EventType
+        """
+        return cls('no_expiration_link_gen_create_report', val)
+
+    @classmethod
+    def no_expiration_link_gen_report_failed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_expiration_link_gen_report_failed`` tag with value ``val``.
+
+        :param NoExpirationLinkGenReportFailedType val:
+        :rtype: EventType
+        """
+        return cls('no_expiration_link_gen_report_failed', val)
+
+    @classmethod
+    def no_password_link_gen_create_report(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_password_link_gen_create_report`` tag with value ``val``.
+
+        :param NoPasswordLinkGenCreateReportType val:
+        :rtype: EventType
+        """
+        return cls('no_password_link_gen_create_report', val)
+
+    @classmethod
+    def no_password_link_gen_report_failed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_password_link_gen_report_failed`` tag with value ``val``.
+
+        :param NoPasswordLinkGenReportFailedType val:
+        :rtype: EventType
+        """
+        return cls('no_password_link_gen_report_failed', val)
+
+    @classmethod
+    def no_password_link_view_create_report(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_password_link_view_create_report`` tag with value ``val``.
+
+        :param NoPasswordLinkViewCreateReportType val:
+        :rtype: EventType
+        """
+        return cls('no_password_link_view_create_report', val)
+
+    @classmethod
+    def no_password_link_view_report_failed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``no_password_link_view_report_failed`` tag with value ``val``.
+
+        :param NoPasswordLinkViewReportFailedType val:
+        :rtype: EventType
+        """
+        return cls('no_password_link_view_report_failed', val)
+
+    @classmethod
+    def outdated_link_view_create_report(cls, val):
+        """
+        Create an instance of this class set to the
+        ``outdated_link_view_create_report`` tag with value ``val``.
+
+        :param OutdatedLinkViewCreateReportType val:
+        :rtype: EventType
+        """
+        return cls('outdated_link_view_create_report', val)
+
+    @classmethod
+    def outdated_link_view_report_failed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``outdated_link_view_report_failed`` tag with value ``val``.
+
+        :param OutdatedLinkViewReportFailedType val:
+        :rtype: EventType
+        """
+        return cls('outdated_link_view_report_failed', val)
 
     @classmethod
     def paper_admin_export_start(cls, val):
@@ -27216,6 +27816,17 @@ class EventType(bb.Union):
         return cls('member_requests_change_policy', val)
 
     @classmethod
+    def member_send_invite_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_send_invite_policy_changed`` tag with value ``val``.
+
+        :param MemberSendInvitePolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('member_send_invite_policy_changed', val)
+
+    @classmethod
     def member_space_limits_add_exception(cls, val):
         """
         Create an instance of this class set to the
@@ -28830,6 +29441,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'legal_holds_report_a_hold'
 
+    def is_account_lock_or_unlocked(self):
+        """
+        Check if the union tag is ``account_lock_or_unlocked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_lock_or_unlocked'
+
     def is_emm_error(self):
         """
         Check if the union tag is ``emm_error``.
@@ -29565,6 +30184,70 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'export_members_report_fail'
+
+    def is_no_expiration_link_gen_create_report(self):
+        """
+        Check if the union tag is ``no_expiration_link_gen_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_expiration_link_gen_create_report'
+
+    def is_no_expiration_link_gen_report_failed(self):
+        """
+        Check if the union tag is ``no_expiration_link_gen_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_expiration_link_gen_report_failed'
+
+    def is_no_password_link_gen_create_report(self):
+        """
+        Check if the union tag is ``no_password_link_gen_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_gen_create_report'
+
+    def is_no_password_link_gen_report_failed(self):
+        """
+        Check if the union tag is ``no_password_link_gen_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_gen_report_failed'
+
+    def is_no_password_link_view_create_report(self):
+        """
+        Check if the union tag is ``no_password_link_view_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_view_create_report'
+
+    def is_no_password_link_view_report_failed(self):
+        """
+        Check if the union tag is ``no_password_link_view_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_view_report_failed'
+
+    def is_outdated_link_view_create_report(self):
+        """
+        Check if the union tag is ``outdated_link_view_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'outdated_link_view_create_report'
+
+    def is_outdated_link_view_report_failed(self):
+        """
+        Check if the union tag is ``outdated_link_view_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'outdated_link_view_report_failed'
 
     def is_paper_admin_export_start(self):
         """
@@ -30781,6 +31464,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_requests_change_policy'
+
+    def is_member_send_invite_policy_changed(self):
+        """
+        Check if the union tag is ``member_send_invite_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_send_invite_policy_changed'
 
     def is_member_space_limits_add_exception(self):
         """
@@ -32511,6 +33202,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'legal_holds_report_a_hold' not set")
         return self._value
 
+    def get_account_lock_or_unlocked(self):
+        """
+        (logins) Unlocked/locked account after failed sign in attempts
+
+        Only call this if :meth:`is_account_lock_or_unlocked` is true.
+
+        :rtype: AccountLockOrUnlockedType
+        """
+        if not self.is_account_lock_or_unlocked():
+            raise AttributeError("tag 'account_lock_or_unlocked' not set")
+        return self._value
+
     def get_emm_error(self):
         """
         (logins) Failed to sign in via EMM (deprecated, replaced by 'Failed to
@@ -33625,6 +34328,102 @@ class EventType(bb.Union):
         """
         if not self.is_export_members_report_fail():
             raise AttributeError("tag 'export_members_report_fail' not set")
+        return self._value
+
+    def get_no_expiration_link_gen_create_report(self):
+        """
+        (reports) Report created: Links created with no expiration
+
+        Only call this if :meth:`is_no_expiration_link_gen_create_report` is true.
+
+        :rtype: NoExpirationLinkGenCreateReportType
+        """
+        if not self.is_no_expiration_link_gen_create_report():
+            raise AttributeError("tag 'no_expiration_link_gen_create_report' not set")
+        return self._value
+
+    def get_no_expiration_link_gen_report_failed(self):
+        """
+        (reports) Couldn't create report: Links created with no expiration
+
+        Only call this if :meth:`is_no_expiration_link_gen_report_failed` is true.
+
+        :rtype: NoExpirationLinkGenReportFailedType
+        """
+        if not self.is_no_expiration_link_gen_report_failed():
+            raise AttributeError("tag 'no_expiration_link_gen_report_failed' not set")
+        return self._value
+
+    def get_no_password_link_gen_create_report(self):
+        """
+        (reports) Report created: Links created without passwords
+
+        Only call this if :meth:`is_no_password_link_gen_create_report` is true.
+
+        :rtype: NoPasswordLinkGenCreateReportType
+        """
+        if not self.is_no_password_link_gen_create_report():
+            raise AttributeError("tag 'no_password_link_gen_create_report' not set")
+        return self._value
+
+    def get_no_password_link_gen_report_failed(self):
+        """
+        (reports) Couldn't create report: Links created without passwords
+
+        Only call this if :meth:`is_no_password_link_gen_report_failed` is true.
+
+        :rtype: NoPasswordLinkGenReportFailedType
+        """
+        if not self.is_no_password_link_gen_report_failed():
+            raise AttributeError("tag 'no_password_link_gen_report_failed' not set")
+        return self._value
+
+    def get_no_password_link_view_create_report(self):
+        """
+        (reports) Report created: Views of links without passwords
+
+        Only call this if :meth:`is_no_password_link_view_create_report` is true.
+
+        :rtype: NoPasswordLinkViewCreateReportType
+        """
+        if not self.is_no_password_link_view_create_report():
+            raise AttributeError("tag 'no_password_link_view_create_report' not set")
+        return self._value
+
+    def get_no_password_link_view_report_failed(self):
+        """
+        (reports) Couldn't create report: Views of links without passwords
+
+        Only call this if :meth:`is_no_password_link_view_report_failed` is true.
+
+        :rtype: NoPasswordLinkViewReportFailedType
+        """
+        if not self.is_no_password_link_view_report_failed():
+            raise AttributeError("tag 'no_password_link_view_report_failed' not set")
+        return self._value
+
+    def get_outdated_link_view_create_report(self):
+        """
+        (reports) Report created: Views of old links
+
+        Only call this if :meth:`is_outdated_link_view_create_report` is true.
+
+        :rtype: OutdatedLinkViewCreateReportType
+        """
+        if not self.is_outdated_link_view_create_report():
+            raise AttributeError("tag 'outdated_link_view_create_report' not set")
+        return self._value
+
+    def get_outdated_link_view_report_failed(self):
+        """
+        (reports) Couldn't create report: Views of old links
+
+        Only call this if :meth:`is_outdated_link_view_report_failed` is true.
+
+        :rtype: OutdatedLinkViewReportFailedType
+        """
+        if not self.is_outdated_link_view_report_failed():
+            raise AttributeError("tag 'outdated_link_view_report_failed' not set")
         return self._value
 
     def get_paper_admin_export_start(self):
@@ -35485,6 +36284,18 @@ class EventType(bb.Union):
         """
         if not self.is_member_requests_change_policy():
             raise AttributeError("tag 'member_requests_change_policy' not set")
+        return self._value
+
+    def get_member_send_invite_policy_changed(self):
+        """
+        (team_policies) Changed member send invite policy for team
+
+        Only call this if :meth:`is_member_send_invite_policy_changed` is true.
+
+        :rtype: MemberSendInvitePolicyChangedType
+        """
+        if not self.is_member_send_invite_policy_changed():
+            raise AttributeError("tag 'member_send_invite_policy_changed' not set")
         return self._value
 
     def get_member_space_limits_add_exception(self):
@@ -38965,6 +39776,7 @@ class FileOrFolderLogInfo(bb.Struct):
         missing due to historical data gap.
     :ivar team_log.FileOrFolderLogInfo.file_id: Unique ID. Might be missing due
         to historical data gap.
+    :ivar team_log.FileOrFolderLogInfo.file_size: File or folder size in bytes.
     """
 
     __slots__ = [
@@ -38974,6 +39786,8 @@ class FileOrFolderLogInfo(bb.Struct):
         '_display_name_present',
         '_file_id_value',
         '_file_id_present',
+        '_file_size_value',
+        '_file_size_present',
     ]
 
     _has_required_fields = True
@@ -38981,19 +39795,24 @@ class FileOrFolderLogInfo(bb.Struct):
     def __init__(self,
                  path=None,
                  display_name=None,
-                 file_id=None):
+                 file_id=None,
+                 file_size=None):
         self._path_value = None
         self._path_present = False
         self._display_name_value = None
         self._display_name_present = False
         self._file_id_value = None
         self._file_id_present = False
+        self._file_size_value = None
+        self._file_size_present = False
         if path is not None:
             self.path = path
         if display_name is not None:
             self.display_name = display_name
         if file_id is not None:
             self.file_id = file_id
+        if file_size is not None:
+            self.file_size = file_size
 
     @property
     def path(self):
@@ -39070,14 +39889,41 @@ class FileOrFolderLogInfo(bb.Struct):
         self._file_id_value = None
         self._file_id_present = False
 
+    @property
+    def file_size(self):
+        """
+        File or folder size in bytes.
+
+        :rtype: int
+        """
+        if self._file_size_present:
+            return self._file_size_value
+        else:
+            return None
+
+    @file_size.setter
+    def file_size(self, val):
+        if val is None:
+            del self.file_size
+            return
+        val = self._file_size_validator.validate(val)
+        self._file_size_value = val
+        self._file_size_present = True
+
+    @file_size.deleter
+    def file_size(self):
+        self._file_size_value = None
+        self._file_size_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileOrFolderLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'FileOrFolderLogInfo(path={!r}, display_name={!r}, file_id={!r})'.format(
+        return 'FileOrFolderLogInfo(path={!r}, display_name={!r}, file_id={!r}, file_size={!r})'.format(
             self._path_value,
             self._display_name_value,
             self._file_id_value,
+            self._file_size_value,
         )
 
 FileOrFolderLogInfo_validator = bv.Struct(FileOrFolderLogInfo)
@@ -39095,19 +39941,22 @@ class FileLogInfo(FileOrFolderLogInfo):
     def __init__(self,
                  path=None,
                  display_name=None,
-                 file_id=None):
+                 file_id=None,
+                 file_size=None):
         super(FileLogInfo, self).__init__(path,
                                           display_name,
-                                          file_id)
+                                          file_id,
+                                          file_size)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'FileLogInfo(path={!r}, display_name={!r}, file_id={!r})'.format(
+        return 'FileLogInfo(path={!r}, display_name={!r}, file_id={!r}, file_size={!r})'.format(
             self._path_value,
             self._display_name_value,
             self._file_id_value,
+            self._file_size_value,
         )
 
 FileLogInfo_validator = bv.Struct(FileLogInfo)
@@ -42129,9 +42978,13 @@ FileUnresolveCommentType_validator = bv.Struct(FileUnresolveCommentType)
 class FolderLogInfo(FileOrFolderLogInfo):
     """
     Folder's logged information.
+
+    :ivar team_log.FolderLogInfo.file_count: Number of files within the folder.
     """
 
     __slots__ = [
+        '_file_count_value',
+        '_file_count_present',
     ]
 
     _has_required_fields = True
@@ -42139,19 +42992,54 @@ class FolderLogInfo(FileOrFolderLogInfo):
     def __init__(self,
                  path=None,
                  display_name=None,
-                 file_id=None):
+                 file_id=None,
+                 file_size=None,
+                 file_count=None):
         super(FolderLogInfo, self).__init__(path,
                                             display_name,
-                                            file_id)
+                                            file_id,
+                                            file_size)
+        self._file_count_value = None
+        self._file_count_present = False
+        if file_count is not None:
+            self.file_count = file_count
+
+    @property
+    def file_count(self):
+        """
+        Number of files within the folder.
+
+        :rtype: int
+        """
+        if self._file_count_present:
+            return self._file_count_value
+        else:
+            return None
+
+    @file_count.setter
+    def file_count(self, val):
+        if val is None:
+            del self.file_count
+            return
+        val = self._file_count_validator.validate(val)
+        self._file_count_value = val
+        self._file_count_present = True
+
+    @file_count.deleter
+    def file_count(self):
+        self._file_count_value = None
+        self._file_count_present = False
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FolderLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'FolderLogInfo(path={!r}, display_name={!r}, file_id={!r})'.format(
+        return 'FolderLogInfo(path={!r}, display_name={!r}, file_id={!r}, file_size={!r}, file_count={!r})'.format(
             self._path_value,
             self._display_name_value,
             self._file_id_value,
+            self._file_size_value,
+            self._file_count_value,
         )
 
 FolderLogInfo_validator = bv.Struct(FolderLogInfo)
@@ -49094,6 +49982,8 @@ class LoginMethod(bb.Union):
     # Attribute is overwritten below the class definition
     apple_oauth = None
     # Attribute is overwritten below the class definition
+    first_party_token_exchange = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_password(self):
@@ -49151,6 +50041,14 @@ class LoginMethod(bb.Union):
         :rtype: bool
         """
         return self._tag == 'apple_oauth'
+
+    def is_first_party_token_exchange(self):
+        """
+        Check if the union tag is ``first_party_token_exchange``.
+
+        :rtype: bool
+        """
+        return self._tag == 'first_party_token_exchange'
 
     def is_other(self):
         """
@@ -51007,6 +51905,200 @@ class MemberRequestsPolicy(bb.Union):
         return 'MemberRequestsPolicy(%r, %r)' % (self._tag, self._value)
 
 MemberRequestsPolicy_validator = bv.Union(MemberRequestsPolicy)
+
+class MemberSendInvitePolicy(bb.Union):
+    """
+    Policy for controlling whether team members can send team invites
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    specific_members = None
+    # Attribute is overwritten below the class definition
+    everyone = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_specific_members(self):
+        """
+        Check if the union tag is ``specific_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'specific_members'
+
+    def is_everyone(self):
+        """
+        Check if the union tag is ``everyone``.
+
+        :rtype: bool
+        """
+        return self._tag == 'everyone'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberSendInvitePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberSendInvitePolicy(%r, %r)' % (self._tag, self._value)
+
+MemberSendInvitePolicy_validator = bv.Union(MemberSendInvitePolicy)
+
+class MemberSendInvitePolicyChangedDetails(bb.Struct):
+    """
+    Changed member send invite policy for team.
+
+    :ivar team_log.MemberSendInvitePolicyChangedDetails.new_value: New team
+        member send invite policy.
+    :ivar team_log.MemberSendInvitePolicyChangedDetails.previous_value: Previous
+        team member send invite policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New team member send invite policy.
+
+        :rtype: MemberSendInvitePolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous team member send invite policy.
+
+        :rtype: MemberSendInvitePolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberSendInvitePolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberSendInvitePolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+MemberSendInvitePolicyChangedDetails_validator = bv.Struct(MemberSendInvitePolicyChangedDetails)
+
+class MemberSendInvitePolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberSendInvitePolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberSendInvitePolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberSendInvitePolicyChangedType_validator = bv.Struct(MemberSendInvitePolicyChangedType)
 
 class MemberSetProfilePhotoDetails(bb.Struct):
     """
@@ -53202,6 +54294,717 @@ class NetworkControlPolicy(bb.Union):
 
 NetworkControlPolicy_validator = bv.Union(NetworkControlPolicy)
 
+class NoExpirationLinkGenCreateReportDetails(bb.Struct):
+    """
+    Report created: Links created with no expiration.
+
+    :ivar team_log.NoExpirationLinkGenCreateReportDetails.start_date: Report
+        start date.
+    :ivar team_log.NoExpirationLinkGenCreateReportDetails.end_date: Report end
+        date.
+    """
+
+    __slots__ = [
+        '_start_date_value',
+        '_start_date_present',
+        '_end_date_value',
+        '_end_date_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 start_date=None,
+                 end_date=None):
+        self._start_date_value = None
+        self._start_date_present = False
+        self._end_date_value = None
+        self._end_date_present = False
+        if start_date is not None:
+            self.start_date = start_date
+        if end_date is not None:
+            self.end_date = end_date
+
+    @property
+    def start_date(self):
+        """
+        Report start date.
+
+        :rtype: datetime.datetime
+        """
+        if self._start_date_present:
+            return self._start_date_value
+        else:
+            raise AttributeError("missing required field 'start_date'")
+
+    @start_date.setter
+    def start_date(self, val):
+        val = self._start_date_validator.validate(val)
+        self._start_date_value = val
+        self._start_date_present = True
+
+    @start_date.deleter
+    def start_date(self):
+        self._start_date_value = None
+        self._start_date_present = False
+
+    @property
+    def end_date(self):
+        """
+        Report end date.
+
+        :rtype: datetime.datetime
+        """
+        if self._end_date_present:
+            return self._end_date_value
+        else:
+            raise AttributeError("missing required field 'end_date'")
+
+    @end_date.setter
+    def end_date(self, val):
+        val = self._end_date_validator.validate(val)
+        self._end_date_value = val
+        self._end_date_present = True
+
+    @end_date.deleter
+    def end_date(self):
+        self._end_date_value = None
+        self._end_date_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoExpirationLinkGenCreateReportDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoExpirationLinkGenCreateReportDetails(start_date={!r}, end_date={!r})'.format(
+            self._start_date_value,
+            self._end_date_value,
+        )
+
+NoExpirationLinkGenCreateReportDetails_validator = bv.Struct(NoExpirationLinkGenCreateReportDetails)
+
+class NoExpirationLinkGenCreateReportType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoExpirationLinkGenCreateReportType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoExpirationLinkGenCreateReportType(description={!r})'.format(
+            self._description_value,
+        )
+
+NoExpirationLinkGenCreateReportType_validator = bv.Struct(NoExpirationLinkGenCreateReportType)
+
+class NoExpirationLinkGenReportFailedDetails(bb.Struct):
+    """
+    Couldn't create report: Links created with no expiration.
+
+    :ivar team_log.NoExpirationLinkGenReportFailedDetails.failure_reason:
+        Failure reason.
+    """
+
+    __slots__ = [
+        '_failure_reason_value',
+        '_failure_reason_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 failure_reason=None):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+        if failure_reason is not None:
+            self.failure_reason = failure_reason
+
+    @property
+    def failure_reason(self):
+        """
+        Failure reason.
+
+        :rtype: team.TeamReportFailureReason
+        """
+        if self._failure_reason_present:
+            return self._failure_reason_value
+        else:
+            raise AttributeError("missing required field 'failure_reason'")
+
+    @failure_reason.setter
+    def failure_reason(self, val):
+        self._failure_reason_validator.validate_type_only(val)
+        self._failure_reason_value = val
+        self._failure_reason_present = True
+
+    @failure_reason.deleter
+    def failure_reason(self):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoExpirationLinkGenReportFailedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoExpirationLinkGenReportFailedDetails(failure_reason={!r})'.format(
+            self._failure_reason_value,
+        )
+
+NoExpirationLinkGenReportFailedDetails_validator = bv.Struct(NoExpirationLinkGenReportFailedDetails)
+
+class NoExpirationLinkGenReportFailedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoExpirationLinkGenReportFailedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoExpirationLinkGenReportFailedType(description={!r})'.format(
+            self._description_value,
+        )
+
+NoExpirationLinkGenReportFailedType_validator = bv.Struct(NoExpirationLinkGenReportFailedType)
+
+class NoPasswordLinkGenCreateReportDetails(bb.Struct):
+    """
+    Report created: Links created without passwords.
+
+    :ivar team_log.NoPasswordLinkGenCreateReportDetails.start_date: Report start
+        date.
+    :ivar team_log.NoPasswordLinkGenCreateReportDetails.end_date: Report end
+        date.
+    """
+
+    __slots__ = [
+        '_start_date_value',
+        '_start_date_present',
+        '_end_date_value',
+        '_end_date_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 start_date=None,
+                 end_date=None):
+        self._start_date_value = None
+        self._start_date_present = False
+        self._end_date_value = None
+        self._end_date_present = False
+        if start_date is not None:
+            self.start_date = start_date
+        if end_date is not None:
+            self.end_date = end_date
+
+    @property
+    def start_date(self):
+        """
+        Report start date.
+
+        :rtype: datetime.datetime
+        """
+        if self._start_date_present:
+            return self._start_date_value
+        else:
+            raise AttributeError("missing required field 'start_date'")
+
+    @start_date.setter
+    def start_date(self, val):
+        val = self._start_date_validator.validate(val)
+        self._start_date_value = val
+        self._start_date_present = True
+
+    @start_date.deleter
+    def start_date(self):
+        self._start_date_value = None
+        self._start_date_present = False
+
+    @property
+    def end_date(self):
+        """
+        Report end date.
+
+        :rtype: datetime.datetime
+        """
+        if self._end_date_present:
+            return self._end_date_value
+        else:
+            raise AttributeError("missing required field 'end_date'")
+
+    @end_date.setter
+    def end_date(self, val):
+        val = self._end_date_validator.validate(val)
+        self._end_date_value = val
+        self._end_date_present = True
+
+    @end_date.deleter
+    def end_date(self):
+        self._end_date_value = None
+        self._end_date_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPasswordLinkGenCreateReportDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoPasswordLinkGenCreateReportDetails(start_date={!r}, end_date={!r})'.format(
+            self._start_date_value,
+            self._end_date_value,
+        )
+
+NoPasswordLinkGenCreateReportDetails_validator = bv.Struct(NoPasswordLinkGenCreateReportDetails)
+
+class NoPasswordLinkGenCreateReportType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPasswordLinkGenCreateReportType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoPasswordLinkGenCreateReportType(description={!r})'.format(
+            self._description_value,
+        )
+
+NoPasswordLinkGenCreateReportType_validator = bv.Struct(NoPasswordLinkGenCreateReportType)
+
+class NoPasswordLinkGenReportFailedDetails(bb.Struct):
+    """
+    Couldn't create report: Links created without passwords.
+
+    :ivar team_log.NoPasswordLinkGenReportFailedDetails.failure_reason: Failure
+        reason.
+    """
+
+    __slots__ = [
+        '_failure_reason_value',
+        '_failure_reason_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 failure_reason=None):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+        if failure_reason is not None:
+            self.failure_reason = failure_reason
+
+    @property
+    def failure_reason(self):
+        """
+        Failure reason.
+
+        :rtype: team.TeamReportFailureReason
+        """
+        if self._failure_reason_present:
+            return self._failure_reason_value
+        else:
+            raise AttributeError("missing required field 'failure_reason'")
+
+    @failure_reason.setter
+    def failure_reason(self, val):
+        self._failure_reason_validator.validate_type_only(val)
+        self._failure_reason_value = val
+        self._failure_reason_present = True
+
+    @failure_reason.deleter
+    def failure_reason(self):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPasswordLinkGenReportFailedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoPasswordLinkGenReportFailedDetails(failure_reason={!r})'.format(
+            self._failure_reason_value,
+        )
+
+NoPasswordLinkGenReportFailedDetails_validator = bv.Struct(NoPasswordLinkGenReportFailedDetails)
+
+class NoPasswordLinkGenReportFailedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPasswordLinkGenReportFailedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoPasswordLinkGenReportFailedType(description={!r})'.format(
+            self._description_value,
+        )
+
+NoPasswordLinkGenReportFailedType_validator = bv.Struct(NoPasswordLinkGenReportFailedType)
+
+class NoPasswordLinkViewCreateReportDetails(bb.Struct):
+    """
+    Report created: Views of links without passwords.
+
+    :ivar team_log.NoPasswordLinkViewCreateReportDetails.start_date: Report
+        start date.
+    :ivar team_log.NoPasswordLinkViewCreateReportDetails.end_date: Report end
+        date.
+    """
+
+    __slots__ = [
+        '_start_date_value',
+        '_start_date_present',
+        '_end_date_value',
+        '_end_date_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 start_date=None,
+                 end_date=None):
+        self._start_date_value = None
+        self._start_date_present = False
+        self._end_date_value = None
+        self._end_date_present = False
+        if start_date is not None:
+            self.start_date = start_date
+        if end_date is not None:
+            self.end_date = end_date
+
+    @property
+    def start_date(self):
+        """
+        Report start date.
+
+        :rtype: datetime.datetime
+        """
+        if self._start_date_present:
+            return self._start_date_value
+        else:
+            raise AttributeError("missing required field 'start_date'")
+
+    @start_date.setter
+    def start_date(self, val):
+        val = self._start_date_validator.validate(val)
+        self._start_date_value = val
+        self._start_date_present = True
+
+    @start_date.deleter
+    def start_date(self):
+        self._start_date_value = None
+        self._start_date_present = False
+
+    @property
+    def end_date(self):
+        """
+        Report end date.
+
+        :rtype: datetime.datetime
+        """
+        if self._end_date_present:
+            return self._end_date_value
+        else:
+            raise AttributeError("missing required field 'end_date'")
+
+    @end_date.setter
+    def end_date(self, val):
+        val = self._end_date_validator.validate(val)
+        self._end_date_value = val
+        self._end_date_present = True
+
+    @end_date.deleter
+    def end_date(self):
+        self._end_date_value = None
+        self._end_date_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPasswordLinkViewCreateReportDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoPasswordLinkViewCreateReportDetails(start_date={!r}, end_date={!r})'.format(
+            self._start_date_value,
+            self._end_date_value,
+        )
+
+NoPasswordLinkViewCreateReportDetails_validator = bv.Struct(NoPasswordLinkViewCreateReportDetails)
+
+class NoPasswordLinkViewCreateReportType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPasswordLinkViewCreateReportType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoPasswordLinkViewCreateReportType(description={!r})'.format(
+            self._description_value,
+        )
+
+NoPasswordLinkViewCreateReportType_validator = bv.Struct(NoPasswordLinkViewCreateReportType)
+
+class NoPasswordLinkViewReportFailedDetails(bb.Struct):
+    """
+    Couldn't create report: Views of links without passwords.
+
+    :ivar team_log.NoPasswordLinkViewReportFailedDetails.failure_reason: Failure
+        reason.
+    """
+
+    __slots__ = [
+        '_failure_reason_value',
+        '_failure_reason_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 failure_reason=None):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+        if failure_reason is not None:
+            self.failure_reason = failure_reason
+
+    @property
+    def failure_reason(self):
+        """
+        Failure reason.
+
+        :rtype: team.TeamReportFailureReason
+        """
+        if self._failure_reason_present:
+            return self._failure_reason_value
+        else:
+            raise AttributeError("missing required field 'failure_reason'")
+
+    @failure_reason.setter
+    def failure_reason(self, val):
+        self._failure_reason_validator.validate_type_only(val)
+        self._failure_reason_value = val
+        self._failure_reason_present = True
+
+    @failure_reason.deleter
+    def failure_reason(self):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPasswordLinkViewReportFailedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoPasswordLinkViewReportFailedDetails(failure_reason={!r})'.format(
+            self._failure_reason_value,
+        )
+
+NoPasswordLinkViewReportFailedDetails_validator = bv.Struct(NoPasswordLinkViewReportFailedDetails)
+
+class NoPasswordLinkViewReportFailedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPasswordLinkViewReportFailedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'NoPasswordLinkViewReportFailedType(description={!r})'.format(
+            self._description_value,
+        )
+
+NoPasswordLinkViewReportFailedType_validator = bv.Struct(NoPasswordLinkViewReportFailedType)
+
 class UserLogInfo(bb.Struct):
     """
     User's logged information.
@@ -54023,6 +55826,243 @@ class OriginLogInfo(bb.Struct):
         )
 
 OriginLogInfo_validator = bv.Struct(OriginLogInfo)
+
+class OutdatedLinkViewCreateReportDetails(bb.Struct):
+    """
+    Report created: Views of old links.
+
+    :ivar team_log.OutdatedLinkViewCreateReportDetails.start_date: Report start
+        date.
+    :ivar team_log.OutdatedLinkViewCreateReportDetails.end_date: Report end
+        date.
+    """
+
+    __slots__ = [
+        '_start_date_value',
+        '_start_date_present',
+        '_end_date_value',
+        '_end_date_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 start_date=None,
+                 end_date=None):
+        self._start_date_value = None
+        self._start_date_present = False
+        self._end_date_value = None
+        self._end_date_present = False
+        if start_date is not None:
+            self.start_date = start_date
+        if end_date is not None:
+            self.end_date = end_date
+
+    @property
+    def start_date(self):
+        """
+        Report start date.
+
+        :rtype: datetime.datetime
+        """
+        if self._start_date_present:
+            return self._start_date_value
+        else:
+            raise AttributeError("missing required field 'start_date'")
+
+    @start_date.setter
+    def start_date(self, val):
+        val = self._start_date_validator.validate(val)
+        self._start_date_value = val
+        self._start_date_present = True
+
+    @start_date.deleter
+    def start_date(self):
+        self._start_date_value = None
+        self._start_date_present = False
+
+    @property
+    def end_date(self):
+        """
+        Report end date.
+
+        :rtype: datetime.datetime
+        """
+        if self._end_date_present:
+            return self._end_date_value
+        else:
+            raise AttributeError("missing required field 'end_date'")
+
+    @end_date.setter
+    def end_date(self, val):
+        val = self._end_date_validator.validate(val)
+        self._end_date_value = val
+        self._end_date_present = True
+
+    @end_date.deleter
+    def end_date(self):
+        self._end_date_value = None
+        self._end_date_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OutdatedLinkViewCreateReportDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'OutdatedLinkViewCreateReportDetails(start_date={!r}, end_date={!r})'.format(
+            self._start_date_value,
+            self._end_date_value,
+        )
+
+OutdatedLinkViewCreateReportDetails_validator = bv.Struct(OutdatedLinkViewCreateReportDetails)
+
+class OutdatedLinkViewCreateReportType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OutdatedLinkViewCreateReportType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'OutdatedLinkViewCreateReportType(description={!r})'.format(
+            self._description_value,
+        )
+
+OutdatedLinkViewCreateReportType_validator = bv.Struct(OutdatedLinkViewCreateReportType)
+
+class OutdatedLinkViewReportFailedDetails(bb.Struct):
+    """
+    Couldn't create report: Views of old links.
+
+    :ivar team_log.OutdatedLinkViewReportFailedDetails.failure_reason: Failure
+        reason.
+    """
+
+    __slots__ = [
+        '_failure_reason_value',
+        '_failure_reason_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 failure_reason=None):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+        if failure_reason is not None:
+            self.failure_reason = failure_reason
+
+    @property
+    def failure_reason(self):
+        """
+        Failure reason.
+
+        :rtype: team.TeamReportFailureReason
+        """
+        if self._failure_reason_present:
+            return self._failure_reason_value
+        else:
+            raise AttributeError("missing required field 'failure_reason'")
+
+    @failure_reason.setter
+    def failure_reason(self, val):
+        self._failure_reason_validator.validate_type_only(val)
+        self._failure_reason_value = val
+        self._failure_reason_present = True
+
+    @failure_reason.deleter
+    def failure_reason(self):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OutdatedLinkViewReportFailedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'OutdatedLinkViewReportFailedDetails(failure_reason={!r})'.format(
+            self._failure_reason_value,
+        )
+
+OutdatedLinkViewReportFailedDetails_validator = bv.Struct(OutdatedLinkViewReportFailedDetails)
+
+class OutdatedLinkViewReportFailedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OutdatedLinkViewReportFailedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'OutdatedLinkViewReportFailedType(description={!r})'.format(
+            self._description_value,
+        )
+
+OutdatedLinkViewReportFailedType_validator = bv.Struct(OutdatedLinkViewReportFailedType)
 
 class PaperAccessType(bb.Union):
     """
@@ -86951,6 +88991,34 @@ AccountCaptureRelinquishAccountType._description_validator = bv.String()
 AccountCaptureRelinquishAccountType._all_field_names_ = set(['description'])
 AccountCaptureRelinquishAccountType._all_fields_ = [('description', AccountCaptureRelinquishAccountType._description_validator)]
 
+AccountLockOrUnlockedDetails._previous_value_validator = AccountState_validator
+AccountLockOrUnlockedDetails._new_value_validator = AccountState_validator
+AccountLockOrUnlockedDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+])
+AccountLockOrUnlockedDetails._all_fields_ = [
+    ('previous_value', AccountLockOrUnlockedDetails._previous_value_validator),
+    ('new_value', AccountLockOrUnlockedDetails._new_value_validator),
+]
+
+AccountLockOrUnlockedType._description_validator = bv.String()
+AccountLockOrUnlockedType._all_field_names_ = set(['description'])
+AccountLockOrUnlockedType._all_fields_ = [('description', AccountLockOrUnlockedType._description_validator)]
+
+AccountState._locked_validator = bv.Void()
+AccountState._unlocked_validator = bv.Void()
+AccountState._other_validator = bv.Void()
+AccountState._tagmap = {
+    'locked': AccountState._locked_validator,
+    'unlocked': AccountState._unlocked_validator,
+    'other': AccountState._other_validator,
+}
+
+AccountState.locked = AccountState('locked')
+AccountState.unlocked = AccountState('unlocked')
+AccountState.other = AccountState('other')
+
 ActionDetails._team_join_details_validator = JoinTeamDetails_validator
 ActionDetails._remove_action_validator = MemberRemoveActionType_validator
 ActionDetails._team_invite_details_validator = TeamInviteDetails_validator
@@ -88137,6 +90205,7 @@ EventDetails._legal_holds_export_removed_details_validator = LegalHoldsExportRem
 EventDetails._legal_holds_release_a_hold_details_validator = LegalHoldsReleaseAHoldDetails_validator
 EventDetails._legal_holds_remove_members_details_validator = LegalHoldsRemoveMembersDetails_validator
 EventDetails._legal_holds_report_a_hold_details_validator = LegalHoldsReportAHoldDetails_validator
+EventDetails._account_lock_or_unlocked_details_validator = AccountLockOrUnlockedDetails_validator
 EventDetails._emm_error_details_validator = EmmErrorDetails_validator
 EventDetails._guest_admin_signed_in_via_trusted_teams_details_validator = GuestAdminSignedInViaTrustedTeamsDetails_validator
 EventDetails._guest_admin_signed_out_via_trusted_teams_details_validator = GuestAdminSignedOutViaTrustedTeamsDetails_validator
@@ -88229,6 +90298,14 @@ EventDetails._emm_create_exceptions_report_details_validator = EmmCreateExceptio
 EventDetails._emm_create_usage_report_details_validator = EmmCreateUsageReportDetails_validator
 EventDetails._export_members_report_details_validator = ExportMembersReportDetails_validator
 EventDetails._export_members_report_fail_details_validator = ExportMembersReportFailDetails_validator
+EventDetails._no_expiration_link_gen_create_report_details_validator = NoExpirationLinkGenCreateReportDetails_validator
+EventDetails._no_expiration_link_gen_report_failed_details_validator = NoExpirationLinkGenReportFailedDetails_validator
+EventDetails._no_password_link_gen_create_report_details_validator = NoPasswordLinkGenCreateReportDetails_validator
+EventDetails._no_password_link_gen_report_failed_details_validator = NoPasswordLinkGenReportFailedDetails_validator
+EventDetails._no_password_link_view_create_report_details_validator = NoPasswordLinkViewCreateReportDetails_validator
+EventDetails._no_password_link_view_report_failed_details_validator = NoPasswordLinkViewReportFailedDetails_validator
+EventDetails._outdated_link_view_create_report_details_validator = OutdatedLinkViewCreateReportDetails_validator
+EventDetails._outdated_link_view_report_failed_details_validator = OutdatedLinkViewReportFailedDetails_validator
 EventDetails._paper_admin_export_start_details_validator = PaperAdminExportStartDetails_validator
 EventDetails._smart_sync_create_admin_privilege_report_details_validator = SmartSyncCreateAdminPrivilegeReportDetails_validator
 EventDetails._team_activity_create_report_details_validator = TeamActivityCreateReportDetails_validator
@@ -88381,6 +90458,7 @@ EventDetails._google_sso_change_policy_details_validator = GoogleSsoChangePolicy
 EventDetails._group_user_management_change_policy_details_validator = GroupUserManagementChangePolicyDetails_validator
 EventDetails._integration_policy_changed_details_validator = IntegrationPolicyChangedDetails_validator
 EventDetails._member_requests_change_policy_details_validator = MemberRequestsChangePolicyDetails_validator
+EventDetails._member_send_invite_policy_changed_details_validator = MemberSendInvitePolicyChangedDetails_validator
 EventDetails._member_space_limits_add_exception_details_validator = MemberSpaceLimitsAddExceptionDetails_validator
 EventDetails._member_space_limits_change_caps_type_policy_details_validator = MemberSpaceLimitsChangeCapsTypePolicyDetails_validator
 EventDetails._member_space_limits_change_policy_details_validator = MemberSpaceLimitsChangePolicyDetails_validator
@@ -88554,6 +90632,7 @@ EventDetails._tagmap = {
     'legal_holds_release_a_hold_details': EventDetails._legal_holds_release_a_hold_details_validator,
     'legal_holds_remove_members_details': EventDetails._legal_holds_remove_members_details_validator,
     'legal_holds_report_a_hold_details': EventDetails._legal_holds_report_a_hold_details_validator,
+    'account_lock_or_unlocked_details': EventDetails._account_lock_or_unlocked_details_validator,
     'emm_error_details': EventDetails._emm_error_details_validator,
     'guest_admin_signed_in_via_trusted_teams_details': EventDetails._guest_admin_signed_in_via_trusted_teams_details_validator,
     'guest_admin_signed_out_via_trusted_teams_details': EventDetails._guest_admin_signed_out_via_trusted_teams_details_validator,
@@ -88646,6 +90725,14 @@ EventDetails._tagmap = {
     'emm_create_usage_report_details': EventDetails._emm_create_usage_report_details_validator,
     'export_members_report_details': EventDetails._export_members_report_details_validator,
     'export_members_report_fail_details': EventDetails._export_members_report_fail_details_validator,
+    'no_expiration_link_gen_create_report_details': EventDetails._no_expiration_link_gen_create_report_details_validator,
+    'no_expiration_link_gen_report_failed_details': EventDetails._no_expiration_link_gen_report_failed_details_validator,
+    'no_password_link_gen_create_report_details': EventDetails._no_password_link_gen_create_report_details_validator,
+    'no_password_link_gen_report_failed_details': EventDetails._no_password_link_gen_report_failed_details_validator,
+    'no_password_link_view_create_report_details': EventDetails._no_password_link_view_create_report_details_validator,
+    'no_password_link_view_report_failed_details': EventDetails._no_password_link_view_report_failed_details_validator,
+    'outdated_link_view_create_report_details': EventDetails._outdated_link_view_create_report_details_validator,
+    'outdated_link_view_report_failed_details': EventDetails._outdated_link_view_report_failed_details_validator,
     'paper_admin_export_start_details': EventDetails._paper_admin_export_start_details_validator,
     'smart_sync_create_admin_privilege_report_details': EventDetails._smart_sync_create_admin_privilege_report_details_validator,
     'team_activity_create_report_details': EventDetails._team_activity_create_report_details_validator,
@@ -88798,6 +90885,7 @@ EventDetails._tagmap = {
     'group_user_management_change_policy_details': EventDetails._group_user_management_change_policy_details_validator,
     'integration_policy_changed_details': EventDetails._integration_policy_changed_details_validator,
     'member_requests_change_policy_details': EventDetails._member_requests_change_policy_details_validator,
+    'member_send_invite_policy_changed_details': EventDetails._member_send_invite_policy_changed_details_validator,
     'member_space_limits_add_exception_details': EventDetails._member_space_limits_add_exception_details_validator,
     'member_space_limits_change_caps_type_policy_details': EventDetails._member_space_limits_change_caps_type_policy_details_validator,
     'member_space_limits_change_policy_details': EventDetails._member_space_limits_change_policy_details_validator,
@@ -88974,6 +91062,7 @@ EventType._legal_holds_export_removed_validator = LegalHoldsExportRemovedType_va
 EventType._legal_holds_release_a_hold_validator = LegalHoldsReleaseAHoldType_validator
 EventType._legal_holds_remove_members_validator = LegalHoldsRemoveMembersType_validator
 EventType._legal_holds_report_a_hold_validator = LegalHoldsReportAHoldType_validator
+EventType._account_lock_or_unlocked_validator = AccountLockOrUnlockedType_validator
 EventType._emm_error_validator = EmmErrorType_validator
 EventType._guest_admin_signed_in_via_trusted_teams_validator = GuestAdminSignedInViaTrustedTeamsType_validator
 EventType._guest_admin_signed_out_via_trusted_teams_validator = GuestAdminSignedOutViaTrustedTeamsType_validator
@@ -89066,6 +91155,14 @@ EventType._emm_create_exceptions_report_validator = EmmCreateExceptionsReportTyp
 EventType._emm_create_usage_report_validator = EmmCreateUsageReportType_validator
 EventType._export_members_report_validator = ExportMembersReportType_validator
 EventType._export_members_report_fail_validator = ExportMembersReportFailType_validator
+EventType._no_expiration_link_gen_create_report_validator = NoExpirationLinkGenCreateReportType_validator
+EventType._no_expiration_link_gen_report_failed_validator = NoExpirationLinkGenReportFailedType_validator
+EventType._no_password_link_gen_create_report_validator = NoPasswordLinkGenCreateReportType_validator
+EventType._no_password_link_gen_report_failed_validator = NoPasswordLinkGenReportFailedType_validator
+EventType._no_password_link_view_create_report_validator = NoPasswordLinkViewCreateReportType_validator
+EventType._no_password_link_view_report_failed_validator = NoPasswordLinkViewReportFailedType_validator
+EventType._outdated_link_view_create_report_validator = OutdatedLinkViewCreateReportType_validator
+EventType._outdated_link_view_report_failed_validator = OutdatedLinkViewReportFailedType_validator
 EventType._paper_admin_export_start_validator = PaperAdminExportStartType_validator
 EventType._smart_sync_create_admin_privilege_report_validator = SmartSyncCreateAdminPrivilegeReportType_validator
 EventType._team_activity_create_report_validator = TeamActivityCreateReportType_validator
@@ -89218,6 +91315,7 @@ EventType._google_sso_change_policy_validator = GoogleSsoChangePolicyType_valida
 EventType._group_user_management_change_policy_validator = GroupUserManagementChangePolicyType_validator
 EventType._integration_policy_changed_validator = IntegrationPolicyChangedType_validator
 EventType._member_requests_change_policy_validator = MemberRequestsChangePolicyType_validator
+EventType._member_send_invite_policy_changed_validator = MemberSendInvitePolicyChangedType_validator
 EventType._member_space_limits_add_exception_validator = MemberSpaceLimitsAddExceptionType_validator
 EventType._member_space_limits_change_caps_type_policy_validator = MemberSpaceLimitsChangeCapsTypePolicyType_validator
 EventType._member_space_limits_change_policy_validator = MemberSpaceLimitsChangePolicyType_validator
@@ -89390,6 +91488,7 @@ EventType._tagmap = {
     'legal_holds_release_a_hold': EventType._legal_holds_release_a_hold_validator,
     'legal_holds_remove_members': EventType._legal_holds_remove_members_validator,
     'legal_holds_report_a_hold': EventType._legal_holds_report_a_hold_validator,
+    'account_lock_or_unlocked': EventType._account_lock_or_unlocked_validator,
     'emm_error': EventType._emm_error_validator,
     'guest_admin_signed_in_via_trusted_teams': EventType._guest_admin_signed_in_via_trusted_teams_validator,
     'guest_admin_signed_out_via_trusted_teams': EventType._guest_admin_signed_out_via_trusted_teams_validator,
@@ -89482,6 +91581,14 @@ EventType._tagmap = {
     'emm_create_usage_report': EventType._emm_create_usage_report_validator,
     'export_members_report': EventType._export_members_report_validator,
     'export_members_report_fail': EventType._export_members_report_fail_validator,
+    'no_expiration_link_gen_create_report': EventType._no_expiration_link_gen_create_report_validator,
+    'no_expiration_link_gen_report_failed': EventType._no_expiration_link_gen_report_failed_validator,
+    'no_password_link_gen_create_report': EventType._no_password_link_gen_create_report_validator,
+    'no_password_link_gen_report_failed': EventType._no_password_link_gen_report_failed_validator,
+    'no_password_link_view_create_report': EventType._no_password_link_view_create_report_validator,
+    'no_password_link_view_report_failed': EventType._no_password_link_view_report_failed_validator,
+    'outdated_link_view_create_report': EventType._outdated_link_view_create_report_validator,
+    'outdated_link_view_report_failed': EventType._outdated_link_view_report_failed_validator,
     'paper_admin_export_start': EventType._paper_admin_export_start_validator,
     'smart_sync_create_admin_privilege_report': EventType._smart_sync_create_admin_privilege_report_validator,
     'team_activity_create_report': EventType._team_activity_create_report_validator,
@@ -89634,6 +91741,7 @@ EventType._tagmap = {
     'group_user_management_change_policy': EventType._group_user_management_change_policy_validator,
     'integration_policy_changed': EventType._integration_policy_changed_validator,
     'member_requests_change_policy': EventType._member_requests_change_policy_validator,
+    'member_send_invite_policy_changed': EventType._member_send_invite_policy_changed_validator,
     'member_space_limits_add_exception': EventType._member_space_limits_add_exception_validator,
     'member_space_limits_change_caps_type_policy': EventType._member_space_limits_change_caps_type_policy_validator,
     'member_space_limits_change_policy': EventType._member_space_limits_change_policy_validator,
@@ -90024,15 +92132,18 @@ FileLockingPolicyChangedType._all_fields_ = [('description', FileLockingPolicyCh
 FileOrFolderLogInfo._path_validator = PathLogInfo_validator
 FileOrFolderLogInfo._display_name_validator = bv.Nullable(bv.String())
 FileOrFolderLogInfo._file_id_validator = bv.Nullable(bv.String())
+FileOrFolderLogInfo._file_size_validator = bv.Nullable(bv.UInt64())
 FileOrFolderLogInfo._all_field_names_ = set([
     'path',
     'display_name',
     'file_id',
+    'file_size',
 ])
 FileOrFolderLogInfo._all_fields_ = [
     ('path', FileOrFolderLogInfo._path_validator),
     ('display_name', FileOrFolderLogInfo._display_name_validator),
     ('file_id', FileOrFolderLogInfo._file_id_validator),
+    ('file_size', FileOrFolderLogInfo._file_size_validator),
 ]
 
 FileLogInfo._all_field_names_ = FileOrFolderLogInfo._all_field_names_.union(set([]))
@@ -90340,8 +92451,9 @@ FileUnresolveCommentType._description_validator = bv.String()
 FileUnresolveCommentType._all_field_names_ = set(['description'])
 FileUnresolveCommentType._all_fields_ = [('description', FileUnresolveCommentType._description_validator)]
 
-FolderLogInfo._all_field_names_ = FileOrFolderLogInfo._all_field_names_.union(set([]))
-FolderLogInfo._all_fields_ = FileOrFolderLogInfo._all_fields_ + []
+FolderLogInfo._file_count_validator = bv.Nullable(bv.UInt64())
+FolderLogInfo._all_field_names_ = FileOrFolderLogInfo._all_field_names_.union(set(['file_count']))
+FolderLogInfo._all_fields_ = FileOrFolderLogInfo._all_fields_ + [('file_count', FolderLogInfo._file_count_validator)]
 
 FolderOverviewDescriptionChangedDetails._folder_overview_location_asset_validator = bv.UInt64()
 FolderOverviewDescriptionChangedDetails._all_field_names_ = set(['folder_overview_location_asset'])
@@ -91108,6 +93220,7 @@ LoginMethod._google_oauth_validator = bv.Void()
 LoginMethod._web_session_validator = bv.Void()
 LoginMethod._qr_code_validator = bv.Void()
 LoginMethod._apple_oauth_validator = bv.Void()
+LoginMethod._first_party_token_exchange_validator = bv.Void()
 LoginMethod._other_validator = bv.Void()
 LoginMethod._tagmap = {
     'password': LoginMethod._password_validator,
@@ -91117,6 +93230,7 @@ LoginMethod._tagmap = {
     'web_session': LoginMethod._web_session_validator,
     'qr_code': LoginMethod._qr_code_validator,
     'apple_oauth': LoginMethod._apple_oauth_validator,
+    'first_party_token_exchange': LoginMethod._first_party_token_exchange_validator,
     'other': LoginMethod._other_validator,
 }
 
@@ -91127,6 +93241,7 @@ LoginMethod.google_oauth = LoginMethod('google_oauth')
 LoginMethod.web_session = LoginMethod('web_session')
 LoginMethod.qr_code = LoginMethod('qr_code')
 LoginMethod.apple_oauth = LoginMethod('apple_oauth')
+LoginMethod.first_party_token_exchange = LoginMethod('first_party_token_exchange')
 LoginMethod.other = LoginMethod('other')
 
 LoginSuccessDetails._is_emm_managed_validator = bv.Nullable(bv.Boolean())
@@ -91338,6 +93453,37 @@ MemberRequestsPolicy.auto_accept = MemberRequestsPolicy('auto_accept')
 MemberRequestsPolicy.disabled = MemberRequestsPolicy('disabled')
 MemberRequestsPolicy.require_approval = MemberRequestsPolicy('require_approval')
 MemberRequestsPolicy.other = MemberRequestsPolicy('other')
+
+MemberSendInvitePolicy._disabled_validator = bv.Void()
+MemberSendInvitePolicy._specific_members_validator = bv.Void()
+MemberSendInvitePolicy._everyone_validator = bv.Void()
+MemberSendInvitePolicy._other_validator = bv.Void()
+MemberSendInvitePolicy._tagmap = {
+    'disabled': MemberSendInvitePolicy._disabled_validator,
+    'specific_members': MemberSendInvitePolicy._specific_members_validator,
+    'everyone': MemberSendInvitePolicy._everyone_validator,
+    'other': MemberSendInvitePolicy._other_validator,
+}
+
+MemberSendInvitePolicy.disabled = MemberSendInvitePolicy('disabled')
+MemberSendInvitePolicy.specific_members = MemberSendInvitePolicy('specific_members')
+MemberSendInvitePolicy.everyone = MemberSendInvitePolicy('everyone')
+MemberSendInvitePolicy.other = MemberSendInvitePolicy('other')
+
+MemberSendInvitePolicyChangedDetails._new_value_validator = MemberSendInvitePolicy_validator
+MemberSendInvitePolicyChangedDetails._previous_value_validator = MemberSendInvitePolicy_validator
+MemberSendInvitePolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+MemberSendInvitePolicyChangedDetails._all_fields_ = [
+    ('new_value', MemberSendInvitePolicyChangedDetails._new_value_validator),
+    ('previous_value', MemberSendInvitePolicyChangedDetails._previous_value_validator),
+]
+
+MemberSendInvitePolicyChangedType._description_validator = bv.String()
+MemberSendInvitePolicyChangedType._all_field_names_ = set(['description'])
+MemberSendInvitePolicyChangedType._all_fields_ = [('description', MemberSendInvitePolicyChangedType._description_validator)]
 
 MemberSetProfilePhotoDetails._all_field_names_ = set([])
 MemberSetProfilePhotoDetails._all_fields_ = []
@@ -91604,6 +93750,75 @@ NetworkControlPolicy.disabled = NetworkControlPolicy('disabled')
 NetworkControlPolicy.enabled = NetworkControlPolicy('enabled')
 NetworkControlPolicy.other = NetworkControlPolicy('other')
 
+NoExpirationLinkGenCreateReportDetails._start_date_validator = common.DropboxTimestamp_validator
+NoExpirationLinkGenCreateReportDetails._end_date_validator = common.DropboxTimestamp_validator
+NoExpirationLinkGenCreateReportDetails._all_field_names_ = set([
+    'start_date',
+    'end_date',
+])
+NoExpirationLinkGenCreateReportDetails._all_fields_ = [
+    ('start_date', NoExpirationLinkGenCreateReportDetails._start_date_validator),
+    ('end_date', NoExpirationLinkGenCreateReportDetails._end_date_validator),
+]
+
+NoExpirationLinkGenCreateReportType._description_validator = bv.String()
+NoExpirationLinkGenCreateReportType._all_field_names_ = set(['description'])
+NoExpirationLinkGenCreateReportType._all_fields_ = [('description', NoExpirationLinkGenCreateReportType._description_validator)]
+
+NoExpirationLinkGenReportFailedDetails._failure_reason_validator = team.TeamReportFailureReason_validator
+NoExpirationLinkGenReportFailedDetails._all_field_names_ = set(['failure_reason'])
+NoExpirationLinkGenReportFailedDetails._all_fields_ = [('failure_reason', NoExpirationLinkGenReportFailedDetails._failure_reason_validator)]
+
+NoExpirationLinkGenReportFailedType._description_validator = bv.String()
+NoExpirationLinkGenReportFailedType._all_field_names_ = set(['description'])
+NoExpirationLinkGenReportFailedType._all_fields_ = [('description', NoExpirationLinkGenReportFailedType._description_validator)]
+
+NoPasswordLinkGenCreateReportDetails._start_date_validator = common.DropboxTimestamp_validator
+NoPasswordLinkGenCreateReportDetails._end_date_validator = common.DropboxTimestamp_validator
+NoPasswordLinkGenCreateReportDetails._all_field_names_ = set([
+    'start_date',
+    'end_date',
+])
+NoPasswordLinkGenCreateReportDetails._all_fields_ = [
+    ('start_date', NoPasswordLinkGenCreateReportDetails._start_date_validator),
+    ('end_date', NoPasswordLinkGenCreateReportDetails._end_date_validator),
+]
+
+NoPasswordLinkGenCreateReportType._description_validator = bv.String()
+NoPasswordLinkGenCreateReportType._all_field_names_ = set(['description'])
+NoPasswordLinkGenCreateReportType._all_fields_ = [('description', NoPasswordLinkGenCreateReportType._description_validator)]
+
+NoPasswordLinkGenReportFailedDetails._failure_reason_validator = team.TeamReportFailureReason_validator
+NoPasswordLinkGenReportFailedDetails._all_field_names_ = set(['failure_reason'])
+NoPasswordLinkGenReportFailedDetails._all_fields_ = [('failure_reason', NoPasswordLinkGenReportFailedDetails._failure_reason_validator)]
+
+NoPasswordLinkGenReportFailedType._description_validator = bv.String()
+NoPasswordLinkGenReportFailedType._all_field_names_ = set(['description'])
+NoPasswordLinkGenReportFailedType._all_fields_ = [('description', NoPasswordLinkGenReportFailedType._description_validator)]
+
+NoPasswordLinkViewCreateReportDetails._start_date_validator = common.DropboxTimestamp_validator
+NoPasswordLinkViewCreateReportDetails._end_date_validator = common.DropboxTimestamp_validator
+NoPasswordLinkViewCreateReportDetails._all_field_names_ = set([
+    'start_date',
+    'end_date',
+])
+NoPasswordLinkViewCreateReportDetails._all_fields_ = [
+    ('start_date', NoPasswordLinkViewCreateReportDetails._start_date_validator),
+    ('end_date', NoPasswordLinkViewCreateReportDetails._end_date_validator),
+]
+
+NoPasswordLinkViewCreateReportType._description_validator = bv.String()
+NoPasswordLinkViewCreateReportType._all_field_names_ = set(['description'])
+NoPasswordLinkViewCreateReportType._all_fields_ = [('description', NoPasswordLinkViewCreateReportType._description_validator)]
+
+NoPasswordLinkViewReportFailedDetails._failure_reason_validator = team.TeamReportFailureReason_validator
+NoPasswordLinkViewReportFailedDetails._all_field_names_ = set(['failure_reason'])
+NoPasswordLinkViewReportFailedDetails._all_fields_ = [('failure_reason', NoPasswordLinkViewReportFailedDetails._failure_reason_validator)]
+
+NoPasswordLinkViewReportFailedType._description_validator = bv.String()
+NoPasswordLinkViewReportFailedType._all_field_names_ = set(['description'])
+NoPasswordLinkViewReportFailedType._all_fields_ = [('description', NoPasswordLinkViewReportFailedType._description_validator)]
+
 UserLogInfo._account_id_validator = bv.Nullable(users_common.AccountId_validator)
 UserLogInfo._display_name_validator = bv.Nullable(common.DisplayNameLegacy_validator)
 UserLogInfo._email_validator = bv.Nullable(EmailAddress_validator)
@@ -91701,6 +93916,29 @@ OriginLogInfo._all_fields_ = [
     ('geo_location', OriginLogInfo._geo_location_validator),
     ('access_method', OriginLogInfo._access_method_validator),
 ]
+
+OutdatedLinkViewCreateReportDetails._start_date_validator = common.DropboxTimestamp_validator
+OutdatedLinkViewCreateReportDetails._end_date_validator = common.DropboxTimestamp_validator
+OutdatedLinkViewCreateReportDetails._all_field_names_ = set([
+    'start_date',
+    'end_date',
+])
+OutdatedLinkViewCreateReportDetails._all_fields_ = [
+    ('start_date', OutdatedLinkViewCreateReportDetails._start_date_validator),
+    ('end_date', OutdatedLinkViewCreateReportDetails._end_date_validator),
+]
+
+OutdatedLinkViewCreateReportType._description_validator = bv.String()
+OutdatedLinkViewCreateReportType._all_field_names_ = set(['description'])
+OutdatedLinkViewCreateReportType._all_fields_ = [('description', OutdatedLinkViewCreateReportType._description_validator)]
+
+OutdatedLinkViewReportFailedDetails._failure_reason_validator = team.TeamReportFailureReason_validator
+OutdatedLinkViewReportFailedDetails._all_field_names_ = set(['failure_reason'])
+OutdatedLinkViewReportFailedDetails._all_fields_ = [('failure_reason', OutdatedLinkViewReportFailedDetails._failure_reason_validator)]
+
+OutdatedLinkViewReportFailedType._description_validator = bv.String()
+OutdatedLinkViewReportFailedType._all_field_names_ = set(['description'])
+OutdatedLinkViewReportFailedType._all_fields_ = [('description', OutdatedLinkViewReportFailedType._description_validator)]
 
 PaperAccessType._viewer_validator = bv.Void()
 PaperAccessType._commenter_validator = bv.Void()

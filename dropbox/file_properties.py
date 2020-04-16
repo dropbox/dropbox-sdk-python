@@ -37,7 +37,8 @@ class AddPropertiesArg(bb.Struct):
     :ivar file_properties.AddPropertiesArg.path: A unique identifier for the
         file or folder.
     :ivar file_properties.AddPropertiesArg.property_groups: The property groups
-        which are to be added to a Dropbox file.
+        which are to be added to a Dropbox file. No two groups in the input
+        should  refer to the same template.
     """
 
     __slots__ = [
@@ -87,7 +88,8 @@ class AddPropertiesArg(bb.Struct):
     @property
     def property_groups(self):
         """
-        The property groups which are to be added to a Dropbox file.
+        The property groups which are to be added to a Dropbox file. No two
+        groups in the input should  refer to the same template.
 
         :rtype: list of [PropertyGroup]
         """
@@ -260,12 +262,17 @@ class InvalidPropertyGroupError(PropertiesError):
     :ivar file_properties.InvalidPropertyGroupError.does_not_fit_template: One
         or more of the supplied property fields does not conform to the template
         specifications.
+    :ivar file_properties.InvalidPropertyGroupError.duplicate_property_groups:
+        There are 2 or more property groups referring to the same templates in
+        the input.
     """
 
     # Attribute is overwritten below the class definition
     property_field_too_large = None
     # Attribute is overwritten below the class definition
     does_not_fit_template = None
+    # Attribute is overwritten below the class definition
+    duplicate_property_groups = None
 
     def is_property_field_too_large(self):
         """
@@ -282,6 +289,14 @@ class InvalidPropertyGroupError(PropertiesError):
         :rtype: bool
         """
         return self._tag == 'does_not_fit_template'
+
+    def is_duplicate_property_groups(self):
+        """
+        Check if the union tag is ``duplicate_property_groups``.
+
+        :rtype: bool
+        """
+        return self._tag == 'duplicate_property_groups'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(InvalidPropertyGroupError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -935,7 +950,8 @@ class OverwritePropertyGroupArg(bb.Struct):
     :ivar file_properties.OverwritePropertyGroupArg.path: A unique identifier
         for the file or folder.
     :ivar file_properties.OverwritePropertyGroupArg.property_groups: The
-        property groups "snapshot" updates to force apply.
+        property groups "snapshot" updates to force apply. No two groups in the
+        input should  refer to the same template.
     """
 
     __slots__ = [
@@ -985,7 +1001,8 @@ class OverwritePropertyGroupArg(bb.Struct):
     @property
     def property_groups(self):
         """
-        The property groups "snapshot" updates to force apply.
+        The property groups "snapshot" updates to force apply. No two groups in
+        the input should  refer to the same template.
 
         :rtype: list of [PropertyGroup]
         """
@@ -2899,14 +2916,17 @@ PropertiesError.unsupported_folder = PropertiesError('unsupported_folder')
 
 InvalidPropertyGroupError._property_field_too_large_validator = bv.Void()
 InvalidPropertyGroupError._does_not_fit_template_validator = bv.Void()
+InvalidPropertyGroupError._duplicate_property_groups_validator = bv.Void()
 InvalidPropertyGroupError._tagmap = {
     'property_field_too_large': InvalidPropertyGroupError._property_field_too_large_validator,
     'does_not_fit_template': InvalidPropertyGroupError._does_not_fit_template_validator,
+    'duplicate_property_groups': InvalidPropertyGroupError._duplicate_property_groups_validator,
 }
 InvalidPropertyGroupError._tagmap.update(PropertiesError._tagmap)
 
 InvalidPropertyGroupError.property_field_too_large = InvalidPropertyGroupError('property_field_too_large')
 InvalidPropertyGroupError.does_not_fit_template = InvalidPropertyGroupError('does_not_fit_template')
+InvalidPropertyGroupError.duplicate_property_groups = InvalidPropertyGroupError('duplicate_property_groups')
 
 AddPropertiesError._property_group_already_exists_validator = bv.Void()
 AddPropertiesError._tagmap = {

@@ -3030,106 +3030,6 @@ class ExcludedUsersUpdateStatus(bb.Union):
 
 ExcludedUsersUpdateStatus_validator = bv.Union(ExcludedUsersUpdateStatus)
 
-class ExportPolicyJobStatus(async_.PollResultBase):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar team.ExportPolicyJobStatus.complete: The asynchronous job has
-        finished. Returning the metadata of the newly created folder that
-        includes the exported hold.
-    :ivar team.ExportPolicyJobStatus.failed: The asynchronous job returned an
-        error.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    complete = None
-    # Attribute is overwritten below the class definition
-    failed = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_complete(self):
-        """
-        Check if the union tag is ``complete``.
-
-        :rtype: bool
-        """
-        return self._tag == 'complete'
-
-    def is_failed(self):
-        """
-        Check if the union tag is ``failed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'failed'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ExportPolicyJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ExportPolicyJobStatus(%r, %r)' % (self._tag, self._value)
-
-ExportPolicyJobStatus_validator = bv.Union(ExportPolicyJobStatus)
-
-class ExportPolicyJobStatusResult(bb.Struct):
-
-    __slots__ = [
-        '_status_value',
-        '_status_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 status=None):
-        self._status_value = None
-        self._status_present = False
-        if status is not None:
-            self.status = status
-
-    @property
-    def status(self):
-        """
-        :rtype: ExportPolicyJobStatus
-        """
-        if self._status_present:
-            return self._status_value
-        else:
-            raise AttributeError("missing required field 'status'")
-
-    @status.setter
-    def status(self, val):
-        self._status_validator.validate_type_only(val)
-        self._status_value = val
-        self._status_present = True
-
-    @status.deleter
-    def status(self):
-        self._status_value = None
-        self._status_present = False
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ExportPolicyJobStatusResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ExportPolicyJobStatusResult(status={!r})'.format(
-            self._status_value,
-        )
-
-ExportPolicyJobStatusResult_validator = bv.Struct(ExportPolicyJobStatusResult)
-
 class Feature(bb.Union):
     """
     A set of features that a Dropbox Business account may support.
@@ -8128,198 +8028,6 @@ class LegalHoldsError(bb.Union):
 
 LegalHoldsError_validator = bv.Union(LegalHoldsError)
 
-class LegalHoldsExportPolicyError(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar team.LegalHoldsExportPolicyError.invalid_path: The path provided is
-        invalid.
-    :ivar
-        team.LegalHoldsExportPolicyError.legal_hold_performing_another_operation:
-        Legal hold is currently performing another operation.
-    :ivar team.LegalHoldsExportPolicyError.unknown_legal_hold_error: There has
-        been an unknown legal hold error.
-    :ivar team.LegalHoldsExportPolicyError.transient_error: Temporary
-        infrastructure failure, please retry.
-    :ivar team.LegalHoldsExportPolicyError.insufficient_quota: The current team
-        does not have enough space to export the legal hold policy.
-    :ivar team.LegalHoldsExportPolicyError.legal_hold_export_still_empty: The
-        legal hold is not holding any revisions yet
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    invalid_path = None
-    # Attribute is overwritten below the class definition
-    legal_hold_performing_another_operation = None
-    # Attribute is overwritten below the class definition
-    unknown_legal_hold_error = None
-    # Attribute is overwritten below the class definition
-    transient_error = None
-    # Attribute is overwritten below the class definition
-    insufficient_quota = None
-    # Attribute is overwritten below the class definition
-    legal_hold_export_still_empty = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_invalid_path(self):
-        """
-        Check if the union tag is ``invalid_path``.
-
-        :rtype: bool
-        """
-        return self._tag == 'invalid_path'
-
-    def is_legal_hold_performing_another_operation(self):
-        """
-        Check if the union tag is ``legal_hold_performing_another_operation``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_hold_performing_another_operation'
-
-    def is_unknown_legal_hold_error(self):
-        """
-        Check if the union tag is ``unknown_legal_hold_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unknown_legal_hold_error'
-
-    def is_transient_error(self):
-        """
-        Check if the union tag is ``transient_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'transient_error'
-
-    def is_insufficient_quota(self):
-        """
-        Check if the union tag is ``insufficient_quota``.
-
-        :rtype: bool
-        """
-        return self._tag == 'insufficient_quota'
-
-    def is_legal_hold_export_still_empty(self):
-        """
-        Check if the union tag is ``legal_hold_export_still_empty``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_hold_export_still_empty'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(LegalHoldsExportPolicyError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsExportPolicyError(%r, %r)' % (self._tag, self._value)
-
-LegalHoldsExportPolicyError_validator = bv.Union(LegalHoldsExportPolicyError)
-
-class LegalHoldsExportPolicyResult(bb.Struct):
-    """
-    :ivar team.LegalHoldsExportPolicyResult.async_job_id: Pass the given ID into
-        :meth:`dropbox.dropbox.Dropbox.team_legal_holds_export_policy_job_status_check`
-        to obtain the status of the export policy job status.
-    :ivar team.LegalHoldsExportPolicyResult.export_folder_metadata: Metadata for
-        the newly created folder that will eventually, once the export policy
-        job completes, include the hold's export.
-    """
-
-    __slots__ = [
-        '_async_job_id_value',
-        '_async_job_id_present',
-        '_export_folder_metadata_value',
-        '_export_folder_metadata_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 async_job_id=None,
-                 export_folder_metadata=None):
-        self._async_job_id_value = None
-        self._async_job_id_present = False
-        self._export_folder_metadata_value = None
-        self._export_folder_metadata_present = False
-        if async_job_id is not None:
-            self.async_job_id = async_job_id
-        if export_folder_metadata is not None:
-            self.export_folder_metadata = export_folder_metadata
-
-    @property
-    def async_job_id(self):
-        """
-        Pass the given ID into
-        :meth:`dropbox.dropbox.Dropbox.team_legal_holds_export_policy_job_status_check`
-        to obtain the status of the export policy job status.
-
-        :rtype: str
-        """
-        if self._async_job_id_present:
-            return self._async_job_id_value
-        else:
-            raise AttributeError("missing required field 'async_job_id'")
-
-    @async_job_id.setter
-    def async_job_id(self, val):
-        val = self._async_job_id_validator.validate(val)
-        self._async_job_id_value = val
-        self._async_job_id_present = True
-
-    @async_job_id.deleter
-    def async_job_id(self):
-        self._async_job_id_value = None
-        self._async_job_id_present = False
-
-    @property
-    def export_folder_metadata(self):
-        """
-        Metadata for the newly created folder that will eventually, once the
-        export policy job completes, include the hold's export.
-
-        :rtype: files.FolderMetadata
-        """
-        if self._export_folder_metadata_present:
-            return self._export_folder_metadata_value
-        else:
-            raise AttributeError("missing required field 'export_folder_metadata'")
-
-    @export_folder_metadata.setter
-    def export_folder_metadata(self, val):
-        self._export_folder_metadata_validator.validate_type_only(val)
-        self._export_folder_metadata_value = val
-        self._export_folder_metadata_present = True
-
-    @export_folder_metadata.deleter
-    def export_folder_metadata(self):
-        self._export_folder_metadata_value = None
-        self._export_folder_metadata_present = False
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(LegalHoldsExportPolicyResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsExportPolicyResult(async_job_id={!r}, export_folder_metadata={!r})'.format(
-            self._async_job_id_value,
-            self._export_folder_metadata_value,
-        )
-
-LegalHoldsExportPolicyResult_validator = bv.Struct(LegalHoldsExportPolicyResult)
-
 class LegalHoldsGetPolicyArg(bb.Struct):
     """
     :ivar team.LegalHoldsGetPolicyArg.id: The legal hold Id.
@@ -8728,14 +8436,12 @@ class LegalHoldsListHeldRevisionsContinueError(bb.Union):
 
 LegalHoldsListHeldRevisionsContinueError_validator = bv.Union(LegalHoldsListHeldRevisionsContinueError)
 
-class LegalHoldsListHeldRevisionsError(bb.Union):
+class LegalHoldsListHeldRevisionsError(LegalHoldsError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team.LegalHoldsListHeldRevisionsError.unknown_legal_hold_error: There
-        has been an unknown legal hold error.
     :ivar team.LegalHoldsListHeldRevisionsError.transient_error: Temporary
         infrastructure failure, please retry.
     :ivar team.LegalHoldsListHeldRevisionsError.legal_hold_still_empty: The
@@ -8744,25 +8450,12 @@ class LegalHoldsListHeldRevisionsError(bb.Union):
         list revisions for an inactive legal hold.
     """
 
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    unknown_legal_hold_error = None
     # Attribute is overwritten below the class definition
     transient_error = None
     # Attribute is overwritten below the class definition
     legal_hold_still_empty = None
     # Attribute is overwritten below the class definition
     inactive_legal_hold = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_unknown_legal_hold_error(self):
-        """
-        Check if the union tag is ``unknown_legal_hold_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unknown_legal_hold_error'
 
     def is_transient_error(self):
         """
@@ -8787,14 +8480,6 @@ class LegalHoldsListHeldRevisionsError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'inactive_legal_hold'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListHeldRevisionsError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -9145,6 +8830,8 @@ class LegalHoldsPolicyCreateError(LegalHoldsError):
         infrastructure failure, please retry.
     :ivar team.LegalHoldsPolicyCreateError.name_must_be_unique: The name
         provided is already in use by another legal hold.
+    :ivar team.LegalHoldsPolicyCreateError.team_exceeded_legal_hold_quota: Team
+        exceeded legal hold quota.
     """
 
     # Attribute is overwritten below the class definition
@@ -9159,6 +8846,8 @@ class LegalHoldsPolicyCreateError(LegalHoldsError):
     transient_error = None
     # Attribute is overwritten below the class definition
     name_must_be_unique = None
+    # Attribute is overwritten below the class definition
+    team_exceeded_legal_hold_quota = None
 
     def is_start_date_is_later_than_end_date(self):
         """
@@ -9208,6 +8897,14 @@ class LegalHoldsPolicyCreateError(LegalHoldsError):
         """
         return self._tag == 'name_must_be_unique'
 
+    def is_team_exceeded_legal_hold_quota(self):
+        """
+        Check if the union tag is ``team_exceeded_legal_hold_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_exceeded_legal_hold_quota'
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
@@ -9215,97 +8912,6 @@ class LegalHoldsPolicyCreateError(LegalHoldsError):
         return 'LegalHoldsPolicyCreateError(%r, %r)' % (self._tag, self._value)
 
 LegalHoldsPolicyCreateError_validator = bv.Union(LegalHoldsPolicyCreateError)
-
-class LegalHoldsPolicyExportArg(bb.Struct):
-    """
-    :ivar team.LegalHoldsPolicyExportArg.id: The legal hold Id.
-    :ivar team.LegalHoldsPolicyExportArg.path: The selected destination path in
-        the team's Dropbox for the export. The path must be a namespace path
-        (see example) of a namespace that's accessible to the application. To
-        get the list of accessible namespaces use the route
-        :meth:`dropbox.dropbox.Dropbox.team_namespaces_list`.
-    """
-
-    __slots__ = [
-        '_id_value',
-        '_id_present',
-        '_path_value',
-        '_path_present',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 id=None,
-                 path=None):
-        self._id_value = None
-        self._id_present = False
-        self._path_value = None
-        self._path_present = False
-        if id is not None:
-            self.id = id
-        if path is not None:
-            self.path = path
-
-    @property
-    def id(self):
-        """
-        The legal hold Id.
-
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
-
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def path(self):
-        """
-        The selected destination path in the team's Dropbox for the export. The
-        path must be a namespace path (see example) of a namespace that's
-        accessible to the application. To get the list of accessible namespaces
-        use the route :meth:`dropbox.dropbox.Dropbox.team_namespaces_list`.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(LegalHoldsPolicyExportArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsPolicyExportArg(id={!r}, path={!r})'.format(
-            self._id_value,
-            self._path_value,
-        )
-
-LegalHoldsPolicyExportArg_validator = bv.Struct(LegalHoldsPolicyExportArg)
 
 class LegalHoldsPolicyReleaseArg(bb.Struct):
     """
@@ -9359,7 +8965,7 @@ class LegalHoldsPolicyReleaseArg(bb.Struct):
 
 LegalHoldsPolicyReleaseArg_validator = bv.Struct(LegalHoldsPolicyReleaseArg)
 
-class LegalHoldsPolicyReleaseError(bb.Union):
+class LegalHoldsPolicyReleaseError(LegalHoldsError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -9374,15 +8980,12 @@ class LegalHoldsPolicyReleaseError(bb.Union):
         hold policy does not exist for ``LegalHoldsPolicyReleaseArg.id``.
     """
 
-    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     legal_hold_performing_another_operation = None
     # Attribute is overwritten below the class definition
     legal_hold_already_releasing = None
     # Attribute is overwritten below the class definition
     legal_hold_policy_not_found = None
-    # Attribute is overwritten below the class definition
-    other = None
 
     def is_legal_hold_performing_another_operation(self):
         """
@@ -9407,14 +9010,6 @@ class LegalHoldsPolicyReleaseError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'legal_hold_policy_not_found'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyReleaseError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -21445,12 +21040,10 @@ LegalHoldsPolicyUpdateResult_validator = LegalHoldPolicy_validator
 LegalHoldsPolicyUpdateResult = LegalHoldPolicy
 ListHeldRevisionCursor_validator = bv.String(min_length=1)
 MembersGetInfoResult_validator = bv.List(MembersGetInfoItem_validator)
-NSpath_validator = bv.String(pattern=u'(ns:[0-9]+(/.*)?)')
 NumberPerDay_validator = bv.List(bv.Nullable(bv.UInt64()))
 Path_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?')
 SecondaryEmail_validator = secondary_emails.SecondaryEmail_validator
 SecondaryEmail = secondary_emails.SecondaryEmail
-UserId_validator = bv.UInt64()
 UserQuota_validator = bv.UInt32(min_value=15)
 DeviceSession._session_id_validator = bv.String()
 DeviceSession._ip_address_validator = bv.Nullable(bv.String())
@@ -21800,24 +21393,6 @@ ExcludedUsersUpdateStatus._tagmap = {
 
 ExcludedUsersUpdateStatus.success = ExcludedUsersUpdateStatus('success')
 ExcludedUsersUpdateStatus.other = ExcludedUsersUpdateStatus('other')
-
-ExportPolicyJobStatus._complete_validator = bv.Void()
-ExportPolicyJobStatus._failed_validator = bv.Void()
-ExportPolicyJobStatus._other_validator = bv.Void()
-ExportPolicyJobStatus._tagmap = {
-    'complete': ExportPolicyJobStatus._complete_validator,
-    'failed': ExportPolicyJobStatus._failed_validator,
-    'other': ExportPolicyJobStatus._other_validator,
-}
-ExportPolicyJobStatus._tagmap.update(async_.PollResultBase._tagmap)
-
-ExportPolicyJobStatus.complete = ExportPolicyJobStatus('complete')
-ExportPolicyJobStatus.failed = ExportPolicyJobStatus('failed')
-ExportPolicyJobStatus.other = ExportPolicyJobStatus('other')
-
-ExportPolicyJobStatusResult._status_validator = ExportPolicyJobStatus_validator
-ExportPolicyJobStatusResult._all_field_names_ = set(['status'])
-ExportPolicyJobStatusResult._all_fields_ = [('status', ExportPolicyJobStatusResult._status_validator)]
 
 Feature._upload_api_rate_limit_validator = bv.Void()
 Feature._has_team_shared_dropbox_validator = bv.Void()
@@ -22462,42 +22037,6 @@ LegalHoldsError.unknown_legal_hold_error = LegalHoldsError('unknown_legal_hold_e
 LegalHoldsError.insufficient_permissions = LegalHoldsError('insufficient_permissions')
 LegalHoldsError.other = LegalHoldsError('other')
 
-LegalHoldsExportPolicyError._invalid_path_validator = bv.Void()
-LegalHoldsExportPolicyError._legal_hold_performing_another_operation_validator = bv.Void()
-LegalHoldsExportPolicyError._unknown_legal_hold_error_validator = bv.Void()
-LegalHoldsExportPolicyError._transient_error_validator = bv.Void()
-LegalHoldsExportPolicyError._insufficient_quota_validator = bv.Void()
-LegalHoldsExportPolicyError._legal_hold_export_still_empty_validator = bv.Void()
-LegalHoldsExportPolicyError._other_validator = bv.Void()
-LegalHoldsExportPolicyError._tagmap = {
-    'invalid_path': LegalHoldsExportPolicyError._invalid_path_validator,
-    'legal_hold_performing_another_operation': LegalHoldsExportPolicyError._legal_hold_performing_another_operation_validator,
-    'unknown_legal_hold_error': LegalHoldsExportPolicyError._unknown_legal_hold_error_validator,
-    'transient_error': LegalHoldsExportPolicyError._transient_error_validator,
-    'insufficient_quota': LegalHoldsExportPolicyError._insufficient_quota_validator,
-    'legal_hold_export_still_empty': LegalHoldsExportPolicyError._legal_hold_export_still_empty_validator,
-    'other': LegalHoldsExportPolicyError._other_validator,
-}
-
-LegalHoldsExportPolicyError.invalid_path = LegalHoldsExportPolicyError('invalid_path')
-LegalHoldsExportPolicyError.legal_hold_performing_another_operation = LegalHoldsExportPolicyError('legal_hold_performing_another_operation')
-LegalHoldsExportPolicyError.unknown_legal_hold_error = LegalHoldsExportPolicyError('unknown_legal_hold_error')
-LegalHoldsExportPolicyError.transient_error = LegalHoldsExportPolicyError('transient_error')
-LegalHoldsExportPolicyError.insufficient_quota = LegalHoldsExportPolicyError('insufficient_quota')
-LegalHoldsExportPolicyError.legal_hold_export_still_empty = LegalHoldsExportPolicyError('legal_hold_export_still_empty')
-LegalHoldsExportPolicyError.other = LegalHoldsExportPolicyError('other')
-
-LegalHoldsExportPolicyResult._async_job_id_validator = async_.AsyncJobId_validator
-LegalHoldsExportPolicyResult._export_folder_metadata_validator = files.FolderMetadata_validator
-LegalHoldsExportPolicyResult._all_field_names_ = set([
-    'async_job_id',
-    'export_folder_metadata',
-])
-LegalHoldsExportPolicyResult._all_fields_ = [
-    ('async_job_id', LegalHoldsExportPolicyResult._async_job_id_validator),
-    ('export_folder_metadata', LegalHoldsExportPolicyResult._export_folder_metadata_validator),
-]
-
 LegalHoldsGetPolicyArg._id_validator = LegalHoldId_validator
 LegalHoldsGetPolicyArg._all_field_names_ = set(['id'])
 LegalHoldsGetPolicyArg._all_fields_ = [('id', LegalHoldsGetPolicyArg._id_validator)]
@@ -22555,24 +22094,19 @@ LegalHoldsListHeldRevisionsContinueError.transient_error = LegalHoldsListHeldRev
 LegalHoldsListHeldRevisionsContinueError.reset = LegalHoldsListHeldRevisionsContinueError('reset')
 LegalHoldsListHeldRevisionsContinueError.other = LegalHoldsListHeldRevisionsContinueError('other')
 
-LegalHoldsListHeldRevisionsError._unknown_legal_hold_error_validator = bv.Void()
 LegalHoldsListHeldRevisionsError._transient_error_validator = bv.Void()
 LegalHoldsListHeldRevisionsError._legal_hold_still_empty_validator = bv.Void()
 LegalHoldsListHeldRevisionsError._inactive_legal_hold_validator = bv.Void()
-LegalHoldsListHeldRevisionsError._other_validator = bv.Void()
 LegalHoldsListHeldRevisionsError._tagmap = {
-    'unknown_legal_hold_error': LegalHoldsListHeldRevisionsError._unknown_legal_hold_error_validator,
     'transient_error': LegalHoldsListHeldRevisionsError._transient_error_validator,
     'legal_hold_still_empty': LegalHoldsListHeldRevisionsError._legal_hold_still_empty_validator,
     'inactive_legal_hold': LegalHoldsListHeldRevisionsError._inactive_legal_hold_validator,
-    'other': LegalHoldsListHeldRevisionsError._other_validator,
 }
+LegalHoldsListHeldRevisionsError._tagmap.update(LegalHoldsError._tagmap)
 
-LegalHoldsListHeldRevisionsError.unknown_legal_hold_error = LegalHoldsListHeldRevisionsError('unknown_legal_hold_error')
 LegalHoldsListHeldRevisionsError.transient_error = LegalHoldsListHeldRevisionsError('transient_error')
 LegalHoldsListHeldRevisionsError.legal_hold_still_empty = LegalHoldsListHeldRevisionsError('legal_hold_still_empty')
 LegalHoldsListHeldRevisionsError.inactive_legal_hold = LegalHoldsListHeldRevisionsError('inactive_legal_hold')
-LegalHoldsListHeldRevisionsError.other = LegalHoldsListHeldRevisionsError('other')
 
 LegalHoldsListPoliciesArg._include_released_validator = bv.Boolean()
 LegalHoldsListPoliciesArg._all_field_names_ = set(['include_released'])
@@ -22616,6 +22150,7 @@ LegalHoldsPolicyCreateError._invalid_members_validator = bv.Void()
 LegalHoldsPolicyCreateError._number_of_users_on_hold_is_greater_than_hold_limitation_validator = bv.Void()
 LegalHoldsPolicyCreateError._transient_error_validator = bv.Void()
 LegalHoldsPolicyCreateError._name_must_be_unique_validator = bv.Void()
+LegalHoldsPolicyCreateError._team_exceeded_legal_hold_quota_validator = bv.Void()
 LegalHoldsPolicyCreateError._tagmap = {
     'start_date_is_later_than_end_date': LegalHoldsPolicyCreateError._start_date_is_later_than_end_date_validator,
     'empty_members_list': LegalHoldsPolicyCreateError._empty_members_list_validator,
@@ -22623,6 +22158,7 @@ LegalHoldsPolicyCreateError._tagmap = {
     'number_of_users_on_hold_is_greater_than_hold_limitation': LegalHoldsPolicyCreateError._number_of_users_on_hold_is_greater_than_hold_limitation_validator,
     'transient_error': LegalHoldsPolicyCreateError._transient_error_validator,
     'name_must_be_unique': LegalHoldsPolicyCreateError._name_must_be_unique_validator,
+    'team_exceeded_legal_hold_quota': LegalHoldsPolicyCreateError._team_exceeded_legal_hold_quota_validator,
 }
 LegalHoldsPolicyCreateError._tagmap.update(LegalHoldsError._tagmap)
 
@@ -22632,17 +22168,7 @@ LegalHoldsPolicyCreateError.invalid_members = LegalHoldsPolicyCreateError('inval
 LegalHoldsPolicyCreateError.number_of_users_on_hold_is_greater_than_hold_limitation = LegalHoldsPolicyCreateError('number_of_users_on_hold_is_greater_than_hold_limitation')
 LegalHoldsPolicyCreateError.transient_error = LegalHoldsPolicyCreateError('transient_error')
 LegalHoldsPolicyCreateError.name_must_be_unique = LegalHoldsPolicyCreateError('name_must_be_unique')
-
-LegalHoldsPolicyExportArg._id_validator = LegalHoldId_validator
-LegalHoldsPolicyExportArg._path_validator = NSpath_validator
-LegalHoldsPolicyExportArg._all_field_names_ = set([
-    'id',
-    'path',
-])
-LegalHoldsPolicyExportArg._all_fields_ = [
-    ('id', LegalHoldsPolicyExportArg._id_validator),
-    ('path', LegalHoldsPolicyExportArg._path_validator),
-]
+LegalHoldsPolicyCreateError.team_exceeded_legal_hold_quota = LegalHoldsPolicyCreateError('team_exceeded_legal_hold_quota')
 
 LegalHoldsPolicyReleaseArg._id_validator = LegalHoldId_validator
 LegalHoldsPolicyReleaseArg._all_field_names_ = set(['id'])
@@ -22651,18 +22177,16 @@ LegalHoldsPolicyReleaseArg._all_fields_ = [('id', LegalHoldsPolicyReleaseArg._id
 LegalHoldsPolicyReleaseError._legal_hold_performing_another_operation_validator = bv.Void()
 LegalHoldsPolicyReleaseError._legal_hold_already_releasing_validator = bv.Void()
 LegalHoldsPolicyReleaseError._legal_hold_policy_not_found_validator = bv.Void()
-LegalHoldsPolicyReleaseError._other_validator = bv.Void()
 LegalHoldsPolicyReleaseError._tagmap = {
     'legal_hold_performing_another_operation': LegalHoldsPolicyReleaseError._legal_hold_performing_another_operation_validator,
     'legal_hold_already_releasing': LegalHoldsPolicyReleaseError._legal_hold_already_releasing_validator,
     'legal_hold_policy_not_found': LegalHoldsPolicyReleaseError._legal_hold_policy_not_found_validator,
-    'other': LegalHoldsPolicyReleaseError._other_validator,
 }
+LegalHoldsPolicyReleaseError._tagmap.update(LegalHoldsError._tagmap)
 
 LegalHoldsPolicyReleaseError.legal_hold_performing_another_operation = LegalHoldsPolicyReleaseError('legal_hold_performing_another_operation')
 LegalHoldsPolicyReleaseError.legal_hold_already_releasing = LegalHoldsPolicyReleaseError('legal_hold_already_releasing')
 LegalHoldsPolicyReleaseError.legal_hold_policy_not_found = LegalHoldsPolicyReleaseError('legal_hold_policy_not_found')
-LegalHoldsPolicyReleaseError.other = LegalHoldsPolicyReleaseError('other')
 
 LegalHoldsPolicyUpdateArg._id_validator = LegalHoldId_validator
 LegalHoldsPolicyUpdateArg._name_validator = bv.Nullable(LegalHoldPolicyName_validator)
@@ -24441,26 +23965,6 @@ legal_holds_create_policy = bb.Route(
     {'host': u'api',
      'style': u'rpc'},
 )
-legal_holds_export_policy = bb.Route(
-    'legal_holds/export_policy',
-    1,
-    True,
-    LegalHoldsPolicyExportArg_validator,
-    LegalHoldsExportPolicyResult_validator,
-    LegalHoldsExportPolicyError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
-)
-legal_holds_export_policy_job_status_check = bb.Route(
-    'legal_holds/export_policy_job_status/check',
-    1,
-    True,
-    async_.PollArg_validator,
-    ExportPolicyJobStatusResult_validator,
-    async_.PollError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
-)
 legal_holds_get_policy = bb.Route(
     'legal_holds/get_policy',
     1,
@@ -25073,8 +24577,6 @@ ROUTES = {
     'groups/members/set_access_type': groups_members_set_access_type,
     'groups/update': groups_update,
     'legal_holds/create_policy': legal_holds_create_policy,
-    'legal_holds/export_policy': legal_holds_export_policy,
-    'legal_holds/export_policy_job_status/check': legal_holds_export_policy_job_status_check,
     'legal_holds/get_policy': legal_holds_get_policy,
     'legal_holds/list_held_revisions': legal_holds_list_held_revisions,
     'legal_holds/list_held_revisions_continue': legal_holds_list_held_revisions_continue,
