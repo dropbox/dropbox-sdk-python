@@ -8,12 +8,16 @@ This example uses Scopes, a currently beta feature.
 If you are interested in using this, please contact
 Dropbox support
 
-It goes through an example of requesting a starting scope, and requesting more throughout the process
+It goes through an example of requesting a starting scope,
+and requesting more throughout the process
 '''
 APP_KEY = ""
 APP_SECRET = ""
 
-auth_flow = DropboxOAuth2FlowNoRedirect(APP_KEY, consumer_secret=APP_SECRET, token_access_type='offline', scope=['files.metadata.read'])
+auth_flow = DropboxOAuth2FlowNoRedirect(APP_KEY,
+                                        consumer_secret=APP_SECRET,
+                                        token_access_type='offline',
+                                        scope=['files.metadata.read'])
 
 authorize_url = auth_flow.start()
 print("1. Go to: " + authorize_url)
@@ -30,7 +34,10 @@ except Exception as e:
     exit(1)
 
 # If an application needs write scopes now we can request the new scope with the auth flow
-auth_flow2 = DropboxOAuth2FlowNoRedirect(APP_KEY, consumer_secret=APP_SECRET, token_access_type='offline', scope=['files.metadata.write'])
+auth_flow2 = DropboxOAuth2FlowNoRedirect(APP_KEY,
+                                         consumer_secret=APP_SECRET,
+                                         token_access_type='offline',
+                                         scope=['files.metadata.write'])
 
 authorize_url = auth_flow2.start()
 print("1. Go to: " + authorize_url)
@@ -46,8 +53,13 @@ except Exception as e:
     print('Error: %s' % (e,))
     exit(1)
 
-# If an application needs a new scope but wants to keep the existing scopes, you can add include_granted_scopes parameter
-auth_flow3 = DropboxOAuth2FlowNoRedirect(APP_KEY, consumer_secret=APP_SECRET, token_access_type='offline', scope=['files.content.read', 'files.content.write'], include_granted_scopes='user')
+# If an application needs a new scope but wants to keep the existing scopes,
+# you can add include_granted_scopes parameter
+auth_flow3 = DropboxOAuth2FlowNoRedirect(APP_KEY,
+                                         consumer_secret=APP_SECRET,
+                                         token_access_type='offline',
+                                         scope=['files.content.read', 'files.content.write'],
+                                         include_granted_scopes='user')
 
 authorize_url = auth_flow3.start()
 print("1. Go to: " + authorize_url)
