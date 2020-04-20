@@ -209,11 +209,10 @@ class TestOAuth:
         assert auth_result.user_id == USER_ID
         assert auth_result.account_id == ACCOUNT_ID
         assert auth_result.scope == " ".join(SCOPE_LIST)
-
         auth_flow_offline_with_scopes.requests_session.post.assert_called_once()
         token_call_args = auth_flow_offline_with_scopes.requests_session.post.call_args_list
         assert len(token_call_args) == 1
-        first_call_args = token_call_args[0]._get_call_arguments()
+        first_call_args = token_call_args[0]
         assert first_call_args[0][0] == 'https://{}/oauth2/token'.format(session.API_HOST)
         call_data = first_call_args[1]['data']
         assert call_data['client_id'] == APP_KEY
