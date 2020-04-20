@@ -383,7 +383,10 @@ class _DropboxTransport(object):
             scope = " ".join(scope)
             body['scope'] = scope
 
-        res = self._session.post(url, data=body)
+        timeout = self._DEFAULT_TIMEOUT
+        if self._timeout:
+            timeout = self._timeout
+        res = self._session.post(url, data=body, timeout=timeout)
         if res.status_code == 400 and res.json()['error'] == 'invalid_grant':
             request_id = res.headers.get('x-dropbox-request-id')
             err = stone_serializers.json_compat_obj_decode(
