@@ -386,15 +386,15 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
                 "dropbox-auth-csrf-token")
 
         # URL handler for /dropbox-auth-start
-        def dropbox_auth_start(web_app_session, request):
-            authorize_url = get_dropbox_auth_flow(web_app_session).start()
+        def dropbox_auth_start(web_app_session):
+            authorize_url = get_dropbox_auth_flow(web_app_session.session).start()
             redirect_to(authorize_url)
 
         # URL handler for /dropbox-auth-finish
-        def dropbox_auth_finish(web_app_session, request):
+        def dropbox_auth_finish(web_app_session):
             try:
                 oauth_result = \\
-                        get_dropbox_auth_flow(web_app_session).finish(
+                        get_dropbox_auth_flow(web_app_session.session).finish(
                             request.query_params)
             except BadRequestException, e:
                 http_status(400)
