@@ -103,7 +103,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
             account_id=account_id,
             user_id=user_id,
             refresh_token=refresh_token,
-            expires_in=expires_in,
+            expiration=expires_in,
             scope=scope)
         self.url_state = url_state
 
