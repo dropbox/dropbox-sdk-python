@@ -280,25 +280,8 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
     OAuth 2 authorization helper for apps that can't provide a redirect URI
     (such as the command-line example apps).
 
-    Example::
+    See examples under example/oauth
 
-        from dropbox import DropboxOAuth2FlowNoRedirect
-
-        auth_flow = DropboxOAuth2FlowNoRedirect(APP_KEY, APP_SECRET)
-
-        authorize_url = auth_flow.start()
-        print("1. Go to: " + authorize_url)
-        print("2. Click \\"Allow\\" (you might have to log in first).")
-        print("3. Copy the authorization code.")
-        auth_code = raw_input("Enter the authorization code here: ").strip()
-
-        try:
-            oauth_result = auth_flow.finish(auth_code)
-        except Exception as e:
-            print('Error: %s' % (e,))
-            return
-
-        dbx = Dropbox(oauth_result.access_token)
     """
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
@@ -375,40 +358,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
     user authorize your app.  The second involves getting an OAuth 2 access
     token from Dropbox.
 
-    Example::
-
-        from dropbox import DropboxOAuth2Flow
-
-        def get_dropbox_auth_flow(web_app_session):
-            redirect_uri = "https://my-web-server.org/dropbox-auth-finish"
-            return DropboxOAuth2Flow(
-                APP_KEY, APP_SECRET, redirect_uri, web_app_session,
-                "dropbox-auth-csrf-token")
-
-        # URL handler for /dropbox-auth-start
-        def dropbox_auth_start(web_app_session, request):
-            authorize_url = get_dropbox_auth_flow(web_app_session).start()
-            redirect_to(authorize_url)
-
-        # URL handler for /dropbox-auth-finish
-        def dropbox_auth_finish(web_app_session, request):
-            try:
-                oauth_result = \\
-                        get_dropbox_auth_flow(web_app_session).finish(
-                            request.query_params)
-            except BadRequestException, e:
-                http_status(400)
-            except BadStateException, e:
-                # Start the auth flow again.
-                redirect_to("/dropbox-auth-start")
-            except CsrfException, e:
-                http_status(403)
-            except NotApprovedException, e:
-                flash('Not approved?  Why not?')
-                return redirect_to("/home")
-            except ProviderException, e:
-                logger.log("Auth error: %s" % (e,))
-                http_status(403)
+    See examples under example/oauth
 
     """
 
