@@ -35,6 +35,7 @@ else:
 TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
 INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
 PKCE_VERIFIER_LENGTH = 128
+DEFAULT_REQUEST_TIMEOUT=60
 
 class OAuth2FlowNoRedirectResult(object):
     """
@@ -126,11 +127,10 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
             self.expires_at,
         )
 
-
 class DropboxOAuth2FlowBase(object):
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
-                 scope=None, include_granted_scopes=None, use_pkce=False):
+                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_REQUEST_TIMEOUT):
         if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
             raise BadInputException("Scope list must be of type list")
         if token_access_type is not None and token_access_type not in TOKEN_ACCESS_TYPES:
@@ -145,6 +145,7 @@ class DropboxOAuth2FlowBase(object):
         self.consumer_secret = consumer_secret
         self.locale = locale
         self.token_access_type = token_access_type
+        self.request_timeout = timeout
         self.requests_session = pinned_session()
         self.scope = scope
         self.include_granted_scopes = include_granted_scopes
@@ -195,7 +196,7 @@ class DropboxOAuth2FlowBase(object):
         if redirect_uri is not None:
             params['redirect_uri'] = redirect_uri
 
-        resp = self.requests_session.post(url, data=params)
+        resp = self.requests_session.post(url, data=params, timeout=self.request_timeout)
         resp.raise_for_status()
 
         d = resp.json()
