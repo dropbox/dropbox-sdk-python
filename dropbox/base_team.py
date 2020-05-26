@@ -21,6 +21,7 @@ from . import (
     secondary_emails,
     seen_state,
     sharing,
+    stone_fixtures,
     team,
     team_common,
     team_log,
@@ -785,6 +786,9 @@ class DropboxTeamBase(object):
     def team_legal_holds_list_held_revisions(self,
                                              id):
         """
+        List the file metadata that's under the hold. Permission : Team member
+        file access.
+
         :param str id: The legal hold Id.
         :rtype: :class:`dropbox.team.LegalHoldsListHeldRevisionResult`
         :raises: :class:`.exceptions.ApiError`
@@ -805,8 +809,13 @@ class DropboxTeamBase(object):
                                                       id,
                                                       cursor=None):
         """
+        Continue listing the file metadata that's under the hold. Permission :
+        Team member file access.
+
         :param str id: The legal hold Id.
-        :param Nullable cursor: cursor of list held revisions.
+        :param Nullable cursor: The cursor idicates where to continue reading
+            file metadata entries for the next API call. When there are no more
+            entries, the cursor will return none.
         :rtype: :class:`dropbox.team.LegalHoldsListHeldRevisionResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1441,12 +1450,12 @@ class DropboxTeamBase(object):
             members. In order to keep the account the argument ``wipe_data``
             should be set to ``False``.
         :param bool retain_team_shares: If provided, allows removed users to
-            keep access to folders already explicitly shared with them (not via
-            a group) when they are downgraded to a Basic account. Users will not
-            retain access to folders that do not allow external sharing. In
-            order to keep the sharing relationships, the arguments ``wipe_data``
-            should be set to ``False`` and ``keep_account`` should be set to
-            ``True``.
+            keep access to Dropbox folders (not Dropbox Paper folders) already
+            explicitly shared with them (not via a group) when they are
+            downgraded to a Basic account. Users will not retain access to
+            folders that do not allow external sharing. In order to keep the
+            sharing relationships, the arguments ``wipe_data`` should be set to
+            ``False`` and ``keep_account`` should be set to ``True``.
         :rtype: :class:`dropbox.team.LaunchEmptyResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2248,7 +2257,8 @@ class DropboxTeamBase(object):
                             limit=1000,
                             account_id=None,
                             time=None,
-                            category=None):
+                            category=None,
+                            event_type=None):
         """
         Retrieves team events. If the result's ``GetTeamEventsResult.has_more``
         field is ``True``, call :meth:`team_log_get_events_continue` with the
@@ -2267,11 +2277,14 @@ class DropboxTeamBase(object):
             even return no events, even with `has_more` set to true. In this
             case, callers should fetch again using
             :meth:`team_log_get_events_continue`.
-        :param Nullable account_id: Filter the events by account ID. Return ony
+        :param Nullable account_id: Filter the events by account ID. Return only
             events with this account_id as either Actor, Context, or
             Participants.
         :param Nullable time: Filter by time range.
         :param Nullable category: Filter the returned events to a single
+            category.
+        :param Nullable event_type: Filter the returned events to a single event
+            type. Note that event_type shouldn't be provided together with
             category.
         :rtype: :class:`dropbox.team_log.GetTeamEventsResult`
         :raises: :class:`.exceptions.ApiError`
@@ -2282,7 +2295,8 @@ class DropboxTeamBase(object):
         arg = team_log.GetTeamEventsArg(limit,
                                         account_id,
                                         time,
-                                        category)
+                                        category,
+                                        event_type)
         r = self.request(
             team_log.get_events,
             'team_log',

@@ -23017,7 +23017,7 @@ EventDetails_validator = bv.Union(EventDetails)
 
 class EventType(bb.Union):
     """
-    The type of the event.
+    The type of the event with description.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -37305,6 +37305,5153 @@ class EventType(bb.Union):
 
 EventType_validator = bv.Union(EventType)
 
+class EventTypeArg(bb.Union):
+    """
+    The type of the event.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_log.EventTypeArg.app_link_team: (apps) Linked app for team
+    :ivar team_log.EventTypeArg.app_link_user: (apps) Linked app for member
+    :ivar team_log.EventTypeArg.app_unlink_team: (apps) Unlinked app for team
+    :ivar team_log.EventTypeArg.app_unlink_user: (apps) Unlinked app for member
+    :ivar team_log.EventTypeArg.integration_connected: (apps) Connected
+        integration for member
+    :ivar team_log.EventTypeArg.integration_disconnected: (apps) Disconnected
+        integration for member
+    :ivar team_log.EventTypeArg.file_add_comment: (comments) Added file comment
+    :ivar team_log.EventTypeArg.file_change_comment_subscription: (comments)
+        Subscribed to or unsubscribed from comment notifications for file
+    :ivar team_log.EventTypeArg.file_delete_comment: (comments) Deleted file
+        comment
+    :ivar team_log.EventTypeArg.file_edit_comment: (comments) Edited file
+        comment
+    :ivar team_log.EventTypeArg.file_like_comment: (comments) Liked file comment
+        (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.file_resolve_comment: (comments) Resolved file
+        comment
+    :ivar team_log.EventTypeArg.file_unlike_comment: (comments) Unliked file
+        comment (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.file_unresolve_comment: (comments) Unresolved
+        file comment
+    :ivar team_log.EventTypeArg.device_change_ip_desktop: (devices) Changed IP
+        address associated with active desktop session
+    :ivar team_log.EventTypeArg.device_change_ip_mobile: (devices) Changed IP
+        address associated with active mobile session
+    :ivar team_log.EventTypeArg.device_change_ip_web: (devices) Changed IP
+        address associated with active web session
+    :ivar team_log.EventTypeArg.device_delete_on_unlink_fail: (devices) Failed
+        to delete all files from unlinked device
+    :ivar team_log.EventTypeArg.device_delete_on_unlink_success: (devices)
+        Deleted all files from unlinked device
+    :ivar team_log.EventTypeArg.device_link_fail: (devices) Failed to link
+        device
+    :ivar team_log.EventTypeArg.device_link_success: (devices) Linked device
+    :ivar team_log.EventTypeArg.device_management_disabled: (devices) Disabled
+        device management (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.device_management_enabled: (devices) Enabled
+        device management (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.device_unlink: (devices) Disconnected device
+    :ivar team_log.EventTypeArg.emm_refresh_auth_token: (devices) Refreshed auth
+        token used for setting up EMM
+    :ivar team_log.EventTypeArg.account_capture_change_availability: (domains)
+        Granted/revoked option to enable account capture on team domains
+    :ivar team_log.EventTypeArg.account_capture_migrate_account: (domains)
+        Account-captured user migrated account to team
+    :ivar team_log.EventTypeArg.account_capture_notification_emails_sent:
+        (domains) Sent account capture email to all unmanaged members
+    :ivar team_log.EventTypeArg.account_capture_relinquish_account: (domains)
+        Account-captured user changed account email to personal email
+    :ivar team_log.EventTypeArg.disabled_domain_invites: (domains) Disabled
+        domain invites (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.domain_invites_approve_request_to_join_team:
+        (domains) Approved user's request to join team
+    :ivar team_log.EventTypeArg.domain_invites_decline_request_to_join_team:
+        (domains) Declined user's request to join team
+    :ivar team_log.EventTypeArg.domain_invites_email_existing_users: (domains)
+        Sent domain invites to existing domain accounts (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.domain_invites_request_to_join_team: (domains)
+        Requested to join team
+    :ivar team_log.EventTypeArg.domain_invites_set_invite_new_user_pref_to_no:
+        (domains) Disabled "Automatically invite new users" (deprecated, no
+        longer logged)
+    :ivar team_log.EventTypeArg.domain_invites_set_invite_new_user_pref_to_yes:
+        (domains) Enabled "Automatically invite new users" (deprecated, no
+        longer logged)
+    :ivar team_log.EventTypeArg.domain_verification_add_domain_fail: (domains)
+        Failed to verify team domain
+    :ivar team_log.EventTypeArg.domain_verification_add_domain_success:
+        (domains) Verified team domain
+    :ivar team_log.EventTypeArg.domain_verification_remove_domain: (domains)
+        Removed domain from list of verified team domains
+    :ivar team_log.EventTypeArg.enabled_domain_invites: (domains) Enabled domain
+        invites (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.create_folder: (file_operations) Created folders
+        (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.file_add: (file_operations) Added files and/or
+        folders
+    :ivar team_log.EventTypeArg.file_copy: (file_operations) Copied files and/or
+        folders
+    :ivar team_log.EventTypeArg.file_delete: (file_operations) Deleted files
+        and/or folders
+    :ivar team_log.EventTypeArg.file_download: (file_operations) Downloaded
+        files and/or folders
+    :ivar team_log.EventTypeArg.file_edit: (file_operations) Edited files
+    :ivar team_log.EventTypeArg.file_get_copy_reference: (file_operations)
+        Created copy reference to file/folder
+    :ivar team_log.EventTypeArg.file_locking_lock_status_changed:
+        (file_operations) Locked/unlocked editing for a file
+    :ivar team_log.EventTypeArg.file_move: (file_operations) Moved files and/or
+        folders
+    :ivar team_log.EventTypeArg.file_permanently_delete: (file_operations)
+        Permanently deleted files and/or folders
+    :ivar team_log.EventTypeArg.file_preview: (file_operations) Previewed files
+        and/or folders
+    :ivar team_log.EventTypeArg.file_rename: (file_operations) Renamed files
+        and/or folders
+    :ivar team_log.EventTypeArg.file_restore: (file_operations) Restored deleted
+        files and/or folders
+    :ivar team_log.EventTypeArg.file_revert: (file_operations) Reverted files to
+        previous version
+    :ivar team_log.EventTypeArg.file_rollback_changes: (file_operations) Rolled
+        back file actions
+    :ivar team_log.EventTypeArg.file_save_copy_reference: (file_operations)
+        Saved file/folder using copy reference
+    :ivar team_log.EventTypeArg.folder_overview_description_changed:
+        (file_operations) Updated folder overview
+    :ivar team_log.EventTypeArg.folder_overview_item_pinned: (file_operations)
+        Pinned item to folder overview
+    :ivar team_log.EventTypeArg.folder_overview_item_unpinned: (file_operations)
+        Unpinned item from folder overview
+    :ivar team_log.EventTypeArg.rewind_folder: (file_operations) Rewound a
+        folder
+    :ivar team_log.EventTypeArg.file_request_change: (file_requests) Changed
+        file request
+    :ivar team_log.EventTypeArg.file_request_close: (file_requests) Closed file
+        request
+    :ivar team_log.EventTypeArg.file_request_create: (file_requests) Created
+        file request
+    :ivar team_log.EventTypeArg.file_request_delete: (file_requests) Delete file
+        request
+    :ivar team_log.EventTypeArg.file_request_receive_file: (file_requests)
+        Received files for file request
+    :ivar team_log.EventTypeArg.group_add_external_id: (groups) Added external
+        ID for group
+    :ivar team_log.EventTypeArg.group_add_member: (groups) Added team members to
+        group
+    :ivar team_log.EventTypeArg.group_change_external_id: (groups) Changed
+        external ID for group
+    :ivar team_log.EventTypeArg.group_change_management_type: (groups) Changed
+        group management type
+    :ivar team_log.EventTypeArg.group_change_member_role: (groups) Changed
+        manager permissions of group member
+    :ivar team_log.EventTypeArg.group_create: (groups) Created group
+    :ivar team_log.EventTypeArg.group_delete: (groups) Deleted group
+    :ivar team_log.EventTypeArg.group_description_updated: (groups) Updated
+        group (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.group_join_policy_updated: (groups) Updated
+        group join policy (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.group_moved: (groups) Moved group (deprecated,
+        no longer logged)
+    :ivar team_log.EventTypeArg.group_remove_external_id: (groups) Removed
+        external ID for group
+    :ivar team_log.EventTypeArg.group_remove_member: (groups) Removed team
+        members from group
+    :ivar team_log.EventTypeArg.group_rename: (groups) Renamed group
+    :ivar team_log.EventTypeArg.legal_holds_activate_a_hold: (legal_holds)
+        Activated a hold
+    :ivar team_log.EventTypeArg.legal_holds_add_members: (legal_holds) Added
+        members to a hold
+    :ivar team_log.EventTypeArg.legal_holds_change_hold_details: (legal_holds)
+        Edited details for a hold
+    :ivar team_log.EventTypeArg.legal_holds_change_hold_name: (legal_holds)
+        Renamed a hold
+    :ivar team_log.EventTypeArg.legal_holds_export_a_hold: (legal_holds)
+        Exported hold
+    :ivar team_log.EventTypeArg.legal_holds_export_cancelled: (legal_holds)
+        Canceled export for a hold
+    :ivar team_log.EventTypeArg.legal_holds_export_downloaded: (legal_holds)
+        Downloaded export for a hold
+    :ivar team_log.EventTypeArg.legal_holds_export_removed: (legal_holds)
+        Removed export for a hold
+    :ivar team_log.EventTypeArg.legal_holds_release_a_hold: (legal_holds)
+        Released a hold
+    :ivar team_log.EventTypeArg.legal_holds_remove_members: (legal_holds)
+        Removed members from a hold
+    :ivar team_log.EventTypeArg.legal_holds_report_a_hold: (legal_holds) Created
+        a summary report for a hold
+    :ivar team_log.EventTypeArg.account_lock_or_unlocked: (logins)
+        Unlocked/locked account after failed sign in attempts
+    :ivar team_log.EventTypeArg.emm_error: (logins) Failed to sign in via EMM
+        (deprecated, replaced by 'Failed to sign in')
+    :ivar team_log.EventTypeArg.guest_admin_signed_in_via_trusted_teams:
+        (logins) Started trusted team admin session
+    :ivar team_log.EventTypeArg.guest_admin_signed_out_via_trusted_teams:
+        (logins) Ended trusted team admin session
+    :ivar team_log.EventTypeArg.login_fail: (logins) Failed to sign in
+    :ivar team_log.EventTypeArg.login_success: (logins) Signed in
+    :ivar team_log.EventTypeArg.logout: (logins) Signed out
+    :ivar team_log.EventTypeArg.reseller_support_session_end: (logins) Ended
+        reseller support session
+    :ivar team_log.EventTypeArg.reseller_support_session_start: (logins) Started
+        reseller support session
+    :ivar team_log.EventTypeArg.sign_in_as_session_end: (logins) Ended admin
+        sign-in-as session
+    :ivar team_log.EventTypeArg.sign_in_as_session_start: (logins) Started admin
+        sign-in-as session
+    :ivar team_log.EventTypeArg.sso_error: (logins) Failed to sign in via SSO
+        (deprecated, replaced by 'Failed to sign in')
+    :ivar team_log.EventTypeArg.create_team_invite_link: (members) Created team
+        invite link
+    :ivar team_log.EventTypeArg.delete_team_invite_link: (members) Deleted team
+        invite link
+    :ivar team_log.EventTypeArg.member_add_external_id: (members) Added an
+        external ID for team member
+    :ivar team_log.EventTypeArg.member_add_name: (members) Added team member
+        name
+    :ivar team_log.EventTypeArg.member_change_admin_role: (members) Changed team
+        member admin role
+    :ivar team_log.EventTypeArg.member_change_email: (members) Changed team
+        member email
+    :ivar team_log.EventTypeArg.member_change_external_id: (members) Changed the
+        external ID for team member
+    :ivar team_log.EventTypeArg.member_change_membership_type: (members) Changed
+        membership type (limited/full) of member (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.member_change_name: (members) Changed team
+        member name
+    :ivar team_log.EventTypeArg.member_change_status: (members) Changed member
+        status (invited, joined, suspended, etc.)
+    :ivar team_log.EventTypeArg.member_delete_manual_contacts: (members) Cleared
+        manually added contacts
+    :ivar team_log.EventTypeArg.member_delete_profile_photo: (members) Deleted
+        team member profile photo
+    :ivar team_log.EventTypeArg.member_permanently_delete_account_contents:
+        (members) Permanently deleted contents of deleted team member account
+    :ivar team_log.EventTypeArg.member_remove_external_id: (members) Removed the
+        external ID for team member
+    :ivar team_log.EventTypeArg.member_set_profile_photo: (members) Set team
+        member profile photo
+    :ivar team_log.EventTypeArg.member_space_limits_add_custom_quota: (members)
+        Set custom member space limit
+    :ivar team_log.EventTypeArg.member_space_limits_change_custom_quota:
+        (members) Changed custom member space limit
+    :ivar team_log.EventTypeArg.member_space_limits_change_status: (members)
+        Changed space limit status
+    :ivar team_log.EventTypeArg.member_space_limits_remove_custom_quota:
+        (members) Removed custom member space limit
+    :ivar team_log.EventTypeArg.member_suggest: (members) Suggested person to
+        add to team
+    :ivar team_log.EventTypeArg.member_transfer_account_contents: (members)
+        Transferred contents of deleted member account to another member
+    :ivar team_log.EventTypeArg.pending_secondary_email_added: (members) Added
+        pending secondary email
+    :ivar team_log.EventTypeArg.secondary_email_deleted: (members) Deleted
+        secondary email
+    :ivar team_log.EventTypeArg.secondary_email_verified: (members) Verified
+        secondary email
+    :ivar team_log.EventTypeArg.secondary_mails_policy_changed: (members)
+        Secondary mails policy changed
+    :ivar team_log.EventTypeArg.binder_add_page: (paper) Added Binder page
+        (deprecated, replaced by 'Edited files')
+    :ivar team_log.EventTypeArg.binder_add_section: (paper) Added Binder section
+        (deprecated, replaced by 'Edited files')
+    :ivar team_log.EventTypeArg.binder_remove_page: (paper) Removed Binder page
+        (deprecated, replaced by 'Edited files')
+    :ivar team_log.EventTypeArg.binder_remove_section: (paper) Removed Binder
+        section (deprecated, replaced by 'Edited files')
+    :ivar team_log.EventTypeArg.binder_rename_page: (paper) Renamed Binder page
+        (deprecated, replaced by 'Edited files')
+    :ivar team_log.EventTypeArg.binder_rename_section: (paper) Renamed Binder
+        section (deprecated, replaced by 'Edited files')
+    :ivar team_log.EventTypeArg.binder_reorder_page: (paper) Reordered Binder
+        page (deprecated, replaced by 'Edited files')
+    :ivar team_log.EventTypeArg.binder_reorder_section: (paper) Reordered Binder
+        section (deprecated, replaced by 'Edited files')
+    :ivar team_log.EventTypeArg.paper_content_add_member: (paper) Added users
+        and/or groups to Paper doc/folder
+    :ivar team_log.EventTypeArg.paper_content_add_to_folder: (paper) Added Paper
+        doc/folder to folder
+    :ivar team_log.EventTypeArg.paper_content_archive: (paper) Archived Paper
+        doc/folder
+    :ivar team_log.EventTypeArg.paper_content_create: (paper) Created Paper
+        doc/folder
+    :ivar team_log.EventTypeArg.paper_content_permanently_delete: (paper)
+        Permanently deleted Paper doc/folder
+    :ivar team_log.EventTypeArg.paper_content_remove_from_folder: (paper)
+        Removed Paper doc/folder from folder
+    :ivar team_log.EventTypeArg.paper_content_remove_member: (paper) Removed
+        users and/or groups from Paper doc/folder
+    :ivar team_log.EventTypeArg.paper_content_rename: (paper) Renamed Paper
+        doc/folder
+    :ivar team_log.EventTypeArg.paper_content_restore: (paper) Restored archived
+        Paper doc/folder
+    :ivar team_log.EventTypeArg.paper_doc_add_comment: (paper) Added Paper doc
+        comment
+    :ivar team_log.EventTypeArg.paper_doc_change_member_role: (paper) Changed
+        member permissions for Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_change_sharing_policy: (paper) Changed
+        sharing setting for Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_change_subscription: (paper)
+        Followed/unfollowed Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_deleted: (paper) Archived Paper doc
+        (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.paper_doc_delete_comment: (paper) Deleted Paper
+        doc comment
+    :ivar team_log.EventTypeArg.paper_doc_download: (paper) Downloaded Paper doc
+        in specific format
+    :ivar team_log.EventTypeArg.paper_doc_edit: (paper) Edited Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_edit_comment: (paper) Edited Paper doc
+        comment
+    :ivar team_log.EventTypeArg.paper_doc_followed: (paper) Followed Paper doc
+        (deprecated, replaced by 'Followed/unfollowed Paper doc')
+    :ivar team_log.EventTypeArg.paper_doc_mention: (paper) Mentioned user in
+        Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_ownership_changed: (paper) Transferred
+        ownership of Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_request_access: (paper) Requested
+        access to Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_resolve_comment: (paper) Resolved
+        Paper doc comment
+    :ivar team_log.EventTypeArg.paper_doc_revert: (paper) Restored Paper doc to
+        previous version
+    :ivar team_log.EventTypeArg.paper_doc_slack_share: (paper) Shared Paper doc
+        via Slack
+    :ivar team_log.EventTypeArg.paper_doc_team_invite: (paper) Shared Paper doc
+        with users and/or groups (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.paper_doc_trashed: (paper) Deleted Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_unresolve_comment: (paper) Unresolved
+        Paper doc comment
+    :ivar team_log.EventTypeArg.paper_doc_untrashed: (paper) Restored Paper doc
+    :ivar team_log.EventTypeArg.paper_doc_view: (paper) Viewed Paper doc
+    :ivar team_log.EventTypeArg.paper_external_view_allow: (paper) Changed Paper
+        external sharing setting to anyone (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.paper_external_view_default_team: (paper)
+        Changed Paper external sharing setting to default team (deprecated, no
+        longer logged)
+    :ivar team_log.EventTypeArg.paper_external_view_forbid: (paper) Changed
+        Paper external sharing setting to team-only (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.paper_folder_change_subscription: (paper)
+        Followed/unfollowed Paper folder
+    :ivar team_log.EventTypeArg.paper_folder_deleted: (paper) Archived Paper
+        folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.paper_folder_followed: (paper) Followed Paper
+        folder (deprecated, replaced by 'Followed/unfollowed Paper folder')
+    :ivar team_log.EventTypeArg.paper_folder_team_invite: (paper) Shared Paper
+        folder with users and/or groups (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.paper_published_link_change_permission: (paper)
+        Changed permissions for published doc
+    :ivar team_log.EventTypeArg.paper_published_link_create: (paper) Published
+        doc
+    :ivar team_log.EventTypeArg.paper_published_link_disabled: (paper)
+        Unpublished doc
+    :ivar team_log.EventTypeArg.paper_published_link_view: (paper) Viewed
+        published doc
+    :ivar team_log.EventTypeArg.password_change: (passwords) Changed password
+    :ivar team_log.EventTypeArg.password_reset: (passwords) Reset password
+    :ivar team_log.EventTypeArg.password_reset_all: (passwords) Reset all team
+        member passwords
+    :ivar team_log.EventTypeArg.emm_create_exceptions_report: (reports) Created
+        EMM-excluded users report
+    :ivar team_log.EventTypeArg.emm_create_usage_report: (reports) Created EMM
+        mobile app usage report
+    :ivar team_log.EventTypeArg.export_members_report: (reports) Created member
+        data report
+    :ivar team_log.EventTypeArg.export_members_report_fail: (reports) Failed to
+        create members data report
+    :ivar team_log.EventTypeArg.no_expiration_link_gen_create_report: (reports)
+        Report created: Links created with no expiration
+    :ivar team_log.EventTypeArg.no_expiration_link_gen_report_failed: (reports)
+        Couldn't create report: Links created with no expiration
+    :ivar team_log.EventTypeArg.no_password_link_gen_create_report: (reports)
+        Report created: Links created without passwords
+    :ivar team_log.EventTypeArg.no_password_link_gen_report_failed: (reports)
+        Couldn't create report: Links created without passwords
+    :ivar team_log.EventTypeArg.no_password_link_view_create_report: (reports)
+        Report created: Views of links without passwords
+    :ivar team_log.EventTypeArg.no_password_link_view_report_failed: (reports)
+        Couldn't create report: Views of links without passwords
+    :ivar team_log.EventTypeArg.outdated_link_view_create_report: (reports)
+        Report created: Views of old links
+    :ivar team_log.EventTypeArg.outdated_link_view_report_failed: (reports)
+        Couldn't create report: Views of old links
+    :ivar team_log.EventTypeArg.paper_admin_export_start: (reports) Exported all
+        team Paper docs
+    :ivar team_log.EventTypeArg.smart_sync_create_admin_privilege_report:
+        (reports) Created Smart Sync non-admin devices report
+    :ivar team_log.EventTypeArg.team_activity_create_report: (reports) Created
+        team activity report
+    :ivar team_log.EventTypeArg.team_activity_create_report_fail: (reports)
+        Couldn't generate team activity report
+    :ivar team_log.EventTypeArg.collection_share: (sharing) Shared album
+    :ivar team_log.EventTypeArg.file_transfers_file_add: (sharing) Transfer
+        files added
+    :ivar team_log.EventTypeArg.file_transfers_transfer_delete: (sharing)
+        Deleted transfer
+    :ivar team_log.EventTypeArg.file_transfers_transfer_download: (sharing)
+        Transfer downloaded
+    :ivar team_log.EventTypeArg.file_transfers_transfer_send: (sharing) Sent
+        transfer
+    :ivar team_log.EventTypeArg.file_transfers_transfer_view: (sharing) Viewed
+        transfer
+    :ivar team_log.EventTypeArg.note_acl_invite_only: (sharing) Changed Paper
+        doc to invite-only (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.note_acl_link: (sharing) Changed Paper doc to
+        link-accessible (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.note_acl_team_link: (sharing) Changed Paper doc
+        to link-accessible for team (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.note_shared: (sharing) Shared Paper doc
+        (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.note_share_receive: (sharing) Shared received
+        Paper doc (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.open_note_shared: (sharing) Opened shared Paper
+        doc (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_add_group: (sharing) Added team to shared
+        folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_allow_non_members_to_view_shared_links:
+        (sharing) Allowed non-collaborators to view links to files in shared
+        folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_external_invite_warn: (sharing) Set team
+        members to see warning before sharing folders outside team (deprecated,
+        no longer logged)
+    :ivar team_log.EventTypeArg.sf_fb_invite: (sharing) Invited Facebook users
+        to shared folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_fb_invite_change_role: (sharing) Changed
+        Facebook user's role in shared folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_fb_uninvite: (sharing) Uninvited Facebook
+        user from shared folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_invite_group: (sharing) Invited group to
+        shared folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_team_grant_access: (sharing) Granted access
+        to shared folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_team_invite: (sharing) Invited team members
+        to shared folder (deprecated, replaced by 'Invited user to Dropbox and
+        added them to shared file/folder')
+    :ivar team_log.EventTypeArg.sf_team_invite_change_role: (sharing) Changed
+        team member's role in shared folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_team_join: (sharing) Joined team member's
+        shared folder (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_team_join_from_oob_link: (sharing) Joined
+        team member's shared folder from link (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.sf_team_uninvite: (sharing) Unshared folder with
+        team member (deprecated, replaced by 'Removed invitee from shared
+        file/folder before invite was accepted')
+    :ivar team_log.EventTypeArg.shared_content_add_invitees: (sharing) Invited
+        user to Dropbox and added them to shared file/folder
+    :ivar team_log.EventTypeArg.shared_content_add_link_expiry: (sharing) Added
+        expiration date to link for shared file/folder (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.shared_content_add_link_password: (sharing)
+        Added password to link for shared file/folder (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.shared_content_add_member: (sharing) Added users
+        and/or groups to shared file/folder
+    :ivar team_log.EventTypeArg.shared_content_change_downloads_policy:
+        (sharing) Changed whether members can download shared file/folder
+        (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.shared_content_change_invitee_role: (sharing)
+        Changed access type of invitee to shared file/folder before invite was
+        accepted
+    :ivar team_log.EventTypeArg.shared_content_change_link_audience: (sharing)
+        Changed link audience of shared file/folder (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.shared_content_change_link_expiry: (sharing)
+        Changed link expiration of shared file/folder (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.shared_content_change_link_password: (sharing)
+        Changed link password of shared file/folder (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.shared_content_change_member_role: (sharing)
+        Changed access type of shared file/folder member
+    :ivar team_log.EventTypeArg.shared_content_change_viewer_info_policy:
+        (sharing) Changed whether members can see who viewed shared file/folder
+    :ivar team_log.EventTypeArg.shared_content_claim_invitation: (sharing)
+        Acquired membership of shared file/folder by accepting invite
+    :ivar team_log.EventTypeArg.shared_content_copy: (sharing) Copied shared
+        file/folder to own Dropbox
+    :ivar team_log.EventTypeArg.shared_content_download: (sharing) Downloaded
+        shared file/folder
+    :ivar team_log.EventTypeArg.shared_content_relinquish_membership: (sharing)
+        Left shared file/folder
+    :ivar team_log.EventTypeArg.shared_content_remove_invitees: (sharing)
+        Removed invitee from shared file/folder before invite was accepted
+    :ivar team_log.EventTypeArg.shared_content_remove_link_expiry: (sharing)
+        Removed link expiration date of shared file/folder (deprecated, no
+        longer logged)
+    :ivar team_log.EventTypeArg.shared_content_remove_link_password: (sharing)
+        Removed link password of shared file/folder (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.shared_content_remove_member: (sharing) Removed
+        user/group from shared file/folder
+    :ivar team_log.EventTypeArg.shared_content_request_access: (sharing)
+        Requested access to shared file/folder
+    :ivar team_log.EventTypeArg.shared_content_restore_invitees: (sharing)
+        Restored shared file/folder invitees
+    :ivar team_log.EventTypeArg.shared_content_restore_member: (sharing)
+        Restored users and/or groups to membership of shared file/folder
+    :ivar team_log.EventTypeArg.shared_content_unshare: (sharing) Unshared
+        file/folder by clearing membership
+    :ivar team_log.EventTypeArg.shared_content_view: (sharing) Previewed shared
+        file/folder
+    :ivar team_log.EventTypeArg.shared_folder_change_link_policy: (sharing)
+        Changed who can access shared folder via link
+    :ivar team_log.EventTypeArg.shared_folder_change_members_inheritance_policy:
+        (sharing) Changed whether shared folder inherits members from parent
+        folder
+    :ivar team_log.EventTypeArg.shared_folder_change_members_management_policy:
+        (sharing) Changed who can add/remove members of shared folder
+    :ivar team_log.EventTypeArg.shared_folder_change_members_policy: (sharing)
+        Changed who can become member of shared folder
+    :ivar team_log.EventTypeArg.shared_folder_create: (sharing) Created shared
+        folder
+    :ivar team_log.EventTypeArg.shared_folder_decline_invitation: (sharing)
+        Declined team member's invite to shared folder
+    :ivar team_log.EventTypeArg.shared_folder_mount: (sharing) Added shared
+        folder to own Dropbox
+    :ivar team_log.EventTypeArg.shared_folder_nest: (sharing) Changed parent of
+        shared folder
+    :ivar team_log.EventTypeArg.shared_folder_transfer_ownership: (sharing)
+        Transferred ownership of shared folder to another member
+    :ivar team_log.EventTypeArg.shared_folder_unmount: (sharing) Deleted shared
+        folder from Dropbox
+    :ivar team_log.EventTypeArg.shared_link_add_expiry: (sharing) Added shared
+        link expiration date
+    :ivar team_log.EventTypeArg.shared_link_change_expiry: (sharing) Changed
+        shared link expiration date
+    :ivar team_log.EventTypeArg.shared_link_change_visibility: (sharing) Changed
+        visibility of shared link
+    :ivar team_log.EventTypeArg.shared_link_copy: (sharing) Added file/folder to
+        Dropbox from shared link
+    :ivar team_log.EventTypeArg.shared_link_create: (sharing) Created shared
+        link
+    :ivar team_log.EventTypeArg.shared_link_disable: (sharing) Removed shared
+        link
+    :ivar team_log.EventTypeArg.shared_link_download: (sharing) Downloaded
+        file/folder from shared link
+    :ivar team_log.EventTypeArg.shared_link_remove_expiry: (sharing) Removed
+        shared link expiration date
+    :ivar team_log.EventTypeArg.shared_link_settings_add_expiration: (sharing)
+        Added an expiration date to the shared link
+    :ivar team_log.EventTypeArg.shared_link_settings_add_password: (sharing)
+        Added a password to the shared link
+    :ivar team_log.EventTypeArg.shared_link_settings_allow_download_disabled:
+        (sharing) Disabled downloads
+    :ivar team_log.EventTypeArg.shared_link_settings_allow_download_enabled:
+        (sharing) Enabled downloads
+    :ivar team_log.EventTypeArg.shared_link_settings_change_audience: (sharing)
+        Changed the audience of the shared link
+    :ivar team_log.EventTypeArg.shared_link_settings_change_expiration:
+        (sharing) Changed the expiration date of the shared link
+    :ivar team_log.EventTypeArg.shared_link_settings_change_password: (sharing)
+        Changed the password of the shared link
+    :ivar team_log.EventTypeArg.shared_link_settings_remove_expiration:
+        (sharing) Removed the expiration date from the shared link
+    :ivar team_log.EventTypeArg.shared_link_settings_remove_password: (sharing)
+        Removed the password from the shared link
+    :ivar team_log.EventTypeArg.shared_link_share: (sharing) Added members as
+        audience of shared link
+    :ivar team_log.EventTypeArg.shared_link_view: (sharing) Opened shared link
+    :ivar team_log.EventTypeArg.shared_note_opened: (sharing) Opened shared
+        Paper doc (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.shmodel_group_share: (sharing) Shared link with
+        group (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.showcase_access_granted: (showcase) Granted
+        access to showcase
+    :ivar team_log.EventTypeArg.showcase_add_member: (showcase) Added member to
+        showcase
+    :ivar team_log.EventTypeArg.showcase_archived: (showcase) Archived showcase
+    :ivar team_log.EventTypeArg.showcase_created: (showcase) Created showcase
+    :ivar team_log.EventTypeArg.showcase_delete_comment: (showcase) Deleted
+        showcase comment
+    :ivar team_log.EventTypeArg.showcase_edited: (showcase) Edited showcase
+    :ivar team_log.EventTypeArg.showcase_edit_comment: (showcase) Edited
+        showcase comment
+    :ivar team_log.EventTypeArg.showcase_file_added: (showcase) Added file to
+        showcase
+    :ivar team_log.EventTypeArg.showcase_file_download: (showcase) Downloaded
+        file from showcase
+    :ivar team_log.EventTypeArg.showcase_file_removed: (showcase) Removed file
+        from showcase
+    :ivar team_log.EventTypeArg.showcase_file_view: (showcase) Viewed file in
+        showcase
+    :ivar team_log.EventTypeArg.showcase_permanently_deleted: (showcase)
+        Permanently deleted showcase
+    :ivar team_log.EventTypeArg.showcase_post_comment: (showcase) Added showcase
+        comment
+    :ivar team_log.EventTypeArg.showcase_remove_member: (showcase) Removed
+        member from showcase
+    :ivar team_log.EventTypeArg.showcase_renamed: (showcase) Renamed showcase
+    :ivar team_log.EventTypeArg.showcase_request_access: (showcase) Requested
+        access to showcase
+    :ivar team_log.EventTypeArg.showcase_resolve_comment: (showcase) Resolved
+        showcase comment
+    :ivar team_log.EventTypeArg.showcase_restored: (showcase) Unarchived
+        showcase
+    :ivar team_log.EventTypeArg.showcase_trashed: (showcase) Deleted showcase
+    :ivar team_log.EventTypeArg.showcase_trashed_deprecated: (showcase) Deleted
+        showcase (old version) (deprecated, replaced by 'Deleted showcase')
+    :ivar team_log.EventTypeArg.showcase_unresolve_comment: (showcase)
+        Unresolved showcase comment
+    :ivar team_log.EventTypeArg.showcase_untrashed: (showcase) Restored showcase
+    :ivar team_log.EventTypeArg.showcase_untrashed_deprecated: (showcase)
+        Restored showcase (old version) (deprecated, replaced by 'Restored
+        showcase')
+    :ivar team_log.EventTypeArg.showcase_view: (showcase) Viewed showcase
+    :ivar team_log.EventTypeArg.sso_add_cert: (sso) Added X.509 certificate for
+        SSO
+    :ivar team_log.EventTypeArg.sso_add_login_url: (sso) Added sign-in URL for
+        SSO
+    :ivar team_log.EventTypeArg.sso_add_logout_url: (sso) Added sign-out URL for
+        SSO
+    :ivar team_log.EventTypeArg.sso_change_cert: (sso) Changed X.509 certificate
+        for SSO
+    :ivar team_log.EventTypeArg.sso_change_login_url: (sso) Changed sign-in URL
+        for SSO
+    :ivar team_log.EventTypeArg.sso_change_logout_url: (sso) Changed sign-out
+        URL for SSO
+    :ivar team_log.EventTypeArg.sso_change_saml_identity_mode: (sso) Changed
+        SAML identity mode for SSO
+    :ivar team_log.EventTypeArg.sso_remove_cert: (sso) Removed X.509 certificate
+        for SSO
+    :ivar team_log.EventTypeArg.sso_remove_login_url: (sso) Removed sign-in URL
+        for SSO
+    :ivar team_log.EventTypeArg.sso_remove_logout_url: (sso) Removed sign-out
+        URL for SSO
+    :ivar team_log.EventTypeArg.team_folder_change_status: (team_folders)
+        Changed archival status of team folder
+    :ivar team_log.EventTypeArg.team_folder_create: (team_folders) Created team
+        folder in active status
+    :ivar team_log.EventTypeArg.team_folder_downgrade: (team_folders) Downgraded
+        team folder to regular shared folder
+    :ivar team_log.EventTypeArg.team_folder_permanently_delete: (team_folders)
+        Permanently deleted archived team folder
+    :ivar team_log.EventTypeArg.team_folder_rename: (team_folders) Renamed
+        active/archived team folder
+    :ivar team_log.EventTypeArg.team_selective_sync_settings_changed:
+        (team_folders) Changed sync default
+    :ivar team_log.EventTypeArg.account_capture_change_policy: (team_policies)
+        Changed account capture setting on team domain
+    :ivar team_log.EventTypeArg.allow_download_disabled: (team_policies)
+        Disabled downloads (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.allow_download_enabled: (team_policies) Enabled
+        downloads (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.camera_uploads_policy_changed: (team_policies)
+        Changed camera uploads setting for team
+    :ivar team_log.EventTypeArg.data_placement_restriction_change_policy:
+        (team_policies) Set restrictions on data center locations where team
+        data resides
+    :ivar team_log.EventTypeArg.data_placement_restriction_satisfy_policy:
+        (team_policies) Completed restrictions on data center locations where
+        team data resides
+    :ivar team_log.EventTypeArg.device_approvals_add_exception: (team_policies)
+        Added members to device approvals exception list
+    :ivar team_log.EventTypeArg.device_approvals_change_desktop_policy:
+        (team_policies) Set/removed limit on number of computers member can link
+        to team Dropbox account
+    :ivar team_log.EventTypeArg.device_approvals_change_mobile_policy:
+        (team_policies) Set/removed limit on number of mobile devices member can
+        link to team Dropbox account
+    :ivar team_log.EventTypeArg.device_approvals_change_overage_action:
+        (team_policies) Changed device approvals setting when member is over
+        limit
+    :ivar team_log.EventTypeArg.device_approvals_change_unlink_action:
+        (team_policies) Changed device approvals setting when member unlinks
+        approved device
+    :ivar team_log.EventTypeArg.device_approvals_remove_exception:
+        (team_policies) Removed members from device approvals exception list
+    :ivar team_log.EventTypeArg.directory_restrictions_add_members:
+        (team_policies) Added members to directory restrictions list
+    :ivar team_log.EventTypeArg.directory_restrictions_remove_members:
+        (team_policies) Removed members from directory restrictions list
+    :ivar team_log.EventTypeArg.emm_add_exception: (team_policies) Added members
+        to EMM exception list
+    :ivar team_log.EventTypeArg.emm_change_policy: (team_policies)
+        Enabled/disabled enterprise mobility management for members
+    :ivar team_log.EventTypeArg.emm_remove_exception: (team_policies) Removed
+        members from EMM exception list
+    :ivar team_log.EventTypeArg.extended_version_history_change_policy:
+        (team_policies) Accepted/opted out of extended version history
+    :ivar team_log.EventTypeArg.file_comments_change_policy: (team_policies)
+        Enabled/disabled commenting on team files
+    :ivar team_log.EventTypeArg.file_locking_policy_changed: (team_policies)
+        Changed file locking policy for team
+    :ivar team_log.EventTypeArg.file_requests_change_policy: (team_policies)
+        Enabled/disabled file requests
+    :ivar team_log.EventTypeArg.file_requests_emails_enabled: (team_policies)
+        Enabled file request emails for everyone (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.file_requests_emails_restricted_to_team_only:
+        (team_policies) Enabled file request emails for team (deprecated, no
+        longer logged)
+    :ivar team_log.EventTypeArg.file_transfers_policy_changed: (team_policies)
+        Changed file transfers policy for team
+    :ivar team_log.EventTypeArg.google_sso_change_policy: (team_policies)
+        Enabled/disabled Google single sign-on for team
+    :ivar team_log.EventTypeArg.group_user_management_change_policy:
+        (team_policies) Changed who can create groups
+    :ivar team_log.EventTypeArg.integration_policy_changed: (team_policies)
+        Changed integration policy for team
+    :ivar team_log.EventTypeArg.member_requests_change_policy: (team_policies)
+        Changed whether users can find team when not invited
+    :ivar team_log.EventTypeArg.member_send_invite_policy_changed:
+        (team_policies) Changed member send invite policy for team
+    :ivar team_log.EventTypeArg.member_space_limits_add_exception:
+        (team_policies) Added members to member space limit exception list
+    :ivar team_log.EventTypeArg.member_space_limits_change_caps_type_policy:
+        (team_policies) Changed member space limit type for team
+    :ivar team_log.EventTypeArg.member_space_limits_change_policy:
+        (team_policies) Changed team default member space limit
+    :ivar team_log.EventTypeArg.member_space_limits_remove_exception:
+        (team_policies) Removed members from member space limit exception list
+    :ivar team_log.EventTypeArg.member_suggestions_change_policy:
+        (team_policies) Enabled/disabled option for team members to suggest
+        people to add to team
+    :ivar team_log.EventTypeArg.microsoft_office_addin_change_policy:
+        (team_policies) Enabled/disabled Microsoft Office add-in
+    :ivar team_log.EventTypeArg.network_control_change_policy: (team_policies)
+        Enabled/disabled network control
+    :ivar team_log.EventTypeArg.paper_change_deployment_policy: (team_policies)
+        Changed whether Dropbox Paper, when enabled, is deployed to all members
+        or to specific members
+    :ivar team_log.EventTypeArg.paper_change_member_link_policy: (team_policies)
+        Changed whether non-members can view Paper docs with link (deprecated,
+        no longer logged)
+    :ivar team_log.EventTypeArg.paper_change_member_policy: (team_policies)
+        Changed whether members can share Paper docs outside team, and if docs
+        are accessible only by team members or anyone by default
+    :ivar team_log.EventTypeArg.paper_change_policy: (team_policies)
+        Enabled/disabled Dropbox Paper for team
+    :ivar team_log.EventTypeArg.paper_default_folder_policy_changed:
+        (team_policies) Changed Paper Default Folder Policy setting for team
+    :ivar team_log.EventTypeArg.paper_desktop_policy_changed: (team_policies)
+        Enabled/disabled Paper Desktop for team
+    :ivar team_log.EventTypeArg.paper_enabled_users_group_addition:
+        (team_policies) Added users to Paper-enabled users list
+    :ivar team_log.EventTypeArg.paper_enabled_users_group_removal:
+        (team_policies) Removed users from Paper-enabled users list
+    :ivar team_log.EventTypeArg.password_strength_requirements_change_policy:
+        (team_policies) Changed team password strength requirements
+    :ivar team_log.EventTypeArg.permanent_delete_change_policy: (team_policies)
+        Enabled/disabled ability of team members to permanently delete content
+    :ivar team_log.EventTypeArg.reseller_support_change_policy: (team_policies)
+        Enabled/disabled reseller support
+    :ivar team_log.EventTypeArg.rewind_policy_changed: (team_policies) Changed
+        Rewind policy for team
+    :ivar team_log.EventTypeArg.sharing_change_folder_join_policy:
+        (team_policies) Changed whether team members can join shared folders
+        owned outside team
+    :ivar team_log.EventTypeArg.sharing_change_link_policy: (team_policies)
+        Changed whether members can share links outside team, and if links are
+        accessible only by team members or anyone by default
+    :ivar team_log.EventTypeArg.sharing_change_member_policy: (team_policies)
+        Changed whether members can share files/folders outside team
+    :ivar team_log.EventTypeArg.showcase_change_download_policy: (team_policies)
+        Enabled/disabled downloading files from Dropbox Showcase for team
+    :ivar team_log.EventTypeArg.showcase_change_enabled_policy: (team_policies)
+        Enabled/disabled Dropbox Showcase for team
+    :ivar team_log.EventTypeArg.showcase_change_external_sharing_policy:
+        (team_policies) Enabled/disabled sharing Dropbox Showcase externally for
+        team
+    :ivar team_log.EventTypeArg.smarter_smart_sync_policy_changed:
+        (team_policies) Changed automatic Smart Sync setting for team
+    :ivar team_log.EventTypeArg.smart_sync_change_policy: (team_policies)
+        Changed default Smart Sync setting for team members
+    :ivar team_log.EventTypeArg.smart_sync_not_opt_out: (team_policies) Opted
+        team into Smart Sync
+    :ivar team_log.EventTypeArg.smart_sync_opt_out: (team_policies) Opted team
+        out of Smart Sync
+    :ivar team_log.EventTypeArg.sso_change_policy: (team_policies) Changed
+        single sign-on setting for team
+    :ivar team_log.EventTypeArg.team_extensions_policy_changed: (team_policies)
+        Changed App Integrations setting for team
+    :ivar team_log.EventTypeArg.team_selective_sync_policy_changed:
+        (team_policies) Enabled/disabled Team Selective Sync for team
+    :ivar team_log.EventTypeArg.team_sharing_whitelist_subjects_changed:
+        (team_policies) Edited the approved list for sharing externally
+    :ivar team_log.EventTypeArg.tfa_add_exception: (team_policies) Added members
+        to two factor authentication exception list
+    :ivar team_log.EventTypeArg.tfa_change_policy: (team_policies) Changed
+        two-step verification setting for team
+    :ivar team_log.EventTypeArg.tfa_remove_exception: (team_policies) Removed
+        members from two factor authentication exception list
+    :ivar team_log.EventTypeArg.two_account_change_policy: (team_policies)
+        Enabled/disabled option for members to link personal Dropbox account and
+        team account to same computer
+    :ivar team_log.EventTypeArg.viewer_info_policy_changed: (team_policies)
+        Changed team policy for viewer info
+    :ivar team_log.EventTypeArg.watermarking_policy_changed: (team_policies)
+        Changed watermarking policy for team
+    :ivar team_log.EventTypeArg.web_sessions_change_active_session_limit:
+        (team_policies) Changed limit on active sessions per member
+    :ivar team_log.EventTypeArg.web_sessions_change_fixed_length_policy:
+        (team_policies) Changed how long members can stay signed in to
+        Dropbox.com
+    :ivar team_log.EventTypeArg.web_sessions_change_idle_length_policy:
+        (team_policies) Changed how long team members can be idle while signed
+        in to Dropbox.com
+    :ivar team_log.EventTypeArg.team_merge_from: (team_profile) Merged another
+        team into this team
+    :ivar team_log.EventTypeArg.team_merge_to: (team_profile) Merged this team
+        into another team
+    :ivar team_log.EventTypeArg.team_profile_add_logo: (team_profile) Added team
+        logo to display on shared link headers
+    :ivar team_log.EventTypeArg.team_profile_change_default_language:
+        (team_profile) Changed default language for team
+    :ivar team_log.EventTypeArg.team_profile_change_logo: (team_profile) Changed
+        team logo displayed on shared link headers
+    :ivar team_log.EventTypeArg.team_profile_change_name: (team_profile) Changed
+        team name
+    :ivar team_log.EventTypeArg.team_profile_remove_logo: (team_profile) Removed
+        team logo displayed on shared link headers
+    :ivar team_log.EventTypeArg.tfa_add_backup_phone: (tfa) Added backup phone
+        for two-step verification
+    :ivar team_log.EventTypeArg.tfa_add_security_key: (tfa) Added security key
+        for two-step verification
+    :ivar team_log.EventTypeArg.tfa_change_backup_phone: (tfa) Changed backup
+        phone for two-step verification
+    :ivar team_log.EventTypeArg.tfa_change_status: (tfa)
+        Enabled/disabled/changed two-step verification setting
+    :ivar team_log.EventTypeArg.tfa_remove_backup_phone: (tfa) Removed backup
+        phone for two-step verification
+    :ivar team_log.EventTypeArg.tfa_remove_security_key: (tfa) Removed security
+        key for two-step verification
+    :ivar team_log.EventTypeArg.tfa_reset: (tfa) Reset two-step verification for
+        team member
+    :ivar team_log.EventTypeArg.changed_enterprise_admin_role: (trusted_teams)
+        Changed enterprise admin role
+    :ivar team_log.EventTypeArg.changed_enterprise_connected_team_status:
+        (trusted_teams) Changed enterprise-connected team status
+    :ivar team_log.EventTypeArg.ended_enterprise_admin_session: (trusted_teams)
+        Ended enterprise admin session
+    :ivar team_log.EventTypeArg.ended_enterprise_admin_session_deprecated:
+        (trusted_teams) Ended enterprise admin session (deprecated, replaced by
+        'Ended enterprise admin session')
+    :ivar team_log.EventTypeArg.enterprise_settings_locking: (trusted_teams)
+        Changed who can update a setting
+    :ivar team_log.EventTypeArg.guest_admin_change_status: (trusted_teams)
+        Changed guest team admin status
+    :ivar team_log.EventTypeArg.started_enterprise_admin_session:
+        (trusted_teams) Started enterprise admin session
+    :ivar team_log.EventTypeArg.team_merge_request_accepted: (trusted_teams)
+        Accepted a team merge request
+    :ivar
+        team_log.EventTypeArg.team_merge_request_accepted_shown_to_primary_team:
+        (trusted_teams) Accepted a team merge request (deprecated, replaced by
+        'Accepted a team merge request')
+    :ivar
+        team_log.EventTypeArg.team_merge_request_accepted_shown_to_secondary_team:
+        (trusted_teams) Accepted a team merge request (deprecated, replaced by
+        'Accepted a team merge request')
+    :ivar team_log.EventTypeArg.team_merge_request_auto_canceled:
+        (trusted_teams) Automatically canceled team merge request
+    :ivar team_log.EventTypeArg.team_merge_request_canceled: (trusted_teams)
+        Canceled a team merge request
+    :ivar
+        team_log.EventTypeArg.team_merge_request_canceled_shown_to_primary_team:
+        (trusted_teams) Canceled a team merge request (deprecated, replaced by
+        'Canceled a team merge request')
+    :ivar
+        team_log.EventTypeArg.team_merge_request_canceled_shown_to_secondary_team:
+        (trusted_teams) Canceled a team merge request (deprecated, replaced by
+        'Canceled a team merge request')
+    :ivar team_log.EventTypeArg.team_merge_request_expired: (trusted_teams) Team
+        merge request expired
+    :ivar
+        team_log.EventTypeArg.team_merge_request_expired_shown_to_primary_team:
+        (trusted_teams) Team merge request expired (deprecated, replaced by
+        'Team merge request expired')
+    :ivar
+        team_log.EventTypeArg.team_merge_request_expired_shown_to_secondary_team:
+        (trusted_teams) Team merge request expired (deprecated, replaced by
+        'Team merge request expired')
+    :ivar
+        team_log.EventTypeArg.team_merge_request_rejected_shown_to_primary_team:
+        (trusted_teams) Rejected a team merge request (deprecated, no longer
+        logged)
+    :ivar
+        team_log.EventTypeArg.team_merge_request_rejected_shown_to_secondary_team:
+        (trusted_teams) Rejected a team merge request (deprecated, no longer
+        logged)
+    :ivar team_log.EventTypeArg.team_merge_request_reminder: (trusted_teams)
+        Sent a team merge request reminder
+    :ivar
+        team_log.EventTypeArg.team_merge_request_reminder_shown_to_primary_team:
+        (trusted_teams) Sent a team merge request reminder (deprecated, replaced
+        by 'Sent a team merge request reminder')
+    :ivar
+        team_log.EventTypeArg.team_merge_request_reminder_shown_to_secondary_team:
+        (trusted_teams) Sent a team merge request reminder (deprecated, replaced
+        by 'Sent a team merge request reminder')
+    :ivar team_log.EventTypeArg.team_merge_request_revoked: (trusted_teams)
+        Canceled the team merge
+    :ivar team_log.EventTypeArg.team_merge_request_sent_shown_to_primary_team:
+        (trusted_teams) Requested to merge their Dropbox team into yours
+    :ivar team_log.EventTypeArg.team_merge_request_sent_shown_to_secondary_team:
+        (trusted_teams) Requested to merge your team into another Dropbox team
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    app_link_team = None
+    # Attribute is overwritten below the class definition
+    app_link_user = None
+    # Attribute is overwritten below the class definition
+    app_unlink_team = None
+    # Attribute is overwritten below the class definition
+    app_unlink_user = None
+    # Attribute is overwritten below the class definition
+    integration_connected = None
+    # Attribute is overwritten below the class definition
+    integration_disconnected = None
+    # Attribute is overwritten below the class definition
+    file_add_comment = None
+    # Attribute is overwritten below the class definition
+    file_change_comment_subscription = None
+    # Attribute is overwritten below the class definition
+    file_delete_comment = None
+    # Attribute is overwritten below the class definition
+    file_edit_comment = None
+    # Attribute is overwritten below the class definition
+    file_like_comment = None
+    # Attribute is overwritten below the class definition
+    file_resolve_comment = None
+    # Attribute is overwritten below the class definition
+    file_unlike_comment = None
+    # Attribute is overwritten below the class definition
+    file_unresolve_comment = None
+    # Attribute is overwritten below the class definition
+    device_change_ip_desktop = None
+    # Attribute is overwritten below the class definition
+    device_change_ip_mobile = None
+    # Attribute is overwritten below the class definition
+    device_change_ip_web = None
+    # Attribute is overwritten below the class definition
+    device_delete_on_unlink_fail = None
+    # Attribute is overwritten below the class definition
+    device_delete_on_unlink_success = None
+    # Attribute is overwritten below the class definition
+    device_link_fail = None
+    # Attribute is overwritten below the class definition
+    device_link_success = None
+    # Attribute is overwritten below the class definition
+    device_management_disabled = None
+    # Attribute is overwritten below the class definition
+    device_management_enabled = None
+    # Attribute is overwritten below the class definition
+    device_unlink = None
+    # Attribute is overwritten below the class definition
+    emm_refresh_auth_token = None
+    # Attribute is overwritten below the class definition
+    account_capture_change_availability = None
+    # Attribute is overwritten below the class definition
+    account_capture_migrate_account = None
+    # Attribute is overwritten below the class definition
+    account_capture_notification_emails_sent = None
+    # Attribute is overwritten below the class definition
+    account_capture_relinquish_account = None
+    # Attribute is overwritten below the class definition
+    disabled_domain_invites = None
+    # Attribute is overwritten below the class definition
+    domain_invites_approve_request_to_join_team = None
+    # Attribute is overwritten below the class definition
+    domain_invites_decline_request_to_join_team = None
+    # Attribute is overwritten below the class definition
+    domain_invites_email_existing_users = None
+    # Attribute is overwritten below the class definition
+    domain_invites_request_to_join_team = None
+    # Attribute is overwritten below the class definition
+    domain_invites_set_invite_new_user_pref_to_no = None
+    # Attribute is overwritten below the class definition
+    domain_invites_set_invite_new_user_pref_to_yes = None
+    # Attribute is overwritten below the class definition
+    domain_verification_add_domain_fail = None
+    # Attribute is overwritten below the class definition
+    domain_verification_add_domain_success = None
+    # Attribute is overwritten below the class definition
+    domain_verification_remove_domain = None
+    # Attribute is overwritten below the class definition
+    enabled_domain_invites = None
+    # Attribute is overwritten below the class definition
+    create_folder = None
+    # Attribute is overwritten below the class definition
+    file_add = None
+    # Attribute is overwritten below the class definition
+    file_copy = None
+    # Attribute is overwritten below the class definition
+    file_delete = None
+    # Attribute is overwritten below the class definition
+    file_download = None
+    # Attribute is overwritten below the class definition
+    file_edit = None
+    # Attribute is overwritten below the class definition
+    file_get_copy_reference = None
+    # Attribute is overwritten below the class definition
+    file_locking_lock_status_changed = None
+    # Attribute is overwritten below the class definition
+    file_move = None
+    # Attribute is overwritten below the class definition
+    file_permanently_delete = None
+    # Attribute is overwritten below the class definition
+    file_preview = None
+    # Attribute is overwritten below the class definition
+    file_rename = None
+    # Attribute is overwritten below the class definition
+    file_restore = None
+    # Attribute is overwritten below the class definition
+    file_revert = None
+    # Attribute is overwritten below the class definition
+    file_rollback_changes = None
+    # Attribute is overwritten below the class definition
+    file_save_copy_reference = None
+    # Attribute is overwritten below the class definition
+    folder_overview_description_changed = None
+    # Attribute is overwritten below the class definition
+    folder_overview_item_pinned = None
+    # Attribute is overwritten below the class definition
+    folder_overview_item_unpinned = None
+    # Attribute is overwritten below the class definition
+    rewind_folder = None
+    # Attribute is overwritten below the class definition
+    file_request_change = None
+    # Attribute is overwritten below the class definition
+    file_request_close = None
+    # Attribute is overwritten below the class definition
+    file_request_create = None
+    # Attribute is overwritten below the class definition
+    file_request_delete = None
+    # Attribute is overwritten below the class definition
+    file_request_receive_file = None
+    # Attribute is overwritten below the class definition
+    group_add_external_id = None
+    # Attribute is overwritten below the class definition
+    group_add_member = None
+    # Attribute is overwritten below the class definition
+    group_change_external_id = None
+    # Attribute is overwritten below the class definition
+    group_change_management_type = None
+    # Attribute is overwritten below the class definition
+    group_change_member_role = None
+    # Attribute is overwritten below the class definition
+    group_create = None
+    # Attribute is overwritten below the class definition
+    group_delete = None
+    # Attribute is overwritten below the class definition
+    group_description_updated = None
+    # Attribute is overwritten below the class definition
+    group_join_policy_updated = None
+    # Attribute is overwritten below the class definition
+    group_moved = None
+    # Attribute is overwritten below the class definition
+    group_remove_external_id = None
+    # Attribute is overwritten below the class definition
+    group_remove_member = None
+    # Attribute is overwritten below the class definition
+    group_rename = None
+    # Attribute is overwritten below the class definition
+    legal_holds_activate_a_hold = None
+    # Attribute is overwritten below the class definition
+    legal_holds_add_members = None
+    # Attribute is overwritten below the class definition
+    legal_holds_change_hold_details = None
+    # Attribute is overwritten below the class definition
+    legal_holds_change_hold_name = None
+    # Attribute is overwritten below the class definition
+    legal_holds_export_a_hold = None
+    # Attribute is overwritten below the class definition
+    legal_holds_export_cancelled = None
+    # Attribute is overwritten below the class definition
+    legal_holds_export_downloaded = None
+    # Attribute is overwritten below the class definition
+    legal_holds_export_removed = None
+    # Attribute is overwritten below the class definition
+    legal_holds_release_a_hold = None
+    # Attribute is overwritten below the class definition
+    legal_holds_remove_members = None
+    # Attribute is overwritten below the class definition
+    legal_holds_report_a_hold = None
+    # Attribute is overwritten below the class definition
+    account_lock_or_unlocked = None
+    # Attribute is overwritten below the class definition
+    emm_error = None
+    # Attribute is overwritten below the class definition
+    guest_admin_signed_in_via_trusted_teams = None
+    # Attribute is overwritten below the class definition
+    guest_admin_signed_out_via_trusted_teams = None
+    # Attribute is overwritten below the class definition
+    login_fail = None
+    # Attribute is overwritten below the class definition
+    login_success = None
+    # Attribute is overwritten below the class definition
+    logout = None
+    # Attribute is overwritten below the class definition
+    reseller_support_session_end = None
+    # Attribute is overwritten below the class definition
+    reseller_support_session_start = None
+    # Attribute is overwritten below the class definition
+    sign_in_as_session_end = None
+    # Attribute is overwritten below the class definition
+    sign_in_as_session_start = None
+    # Attribute is overwritten below the class definition
+    sso_error = None
+    # Attribute is overwritten below the class definition
+    create_team_invite_link = None
+    # Attribute is overwritten below the class definition
+    delete_team_invite_link = None
+    # Attribute is overwritten below the class definition
+    member_add_external_id = None
+    # Attribute is overwritten below the class definition
+    member_add_name = None
+    # Attribute is overwritten below the class definition
+    member_change_admin_role = None
+    # Attribute is overwritten below the class definition
+    member_change_email = None
+    # Attribute is overwritten below the class definition
+    member_change_external_id = None
+    # Attribute is overwritten below the class definition
+    member_change_membership_type = None
+    # Attribute is overwritten below the class definition
+    member_change_name = None
+    # Attribute is overwritten below the class definition
+    member_change_status = None
+    # Attribute is overwritten below the class definition
+    member_delete_manual_contacts = None
+    # Attribute is overwritten below the class definition
+    member_delete_profile_photo = None
+    # Attribute is overwritten below the class definition
+    member_permanently_delete_account_contents = None
+    # Attribute is overwritten below the class definition
+    member_remove_external_id = None
+    # Attribute is overwritten below the class definition
+    member_set_profile_photo = None
+    # Attribute is overwritten below the class definition
+    member_space_limits_add_custom_quota = None
+    # Attribute is overwritten below the class definition
+    member_space_limits_change_custom_quota = None
+    # Attribute is overwritten below the class definition
+    member_space_limits_change_status = None
+    # Attribute is overwritten below the class definition
+    member_space_limits_remove_custom_quota = None
+    # Attribute is overwritten below the class definition
+    member_suggest = None
+    # Attribute is overwritten below the class definition
+    member_transfer_account_contents = None
+    # Attribute is overwritten below the class definition
+    pending_secondary_email_added = None
+    # Attribute is overwritten below the class definition
+    secondary_email_deleted = None
+    # Attribute is overwritten below the class definition
+    secondary_email_verified = None
+    # Attribute is overwritten below the class definition
+    secondary_mails_policy_changed = None
+    # Attribute is overwritten below the class definition
+    binder_add_page = None
+    # Attribute is overwritten below the class definition
+    binder_add_section = None
+    # Attribute is overwritten below the class definition
+    binder_remove_page = None
+    # Attribute is overwritten below the class definition
+    binder_remove_section = None
+    # Attribute is overwritten below the class definition
+    binder_rename_page = None
+    # Attribute is overwritten below the class definition
+    binder_rename_section = None
+    # Attribute is overwritten below the class definition
+    binder_reorder_page = None
+    # Attribute is overwritten below the class definition
+    binder_reorder_section = None
+    # Attribute is overwritten below the class definition
+    paper_content_add_member = None
+    # Attribute is overwritten below the class definition
+    paper_content_add_to_folder = None
+    # Attribute is overwritten below the class definition
+    paper_content_archive = None
+    # Attribute is overwritten below the class definition
+    paper_content_create = None
+    # Attribute is overwritten below the class definition
+    paper_content_permanently_delete = None
+    # Attribute is overwritten below the class definition
+    paper_content_remove_from_folder = None
+    # Attribute is overwritten below the class definition
+    paper_content_remove_member = None
+    # Attribute is overwritten below the class definition
+    paper_content_rename = None
+    # Attribute is overwritten below the class definition
+    paper_content_restore = None
+    # Attribute is overwritten below the class definition
+    paper_doc_add_comment = None
+    # Attribute is overwritten below the class definition
+    paper_doc_change_member_role = None
+    # Attribute is overwritten below the class definition
+    paper_doc_change_sharing_policy = None
+    # Attribute is overwritten below the class definition
+    paper_doc_change_subscription = None
+    # Attribute is overwritten below the class definition
+    paper_doc_deleted = None
+    # Attribute is overwritten below the class definition
+    paper_doc_delete_comment = None
+    # Attribute is overwritten below the class definition
+    paper_doc_download = None
+    # Attribute is overwritten below the class definition
+    paper_doc_edit = None
+    # Attribute is overwritten below the class definition
+    paper_doc_edit_comment = None
+    # Attribute is overwritten below the class definition
+    paper_doc_followed = None
+    # Attribute is overwritten below the class definition
+    paper_doc_mention = None
+    # Attribute is overwritten below the class definition
+    paper_doc_ownership_changed = None
+    # Attribute is overwritten below the class definition
+    paper_doc_request_access = None
+    # Attribute is overwritten below the class definition
+    paper_doc_resolve_comment = None
+    # Attribute is overwritten below the class definition
+    paper_doc_revert = None
+    # Attribute is overwritten below the class definition
+    paper_doc_slack_share = None
+    # Attribute is overwritten below the class definition
+    paper_doc_team_invite = None
+    # Attribute is overwritten below the class definition
+    paper_doc_trashed = None
+    # Attribute is overwritten below the class definition
+    paper_doc_unresolve_comment = None
+    # Attribute is overwritten below the class definition
+    paper_doc_untrashed = None
+    # Attribute is overwritten below the class definition
+    paper_doc_view = None
+    # Attribute is overwritten below the class definition
+    paper_external_view_allow = None
+    # Attribute is overwritten below the class definition
+    paper_external_view_default_team = None
+    # Attribute is overwritten below the class definition
+    paper_external_view_forbid = None
+    # Attribute is overwritten below the class definition
+    paper_folder_change_subscription = None
+    # Attribute is overwritten below the class definition
+    paper_folder_deleted = None
+    # Attribute is overwritten below the class definition
+    paper_folder_followed = None
+    # Attribute is overwritten below the class definition
+    paper_folder_team_invite = None
+    # Attribute is overwritten below the class definition
+    paper_published_link_change_permission = None
+    # Attribute is overwritten below the class definition
+    paper_published_link_create = None
+    # Attribute is overwritten below the class definition
+    paper_published_link_disabled = None
+    # Attribute is overwritten below the class definition
+    paper_published_link_view = None
+    # Attribute is overwritten below the class definition
+    password_change = None
+    # Attribute is overwritten below the class definition
+    password_reset = None
+    # Attribute is overwritten below the class definition
+    password_reset_all = None
+    # Attribute is overwritten below the class definition
+    emm_create_exceptions_report = None
+    # Attribute is overwritten below the class definition
+    emm_create_usage_report = None
+    # Attribute is overwritten below the class definition
+    export_members_report = None
+    # Attribute is overwritten below the class definition
+    export_members_report_fail = None
+    # Attribute is overwritten below the class definition
+    no_expiration_link_gen_create_report = None
+    # Attribute is overwritten below the class definition
+    no_expiration_link_gen_report_failed = None
+    # Attribute is overwritten below the class definition
+    no_password_link_gen_create_report = None
+    # Attribute is overwritten below the class definition
+    no_password_link_gen_report_failed = None
+    # Attribute is overwritten below the class definition
+    no_password_link_view_create_report = None
+    # Attribute is overwritten below the class definition
+    no_password_link_view_report_failed = None
+    # Attribute is overwritten below the class definition
+    outdated_link_view_create_report = None
+    # Attribute is overwritten below the class definition
+    outdated_link_view_report_failed = None
+    # Attribute is overwritten below the class definition
+    paper_admin_export_start = None
+    # Attribute is overwritten below the class definition
+    smart_sync_create_admin_privilege_report = None
+    # Attribute is overwritten below the class definition
+    team_activity_create_report = None
+    # Attribute is overwritten below the class definition
+    team_activity_create_report_fail = None
+    # Attribute is overwritten below the class definition
+    collection_share = None
+    # Attribute is overwritten below the class definition
+    file_transfers_file_add = None
+    # Attribute is overwritten below the class definition
+    file_transfers_transfer_delete = None
+    # Attribute is overwritten below the class definition
+    file_transfers_transfer_download = None
+    # Attribute is overwritten below the class definition
+    file_transfers_transfer_send = None
+    # Attribute is overwritten below the class definition
+    file_transfers_transfer_view = None
+    # Attribute is overwritten below the class definition
+    note_acl_invite_only = None
+    # Attribute is overwritten below the class definition
+    note_acl_link = None
+    # Attribute is overwritten below the class definition
+    note_acl_team_link = None
+    # Attribute is overwritten below the class definition
+    note_shared = None
+    # Attribute is overwritten below the class definition
+    note_share_receive = None
+    # Attribute is overwritten below the class definition
+    open_note_shared = None
+    # Attribute is overwritten below the class definition
+    sf_add_group = None
+    # Attribute is overwritten below the class definition
+    sf_allow_non_members_to_view_shared_links = None
+    # Attribute is overwritten below the class definition
+    sf_external_invite_warn = None
+    # Attribute is overwritten below the class definition
+    sf_fb_invite = None
+    # Attribute is overwritten below the class definition
+    sf_fb_invite_change_role = None
+    # Attribute is overwritten below the class definition
+    sf_fb_uninvite = None
+    # Attribute is overwritten below the class definition
+    sf_invite_group = None
+    # Attribute is overwritten below the class definition
+    sf_team_grant_access = None
+    # Attribute is overwritten below the class definition
+    sf_team_invite = None
+    # Attribute is overwritten below the class definition
+    sf_team_invite_change_role = None
+    # Attribute is overwritten below the class definition
+    sf_team_join = None
+    # Attribute is overwritten below the class definition
+    sf_team_join_from_oob_link = None
+    # Attribute is overwritten below the class definition
+    sf_team_uninvite = None
+    # Attribute is overwritten below the class definition
+    shared_content_add_invitees = None
+    # Attribute is overwritten below the class definition
+    shared_content_add_link_expiry = None
+    # Attribute is overwritten below the class definition
+    shared_content_add_link_password = None
+    # Attribute is overwritten below the class definition
+    shared_content_add_member = None
+    # Attribute is overwritten below the class definition
+    shared_content_change_downloads_policy = None
+    # Attribute is overwritten below the class definition
+    shared_content_change_invitee_role = None
+    # Attribute is overwritten below the class definition
+    shared_content_change_link_audience = None
+    # Attribute is overwritten below the class definition
+    shared_content_change_link_expiry = None
+    # Attribute is overwritten below the class definition
+    shared_content_change_link_password = None
+    # Attribute is overwritten below the class definition
+    shared_content_change_member_role = None
+    # Attribute is overwritten below the class definition
+    shared_content_change_viewer_info_policy = None
+    # Attribute is overwritten below the class definition
+    shared_content_claim_invitation = None
+    # Attribute is overwritten below the class definition
+    shared_content_copy = None
+    # Attribute is overwritten below the class definition
+    shared_content_download = None
+    # Attribute is overwritten below the class definition
+    shared_content_relinquish_membership = None
+    # Attribute is overwritten below the class definition
+    shared_content_remove_invitees = None
+    # Attribute is overwritten below the class definition
+    shared_content_remove_link_expiry = None
+    # Attribute is overwritten below the class definition
+    shared_content_remove_link_password = None
+    # Attribute is overwritten below the class definition
+    shared_content_remove_member = None
+    # Attribute is overwritten below the class definition
+    shared_content_request_access = None
+    # Attribute is overwritten below the class definition
+    shared_content_restore_invitees = None
+    # Attribute is overwritten below the class definition
+    shared_content_restore_member = None
+    # Attribute is overwritten below the class definition
+    shared_content_unshare = None
+    # Attribute is overwritten below the class definition
+    shared_content_view = None
+    # Attribute is overwritten below the class definition
+    shared_folder_change_link_policy = None
+    # Attribute is overwritten below the class definition
+    shared_folder_change_members_inheritance_policy = None
+    # Attribute is overwritten below the class definition
+    shared_folder_change_members_management_policy = None
+    # Attribute is overwritten below the class definition
+    shared_folder_change_members_policy = None
+    # Attribute is overwritten below the class definition
+    shared_folder_create = None
+    # Attribute is overwritten below the class definition
+    shared_folder_decline_invitation = None
+    # Attribute is overwritten below the class definition
+    shared_folder_mount = None
+    # Attribute is overwritten below the class definition
+    shared_folder_nest = None
+    # Attribute is overwritten below the class definition
+    shared_folder_transfer_ownership = None
+    # Attribute is overwritten below the class definition
+    shared_folder_unmount = None
+    # Attribute is overwritten below the class definition
+    shared_link_add_expiry = None
+    # Attribute is overwritten below the class definition
+    shared_link_change_expiry = None
+    # Attribute is overwritten below the class definition
+    shared_link_change_visibility = None
+    # Attribute is overwritten below the class definition
+    shared_link_copy = None
+    # Attribute is overwritten below the class definition
+    shared_link_create = None
+    # Attribute is overwritten below the class definition
+    shared_link_disable = None
+    # Attribute is overwritten below the class definition
+    shared_link_download = None
+    # Attribute is overwritten below the class definition
+    shared_link_remove_expiry = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_add_expiration = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_add_password = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_allow_download_disabled = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_allow_download_enabled = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_change_audience = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_change_expiration = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_change_password = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_remove_expiration = None
+    # Attribute is overwritten below the class definition
+    shared_link_settings_remove_password = None
+    # Attribute is overwritten below the class definition
+    shared_link_share = None
+    # Attribute is overwritten below the class definition
+    shared_link_view = None
+    # Attribute is overwritten below the class definition
+    shared_note_opened = None
+    # Attribute is overwritten below the class definition
+    shmodel_group_share = None
+    # Attribute is overwritten below the class definition
+    showcase_access_granted = None
+    # Attribute is overwritten below the class definition
+    showcase_add_member = None
+    # Attribute is overwritten below the class definition
+    showcase_archived = None
+    # Attribute is overwritten below the class definition
+    showcase_created = None
+    # Attribute is overwritten below the class definition
+    showcase_delete_comment = None
+    # Attribute is overwritten below the class definition
+    showcase_edited = None
+    # Attribute is overwritten below the class definition
+    showcase_edit_comment = None
+    # Attribute is overwritten below the class definition
+    showcase_file_added = None
+    # Attribute is overwritten below the class definition
+    showcase_file_download = None
+    # Attribute is overwritten below the class definition
+    showcase_file_removed = None
+    # Attribute is overwritten below the class definition
+    showcase_file_view = None
+    # Attribute is overwritten below the class definition
+    showcase_permanently_deleted = None
+    # Attribute is overwritten below the class definition
+    showcase_post_comment = None
+    # Attribute is overwritten below the class definition
+    showcase_remove_member = None
+    # Attribute is overwritten below the class definition
+    showcase_renamed = None
+    # Attribute is overwritten below the class definition
+    showcase_request_access = None
+    # Attribute is overwritten below the class definition
+    showcase_resolve_comment = None
+    # Attribute is overwritten below the class definition
+    showcase_restored = None
+    # Attribute is overwritten below the class definition
+    showcase_trashed = None
+    # Attribute is overwritten below the class definition
+    showcase_trashed_deprecated = None
+    # Attribute is overwritten below the class definition
+    showcase_unresolve_comment = None
+    # Attribute is overwritten below the class definition
+    showcase_untrashed = None
+    # Attribute is overwritten below the class definition
+    showcase_untrashed_deprecated = None
+    # Attribute is overwritten below the class definition
+    showcase_view = None
+    # Attribute is overwritten below the class definition
+    sso_add_cert = None
+    # Attribute is overwritten below the class definition
+    sso_add_login_url = None
+    # Attribute is overwritten below the class definition
+    sso_add_logout_url = None
+    # Attribute is overwritten below the class definition
+    sso_change_cert = None
+    # Attribute is overwritten below the class definition
+    sso_change_login_url = None
+    # Attribute is overwritten below the class definition
+    sso_change_logout_url = None
+    # Attribute is overwritten below the class definition
+    sso_change_saml_identity_mode = None
+    # Attribute is overwritten below the class definition
+    sso_remove_cert = None
+    # Attribute is overwritten below the class definition
+    sso_remove_login_url = None
+    # Attribute is overwritten below the class definition
+    sso_remove_logout_url = None
+    # Attribute is overwritten below the class definition
+    team_folder_change_status = None
+    # Attribute is overwritten below the class definition
+    team_folder_create = None
+    # Attribute is overwritten below the class definition
+    team_folder_downgrade = None
+    # Attribute is overwritten below the class definition
+    team_folder_permanently_delete = None
+    # Attribute is overwritten below the class definition
+    team_folder_rename = None
+    # Attribute is overwritten below the class definition
+    team_selective_sync_settings_changed = None
+    # Attribute is overwritten below the class definition
+    account_capture_change_policy = None
+    # Attribute is overwritten below the class definition
+    allow_download_disabled = None
+    # Attribute is overwritten below the class definition
+    allow_download_enabled = None
+    # Attribute is overwritten below the class definition
+    camera_uploads_policy_changed = None
+    # Attribute is overwritten below the class definition
+    data_placement_restriction_change_policy = None
+    # Attribute is overwritten below the class definition
+    data_placement_restriction_satisfy_policy = None
+    # Attribute is overwritten below the class definition
+    device_approvals_add_exception = None
+    # Attribute is overwritten below the class definition
+    device_approvals_change_desktop_policy = None
+    # Attribute is overwritten below the class definition
+    device_approvals_change_mobile_policy = None
+    # Attribute is overwritten below the class definition
+    device_approvals_change_overage_action = None
+    # Attribute is overwritten below the class definition
+    device_approvals_change_unlink_action = None
+    # Attribute is overwritten below the class definition
+    device_approvals_remove_exception = None
+    # Attribute is overwritten below the class definition
+    directory_restrictions_add_members = None
+    # Attribute is overwritten below the class definition
+    directory_restrictions_remove_members = None
+    # Attribute is overwritten below the class definition
+    emm_add_exception = None
+    # Attribute is overwritten below the class definition
+    emm_change_policy = None
+    # Attribute is overwritten below the class definition
+    emm_remove_exception = None
+    # Attribute is overwritten below the class definition
+    extended_version_history_change_policy = None
+    # Attribute is overwritten below the class definition
+    file_comments_change_policy = None
+    # Attribute is overwritten below the class definition
+    file_locking_policy_changed = None
+    # Attribute is overwritten below the class definition
+    file_requests_change_policy = None
+    # Attribute is overwritten below the class definition
+    file_requests_emails_enabled = None
+    # Attribute is overwritten below the class definition
+    file_requests_emails_restricted_to_team_only = None
+    # Attribute is overwritten below the class definition
+    file_transfers_policy_changed = None
+    # Attribute is overwritten below the class definition
+    google_sso_change_policy = None
+    # Attribute is overwritten below the class definition
+    group_user_management_change_policy = None
+    # Attribute is overwritten below the class definition
+    integration_policy_changed = None
+    # Attribute is overwritten below the class definition
+    member_requests_change_policy = None
+    # Attribute is overwritten below the class definition
+    member_send_invite_policy_changed = None
+    # Attribute is overwritten below the class definition
+    member_space_limits_add_exception = None
+    # Attribute is overwritten below the class definition
+    member_space_limits_change_caps_type_policy = None
+    # Attribute is overwritten below the class definition
+    member_space_limits_change_policy = None
+    # Attribute is overwritten below the class definition
+    member_space_limits_remove_exception = None
+    # Attribute is overwritten below the class definition
+    member_suggestions_change_policy = None
+    # Attribute is overwritten below the class definition
+    microsoft_office_addin_change_policy = None
+    # Attribute is overwritten below the class definition
+    network_control_change_policy = None
+    # Attribute is overwritten below the class definition
+    paper_change_deployment_policy = None
+    # Attribute is overwritten below the class definition
+    paper_change_member_link_policy = None
+    # Attribute is overwritten below the class definition
+    paper_change_member_policy = None
+    # Attribute is overwritten below the class definition
+    paper_change_policy = None
+    # Attribute is overwritten below the class definition
+    paper_default_folder_policy_changed = None
+    # Attribute is overwritten below the class definition
+    paper_desktop_policy_changed = None
+    # Attribute is overwritten below the class definition
+    paper_enabled_users_group_addition = None
+    # Attribute is overwritten below the class definition
+    paper_enabled_users_group_removal = None
+    # Attribute is overwritten below the class definition
+    password_strength_requirements_change_policy = None
+    # Attribute is overwritten below the class definition
+    permanent_delete_change_policy = None
+    # Attribute is overwritten below the class definition
+    reseller_support_change_policy = None
+    # Attribute is overwritten below the class definition
+    rewind_policy_changed = None
+    # Attribute is overwritten below the class definition
+    sharing_change_folder_join_policy = None
+    # Attribute is overwritten below the class definition
+    sharing_change_link_policy = None
+    # Attribute is overwritten below the class definition
+    sharing_change_member_policy = None
+    # Attribute is overwritten below the class definition
+    showcase_change_download_policy = None
+    # Attribute is overwritten below the class definition
+    showcase_change_enabled_policy = None
+    # Attribute is overwritten below the class definition
+    showcase_change_external_sharing_policy = None
+    # Attribute is overwritten below the class definition
+    smarter_smart_sync_policy_changed = None
+    # Attribute is overwritten below the class definition
+    smart_sync_change_policy = None
+    # Attribute is overwritten below the class definition
+    smart_sync_not_opt_out = None
+    # Attribute is overwritten below the class definition
+    smart_sync_opt_out = None
+    # Attribute is overwritten below the class definition
+    sso_change_policy = None
+    # Attribute is overwritten below the class definition
+    team_extensions_policy_changed = None
+    # Attribute is overwritten below the class definition
+    team_selective_sync_policy_changed = None
+    # Attribute is overwritten below the class definition
+    team_sharing_whitelist_subjects_changed = None
+    # Attribute is overwritten below the class definition
+    tfa_add_exception = None
+    # Attribute is overwritten below the class definition
+    tfa_change_policy = None
+    # Attribute is overwritten below the class definition
+    tfa_remove_exception = None
+    # Attribute is overwritten below the class definition
+    two_account_change_policy = None
+    # Attribute is overwritten below the class definition
+    viewer_info_policy_changed = None
+    # Attribute is overwritten below the class definition
+    watermarking_policy_changed = None
+    # Attribute is overwritten below the class definition
+    web_sessions_change_active_session_limit = None
+    # Attribute is overwritten below the class definition
+    web_sessions_change_fixed_length_policy = None
+    # Attribute is overwritten below the class definition
+    web_sessions_change_idle_length_policy = None
+    # Attribute is overwritten below the class definition
+    team_merge_from = None
+    # Attribute is overwritten below the class definition
+    team_merge_to = None
+    # Attribute is overwritten below the class definition
+    team_profile_add_logo = None
+    # Attribute is overwritten below the class definition
+    team_profile_change_default_language = None
+    # Attribute is overwritten below the class definition
+    team_profile_change_logo = None
+    # Attribute is overwritten below the class definition
+    team_profile_change_name = None
+    # Attribute is overwritten below the class definition
+    team_profile_remove_logo = None
+    # Attribute is overwritten below the class definition
+    tfa_add_backup_phone = None
+    # Attribute is overwritten below the class definition
+    tfa_add_security_key = None
+    # Attribute is overwritten below the class definition
+    tfa_change_backup_phone = None
+    # Attribute is overwritten below the class definition
+    tfa_change_status = None
+    # Attribute is overwritten below the class definition
+    tfa_remove_backup_phone = None
+    # Attribute is overwritten below the class definition
+    tfa_remove_security_key = None
+    # Attribute is overwritten below the class definition
+    tfa_reset = None
+    # Attribute is overwritten below the class definition
+    changed_enterprise_admin_role = None
+    # Attribute is overwritten below the class definition
+    changed_enterprise_connected_team_status = None
+    # Attribute is overwritten below the class definition
+    ended_enterprise_admin_session = None
+    # Attribute is overwritten below the class definition
+    ended_enterprise_admin_session_deprecated = None
+    # Attribute is overwritten below the class definition
+    enterprise_settings_locking = None
+    # Attribute is overwritten below the class definition
+    guest_admin_change_status = None
+    # Attribute is overwritten below the class definition
+    started_enterprise_admin_session = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_accepted = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_accepted_shown_to_primary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_accepted_shown_to_secondary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_auto_canceled = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_canceled = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_canceled_shown_to_primary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_canceled_shown_to_secondary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_expired = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_expired_shown_to_primary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_expired_shown_to_secondary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_rejected_shown_to_primary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_rejected_shown_to_secondary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_reminder = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_reminder_shown_to_primary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_reminder_shown_to_secondary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_revoked = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_sent_shown_to_primary_team = None
+    # Attribute is overwritten below the class definition
+    team_merge_request_sent_shown_to_secondary_team = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_app_link_team(self):
+        """
+        Check if the union tag is ``app_link_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_link_team'
+
+    def is_app_link_user(self):
+        """
+        Check if the union tag is ``app_link_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_link_user'
+
+    def is_app_unlink_team(self):
+        """
+        Check if the union tag is ``app_unlink_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_unlink_team'
+
+    def is_app_unlink_user(self):
+        """
+        Check if the union tag is ``app_unlink_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_unlink_user'
+
+    def is_integration_connected(self):
+        """
+        Check if the union tag is ``integration_connected``.
+
+        :rtype: bool
+        """
+        return self._tag == 'integration_connected'
+
+    def is_integration_disconnected(self):
+        """
+        Check if the union tag is ``integration_disconnected``.
+
+        :rtype: bool
+        """
+        return self._tag == 'integration_disconnected'
+
+    def is_file_add_comment(self):
+        """
+        Check if the union tag is ``file_add_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_add_comment'
+
+    def is_file_change_comment_subscription(self):
+        """
+        Check if the union tag is ``file_change_comment_subscription``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_change_comment_subscription'
+
+    def is_file_delete_comment(self):
+        """
+        Check if the union tag is ``file_delete_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_delete_comment'
+
+    def is_file_edit_comment(self):
+        """
+        Check if the union tag is ``file_edit_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_edit_comment'
+
+    def is_file_like_comment(self):
+        """
+        Check if the union tag is ``file_like_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_like_comment'
+
+    def is_file_resolve_comment(self):
+        """
+        Check if the union tag is ``file_resolve_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_resolve_comment'
+
+    def is_file_unlike_comment(self):
+        """
+        Check if the union tag is ``file_unlike_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_unlike_comment'
+
+    def is_file_unresolve_comment(self):
+        """
+        Check if the union tag is ``file_unresolve_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_unresolve_comment'
+
+    def is_device_change_ip_desktop(self):
+        """
+        Check if the union tag is ``device_change_ip_desktop``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_change_ip_desktop'
+
+    def is_device_change_ip_mobile(self):
+        """
+        Check if the union tag is ``device_change_ip_mobile``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_change_ip_mobile'
+
+    def is_device_change_ip_web(self):
+        """
+        Check if the union tag is ``device_change_ip_web``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_change_ip_web'
+
+    def is_device_delete_on_unlink_fail(self):
+        """
+        Check if the union tag is ``device_delete_on_unlink_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_delete_on_unlink_fail'
+
+    def is_device_delete_on_unlink_success(self):
+        """
+        Check if the union tag is ``device_delete_on_unlink_success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_delete_on_unlink_success'
+
+    def is_device_link_fail(self):
+        """
+        Check if the union tag is ``device_link_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_link_fail'
+
+    def is_device_link_success(self):
+        """
+        Check if the union tag is ``device_link_success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_link_success'
+
+    def is_device_management_disabled(self):
+        """
+        Check if the union tag is ``device_management_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_management_disabled'
+
+    def is_device_management_enabled(self):
+        """
+        Check if the union tag is ``device_management_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_management_enabled'
+
+    def is_device_unlink(self):
+        """
+        Check if the union tag is ``device_unlink``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_unlink'
+
+    def is_emm_refresh_auth_token(self):
+        """
+        Check if the union tag is ``emm_refresh_auth_token``.
+
+        :rtype: bool
+        """
+        return self._tag == 'emm_refresh_auth_token'
+
+    def is_account_capture_change_availability(self):
+        """
+        Check if the union tag is ``account_capture_change_availability``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_capture_change_availability'
+
+    def is_account_capture_migrate_account(self):
+        """
+        Check if the union tag is ``account_capture_migrate_account``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_capture_migrate_account'
+
+    def is_account_capture_notification_emails_sent(self):
+        """
+        Check if the union tag is ``account_capture_notification_emails_sent``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_capture_notification_emails_sent'
+
+    def is_account_capture_relinquish_account(self):
+        """
+        Check if the union tag is ``account_capture_relinquish_account``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_capture_relinquish_account'
+
+    def is_disabled_domain_invites(self):
+        """
+        Check if the union tag is ``disabled_domain_invites``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled_domain_invites'
+
+    def is_domain_invites_approve_request_to_join_team(self):
+        """
+        Check if the union tag is ``domain_invites_approve_request_to_join_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_invites_approve_request_to_join_team'
+
+    def is_domain_invites_decline_request_to_join_team(self):
+        """
+        Check if the union tag is ``domain_invites_decline_request_to_join_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_invites_decline_request_to_join_team'
+
+    def is_domain_invites_email_existing_users(self):
+        """
+        Check if the union tag is ``domain_invites_email_existing_users``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_invites_email_existing_users'
+
+    def is_domain_invites_request_to_join_team(self):
+        """
+        Check if the union tag is ``domain_invites_request_to_join_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_invites_request_to_join_team'
+
+    def is_domain_invites_set_invite_new_user_pref_to_no(self):
+        """
+        Check if the union tag is ``domain_invites_set_invite_new_user_pref_to_no``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_invites_set_invite_new_user_pref_to_no'
+
+    def is_domain_invites_set_invite_new_user_pref_to_yes(self):
+        """
+        Check if the union tag is ``domain_invites_set_invite_new_user_pref_to_yes``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_invites_set_invite_new_user_pref_to_yes'
+
+    def is_domain_verification_add_domain_fail(self):
+        """
+        Check if the union tag is ``domain_verification_add_domain_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_verification_add_domain_fail'
+
+    def is_domain_verification_add_domain_success(self):
+        """
+        Check if the union tag is ``domain_verification_add_domain_success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_verification_add_domain_success'
+
+    def is_domain_verification_remove_domain(self):
+        """
+        Check if the union tag is ``domain_verification_remove_domain``.
+
+        :rtype: bool
+        """
+        return self._tag == 'domain_verification_remove_domain'
+
+    def is_enabled_domain_invites(self):
+        """
+        Check if the union tag is ``enabled_domain_invites``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled_domain_invites'
+
+    def is_create_folder(self):
+        """
+        Check if the union tag is ``create_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'create_folder'
+
+    def is_file_add(self):
+        """
+        Check if the union tag is ``file_add``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_add'
+
+    def is_file_copy(self):
+        """
+        Check if the union tag is ``file_copy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_copy'
+
+    def is_file_delete(self):
+        """
+        Check if the union tag is ``file_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_delete'
+
+    def is_file_download(self):
+        """
+        Check if the union tag is ``file_download``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_download'
+
+    def is_file_edit(self):
+        """
+        Check if the union tag is ``file_edit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_edit'
+
+    def is_file_get_copy_reference(self):
+        """
+        Check if the union tag is ``file_get_copy_reference``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_get_copy_reference'
+
+    def is_file_locking_lock_status_changed(self):
+        """
+        Check if the union tag is ``file_locking_lock_status_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_locking_lock_status_changed'
+
+    def is_file_move(self):
+        """
+        Check if the union tag is ``file_move``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_move'
+
+    def is_file_permanently_delete(self):
+        """
+        Check if the union tag is ``file_permanently_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_permanently_delete'
+
+    def is_file_preview(self):
+        """
+        Check if the union tag is ``file_preview``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_preview'
+
+    def is_file_rename(self):
+        """
+        Check if the union tag is ``file_rename``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_rename'
+
+    def is_file_restore(self):
+        """
+        Check if the union tag is ``file_restore``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_restore'
+
+    def is_file_revert(self):
+        """
+        Check if the union tag is ``file_revert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_revert'
+
+    def is_file_rollback_changes(self):
+        """
+        Check if the union tag is ``file_rollback_changes``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_rollback_changes'
+
+    def is_file_save_copy_reference(self):
+        """
+        Check if the union tag is ``file_save_copy_reference``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_save_copy_reference'
+
+    def is_folder_overview_description_changed(self):
+        """
+        Check if the union tag is ``folder_overview_description_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_description_changed'
+
+    def is_folder_overview_item_pinned(self):
+        """
+        Check if the union tag is ``folder_overview_item_pinned``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_item_pinned'
+
+    def is_folder_overview_item_unpinned(self):
+        """
+        Check if the union tag is ``folder_overview_item_unpinned``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_overview_item_unpinned'
+
+    def is_rewind_folder(self):
+        """
+        Check if the union tag is ``rewind_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rewind_folder'
+
+    def is_file_request_change(self):
+        """
+        Check if the union tag is ``file_request_change``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_request_change'
+
+    def is_file_request_close(self):
+        """
+        Check if the union tag is ``file_request_close``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_request_close'
+
+    def is_file_request_create(self):
+        """
+        Check if the union tag is ``file_request_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_request_create'
+
+    def is_file_request_delete(self):
+        """
+        Check if the union tag is ``file_request_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_request_delete'
+
+    def is_file_request_receive_file(self):
+        """
+        Check if the union tag is ``file_request_receive_file``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_request_receive_file'
+
+    def is_group_add_external_id(self):
+        """
+        Check if the union tag is ``group_add_external_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_add_external_id'
+
+    def is_group_add_member(self):
+        """
+        Check if the union tag is ``group_add_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_add_member'
+
+    def is_group_change_external_id(self):
+        """
+        Check if the union tag is ``group_change_external_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_change_external_id'
+
+    def is_group_change_management_type(self):
+        """
+        Check if the union tag is ``group_change_management_type``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_change_management_type'
+
+    def is_group_change_member_role(self):
+        """
+        Check if the union tag is ``group_change_member_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_change_member_role'
+
+    def is_group_create(self):
+        """
+        Check if the union tag is ``group_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_create'
+
+    def is_group_delete(self):
+        """
+        Check if the union tag is ``group_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_delete'
+
+    def is_group_description_updated(self):
+        """
+        Check if the union tag is ``group_description_updated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_description_updated'
+
+    def is_group_join_policy_updated(self):
+        """
+        Check if the union tag is ``group_join_policy_updated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_join_policy_updated'
+
+    def is_group_moved(self):
+        """
+        Check if the union tag is ``group_moved``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_moved'
+
+    def is_group_remove_external_id(self):
+        """
+        Check if the union tag is ``group_remove_external_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_remove_external_id'
+
+    def is_group_remove_member(self):
+        """
+        Check if the union tag is ``group_remove_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_remove_member'
+
+    def is_group_rename(self):
+        """
+        Check if the union tag is ``group_rename``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_rename'
+
+    def is_legal_holds_activate_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_activate_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_activate_a_hold'
+
+    def is_legal_holds_add_members(self):
+        """
+        Check if the union tag is ``legal_holds_add_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_add_members'
+
+    def is_legal_holds_change_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_details'
+
+    def is_legal_holds_change_hold_name(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_name'
+
+    def is_legal_holds_export_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_export_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_a_hold'
+
+    def is_legal_holds_export_cancelled(self):
+        """
+        Check if the union tag is ``legal_holds_export_cancelled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_cancelled'
+
+    def is_legal_holds_export_downloaded(self):
+        """
+        Check if the union tag is ``legal_holds_export_downloaded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_downloaded'
+
+    def is_legal_holds_export_removed(self):
+        """
+        Check if the union tag is ``legal_holds_export_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_removed'
+
+    def is_legal_holds_release_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_release_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_release_a_hold'
+
+    def is_legal_holds_remove_members(self):
+        """
+        Check if the union tag is ``legal_holds_remove_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_remove_members'
+
+    def is_legal_holds_report_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_report_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_report_a_hold'
+
+    def is_account_lock_or_unlocked(self):
+        """
+        Check if the union tag is ``account_lock_or_unlocked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_lock_or_unlocked'
+
+    def is_emm_error(self):
+        """
+        Check if the union tag is ``emm_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'emm_error'
+
+    def is_guest_admin_signed_in_via_trusted_teams(self):
+        """
+        Check if the union tag is ``guest_admin_signed_in_via_trusted_teams``.
+
+        :rtype: bool
+        """
+        return self._tag == 'guest_admin_signed_in_via_trusted_teams'
+
+    def is_guest_admin_signed_out_via_trusted_teams(self):
+        """
+        Check if the union tag is ``guest_admin_signed_out_via_trusted_teams``.
+
+        :rtype: bool
+        """
+        return self._tag == 'guest_admin_signed_out_via_trusted_teams'
+
+    def is_login_fail(self):
+        """
+        Check if the union tag is ``login_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'login_fail'
+
+    def is_login_success(self):
+        """
+        Check if the union tag is ``login_success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'login_success'
+
+    def is_logout(self):
+        """
+        Check if the union tag is ``logout``.
+
+        :rtype: bool
+        """
+        return self._tag == 'logout'
+
+    def is_reseller_support_session_end(self):
+        """
+        Check if the union tag is ``reseller_support_session_end``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reseller_support_session_end'
+
+    def is_reseller_support_session_start(self):
+        """
+        Check if the union tag is ``reseller_support_session_start``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reseller_support_session_start'
+
+    def is_sign_in_as_session_end(self):
+        """
+        Check if the union tag is ``sign_in_as_session_end``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sign_in_as_session_end'
+
+    def is_sign_in_as_session_start(self):
+        """
+        Check if the union tag is ``sign_in_as_session_start``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sign_in_as_session_start'
+
+    def is_sso_error(self):
+        """
+        Check if the union tag is ``sso_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_error'
+
+    def is_create_team_invite_link(self):
+        """
+        Check if the union tag is ``create_team_invite_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'create_team_invite_link'
+
+    def is_delete_team_invite_link(self):
+        """
+        Check if the union tag is ``delete_team_invite_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'delete_team_invite_link'
+
+    def is_member_add_external_id(self):
+        """
+        Check if the union tag is ``member_add_external_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_add_external_id'
+
+    def is_member_add_name(self):
+        """
+        Check if the union tag is ``member_add_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_add_name'
+
+    def is_member_change_admin_role(self):
+        """
+        Check if the union tag is ``member_change_admin_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_admin_role'
+
+    def is_member_change_email(self):
+        """
+        Check if the union tag is ``member_change_email``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_email'
+
+    def is_member_change_external_id(self):
+        """
+        Check if the union tag is ``member_change_external_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_external_id'
+
+    def is_member_change_membership_type(self):
+        """
+        Check if the union tag is ``member_change_membership_type``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_membership_type'
+
+    def is_member_change_name(self):
+        """
+        Check if the union tag is ``member_change_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_name'
+
+    def is_member_change_status(self):
+        """
+        Check if the union tag is ``member_change_status``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_status'
+
+    def is_member_delete_manual_contacts(self):
+        """
+        Check if the union tag is ``member_delete_manual_contacts``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_delete_manual_contacts'
+
+    def is_member_delete_profile_photo(self):
+        """
+        Check if the union tag is ``member_delete_profile_photo``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_delete_profile_photo'
+
+    def is_member_permanently_delete_account_contents(self):
+        """
+        Check if the union tag is ``member_permanently_delete_account_contents``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_permanently_delete_account_contents'
+
+    def is_member_remove_external_id(self):
+        """
+        Check if the union tag is ``member_remove_external_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_remove_external_id'
+
+    def is_member_set_profile_photo(self):
+        """
+        Check if the union tag is ``member_set_profile_photo``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_set_profile_photo'
+
+    def is_member_space_limits_add_custom_quota(self):
+        """
+        Check if the union tag is ``member_space_limits_add_custom_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_add_custom_quota'
+
+    def is_member_space_limits_change_custom_quota(self):
+        """
+        Check if the union tag is ``member_space_limits_change_custom_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_change_custom_quota'
+
+    def is_member_space_limits_change_status(self):
+        """
+        Check if the union tag is ``member_space_limits_change_status``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_change_status'
+
+    def is_member_space_limits_remove_custom_quota(self):
+        """
+        Check if the union tag is ``member_space_limits_remove_custom_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_remove_custom_quota'
+
+    def is_member_suggest(self):
+        """
+        Check if the union tag is ``member_suggest``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_suggest'
+
+    def is_member_transfer_account_contents(self):
+        """
+        Check if the union tag is ``member_transfer_account_contents``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_transfer_account_contents'
+
+    def is_pending_secondary_email_added(self):
+        """
+        Check if the union tag is ``pending_secondary_email_added``.
+
+        :rtype: bool
+        """
+        return self._tag == 'pending_secondary_email_added'
+
+    def is_secondary_email_deleted(self):
+        """
+        Check if the union tag is ``secondary_email_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_email_deleted'
+
+    def is_secondary_email_verified(self):
+        """
+        Check if the union tag is ``secondary_email_verified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_email_verified'
+
+    def is_secondary_mails_policy_changed(self):
+        """
+        Check if the union tag is ``secondary_mails_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'secondary_mails_policy_changed'
+
+    def is_binder_add_page(self):
+        """
+        Check if the union tag is ``binder_add_page``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_add_page'
+
+    def is_binder_add_section(self):
+        """
+        Check if the union tag is ``binder_add_section``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_add_section'
+
+    def is_binder_remove_page(self):
+        """
+        Check if the union tag is ``binder_remove_page``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_remove_page'
+
+    def is_binder_remove_section(self):
+        """
+        Check if the union tag is ``binder_remove_section``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_remove_section'
+
+    def is_binder_rename_page(self):
+        """
+        Check if the union tag is ``binder_rename_page``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_rename_page'
+
+    def is_binder_rename_section(self):
+        """
+        Check if the union tag is ``binder_rename_section``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_rename_section'
+
+    def is_binder_reorder_page(self):
+        """
+        Check if the union tag is ``binder_reorder_page``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_reorder_page'
+
+    def is_binder_reorder_section(self):
+        """
+        Check if the union tag is ``binder_reorder_section``.
+
+        :rtype: bool
+        """
+        return self._tag == 'binder_reorder_section'
+
+    def is_paper_content_add_member(self):
+        """
+        Check if the union tag is ``paper_content_add_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_add_member'
+
+    def is_paper_content_add_to_folder(self):
+        """
+        Check if the union tag is ``paper_content_add_to_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_add_to_folder'
+
+    def is_paper_content_archive(self):
+        """
+        Check if the union tag is ``paper_content_archive``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_archive'
+
+    def is_paper_content_create(self):
+        """
+        Check if the union tag is ``paper_content_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_create'
+
+    def is_paper_content_permanently_delete(self):
+        """
+        Check if the union tag is ``paper_content_permanently_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_permanently_delete'
+
+    def is_paper_content_remove_from_folder(self):
+        """
+        Check if the union tag is ``paper_content_remove_from_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_remove_from_folder'
+
+    def is_paper_content_remove_member(self):
+        """
+        Check if the union tag is ``paper_content_remove_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_remove_member'
+
+    def is_paper_content_rename(self):
+        """
+        Check if the union tag is ``paper_content_rename``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_rename'
+
+    def is_paper_content_restore(self):
+        """
+        Check if the union tag is ``paper_content_restore``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_content_restore'
+
+    def is_paper_doc_add_comment(self):
+        """
+        Check if the union tag is ``paper_doc_add_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_add_comment'
+
+    def is_paper_doc_change_member_role(self):
+        """
+        Check if the union tag is ``paper_doc_change_member_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_change_member_role'
+
+    def is_paper_doc_change_sharing_policy(self):
+        """
+        Check if the union tag is ``paper_doc_change_sharing_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_change_sharing_policy'
+
+    def is_paper_doc_change_subscription(self):
+        """
+        Check if the union tag is ``paper_doc_change_subscription``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_change_subscription'
+
+    def is_paper_doc_deleted(self):
+        """
+        Check if the union tag is ``paper_doc_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_deleted'
+
+    def is_paper_doc_delete_comment(self):
+        """
+        Check if the union tag is ``paper_doc_delete_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_delete_comment'
+
+    def is_paper_doc_download(self):
+        """
+        Check if the union tag is ``paper_doc_download``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_download'
+
+    def is_paper_doc_edit(self):
+        """
+        Check if the union tag is ``paper_doc_edit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_edit'
+
+    def is_paper_doc_edit_comment(self):
+        """
+        Check if the union tag is ``paper_doc_edit_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_edit_comment'
+
+    def is_paper_doc_followed(self):
+        """
+        Check if the union tag is ``paper_doc_followed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_followed'
+
+    def is_paper_doc_mention(self):
+        """
+        Check if the union tag is ``paper_doc_mention``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_mention'
+
+    def is_paper_doc_ownership_changed(self):
+        """
+        Check if the union tag is ``paper_doc_ownership_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_ownership_changed'
+
+    def is_paper_doc_request_access(self):
+        """
+        Check if the union tag is ``paper_doc_request_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_request_access'
+
+    def is_paper_doc_resolve_comment(self):
+        """
+        Check if the union tag is ``paper_doc_resolve_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_resolve_comment'
+
+    def is_paper_doc_revert(self):
+        """
+        Check if the union tag is ``paper_doc_revert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_revert'
+
+    def is_paper_doc_slack_share(self):
+        """
+        Check if the union tag is ``paper_doc_slack_share``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_slack_share'
+
+    def is_paper_doc_team_invite(self):
+        """
+        Check if the union tag is ``paper_doc_team_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_team_invite'
+
+    def is_paper_doc_trashed(self):
+        """
+        Check if the union tag is ``paper_doc_trashed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_trashed'
+
+    def is_paper_doc_unresolve_comment(self):
+        """
+        Check if the union tag is ``paper_doc_unresolve_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_unresolve_comment'
+
+    def is_paper_doc_untrashed(self):
+        """
+        Check if the union tag is ``paper_doc_untrashed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_untrashed'
+
+    def is_paper_doc_view(self):
+        """
+        Check if the union tag is ``paper_doc_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_doc_view'
+
+    def is_paper_external_view_allow(self):
+        """
+        Check if the union tag is ``paper_external_view_allow``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_external_view_allow'
+
+    def is_paper_external_view_default_team(self):
+        """
+        Check if the union tag is ``paper_external_view_default_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_external_view_default_team'
+
+    def is_paper_external_view_forbid(self):
+        """
+        Check if the union tag is ``paper_external_view_forbid``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_external_view_forbid'
+
+    def is_paper_folder_change_subscription(self):
+        """
+        Check if the union tag is ``paper_folder_change_subscription``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_folder_change_subscription'
+
+    def is_paper_folder_deleted(self):
+        """
+        Check if the union tag is ``paper_folder_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_folder_deleted'
+
+    def is_paper_folder_followed(self):
+        """
+        Check if the union tag is ``paper_folder_followed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_folder_followed'
+
+    def is_paper_folder_team_invite(self):
+        """
+        Check if the union tag is ``paper_folder_team_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_folder_team_invite'
+
+    def is_paper_published_link_change_permission(self):
+        """
+        Check if the union tag is ``paper_published_link_change_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_published_link_change_permission'
+
+    def is_paper_published_link_create(self):
+        """
+        Check if the union tag is ``paper_published_link_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_published_link_create'
+
+    def is_paper_published_link_disabled(self):
+        """
+        Check if the union tag is ``paper_published_link_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_published_link_disabled'
+
+    def is_paper_published_link_view(self):
+        """
+        Check if the union tag is ``paper_published_link_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_published_link_view'
+
+    def is_password_change(self):
+        """
+        Check if the union tag is ``password_change``.
+
+        :rtype: bool
+        """
+        return self._tag == 'password_change'
+
+    def is_password_reset(self):
+        """
+        Check if the union tag is ``password_reset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'password_reset'
+
+    def is_password_reset_all(self):
+        """
+        Check if the union tag is ``password_reset_all``.
+
+        :rtype: bool
+        """
+        return self._tag == 'password_reset_all'
+
+    def is_emm_create_exceptions_report(self):
+        """
+        Check if the union tag is ``emm_create_exceptions_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'emm_create_exceptions_report'
+
+    def is_emm_create_usage_report(self):
+        """
+        Check if the union tag is ``emm_create_usage_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'emm_create_usage_report'
+
+    def is_export_members_report(self):
+        """
+        Check if the union tag is ``export_members_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'export_members_report'
+
+    def is_export_members_report_fail(self):
+        """
+        Check if the union tag is ``export_members_report_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'export_members_report_fail'
+
+    def is_no_expiration_link_gen_create_report(self):
+        """
+        Check if the union tag is ``no_expiration_link_gen_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_expiration_link_gen_create_report'
+
+    def is_no_expiration_link_gen_report_failed(self):
+        """
+        Check if the union tag is ``no_expiration_link_gen_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_expiration_link_gen_report_failed'
+
+    def is_no_password_link_gen_create_report(self):
+        """
+        Check if the union tag is ``no_password_link_gen_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_gen_create_report'
+
+    def is_no_password_link_gen_report_failed(self):
+        """
+        Check if the union tag is ``no_password_link_gen_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_gen_report_failed'
+
+    def is_no_password_link_view_create_report(self):
+        """
+        Check if the union tag is ``no_password_link_view_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_view_create_report'
+
+    def is_no_password_link_view_report_failed(self):
+        """
+        Check if the union tag is ``no_password_link_view_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_password_link_view_report_failed'
+
+    def is_outdated_link_view_create_report(self):
+        """
+        Check if the union tag is ``outdated_link_view_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'outdated_link_view_create_report'
+
+    def is_outdated_link_view_report_failed(self):
+        """
+        Check if the union tag is ``outdated_link_view_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'outdated_link_view_report_failed'
+
+    def is_paper_admin_export_start(self):
+        """
+        Check if the union tag is ``paper_admin_export_start``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_admin_export_start'
+
+    def is_smart_sync_create_admin_privilege_report(self):
+        """
+        Check if the union tag is ``smart_sync_create_admin_privilege_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'smart_sync_create_admin_privilege_report'
+
+    def is_team_activity_create_report(self):
+        """
+        Check if the union tag is ``team_activity_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_activity_create_report'
+
+    def is_team_activity_create_report_fail(self):
+        """
+        Check if the union tag is ``team_activity_create_report_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_activity_create_report_fail'
+
+    def is_collection_share(self):
+        """
+        Check if the union tag is ``collection_share``.
+
+        :rtype: bool
+        """
+        return self._tag == 'collection_share'
+
+    def is_file_transfers_file_add(self):
+        """
+        Check if the union tag is ``file_transfers_file_add``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_file_add'
+
+    def is_file_transfers_transfer_delete(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_delete'
+
+    def is_file_transfers_transfer_download(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_download``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_download'
+
+    def is_file_transfers_transfer_send(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_send``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_send'
+
+    def is_file_transfers_transfer_view(self):
+        """
+        Check if the union tag is ``file_transfers_transfer_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_transfer_view'
+
+    def is_note_acl_invite_only(self):
+        """
+        Check if the union tag is ``note_acl_invite_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'note_acl_invite_only'
+
+    def is_note_acl_link(self):
+        """
+        Check if the union tag is ``note_acl_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'note_acl_link'
+
+    def is_note_acl_team_link(self):
+        """
+        Check if the union tag is ``note_acl_team_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'note_acl_team_link'
+
+    def is_note_shared(self):
+        """
+        Check if the union tag is ``note_shared``.
+
+        :rtype: bool
+        """
+        return self._tag == 'note_shared'
+
+    def is_note_share_receive(self):
+        """
+        Check if the union tag is ``note_share_receive``.
+
+        :rtype: bool
+        """
+        return self._tag == 'note_share_receive'
+
+    def is_open_note_shared(self):
+        """
+        Check if the union tag is ``open_note_shared``.
+
+        :rtype: bool
+        """
+        return self._tag == 'open_note_shared'
+
+    def is_sf_add_group(self):
+        """
+        Check if the union tag is ``sf_add_group``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_add_group'
+
+    def is_sf_allow_non_members_to_view_shared_links(self):
+        """
+        Check if the union tag is ``sf_allow_non_members_to_view_shared_links``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_allow_non_members_to_view_shared_links'
+
+    def is_sf_external_invite_warn(self):
+        """
+        Check if the union tag is ``sf_external_invite_warn``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_external_invite_warn'
+
+    def is_sf_fb_invite(self):
+        """
+        Check if the union tag is ``sf_fb_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_invite'
+
+    def is_sf_fb_invite_change_role(self):
+        """
+        Check if the union tag is ``sf_fb_invite_change_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_invite_change_role'
+
+    def is_sf_fb_uninvite(self):
+        """
+        Check if the union tag is ``sf_fb_uninvite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_fb_uninvite'
+
+    def is_sf_invite_group(self):
+        """
+        Check if the union tag is ``sf_invite_group``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_invite_group'
+
+    def is_sf_team_grant_access(self):
+        """
+        Check if the union tag is ``sf_team_grant_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_team_grant_access'
+
+    def is_sf_team_invite(self):
+        """
+        Check if the union tag is ``sf_team_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_team_invite'
+
+    def is_sf_team_invite_change_role(self):
+        """
+        Check if the union tag is ``sf_team_invite_change_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_team_invite_change_role'
+
+    def is_sf_team_join(self):
+        """
+        Check if the union tag is ``sf_team_join``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_team_join'
+
+    def is_sf_team_join_from_oob_link(self):
+        """
+        Check if the union tag is ``sf_team_join_from_oob_link``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_team_join_from_oob_link'
+
+    def is_sf_team_uninvite(self):
+        """
+        Check if the union tag is ``sf_team_uninvite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sf_team_uninvite'
+
+    def is_shared_content_add_invitees(self):
+        """
+        Check if the union tag is ``shared_content_add_invitees``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_add_invitees'
+
+    def is_shared_content_add_link_expiry(self):
+        """
+        Check if the union tag is ``shared_content_add_link_expiry``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_add_link_expiry'
+
+    def is_shared_content_add_link_password(self):
+        """
+        Check if the union tag is ``shared_content_add_link_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_add_link_password'
+
+    def is_shared_content_add_member(self):
+        """
+        Check if the union tag is ``shared_content_add_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_add_member'
+
+    def is_shared_content_change_downloads_policy(self):
+        """
+        Check if the union tag is ``shared_content_change_downloads_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_change_downloads_policy'
+
+    def is_shared_content_change_invitee_role(self):
+        """
+        Check if the union tag is ``shared_content_change_invitee_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_change_invitee_role'
+
+    def is_shared_content_change_link_audience(self):
+        """
+        Check if the union tag is ``shared_content_change_link_audience``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_change_link_audience'
+
+    def is_shared_content_change_link_expiry(self):
+        """
+        Check if the union tag is ``shared_content_change_link_expiry``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_change_link_expiry'
+
+    def is_shared_content_change_link_password(self):
+        """
+        Check if the union tag is ``shared_content_change_link_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_change_link_password'
+
+    def is_shared_content_change_member_role(self):
+        """
+        Check if the union tag is ``shared_content_change_member_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_change_member_role'
+
+    def is_shared_content_change_viewer_info_policy(self):
+        """
+        Check if the union tag is ``shared_content_change_viewer_info_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_change_viewer_info_policy'
+
+    def is_shared_content_claim_invitation(self):
+        """
+        Check if the union tag is ``shared_content_claim_invitation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_claim_invitation'
+
+    def is_shared_content_copy(self):
+        """
+        Check if the union tag is ``shared_content_copy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_copy'
+
+    def is_shared_content_download(self):
+        """
+        Check if the union tag is ``shared_content_download``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_download'
+
+    def is_shared_content_relinquish_membership(self):
+        """
+        Check if the union tag is ``shared_content_relinquish_membership``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_relinquish_membership'
+
+    def is_shared_content_remove_invitees(self):
+        """
+        Check if the union tag is ``shared_content_remove_invitees``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_remove_invitees'
+
+    def is_shared_content_remove_link_expiry(self):
+        """
+        Check if the union tag is ``shared_content_remove_link_expiry``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_remove_link_expiry'
+
+    def is_shared_content_remove_link_password(self):
+        """
+        Check if the union tag is ``shared_content_remove_link_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_remove_link_password'
+
+    def is_shared_content_remove_member(self):
+        """
+        Check if the union tag is ``shared_content_remove_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_remove_member'
+
+    def is_shared_content_request_access(self):
+        """
+        Check if the union tag is ``shared_content_request_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_request_access'
+
+    def is_shared_content_restore_invitees(self):
+        """
+        Check if the union tag is ``shared_content_restore_invitees``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_restore_invitees'
+
+    def is_shared_content_restore_member(self):
+        """
+        Check if the union tag is ``shared_content_restore_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_restore_member'
+
+    def is_shared_content_unshare(self):
+        """
+        Check if the union tag is ``shared_content_unshare``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_unshare'
+
+    def is_shared_content_view(self):
+        """
+        Check if the union tag is ``shared_content_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_content_view'
+
+    def is_shared_folder_change_link_policy(self):
+        """
+        Check if the union tag is ``shared_folder_change_link_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_change_link_policy'
+
+    def is_shared_folder_change_members_inheritance_policy(self):
+        """
+        Check if the union tag is ``shared_folder_change_members_inheritance_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_change_members_inheritance_policy'
+
+    def is_shared_folder_change_members_management_policy(self):
+        """
+        Check if the union tag is ``shared_folder_change_members_management_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_change_members_management_policy'
+
+    def is_shared_folder_change_members_policy(self):
+        """
+        Check if the union tag is ``shared_folder_change_members_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_change_members_policy'
+
+    def is_shared_folder_create(self):
+        """
+        Check if the union tag is ``shared_folder_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_create'
+
+    def is_shared_folder_decline_invitation(self):
+        """
+        Check if the union tag is ``shared_folder_decline_invitation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_decline_invitation'
+
+    def is_shared_folder_mount(self):
+        """
+        Check if the union tag is ``shared_folder_mount``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_mount'
+
+    def is_shared_folder_nest(self):
+        """
+        Check if the union tag is ``shared_folder_nest``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_nest'
+
+    def is_shared_folder_transfer_ownership(self):
+        """
+        Check if the union tag is ``shared_folder_transfer_ownership``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_transfer_ownership'
+
+    def is_shared_folder_unmount(self):
+        """
+        Check if the union tag is ``shared_folder_unmount``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_folder_unmount'
+
+    def is_shared_link_add_expiry(self):
+        """
+        Check if the union tag is ``shared_link_add_expiry``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_add_expiry'
+
+    def is_shared_link_change_expiry(self):
+        """
+        Check if the union tag is ``shared_link_change_expiry``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_change_expiry'
+
+    def is_shared_link_change_visibility(self):
+        """
+        Check if the union tag is ``shared_link_change_visibility``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_change_visibility'
+
+    def is_shared_link_copy(self):
+        """
+        Check if the union tag is ``shared_link_copy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_copy'
+
+    def is_shared_link_create(self):
+        """
+        Check if the union tag is ``shared_link_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_create'
+
+    def is_shared_link_disable(self):
+        """
+        Check if the union tag is ``shared_link_disable``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_disable'
+
+    def is_shared_link_download(self):
+        """
+        Check if the union tag is ``shared_link_download``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_download'
+
+    def is_shared_link_remove_expiry(self):
+        """
+        Check if the union tag is ``shared_link_remove_expiry``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_remove_expiry'
+
+    def is_shared_link_settings_add_expiration(self):
+        """
+        Check if the union tag is ``shared_link_settings_add_expiration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_add_expiration'
+
+    def is_shared_link_settings_add_password(self):
+        """
+        Check if the union tag is ``shared_link_settings_add_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_add_password'
+
+    def is_shared_link_settings_allow_download_disabled(self):
+        """
+        Check if the union tag is ``shared_link_settings_allow_download_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_allow_download_disabled'
+
+    def is_shared_link_settings_allow_download_enabled(self):
+        """
+        Check if the union tag is ``shared_link_settings_allow_download_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_allow_download_enabled'
+
+    def is_shared_link_settings_change_audience(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_audience``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_audience'
+
+    def is_shared_link_settings_change_expiration(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_expiration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_expiration'
+
+    def is_shared_link_settings_change_password(self):
+        """
+        Check if the union tag is ``shared_link_settings_change_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_change_password'
+
+    def is_shared_link_settings_remove_expiration(self):
+        """
+        Check if the union tag is ``shared_link_settings_remove_expiration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_remove_expiration'
+
+    def is_shared_link_settings_remove_password(self):
+        """
+        Check if the union tag is ``shared_link_settings_remove_password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_settings_remove_password'
+
+    def is_shared_link_share(self):
+        """
+        Check if the union tag is ``shared_link_share``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_share'
+
+    def is_shared_link_view(self):
+        """
+        Check if the union tag is ``shared_link_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_link_view'
+
+    def is_shared_note_opened(self):
+        """
+        Check if the union tag is ``shared_note_opened``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shared_note_opened'
+
+    def is_shmodel_group_share(self):
+        """
+        Check if the union tag is ``shmodel_group_share``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shmodel_group_share'
+
+    def is_showcase_access_granted(self):
+        """
+        Check if the union tag is ``showcase_access_granted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_access_granted'
+
+    def is_showcase_add_member(self):
+        """
+        Check if the union tag is ``showcase_add_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_add_member'
+
+    def is_showcase_archived(self):
+        """
+        Check if the union tag is ``showcase_archived``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_archived'
+
+    def is_showcase_created(self):
+        """
+        Check if the union tag is ``showcase_created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_created'
+
+    def is_showcase_delete_comment(self):
+        """
+        Check if the union tag is ``showcase_delete_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_delete_comment'
+
+    def is_showcase_edited(self):
+        """
+        Check if the union tag is ``showcase_edited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_edited'
+
+    def is_showcase_edit_comment(self):
+        """
+        Check if the union tag is ``showcase_edit_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_edit_comment'
+
+    def is_showcase_file_added(self):
+        """
+        Check if the union tag is ``showcase_file_added``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_added'
+
+    def is_showcase_file_download(self):
+        """
+        Check if the union tag is ``showcase_file_download``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_download'
+
+    def is_showcase_file_removed(self):
+        """
+        Check if the union tag is ``showcase_file_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_removed'
+
+    def is_showcase_file_view(self):
+        """
+        Check if the union tag is ``showcase_file_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_file_view'
+
+    def is_showcase_permanently_deleted(self):
+        """
+        Check if the union tag is ``showcase_permanently_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_permanently_deleted'
+
+    def is_showcase_post_comment(self):
+        """
+        Check if the union tag is ``showcase_post_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_post_comment'
+
+    def is_showcase_remove_member(self):
+        """
+        Check if the union tag is ``showcase_remove_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_remove_member'
+
+    def is_showcase_renamed(self):
+        """
+        Check if the union tag is ``showcase_renamed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_renamed'
+
+    def is_showcase_request_access(self):
+        """
+        Check if the union tag is ``showcase_request_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_request_access'
+
+    def is_showcase_resolve_comment(self):
+        """
+        Check if the union tag is ``showcase_resolve_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_resolve_comment'
+
+    def is_showcase_restored(self):
+        """
+        Check if the union tag is ``showcase_restored``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_restored'
+
+    def is_showcase_trashed(self):
+        """
+        Check if the union tag is ``showcase_trashed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_trashed'
+
+    def is_showcase_trashed_deprecated(self):
+        """
+        Check if the union tag is ``showcase_trashed_deprecated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_trashed_deprecated'
+
+    def is_showcase_unresolve_comment(self):
+        """
+        Check if the union tag is ``showcase_unresolve_comment``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_unresolve_comment'
+
+    def is_showcase_untrashed(self):
+        """
+        Check if the union tag is ``showcase_untrashed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_untrashed'
+
+    def is_showcase_untrashed_deprecated(self):
+        """
+        Check if the union tag is ``showcase_untrashed_deprecated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_untrashed_deprecated'
+
+    def is_showcase_view(self):
+        """
+        Check if the union tag is ``showcase_view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_view'
+
+    def is_sso_add_cert(self):
+        """
+        Check if the union tag is ``sso_add_cert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_add_cert'
+
+    def is_sso_add_login_url(self):
+        """
+        Check if the union tag is ``sso_add_login_url``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_add_login_url'
+
+    def is_sso_add_logout_url(self):
+        """
+        Check if the union tag is ``sso_add_logout_url``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_add_logout_url'
+
+    def is_sso_change_cert(self):
+        """
+        Check if the union tag is ``sso_change_cert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_change_cert'
+
+    def is_sso_change_login_url(self):
+        """
+        Check if the union tag is ``sso_change_login_url``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_change_login_url'
+
+    def is_sso_change_logout_url(self):
+        """
+        Check if the union tag is ``sso_change_logout_url``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_change_logout_url'
+
+    def is_sso_change_saml_identity_mode(self):
+        """
+        Check if the union tag is ``sso_change_saml_identity_mode``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_change_saml_identity_mode'
+
+    def is_sso_remove_cert(self):
+        """
+        Check if the union tag is ``sso_remove_cert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_remove_cert'
+
+    def is_sso_remove_login_url(self):
+        """
+        Check if the union tag is ``sso_remove_login_url``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_remove_login_url'
+
+    def is_sso_remove_logout_url(self):
+        """
+        Check if the union tag is ``sso_remove_logout_url``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_remove_logout_url'
+
+    def is_team_folder_change_status(self):
+        """
+        Check if the union tag is ``team_folder_change_status``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder_change_status'
+
+    def is_team_folder_create(self):
+        """
+        Check if the union tag is ``team_folder_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder_create'
+
+    def is_team_folder_downgrade(self):
+        """
+        Check if the union tag is ``team_folder_downgrade``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder_downgrade'
+
+    def is_team_folder_permanently_delete(self):
+        """
+        Check if the union tag is ``team_folder_permanently_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder_permanently_delete'
+
+    def is_team_folder_rename(self):
+        """
+        Check if the union tag is ``team_folder_rename``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folder_rename'
+
+    def is_team_selective_sync_settings_changed(self):
+        """
+        Check if the union tag is ``team_selective_sync_settings_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_selective_sync_settings_changed'
+
+    def is_account_capture_change_policy(self):
+        """
+        Check if the union tag is ``account_capture_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_capture_change_policy'
+
+    def is_allow_download_disabled(self):
+        """
+        Check if the union tag is ``allow_download_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'allow_download_disabled'
+
+    def is_allow_download_enabled(self):
+        """
+        Check if the union tag is ``allow_download_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'allow_download_enabled'
+
+    def is_camera_uploads_policy_changed(self):
+        """
+        Check if the union tag is ``camera_uploads_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'camera_uploads_policy_changed'
+
+    def is_data_placement_restriction_change_policy(self):
+        """
+        Check if the union tag is ``data_placement_restriction_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_placement_restriction_change_policy'
+
+    def is_data_placement_restriction_satisfy_policy(self):
+        """
+        Check if the union tag is ``data_placement_restriction_satisfy_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_placement_restriction_satisfy_policy'
+
+    def is_device_approvals_add_exception(self):
+        """
+        Check if the union tag is ``device_approvals_add_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_add_exception'
+
+    def is_device_approvals_change_desktop_policy(self):
+        """
+        Check if the union tag is ``device_approvals_change_desktop_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_change_desktop_policy'
+
+    def is_device_approvals_change_mobile_policy(self):
+        """
+        Check if the union tag is ``device_approvals_change_mobile_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_change_mobile_policy'
+
+    def is_device_approvals_change_overage_action(self):
+        """
+        Check if the union tag is ``device_approvals_change_overage_action``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_change_overage_action'
+
+    def is_device_approvals_change_unlink_action(self):
+        """
+        Check if the union tag is ``device_approvals_change_unlink_action``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_change_unlink_action'
+
+    def is_device_approvals_remove_exception(self):
+        """
+        Check if the union tag is ``device_approvals_remove_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_approvals_remove_exception'
+
+    def is_directory_restrictions_add_members(self):
+        """
+        Check if the union tag is ``directory_restrictions_add_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'directory_restrictions_add_members'
+
+    def is_directory_restrictions_remove_members(self):
+        """
+        Check if the union tag is ``directory_restrictions_remove_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'directory_restrictions_remove_members'
+
+    def is_emm_add_exception(self):
+        """
+        Check if the union tag is ``emm_add_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'emm_add_exception'
+
+    def is_emm_change_policy(self):
+        """
+        Check if the union tag is ``emm_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'emm_change_policy'
+
+    def is_emm_remove_exception(self):
+        """
+        Check if the union tag is ``emm_remove_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'emm_remove_exception'
+
+    def is_extended_version_history_change_policy(self):
+        """
+        Check if the union tag is ``extended_version_history_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'extended_version_history_change_policy'
+
+    def is_file_comments_change_policy(self):
+        """
+        Check if the union tag is ``file_comments_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_comments_change_policy'
+
+    def is_file_locking_policy_changed(self):
+        """
+        Check if the union tag is ``file_locking_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_locking_policy_changed'
+
+    def is_file_requests_change_policy(self):
+        """
+        Check if the union tag is ``file_requests_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_requests_change_policy'
+
+    def is_file_requests_emails_enabled(self):
+        """
+        Check if the union tag is ``file_requests_emails_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_requests_emails_enabled'
+
+    def is_file_requests_emails_restricted_to_team_only(self):
+        """
+        Check if the union tag is ``file_requests_emails_restricted_to_team_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_requests_emails_restricted_to_team_only'
+
+    def is_file_transfers_policy_changed(self):
+        """
+        Check if the union tag is ``file_transfers_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_transfers_policy_changed'
+
+    def is_google_sso_change_policy(self):
+        """
+        Check if the union tag is ``google_sso_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'google_sso_change_policy'
+
+    def is_group_user_management_change_policy(self):
+        """
+        Check if the union tag is ``group_user_management_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'group_user_management_change_policy'
+
+    def is_integration_policy_changed(self):
+        """
+        Check if the union tag is ``integration_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'integration_policy_changed'
+
+    def is_member_requests_change_policy(self):
+        """
+        Check if the union tag is ``member_requests_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_requests_change_policy'
+
+    def is_member_send_invite_policy_changed(self):
+        """
+        Check if the union tag is ``member_send_invite_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_send_invite_policy_changed'
+
+    def is_member_space_limits_add_exception(self):
+        """
+        Check if the union tag is ``member_space_limits_add_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_add_exception'
+
+    def is_member_space_limits_change_caps_type_policy(self):
+        """
+        Check if the union tag is ``member_space_limits_change_caps_type_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_change_caps_type_policy'
+
+    def is_member_space_limits_change_policy(self):
+        """
+        Check if the union tag is ``member_space_limits_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_change_policy'
+
+    def is_member_space_limits_remove_exception(self):
+        """
+        Check if the union tag is ``member_space_limits_remove_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_space_limits_remove_exception'
+
+    def is_member_suggestions_change_policy(self):
+        """
+        Check if the union tag is ``member_suggestions_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_suggestions_change_policy'
+
+    def is_microsoft_office_addin_change_policy(self):
+        """
+        Check if the union tag is ``microsoft_office_addin_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'microsoft_office_addin_change_policy'
+
+    def is_network_control_change_policy(self):
+        """
+        Check if the union tag is ``network_control_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'network_control_change_policy'
+
+    def is_paper_change_deployment_policy(self):
+        """
+        Check if the union tag is ``paper_change_deployment_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_change_deployment_policy'
+
+    def is_paper_change_member_link_policy(self):
+        """
+        Check if the union tag is ``paper_change_member_link_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_change_member_link_policy'
+
+    def is_paper_change_member_policy(self):
+        """
+        Check if the union tag is ``paper_change_member_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_change_member_policy'
+
+    def is_paper_change_policy(self):
+        """
+        Check if the union tag is ``paper_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_change_policy'
+
+    def is_paper_default_folder_policy_changed(self):
+        """
+        Check if the union tag is ``paper_default_folder_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_default_folder_policy_changed'
+
+    def is_paper_desktop_policy_changed(self):
+        """
+        Check if the union tag is ``paper_desktop_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_desktop_policy_changed'
+
+    def is_paper_enabled_users_group_addition(self):
+        """
+        Check if the union tag is ``paper_enabled_users_group_addition``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_enabled_users_group_addition'
+
+    def is_paper_enabled_users_group_removal(self):
+        """
+        Check if the union tag is ``paper_enabled_users_group_removal``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_enabled_users_group_removal'
+
+    def is_password_strength_requirements_change_policy(self):
+        """
+        Check if the union tag is ``password_strength_requirements_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'password_strength_requirements_change_policy'
+
+    def is_permanent_delete_change_policy(self):
+        """
+        Check if the union tag is ``permanent_delete_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'permanent_delete_change_policy'
+
+    def is_reseller_support_change_policy(self):
+        """
+        Check if the union tag is ``reseller_support_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reseller_support_change_policy'
+
+    def is_rewind_policy_changed(self):
+        """
+        Check if the union tag is ``rewind_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rewind_policy_changed'
+
+    def is_sharing_change_folder_join_policy(self):
+        """
+        Check if the union tag is ``sharing_change_folder_join_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_folder_join_policy'
+
+    def is_sharing_change_link_policy(self):
+        """
+        Check if the union tag is ``sharing_change_link_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_policy'
+
+    def is_sharing_change_member_policy(self):
+        """
+        Check if the union tag is ``sharing_change_member_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_member_policy'
+
+    def is_showcase_change_download_policy(self):
+        """
+        Check if the union tag is ``showcase_change_download_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_download_policy'
+
+    def is_showcase_change_enabled_policy(self):
+        """
+        Check if the union tag is ``showcase_change_enabled_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_enabled_policy'
+
+    def is_showcase_change_external_sharing_policy(self):
+        """
+        Check if the union tag is ``showcase_change_external_sharing_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'showcase_change_external_sharing_policy'
+
+    def is_smarter_smart_sync_policy_changed(self):
+        """
+        Check if the union tag is ``smarter_smart_sync_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'smarter_smart_sync_policy_changed'
+
+    def is_smart_sync_change_policy(self):
+        """
+        Check if the union tag is ``smart_sync_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'smart_sync_change_policy'
+
+    def is_smart_sync_not_opt_out(self):
+        """
+        Check if the union tag is ``smart_sync_not_opt_out``.
+
+        :rtype: bool
+        """
+        return self._tag == 'smart_sync_not_opt_out'
+
+    def is_smart_sync_opt_out(self):
+        """
+        Check if the union tag is ``smart_sync_opt_out``.
+
+        :rtype: bool
+        """
+        return self._tag == 'smart_sync_opt_out'
+
+    def is_sso_change_policy(self):
+        """
+        Check if the union tag is ``sso_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sso_change_policy'
+
+    def is_team_extensions_policy_changed(self):
+        """
+        Check if the union tag is ``team_extensions_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_extensions_policy_changed'
+
+    def is_team_selective_sync_policy_changed(self):
+        """
+        Check if the union tag is ``team_selective_sync_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_selective_sync_policy_changed'
+
+    def is_team_sharing_whitelist_subjects_changed(self):
+        """
+        Check if the union tag is ``team_sharing_whitelist_subjects_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_sharing_whitelist_subjects_changed'
+
+    def is_tfa_add_exception(self):
+        """
+        Check if the union tag is ``tfa_add_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_add_exception'
+
+    def is_tfa_change_policy(self):
+        """
+        Check if the union tag is ``tfa_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_change_policy'
+
+    def is_tfa_remove_exception(self):
+        """
+        Check if the union tag is ``tfa_remove_exception``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_remove_exception'
+
+    def is_two_account_change_policy(self):
+        """
+        Check if the union tag is ``two_account_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'two_account_change_policy'
+
+    def is_viewer_info_policy_changed(self):
+        """
+        Check if the union tag is ``viewer_info_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'viewer_info_policy_changed'
+
+    def is_watermarking_policy_changed(self):
+        """
+        Check if the union tag is ``watermarking_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'watermarking_policy_changed'
+
+    def is_web_sessions_change_active_session_limit(self):
+        """
+        Check if the union tag is ``web_sessions_change_active_session_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_sessions_change_active_session_limit'
+
+    def is_web_sessions_change_fixed_length_policy(self):
+        """
+        Check if the union tag is ``web_sessions_change_fixed_length_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_sessions_change_fixed_length_policy'
+
+    def is_web_sessions_change_idle_length_policy(self):
+        """
+        Check if the union tag is ``web_sessions_change_idle_length_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_sessions_change_idle_length_policy'
+
+    def is_team_merge_from(self):
+        """
+        Check if the union tag is ``team_merge_from``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_from'
+
+    def is_team_merge_to(self):
+        """
+        Check if the union tag is ``team_merge_to``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_to'
+
+    def is_team_profile_add_logo(self):
+        """
+        Check if the union tag is ``team_profile_add_logo``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_add_logo'
+
+    def is_team_profile_change_default_language(self):
+        """
+        Check if the union tag is ``team_profile_change_default_language``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_change_default_language'
+
+    def is_team_profile_change_logo(self):
+        """
+        Check if the union tag is ``team_profile_change_logo``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_change_logo'
+
+    def is_team_profile_change_name(self):
+        """
+        Check if the union tag is ``team_profile_change_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_change_name'
+
+    def is_team_profile_remove_logo(self):
+        """
+        Check if the union tag is ``team_profile_remove_logo``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_remove_logo'
+
+    def is_tfa_add_backup_phone(self):
+        """
+        Check if the union tag is ``tfa_add_backup_phone``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_add_backup_phone'
+
+    def is_tfa_add_security_key(self):
+        """
+        Check if the union tag is ``tfa_add_security_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_add_security_key'
+
+    def is_tfa_change_backup_phone(self):
+        """
+        Check if the union tag is ``tfa_change_backup_phone``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_change_backup_phone'
+
+    def is_tfa_change_status(self):
+        """
+        Check if the union tag is ``tfa_change_status``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_change_status'
+
+    def is_tfa_remove_backup_phone(self):
+        """
+        Check if the union tag is ``tfa_remove_backup_phone``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_remove_backup_phone'
+
+    def is_tfa_remove_security_key(self):
+        """
+        Check if the union tag is ``tfa_remove_security_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_remove_security_key'
+
+    def is_tfa_reset(self):
+        """
+        Check if the union tag is ``tfa_reset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tfa_reset'
+
+    def is_changed_enterprise_admin_role(self):
+        """
+        Check if the union tag is ``changed_enterprise_admin_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'changed_enterprise_admin_role'
+
+    def is_changed_enterprise_connected_team_status(self):
+        """
+        Check if the union tag is ``changed_enterprise_connected_team_status``.
+
+        :rtype: bool
+        """
+        return self._tag == 'changed_enterprise_connected_team_status'
+
+    def is_ended_enterprise_admin_session(self):
+        """
+        Check if the union tag is ``ended_enterprise_admin_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ended_enterprise_admin_session'
+
+    def is_ended_enterprise_admin_session_deprecated(self):
+        """
+        Check if the union tag is ``ended_enterprise_admin_session_deprecated``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ended_enterprise_admin_session_deprecated'
+
+    def is_enterprise_settings_locking(self):
+        """
+        Check if the union tag is ``enterprise_settings_locking``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enterprise_settings_locking'
+
+    def is_guest_admin_change_status(self):
+        """
+        Check if the union tag is ``guest_admin_change_status``.
+
+        :rtype: bool
+        """
+        return self._tag == 'guest_admin_change_status'
+
+    def is_started_enterprise_admin_session(self):
+        """
+        Check if the union tag is ``started_enterprise_admin_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'started_enterprise_admin_session'
+
+    def is_team_merge_request_accepted(self):
+        """
+        Check if the union tag is ``team_merge_request_accepted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_accepted'
+
+    def is_team_merge_request_accepted_shown_to_primary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_accepted_shown_to_primary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_accepted_shown_to_primary_team'
+
+    def is_team_merge_request_accepted_shown_to_secondary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_accepted_shown_to_secondary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_accepted_shown_to_secondary_team'
+
+    def is_team_merge_request_auto_canceled(self):
+        """
+        Check if the union tag is ``team_merge_request_auto_canceled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_auto_canceled'
+
+    def is_team_merge_request_canceled(self):
+        """
+        Check if the union tag is ``team_merge_request_canceled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_canceled'
+
+    def is_team_merge_request_canceled_shown_to_primary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_canceled_shown_to_primary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_canceled_shown_to_primary_team'
+
+    def is_team_merge_request_canceled_shown_to_secondary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_canceled_shown_to_secondary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_canceled_shown_to_secondary_team'
+
+    def is_team_merge_request_expired(self):
+        """
+        Check if the union tag is ``team_merge_request_expired``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_expired'
+
+    def is_team_merge_request_expired_shown_to_primary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_expired_shown_to_primary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_expired_shown_to_primary_team'
+
+    def is_team_merge_request_expired_shown_to_secondary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_expired_shown_to_secondary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_expired_shown_to_secondary_team'
+
+    def is_team_merge_request_rejected_shown_to_primary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_rejected_shown_to_primary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_rejected_shown_to_primary_team'
+
+    def is_team_merge_request_rejected_shown_to_secondary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_rejected_shown_to_secondary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_rejected_shown_to_secondary_team'
+
+    def is_team_merge_request_reminder(self):
+        """
+        Check if the union tag is ``team_merge_request_reminder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_reminder'
+
+    def is_team_merge_request_reminder_shown_to_primary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_reminder_shown_to_primary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_reminder_shown_to_primary_team'
+
+    def is_team_merge_request_reminder_shown_to_secondary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_reminder_shown_to_secondary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_reminder_shown_to_secondary_team'
+
+    def is_team_merge_request_revoked(self):
+        """
+        Check if the union tag is ``team_merge_request_revoked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_revoked'
+
+    def is_team_merge_request_sent_shown_to_primary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_sent_shown_to_primary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_sent_shown_to_primary_team'
+
+    def is_team_merge_request_sent_shown_to_secondary_team(self):
+        """
+        Check if the union tag is ``team_merge_request_sent_shown_to_secondary_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_merge_request_sent_shown_to_secondary_team'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EventTypeArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'EventTypeArg(%r, %r)' % (self._tag, self._value)
+
+EventTypeArg_validator = bv.Union(EventTypeArg)
+
 class ExportMembersReportDetails(bb.Struct):
     """
     Created member data report.
@@ -43586,11 +48733,14 @@ class GetTeamEventsArg(bb.Struct):
         In this case, callers should fetch again using
         :meth:`dropbox.dropbox.Dropbox.team_log_get_events_continue`.
     :ivar team_log.GetTeamEventsArg.account_id: Filter the events by account ID.
-        Return ony events with this account_id as either Actor, Context, or
+        Return only events with this account_id as either Actor, Context, or
         Participants.
     :ivar team_log.GetTeamEventsArg.time: Filter by time range.
     :ivar team_log.GetTeamEventsArg.category: Filter the returned events to a
         single category.
+    :ivar team_log.GetTeamEventsArg.event_type: Filter the returned events to a
+        single event type. Note that event_type shouldn't be provided together
+        with category.
     """
 
     __slots__ = [
@@ -43602,6 +48752,8 @@ class GetTeamEventsArg(bb.Struct):
         '_time_present',
         '_category_value',
         '_category_present',
+        '_event_type_value',
+        '_event_type_present',
     ]
 
     _has_required_fields = False
@@ -43610,7 +48762,8 @@ class GetTeamEventsArg(bb.Struct):
                  limit=None,
                  account_id=None,
                  time=None,
-                 category=None):
+                 category=None,
+                 event_type=None):
         self._limit_value = None
         self._limit_present = False
         self._account_id_value = None
@@ -43619,6 +48772,8 @@ class GetTeamEventsArg(bb.Struct):
         self._time_present = False
         self._category_value = None
         self._category_present = False
+        self._event_type_value = None
+        self._event_type_present = False
         if limit is not None:
             self.limit = limit
         if account_id is not None:
@@ -43627,6 +48782,8 @@ class GetTeamEventsArg(bb.Struct):
             self.time = time
         if category is not None:
             self.category = category
+        if event_type is not None:
+            self.event_type = event_type
 
     @property
     def limit(self):
@@ -43658,7 +48815,7 @@ class GetTeamEventsArg(bb.Struct):
     @property
     def account_id(self):
         """
-        Filter the events by account ID. Return ony events with this account_id
+        Filter the events by account ID. Return only events with this account_id
         as either Actor, Context, or Participants.
 
         :rtype: str
@@ -43734,15 +48891,43 @@ class GetTeamEventsArg(bb.Struct):
         self._category_value = None
         self._category_present = False
 
+    @property
+    def event_type(self):
+        """
+        Filter the returned events to a single event type. Note that event_type
+        shouldn't be provided together with category.
+
+        :rtype: EventTypeArg
+        """
+        if self._event_type_present:
+            return self._event_type_value
+        else:
+            return None
+
+    @event_type.setter
+    def event_type(self, val):
+        if val is None:
+            del self.event_type
+            return
+        self._event_type_validator.validate_type_only(val)
+        self._event_type_value = val
+        self._event_type_present = True
+
+    @event_type.deleter
+    def event_type(self):
+        self._event_type_value = None
+        self._event_type_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetTeamEventsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'GetTeamEventsArg(limit={!r}, account_id={!r}, time={!r}, category={!r})'.format(
+        return 'GetTeamEventsArg(limit={!r}, account_id={!r}, time={!r}, category={!r}, event_type={!r})'.format(
             self._limit_value,
             self._account_id_value,
             self._time_value,
             self._category_value,
+            self._event_type_value,
         )
 
 GetTeamEventsArg_validator = bv.Struct(GetTeamEventsArg)
@@ -43900,6 +49085,8 @@ class GetTeamEventsError(bb.Union):
     :ivar team_log.GetTeamEventsError.account_id_not_found: No user found
         matching the provided account_id.
     :ivar team_log.GetTeamEventsError.invalid_time_range: Invalid time range.
+    :ivar team_log.GetTeamEventsError.invalid_filters: Invalid filters.
+        event_type and category should not be provided together.
     """
 
     _catch_all = 'other'
@@ -43907,6 +49094,8 @@ class GetTeamEventsError(bb.Union):
     account_id_not_found = None
     # Attribute is overwritten below the class definition
     invalid_time_range = None
+    # Attribute is overwritten below the class definition
+    invalid_filters = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -43925,6 +49114,14 @@ class GetTeamEventsError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'invalid_time_range'
+
+    def is_invalid_filters(self):
+        """
+        Check if the union tag is ``invalid_filters``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_filters'
 
     def is_other(self):
         """
@@ -47053,13 +52250,15 @@ class JoinTeamDetails(bb.Struct):
         Please use has_linked_devices boolean field instead.
     :ivar team_log.JoinTeamDetails.linked_shared_folders: Linked shared folders.
         (Deprecated) Please use has_linked_shared_folders boolean field instead.
-    :ivar team_log.JoinTeamDetails.was_linked_apps_truncated: True if the
-        linked_apps list was truncated to the maximum supported length (50).
-    :ivar team_log.JoinTeamDetails.was_linked_devices_truncated: True if the
-        linked_devices list was truncated to the maximum supported length (50).
-    :ivar team_log.JoinTeamDetails.was_linked_shared_folders_truncated: True if
-        the linked_shared_folders list was truncated to the maximum supported
+    :ivar team_log.JoinTeamDetails.was_linked_apps_truncated: (Deprecated) True
+        if the linked_apps list was truncated to the maximum supported length
+        (50).
+    :ivar team_log.JoinTeamDetails.was_linked_devices_truncated: (Deprecated)
+        True if the linked_devices list was truncated to the maximum supported
         length (50).
+    :ivar team_log.JoinTeamDetails.was_linked_shared_folders_truncated:
+        (Deprecated) True if the linked_shared_folders list was truncated to the
+        maximum supported length (50).
     :ivar team_log.JoinTeamDetails.has_linked_apps: True if the user had linked
         apps at event time.
     :ivar team_log.JoinTeamDetails.has_linked_devices: True if the user had
@@ -47213,8 +52412,8 @@ class JoinTeamDetails(bb.Struct):
     @property
     def was_linked_apps_truncated(self):
         """
-        True if the linked_apps list was truncated to the maximum supported
-        length (50).
+        (Deprecated) True if the linked_apps list was truncated to the maximum
+        supported length (50).
 
         :rtype: bool
         """
@@ -47240,8 +52439,8 @@ class JoinTeamDetails(bb.Struct):
     @property
     def was_linked_devices_truncated(self):
         """
-        True if the linked_devices list was truncated to the maximum supported
-        length (50).
+        (Deprecated) True if the linked_devices list was truncated to the
+        maximum supported length (50).
 
         :rtype: bool
         """
@@ -47267,8 +52466,8 @@ class JoinTeamDetails(bb.Struct):
     @property
     def was_linked_shared_folders_truncated(self):
         """
-        True if the linked_shared_folders list was truncated to the maximum
-        supported length (50).
+        (Deprecated) True if the linked_shared_folders list was truncated to the
+        maximum supported length (50).
 
         :rtype: bool
         """
@@ -82339,19 +87538,11 @@ class TeamMembershipType(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    free = None
-    # Attribute is overwritten below the class definition
     full = None
     # Attribute is overwritten below the class definition
+    free = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_free(self):
-        """
-        Check if the union tag is ``free``.
-
-        :rtype: bool
-        """
-        return self._tag == 'free'
 
     def is_full(self):
         """
@@ -82360,6 +87551,14 @@ class TeamMembershipType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'full'
+
+    def is_free(self):
+        """
+        Check if the union tag is ``free``.
+
+        :rtype: bool
+        """
+        return self._tag == 'free'
 
     def is_other(self):
         """
@@ -91828,6 +97027,1285 @@ EventType._tagmap = {
 
 EventType.other = EventType('other')
 
+EventTypeArg._app_link_team_validator = bv.Void()
+EventTypeArg._app_link_user_validator = bv.Void()
+EventTypeArg._app_unlink_team_validator = bv.Void()
+EventTypeArg._app_unlink_user_validator = bv.Void()
+EventTypeArg._integration_connected_validator = bv.Void()
+EventTypeArg._integration_disconnected_validator = bv.Void()
+EventTypeArg._file_add_comment_validator = bv.Void()
+EventTypeArg._file_change_comment_subscription_validator = bv.Void()
+EventTypeArg._file_delete_comment_validator = bv.Void()
+EventTypeArg._file_edit_comment_validator = bv.Void()
+EventTypeArg._file_like_comment_validator = bv.Void()
+EventTypeArg._file_resolve_comment_validator = bv.Void()
+EventTypeArg._file_unlike_comment_validator = bv.Void()
+EventTypeArg._file_unresolve_comment_validator = bv.Void()
+EventTypeArg._device_change_ip_desktop_validator = bv.Void()
+EventTypeArg._device_change_ip_mobile_validator = bv.Void()
+EventTypeArg._device_change_ip_web_validator = bv.Void()
+EventTypeArg._device_delete_on_unlink_fail_validator = bv.Void()
+EventTypeArg._device_delete_on_unlink_success_validator = bv.Void()
+EventTypeArg._device_link_fail_validator = bv.Void()
+EventTypeArg._device_link_success_validator = bv.Void()
+EventTypeArg._device_management_disabled_validator = bv.Void()
+EventTypeArg._device_management_enabled_validator = bv.Void()
+EventTypeArg._device_unlink_validator = bv.Void()
+EventTypeArg._emm_refresh_auth_token_validator = bv.Void()
+EventTypeArg._account_capture_change_availability_validator = bv.Void()
+EventTypeArg._account_capture_migrate_account_validator = bv.Void()
+EventTypeArg._account_capture_notification_emails_sent_validator = bv.Void()
+EventTypeArg._account_capture_relinquish_account_validator = bv.Void()
+EventTypeArg._disabled_domain_invites_validator = bv.Void()
+EventTypeArg._domain_invites_approve_request_to_join_team_validator = bv.Void()
+EventTypeArg._domain_invites_decline_request_to_join_team_validator = bv.Void()
+EventTypeArg._domain_invites_email_existing_users_validator = bv.Void()
+EventTypeArg._domain_invites_request_to_join_team_validator = bv.Void()
+EventTypeArg._domain_invites_set_invite_new_user_pref_to_no_validator = bv.Void()
+EventTypeArg._domain_invites_set_invite_new_user_pref_to_yes_validator = bv.Void()
+EventTypeArg._domain_verification_add_domain_fail_validator = bv.Void()
+EventTypeArg._domain_verification_add_domain_success_validator = bv.Void()
+EventTypeArg._domain_verification_remove_domain_validator = bv.Void()
+EventTypeArg._enabled_domain_invites_validator = bv.Void()
+EventTypeArg._create_folder_validator = bv.Void()
+EventTypeArg._file_add_validator = bv.Void()
+EventTypeArg._file_copy_validator = bv.Void()
+EventTypeArg._file_delete_validator = bv.Void()
+EventTypeArg._file_download_validator = bv.Void()
+EventTypeArg._file_edit_validator = bv.Void()
+EventTypeArg._file_get_copy_reference_validator = bv.Void()
+EventTypeArg._file_locking_lock_status_changed_validator = bv.Void()
+EventTypeArg._file_move_validator = bv.Void()
+EventTypeArg._file_permanently_delete_validator = bv.Void()
+EventTypeArg._file_preview_validator = bv.Void()
+EventTypeArg._file_rename_validator = bv.Void()
+EventTypeArg._file_restore_validator = bv.Void()
+EventTypeArg._file_revert_validator = bv.Void()
+EventTypeArg._file_rollback_changes_validator = bv.Void()
+EventTypeArg._file_save_copy_reference_validator = bv.Void()
+EventTypeArg._folder_overview_description_changed_validator = bv.Void()
+EventTypeArg._folder_overview_item_pinned_validator = bv.Void()
+EventTypeArg._folder_overview_item_unpinned_validator = bv.Void()
+EventTypeArg._rewind_folder_validator = bv.Void()
+EventTypeArg._file_request_change_validator = bv.Void()
+EventTypeArg._file_request_close_validator = bv.Void()
+EventTypeArg._file_request_create_validator = bv.Void()
+EventTypeArg._file_request_delete_validator = bv.Void()
+EventTypeArg._file_request_receive_file_validator = bv.Void()
+EventTypeArg._group_add_external_id_validator = bv.Void()
+EventTypeArg._group_add_member_validator = bv.Void()
+EventTypeArg._group_change_external_id_validator = bv.Void()
+EventTypeArg._group_change_management_type_validator = bv.Void()
+EventTypeArg._group_change_member_role_validator = bv.Void()
+EventTypeArg._group_create_validator = bv.Void()
+EventTypeArg._group_delete_validator = bv.Void()
+EventTypeArg._group_description_updated_validator = bv.Void()
+EventTypeArg._group_join_policy_updated_validator = bv.Void()
+EventTypeArg._group_moved_validator = bv.Void()
+EventTypeArg._group_remove_external_id_validator = bv.Void()
+EventTypeArg._group_remove_member_validator = bv.Void()
+EventTypeArg._group_rename_validator = bv.Void()
+EventTypeArg._legal_holds_activate_a_hold_validator = bv.Void()
+EventTypeArg._legal_holds_add_members_validator = bv.Void()
+EventTypeArg._legal_holds_change_hold_details_validator = bv.Void()
+EventTypeArg._legal_holds_change_hold_name_validator = bv.Void()
+EventTypeArg._legal_holds_export_a_hold_validator = bv.Void()
+EventTypeArg._legal_holds_export_cancelled_validator = bv.Void()
+EventTypeArg._legal_holds_export_downloaded_validator = bv.Void()
+EventTypeArg._legal_holds_export_removed_validator = bv.Void()
+EventTypeArg._legal_holds_release_a_hold_validator = bv.Void()
+EventTypeArg._legal_holds_remove_members_validator = bv.Void()
+EventTypeArg._legal_holds_report_a_hold_validator = bv.Void()
+EventTypeArg._account_lock_or_unlocked_validator = bv.Void()
+EventTypeArg._emm_error_validator = bv.Void()
+EventTypeArg._guest_admin_signed_in_via_trusted_teams_validator = bv.Void()
+EventTypeArg._guest_admin_signed_out_via_trusted_teams_validator = bv.Void()
+EventTypeArg._login_fail_validator = bv.Void()
+EventTypeArg._login_success_validator = bv.Void()
+EventTypeArg._logout_validator = bv.Void()
+EventTypeArg._reseller_support_session_end_validator = bv.Void()
+EventTypeArg._reseller_support_session_start_validator = bv.Void()
+EventTypeArg._sign_in_as_session_end_validator = bv.Void()
+EventTypeArg._sign_in_as_session_start_validator = bv.Void()
+EventTypeArg._sso_error_validator = bv.Void()
+EventTypeArg._create_team_invite_link_validator = bv.Void()
+EventTypeArg._delete_team_invite_link_validator = bv.Void()
+EventTypeArg._member_add_external_id_validator = bv.Void()
+EventTypeArg._member_add_name_validator = bv.Void()
+EventTypeArg._member_change_admin_role_validator = bv.Void()
+EventTypeArg._member_change_email_validator = bv.Void()
+EventTypeArg._member_change_external_id_validator = bv.Void()
+EventTypeArg._member_change_membership_type_validator = bv.Void()
+EventTypeArg._member_change_name_validator = bv.Void()
+EventTypeArg._member_change_status_validator = bv.Void()
+EventTypeArg._member_delete_manual_contacts_validator = bv.Void()
+EventTypeArg._member_delete_profile_photo_validator = bv.Void()
+EventTypeArg._member_permanently_delete_account_contents_validator = bv.Void()
+EventTypeArg._member_remove_external_id_validator = bv.Void()
+EventTypeArg._member_set_profile_photo_validator = bv.Void()
+EventTypeArg._member_space_limits_add_custom_quota_validator = bv.Void()
+EventTypeArg._member_space_limits_change_custom_quota_validator = bv.Void()
+EventTypeArg._member_space_limits_change_status_validator = bv.Void()
+EventTypeArg._member_space_limits_remove_custom_quota_validator = bv.Void()
+EventTypeArg._member_suggest_validator = bv.Void()
+EventTypeArg._member_transfer_account_contents_validator = bv.Void()
+EventTypeArg._pending_secondary_email_added_validator = bv.Void()
+EventTypeArg._secondary_email_deleted_validator = bv.Void()
+EventTypeArg._secondary_email_verified_validator = bv.Void()
+EventTypeArg._secondary_mails_policy_changed_validator = bv.Void()
+EventTypeArg._binder_add_page_validator = bv.Void()
+EventTypeArg._binder_add_section_validator = bv.Void()
+EventTypeArg._binder_remove_page_validator = bv.Void()
+EventTypeArg._binder_remove_section_validator = bv.Void()
+EventTypeArg._binder_rename_page_validator = bv.Void()
+EventTypeArg._binder_rename_section_validator = bv.Void()
+EventTypeArg._binder_reorder_page_validator = bv.Void()
+EventTypeArg._binder_reorder_section_validator = bv.Void()
+EventTypeArg._paper_content_add_member_validator = bv.Void()
+EventTypeArg._paper_content_add_to_folder_validator = bv.Void()
+EventTypeArg._paper_content_archive_validator = bv.Void()
+EventTypeArg._paper_content_create_validator = bv.Void()
+EventTypeArg._paper_content_permanently_delete_validator = bv.Void()
+EventTypeArg._paper_content_remove_from_folder_validator = bv.Void()
+EventTypeArg._paper_content_remove_member_validator = bv.Void()
+EventTypeArg._paper_content_rename_validator = bv.Void()
+EventTypeArg._paper_content_restore_validator = bv.Void()
+EventTypeArg._paper_doc_add_comment_validator = bv.Void()
+EventTypeArg._paper_doc_change_member_role_validator = bv.Void()
+EventTypeArg._paper_doc_change_sharing_policy_validator = bv.Void()
+EventTypeArg._paper_doc_change_subscription_validator = bv.Void()
+EventTypeArg._paper_doc_deleted_validator = bv.Void()
+EventTypeArg._paper_doc_delete_comment_validator = bv.Void()
+EventTypeArg._paper_doc_download_validator = bv.Void()
+EventTypeArg._paper_doc_edit_validator = bv.Void()
+EventTypeArg._paper_doc_edit_comment_validator = bv.Void()
+EventTypeArg._paper_doc_followed_validator = bv.Void()
+EventTypeArg._paper_doc_mention_validator = bv.Void()
+EventTypeArg._paper_doc_ownership_changed_validator = bv.Void()
+EventTypeArg._paper_doc_request_access_validator = bv.Void()
+EventTypeArg._paper_doc_resolve_comment_validator = bv.Void()
+EventTypeArg._paper_doc_revert_validator = bv.Void()
+EventTypeArg._paper_doc_slack_share_validator = bv.Void()
+EventTypeArg._paper_doc_team_invite_validator = bv.Void()
+EventTypeArg._paper_doc_trashed_validator = bv.Void()
+EventTypeArg._paper_doc_unresolve_comment_validator = bv.Void()
+EventTypeArg._paper_doc_untrashed_validator = bv.Void()
+EventTypeArg._paper_doc_view_validator = bv.Void()
+EventTypeArg._paper_external_view_allow_validator = bv.Void()
+EventTypeArg._paper_external_view_default_team_validator = bv.Void()
+EventTypeArg._paper_external_view_forbid_validator = bv.Void()
+EventTypeArg._paper_folder_change_subscription_validator = bv.Void()
+EventTypeArg._paper_folder_deleted_validator = bv.Void()
+EventTypeArg._paper_folder_followed_validator = bv.Void()
+EventTypeArg._paper_folder_team_invite_validator = bv.Void()
+EventTypeArg._paper_published_link_change_permission_validator = bv.Void()
+EventTypeArg._paper_published_link_create_validator = bv.Void()
+EventTypeArg._paper_published_link_disabled_validator = bv.Void()
+EventTypeArg._paper_published_link_view_validator = bv.Void()
+EventTypeArg._password_change_validator = bv.Void()
+EventTypeArg._password_reset_validator = bv.Void()
+EventTypeArg._password_reset_all_validator = bv.Void()
+EventTypeArg._emm_create_exceptions_report_validator = bv.Void()
+EventTypeArg._emm_create_usage_report_validator = bv.Void()
+EventTypeArg._export_members_report_validator = bv.Void()
+EventTypeArg._export_members_report_fail_validator = bv.Void()
+EventTypeArg._no_expiration_link_gen_create_report_validator = bv.Void()
+EventTypeArg._no_expiration_link_gen_report_failed_validator = bv.Void()
+EventTypeArg._no_password_link_gen_create_report_validator = bv.Void()
+EventTypeArg._no_password_link_gen_report_failed_validator = bv.Void()
+EventTypeArg._no_password_link_view_create_report_validator = bv.Void()
+EventTypeArg._no_password_link_view_report_failed_validator = bv.Void()
+EventTypeArg._outdated_link_view_create_report_validator = bv.Void()
+EventTypeArg._outdated_link_view_report_failed_validator = bv.Void()
+EventTypeArg._paper_admin_export_start_validator = bv.Void()
+EventTypeArg._smart_sync_create_admin_privilege_report_validator = bv.Void()
+EventTypeArg._team_activity_create_report_validator = bv.Void()
+EventTypeArg._team_activity_create_report_fail_validator = bv.Void()
+EventTypeArg._collection_share_validator = bv.Void()
+EventTypeArg._file_transfers_file_add_validator = bv.Void()
+EventTypeArg._file_transfers_transfer_delete_validator = bv.Void()
+EventTypeArg._file_transfers_transfer_download_validator = bv.Void()
+EventTypeArg._file_transfers_transfer_send_validator = bv.Void()
+EventTypeArg._file_transfers_transfer_view_validator = bv.Void()
+EventTypeArg._note_acl_invite_only_validator = bv.Void()
+EventTypeArg._note_acl_link_validator = bv.Void()
+EventTypeArg._note_acl_team_link_validator = bv.Void()
+EventTypeArg._note_shared_validator = bv.Void()
+EventTypeArg._note_share_receive_validator = bv.Void()
+EventTypeArg._open_note_shared_validator = bv.Void()
+EventTypeArg._sf_add_group_validator = bv.Void()
+EventTypeArg._sf_allow_non_members_to_view_shared_links_validator = bv.Void()
+EventTypeArg._sf_external_invite_warn_validator = bv.Void()
+EventTypeArg._sf_fb_invite_validator = bv.Void()
+EventTypeArg._sf_fb_invite_change_role_validator = bv.Void()
+EventTypeArg._sf_fb_uninvite_validator = bv.Void()
+EventTypeArg._sf_invite_group_validator = bv.Void()
+EventTypeArg._sf_team_grant_access_validator = bv.Void()
+EventTypeArg._sf_team_invite_validator = bv.Void()
+EventTypeArg._sf_team_invite_change_role_validator = bv.Void()
+EventTypeArg._sf_team_join_validator = bv.Void()
+EventTypeArg._sf_team_join_from_oob_link_validator = bv.Void()
+EventTypeArg._sf_team_uninvite_validator = bv.Void()
+EventTypeArg._shared_content_add_invitees_validator = bv.Void()
+EventTypeArg._shared_content_add_link_expiry_validator = bv.Void()
+EventTypeArg._shared_content_add_link_password_validator = bv.Void()
+EventTypeArg._shared_content_add_member_validator = bv.Void()
+EventTypeArg._shared_content_change_downloads_policy_validator = bv.Void()
+EventTypeArg._shared_content_change_invitee_role_validator = bv.Void()
+EventTypeArg._shared_content_change_link_audience_validator = bv.Void()
+EventTypeArg._shared_content_change_link_expiry_validator = bv.Void()
+EventTypeArg._shared_content_change_link_password_validator = bv.Void()
+EventTypeArg._shared_content_change_member_role_validator = bv.Void()
+EventTypeArg._shared_content_change_viewer_info_policy_validator = bv.Void()
+EventTypeArg._shared_content_claim_invitation_validator = bv.Void()
+EventTypeArg._shared_content_copy_validator = bv.Void()
+EventTypeArg._shared_content_download_validator = bv.Void()
+EventTypeArg._shared_content_relinquish_membership_validator = bv.Void()
+EventTypeArg._shared_content_remove_invitees_validator = bv.Void()
+EventTypeArg._shared_content_remove_link_expiry_validator = bv.Void()
+EventTypeArg._shared_content_remove_link_password_validator = bv.Void()
+EventTypeArg._shared_content_remove_member_validator = bv.Void()
+EventTypeArg._shared_content_request_access_validator = bv.Void()
+EventTypeArg._shared_content_restore_invitees_validator = bv.Void()
+EventTypeArg._shared_content_restore_member_validator = bv.Void()
+EventTypeArg._shared_content_unshare_validator = bv.Void()
+EventTypeArg._shared_content_view_validator = bv.Void()
+EventTypeArg._shared_folder_change_link_policy_validator = bv.Void()
+EventTypeArg._shared_folder_change_members_inheritance_policy_validator = bv.Void()
+EventTypeArg._shared_folder_change_members_management_policy_validator = bv.Void()
+EventTypeArg._shared_folder_change_members_policy_validator = bv.Void()
+EventTypeArg._shared_folder_create_validator = bv.Void()
+EventTypeArg._shared_folder_decline_invitation_validator = bv.Void()
+EventTypeArg._shared_folder_mount_validator = bv.Void()
+EventTypeArg._shared_folder_nest_validator = bv.Void()
+EventTypeArg._shared_folder_transfer_ownership_validator = bv.Void()
+EventTypeArg._shared_folder_unmount_validator = bv.Void()
+EventTypeArg._shared_link_add_expiry_validator = bv.Void()
+EventTypeArg._shared_link_change_expiry_validator = bv.Void()
+EventTypeArg._shared_link_change_visibility_validator = bv.Void()
+EventTypeArg._shared_link_copy_validator = bv.Void()
+EventTypeArg._shared_link_create_validator = bv.Void()
+EventTypeArg._shared_link_disable_validator = bv.Void()
+EventTypeArg._shared_link_download_validator = bv.Void()
+EventTypeArg._shared_link_remove_expiry_validator = bv.Void()
+EventTypeArg._shared_link_settings_add_expiration_validator = bv.Void()
+EventTypeArg._shared_link_settings_add_password_validator = bv.Void()
+EventTypeArg._shared_link_settings_allow_download_disabled_validator = bv.Void()
+EventTypeArg._shared_link_settings_allow_download_enabled_validator = bv.Void()
+EventTypeArg._shared_link_settings_change_audience_validator = bv.Void()
+EventTypeArg._shared_link_settings_change_expiration_validator = bv.Void()
+EventTypeArg._shared_link_settings_change_password_validator = bv.Void()
+EventTypeArg._shared_link_settings_remove_expiration_validator = bv.Void()
+EventTypeArg._shared_link_settings_remove_password_validator = bv.Void()
+EventTypeArg._shared_link_share_validator = bv.Void()
+EventTypeArg._shared_link_view_validator = bv.Void()
+EventTypeArg._shared_note_opened_validator = bv.Void()
+EventTypeArg._shmodel_group_share_validator = bv.Void()
+EventTypeArg._showcase_access_granted_validator = bv.Void()
+EventTypeArg._showcase_add_member_validator = bv.Void()
+EventTypeArg._showcase_archived_validator = bv.Void()
+EventTypeArg._showcase_created_validator = bv.Void()
+EventTypeArg._showcase_delete_comment_validator = bv.Void()
+EventTypeArg._showcase_edited_validator = bv.Void()
+EventTypeArg._showcase_edit_comment_validator = bv.Void()
+EventTypeArg._showcase_file_added_validator = bv.Void()
+EventTypeArg._showcase_file_download_validator = bv.Void()
+EventTypeArg._showcase_file_removed_validator = bv.Void()
+EventTypeArg._showcase_file_view_validator = bv.Void()
+EventTypeArg._showcase_permanently_deleted_validator = bv.Void()
+EventTypeArg._showcase_post_comment_validator = bv.Void()
+EventTypeArg._showcase_remove_member_validator = bv.Void()
+EventTypeArg._showcase_renamed_validator = bv.Void()
+EventTypeArg._showcase_request_access_validator = bv.Void()
+EventTypeArg._showcase_resolve_comment_validator = bv.Void()
+EventTypeArg._showcase_restored_validator = bv.Void()
+EventTypeArg._showcase_trashed_validator = bv.Void()
+EventTypeArg._showcase_trashed_deprecated_validator = bv.Void()
+EventTypeArg._showcase_unresolve_comment_validator = bv.Void()
+EventTypeArg._showcase_untrashed_validator = bv.Void()
+EventTypeArg._showcase_untrashed_deprecated_validator = bv.Void()
+EventTypeArg._showcase_view_validator = bv.Void()
+EventTypeArg._sso_add_cert_validator = bv.Void()
+EventTypeArg._sso_add_login_url_validator = bv.Void()
+EventTypeArg._sso_add_logout_url_validator = bv.Void()
+EventTypeArg._sso_change_cert_validator = bv.Void()
+EventTypeArg._sso_change_login_url_validator = bv.Void()
+EventTypeArg._sso_change_logout_url_validator = bv.Void()
+EventTypeArg._sso_change_saml_identity_mode_validator = bv.Void()
+EventTypeArg._sso_remove_cert_validator = bv.Void()
+EventTypeArg._sso_remove_login_url_validator = bv.Void()
+EventTypeArg._sso_remove_logout_url_validator = bv.Void()
+EventTypeArg._team_folder_change_status_validator = bv.Void()
+EventTypeArg._team_folder_create_validator = bv.Void()
+EventTypeArg._team_folder_downgrade_validator = bv.Void()
+EventTypeArg._team_folder_permanently_delete_validator = bv.Void()
+EventTypeArg._team_folder_rename_validator = bv.Void()
+EventTypeArg._team_selective_sync_settings_changed_validator = bv.Void()
+EventTypeArg._account_capture_change_policy_validator = bv.Void()
+EventTypeArg._allow_download_disabled_validator = bv.Void()
+EventTypeArg._allow_download_enabled_validator = bv.Void()
+EventTypeArg._camera_uploads_policy_changed_validator = bv.Void()
+EventTypeArg._data_placement_restriction_change_policy_validator = bv.Void()
+EventTypeArg._data_placement_restriction_satisfy_policy_validator = bv.Void()
+EventTypeArg._device_approvals_add_exception_validator = bv.Void()
+EventTypeArg._device_approvals_change_desktop_policy_validator = bv.Void()
+EventTypeArg._device_approvals_change_mobile_policy_validator = bv.Void()
+EventTypeArg._device_approvals_change_overage_action_validator = bv.Void()
+EventTypeArg._device_approvals_change_unlink_action_validator = bv.Void()
+EventTypeArg._device_approvals_remove_exception_validator = bv.Void()
+EventTypeArg._directory_restrictions_add_members_validator = bv.Void()
+EventTypeArg._directory_restrictions_remove_members_validator = bv.Void()
+EventTypeArg._emm_add_exception_validator = bv.Void()
+EventTypeArg._emm_change_policy_validator = bv.Void()
+EventTypeArg._emm_remove_exception_validator = bv.Void()
+EventTypeArg._extended_version_history_change_policy_validator = bv.Void()
+EventTypeArg._file_comments_change_policy_validator = bv.Void()
+EventTypeArg._file_locking_policy_changed_validator = bv.Void()
+EventTypeArg._file_requests_change_policy_validator = bv.Void()
+EventTypeArg._file_requests_emails_enabled_validator = bv.Void()
+EventTypeArg._file_requests_emails_restricted_to_team_only_validator = bv.Void()
+EventTypeArg._file_transfers_policy_changed_validator = bv.Void()
+EventTypeArg._google_sso_change_policy_validator = bv.Void()
+EventTypeArg._group_user_management_change_policy_validator = bv.Void()
+EventTypeArg._integration_policy_changed_validator = bv.Void()
+EventTypeArg._member_requests_change_policy_validator = bv.Void()
+EventTypeArg._member_send_invite_policy_changed_validator = bv.Void()
+EventTypeArg._member_space_limits_add_exception_validator = bv.Void()
+EventTypeArg._member_space_limits_change_caps_type_policy_validator = bv.Void()
+EventTypeArg._member_space_limits_change_policy_validator = bv.Void()
+EventTypeArg._member_space_limits_remove_exception_validator = bv.Void()
+EventTypeArg._member_suggestions_change_policy_validator = bv.Void()
+EventTypeArg._microsoft_office_addin_change_policy_validator = bv.Void()
+EventTypeArg._network_control_change_policy_validator = bv.Void()
+EventTypeArg._paper_change_deployment_policy_validator = bv.Void()
+EventTypeArg._paper_change_member_link_policy_validator = bv.Void()
+EventTypeArg._paper_change_member_policy_validator = bv.Void()
+EventTypeArg._paper_change_policy_validator = bv.Void()
+EventTypeArg._paper_default_folder_policy_changed_validator = bv.Void()
+EventTypeArg._paper_desktop_policy_changed_validator = bv.Void()
+EventTypeArg._paper_enabled_users_group_addition_validator = bv.Void()
+EventTypeArg._paper_enabled_users_group_removal_validator = bv.Void()
+EventTypeArg._password_strength_requirements_change_policy_validator = bv.Void()
+EventTypeArg._permanent_delete_change_policy_validator = bv.Void()
+EventTypeArg._reseller_support_change_policy_validator = bv.Void()
+EventTypeArg._rewind_policy_changed_validator = bv.Void()
+EventTypeArg._sharing_change_folder_join_policy_validator = bv.Void()
+EventTypeArg._sharing_change_link_policy_validator = bv.Void()
+EventTypeArg._sharing_change_member_policy_validator = bv.Void()
+EventTypeArg._showcase_change_download_policy_validator = bv.Void()
+EventTypeArg._showcase_change_enabled_policy_validator = bv.Void()
+EventTypeArg._showcase_change_external_sharing_policy_validator = bv.Void()
+EventTypeArg._smarter_smart_sync_policy_changed_validator = bv.Void()
+EventTypeArg._smart_sync_change_policy_validator = bv.Void()
+EventTypeArg._smart_sync_not_opt_out_validator = bv.Void()
+EventTypeArg._smart_sync_opt_out_validator = bv.Void()
+EventTypeArg._sso_change_policy_validator = bv.Void()
+EventTypeArg._team_extensions_policy_changed_validator = bv.Void()
+EventTypeArg._team_selective_sync_policy_changed_validator = bv.Void()
+EventTypeArg._team_sharing_whitelist_subjects_changed_validator = bv.Void()
+EventTypeArg._tfa_add_exception_validator = bv.Void()
+EventTypeArg._tfa_change_policy_validator = bv.Void()
+EventTypeArg._tfa_remove_exception_validator = bv.Void()
+EventTypeArg._two_account_change_policy_validator = bv.Void()
+EventTypeArg._viewer_info_policy_changed_validator = bv.Void()
+EventTypeArg._watermarking_policy_changed_validator = bv.Void()
+EventTypeArg._web_sessions_change_active_session_limit_validator = bv.Void()
+EventTypeArg._web_sessions_change_fixed_length_policy_validator = bv.Void()
+EventTypeArg._web_sessions_change_idle_length_policy_validator = bv.Void()
+EventTypeArg._team_merge_from_validator = bv.Void()
+EventTypeArg._team_merge_to_validator = bv.Void()
+EventTypeArg._team_profile_add_logo_validator = bv.Void()
+EventTypeArg._team_profile_change_default_language_validator = bv.Void()
+EventTypeArg._team_profile_change_logo_validator = bv.Void()
+EventTypeArg._team_profile_change_name_validator = bv.Void()
+EventTypeArg._team_profile_remove_logo_validator = bv.Void()
+EventTypeArg._tfa_add_backup_phone_validator = bv.Void()
+EventTypeArg._tfa_add_security_key_validator = bv.Void()
+EventTypeArg._tfa_change_backup_phone_validator = bv.Void()
+EventTypeArg._tfa_change_status_validator = bv.Void()
+EventTypeArg._tfa_remove_backup_phone_validator = bv.Void()
+EventTypeArg._tfa_remove_security_key_validator = bv.Void()
+EventTypeArg._tfa_reset_validator = bv.Void()
+EventTypeArg._changed_enterprise_admin_role_validator = bv.Void()
+EventTypeArg._changed_enterprise_connected_team_status_validator = bv.Void()
+EventTypeArg._ended_enterprise_admin_session_validator = bv.Void()
+EventTypeArg._ended_enterprise_admin_session_deprecated_validator = bv.Void()
+EventTypeArg._enterprise_settings_locking_validator = bv.Void()
+EventTypeArg._guest_admin_change_status_validator = bv.Void()
+EventTypeArg._started_enterprise_admin_session_validator = bv.Void()
+EventTypeArg._team_merge_request_accepted_validator = bv.Void()
+EventTypeArg._team_merge_request_accepted_shown_to_primary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_accepted_shown_to_secondary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_auto_canceled_validator = bv.Void()
+EventTypeArg._team_merge_request_canceled_validator = bv.Void()
+EventTypeArg._team_merge_request_canceled_shown_to_primary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_canceled_shown_to_secondary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_expired_validator = bv.Void()
+EventTypeArg._team_merge_request_expired_shown_to_primary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_expired_shown_to_secondary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_rejected_shown_to_primary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_rejected_shown_to_secondary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_reminder_validator = bv.Void()
+EventTypeArg._team_merge_request_reminder_shown_to_primary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_reminder_shown_to_secondary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_revoked_validator = bv.Void()
+EventTypeArg._team_merge_request_sent_shown_to_primary_team_validator = bv.Void()
+EventTypeArg._team_merge_request_sent_shown_to_secondary_team_validator = bv.Void()
+EventTypeArg._other_validator = bv.Void()
+EventTypeArg._tagmap = {
+    'app_link_team': EventTypeArg._app_link_team_validator,
+    'app_link_user': EventTypeArg._app_link_user_validator,
+    'app_unlink_team': EventTypeArg._app_unlink_team_validator,
+    'app_unlink_user': EventTypeArg._app_unlink_user_validator,
+    'integration_connected': EventTypeArg._integration_connected_validator,
+    'integration_disconnected': EventTypeArg._integration_disconnected_validator,
+    'file_add_comment': EventTypeArg._file_add_comment_validator,
+    'file_change_comment_subscription': EventTypeArg._file_change_comment_subscription_validator,
+    'file_delete_comment': EventTypeArg._file_delete_comment_validator,
+    'file_edit_comment': EventTypeArg._file_edit_comment_validator,
+    'file_like_comment': EventTypeArg._file_like_comment_validator,
+    'file_resolve_comment': EventTypeArg._file_resolve_comment_validator,
+    'file_unlike_comment': EventTypeArg._file_unlike_comment_validator,
+    'file_unresolve_comment': EventTypeArg._file_unresolve_comment_validator,
+    'device_change_ip_desktop': EventTypeArg._device_change_ip_desktop_validator,
+    'device_change_ip_mobile': EventTypeArg._device_change_ip_mobile_validator,
+    'device_change_ip_web': EventTypeArg._device_change_ip_web_validator,
+    'device_delete_on_unlink_fail': EventTypeArg._device_delete_on_unlink_fail_validator,
+    'device_delete_on_unlink_success': EventTypeArg._device_delete_on_unlink_success_validator,
+    'device_link_fail': EventTypeArg._device_link_fail_validator,
+    'device_link_success': EventTypeArg._device_link_success_validator,
+    'device_management_disabled': EventTypeArg._device_management_disabled_validator,
+    'device_management_enabled': EventTypeArg._device_management_enabled_validator,
+    'device_unlink': EventTypeArg._device_unlink_validator,
+    'emm_refresh_auth_token': EventTypeArg._emm_refresh_auth_token_validator,
+    'account_capture_change_availability': EventTypeArg._account_capture_change_availability_validator,
+    'account_capture_migrate_account': EventTypeArg._account_capture_migrate_account_validator,
+    'account_capture_notification_emails_sent': EventTypeArg._account_capture_notification_emails_sent_validator,
+    'account_capture_relinquish_account': EventTypeArg._account_capture_relinquish_account_validator,
+    'disabled_domain_invites': EventTypeArg._disabled_domain_invites_validator,
+    'domain_invites_approve_request_to_join_team': EventTypeArg._domain_invites_approve_request_to_join_team_validator,
+    'domain_invites_decline_request_to_join_team': EventTypeArg._domain_invites_decline_request_to_join_team_validator,
+    'domain_invites_email_existing_users': EventTypeArg._domain_invites_email_existing_users_validator,
+    'domain_invites_request_to_join_team': EventTypeArg._domain_invites_request_to_join_team_validator,
+    'domain_invites_set_invite_new_user_pref_to_no': EventTypeArg._domain_invites_set_invite_new_user_pref_to_no_validator,
+    'domain_invites_set_invite_new_user_pref_to_yes': EventTypeArg._domain_invites_set_invite_new_user_pref_to_yes_validator,
+    'domain_verification_add_domain_fail': EventTypeArg._domain_verification_add_domain_fail_validator,
+    'domain_verification_add_domain_success': EventTypeArg._domain_verification_add_domain_success_validator,
+    'domain_verification_remove_domain': EventTypeArg._domain_verification_remove_domain_validator,
+    'enabled_domain_invites': EventTypeArg._enabled_domain_invites_validator,
+    'create_folder': EventTypeArg._create_folder_validator,
+    'file_add': EventTypeArg._file_add_validator,
+    'file_copy': EventTypeArg._file_copy_validator,
+    'file_delete': EventTypeArg._file_delete_validator,
+    'file_download': EventTypeArg._file_download_validator,
+    'file_edit': EventTypeArg._file_edit_validator,
+    'file_get_copy_reference': EventTypeArg._file_get_copy_reference_validator,
+    'file_locking_lock_status_changed': EventTypeArg._file_locking_lock_status_changed_validator,
+    'file_move': EventTypeArg._file_move_validator,
+    'file_permanently_delete': EventTypeArg._file_permanently_delete_validator,
+    'file_preview': EventTypeArg._file_preview_validator,
+    'file_rename': EventTypeArg._file_rename_validator,
+    'file_restore': EventTypeArg._file_restore_validator,
+    'file_revert': EventTypeArg._file_revert_validator,
+    'file_rollback_changes': EventTypeArg._file_rollback_changes_validator,
+    'file_save_copy_reference': EventTypeArg._file_save_copy_reference_validator,
+    'folder_overview_description_changed': EventTypeArg._folder_overview_description_changed_validator,
+    'folder_overview_item_pinned': EventTypeArg._folder_overview_item_pinned_validator,
+    'folder_overview_item_unpinned': EventTypeArg._folder_overview_item_unpinned_validator,
+    'rewind_folder': EventTypeArg._rewind_folder_validator,
+    'file_request_change': EventTypeArg._file_request_change_validator,
+    'file_request_close': EventTypeArg._file_request_close_validator,
+    'file_request_create': EventTypeArg._file_request_create_validator,
+    'file_request_delete': EventTypeArg._file_request_delete_validator,
+    'file_request_receive_file': EventTypeArg._file_request_receive_file_validator,
+    'group_add_external_id': EventTypeArg._group_add_external_id_validator,
+    'group_add_member': EventTypeArg._group_add_member_validator,
+    'group_change_external_id': EventTypeArg._group_change_external_id_validator,
+    'group_change_management_type': EventTypeArg._group_change_management_type_validator,
+    'group_change_member_role': EventTypeArg._group_change_member_role_validator,
+    'group_create': EventTypeArg._group_create_validator,
+    'group_delete': EventTypeArg._group_delete_validator,
+    'group_description_updated': EventTypeArg._group_description_updated_validator,
+    'group_join_policy_updated': EventTypeArg._group_join_policy_updated_validator,
+    'group_moved': EventTypeArg._group_moved_validator,
+    'group_remove_external_id': EventTypeArg._group_remove_external_id_validator,
+    'group_remove_member': EventTypeArg._group_remove_member_validator,
+    'group_rename': EventTypeArg._group_rename_validator,
+    'legal_holds_activate_a_hold': EventTypeArg._legal_holds_activate_a_hold_validator,
+    'legal_holds_add_members': EventTypeArg._legal_holds_add_members_validator,
+    'legal_holds_change_hold_details': EventTypeArg._legal_holds_change_hold_details_validator,
+    'legal_holds_change_hold_name': EventTypeArg._legal_holds_change_hold_name_validator,
+    'legal_holds_export_a_hold': EventTypeArg._legal_holds_export_a_hold_validator,
+    'legal_holds_export_cancelled': EventTypeArg._legal_holds_export_cancelled_validator,
+    'legal_holds_export_downloaded': EventTypeArg._legal_holds_export_downloaded_validator,
+    'legal_holds_export_removed': EventTypeArg._legal_holds_export_removed_validator,
+    'legal_holds_release_a_hold': EventTypeArg._legal_holds_release_a_hold_validator,
+    'legal_holds_remove_members': EventTypeArg._legal_holds_remove_members_validator,
+    'legal_holds_report_a_hold': EventTypeArg._legal_holds_report_a_hold_validator,
+    'account_lock_or_unlocked': EventTypeArg._account_lock_or_unlocked_validator,
+    'emm_error': EventTypeArg._emm_error_validator,
+    'guest_admin_signed_in_via_trusted_teams': EventTypeArg._guest_admin_signed_in_via_trusted_teams_validator,
+    'guest_admin_signed_out_via_trusted_teams': EventTypeArg._guest_admin_signed_out_via_trusted_teams_validator,
+    'login_fail': EventTypeArg._login_fail_validator,
+    'login_success': EventTypeArg._login_success_validator,
+    'logout': EventTypeArg._logout_validator,
+    'reseller_support_session_end': EventTypeArg._reseller_support_session_end_validator,
+    'reseller_support_session_start': EventTypeArg._reseller_support_session_start_validator,
+    'sign_in_as_session_end': EventTypeArg._sign_in_as_session_end_validator,
+    'sign_in_as_session_start': EventTypeArg._sign_in_as_session_start_validator,
+    'sso_error': EventTypeArg._sso_error_validator,
+    'create_team_invite_link': EventTypeArg._create_team_invite_link_validator,
+    'delete_team_invite_link': EventTypeArg._delete_team_invite_link_validator,
+    'member_add_external_id': EventTypeArg._member_add_external_id_validator,
+    'member_add_name': EventTypeArg._member_add_name_validator,
+    'member_change_admin_role': EventTypeArg._member_change_admin_role_validator,
+    'member_change_email': EventTypeArg._member_change_email_validator,
+    'member_change_external_id': EventTypeArg._member_change_external_id_validator,
+    'member_change_membership_type': EventTypeArg._member_change_membership_type_validator,
+    'member_change_name': EventTypeArg._member_change_name_validator,
+    'member_change_status': EventTypeArg._member_change_status_validator,
+    'member_delete_manual_contacts': EventTypeArg._member_delete_manual_contacts_validator,
+    'member_delete_profile_photo': EventTypeArg._member_delete_profile_photo_validator,
+    'member_permanently_delete_account_contents': EventTypeArg._member_permanently_delete_account_contents_validator,
+    'member_remove_external_id': EventTypeArg._member_remove_external_id_validator,
+    'member_set_profile_photo': EventTypeArg._member_set_profile_photo_validator,
+    'member_space_limits_add_custom_quota': EventTypeArg._member_space_limits_add_custom_quota_validator,
+    'member_space_limits_change_custom_quota': EventTypeArg._member_space_limits_change_custom_quota_validator,
+    'member_space_limits_change_status': EventTypeArg._member_space_limits_change_status_validator,
+    'member_space_limits_remove_custom_quota': EventTypeArg._member_space_limits_remove_custom_quota_validator,
+    'member_suggest': EventTypeArg._member_suggest_validator,
+    'member_transfer_account_contents': EventTypeArg._member_transfer_account_contents_validator,
+    'pending_secondary_email_added': EventTypeArg._pending_secondary_email_added_validator,
+    'secondary_email_deleted': EventTypeArg._secondary_email_deleted_validator,
+    'secondary_email_verified': EventTypeArg._secondary_email_verified_validator,
+    'secondary_mails_policy_changed': EventTypeArg._secondary_mails_policy_changed_validator,
+    'binder_add_page': EventTypeArg._binder_add_page_validator,
+    'binder_add_section': EventTypeArg._binder_add_section_validator,
+    'binder_remove_page': EventTypeArg._binder_remove_page_validator,
+    'binder_remove_section': EventTypeArg._binder_remove_section_validator,
+    'binder_rename_page': EventTypeArg._binder_rename_page_validator,
+    'binder_rename_section': EventTypeArg._binder_rename_section_validator,
+    'binder_reorder_page': EventTypeArg._binder_reorder_page_validator,
+    'binder_reorder_section': EventTypeArg._binder_reorder_section_validator,
+    'paper_content_add_member': EventTypeArg._paper_content_add_member_validator,
+    'paper_content_add_to_folder': EventTypeArg._paper_content_add_to_folder_validator,
+    'paper_content_archive': EventTypeArg._paper_content_archive_validator,
+    'paper_content_create': EventTypeArg._paper_content_create_validator,
+    'paper_content_permanently_delete': EventTypeArg._paper_content_permanently_delete_validator,
+    'paper_content_remove_from_folder': EventTypeArg._paper_content_remove_from_folder_validator,
+    'paper_content_remove_member': EventTypeArg._paper_content_remove_member_validator,
+    'paper_content_rename': EventTypeArg._paper_content_rename_validator,
+    'paper_content_restore': EventTypeArg._paper_content_restore_validator,
+    'paper_doc_add_comment': EventTypeArg._paper_doc_add_comment_validator,
+    'paper_doc_change_member_role': EventTypeArg._paper_doc_change_member_role_validator,
+    'paper_doc_change_sharing_policy': EventTypeArg._paper_doc_change_sharing_policy_validator,
+    'paper_doc_change_subscription': EventTypeArg._paper_doc_change_subscription_validator,
+    'paper_doc_deleted': EventTypeArg._paper_doc_deleted_validator,
+    'paper_doc_delete_comment': EventTypeArg._paper_doc_delete_comment_validator,
+    'paper_doc_download': EventTypeArg._paper_doc_download_validator,
+    'paper_doc_edit': EventTypeArg._paper_doc_edit_validator,
+    'paper_doc_edit_comment': EventTypeArg._paper_doc_edit_comment_validator,
+    'paper_doc_followed': EventTypeArg._paper_doc_followed_validator,
+    'paper_doc_mention': EventTypeArg._paper_doc_mention_validator,
+    'paper_doc_ownership_changed': EventTypeArg._paper_doc_ownership_changed_validator,
+    'paper_doc_request_access': EventTypeArg._paper_doc_request_access_validator,
+    'paper_doc_resolve_comment': EventTypeArg._paper_doc_resolve_comment_validator,
+    'paper_doc_revert': EventTypeArg._paper_doc_revert_validator,
+    'paper_doc_slack_share': EventTypeArg._paper_doc_slack_share_validator,
+    'paper_doc_team_invite': EventTypeArg._paper_doc_team_invite_validator,
+    'paper_doc_trashed': EventTypeArg._paper_doc_trashed_validator,
+    'paper_doc_unresolve_comment': EventTypeArg._paper_doc_unresolve_comment_validator,
+    'paper_doc_untrashed': EventTypeArg._paper_doc_untrashed_validator,
+    'paper_doc_view': EventTypeArg._paper_doc_view_validator,
+    'paper_external_view_allow': EventTypeArg._paper_external_view_allow_validator,
+    'paper_external_view_default_team': EventTypeArg._paper_external_view_default_team_validator,
+    'paper_external_view_forbid': EventTypeArg._paper_external_view_forbid_validator,
+    'paper_folder_change_subscription': EventTypeArg._paper_folder_change_subscription_validator,
+    'paper_folder_deleted': EventTypeArg._paper_folder_deleted_validator,
+    'paper_folder_followed': EventTypeArg._paper_folder_followed_validator,
+    'paper_folder_team_invite': EventTypeArg._paper_folder_team_invite_validator,
+    'paper_published_link_change_permission': EventTypeArg._paper_published_link_change_permission_validator,
+    'paper_published_link_create': EventTypeArg._paper_published_link_create_validator,
+    'paper_published_link_disabled': EventTypeArg._paper_published_link_disabled_validator,
+    'paper_published_link_view': EventTypeArg._paper_published_link_view_validator,
+    'password_change': EventTypeArg._password_change_validator,
+    'password_reset': EventTypeArg._password_reset_validator,
+    'password_reset_all': EventTypeArg._password_reset_all_validator,
+    'emm_create_exceptions_report': EventTypeArg._emm_create_exceptions_report_validator,
+    'emm_create_usage_report': EventTypeArg._emm_create_usage_report_validator,
+    'export_members_report': EventTypeArg._export_members_report_validator,
+    'export_members_report_fail': EventTypeArg._export_members_report_fail_validator,
+    'no_expiration_link_gen_create_report': EventTypeArg._no_expiration_link_gen_create_report_validator,
+    'no_expiration_link_gen_report_failed': EventTypeArg._no_expiration_link_gen_report_failed_validator,
+    'no_password_link_gen_create_report': EventTypeArg._no_password_link_gen_create_report_validator,
+    'no_password_link_gen_report_failed': EventTypeArg._no_password_link_gen_report_failed_validator,
+    'no_password_link_view_create_report': EventTypeArg._no_password_link_view_create_report_validator,
+    'no_password_link_view_report_failed': EventTypeArg._no_password_link_view_report_failed_validator,
+    'outdated_link_view_create_report': EventTypeArg._outdated_link_view_create_report_validator,
+    'outdated_link_view_report_failed': EventTypeArg._outdated_link_view_report_failed_validator,
+    'paper_admin_export_start': EventTypeArg._paper_admin_export_start_validator,
+    'smart_sync_create_admin_privilege_report': EventTypeArg._smart_sync_create_admin_privilege_report_validator,
+    'team_activity_create_report': EventTypeArg._team_activity_create_report_validator,
+    'team_activity_create_report_fail': EventTypeArg._team_activity_create_report_fail_validator,
+    'collection_share': EventTypeArg._collection_share_validator,
+    'file_transfers_file_add': EventTypeArg._file_transfers_file_add_validator,
+    'file_transfers_transfer_delete': EventTypeArg._file_transfers_transfer_delete_validator,
+    'file_transfers_transfer_download': EventTypeArg._file_transfers_transfer_download_validator,
+    'file_transfers_transfer_send': EventTypeArg._file_transfers_transfer_send_validator,
+    'file_transfers_transfer_view': EventTypeArg._file_transfers_transfer_view_validator,
+    'note_acl_invite_only': EventTypeArg._note_acl_invite_only_validator,
+    'note_acl_link': EventTypeArg._note_acl_link_validator,
+    'note_acl_team_link': EventTypeArg._note_acl_team_link_validator,
+    'note_shared': EventTypeArg._note_shared_validator,
+    'note_share_receive': EventTypeArg._note_share_receive_validator,
+    'open_note_shared': EventTypeArg._open_note_shared_validator,
+    'sf_add_group': EventTypeArg._sf_add_group_validator,
+    'sf_allow_non_members_to_view_shared_links': EventTypeArg._sf_allow_non_members_to_view_shared_links_validator,
+    'sf_external_invite_warn': EventTypeArg._sf_external_invite_warn_validator,
+    'sf_fb_invite': EventTypeArg._sf_fb_invite_validator,
+    'sf_fb_invite_change_role': EventTypeArg._sf_fb_invite_change_role_validator,
+    'sf_fb_uninvite': EventTypeArg._sf_fb_uninvite_validator,
+    'sf_invite_group': EventTypeArg._sf_invite_group_validator,
+    'sf_team_grant_access': EventTypeArg._sf_team_grant_access_validator,
+    'sf_team_invite': EventTypeArg._sf_team_invite_validator,
+    'sf_team_invite_change_role': EventTypeArg._sf_team_invite_change_role_validator,
+    'sf_team_join': EventTypeArg._sf_team_join_validator,
+    'sf_team_join_from_oob_link': EventTypeArg._sf_team_join_from_oob_link_validator,
+    'sf_team_uninvite': EventTypeArg._sf_team_uninvite_validator,
+    'shared_content_add_invitees': EventTypeArg._shared_content_add_invitees_validator,
+    'shared_content_add_link_expiry': EventTypeArg._shared_content_add_link_expiry_validator,
+    'shared_content_add_link_password': EventTypeArg._shared_content_add_link_password_validator,
+    'shared_content_add_member': EventTypeArg._shared_content_add_member_validator,
+    'shared_content_change_downloads_policy': EventTypeArg._shared_content_change_downloads_policy_validator,
+    'shared_content_change_invitee_role': EventTypeArg._shared_content_change_invitee_role_validator,
+    'shared_content_change_link_audience': EventTypeArg._shared_content_change_link_audience_validator,
+    'shared_content_change_link_expiry': EventTypeArg._shared_content_change_link_expiry_validator,
+    'shared_content_change_link_password': EventTypeArg._shared_content_change_link_password_validator,
+    'shared_content_change_member_role': EventTypeArg._shared_content_change_member_role_validator,
+    'shared_content_change_viewer_info_policy': EventTypeArg._shared_content_change_viewer_info_policy_validator,
+    'shared_content_claim_invitation': EventTypeArg._shared_content_claim_invitation_validator,
+    'shared_content_copy': EventTypeArg._shared_content_copy_validator,
+    'shared_content_download': EventTypeArg._shared_content_download_validator,
+    'shared_content_relinquish_membership': EventTypeArg._shared_content_relinquish_membership_validator,
+    'shared_content_remove_invitees': EventTypeArg._shared_content_remove_invitees_validator,
+    'shared_content_remove_link_expiry': EventTypeArg._shared_content_remove_link_expiry_validator,
+    'shared_content_remove_link_password': EventTypeArg._shared_content_remove_link_password_validator,
+    'shared_content_remove_member': EventTypeArg._shared_content_remove_member_validator,
+    'shared_content_request_access': EventTypeArg._shared_content_request_access_validator,
+    'shared_content_restore_invitees': EventTypeArg._shared_content_restore_invitees_validator,
+    'shared_content_restore_member': EventTypeArg._shared_content_restore_member_validator,
+    'shared_content_unshare': EventTypeArg._shared_content_unshare_validator,
+    'shared_content_view': EventTypeArg._shared_content_view_validator,
+    'shared_folder_change_link_policy': EventTypeArg._shared_folder_change_link_policy_validator,
+    'shared_folder_change_members_inheritance_policy': EventTypeArg._shared_folder_change_members_inheritance_policy_validator,
+    'shared_folder_change_members_management_policy': EventTypeArg._shared_folder_change_members_management_policy_validator,
+    'shared_folder_change_members_policy': EventTypeArg._shared_folder_change_members_policy_validator,
+    'shared_folder_create': EventTypeArg._shared_folder_create_validator,
+    'shared_folder_decline_invitation': EventTypeArg._shared_folder_decline_invitation_validator,
+    'shared_folder_mount': EventTypeArg._shared_folder_mount_validator,
+    'shared_folder_nest': EventTypeArg._shared_folder_nest_validator,
+    'shared_folder_transfer_ownership': EventTypeArg._shared_folder_transfer_ownership_validator,
+    'shared_folder_unmount': EventTypeArg._shared_folder_unmount_validator,
+    'shared_link_add_expiry': EventTypeArg._shared_link_add_expiry_validator,
+    'shared_link_change_expiry': EventTypeArg._shared_link_change_expiry_validator,
+    'shared_link_change_visibility': EventTypeArg._shared_link_change_visibility_validator,
+    'shared_link_copy': EventTypeArg._shared_link_copy_validator,
+    'shared_link_create': EventTypeArg._shared_link_create_validator,
+    'shared_link_disable': EventTypeArg._shared_link_disable_validator,
+    'shared_link_download': EventTypeArg._shared_link_download_validator,
+    'shared_link_remove_expiry': EventTypeArg._shared_link_remove_expiry_validator,
+    'shared_link_settings_add_expiration': EventTypeArg._shared_link_settings_add_expiration_validator,
+    'shared_link_settings_add_password': EventTypeArg._shared_link_settings_add_password_validator,
+    'shared_link_settings_allow_download_disabled': EventTypeArg._shared_link_settings_allow_download_disabled_validator,
+    'shared_link_settings_allow_download_enabled': EventTypeArg._shared_link_settings_allow_download_enabled_validator,
+    'shared_link_settings_change_audience': EventTypeArg._shared_link_settings_change_audience_validator,
+    'shared_link_settings_change_expiration': EventTypeArg._shared_link_settings_change_expiration_validator,
+    'shared_link_settings_change_password': EventTypeArg._shared_link_settings_change_password_validator,
+    'shared_link_settings_remove_expiration': EventTypeArg._shared_link_settings_remove_expiration_validator,
+    'shared_link_settings_remove_password': EventTypeArg._shared_link_settings_remove_password_validator,
+    'shared_link_share': EventTypeArg._shared_link_share_validator,
+    'shared_link_view': EventTypeArg._shared_link_view_validator,
+    'shared_note_opened': EventTypeArg._shared_note_opened_validator,
+    'shmodel_group_share': EventTypeArg._shmodel_group_share_validator,
+    'showcase_access_granted': EventTypeArg._showcase_access_granted_validator,
+    'showcase_add_member': EventTypeArg._showcase_add_member_validator,
+    'showcase_archived': EventTypeArg._showcase_archived_validator,
+    'showcase_created': EventTypeArg._showcase_created_validator,
+    'showcase_delete_comment': EventTypeArg._showcase_delete_comment_validator,
+    'showcase_edited': EventTypeArg._showcase_edited_validator,
+    'showcase_edit_comment': EventTypeArg._showcase_edit_comment_validator,
+    'showcase_file_added': EventTypeArg._showcase_file_added_validator,
+    'showcase_file_download': EventTypeArg._showcase_file_download_validator,
+    'showcase_file_removed': EventTypeArg._showcase_file_removed_validator,
+    'showcase_file_view': EventTypeArg._showcase_file_view_validator,
+    'showcase_permanently_deleted': EventTypeArg._showcase_permanently_deleted_validator,
+    'showcase_post_comment': EventTypeArg._showcase_post_comment_validator,
+    'showcase_remove_member': EventTypeArg._showcase_remove_member_validator,
+    'showcase_renamed': EventTypeArg._showcase_renamed_validator,
+    'showcase_request_access': EventTypeArg._showcase_request_access_validator,
+    'showcase_resolve_comment': EventTypeArg._showcase_resolve_comment_validator,
+    'showcase_restored': EventTypeArg._showcase_restored_validator,
+    'showcase_trashed': EventTypeArg._showcase_trashed_validator,
+    'showcase_trashed_deprecated': EventTypeArg._showcase_trashed_deprecated_validator,
+    'showcase_unresolve_comment': EventTypeArg._showcase_unresolve_comment_validator,
+    'showcase_untrashed': EventTypeArg._showcase_untrashed_validator,
+    'showcase_untrashed_deprecated': EventTypeArg._showcase_untrashed_deprecated_validator,
+    'showcase_view': EventTypeArg._showcase_view_validator,
+    'sso_add_cert': EventTypeArg._sso_add_cert_validator,
+    'sso_add_login_url': EventTypeArg._sso_add_login_url_validator,
+    'sso_add_logout_url': EventTypeArg._sso_add_logout_url_validator,
+    'sso_change_cert': EventTypeArg._sso_change_cert_validator,
+    'sso_change_login_url': EventTypeArg._sso_change_login_url_validator,
+    'sso_change_logout_url': EventTypeArg._sso_change_logout_url_validator,
+    'sso_change_saml_identity_mode': EventTypeArg._sso_change_saml_identity_mode_validator,
+    'sso_remove_cert': EventTypeArg._sso_remove_cert_validator,
+    'sso_remove_login_url': EventTypeArg._sso_remove_login_url_validator,
+    'sso_remove_logout_url': EventTypeArg._sso_remove_logout_url_validator,
+    'team_folder_change_status': EventTypeArg._team_folder_change_status_validator,
+    'team_folder_create': EventTypeArg._team_folder_create_validator,
+    'team_folder_downgrade': EventTypeArg._team_folder_downgrade_validator,
+    'team_folder_permanently_delete': EventTypeArg._team_folder_permanently_delete_validator,
+    'team_folder_rename': EventTypeArg._team_folder_rename_validator,
+    'team_selective_sync_settings_changed': EventTypeArg._team_selective_sync_settings_changed_validator,
+    'account_capture_change_policy': EventTypeArg._account_capture_change_policy_validator,
+    'allow_download_disabled': EventTypeArg._allow_download_disabled_validator,
+    'allow_download_enabled': EventTypeArg._allow_download_enabled_validator,
+    'camera_uploads_policy_changed': EventTypeArg._camera_uploads_policy_changed_validator,
+    'data_placement_restriction_change_policy': EventTypeArg._data_placement_restriction_change_policy_validator,
+    'data_placement_restriction_satisfy_policy': EventTypeArg._data_placement_restriction_satisfy_policy_validator,
+    'device_approvals_add_exception': EventTypeArg._device_approvals_add_exception_validator,
+    'device_approvals_change_desktop_policy': EventTypeArg._device_approvals_change_desktop_policy_validator,
+    'device_approvals_change_mobile_policy': EventTypeArg._device_approvals_change_mobile_policy_validator,
+    'device_approvals_change_overage_action': EventTypeArg._device_approvals_change_overage_action_validator,
+    'device_approvals_change_unlink_action': EventTypeArg._device_approvals_change_unlink_action_validator,
+    'device_approvals_remove_exception': EventTypeArg._device_approvals_remove_exception_validator,
+    'directory_restrictions_add_members': EventTypeArg._directory_restrictions_add_members_validator,
+    'directory_restrictions_remove_members': EventTypeArg._directory_restrictions_remove_members_validator,
+    'emm_add_exception': EventTypeArg._emm_add_exception_validator,
+    'emm_change_policy': EventTypeArg._emm_change_policy_validator,
+    'emm_remove_exception': EventTypeArg._emm_remove_exception_validator,
+    'extended_version_history_change_policy': EventTypeArg._extended_version_history_change_policy_validator,
+    'file_comments_change_policy': EventTypeArg._file_comments_change_policy_validator,
+    'file_locking_policy_changed': EventTypeArg._file_locking_policy_changed_validator,
+    'file_requests_change_policy': EventTypeArg._file_requests_change_policy_validator,
+    'file_requests_emails_enabled': EventTypeArg._file_requests_emails_enabled_validator,
+    'file_requests_emails_restricted_to_team_only': EventTypeArg._file_requests_emails_restricted_to_team_only_validator,
+    'file_transfers_policy_changed': EventTypeArg._file_transfers_policy_changed_validator,
+    'google_sso_change_policy': EventTypeArg._google_sso_change_policy_validator,
+    'group_user_management_change_policy': EventTypeArg._group_user_management_change_policy_validator,
+    'integration_policy_changed': EventTypeArg._integration_policy_changed_validator,
+    'member_requests_change_policy': EventTypeArg._member_requests_change_policy_validator,
+    'member_send_invite_policy_changed': EventTypeArg._member_send_invite_policy_changed_validator,
+    'member_space_limits_add_exception': EventTypeArg._member_space_limits_add_exception_validator,
+    'member_space_limits_change_caps_type_policy': EventTypeArg._member_space_limits_change_caps_type_policy_validator,
+    'member_space_limits_change_policy': EventTypeArg._member_space_limits_change_policy_validator,
+    'member_space_limits_remove_exception': EventTypeArg._member_space_limits_remove_exception_validator,
+    'member_suggestions_change_policy': EventTypeArg._member_suggestions_change_policy_validator,
+    'microsoft_office_addin_change_policy': EventTypeArg._microsoft_office_addin_change_policy_validator,
+    'network_control_change_policy': EventTypeArg._network_control_change_policy_validator,
+    'paper_change_deployment_policy': EventTypeArg._paper_change_deployment_policy_validator,
+    'paper_change_member_link_policy': EventTypeArg._paper_change_member_link_policy_validator,
+    'paper_change_member_policy': EventTypeArg._paper_change_member_policy_validator,
+    'paper_change_policy': EventTypeArg._paper_change_policy_validator,
+    'paper_default_folder_policy_changed': EventTypeArg._paper_default_folder_policy_changed_validator,
+    'paper_desktop_policy_changed': EventTypeArg._paper_desktop_policy_changed_validator,
+    'paper_enabled_users_group_addition': EventTypeArg._paper_enabled_users_group_addition_validator,
+    'paper_enabled_users_group_removal': EventTypeArg._paper_enabled_users_group_removal_validator,
+    'password_strength_requirements_change_policy': EventTypeArg._password_strength_requirements_change_policy_validator,
+    'permanent_delete_change_policy': EventTypeArg._permanent_delete_change_policy_validator,
+    'reseller_support_change_policy': EventTypeArg._reseller_support_change_policy_validator,
+    'rewind_policy_changed': EventTypeArg._rewind_policy_changed_validator,
+    'sharing_change_folder_join_policy': EventTypeArg._sharing_change_folder_join_policy_validator,
+    'sharing_change_link_policy': EventTypeArg._sharing_change_link_policy_validator,
+    'sharing_change_member_policy': EventTypeArg._sharing_change_member_policy_validator,
+    'showcase_change_download_policy': EventTypeArg._showcase_change_download_policy_validator,
+    'showcase_change_enabled_policy': EventTypeArg._showcase_change_enabled_policy_validator,
+    'showcase_change_external_sharing_policy': EventTypeArg._showcase_change_external_sharing_policy_validator,
+    'smarter_smart_sync_policy_changed': EventTypeArg._smarter_smart_sync_policy_changed_validator,
+    'smart_sync_change_policy': EventTypeArg._smart_sync_change_policy_validator,
+    'smart_sync_not_opt_out': EventTypeArg._smart_sync_not_opt_out_validator,
+    'smart_sync_opt_out': EventTypeArg._smart_sync_opt_out_validator,
+    'sso_change_policy': EventTypeArg._sso_change_policy_validator,
+    'team_extensions_policy_changed': EventTypeArg._team_extensions_policy_changed_validator,
+    'team_selective_sync_policy_changed': EventTypeArg._team_selective_sync_policy_changed_validator,
+    'team_sharing_whitelist_subjects_changed': EventTypeArg._team_sharing_whitelist_subjects_changed_validator,
+    'tfa_add_exception': EventTypeArg._tfa_add_exception_validator,
+    'tfa_change_policy': EventTypeArg._tfa_change_policy_validator,
+    'tfa_remove_exception': EventTypeArg._tfa_remove_exception_validator,
+    'two_account_change_policy': EventTypeArg._two_account_change_policy_validator,
+    'viewer_info_policy_changed': EventTypeArg._viewer_info_policy_changed_validator,
+    'watermarking_policy_changed': EventTypeArg._watermarking_policy_changed_validator,
+    'web_sessions_change_active_session_limit': EventTypeArg._web_sessions_change_active_session_limit_validator,
+    'web_sessions_change_fixed_length_policy': EventTypeArg._web_sessions_change_fixed_length_policy_validator,
+    'web_sessions_change_idle_length_policy': EventTypeArg._web_sessions_change_idle_length_policy_validator,
+    'team_merge_from': EventTypeArg._team_merge_from_validator,
+    'team_merge_to': EventTypeArg._team_merge_to_validator,
+    'team_profile_add_logo': EventTypeArg._team_profile_add_logo_validator,
+    'team_profile_change_default_language': EventTypeArg._team_profile_change_default_language_validator,
+    'team_profile_change_logo': EventTypeArg._team_profile_change_logo_validator,
+    'team_profile_change_name': EventTypeArg._team_profile_change_name_validator,
+    'team_profile_remove_logo': EventTypeArg._team_profile_remove_logo_validator,
+    'tfa_add_backup_phone': EventTypeArg._tfa_add_backup_phone_validator,
+    'tfa_add_security_key': EventTypeArg._tfa_add_security_key_validator,
+    'tfa_change_backup_phone': EventTypeArg._tfa_change_backup_phone_validator,
+    'tfa_change_status': EventTypeArg._tfa_change_status_validator,
+    'tfa_remove_backup_phone': EventTypeArg._tfa_remove_backup_phone_validator,
+    'tfa_remove_security_key': EventTypeArg._tfa_remove_security_key_validator,
+    'tfa_reset': EventTypeArg._tfa_reset_validator,
+    'changed_enterprise_admin_role': EventTypeArg._changed_enterprise_admin_role_validator,
+    'changed_enterprise_connected_team_status': EventTypeArg._changed_enterprise_connected_team_status_validator,
+    'ended_enterprise_admin_session': EventTypeArg._ended_enterprise_admin_session_validator,
+    'ended_enterprise_admin_session_deprecated': EventTypeArg._ended_enterprise_admin_session_deprecated_validator,
+    'enterprise_settings_locking': EventTypeArg._enterprise_settings_locking_validator,
+    'guest_admin_change_status': EventTypeArg._guest_admin_change_status_validator,
+    'started_enterprise_admin_session': EventTypeArg._started_enterprise_admin_session_validator,
+    'team_merge_request_accepted': EventTypeArg._team_merge_request_accepted_validator,
+    'team_merge_request_accepted_shown_to_primary_team': EventTypeArg._team_merge_request_accepted_shown_to_primary_team_validator,
+    'team_merge_request_accepted_shown_to_secondary_team': EventTypeArg._team_merge_request_accepted_shown_to_secondary_team_validator,
+    'team_merge_request_auto_canceled': EventTypeArg._team_merge_request_auto_canceled_validator,
+    'team_merge_request_canceled': EventTypeArg._team_merge_request_canceled_validator,
+    'team_merge_request_canceled_shown_to_primary_team': EventTypeArg._team_merge_request_canceled_shown_to_primary_team_validator,
+    'team_merge_request_canceled_shown_to_secondary_team': EventTypeArg._team_merge_request_canceled_shown_to_secondary_team_validator,
+    'team_merge_request_expired': EventTypeArg._team_merge_request_expired_validator,
+    'team_merge_request_expired_shown_to_primary_team': EventTypeArg._team_merge_request_expired_shown_to_primary_team_validator,
+    'team_merge_request_expired_shown_to_secondary_team': EventTypeArg._team_merge_request_expired_shown_to_secondary_team_validator,
+    'team_merge_request_rejected_shown_to_primary_team': EventTypeArg._team_merge_request_rejected_shown_to_primary_team_validator,
+    'team_merge_request_rejected_shown_to_secondary_team': EventTypeArg._team_merge_request_rejected_shown_to_secondary_team_validator,
+    'team_merge_request_reminder': EventTypeArg._team_merge_request_reminder_validator,
+    'team_merge_request_reminder_shown_to_primary_team': EventTypeArg._team_merge_request_reminder_shown_to_primary_team_validator,
+    'team_merge_request_reminder_shown_to_secondary_team': EventTypeArg._team_merge_request_reminder_shown_to_secondary_team_validator,
+    'team_merge_request_revoked': EventTypeArg._team_merge_request_revoked_validator,
+    'team_merge_request_sent_shown_to_primary_team': EventTypeArg._team_merge_request_sent_shown_to_primary_team_validator,
+    'team_merge_request_sent_shown_to_secondary_team': EventTypeArg._team_merge_request_sent_shown_to_secondary_team_validator,
+    'other': EventTypeArg._other_validator,
+}
+
+EventTypeArg.app_link_team = EventTypeArg('app_link_team')
+EventTypeArg.app_link_user = EventTypeArg('app_link_user')
+EventTypeArg.app_unlink_team = EventTypeArg('app_unlink_team')
+EventTypeArg.app_unlink_user = EventTypeArg('app_unlink_user')
+EventTypeArg.integration_connected = EventTypeArg('integration_connected')
+EventTypeArg.integration_disconnected = EventTypeArg('integration_disconnected')
+EventTypeArg.file_add_comment = EventTypeArg('file_add_comment')
+EventTypeArg.file_change_comment_subscription = EventTypeArg('file_change_comment_subscription')
+EventTypeArg.file_delete_comment = EventTypeArg('file_delete_comment')
+EventTypeArg.file_edit_comment = EventTypeArg('file_edit_comment')
+EventTypeArg.file_like_comment = EventTypeArg('file_like_comment')
+EventTypeArg.file_resolve_comment = EventTypeArg('file_resolve_comment')
+EventTypeArg.file_unlike_comment = EventTypeArg('file_unlike_comment')
+EventTypeArg.file_unresolve_comment = EventTypeArg('file_unresolve_comment')
+EventTypeArg.device_change_ip_desktop = EventTypeArg('device_change_ip_desktop')
+EventTypeArg.device_change_ip_mobile = EventTypeArg('device_change_ip_mobile')
+EventTypeArg.device_change_ip_web = EventTypeArg('device_change_ip_web')
+EventTypeArg.device_delete_on_unlink_fail = EventTypeArg('device_delete_on_unlink_fail')
+EventTypeArg.device_delete_on_unlink_success = EventTypeArg('device_delete_on_unlink_success')
+EventTypeArg.device_link_fail = EventTypeArg('device_link_fail')
+EventTypeArg.device_link_success = EventTypeArg('device_link_success')
+EventTypeArg.device_management_disabled = EventTypeArg('device_management_disabled')
+EventTypeArg.device_management_enabled = EventTypeArg('device_management_enabled')
+EventTypeArg.device_unlink = EventTypeArg('device_unlink')
+EventTypeArg.emm_refresh_auth_token = EventTypeArg('emm_refresh_auth_token')
+EventTypeArg.account_capture_change_availability = EventTypeArg('account_capture_change_availability')
+EventTypeArg.account_capture_migrate_account = EventTypeArg('account_capture_migrate_account')
+EventTypeArg.account_capture_notification_emails_sent = EventTypeArg('account_capture_notification_emails_sent')
+EventTypeArg.account_capture_relinquish_account = EventTypeArg('account_capture_relinquish_account')
+EventTypeArg.disabled_domain_invites = EventTypeArg('disabled_domain_invites')
+EventTypeArg.domain_invites_approve_request_to_join_team = EventTypeArg('domain_invites_approve_request_to_join_team')
+EventTypeArg.domain_invites_decline_request_to_join_team = EventTypeArg('domain_invites_decline_request_to_join_team')
+EventTypeArg.domain_invites_email_existing_users = EventTypeArg('domain_invites_email_existing_users')
+EventTypeArg.domain_invites_request_to_join_team = EventTypeArg('domain_invites_request_to_join_team')
+EventTypeArg.domain_invites_set_invite_new_user_pref_to_no = EventTypeArg('domain_invites_set_invite_new_user_pref_to_no')
+EventTypeArg.domain_invites_set_invite_new_user_pref_to_yes = EventTypeArg('domain_invites_set_invite_new_user_pref_to_yes')
+EventTypeArg.domain_verification_add_domain_fail = EventTypeArg('domain_verification_add_domain_fail')
+EventTypeArg.domain_verification_add_domain_success = EventTypeArg('domain_verification_add_domain_success')
+EventTypeArg.domain_verification_remove_domain = EventTypeArg('domain_verification_remove_domain')
+EventTypeArg.enabled_domain_invites = EventTypeArg('enabled_domain_invites')
+EventTypeArg.create_folder = EventTypeArg('create_folder')
+EventTypeArg.file_add = EventTypeArg('file_add')
+EventTypeArg.file_copy = EventTypeArg('file_copy')
+EventTypeArg.file_delete = EventTypeArg('file_delete')
+EventTypeArg.file_download = EventTypeArg('file_download')
+EventTypeArg.file_edit = EventTypeArg('file_edit')
+EventTypeArg.file_get_copy_reference = EventTypeArg('file_get_copy_reference')
+EventTypeArg.file_locking_lock_status_changed = EventTypeArg('file_locking_lock_status_changed')
+EventTypeArg.file_move = EventTypeArg('file_move')
+EventTypeArg.file_permanently_delete = EventTypeArg('file_permanently_delete')
+EventTypeArg.file_preview = EventTypeArg('file_preview')
+EventTypeArg.file_rename = EventTypeArg('file_rename')
+EventTypeArg.file_restore = EventTypeArg('file_restore')
+EventTypeArg.file_revert = EventTypeArg('file_revert')
+EventTypeArg.file_rollback_changes = EventTypeArg('file_rollback_changes')
+EventTypeArg.file_save_copy_reference = EventTypeArg('file_save_copy_reference')
+EventTypeArg.folder_overview_description_changed = EventTypeArg('folder_overview_description_changed')
+EventTypeArg.folder_overview_item_pinned = EventTypeArg('folder_overview_item_pinned')
+EventTypeArg.folder_overview_item_unpinned = EventTypeArg('folder_overview_item_unpinned')
+EventTypeArg.rewind_folder = EventTypeArg('rewind_folder')
+EventTypeArg.file_request_change = EventTypeArg('file_request_change')
+EventTypeArg.file_request_close = EventTypeArg('file_request_close')
+EventTypeArg.file_request_create = EventTypeArg('file_request_create')
+EventTypeArg.file_request_delete = EventTypeArg('file_request_delete')
+EventTypeArg.file_request_receive_file = EventTypeArg('file_request_receive_file')
+EventTypeArg.group_add_external_id = EventTypeArg('group_add_external_id')
+EventTypeArg.group_add_member = EventTypeArg('group_add_member')
+EventTypeArg.group_change_external_id = EventTypeArg('group_change_external_id')
+EventTypeArg.group_change_management_type = EventTypeArg('group_change_management_type')
+EventTypeArg.group_change_member_role = EventTypeArg('group_change_member_role')
+EventTypeArg.group_create = EventTypeArg('group_create')
+EventTypeArg.group_delete = EventTypeArg('group_delete')
+EventTypeArg.group_description_updated = EventTypeArg('group_description_updated')
+EventTypeArg.group_join_policy_updated = EventTypeArg('group_join_policy_updated')
+EventTypeArg.group_moved = EventTypeArg('group_moved')
+EventTypeArg.group_remove_external_id = EventTypeArg('group_remove_external_id')
+EventTypeArg.group_remove_member = EventTypeArg('group_remove_member')
+EventTypeArg.group_rename = EventTypeArg('group_rename')
+EventTypeArg.legal_holds_activate_a_hold = EventTypeArg('legal_holds_activate_a_hold')
+EventTypeArg.legal_holds_add_members = EventTypeArg('legal_holds_add_members')
+EventTypeArg.legal_holds_change_hold_details = EventTypeArg('legal_holds_change_hold_details')
+EventTypeArg.legal_holds_change_hold_name = EventTypeArg('legal_holds_change_hold_name')
+EventTypeArg.legal_holds_export_a_hold = EventTypeArg('legal_holds_export_a_hold')
+EventTypeArg.legal_holds_export_cancelled = EventTypeArg('legal_holds_export_cancelled')
+EventTypeArg.legal_holds_export_downloaded = EventTypeArg('legal_holds_export_downloaded')
+EventTypeArg.legal_holds_export_removed = EventTypeArg('legal_holds_export_removed')
+EventTypeArg.legal_holds_release_a_hold = EventTypeArg('legal_holds_release_a_hold')
+EventTypeArg.legal_holds_remove_members = EventTypeArg('legal_holds_remove_members')
+EventTypeArg.legal_holds_report_a_hold = EventTypeArg('legal_holds_report_a_hold')
+EventTypeArg.account_lock_or_unlocked = EventTypeArg('account_lock_or_unlocked')
+EventTypeArg.emm_error = EventTypeArg('emm_error')
+EventTypeArg.guest_admin_signed_in_via_trusted_teams = EventTypeArg('guest_admin_signed_in_via_trusted_teams')
+EventTypeArg.guest_admin_signed_out_via_trusted_teams = EventTypeArg('guest_admin_signed_out_via_trusted_teams')
+EventTypeArg.login_fail = EventTypeArg('login_fail')
+EventTypeArg.login_success = EventTypeArg('login_success')
+EventTypeArg.logout = EventTypeArg('logout')
+EventTypeArg.reseller_support_session_end = EventTypeArg('reseller_support_session_end')
+EventTypeArg.reseller_support_session_start = EventTypeArg('reseller_support_session_start')
+EventTypeArg.sign_in_as_session_end = EventTypeArg('sign_in_as_session_end')
+EventTypeArg.sign_in_as_session_start = EventTypeArg('sign_in_as_session_start')
+EventTypeArg.sso_error = EventTypeArg('sso_error')
+EventTypeArg.create_team_invite_link = EventTypeArg('create_team_invite_link')
+EventTypeArg.delete_team_invite_link = EventTypeArg('delete_team_invite_link')
+EventTypeArg.member_add_external_id = EventTypeArg('member_add_external_id')
+EventTypeArg.member_add_name = EventTypeArg('member_add_name')
+EventTypeArg.member_change_admin_role = EventTypeArg('member_change_admin_role')
+EventTypeArg.member_change_email = EventTypeArg('member_change_email')
+EventTypeArg.member_change_external_id = EventTypeArg('member_change_external_id')
+EventTypeArg.member_change_membership_type = EventTypeArg('member_change_membership_type')
+EventTypeArg.member_change_name = EventTypeArg('member_change_name')
+EventTypeArg.member_change_status = EventTypeArg('member_change_status')
+EventTypeArg.member_delete_manual_contacts = EventTypeArg('member_delete_manual_contacts')
+EventTypeArg.member_delete_profile_photo = EventTypeArg('member_delete_profile_photo')
+EventTypeArg.member_permanently_delete_account_contents = EventTypeArg('member_permanently_delete_account_contents')
+EventTypeArg.member_remove_external_id = EventTypeArg('member_remove_external_id')
+EventTypeArg.member_set_profile_photo = EventTypeArg('member_set_profile_photo')
+EventTypeArg.member_space_limits_add_custom_quota = EventTypeArg('member_space_limits_add_custom_quota')
+EventTypeArg.member_space_limits_change_custom_quota = EventTypeArg('member_space_limits_change_custom_quota')
+EventTypeArg.member_space_limits_change_status = EventTypeArg('member_space_limits_change_status')
+EventTypeArg.member_space_limits_remove_custom_quota = EventTypeArg('member_space_limits_remove_custom_quota')
+EventTypeArg.member_suggest = EventTypeArg('member_suggest')
+EventTypeArg.member_transfer_account_contents = EventTypeArg('member_transfer_account_contents')
+EventTypeArg.pending_secondary_email_added = EventTypeArg('pending_secondary_email_added')
+EventTypeArg.secondary_email_deleted = EventTypeArg('secondary_email_deleted')
+EventTypeArg.secondary_email_verified = EventTypeArg('secondary_email_verified')
+EventTypeArg.secondary_mails_policy_changed = EventTypeArg('secondary_mails_policy_changed')
+EventTypeArg.binder_add_page = EventTypeArg('binder_add_page')
+EventTypeArg.binder_add_section = EventTypeArg('binder_add_section')
+EventTypeArg.binder_remove_page = EventTypeArg('binder_remove_page')
+EventTypeArg.binder_remove_section = EventTypeArg('binder_remove_section')
+EventTypeArg.binder_rename_page = EventTypeArg('binder_rename_page')
+EventTypeArg.binder_rename_section = EventTypeArg('binder_rename_section')
+EventTypeArg.binder_reorder_page = EventTypeArg('binder_reorder_page')
+EventTypeArg.binder_reorder_section = EventTypeArg('binder_reorder_section')
+EventTypeArg.paper_content_add_member = EventTypeArg('paper_content_add_member')
+EventTypeArg.paper_content_add_to_folder = EventTypeArg('paper_content_add_to_folder')
+EventTypeArg.paper_content_archive = EventTypeArg('paper_content_archive')
+EventTypeArg.paper_content_create = EventTypeArg('paper_content_create')
+EventTypeArg.paper_content_permanently_delete = EventTypeArg('paper_content_permanently_delete')
+EventTypeArg.paper_content_remove_from_folder = EventTypeArg('paper_content_remove_from_folder')
+EventTypeArg.paper_content_remove_member = EventTypeArg('paper_content_remove_member')
+EventTypeArg.paper_content_rename = EventTypeArg('paper_content_rename')
+EventTypeArg.paper_content_restore = EventTypeArg('paper_content_restore')
+EventTypeArg.paper_doc_add_comment = EventTypeArg('paper_doc_add_comment')
+EventTypeArg.paper_doc_change_member_role = EventTypeArg('paper_doc_change_member_role')
+EventTypeArg.paper_doc_change_sharing_policy = EventTypeArg('paper_doc_change_sharing_policy')
+EventTypeArg.paper_doc_change_subscription = EventTypeArg('paper_doc_change_subscription')
+EventTypeArg.paper_doc_deleted = EventTypeArg('paper_doc_deleted')
+EventTypeArg.paper_doc_delete_comment = EventTypeArg('paper_doc_delete_comment')
+EventTypeArg.paper_doc_download = EventTypeArg('paper_doc_download')
+EventTypeArg.paper_doc_edit = EventTypeArg('paper_doc_edit')
+EventTypeArg.paper_doc_edit_comment = EventTypeArg('paper_doc_edit_comment')
+EventTypeArg.paper_doc_followed = EventTypeArg('paper_doc_followed')
+EventTypeArg.paper_doc_mention = EventTypeArg('paper_doc_mention')
+EventTypeArg.paper_doc_ownership_changed = EventTypeArg('paper_doc_ownership_changed')
+EventTypeArg.paper_doc_request_access = EventTypeArg('paper_doc_request_access')
+EventTypeArg.paper_doc_resolve_comment = EventTypeArg('paper_doc_resolve_comment')
+EventTypeArg.paper_doc_revert = EventTypeArg('paper_doc_revert')
+EventTypeArg.paper_doc_slack_share = EventTypeArg('paper_doc_slack_share')
+EventTypeArg.paper_doc_team_invite = EventTypeArg('paper_doc_team_invite')
+EventTypeArg.paper_doc_trashed = EventTypeArg('paper_doc_trashed')
+EventTypeArg.paper_doc_unresolve_comment = EventTypeArg('paper_doc_unresolve_comment')
+EventTypeArg.paper_doc_untrashed = EventTypeArg('paper_doc_untrashed')
+EventTypeArg.paper_doc_view = EventTypeArg('paper_doc_view')
+EventTypeArg.paper_external_view_allow = EventTypeArg('paper_external_view_allow')
+EventTypeArg.paper_external_view_default_team = EventTypeArg('paper_external_view_default_team')
+EventTypeArg.paper_external_view_forbid = EventTypeArg('paper_external_view_forbid')
+EventTypeArg.paper_folder_change_subscription = EventTypeArg('paper_folder_change_subscription')
+EventTypeArg.paper_folder_deleted = EventTypeArg('paper_folder_deleted')
+EventTypeArg.paper_folder_followed = EventTypeArg('paper_folder_followed')
+EventTypeArg.paper_folder_team_invite = EventTypeArg('paper_folder_team_invite')
+EventTypeArg.paper_published_link_change_permission = EventTypeArg('paper_published_link_change_permission')
+EventTypeArg.paper_published_link_create = EventTypeArg('paper_published_link_create')
+EventTypeArg.paper_published_link_disabled = EventTypeArg('paper_published_link_disabled')
+EventTypeArg.paper_published_link_view = EventTypeArg('paper_published_link_view')
+EventTypeArg.password_change = EventTypeArg('password_change')
+EventTypeArg.password_reset = EventTypeArg('password_reset')
+EventTypeArg.password_reset_all = EventTypeArg('password_reset_all')
+EventTypeArg.emm_create_exceptions_report = EventTypeArg('emm_create_exceptions_report')
+EventTypeArg.emm_create_usage_report = EventTypeArg('emm_create_usage_report')
+EventTypeArg.export_members_report = EventTypeArg('export_members_report')
+EventTypeArg.export_members_report_fail = EventTypeArg('export_members_report_fail')
+EventTypeArg.no_expiration_link_gen_create_report = EventTypeArg('no_expiration_link_gen_create_report')
+EventTypeArg.no_expiration_link_gen_report_failed = EventTypeArg('no_expiration_link_gen_report_failed')
+EventTypeArg.no_password_link_gen_create_report = EventTypeArg('no_password_link_gen_create_report')
+EventTypeArg.no_password_link_gen_report_failed = EventTypeArg('no_password_link_gen_report_failed')
+EventTypeArg.no_password_link_view_create_report = EventTypeArg('no_password_link_view_create_report')
+EventTypeArg.no_password_link_view_report_failed = EventTypeArg('no_password_link_view_report_failed')
+EventTypeArg.outdated_link_view_create_report = EventTypeArg('outdated_link_view_create_report')
+EventTypeArg.outdated_link_view_report_failed = EventTypeArg('outdated_link_view_report_failed')
+EventTypeArg.paper_admin_export_start = EventTypeArg('paper_admin_export_start')
+EventTypeArg.smart_sync_create_admin_privilege_report = EventTypeArg('smart_sync_create_admin_privilege_report')
+EventTypeArg.team_activity_create_report = EventTypeArg('team_activity_create_report')
+EventTypeArg.team_activity_create_report_fail = EventTypeArg('team_activity_create_report_fail')
+EventTypeArg.collection_share = EventTypeArg('collection_share')
+EventTypeArg.file_transfers_file_add = EventTypeArg('file_transfers_file_add')
+EventTypeArg.file_transfers_transfer_delete = EventTypeArg('file_transfers_transfer_delete')
+EventTypeArg.file_transfers_transfer_download = EventTypeArg('file_transfers_transfer_download')
+EventTypeArg.file_transfers_transfer_send = EventTypeArg('file_transfers_transfer_send')
+EventTypeArg.file_transfers_transfer_view = EventTypeArg('file_transfers_transfer_view')
+EventTypeArg.note_acl_invite_only = EventTypeArg('note_acl_invite_only')
+EventTypeArg.note_acl_link = EventTypeArg('note_acl_link')
+EventTypeArg.note_acl_team_link = EventTypeArg('note_acl_team_link')
+EventTypeArg.note_shared = EventTypeArg('note_shared')
+EventTypeArg.note_share_receive = EventTypeArg('note_share_receive')
+EventTypeArg.open_note_shared = EventTypeArg('open_note_shared')
+EventTypeArg.sf_add_group = EventTypeArg('sf_add_group')
+EventTypeArg.sf_allow_non_members_to_view_shared_links = EventTypeArg('sf_allow_non_members_to_view_shared_links')
+EventTypeArg.sf_external_invite_warn = EventTypeArg('sf_external_invite_warn')
+EventTypeArg.sf_fb_invite = EventTypeArg('sf_fb_invite')
+EventTypeArg.sf_fb_invite_change_role = EventTypeArg('sf_fb_invite_change_role')
+EventTypeArg.sf_fb_uninvite = EventTypeArg('sf_fb_uninvite')
+EventTypeArg.sf_invite_group = EventTypeArg('sf_invite_group')
+EventTypeArg.sf_team_grant_access = EventTypeArg('sf_team_grant_access')
+EventTypeArg.sf_team_invite = EventTypeArg('sf_team_invite')
+EventTypeArg.sf_team_invite_change_role = EventTypeArg('sf_team_invite_change_role')
+EventTypeArg.sf_team_join = EventTypeArg('sf_team_join')
+EventTypeArg.sf_team_join_from_oob_link = EventTypeArg('sf_team_join_from_oob_link')
+EventTypeArg.sf_team_uninvite = EventTypeArg('sf_team_uninvite')
+EventTypeArg.shared_content_add_invitees = EventTypeArg('shared_content_add_invitees')
+EventTypeArg.shared_content_add_link_expiry = EventTypeArg('shared_content_add_link_expiry')
+EventTypeArg.shared_content_add_link_password = EventTypeArg('shared_content_add_link_password')
+EventTypeArg.shared_content_add_member = EventTypeArg('shared_content_add_member')
+EventTypeArg.shared_content_change_downloads_policy = EventTypeArg('shared_content_change_downloads_policy')
+EventTypeArg.shared_content_change_invitee_role = EventTypeArg('shared_content_change_invitee_role')
+EventTypeArg.shared_content_change_link_audience = EventTypeArg('shared_content_change_link_audience')
+EventTypeArg.shared_content_change_link_expiry = EventTypeArg('shared_content_change_link_expiry')
+EventTypeArg.shared_content_change_link_password = EventTypeArg('shared_content_change_link_password')
+EventTypeArg.shared_content_change_member_role = EventTypeArg('shared_content_change_member_role')
+EventTypeArg.shared_content_change_viewer_info_policy = EventTypeArg('shared_content_change_viewer_info_policy')
+EventTypeArg.shared_content_claim_invitation = EventTypeArg('shared_content_claim_invitation')
+EventTypeArg.shared_content_copy = EventTypeArg('shared_content_copy')
+EventTypeArg.shared_content_download = EventTypeArg('shared_content_download')
+EventTypeArg.shared_content_relinquish_membership = EventTypeArg('shared_content_relinquish_membership')
+EventTypeArg.shared_content_remove_invitees = EventTypeArg('shared_content_remove_invitees')
+EventTypeArg.shared_content_remove_link_expiry = EventTypeArg('shared_content_remove_link_expiry')
+EventTypeArg.shared_content_remove_link_password = EventTypeArg('shared_content_remove_link_password')
+EventTypeArg.shared_content_remove_member = EventTypeArg('shared_content_remove_member')
+EventTypeArg.shared_content_request_access = EventTypeArg('shared_content_request_access')
+EventTypeArg.shared_content_restore_invitees = EventTypeArg('shared_content_restore_invitees')
+EventTypeArg.shared_content_restore_member = EventTypeArg('shared_content_restore_member')
+EventTypeArg.shared_content_unshare = EventTypeArg('shared_content_unshare')
+EventTypeArg.shared_content_view = EventTypeArg('shared_content_view')
+EventTypeArg.shared_folder_change_link_policy = EventTypeArg('shared_folder_change_link_policy')
+EventTypeArg.shared_folder_change_members_inheritance_policy = EventTypeArg('shared_folder_change_members_inheritance_policy')
+EventTypeArg.shared_folder_change_members_management_policy = EventTypeArg('shared_folder_change_members_management_policy')
+EventTypeArg.shared_folder_change_members_policy = EventTypeArg('shared_folder_change_members_policy')
+EventTypeArg.shared_folder_create = EventTypeArg('shared_folder_create')
+EventTypeArg.shared_folder_decline_invitation = EventTypeArg('shared_folder_decline_invitation')
+EventTypeArg.shared_folder_mount = EventTypeArg('shared_folder_mount')
+EventTypeArg.shared_folder_nest = EventTypeArg('shared_folder_nest')
+EventTypeArg.shared_folder_transfer_ownership = EventTypeArg('shared_folder_transfer_ownership')
+EventTypeArg.shared_folder_unmount = EventTypeArg('shared_folder_unmount')
+EventTypeArg.shared_link_add_expiry = EventTypeArg('shared_link_add_expiry')
+EventTypeArg.shared_link_change_expiry = EventTypeArg('shared_link_change_expiry')
+EventTypeArg.shared_link_change_visibility = EventTypeArg('shared_link_change_visibility')
+EventTypeArg.shared_link_copy = EventTypeArg('shared_link_copy')
+EventTypeArg.shared_link_create = EventTypeArg('shared_link_create')
+EventTypeArg.shared_link_disable = EventTypeArg('shared_link_disable')
+EventTypeArg.shared_link_download = EventTypeArg('shared_link_download')
+EventTypeArg.shared_link_remove_expiry = EventTypeArg('shared_link_remove_expiry')
+EventTypeArg.shared_link_settings_add_expiration = EventTypeArg('shared_link_settings_add_expiration')
+EventTypeArg.shared_link_settings_add_password = EventTypeArg('shared_link_settings_add_password')
+EventTypeArg.shared_link_settings_allow_download_disabled = EventTypeArg('shared_link_settings_allow_download_disabled')
+EventTypeArg.shared_link_settings_allow_download_enabled = EventTypeArg('shared_link_settings_allow_download_enabled')
+EventTypeArg.shared_link_settings_change_audience = EventTypeArg('shared_link_settings_change_audience')
+EventTypeArg.shared_link_settings_change_expiration = EventTypeArg('shared_link_settings_change_expiration')
+EventTypeArg.shared_link_settings_change_password = EventTypeArg('shared_link_settings_change_password')
+EventTypeArg.shared_link_settings_remove_expiration = EventTypeArg('shared_link_settings_remove_expiration')
+EventTypeArg.shared_link_settings_remove_password = EventTypeArg('shared_link_settings_remove_password')
+EventTypeArg.shared_link_share = EventTypeArg('shared_link_share')
+EventTypeArg.shared_link_view = EventTypeArg('shared_link_view')
+EventTypeArg.shared_note_opened = EventTypeArg('shared_note_opened')
+EventTypeArg.shmodel_group_share = EventTypeArg('shmodel_group_share')
+EventTypeArg.showcase_access_granted = EventTypeArg('showcase_access_granted')
+EventTypeArg.showcase_add_member = EventTypeArg('showcase_add_member')
+EventTypeArg.showcase_archived = EventTypeArg('showcase_archived')
+EventTypeArg.showcase_created = EventTypeArg('showcase_created')
+EventTypeArg.showcase_delete_comment = EventTypeArg('showcase_delete_comment')
+EventTypeArg.showcase_edited = EventTypeArg('showcase_edited')
+EventTypeArg.showcase_edit_comment = EventTypeArg('showcase_edit_comment')
+EventTypeArg.showcase_file_added = EventTypeArg('showcase_file_added')
+EventTypeArg.showcase_file_download = EventTypeArg('showcase_file_download')
+EventTypeArg.showcase_file_removed = EventTypeArg('showcase_file_removed')
+EventTypeArg.showcase_file_view = EventTypeArg('showcase_file_view')
+EventTypeArg.showcase_permanently_deleted = EventTypeArg('showcase_permanently_deleted')
+EventTypeArg.showcase_post_comment = EventTypeArg('showcase_post_comment')
+EventTypeArg.showcase_remove_member = EventTypeArg('showcase_remove_member')
+EventTypeArg.showcase_renamed = EventTypeArg('showcase_renamed')
+EventTypeArg.showcase_request_access = EventTypeArg('showcase_request_access')
+EventTypeArg.showcase_resolve_comment = EventTypeArg('showcase_resolve_comment')
+EventTypeArg.showcase_restored = EventTypeArg('showcase_restored')
+EventTypeArg.showcase_trashed = EventTypeArg('showcase_trashed')
+EventTypeArg.showcase_trashed_deprecated = EventTypeArg('showcase_trashed_deprecated')
+EventTypeArg.showcase_unresolve_comment = EventTypeArg('showcase_unresolve_comment')
+EventTypeArg.showcase_untrashed = EventTypeArg('showcase_untrashed')
+EventTypeArg.showcase_untrashed_deprecated = EventTypeArg('showcase_untrashed_deprecated')
+EventTypeArg.showcase_view = EventTypeArg('showcase_view')
+EventTypeArg.sso_add_cert = EventTypeArg('sso_add_cert')
+EventTypeArg.sso_add_login_url = EventTypeArg('sso_add_login_url')
+EventTypeArg.sso_add_logout_url = EventTypeArg('sso_add_logout_url')
+EventTypeArg.sso_change_cert = EventTypeArg('sso_change_cert')
+EventTypeArg.sso_change_login_url = EventTypeArg('sso_change_login_url')
+EventTypeArg.sso_change_logout_url = EventTypeArg('sso_change_logout_url')
+EventTypeArg.sso_change_saml_identity_mode = EventTypeArg('sso_change_saml_identity_mode')
+EventTypeArg.sso_remove_cert = EventTypeArg('sso_remove_cert')
+EventTypeArg.sso_remove_login_url = EventTypeArg('sso_remove_login_url')
+EventTypeArg.sso_remove_logout_url = EventTypeArg('sso_remove_logout_url')
+EventTypeArg.team_folder_change_status = EventTypeArg('team_folder_change_status')
+EventTypeArg.team_folder_create = EventTypeArg('team_folder_create')
+EventTypeArg.team_folder_downgrade = EventTypeArg('team_folder_downgrade')
+EventTypeArg.team_folder_permanently_delete = EventTypeArg('team_folder_permanently_delete')
+EventTypeArg.team_folder_rename = EventTypeArg('team_folder_rename')
+EventTypeArg.team_selective_sync_settings_changed = EventTypeArg('team_selective_sync_settings_changed')
+EventTypeArg.account_capture_change_policy = EventTypeArg('account_capture_change_policy')
+EventTypeArg.allow_download_disabled = EventTypeArg('allow_download_disabled')
+EventTypeArg.allow_download_enabled = EventTypeArg('allow_download_enabled')
+EventTypeArg.camera_uploads_policy_changed = EventTypeArg('camera_uploads_policy_changed')
+EventTypeArg.data_placement_restriction_change_policy = EventTypeArg('data_placement_restriction_change_policy')
+EventTypeArg.data_placement_restriction_satisfy_policy = EventTypeArg('data_placement_restriction_satisfy_policy')
+EventTypeArg.device_approvals_add_exception = EventTypeArg('device_approvals_add_exception')
+EventTypeArg.device_approvals_change_desktop_policy = EventTypeArg('device_approvals_change_desktop_policy')
+EventTypeArg.device_approvals_change_mobile_policy = EventTypeArg('device_approvals_change_mobile_policy')
+EventTypeArg.device_approvals_change_overage_action = EventTypeArg('device_approvals_change_overage_action')
+EventTypeArg.device_approvals_change_unlink_action = EventTypeArg('device_approvals_change_unlink_action')
+EventTypeArg.device_approvals_remove_exception = EventTypeArg('device_approvals_remove_exception')
+EventTypeArg.directory_restrictions_add_members = EventTypeArg('directory_restrictions_add_members')
+EventTypeArg.directory_restrictions_remove_members = EventTypeArg('directory_restrictions_remove_members')
+EventTypeArg.emm_add_exception = EventTypeArg('emm_add_exception')
+EventTypeArg.emm_change_policy = EventTypeArg('emm_change_policy')
+EventTypeArg.emm_remove_exception = EventTypeArg('emm_remove_exception')
+EventTypeArg.extended_version_history_change_policy = EventTypeArg('extended_version_history_change_policy')
+EventTypeArg.file_comments_change_policy = EventTypeArg('file_comments_change_policy')
+EventTypeArg.file_locking_policy_changed = EventTypeArg('file_locking_policy_changed')
+EventTypeArg.file_requests_change_policy = EventTypeArg('file_requests_change_policy')
+EventTypeArg.file_requests_emails_enabled = EventTypeArg('file_requests_emails_enabled')
+EventTypeArg.file_requests_emails_restricted_to_team_only = EventTypeArg('file_requests_emails_restricted_to_team_only')
+EventTypeArg.file_transfers_policy_changed = EventTypeArg('file_transfers_policy_changed')
+EventTypeArg.google_sso_change_policy = EventTypeArg('google_sso_change_policy')
+EventTypeArg.group_user_management_change_policy = EventTypeArg('group_user_management_change_policy')
+EventTypeArg.integration_policy_changed = EventTypeArg('integration_policy_changed')
+EventTypeArg.member_requests_change_policy = EventTypeArg('member_requests_change_policy')
+EventTypeArg.member_send_invite_policy_changed = EventTypeArg('member_send_invite_policy_changed')
+EventTypeArg.member_space_limits_add_exception = EventTypeArg('member_space_limits_add_exception')
+EventTypeArg.member_space_limits_change_caps_type_policy = EventTypeArg('member_space_limits_change_caps_type_policy')
+EventTypeArg.member_space_limits_change_policy = EventTypeArg('member_space_limits_change_policy')
+EventTypeArg.member_space_limits_remove_exception = EventTypeArg('member_space_limits_remove_exception')
+EventTypeArg.member_suggestions_change_policy = EventTypeArg('member_suggestions_change_policy')
+EventTypeArg.microsoft_office_addin_change_policy = EventTypeArg('microsoft_office_addin_change_policy')
+EventTypeArg.network_control_change_policy = EventTypeArg('network_control_change_policy')
+EventTypeArg.paper_change_deployment_policy = EventTypeArg('paper_change_deployment_policy')
+EventTypeArg.paper_change_member_link_policy = EventTypeArg('paper_change_member_link_policy')
+EventTypeArg.paper_change_member_policy = EventTypeArg('paper_change_member_policy')
+EventTypeArg.paper_change_policy = EventTypeArg('paper_change_policy')
+EventTypeArg.paper_default_folder_policy_changed = EventTypeArg('paper_default_folder_policy_changed')
+EventTypeArg.paper_desktop_policy_changed = EventTypeArg('paper_desktop_policy_changed')
+EventTypeArg.paper_enabled_users_group_addition = EventTypeArg('paper_enabled_users_group_addition')
+EventTypeArg.paper_enabled_users_group_removal = EventTypeArg('paper_enabled_users_group_removal')
+EventTypeArg.password_strength_requirements_change_policy = EventTypeArg('password_strength_requirements_change_policy')
+EventTypeArg.permanent_delete_change_policy = EventTypeArg('permanent_delete_change_policy')
+EventTypeArg.reseller_support_change_policy = EventTypeArg('reseller_support_change_policy')
+EventTypeArg.rewind_policy_changed = EventTypeArg('rewind_policy_changed')
+EventTypeArg.sharing_change_folder_join_policy = EventTypeArg('sharing_change_folder_join_policy')
+EventTypeArg.sharing_change_link_policy = EventTypeArg('sharing_change_link_policy')
+EventTypeArg.sharing_change_member_policy = EventTypeArg('sharing_change_member_policy')
+EventTypeArg.showcase_change_download_policy = EventTypeArg('showcase_change_download_policy')
+EventTypeArg.showcase_change_enabled_policy = EventTypeArg('showcase_change_enabled_policy')
+EventTypeArg.showcase_change_external_sharing_policy = EventTypeArg('showcase_change_external_sharing_policy')
+EventTypeArg.smarter_smart_sync_policy_changed = EventTypeArg('smarter_smart_sync_policy_changed')
+EventTypeArg.smart_sync_change_policy = EventTypeArg('smart_sync_change_policy')
+EventTypeArg.smart_sync_not_opt_out = EventTypeArg('smart_sync_not_opt_out')
+EventTypeArg.smart_sync_opt_out = EventTypeArg('smart_sync_opt_out')
+EventTypeArg.sso_change_policy = EventTypeArg('sso_change_policy')
+EventTypeArg.team_extensions_policy_changed = EventTypeArg('team_extensions_policy_changed')
+EventTypeArg.team_selective_sync_policy_changed = EventTypeArg('team_selective_sync_policy_changed')
+EventTypeArg.team_sharing_whitelist_subjects_changed = EventTypeArg('team_sharing_whitelist_subjects_changed')
+EventTypeArg.tfa_add_exception = EventTypeArg('tfa_add_exception')
+EventTypeArg.tfa_change_policy = EventTypeArg('tfa_change_policy')
+EventTypeArg.tfa_remove_exception = EventTypeArg('tfa_remove_exception')
+EventTypeArg.two_account_change_policy = EventTypeArg('two_account_change_policy')
+EventTypeArg.viewer_info_policy_changed = EventTypeArg('viewer_info_policy_changed')
+EventTypeArg.watermarking_policy_changed = EventTypeArg('watermarking_policy_changed')
+EventTypeArg.web_sessions_change_active_session_limit = EventTypeArg('web_sessions_change_active_session_limit')
+EventTypeArg.web_sessions_change_fixed_length_policy = EventTypeArg('web_sessions_change_fixed_length_policy')
+EventTypeArg.web_sessions_change_idle_length_policy = EventTypeArg('web_sessions_change_idle_length_policy')
+EventTypeArg.team_merge_from = EventTypeArg('team_merge_from')
+EventTypeArg.team_merge_to = EventTypeArg('team_merge_to')
+EventTypeArg.team_profile_add_logo = EventTypeArg('team_profile_add_logo')
+EventTypeArg.team_profile_change_default_language = EventTypeArg('team_profile_change_default_language')
+EventTypeArg.team_profile_change_logo = EventTypeArg('team_profile_change_logo')
+EventTypeArg.team_profile_change_name = EventTypeArg('team_profile_change_name')
+EventTypeArg.team_profile_remove_logo = EventTypeArg('team_profile_remove_logo')
+EventTypeArg.tfa_add_backup_phone = EventTypeArg('tfa_add_backup_phone')
+EventTypeArg.tfa_add_security_key = EventTypeArg('tfa_add_security_key')
+EventTypeArg.tfa_change_backup_phone = EventTypeArg('tfa_change_backup_phone')
+EventTypeArg.tfa_change_status = EventTypeArg('tfa_change_status')
+EventTypeArg.tfa_remove_backup_phone = EventTypeArg('tfa_remove_backup_phone')
+EventTypeArg.tfa_remove_security_key = EventTypeArg('tfa_remove_security_key')
+EventTypeArg.tfa_reset = EventTypeArg('tfa_reset')
+EventTypeArg.changed_enterprise_admin_role = EventTypeArg('changed_enterprise_admin_role')
+EventTypeArg.changed_enterprise_connected_team_status = EventTypeArg('changed_enterprise_connected_team_status')
+EventTypeArg.ended_enterprise_admin_session = EventTypeArg('ended_enterprise_admin_session')
+EventTypeArg.ended_enterprise_admin_session_deprecated = EventTypeArg('ended_enterprise_admin_session_deprecated')
+EventTypeArg.enterprise_settings_locking = EventTypeArg('enterprise_settings_locking')
+EventTypeArg.guest_admin_change_status = EventTypeArg('guest_admin_change_status')
+EventTypeArg.started_enterprise_admin_session = EventTypeArg('started_enterprise_admin_session')
+EventTypeArg.team_merge_request_accepted = EventTypeArg('team_merge_request_accepted')
+EventTypeArg.team_merge_request_accepted_shown_to_primary_team = EventTypeArg('team_merge_request_accepted_shown_to_primary_team')
+EventTypeArg.team_merge_request_accepted_shown_to_secondary_team = EventTypeArg('team_merge_request_accepted_shown_to_secondary_team')
+EventTypeArg.team_merge_request_auto_canceled = EventTypeArg('team_merge_request_auto_canceled')
+EventTypeArg.team_merge_request_canceled = EventTypeArg('team_merge_request_canceled')
+EventTypeArg.team_merge_request_canceled_shown_to_primary_team = EventTypeArg('team_merge_request_canceled_shown_to_primary_team')
+EventTypeArg.team_merge_request_canceled_shown_to_secondary_team = EventTypeArg('team_merge_request_canceled_shown_to_secondary_team')
+EventTypeArg.team_merge_request_expired = EventTypeArg('team_merge_request_expired')
+EventTypeArg.team_merge_request_expired_shown_to_primary_team = EventTypeArg('team_merge_request_expired_shown_to_primary_team')
+EventTypeArg.team_merge_request_expired_shown_to_secondary_team = EventTypeArg('team_merge_request_expired_shown_to_secondary_team')
+EventTypeArg.team_merge_request_rejected_shown_to_primary_team = EventTypeArg('team_merge_request_rejected_shown_to_primary_team')
+EventTypeArg.team_merge_request_rejected_shown_to_secondary_team = EventTypeArg('team_merge_request_rejected_shown_to_secondary_team')
+EventTypeArg.team_merge_request_reminder = EventTypeArg('team_merge_request_reminder')
+EventTypeArg.team_merge_request_reminder_shown_to_primary_team = EventTypeArg('team_merge_request_reminder_shown_to_primary_team')
+EventTypeArg.team_merge_request_reminder_shown_to_secondary_team = EventTypeArg('team_merge_request_reminder_shown_to_secondary_team')
+EventTypeArg.team_merge_request_revoked = EventTypeArg('team_merge_request_revoked')
+EventTypeArg.team_merge_request_sent_shown_to_primary_team = EventTypeArg('team_merge_request_sent_shown_to_primary_team')
+EventTypeArg.team_merge_request_sent_shown_to_secondary_team = EventTypeArg('team_merge_request_sent_shown_to_secondary_team')
+EventTypeArg.other = EventTypeArg('other')
+
 ExportMembersReportDetails._all_field_names_ = set([])
 ExportMembersReportDetails._all_fields_ = []
 
@@ -92514,17 +98992,20 @@ GetTeamEventsArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
 GetTeamEventsArg._account_id_validator = bv.Nullable(users_common.AccountId_validator)
 GetTeamEventsArg._time_validator = bv.Nullable(team_common.TimeRange_validator)
 GetTeamEventsArg._category_validator = bv.Nullable(EventCategory_validator)
+GetTeamEventsArg._event_type_validator = bv.Nullable(EventTypeArg_validator)
 GetTeamEventsArg._all_field_names_ = set([
     'limit',
     'account_id',
     'time',
     'category',
+    'event_type',
 ])
 GetTeamEventsArg._all_fields_ = [
     ('limit', GetTeamEventsArg._limit_validator),
     ('account_id', GetTeamEventsArg._account_id_validator),
     ('time', GetTeamEventsArg._time_validator),
     ('category', GetTeamEventsArg._category_validator),
+    ('event_type', GetTeamEventsArg._event_type_validator),
 ]
 
 GetTeamEventsContinueArg._cursor_validator = bv.String()
@@ -92545,15 +99026,18 @@ GetTeamEventsContinueError.other = GetTeamEventsContinueError('other')
 
 GetTeamEventsError._account_id_not_found_validator = bv.Void()
 GetTeamEventsError._invalid_time_range_validator = bv.Void()
+GetTeamEventsError._invalid_filters_validator = bv.Void()
 GetTeamEventsError._other_validator = bv.Void()
 GetTeamEventsError._tagmap = {
     'account_id_not_found': GetTeamEventsError._account_id_not_found_validator,
     'invalid_time_range': GetTeamEventsError._invalid_time_range_validator,
+    'invalid_filters': GetTeamEventsError._invalid_filters_validator,
     'other': GetTeamEventsError._other_validator,
 }
 
 GetTeamEventsError.account_id_not_found = GetTeamEventsError('account_id_not_found')
 GetTeamEventsError.invalid_time_range = GetTeamEventsError('invalid_time_range')
+GetTeamEventsError.invalid_filters = GetTeamEventsError('invalid_filters')
 GetTeamEventsError.other = GetTeamEventsError('other')
 
 GetTeamEventsResult._events_validator = bv.List(TeamEvent_validator)
@@ -96747,17 +103231,17 @@ TeamMemberLogInfo._fields_ = [
 ]
 TeamMemberLogInfo._all_fields_ = UserLogInfo._all_fields_ + TeamMemberLogInfo._fields_
 
-TeamMembershipType._free_validator = bv.Void()
 TeamMembershipType._full_validator = bv.Void()
+TeamMembershipType._free_validator = bv.Void()
 TeamMembershipType._other_validator = bv.Void()
 TeamMembershipType._tagmap = {
-    'free': TeamMembershipType._free_validator,
     'full': TeamMembershipType._full_validator,
+    'free': TeamMembershipType._free_validator,
     'other': TeamMembershipType._other_validator,
 }
 
-TeamMembershipType.free = TeamMembershipType('free')
 TeamMembershipType.full = TeamMembershipType('full')
+TeamMembershipType.free = TeamMembershipType('free')
 TeamMembershipType.other = TeamMembershipType('other')
 
 TeamMergeFromDetails._team_name_validator = bv.String()
