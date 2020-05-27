@@ -7609,8 +7609,11 @@ class LegalHoldPolicy(bb.Struct):
         policy.
     :ivar team.LegalHoldPolicy.activation_time: The time at which the legal hold
         was activated.
-    :ivar team.LegalHoldPolicy.start_date: start date of the legal hold policy.
-    :ivar team.LegalHoldPolicy.end_date: end date of the legal hold policy.
+    :ivar team.LegalHoldPolicy.members: Team members IDs and number of
+        permanetly deleted members under hold.
+    :ivar team.LegalHoldPolicy.status: The current state of the hold.
+    :ivar team.LegalHoldPolicy.start_date: Start date of the legal hold policy.
+    :ivar team.LegalHoldPolicy.end_date: End date of the legal hold policy.
     """
 
     __slots__ = [
@@ -7777,6 +7780,8 @@ class LegalHoldPolicy(bb.Struct):
     @property
     def members(self):
         """
+        Team members IDs and number of permanetly deleted members under hold.
+
         :rtype: MembersInfo
         """
         if self._members_present:
@@ -7798,6 +7803,8 @@ class LegalHoldPolicy(bb.Struct):
     @property
     def status(self):
         """
+        The current state of the hold.
+
         :rtype: LegalHoldStatus
         """
         if self._status_present:
@@ -7819,7 +7826,7 @@ class LegalHoldPolicy(bb.Struct):
     @property
     def start_date(self):
         """
-        start date of the legal hold policy.
+        Start date of the legal hold policy.
 
         :rtype: datetime.datetime
         """
@@ -7842,7 +7849,7 @@ class LegalHoldPolicy(bb.Struct):
     @property
     def end_date(self):
         """
-        end date of the legal hold policy.
+        End date of the legal hold policy.
 
         :rtype: datetime.datetime
         """
@@ -8111,10 +8118,15 @@ LegalHoldsGetPolicyError_validator = bv.Union(LegalHoldsGetPolicyError)
 
 class LegalHoldsListHeldRevisionResult(bb.Struct):
     """
-    :ivar team.LegalHoldsListHeldRevisionResult.entries: Entries list.
-    :ivar team.LegalHoldsListHeldRevisionResult.cursor: List held revisions
-        cursor.
-    :ivar team.LegalHoldsListHeldRevisionResult.has_more: Has more.
+    :ivar team.LegalHoldsListHeldRevisionResult.entries: List of file entries
+        that under the hold.
+    :ivar team.LegalHoldsListHeldRevisionResult.cursor: The cursor idicates
+        where to continue reading file metadata entries for the next API call.
+        When there are no more entries, the cursor will return none. Pass the
+        cursor into /2/team/legal_holds/list_held_revisions/continue.
+    :ivar team.LegalHoldsListHeldRevisionResult.has_more: True if there are more
+        file entries that haven't been returned. You can retrieve them with a
+        call to /legal_holds/list_held_revisions_continue.
     """
 
     __slots__ = [
@@ -8148,7 +8160,7 @@ class LegalHoldsListHeldRevisionResult(bb.Struct):
     @property
     def entries(self):
         """
-        Entries list.
+        List of file entries that under the hold.
 
         :rtype: list of [LegalHoldHeldRevisionMetadata]
         """
@@ -8171,7 +8183,10 @@ class LegalHoldsListHeldRevisionResult(bb.Struct):
     @property
     def cursor(self):
         """
-        List held revisions cursor.
+        The cursor idicates where to continue reading file metadata entries for
+        the next API call. When there are no more entries, the cursor will
+        return none. Pass the cursor into
+        /2/team/legal_holds/list_held_revisions/continue.
 
         :rtype: str
         """
@@ -8197,7 +8212,8 @@ class LegalHoldsListHeldRevisionResult(bb.Struct):
     @property
     def has_more(self):
         """
-        Has more.
+        True if there are more file entries that haven't been returned. You can
+        retrieve them with a call to /legal_holds/list_held_revisions_continue.
 
         :rtype: bool
         """
@@ -8284,8 +8300,9 @@ LegalHoldsListHeldRevisionsArg_validator = bv.Struct(LegalHoldsListHeldRevisions
 class LegalHoldsListHeldRevisionsContinueArg(bb.Struct):
     """
     :ivar team.LegalHoldsListHeldRevisionsContinueArg.id: The legal hold Id.
-    :ivar team.LegalHoldsListHeldRevisionsContinueArg.cursor: cursor of list
-        held revisions.
+    :ivar team.LegalHoldsListHeldRevisionsContinueArg.cursor: The cursor
+        idicates where to continue reading file metadata entries for the next
+        API call. When there are no more entries, the cursor will return none.
     """
 
     __slots__ = [
@@ -8335,7 +8352,9 @@ class LegalHoldsListHeldRevisionsContinueArg(bb.Struct):
     @property
     def cursor(self):
         """
-        cursor of list held revisions.
+        The cursor idicates where to continue reading file metadata entries for
+        the next API call. When there are no more entries, the cursor will
+        return none.
 
         :rtype: str
         """
@@ -8445,7 +8464,7 @@ class LegalHoldsListHeldRevisionsError(LegalHoldsError):
     :ivar team.LegalHoldsListHeldRevisionsError.transient_error: Temporary
         infrastructure failure, please retry.
     :ivar team.LegalHoldsListHeldRevisionsError.legal_hold_still_empty: The
-        legal hold is not holding any revisions yet
+        legal hold is not holding any revisions yet.
     :ivar team.LegalHoldsListHeldRevisionsError.inactive_legal_hold: Trying to
         list revisions for an inactive legal hold.
     """
@@ -13807,11 +13826,12 @@ class MembersRemoveArg(MembersDeactivateArg):
         team members. In order to keep the account the argument ``wipe_data``
         should be set to ``False``.
     :ivar team.MembersRemoveArg.retain_team_shares: If provided, allows removed
-        users to keep access to folders already explicitly shared with them (not
-        via a group) when they are downgraded to a Basic account. Users will not
-        retain access to folders that do not allow external sharing. In order to
-        keep the sharing relationships, the arguments ``wipe_data`` should be
-        set to ``False`` and ``keep_account`` should be set to ``True``.
+        users to keep access to Dropbox folders (not Dropbox Paper folders)
+        already explicitly shared with them (not via a group) when they are
+        downgraded to a Basic account. Users will not retain access to folders
+        that do not allow external sharing. In order to keep the sharing
+        relationships, the arguments ``wipe_data`` should be set to ``False``
+        and ``keep_account`` should be set to ``True``.
     """
 
     __slots__ = [
@@ -13937,12 +13957,12 @@ class MembersRemoveArg(MembersDeactivateArg):
     @property
     def retain_team_shares(self):
         """
-        If provided, allows removed users to keep access to folders already
-        explicitly shared with them (not via a group) when they are downgraded
-        to a Basic account. Users will not retain access to folders that do not
-        allow external sharing. In order to keep the sharing relationships, the
-        arguments ``wipe_data`` should be set to ``False`` and ``keep_account``
-        should be set to ``True``.
+        If provided, allows removed users to keep access to Dropbox folders (not
+        Dropbox Paper folders) already explicitly shared with them (not via a
+        group) when they are downgraded to a Basic account. Users will not
+        retain access to folders that do not allow external sharing. In order to
+        keep the sharing relationships, the arguments ``wipe_data`` should be
+        set to ``False`` and ``keep_account`` should be set to ``True``.
 
         :rtype: bool
         """
