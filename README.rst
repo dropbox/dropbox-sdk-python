@@ -1,7 +1,7 @@
 Dropbox Python SDK
 ==================
 
-.. image:: https://travis-ci.org/dropbox/dropbox-sdk-python.svg?branch=master
+.. image:: https://travis-ci.org/dropbox/dropbox-sdk-python.svg?branch=v10.2.0
     :target: https://travis-ci.org/dropbox/dropbox-sdk-python
 
 .. image:: https://readthedocs.org/projects/dropbox-sdk-python/badge/?version=stable
