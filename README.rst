@@ -59,6 +59,7 @@ token for your own Dropbox account for development.  You can also find a variety
 
 `example/oauth <http://github.com/dropbox/dropbox-sdk-python/tree/master/example/oauth/>`_
 
+You can also view our OAuth `guide <https://www.dropbox.com/lp/developers/reference/oauth-guide.html>`_
 
 Example Applications
 --------------------
