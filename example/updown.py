@@ -121,7 +121,7 @@ def main():
             else:
                 print('OK, skipping directory:', name)
         dirs[:] = keep
-        
+
     dbx.close()
 
 def list_folder(dbx, folder, subfolder):
