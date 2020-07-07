@@ -662,6 +662,12 @@ class _DropboxTransport(object):
         return self.clone(
             headers=new_headers
         )
+    
+    def close(self):
+        """
+        Cleans up all resources like the request session/network connection.
+        """
+        self._session.close()
 
 class Dropbox(_DropboxTransport, DropboxBase):
     """

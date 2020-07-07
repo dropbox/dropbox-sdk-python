@@ -27,3 +27,6 @@ except Exception as e:
 dbx = dropbox.Dropbox(oauth2_access_token=oauth_result.access_token)
 dbx.users_get_current_account()
 print("Successfully set up client!")
+
+
+dbx.close()
