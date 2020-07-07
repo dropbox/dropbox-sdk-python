@@ -411,7 +411,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             connection. If `None`, client will wait forever. Defaults
             to 100 seconds.
         """
-        
+
         super(DropboxOAuth2Flow, self).__init__(
             consumer_key=consumer_key,
             consumer_secret=consumer_secret,
