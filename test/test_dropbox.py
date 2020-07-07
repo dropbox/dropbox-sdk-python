@@ -24,7 +24,7 @@ from dropbox import (
     session,
     stone_serializers,
 )
-from dropbox.dropbox import PATH_ROOT_HEADER
+from dropbox.dropbox import PATH_ROOT_HEADER, SELECT_USER_HEADER
 from dropbox.exceptions import (
     ApiError,
     AuthError,
@@ -239,7 +239,15 @@ class TestDropboxTeam(unittest.TestCase):
     @dbx_team_from_env
     def test_as_user(self, dbxt):
         dbx_as_user = dbxt.as_user('1')
-        self.assertIsInstance(dbx_as_user, Dropbox)
+        path_root = PathRoot.root("123")
+
+        dbx_new = dbx_as_user.with_path_root(path_root)
+
+        self.assertIsInstance(dbx_new, Dropbox)
+        self.assertEqual(dbx_new._headers.get(SELECT_USER_HEADER), '1')
+
+        expected = stone_serializers.json_encode(PathRoot_validator, path_root)
+        self.assertEqual(dbx_new._headers.get(PATH_ROOT_HEADER), expected)
 
     @dbx_team_from_env
     def test_as_admin(self, dbxt):
