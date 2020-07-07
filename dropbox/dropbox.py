@@ -47,6 +47,7 @@ from .session import (
     HOST_CONTENT,
     HOST_NOTIFY,
     pinned_session,
+    DEFAULT_TIMEOUT
 )
 
 PATH_ROOT_HEADER = 'Dropbox-API-Path-Root'
@@ -131,9 +132,6 @@ class _DropboxTransport(object):
     # the HTTP body.
     _ROUTE_STYLE_RPC = 'rpc'
 
-    # This is the default longest time we'll block on receiving data from the server
-    _DEFAULT_TIMEOUT = 100
-
     def __init__(self,
                  oauth2_access_token=None,
                  max_retries_on_error=4,
@@ -141,7 +139,7 @@ class _DropboxTransport(object):
                  user_agent=None,
                  session=None,
                  headers=None,
-                 timeout=_DEFAULT_TIMEOUT,
+                 timeout=DEFAULT_TIMEOUT,
                  oauth2_refresh_token=None,
                  oauth2_access_token_expiration=None,
                  app_key=None,
@@ -167,7 +165,7 @@ class _DropboxTransport(object):
             client will wait for any single packet from the
             server. After the timeout the client will give up on
             connection. If `None`, client will wait forever. Defaults
-            to 30 seconds.
+            to 100 seconds.
         :param str oauth2_refresh_token: OAuth2 refresh token for refreshing access token
         :param datetime oauth2_access_token_expiration: Expiration for oauth2_access_token
         :param str app_key: application key of requesting application; used for token refresh
@@ -387,7 +385,7 @@ class _DropboxTransport(object):
             scope = " ".join(scope)
             body['scope'] = scope
 
-        timeout = self._DEFAULT_TIMEOUT
+        timeout = DEFAULT_TIMEOUT
         if self._timeout:
             timeout = self._timeout
         res = self._session.post(url, data=body, timeout=timeout)
