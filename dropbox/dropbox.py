@@ -53,6 +53,10 @@ PATH_ROOT_HEADER = 'Dropbox-API-Path-Root'
 HTTP_STATUS_INVALID_PATH_ROOT = 422
 TOKEN_EXPIRATION_BUFFER = 300
 
+SELECT_ADMIN_HEADER = 'Dropbox-API-Select-Admin'
+
+SELECT_USER_HEADER = 'Dropbox-API-Select-User'
+
 class RouteResult(object):
     """The successful result of a call to a route."""
 
@@ -652,10 +656,11 @@ class _DropboxTransport(object):
         if not isinstance(path_root, PathRoot):
             raise ValueError("path_root must be an instance of PathRoot")
 
+        new_headers = self._headers.copy() if self._headers else {}
+        new_headers[PATH_ROOT_HEADER] = stone_serializers.json_encode(PathRoot_validator, path_root)
+
         return self.clone(
-            headers={
-                PATH_ROOT_HEADER: stone_serializers.json_encode(PathRoot_validator, path_root)
-            }
+            headers=new_headers
         )
 
 class Dropbox(_DropboxTransport, DropboxBase):
@@ -682,7 +687,7 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
             of this admin of the team.
         :rtype: Dropbox
         """
-        return self._get_dropbox_client_with_select_header('Dropbox-API-Select-Admin',
+        return self._get_dropbox_client_with_select_header(SELECT_ADMIN_HEADER,
                                                            team_member_id)
 
     def as_user(self, team_member_id):
@@ -695,7 +700,7 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
             of this member of the team.
         :rtype: Dropbox
         """
-        return self._get_dropbox_client_with_select_header('Dropbox-API-Select-User',
+        return self._get_dropbox_client_with_select_header(SELECT_USER_HEADER,
                                                            team_member_id)
 
     def _get_dropbox_client_with_select_header(self, select_header_name, team_member_id):
