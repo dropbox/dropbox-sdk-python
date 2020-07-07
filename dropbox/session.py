@@ -29,6 +29,9 @@ API_CONTENT_HOST = os.environ.get('DROPBOX_API_CONTENT_HOST', HOST_CONTENT + API
 API_NOTIFICATION_HOST = os.environ.get('DROPBOX_API_NOTIFY_HOST', HOST_NOTIFY + API_DOMAIN)
 WEB_HOST = os.environ.get('DROPBOX_WEB_HOST', HOST_WWW + WEB_DOMAIN)
 
+# This is the default longest time we'll block on receiving data from the server
+DEFAULT_TIMEOUT = 100
+
 _TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
 
 # TODO(kelkabany): We probably only want to instantiate this once so that even

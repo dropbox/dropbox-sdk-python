@@ -23,6 +23,7 @@ from .session import (
     API_HOST,
     WEB_HOST,
     pinned_session,
+    DEFAULT_TIMEOUT,
 )
 
 if six.PY3:
@@ -130,7 +131,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 class DropboxOAuth2FlowBase(object):
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
-                 scope=None, include_granted_scopes=None, use_pkce=False):
+                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):
         if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
             raise BadInputException("Scope list must be of type list")
         if token_access_type is not None and token_access_type not in TOKEN_ACCESS_TYPES:
@@ -148,6 +149,7 @@ class DropboxOAuth2FlowBase(object):
         self.requests_session = pinned_session()
         self.scope = scope
         self.include_granted_scopes = include_granted_scopes
+        self._timeout = timeout
 
         if use_pkce:
             self.code_verifier = _generate_pkce_code_verifier()
@@ -195,7 +197,7 @@ class DropboxOAuth2FlowBase(object):
         if redirect_uri is not None:
             params['redirect_uri'] = redirect_uri
 
-        resp = self.requests_session.post(url, data=params)
+        resp = self.requests_session.post(url, data=params, timeout=self._timeout)
         resp.raise_for_status()
 
         d = resp.json()
@@ -285,7 +287,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
     """
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
-                 scope=None, include_granted_scopes=None, use_pkce=False):  # noqa: E501;
+                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):  # noqa: E501;
         """
         Construct an instance.
 
@@ -311,6 +313,11 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         :param bool use_pkce: Whether or not to use Sha256 based PKCE. PKCE should be only use on
             client apps which doesn't call your server. It is less secure than non-PKCE flow but
             can be used if you are unable to safely retrieve your app secret
+        :param Optional[float] timeout: Maximum duration in seconds that
+            client will wait for any single packet from the
+            server. After the timeout the client will give up on
+            connection. If `None`, client will wait forever. Defaults
+            to 100 seconds.
         """
         super(DropboxOAuth2FlowNoRedirect, self).__init__(
             consumer_key=consumer_key,
@@ -320,6 +327,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             scope=scope,
             include_granted_scopes=include_granted_scopes,
             use_pkce=use_pkce,
+            timeout=timeout
         )
 
     def start(self):
@@ -365,7 +373,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
     def __init__(self, consumer_key, redirect_uri, session,
                  csrf_token_session_key, consumer_secret=None, locale=None,
                  token_access_type='legacy', scope=None,
-                include_granted_scopes=None, use_pkce=False):
+                 include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):
         """
         Construct an instance.
 
@@ -397,7 +405,13 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             team - include team scopes in the grant
             Note: if this user has never linked the app, include_granted_scopes must be None
         :param bool use_pkce: Whether or not to use Sha256 based PKCE
+        :param Optional[float] timeout: Maximum duration in seconds that
+            client will wait for any single packet from the
+            server. After the timeout the client will give up on
+            connection. If `None`, client will wait forever. Defaults
+            to 100 seconds.
         """
+
         super(DropboxOAuth2Flow, self).__init__(
             consumer_key=consumer_key,
             consumer_secret=consumer_secret,
@@ -405,7 +419,9 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             token_access_type=token_access_type,
             scope=scope,
             include_granted_scopes=include_granted_scopes,
-            use_pkce=use_pkce)
+            use_pkce=use_pkce,
+            timeout=timeout
+        )
         self.redirect_uri = redirect_uri
         self.session = session
         self.csrf_token_session_key = csrf_token_session_key
