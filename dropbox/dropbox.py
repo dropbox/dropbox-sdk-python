@@ -663,6 +663,19 @@ class _DropboxTransport(object):
             headers=new_headers
         )
 
+    def close(self):
+        """
+        Cleans up all resources like the request session/network connection.
+        """
+        self._session.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
+
 class Dropbox(_DropboxTransport, DropboxBase):
     """
     Use this class to make requests to the Dropbox API using a user's access

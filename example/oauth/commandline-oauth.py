@@ -24,6 +24,6 @@ except Exception as e:
     print('Error: %s' % (e,))
     exit(1)
 
-dbx = dropbox.Dropbox(oauth2_access_token=oauth_result.access_token)
-dbx.users_get_current_account()
-print("Successfully set up client!")
+with dropbox.Dropbox(oauth2_access_token=oauth_result.access_token) as dbx:
+    dbx.users_get_current_account()
+    print("Successfully set up client!")
