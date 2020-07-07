@@ -29,4 +29,3 @@ except Exception as e:
 with dropbox.Dropbox(oauth2_refresh_token=oauth_result.refresh_token, app_key=APP_KEY) as dbx:
     dbx.users_get_current_account()
     print("Successfully set up client!")
-

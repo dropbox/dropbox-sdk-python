@@ -81,8 +81,8 @@ except Exception as e:
     exit(1)
 
 with dropbox.Dropbox(oauth2_access_token=oauth_result.access_token,
-                      oauth2_access_token_expiration=oauth_result.expires_at,
-                      oauth2_refresh_token=oauth_result.refresh_token,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET):
+                     oauth2_access_token_expiration=oauth_result.expires_at,
+                     oauth2_refresh_token=oauth_result.refresh_token,
+                     app_key=APP_KEY,
+                     app_secret=APP_SECRET):
     print("Successfully set up client!")
