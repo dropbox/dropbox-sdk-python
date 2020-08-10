@@ -40,9 +40,6 @@ PKCE_VERIFIER_LENGTH = 128
 class OAuth2FlowNoRedirectResult(object):
     """
     Authorization information for an OAuth2Flow performed with no redirect.
-
-    Currently refresh_token and expiration are both beta features, if you are interested
-    in using them, please contact Dropbox support
     """
 
     def __init__(self, access_token, account_id, user_id, refresh_token, expiration, scope):
