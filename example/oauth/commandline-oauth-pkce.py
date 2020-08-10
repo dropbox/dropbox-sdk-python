@@ -4,10 +4,6 @@ import dropbox
 from dropbox import DropboxOAuth2FlowNoRedirect
 
 '''
-This example uses PKCE, a currently beta feature.
-If you are interested in using this, please contact
-Dropbox support
-
 Populate your app key in order to run this locally
 '''
 APP_KEY = ""

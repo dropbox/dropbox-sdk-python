@@ -4,10 +4,6 @@ import dropbox
 from dropbox import DropboxOAuth2FlowNoRedirect
 
 '''
-This example uses Scopes, a currently beta feature.
-If you are interested in using this, please contact
-Dropbox support
-
 It goes through an example of requesting a starting scope,
 and requesting more throughout the process
 '''
