@@ -305,7 +305,7 @@ class String(Primitive):
             try:
                 val = val.decode('utf-8')
             except UnicodeDecodeError:
-                raise ValidationError("'%s' was not valid utf-8" % val)
+                raise ValidationError("'%s' was not valid utf-8")
 
         if self.max_length is not None and len(val) > self.max_length:
             raise ValidationError("'%s' must be at most %d characters, got %d"

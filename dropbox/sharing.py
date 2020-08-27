@@ -751,6 +751,8 @@ class AddFolderMemberError(bb.Union):
         performed on a team shared folder.
     :ivar sharing.AddFolderMemberError.no_permission: The current user does not
         have permission to perform this action.
+    :ivar sharing.AddFolderMemberError.invalid_shared_folder: Invalid shared
+        folder error will be returned as an access_error.
     """
 
     _catch_all = 'other'
@@ -770,6 +772,8 @@ class AddFolderMemberError(bb.Union):
     team_folder = None
     # Attribute is overwritten below the class definition
     no_permission = None
+    # Attribute is overwritten below the class definition
+    invalid_shared_folder = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -912,6 +916,14 @@ class AddFolderMemberError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'no_permission'
+
+    def is_invalid_shared_folder(self):
+        """
+        Check if the union tag is ``invalid_shared_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_shared_folder'
 
     def is_other(self):
         """
@@ -12601,6 +12613,8 @@ class SharePathError(bb.Union):
         OS X package.
     :ivar sharing.SharePathError.inside_osx_package: We do not support sharing a
         folder inside a Mac OS X package.
+    :ivar sharing.SharePathError.is_vault: We do not support sharing the Vault
+        folder.
     """
 
     _catch_all = 'other'
@@ -12628,6 +12642,8 @@ class SharePathError(bb.Union):
     is_osx_package = None
     # Attribute is overwritten below the class definition
     inside_osx_package = None
+    # Attribute is overwritten below the class definition
+    is_vault = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -12745,6 +12761,14 @@ class SharePathError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'inside_osx_package'
+
+    def is_is_vault(self):
+        """
+        Check if the union tag is ``is_vault``.
+
+        :rtype: bool
+        """
+        return self._tag == 'is_vault'
 
     def is_other(self):
         """
@@ -17295,6 +17319,7 @@ AddFolderMemberError._too_many_invitees_validator = bv.Void()
 AddFolderMemberError._insufficient_plan_validator = bv.Void()
 AddFolderMemberError._team_folder_validator = bv.Void()
 AddFolderMemberError._no_permission_validator = bv.Void()
+AddFolderMemberError._invalid_shared_folder_validator = bv.Void()
 AddFolderMemberError._other_validator = bv.Void()
 AddFolderMemberError._tagmap = {
     'access_error': AddFolderMemberError._access_error_validator,
@@ -17309,6 +17334,7 @@ AddFolderMemberError._tagmap = {
     'insufficient_plan': AddFolderMemberError._insufficient_plan_validator,
     'team_folder': AddFolderMemberError._team_folder_validator,
     'no_permission': AddFolderMemberError._no_permission_validator,
+    'invalid_shared_folder': AddFolderMemberError._invalid_shared_folder_validator,
     'other': AddFolderMemberError._other_validator,
 }
 
@@ -17320,6 +17346,7 @@ AddFolderMemberError.too_many_invitees = AddFolderMemberError('too_many_invitees
 AddFolderMemberError.insufficient_plan = AddFolderMemberError('insufficient_plan')
 AddFolderMemberError.team_folder = AddFolderMemberError('team_folder')
 AddFolderMemberError.no_permission = AddFolderMemberError('no_permission')
+AddFolderMemberError.invalid_shared_folder = AddFolderMemberError('invalid_shared_folder')
 AddFolderMemberError.other = AddFolderMemberError('other')
 
 AddMember._member_validator = MemberSelector_validator
@@ -18881,6 +18908,7 @@ SharePathError._already_shared_validator = SharedFolderMetadata_validator
 SharePathError._invalid_path_validator = bv.Void()
 SharePathError._is_osx_package_validator = bv.Void()
 SharePathError._inside_osx_package_validator = bv.Void()
+SharePathError._is_vault_validator = bv.Void()
 SharePathError._other_validator = bv.Void()
 SharePathError._tagmap = {
     'is_file': SharePathError._is_file_validator,
@@ -18896,6 +18924,7 @@ SharePathError._tagmap = {
     'invalid_path': SharePathError._invalid_path_validator,
     'is_osx_package': SharePathError._is_osx_package_validator,
     'inside_osx_package': SharePathError._inside_osx_package_validator,
+    'is_vault': SharePathError._is_vault_validator,
     'other': SharePathError._other_validator,
 }
 
@@ -18911,6 +18940,7 @@ SharePathError.inside_public_folder = SharePathError('inside_public_folder')
 SharePathError.invalid_path = SharePathError('invalid_path')
 SharePathError.is_osx_package = SharePathError('is_osx_package')
 SharePathError.inside_osx_package = SharePathError('inside_osx_package')
+SharePathError.is_vault = SharePathError('is_vault')
 SharePathError.other = SharePathError('other')
 
 SharedContentLinkMetadata._audience_exceptions_validator = bv.Nullable(AudienceExceptions_validator)
