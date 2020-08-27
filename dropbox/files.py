@@ -7884,6 +7884,7 @@ class LookupError(bb.Union):
         legal restrictions due to copyright claims.
     :ivar files.LookupError.unsupported_content_type: This operation is not
         supported for this content type.
+    :ivar files.LookupError.locked: The given path is locked.
     """
 
     _catch_all = 'other'
@@ -7897,6 +7898,8 @@ class LookupError(bb.Union):
     restricted_content = None
     # Attribute is overwritten below the class definition
     unsupported_content_type = None
+    # Attribute is overwritten below the class definition
+    locked = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -7958,6 +7961,14 @@ class LookupError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'unsupported_content_type'
+
+    def is_locked(self):
+        """
+        Check if the union tag is ``locked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'locked'
 
     def is_other(self):
         """
@@ -8550,6 +8561,46 @@ class MoveBatchArg(RelocationBatchArgBase):
         )
 
 MoveBatchArg_validator = bv.Struct(MoveBatchArg)
+
+class MoveIntoVaultError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.MoveIntoVaultError.is_shared_folder: Moving shared folder into
+        Vault is not allowed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    is_shared_folder = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_is_shared_folder(self):
+        """
+        Check if the union tag is ``is_shared_folder``.
+
+        :rtype: bool
+        """
+        return self._tag == 'is_shared_folder'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MoveIntoVaultError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MoveIntoVaultError(%r, %r)' % (self._tag, self._value)
+
+MoveIntoVaultError_validator = bv.Union(MoveIntoVaultError)
 
 class PathOrLink(bb.Union):
     """
@@ -9286,6 +9337,9 @@ class RelocationError(bb.Union):
         taking succeeded, and if not, try again. This should happen very rarely.
     :ivar files.RelocationError.cant_move_shared_folder: Can't move the shared
         folder to the given destination.
+    :ivar MoveIntoVaultError RelocationError.cant_move_into_vault: Some content
+        cannot be moved into Vault under certain circumstances, see detailed
+        error.
     """
 
     _catch_all = 'other'
@@ -9342,6 +9396,17 @@ class RelocationError(bb.Union):
         :rtype: RelocationError
         """
         return cls('to', val)
+
+    @classmethod
+    def cant_move_into_vault(cls, val):
+        """
+        Create an instance of this class set to the ``cant_move_into_vault`` tag
+        with value ``val``.
+
+        :param MoveIntoVaultError val:
+        :rtype: RelocationError
+        """
+        return cls('cant_move_into_vault', val)
 
     def is_from_lookup(self):
         """
@@ -9439,6 +9504,14 @@ class RelocationError(bb.Union):
         """
         return self._tag == 'cant_move_shared_folder'
 
+    def is_cant_move_into_vault(self):
+        """
+        Check if the union tag is ``cant_move_into_vault``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cant_move_into_vault'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -9475,6 +9548,19 @@ class RelocationError(bb.Union):
         """
         if not self.is_to():
             raise AttributeError("tag 'to' not set")
+        return self._value
+
+    def get_cant_move_into_vault(self):
+        """
+        Some content cannot be moved into Vault under certain circumstances, see
+        detailed error.
+
+        Only call this if :meth:`is_cant_move_into_vault` is true.
+
+        :rtype: MoveIntoVaultError
+        """
+        if not self.is_cant_move_into_vault():
+            raise AttributeError("tag 'cant_move_into_vault' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -11080,9 +11166,14 @@ class SearchError(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar files.SearchError.internal_error: Something went wrong, please try
+        again.
     """
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    internal_error = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -11123,6 +11214,14 @@ class SearchError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'invalid_argument'
+
+    def is_internal_error(self):
+        """
+        Check if the union tag is ``internal_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'internal_error'
 
     def is_other(self):
         """
@@ -11245,6 +11344,59 @@ class SearchMatch(bb.Struct):
 
 SearchMatch_validator = bv.Struct(SearchMatch)
 
+class SearchMatchFieldOptions(bb.Struct):
+    """
+    :ivar files.SearchMatchFieldOptions.include_highlights: Whether to include
+        highlight span from file title.
+    """
+
+    __slots__ = [
+        '_include_highlights_value',
+        '_include_highlights_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 include_highlights=None):
+        self._include_highlights_value = None
+        self._include_highlights_present = False
+        if include_highlights is not None:
+            self.include_highlights = include_highlights
+
+    @property
+    def include_highlights(self):
+        """
+        Whether to include highlight span from file title.
+
+        :rtype: bool
+        """
+        if self._include_highlights_present:
+            return self._include_highlights_value
+        else:
+            return False
+
+    @include_highlights.setter
+    def include_highlights(self, val):
+        val = self._include_highlights_validator.validate(val)
+        self._include_highlights_value = val
+        self._include_highlights_present = True
+
+    @include_highlights.deleter
+    def include_highlights(self):
+        self._include_highlights_value = None
+        self._include_highlights_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchMatchFieldOptions, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SearchMatchFieldOptions(include_highlights={!r})'.format(
+            self._include_highlights_value,
+        )
+
+SearchMatchFieldOptions_validator = bv.Struct(SearchMatchFieldOptions)
+
 class SearchMatchType(bb.Union):
     """
     Indicates what type of match was found for a given item.
@@ -11306,7 +11458,7 @@ class SearchMatchV2(bb.Struct):
     :ivar files.SearchMatchV2.metadata: The metadata for the matched file or
         folder.
     :ivar files.SearchMatchV2.highlight_spans: The list of HighlightSpan
-        determines which parts of the result should be highlighted.
+        determines which parts of the file title should be highlighted.
     """
 
     __slots__ = [
@@ -11356,8 +11508,8 @@ class SearchMatchV2(bb.Struct):
     @property
     def highlight_spans(self):
         """
-        The list of HighlightSpan determines which parts of the result should be
-        highlighted.
+        The list of HighlightSpan determines which parts of the file title
+        should be highlighted.
 
         :rtype: list of [HighlightSpan]
         """
@@ -11805,6 +11957,10 @@ class SearchV2Arg(bb.Struct):
         multiple fields based on the request arguments. Query string may be
         rewritten to improve relevance of results.
     :ivar files.SearchV2Arg.options: Options for more targeted search results.
+    :ivar files.SearchV2Arg.match_field_options: Options for search results
+        match fields.
+    :ivar files.SearchV2Arg.include_highlights: Deprecated and moved this option
+        to SearchMatchFieldOptions.
     """
 
     __slots__ = [
@@ -11812,6 +11968,8 @@ class SearchV2Arg(bb.Struct):
         '_query_present',
         '_options_value',
         '_options_present',
+        '_match_field_options_value',
+        '_match_field_options_present',
         '_include_highlights_value',
         '_include_highlights_present',
     ]
@@ -11821,17 +11979,22 @@ class SearchV2Arg(bb.Struct):
     def __init__(self,
                  query=None,
                  options=None,
+                 match_field_options=None,
                  include_highlights=None):
         self._query_value = None
         self._query_present = False
         self._options_value = None
         self._options_present = False
+        self._match_field_options_value = None
+        self._match_field_options_present = False
         self._include_highlights_value = None
         self._include_highlights_present = False
         if query is not None:
             self.query = query
         if options is not None:
             self.options = options
+        if match_field_options is not None:
+            self.match_field_options = match_field_options
         if include_highlights is not None:
             self.include_highlights = include_highlights
 
@@ -11887,8 +12050,36 @@ class SearchV2Arg(bb.Struct):
         self._options_present = False
 
     @property
+    def match_field_options(self):
+        """
+        Options for search results match fields.
+
+        :rtype: SearchMatchFieldOptions
+        """
+        if self._match_field_options_present:
+            return self._match_field_options_value
+        else:
+            return None
+
+    @match_field_options.setter
+    def match_field_options(self, val):
+        if val is None:
+            del self.match_field_options
+            return
+        self._match_field_options_validator.validate_type_only(val)
+        self._match_field_options_value = val
+        self._match_field_options_present = True
+
+    @match_field_options.deleter
+    def match_field_options(self):
+        self._match_field_options_value = None
+        self._match_field_options_present = False
+
+    @property
     def include_highlights(self):
         """
+        Deprecated and moved this option to SearchMatchFieldOptions.
+
         :rtype: bool
         """
         if self._include_highlights_present:
@@ -11911,9 +12102,10 @@ class SearchV2Arg(bb.Struct):
         super(SearchV2Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'SearchV2Arg(query={!r}, options={!r}, include_highlights={!r})'.format(
+        return 'SearchV2Arg(query={!r}, options={!r}, match_field_options={!r}, include_highlights={!r})'.format(
             self._query_value,
             self._options_value,
+            self._match_field_options_value,
             self._include_highlights_value,
         )
 
@@ -16084,6 +16276,7 @@ LookupError._not_file_validator = bv.Void()
 LookupError._not_folder_validator = bv.Void()
 LookupError._restricted_content_validator = bv.Void()
 LookupError._unsupported_content_type_validator = bv.Void()
+LookupError._locked_validator = bv.Void()
 LookupError._other_validator = bv.Void()
 LookupError._tagmap = {
     'malformed_path': LookupError._malformed_path_validator,
@@ -16092,6 +16285,7 @@ LookupError._tagmap = {
     'not_folder': LookupError._not_folder_validator,
     'restricted_content': LookupError._restricted_content_validator,
     'unsupported_content_type': LookupError._unsupported_content_type_validator,
+    'locked': LookupError._locked_validator,
     'other': LookupError._other_validator,
 }
 
@@ -16100,6 +16294,7 @@ LookupError.not_file = LookupError('not_file')
 LookupError.not_folder = LookupError('not_folder')
 LookupError.restricted_content = LookupError('restricted_content')
 LookupError.unsupported_content_type = LookupError('unsupported_content_type')
+LookupError.locked = LookupError('locked')
 LookupError.other = LookupError('other')
 
 MediaInfo._pending_validator = bv.Void()
@@ -16177,6 +16372,16 @@ RelocationBatchArgBase._all_fields_ = [
 MoveBatchArg._allow_ownership_transfer_validator = bv.Boolean()
 MoveBatchArg._all_field_names_ = RelocationBatchArgBase._all_field_names_.union(set(['allow_ownership_transfer']))
 MoveBatchArg._all_fields_ = RelocationBatchArgBase._all_fields_ + [('allow_ownership_transfer', MoveBatchArg._allow_ownership_transfer_validator)]
+
+MoveIntoVaultError._is_shared_folder_validator = bv.Void()
+MoveIntoVaultError._other_validator = bv.Void()
+MoveIntoVaultError._tagmap = {
+    'is_shared_folder': MoveIntoVaultError._is_shared_folder_validator,
+    'other': MoveIntoVaultError._other_validator,
+}
+
+MoveIntoVaultError.is_shared_folder = MoveIntoVaultError('is_shared_folder')
+MoveIntoVaultError.other = MoveIntoVaultError('other')
 
 PathOrLink._path_validator = ReadPath_validator
 PathOrLink._link_validator = SharedLinkFileInfo_validator
@@ -16279,6 +16484,7 @@ RelocationError._cant_transfer_ownership_validator = bv.Void()
 RelocationError._insufficient_quota_validator = bv.Void()
 RelocationError._internal_error_validator = bv.Void()
 RelocationError._cant_move_shared_folder_validator = bv.Void()
+RelocationError._cant_move_into_vault_validator = MoveIntoVaultError_validator
 RelocationError._other_validator = bv.Void()
 RelocationError._tagmap = {
     'from_lookup': RelocationError._from_lookup_validator,
@@ -16293,6 +16499,7 @@ RelocationError._tagmap = {
     'insufficient_quota': RelocationError._insufficient_quota_validator,
     'internal_error': RelocationError._internal_error_validator,
     'cant_move_shared_folder': RelocationError._cant_move_shared_folder_validator,
+    'cant_move_into_vault': RelocationError._cant_move_into_vault_validator,
     'other': RelocationError._other_validator,
 }
 
@@ -16513,13 +16720,16 @@ SearchArg._all_fields_ = [
 
 SearchError._path_validator = LookupError_validator
 SearchError._invalid_argument_validator = bv.Nullable(bv.String())
+SearchError._internal_error_validator = bv.Void()
 SearchError._other_validator = bv.Void()
 SearchError._tagmap = {
     'path': SearchError._path_validator,
     'invalid_argument': SearchError._invalid_argument_validator,
+    'internal_error': SearchError._internal_error_validator,
     'other': SearchError._other_validator,
 }
 
+SearchError.internal_error = SearchError('internal_error')
 SearchError.other = SearchError('other')
 
 SearchMatch._match_type_validator = SearchMatchType_validator
@@ -16532,6 +16742,10 @@ SearchMatch._all_fields_ = [
     ('match_type', SearchMatch._match_type_validator),
     ('metadata', SearchMatch._metadata_validator),
 ]
+
+SearchMatchFieldOptions._include_highlights_validator = bv.Boolean()
+SearchMatchFieldOptions._all_field_names_ = set(['include_highlights'])
+SearchMatchFieldOptions._all_fields_ = [('include_highlights', SearchMatchFieldOptions._include_highlights_validator)]
 
 SearchMatchType._filename_validator = bv.Void()
 SearchMatchType._content_validator = bv.Void()
@@ -16609,15 +16823,18 @@ SearchResult._all_fields_ = [
 
 SearchV2Arg._query_validator = bv.String()
 SearchV2Arg._options_validator = bv.Nullable(SearchOptions_validator)
+SearchV2Arg._match_field_options_validator = bv.Nullable(SearchMatchFieldOptions_validator)
 SearchV2Arg._include_highlights_validator = bv.Boolean()
 SearchV2Arg._all_field_names_ = set([
     'query',
     'options',
+    'match_field_options',
     'include_highlights',
 ])
 SearchV2Arg._all_fields_ = [
     ('query', SearchV2Arg._query_validator),
     ('options', SearchV2Arg._options_validator),
+    ('match_field_options', SearchV2Arg._match_field_options_validator),
     ('include_highlights', SearchV2Arg._include_highlights_validator),
 ]
 

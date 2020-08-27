@@ -4843,6 +4843,141 @@ class ConnectedTeamName(bb.Struct):
 
 ConnectedTeamName_validator = bv.Struct(ConnectedTeamName)
 
+class ContentAdministrationPolicyChangedDetails(bb.Struct):
+    """
+    Changed content management setting.
+
+    :ivar team_log.ContentAdministrationPolicyChangedDetails.new_value: New
+        content administration policy.
+    :ivar team_log.ContentAdministrationPolicyChangedDetails.previous_value:
+        Previous content administration policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New content administration policy.
+
+        :rtype: str
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous content administration policy.
+
+        :rtype: str
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ContentAdministrationPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ContentAdministrationPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+ContentAdministrationPolicyChangedDetails_validator = bv.Struct(ContentAdministrationPolicyChangedDetails)
+
+class ContentAdministrationPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ContentAdministrationPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ContentAdministrationPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ContentAdministrationPolicyChangedType_validator = bv.Struct(ContentAdministrationPolicyChangedType)
+
 class ContentPermanentDeletePolicy(bb.Union):
     """
     Policy for pemanent content deletion
@@ -12634,6 +12769,28 @@ class EventDetails(bb.Union):
         return cls('export_members_report_fail_details', val)
 
     @classmethod
+    def external_sharing_create_report_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_sharing_create_report_details`` tag with value ``val``.
+
+        :param ExternalSharingCreateReportDetails val:
+        :rtype: EventDetails
+        """
+        return cls('external_sharing_create_report_details', val)
+
+    @classmethod
+    def external_sharing_report_failed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_sharing_report_failed_details`` tag with value ``val``.
+
+        :param ExternalSharingReportFailedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('external_sharing_report_failed_details', val)
+
+    @classmethod
     def no_expiration_link_gen_create_report_details(cls, val):
         """
         Create an instance of this class set to the
@@ -14140,6 +14297,18 @@ class EventDetails(bb.Union):
         return cls('camera_uploads_policy_changed_details', val)
 
     @classmethod
+    def content_administration_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``content_administration_policy_changed_details`` tag with value
+        ``val``.
+
+        :param ContentAdministrationPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('content_administration_policy_changed_details', val)
+
+    @classmethod
     def data_placement_restriction_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -14633,6 +14802,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('rewind_policy_changed_details', val)
+
+    @classmethod
+    def send_for_signature_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``send_for_signature_policy_changed_details`` tag with value ``val``.
+
+        :param SendForSignaturePolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('send_for_signature_policy_changed_details', val)
 
     @classmethod
     def sharing_change_folder_join_policy_details(cls, val):
@@ -16802,6 +16982,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'export_members_report_fail_details'
 
+    def is_external_sharing_create_report_details(self):
+        """
+        Check if the union tag is ``external_sharing_create_report_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_sharing_create_report_details'
+
+    def is_external_sharing_report_failed_details(self):
+        """
+        Check if the union tag is ``external_sharing_report_failed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_sharing_report_failed_details'
+
     def is_no_expiration_link_gen_create_report_details(self):
         """
         Check if the union tag is ``no_expiration_link_gen_create_report_details``.
@@ -17890,6 +18086,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'camera_uploads_policy_changed_details'
 
+    def is_content_administration_policy_changed_details(self):
+        """
+        Check if the union tag is ``content_administration_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_administration_policy_changed_details'
+
     def is_data_placement_restriction_change_policy_details(self):
         """
         Check if the union tag is ``data_placement_restriction_change_policy_details``.
@@ -18241,6 +18445,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_policy_changed_details'
+
+    def is_send_for_signature_policy_changed_details(self):
+        """
+        Check if the union tag is ``send_for_signature_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'send_for_signature_policy_changed_details'
 
     def is_sharing_change_folder_join_policy_details(self):
         """
@@ -20574,6 +20786,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'export_members_report_fail_details' not set")
         return self._value
 
+    def get_external_sharing_create_report_details(self):
+        """
+        Only call this if :meth:`is_external_sharing_create_report_details` is true.
+
+        :rtype: ExternalSharingCreateReportDetails
+        """
+        if not self.is_external_sharing_create_report_details():
+            raise AttributeError("tag 'external_sharing_create_report_details' not set")
+        return self._value
+
+    def get_external_sharing_report_failed_details(self):
+        """
+        Only call this if :meth:`is_external_sharing_report_failed_details` is true.
+
+        :rtype: ExternalSharingReportFailedDetails
+        """
+        if not self.is_external_sharing_report_failed_details():
+            raise AttributeError("tag 'external_sharing_report_failed_details' not set")
+        return self._value
+
     def get_no_expiration_link_gen_create_report_details(self):
         """
         Only call this if :meth:`is_no_expiration_link_gen_create_report_details` is true.
@@ -21934,6 +22166,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'camera_uploads_policy_changed_details' not set")
         return self._value
 
+    def get_content_administration_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_content_administration_policy_changed_details` is true.
+
+        :rtype: ContentAdministrationPolicyChangedDetails
+        """
+        if not self.is_content_administration_policy_changed_details():
+            raise AttributeError("tag 'content_administration_policy_changed_details' not set")
+        return self._value
+
     def get_data_placement_restriction_change_policy_details(self):
         """
         Only call this if :meth:`is_data_placement_restriction_change_policy_details` is true.
@@ -22372,6 +22614,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_rewind_policy_changed_details():
             raise AttributeError("tag 'rewind_policy_changed_details' not set")
+        return self._value
+
+    def get_send_for_signature_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_send_for_signature_policy_changed_details` is true.
+
+        :rtype: SendForSignaturePolicyChangedDetails
+        """
+        if not self.is_send_for_signature_policy_changed_details():
+            raise AttributeError("tag 'send_for_signature_policy_changed_details' not set")
         return self._value
 
     def get_sharing_change_folder_join_policy_details(self):
@@ -23419,6 +23671,12 @@ class EventType(bb.Union):
         Created member data report
     :ivar ExportMembersReportFailType EventType.export_members_report_fail:
         (reports) Failed to create members data report
+    :ivar ExternalSharingCreateReportType
+        EventType.external_sharing_create_report: (reports) Report created: Data
+        shared outside the team
+    :ivar ExternalSharingReportFailedType
+        EventType.external_sharing_report_failed: (reports) Couldn't create
+        report: Data shared outside the team
     :ivar NoExpirationLinkGenCreateReportType
         EventType.no_expiration_link_gen_create_report: (reports) Report
         created: Links created with no expiration
@@ -23748,6 +24006,9 @@ class EventType(bb.Union):
     :ivar CameraUploadsPolicyChangedType
         EventType.camera_uploads_policy_changed: (team_policies) Changed camera
         uploads setting for team
+    :ivar ContentAdministrationPolicyChangedType
+        EventType.content_administration_policy_changed: (team_policies) Changed
+        content management setting
     :ivar DataPlacementRestrictionChangePolicyType
         EventType.data_placement_restriction_change_policy: (team_policies) Set
         restrictions on data center locations where team data resides
@@ -23875,6 +24136,9 @@ class EventType(bb.Union):
         Enabled/disabled reseller support
     :ivar RewindPolicyChangedType EventType.rewind_policy_changed:
         (team_policies) Changed Rewind policy for team
+    :ivar SendForSignaturePolicyChangedType
+        EventType.send_for_signature_policy_changed: (team_policies) Changed
+        send for signature policy for team
     :ivar SharingChangeFolderJoinPolicyType
         EventType.sharing_change_folder_join_policy: (team_policies) Changed
         whether team members can join shared folders owned outside team
@@ -26054,6 +26318,28 @@ class EventType(bb.Union):
         return cls('export_members_report_fail', val)
 
     @classmethod
+    def external_sharing_create_report(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_sharing_create_report`` tag with value ``val``.
+
+        :param ExternalSharingCreateReportType val:
+        :rtype: EventType
+        """
+        return cls('external_sharing_create_report', val)
+
+    @classmethod
+    def external_sharing_report_failed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_sharing_report_failed`` tag with value ``val``.
+
+        :param ExternalSharingReportFailedType val:
+        :rtype: EventType
+        """
+        return cls('external_sharing_report_failed', val)
+
+    @classmethod
     def no_expiration_link_gen_create_report(cls, val):
         """
         Create an instance of this class set to the
@@ -27552,6 +27838,17 @@ class EventType(bb.Union):
         return cls('camera_uploads_policy_changed', val)
 
     @classmethod
+    def content_administration_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``content_administration_policy_changed`` tag with value ``val``.
+
+        :param ContentAdministrationPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('content_administration_policy_changed', val)
+
+    @classmethod
     def data_placement_restriction_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -28034,6 +28331,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('rewind_policy_changed', val)
+
+    @classmethod
+    def send_for_signature_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``send_for_signature_policy_changed`` tag with value ``val``.
+
+        :param SendForSignaturePolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('send_for_signature_policy_changed', val)
 
     @classmethod
     def sharing_change_folder_join_policy(cls, val):
@@ -30185,6 +30493,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'export_members_report_fail'
 
+    def is_external_sharing_create_report(self):
+        """
+        Check if the union tag is ``external_sharing_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_sharing_create_report'
+
+    def is_external_sharing_report_failed(self):
+        """
+        Check if the union tag is ``external_sharing_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_sharing_report_failed'
+
     def is_no_expiration_link_gen_create_report(self):
         """
         Check if the union tag is ``no_expiration_link_gen_create_report``.
@@ -31273,6 +31597,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'camera_uploads_policy_changed'
 
+    def is_content_administration_policy_changed(self):
+        """
+        Check if the union tag is ``content_administration_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_administration_policy_changed'
+
     def is_data_placement_restriction_change_policy(self):
         """
         Check if the union tag is ``data_placement_restriction_change_policy``.
@@ -31624,6 +31956,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_policy_changed'
+
+    def is_send_for_signature_policy_changed(self):
+        """
+        Check if the union tag is ``send_for_signature_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'send_for_signature_policy_changed'
 
     def is_sharing_change_folder_join_policy(self):
         """
@@ -34330,6 +34670,30 @@ class EventType(bb.Union):
             raise AttributeError("tag 'export_members_report_fail' not set")
         return self._value
 
+    def get_external_sharing_create_report(self):
+        """
+        (reports) Report created: Data shared outside the team
+
+        Only call this if :meth:`is_external_sharing_create_report` is true.
+
+        :rtype: ExternalSharingCreateReportType
+        """
+        if not self.is_external_sharing_create_report():
+            raise AttributeError("tag 'external_sharing_create_report' not set")
+        return self._value
+
+    def get_external_sharing_report_failed(self):
+        """
+        (reports) Couldn't create report: Data shared outside the team
+
+        Only call this if :meth:`is_external_sharing_report_failed` is true.
+
+        :rtype: ExternalSharingReportFailedType
+        """
+        if not self.is_external_sharing_report_failed():
+            raise AttributeError("tag 'external_sharing_report_failed' not set")
+        return self._value
+
     def get_no_expiration_link_gen_create_report(self):
         """
         (reports) Report created: Links created with no expiration
@@ -35989,6 +36353,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'camera_uploads_policy_changed' not set")
         return self._value
 
+    def get_content_administration_policy_changed(self):
+        """
+        (team_policies) Changed content management setting
+
+        Only call this if :meth:`is_content_administration_policy_changed` is true.
+
+        :rtype: ContentAdministrationPolicyChangedType
+        """
+        if not self.is_content_administration_policy_changed():
+            raise AttributeError("tag 'content_administration_policy_changed' not set")
+        return self._value
+
     def get_data_placement_restriction_change_policy(self):
         """
         (team_policies) Set restrictions on data center locations where team
@@ -36530,6 +36906,18 @@ class EventType(bb.Union):
         """
         if not self.is_rewind_policy_changed():
             raise AttributeError("tag 'rewind_policy_changed' not set")
+        return self._value
+
+    def get_send_for_signature_policy_changed(self):
+        """
+        (team_policies) Changed send for signature policy for team
+
+        Only call this if :meth:`is_send_for_signature_policy_changed` is true.
+
+        :rtype: SendForSignaturePolicyChangedType
+        """
+        if not self.is_send_for_signature_policy_changed():
+            raise AttributeError("tag 'send_for_signature_policy_changed' not set")
         return self._value
 
     def get_sharing_change_folder_join_policy(self):
@@ -37662,6 +38050,10 @@ class EventTypeArg(bb.Union):
         data report
     :ivar team_log.EventTypeArg.export_members_report_fail: (reports) Failed to
         create members data report
+    :ivar team_log.EventTypeArg.external_sharing_create_report: (reports) Report
+        created: Data shared outside the team
+    :ivar team_log.EventTypeArg.external_sharing_report_failed: (reports)
+        Couldn't create report: Data shared outside the team
     :ivar team_log.EventTypeArg.no_expiration_link_gen_create_report: (reports)
         Report created: Links created with no expiration
     :ivar team_log.EventTypeArg.no_expiration_link_gen_report_failed: (reports)
@@ -37940,6 +38332,8 @@ class EventTypeArg(bb.Union):
         downloads (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.camera_uploads_policy_changed: (team_policies)
         Changed camera uploads setting for team
+    :ivar team_log.EventTypeArg.content_administration_policy_changed:
+        (team_policies) Changed content management setting
     :ivar team_log.EventTypeArg.data_placement_restriction_change_policy:
         (team_policies) Set restrictions on data center locations where team
         data resides
@@ -38039,6 +38433,8 @@ class EventTypeArg(bb.Union):
         Enabled/disabled reseller support
     :ivar team_log.EventTypeArg.rewind_policy_changed: (team_policies) Changed
         Rewind policy for team
+    :ivar team_log.EventTypeArg.send_for_signature_policy_changed:
+        (team_policies) Changed send for signature policy for team
     :ivar team_log.EventTypeArg.sharing_change_folder_join_policy:
         (team_policies) Changed whether team members can join shared folders
         owned outside team
@@ -38558,6 +38954,10 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     export_members_report_fail = None
     # Attribute is overwritten below the class definition
+    external_sharing_create_report = None
+    # Attribute is overwritten below the class definition
+    external_sharing_report_failed = None
+    # Attribute is overwritten below the class definition
     no_expiration_link_gen_create_report = None
     # Attribute is overwritten below the class definition
     no_expiration_link_gen_report_failed = None
@@ -38830,6 +39230,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     camera_uploads_policy_changed = None
     # Attribute is overwritten below the class definition
+    content_administration_policy_changed = None
+    # Attribute is overwritten below the class definition
     data_placement_restriction_change_policy = None
     # Attribute is overwritten below the class definition
     data_placement_restriction_satisfy_policy = None
@@ -38917,6 +39319,8 @@ class EventTypeArg(bb.Union):
     reseller_support_change_policy = None
     # Attribute is overwritten below the class definition
     rewind_policy_changed = None
+    # Attribute is overwritten below the class definition
+    send_for_signature_policy_changed = None
     # Attribute is overwritten below the class definition
     sharing_change_folder_join_policy = None
     # Attribute is overwritten below the class definition
@@ -40500,6 +40904,22 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'export_members_report_fail'
 
+    def is_external_sharing_create_report(self):
+        """
+        Check if the union tag is ``external_sharing_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_sharing_create_report'
+
+    def is_external_sharing_report_failed(self):
+        """
+        Check if the union tag is ``external_sharing_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_sharing_report_failed'
+
     def is_no_expiration_link_gen_create_report(self):
         """
         Check if the union tag is ``no_expiration_link_gen_create_report``.
@@ -41588,6 +42008,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'camera_uploads_policy_changed'
 
+    def is_content_administration_policy_changed(self):
+        """
+        Check if the union tag is ``content_administration_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_administration_policy_changed'
+
     def is_data_placement_restriction_change_policy(self):
         """
         Check if the union tag is ``data_placement_restriction_change_policy``.
@@ -41939,6 +42367,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_policy_changed'
+
+    def is_send_for_signature_policy_changed(self):
+        """
+        Check if the union tag is ``send_for_signature_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'send_for_signature_policy_changed'
 
     def is_sharing_change_folder_join_policy(self):
         """
@@ -42828,6 +43264,176 @@ class ExtendedVersionHistoryPolicy(bb.Union):
         return 'ExtendedVersionHistoryPolicy(%r, %r)' % (self._tag, self._value)
 
 ExtendedVersionHistoryPolicy_validator = bv.Union(ExtendedVersionHistoryPolicy)
+
+class ExternalSharingCreateReportDetails(bb.Struct):
+    """
+    Report created: Data shared outside the team.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalSharingCreateReportDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExternalSharingCreateReportDetails()'
+
+ExternalSharingCreateReportDetails_validator = bv.Struct(ExternalSharingCreateReportDetails)
+
+class ExternalSharingCreateReportType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalSharingCreateReportType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExternalSharingCreateReportType(description={!r})'.format(
+            self._description_value,
+        )
+
+ExternalSharingCreateReportType_validator = bv.Struct(ExternalSharingCreateReportType)
+
+class ExternalSharingReportFailedDetails(bb.Struct):
+    """
+    Couldn't create report: Data shared outside the team.
+
+    :ivar team_log.ExternalSharingReportFailedDetails.failure_reason: Failure
+        reason.
+    """
+
+    __slots__ = [
+        '_failure_reason_value',
+        '_failure_reason_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 failure_reason=None):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+        if failure_reason is not None:
+            self.failure_reason = failure_reason
+
+    @property
+    def failure_reason(self):
+        """
+        Failure reason.
+
+        :rtype: team.TeamReportFailureReason
+        """
+        if self._failure_reason_present:
+            return self._failure_reason_value
+        else:
+            raise AttributeError("missing required field 'failure_reason'")
+
+    @failure_reason.setter
+    def failure_reason(self, val):
+        self._failure_reason_validator.validate_type_only(val)
+        self._failure_reason_value = val
+        self._failure_reason_present = True
+
+    @failure_reason.deleter
+    def failure_reason(self):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalSharingReportFailedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExternalSharingReportFailedDetails(failure_reason={!r})'.format(
+            self._failure_reason_value,
+        )
+
+ExternalSharingReportFailedDetails_validator = bv.Struct(ExternalSharingReportFailedDetails)
+
+class ExternalSharingReportFailedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalSharingReportFailedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ExternalSharingReportFailedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ExternalSharingReportFailedType_validator = bv.Struct(ExternalSharingReportFailedType)
 
 class ExternalUserLogInfo(bb.Struct):
     """
@@ -48737,7 +49343,8 @@ class GetTeamEventsArg(bb.Struct):
         Participants.
     :ivar team_log.GetTeamEventsArg.time: Filter by time range.
     :ivar team_log.GetTeamEventsArg.category: Filter the returned events to a
-        single category.
+        single category. Note that category shouldn't be provided together with
+        event_type.
     :ivar team_log.GetTeamEventsArg.event_type: Filter the returned events to a
         single event type. Note that event_type shouldn't be provided together
         with category.
@@ -48868,7 +49475,8 @@ class GetTeamEventsArg(bb.Struct):
     @property
     def category(self):
         """
-        Filter the returned events to a single category.
+        Filter the returned events to a single category. Note that category
+        shouldn't be provided together with event_type.
 
         :rtype: EventCategory
         """
@@ -49085,8 +49693,8 @@ class GetTeamEventsError(bb.Union):
     :ivar team_log.GetTeamEventsError.account_id_not_found: No user found
         matching the provided account_id.
     :ivar team_log.GetTeamEventsError.invalid_time_range: Invalid time range.
-    :ivar team_log.GetTeamEventsError.invalid_filters: Invalid filters.
-        event_type and category should not be provided together.
+    :ivar team_log.GetTeamEventsError.invalid_filters: Invalid filters. Do not
+        specify both event_type and category parameters for the same call.
     """
 
     _catch_all = 'other'
@@ -52214,6 +52822,10 @@ class InviteMethod(bb.Union):
     # Attribute is overwritten below the class definition
     invite_link = None
     # Attribute is overwritten below the class definition
+    auto_approve = None
+    # Attribute is overwritten below the class definition
+    moved_from_another_team = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_invite_link(self):
@@ -52223,6 +52835,22 @@ class InviteMethod(bb.Union):
         :rtype: bool
         """
         return self._tag == 'invite_link'
+
+    def is_auto_approve(self):
+        """
+        Check if the union tag is ``auto_approve``.
+
+        :rtype: bool
+        """
+        return self._tag == 'auto_approve'
+
+    def is_moved_from_another_team(self):
+        """
+        Check if the union tag is ``moved_from_another_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'moved_from_another_team'
 
     def is_other(self):
         """
@@ -56370,6 +56998,11 @@ class MemberChangeStatusDetails(bb.Struct):
     :ivar team_log.MemberChangeStatusDetails.new_value: New member status.
     :ivar team_log.MemberChangeStatusDetails.action: Additional information
         indicating the action taken that caused status change.
+    :ivar team_log.MemberChangeStatusDetails.new_team: The user's new team name.
+        This field is relevant when the user is transferred off the team.
+    :ivar team_log.MemberChangeStatusDetails.previous_team: The user's previous
+        team name. This field is relevant when the user is transferred onto the
+        team.
     """
 
     __slots__ = [
@@ -56379,6 +57012,10 @@ class MemberChangeStatusDetails(bb.Struct):
         '_new_value_present',
         '_action_value',
         '_action_present',
+        '_new_team_value',
+        '_new_team_present',
+        '_previous_team_value',
+        '_previous_team_present',
     ]
 
     _has_required_fields = True
@@ -56386,19 +57023,29 @@ class MemberChangeStatusDetails(bb.Struct):
     def __init__(self,
                  new_value=None,
                  previous_value=None,
-                 action=None):
+                 action=None,
+                 new_team=None,
+                 previous_team=None):
         self._previous_value_value = None
         self._previous_value_present = False
         self._new_value_value = None
         self._new_value_present = False
         self._action_value = None
         self._action_present = False
+        self._new_team_value = None
+        self._new_team_present = False
+        self._previous_team_value = None
+        self._previous_team_present = False
         if previous_value is not None:
             self.previous_value = previous_value
         if new_value is not None:
             self.new_value = new_value
         if action is not None:
             self.action = action
+        if new_team is not None:
+            self.new_team = new_team
+        if previous_team is not None:
+            self.previous_team = previous_team
 
     @property
     def previous_value(self):
@@ -56476,14 +57123,70 @@ class MemberChangeStatusDetails(bb.Struct):
         self._action_value = None
         self._action_present = False
 
+    @property
+    def new_team(self):
+        """
+        The user's new team name. This field is relevant when the user is
+        transferred off the team.
+
+        :rtype: str
+        """
+        if self._new_team_present:
+            return self._new_team_value
+        else:
+            return None
+
+    @new_team.setter
+    def new_team(self, val):
+        if val is None:
+            del self.new_team
+            return
+        val = self._new_team_validator.validate(val)
+        self._new_team_value = val
+        self._new_team_present = True
+
+    @new_team.deleter
+    def new_team(self):
+        self._new_team_value = None
+        self._new_team_present = False
+
+    @property
+    def previous_team(self):
+        """
+        The user's previous team name. This field is relevant when the user is
+        transferred onto the team.
+
+        :rtype: str
+        """
+        if self._previous_team_present:
+            return self._previous_team_value
+        else:
+            return None
+
+    @previous_team.setter
+    def previous_team(self, val):
+        if val is None:
+            del self.previous_team
+            return
+        val = self._previous_team_validator.validate(val)
+        self._previous_team_value = val
+        self._previous_team_present = True
+
+    @previous_team.deleter
+    def previous_team(self):
+        self._previous_team_value = None
+        self._previous_team_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberChangeStatusDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'MemberChangeStatusDetails(new_value={!r}, previous_value={!r}, action={!r})'.format(
+        return 'MemberChangeStatusDetails(new_value={!r}, previous_value={!r}, action={!r}, new_team={!r}, previous_team={!r})'.format(
             self._new_value_value,
             self._previous_value_value,
             self._action_value,
+            self._new_team_value,
+            self._previous_team_value,
         )
 
 MemberChangeStatusDetails_validator = bv.Struct(MemberChangeStatusDetails)
@@ -58242,6 +58945,8 @@ class MemberStatus(bb.Union):
     # Attribute is overwritten below the class definition
     removed = None
     # Attribute is overwritten below the class definition
+    moved_to_another_team = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_not_joined(self):
@@ -58283,6 +58988,14 @@ class MemberStatus(bb.Union):
         :rtype: bool
         """
         return self._tag == 'removed'
+
+    def is_moved_to_another_team(self):
+        """
+        Check if the union tag is ``moved_to_another_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'moved_to_another_team'
 
     def is_other(self):
         """
@@ -70410,6 +71123,190 @@ class SecondaryTeamRequestReminderDetails(bb.Struct):
 
 SecondaryTeamRequestReminderDetails_validator = bv.Struct(SecondaryTeamRequestReminderDetails)
 
+class SendForSignaturePolicy(bb.Union):
+    """
+    Policy for controlling team access to send for signature feature
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SendForSignaturePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SendForSignaturePolicy(%r, %r)' % (self._tag, self._value)
+
+SendForSignaturePolicy_validator = bv.Union(SendForSignaturePolicy)
+
+class SendForSignaturePolicyChangedDetails(bb.Struct):
+    """
+    Changed send for signature policy for team.
+
+    :ivar team_log.SendForSignaturePolicyChangedDetails.new_value: New send for
+        signature policy.
+    :ivar team_log.SendForSignaturePolicyChangedDetails.previous_value: Previous
+        send for signature policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New send for signature policy.
+
+        :rtype: SendForSignaturePolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous send for signature policy.
+
+        :rtype: SendForSignaturePolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SendForSignaturePolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SendForSignaturePolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+SendForSignaturePolicyChangedDetails_validator = bv.Struct(SendForSignaturePolicyChangedDetails)
+
+class SendForSignaturePolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SendForSignaturePolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SendForSignaturePolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+SendForSignaturePolicyChangedType_validator = bv.Struct(SendForSignaturePolicyChangedType)
+
 class SfAddGroupDetails(bb.Struct):
     """
     Added team to shared folder.
@@ -79438,6 +80335,8 @@ class SharedLinkVisibility(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    no_one = None
+    # Attribute is overwritten below the class definition
     password = None
     # Attribute is overwritten below the class definition
     public = None
@@ -79445,6 +80344,14 @@ class SharedLinkVisibility(bb.Union):
     team_only = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_no_one(self):
+        """
+        Check if the union tag is ``no_one``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_one'
 
     def is_password(self):
         """
@@ -94621,6 +95528,21 @@ ConnectedTeamName._team_validator = bv.String()
 ConnectedTeamName._all_field_names_ = set(['team'])
 ConnectedTeamName._all_fields_ = [('team', ConnectedTeamName._team_validator)]
 
+ContentAdministrationPolicyChangedDetails._new_value_validator = bv.String()
+ContentAdministrationPolicyChangedDetails._previous_value_validator = bv.String()
+ContentAdministrationPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+ContentAdministrationPolicyChangedDetails._all_fields_ = [
+    ('new_value', ContentAdministrationPolicyChangedDetails._new_value_validator),
+    ('previous_value', ContentAdministrationPolicyChangedDetails._previous_value_validator),
+]
+
+ContentAdministrationPolicyChangedType._description_validator = bv.String()
+ContentAdministrationPolicyChangedType._all_field_names_ = set(['description'])
+ContentAdministrationPolicyChangedType._all_fields_ = [('description', ContentAdministrationPolicyChangedType._description_validator)]
+
 ContentPermanentDeletePolicy._disabled_validator = bv.Void()
 ContentPermanentDeletePolicy._enabled_validator = bv.Void()
 ContentPermanentDeletePolicy._other_validator = bv.Void()
@@ -95497,6 +96419,8 @@ EventDetails._emm_create_exceptions_report_details_validator = EmmCreateExceptio
 EventDetails._emm_create_usage_report_details_validator = EmmCreateUsageReportDetails_validator
 EventDetails._export_members_report_details_validator = ExportMembersReportDetails_validator
 EventDetails._export_members_report_fail_details_validator = ExportMembersReportFailDetails_validator
+EventDetails._external_sharing_create_report_details_validator = ExternalSharingCreateReportDetails_validator
+EventDetails._external_sharing_report_failed_details_validator = ExternalSharingReportFailedDetails_validator
 EventDetails._no_expiration_link_gen_create_report_details_validator = NoExpirationLinkGenCreateReportDetails_validator
 EventDetails._no_expiration_link_gen_report_failed_details_validator = NoExpirationLinkGenReportFailedDetails_validator
 EventDetails._no_password_link_gen_create_report_details_validator = NoPasswordLinkGenCreateReportDetails_validator
@@ -95633,6 +96557,7 @@ EventDetails._account_capture_change_policy_details_validator = AccountCaptureCh
 EventDetails._allow_download_disabled_details_validator = AllowDownloadDisabledDetails_validator
 EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDetails_validator
 EventDetails._camera_uploads_policy_changed_details_validator = CameraUploadsPolicyChangedDetails_validator
+EventDetails._content_administration_policy_changed_details_validator = ContentAdministrationPolicyChangedDetails_validator
 EventDetails._data_placement_restriction_change_policy_details_validator = DataPlacementRestrictionChangePolicyDetails_validator
 EventDetails._data_placement_restriction_satisfy_policy_details_validator = DataPlacementRestrictionSatisfyPolicyDetails_validator
 EventDetails._device_approvals_add_exception_details_validator = DeviceApprovalsAddExceptionDetails_validator
@@ -95677,6 +96602,7 @@ EventDetails._password_strength_requirements_change_policy_details_validator = P
 EventDetails._permanent_delete_change_policy_details_validator = PermanentDeleteChangePolicyDetails_validator
 EventDetails._reseller_support_change_policy_details_validator = ResellerSupportChangePolicyDetails_validator
 EventDetails._rewind_policy_changed_details_validator = RewindPolicyChangedDetails_validator
+EventDetails._send_for_signature_policy_changed_details_validator = SendForSignaturePolicyChangedDetails_validator
 EventDetails._sharing_change_folder_join_policy_details_validator = SharingChangeFolderJoinPolicyDetails_validator
 EventDetails._sharing_change_link_policy_details_validator = SharingChangeLinkPolicyDetails_validator
 EventDetails._sharing_change_member_policy_details_validator = SharingChangeMemberPolicyDetails_validator
@@ -95924,6 +96850,8 @@ EventDetails._tagmap = {
     'emm_create_usage_report_details': EventDetails._emm_create_usage_report_details_validator,
     'export_members_report_details': EventDetails._export_members_report_details_validator,
     'export_members_report_fail_details': EventDetails._export_members_report_fail_details_validator,
+    'external_sharing_create_report_details': EventDetails._external_sharing_create_report_details_validator,
+    'external_sharing_report_failed_details': EventDetails._external_sharing_report_failed_details_validator,
     'no_expiration_link_gen_create_report_details': EventDetails._no_expiration_link_gen_create_report_details_validator,
     'no_expiration_link_gen_report_failed_details': EventDetails._no_expiration_link_gen_report_failed_details_validator,
     'no_password_link_gen_create_report_details': EventDetails._no_password_link_gen_create_report_details_validator,
@@ -96060,6 +96988,7 @@ EventDetails._tagmap = {
     'allow_download_disabled_details': EventDetails._allow_download_disabled_details_validator,
     'allow_download_enabled_details': EventDetails._allow_download_enabled_details_validator,
     'camera_uploads_policy_changed_details': EventDetails._camera_uploads_policy_changed_details_validator,
+    'content_administration_policy_changed_details': EventDetails._content_administration_policy_changed_details_validator,
     'data_placement_restriction_change_policy_details': EventDetails._data_placement_restriction_change_policy_details_validator,
     'data_placement_restriction_satisfy_policy_details': EventDetails._data_placement_restriction_satisfy_policy_details_validator,
     'device_approvals_add_exception_details': EventDetails._device_approvals_add_exception_details_validator,
@@ -96104,6 +97033,7 @@ EventDetails._tagmap = {
     'permanent_delete_change_policy_details': EventDetails._permanent_delete_change_policy_details_validator,
     'reseller_support_change_policy_details': EventDetails._reseller_support_change_policy_details_validator,
     'rewind_policy_changed_details': EventDetails._rewind_policy_changed_details_validator,
+    'send_for_signature_policy_changed_details': EventDetails._send_for_signature_policy_changed_details_validator,
     'sharing_change_folder_join_policy_details': EventDetails._sharing_change_folder_join_policy_details_validator,
     'sharing_change_link_policy_details': EventDetails._sharing_change_link_policy_details_validator,
     'sharing_change_member_policy_details': EventDetails._sharing_change_member_policy_details_validator,
@@ -96354,6 +97284,8 @@ EventType._emm_create_exceptions_report_validator = EmmCreateExceptionsReportTyp
 EventType._emm_create_usage_report_validator = EmmCreateUsageReportType_validator
 EventType._export_members_report_validator = ExportMembersReportType_validator
 EventType._export_members_report_fail_validator = ExportMembersReportFailType_validator
+EventType._external_sharing_create_report_validator = ExternalSharingCreateReportType_validator
+EventType._external_sharing_report_failed_validator = ExternalSharingReportFailedType_validator
 EventType._no_expiration_link_gen_create_report_validator = NoExpirationLinkGenCreateReportType_validator
 EventType._no_expiration_link_gen_report_failed_validator = NoExpirationLinkGenReportFailedType_validator
 EventType._no_password_link_gen_create_report_validator = NoPasswordLinkGenCreateReportType_validator
@@ -96490,6 +97422,7 @@ EventType._account_capture_change_policy_validator = AccountCaptureChangePolicyT
 EventType._allow_download_disabled_validator = AllowDownloadDisabledType_validator
 EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
 EventType._camera_uploads_policy_changed_validator = CameraUploadsPolicyChangedType_validator
+EventType._content_administration_policy_changed_validator = ContentAdministrationPolicyChangedType_validator
 EventType._data_placement_restriction_change_policy_validator = DataPlacementRestrictionChangePolicyType_validator
 EventType._data_placement_restriction_satisfy_policy_validator = DataPlacementRestrictionSatisfyPolicyType_validator
 EventType._device_approvals_add_exception_validator = DeviceApprovalsAddExceptionType_validator
@@ -96534,6 +97467,7 @@ EventType._password_strength_requirements_change_policy_validator = PasswordStre
 EventType._permanent_delete_change_policy_validator = PermanentDeleteChangePolicyType_validator
 EventType._reseller_support_change_policy_validator = ResellerSupportChangePolicyType_validator
 EventType._rewind_policy_changed_validator = RewindPolicyChangedType_validator
+EventType._send_for_signature_policy_changed_validator = SendForSignaturePolicyChangedType_validator
 EventType._sharing_change_folder_join_policy_validator = SharingChangeFolderJoinPolicyType_validator
 EventType._sharing_change_link_policy_validator = SharingChangeLinkPolicyType_validator
 EventType._sharing_change_member_policy_validator = SharingChangeMemberPolicyType_validator
@@ -96780,6 +97714,8 @@ EventType._tagmap = {
     'emm_create_usage_report': EventType._emm_create_usage_report_validator,
     'export_members_report': EventType._export_members_report_validator,
     'export_members_report_fail': EventType._export_members_report_fail_validator,
+    'external_sharing_create_report': EventType._external_sharing_create_report_validator,
+    'external_sharing_report_failed': EventType._external_sharing_report_failed_validator,
     'no_expiration_link_gen_create_report': EventType._no_expiration_link_gen_create_report_validator,
     'no_expiration_link_gen_report_failed': EventType._no_expiration_link_gen_report_failed_validator,
     'no_password_link_gen_create_report': EventType._no_password_link_gen_create_report_validator,
@@ -96916,6 +97852,7 @@ EventType._tagmap = {
     'allow_download_disabled': EventType._allow_download_disabled_validator,
     'allow_download_enabled': EventType._allow_download_enabled_validator,
     'camera_uploads_policy_changed': EventType._camera_uploads_policy_changed_validator,
+    'content_administration_policy_changed': EventType._content_administration_policy_changed_validator,
     'data_placement_restriction_change_policy': EventType._data_placement_restriction_change_policy_validator,
     'data_placement_restriction_satisfy_policy': EventType._data_placement_restriction_satisfy_policy_validator,
     'device_approvals_add_exception': EventType._device_approvals_add_exception_validator,
@@ -96960,6 +97897,7 @@ EventType._tagmap = {
     'permanent_delete_change_policy': EventType._permanent_delete_change_policy_validator,
     'reseller_support_change_policy': EventType._reseller_support_change_policy_validator,
     'rewind_policy_changed': EventType._rewind_policy_changed_validator,
+    'send_for_signature_policy_changed': EventType._send_for_signature_policy_changed_validator,
     'sharing_change_folder_join_policy': EventType._sharing_change_folder_join_policy_validator,
     'sharing_change_link_policy': EventType._sharing_change_link_policy_validator,
     'sharing_change_member_policy': EventType._sharing_change_member_policy_validator,
@@ -97209,6 +98147,8 @@ EventTypeArg._emm_create_exceptions_report_validator = bv.Void()
 EventTypeArg._emm_create_usage_report_validator = bv.Void()
 EventTypeArg._export_members_report_validator = bv.Void()
 EventTypeArg._export_members_report_fail_validator = bv.Void()
+EventTypeArg._external_sharing_create_report_validator = bv.Void()
+EventTypeArg._external_sharing_report_failed_validator = bv.Void()
 EventTypeArg._no_expiration_link_gen_create_report_validator = bv.Void()
 EventTypeArg._no_expiration_link_gen_report_failed_validator = bv.Void()
 EventTypeArg._no_password_link_gen_create_report_validator = bv.Void()
@@ -97345,6 +98285,7 @@ EventTypeArg._account_capture_change_policy_validator = bv.Void()
 EventTypeArg._allow_download_disabled_validator = bv.Void()
 EventTypeArg._allow_download_enabled_validator = bv.Void()
 EventTypeArg._camera_uploads_policy_changed_validator = bv.Void()
+EventTypeArg._content_administration_policy_changed_validator = bv.Void()
 EventTypeArg._data_placement_restriction_change_policy_validator = bv.Void()
 EventTypeArg._data_placement_restriction_satisfy_policy_validator = bv.Void()
 EventTypeArg._device_approvals_add_exception_validator = bv.Void()
@@ -97389,6 +98330,7 @@ EventTypeArg._password_strength_requirements_change_policy_validator = bv.Void()
 EventTypeArg._permanent_delete_change_policy_validator = bv.Void()
 EventTypeArg._reseller_support_change_policy_validator = bv.Void()
 EventTypeArg._rewind_policy_changed_validator = bv.Void()
+EventTypeArg._send_for_signature_policy_changed_validator = bv.Void()
 EventTypeArg._sharing_change_folder_join_policy_validator = bv.Void()
 EventTypeArg._sharing_change_link_policy_validator = bv.Void()
 EventTypeArg._sharing_change_member_policy_validator = bv.Void()
@@ -97635,6 +98577,8 @@ EventTypeArg._tagmap = {
     'emm_create_usage_report': EventTypeArg._emm_create_usage_report_validator,
     'export_members_report': EventTypeArg._export_members_report_validator,
     'export_members_report_fail': EventTypeArg._export_members_report_fail_validator,
+    'external_sharing_create_report': EventTypeArg._external_sharing_create_report_validator,
+    'external_sharing_report_failed': EventTypeArg._external_sharing_report_failed_validator,
     'no_expiration_link_gen_create_report': EventTypeArg._no_expiration_link_gen_create_report_validator,
     'no_expiration_link_gen_report_failed': EventTypeArg._no_expiration_link_gen_report_failed_validator,
     'no_password_link_gen_create_report': EventTypeArg._no_password_link_gen_create_report_validator,
@@ -97771,6 +98715,7 @@ EventTypeArg._tagmap = {
     'allow_download_disabled': EventTypeArg._allow_download_disabled_validator,
     'allow_download_enabled': EventTypeArg._allow_download_enabled_validator,
     'camera_uploads_policy_changed': EventTypeArg._camera_uploads_policy_changed_validator,
+    'content_administration_policy_changed': EventTypeArg._content_administration_policy_changed_validator,
     'data_placement_restriction_change_policy': EventTypeArg._data_placement_restriction_change_policy_validator,
     'data_placement_restriction_satisfy_policy': EventTypeArg._data_placement_restriction_satisfy_policy_validator,
     'device_approvals_add_exception': EventTypeArg._device_approvals_add_exception_validator,
@@ -97815,6 +98760,7 @@ EventTypeArg._tagmap = {
     'permanent_delete_change_policy': EventTypeArg._permanent_delete_change_policy_validator,
     'reseller_support_change_policy': EventTypeArg._reseller_support_change_policy_validator,
     'rewind_policy_changed': EventTypeArg._rewind_policy_changed_validator,
+    'send_for_signature_policy_changed': EventTypeArg._send_for_signature_policy_changed_validator,
     'sharing_change_folder_join_policy': EventTypeArg._sharing_change_folder_join_policy_validator,
     'sharing_change_link_policy': EventTypeArg._sharing_change_link_policy_validator,
     'sharing_change_member_policy': EventTypeArg._sharing_change_member_policy_validator,
@@ -98062,6 +99008,8 @@ EventTypeArg.emm_create_exceptions_report = EventTypeArg('emm_create_exceptions_
 EventTypeArg.emm_create_usage_report = EventTypeArg('emm_create_usage_report')
 EventTypeArg.export_members_report = EventTypeArg('export_members_report')
 EventTypeArg.export_members_report_fail = EventTypeArg('export_members_report_fail')
+EventTypeArg.external_sharing_create_report = EventTypeArg('external_sharing_create_report')
+EventTypeArg.external_sharing_report_failed = EventTypeArg('external_sharing_report_failed')
 EventTypeArg.no_expiration_link_gen_create_report = EventTypeArg('no_expiration_link_gen_create_report')
 EventTypeArg.no_expiration_link_gen_report_failed = EventTypeArg('no_expiration_link_gen_report_failed')
 EventTypeArg.no_password_link_gen_create_report = EventTypeArg('no_password_link_gen_create_report')
@@ -98198,6 +99146,7 @@ EventTypeArg.account_capture_change_policy = EventTypeArg('account_capture_chang
 EventTypeArg.allow_download_disabled = EventTypeArg('allow_download_disabled')
 EventTypeArg.allow_download_enabled = EventTypeArg('allow_download_enabled')
 EventTypeArg.camera_uploads_policy_changed = EventTypeArg('camera_uploads_policy_changed')
+EventTypeArg.content_administration_policy_changed = EventTypeArg('content_administration_policy_changed')
 EventTypeArg.data_placement_restriction_change_policy = EventTypeArg('data_placement_restriction_change_policy')
 EventTypeArg.data_placement_restriction_satisfy_policy = EventTypeArg('data_placement_restriction_satisfy_policy')
 EventTypeArg.device_approvals_add_exception = EventTypeArg('device_approvals_add_exception')
@@ -98242,6 +99191,7 @@ EventTypeArg.password_strength_requirements_change_policy = EventTypeArg('passwo
 EventTypeArg.permanent_delete_change_policy = EventTypeArg('permanent_delete_change_policy')
 EventTypeArg.reseller_support_change_policy = EventTypeArg('reseller_support_change_policy')
 EventTypeArg.rewind_policy_changed = EventTypeArg('rewind_policy_changed')
+EventTypeArg.send_for_signature_policy_changed = EventTypeArg('send_for_signature_policy_changed')
 EventTypeArg.sharing_change_folder_join_policy = EventTypeArg('sharing_change_folder_join_policy')
 EventTypeArg.sharing_change_link_policy = EventTypeArg('sharing_change_link_policy')
 EventTypeArg.sharing_change_member_policy = EventTypeArg('sharing_change_member_policy')
@@ -98354,6 +99304,21 @@ ExtendedVersionHistoryPolicy.explicitly_unlimited = ExtendedVersionHistoryPolicy
 ExtendedVersionHistoryPolicy.implicitly_limited = ExtendedVersionHistoryPolicy('implicitly_limited')
 ExtendedVersionHistoryPolicy.implicitly_unlimited = ExtendedVersionHistoryPolicy('implicitly_unlimited')
 ExtendedVersionHistoryPolicy.other = ExtendedVersionHistoryPolicy('other')
+
+ExternalSharingCreateReportDetails._all_field_names_ = set([])
+ExternalSharingCreateReportDetails._all_fields_ = []
+
+ExternalSharingCreateReportType._description_validator = bv.String()
+ExternalSharingCreateReportType._all_field_names_ = set(['description'])
+ExternalSharingCreateReportType._all_fields_ = [('description', ExternalSharingCreateReportType._description_validator)]
+
+ExternalSharingReportFailedDetails._failure_reason_validator = team.TeamReportFailureReason_validator
+ExternalSharingReportFailedDetails._all_field_names_ = set(['failure_reason'])
+ExternalSharingReportFailedDetails._all_fields_ = [('failure_reason', ExternalSharingReportFailedDetails._failure_reason_validator)]
+
+ExternalSharingReportFailedType._description_validator = bv.String()
+ExternalSharingReportFailedType._all_field_names_ = set(['description'])
+ExternalSharingReportFailedType._all_fields_ = [('description', ExternalSharingReportFailedType._description_validator)]
 
 ExternalUserLogInfo._user_identifier_validator = bv.String()
 ExternalUserLogInfo._identifier_type_validator = IdentifierType_validator
@@ -99378,13 +100343,19 @@ IntegrationPolicyChangedType._all_field_names_ = set(['description'])
 IntegrationPolicyChangedType._all_fields_ = [('description', IntegrationPolicyChangedType._description_validator)]
 
 InviteMethod._invite_link_validator = bv.Void()
+InviteMethod._auto_approve_validator = bv.Void()
+InviteMethod._moved_from_another_team_validator = bv.Void()
 InviteMethod._other_validator = bv.Void()
 InviteMethod._tagmap = {
     'invite_link': InviteMethod._invite_link_validator,
+    'auto_approve': InviteMethod._auto_approve_validator,
+    'moved_from_another_team': InviteMethod._moved_from_another_team_validator,
     'other': InviteMethod._other_validator,
 }
 
 InviteMethod.invite_link = InviteMethod('invite_link')
+InviteMethod.auto_approve = InviteMethod('auto_approve')
+InviteMethod.moved_from_another_team = InviteMethod('moved_from_another_team')
 InviteMethod.other = InviteMethod('other')
 
 JoinTeamDetails._linked_apps_validator = bv.List(UserLinkedAppLogInfo_validator)
@@ -99844,15 +100815,21 @@ MemberChangeNameType._all_fields_ = [('description', MemberChangeNameType._descr
 MemberChangeStatusDetails._previous_value_validator = bv.Nullable(MemberStatus_validator)
 MemberChangeStatusDetails._new_value_validator = MemberStatus_validator
 MemberChangeStatusDetails._action_validator = bv.Nullable(ActionDetails_validator)
+MemberChangeStatusDetails._new_team_validator = bv.Nullable(bv.String())
+MemberChangeStatusDetails._previous_team_validator = bv.Nullable(bv.String())
 MemberChangeStatusDetails._all_field_names_ = set([
     'previous_value',
     'new_value',
     'action',
+    'new_team',
+    'previous_team',
 ])
 MemberChangeStatusDetails._all_fields_ = [
     ('previous_value', MemberChangeStatusDetails._previous_value_validator),
     ('new_value', MemberChangeStatusDetails._new_value_validator),
     ('action', MemberChangeStatusDetails._action_validator),
+    ('new_team', MemberChangeStatusDetails._new_team_validator),
+    ('previous_team', MemberChangeStatusDetails._previous_team_validator),
 ]
 
 MemberChangeStatusType._description_validator = bv.String()
@@ -100070,6 +101047,7 @@ MemberStatus._invited_validator = bv.Void()
 MemberStatus._active_validator = bv.Void()
 MemberStatus._suspended_validator = bv.Void()
 MemberStatus._removed_validator = bv.Void()
+MemberStatus._moved_to_another_team_validator = bv.Void()
 MemberStatus._other_validator = bv.Void()
 MemberStatus._tagmap = {
     'not_joined': MemberStatus._not_joined_validator,
@@ -100077,6 +101055,7 @@ MemberStatus._tagmap = {
     'active': MemberStatus._active_validator,
     'suspended': MemberStatus._suspended_validator,
     'removed': MemberStatus._removed_validator,
+    'moved_to_another_team': MemberStatus._moved_to_another_team_validator,
     'other': MemberStatus._other_validator,
 }
 
@@ -100085,6 +101064,7 @@ MemberStatus.invited = MemberStatus('invited')
 MemberStatus.active = MemberStatus('active')
 MemberStatus.suspended = MemberStatus('suspended')
 MemberStatus.removed = MemberStatus('removed')
+MemberStatus.moved_to_another_team = MemberStatus('moved_to_another_team')
 MemberStatus.other = MemberStatus('other')
 
 MemberSuggestDetails._suggested_members_validator = bv.List(EmailAddress_validator)
@@ -101433,6 +102413,34 @@ SecondaryTeamRequestReminderDetails._sent_to_validator = bv.String()
 SecondaryTeamRequestReminderDetails._all_field_names_ = set(['sent_to'])
 SecondaryTeamRequestReminderDetails._all_fields_ = [('sent_to', SecondaryTeamRequestReminderDetails._sent_to_validator)]
 
+SendForSignaturePolicy._disabled_validator = bv.Void()
+SendForSignaturePolicy._enabled_validator = bv.Void()
+SendForSignaturePolicy._other_validator = bv.Void()
+SendForSignaturePolicy._tagmap = {
+    'disabled': SendForSignaturePolicy._disabled_validator,
+    'enabled': SendForSignaturePolicy._enabled_validator,
+    'other': SendForSignaturePolicy._other_validator,
+}
+
+SendForSignaturePolicy.disabled = SendForSignaturePolicy('disabled')
+SendForSignaturePolicy.enabled = SendForSignaturePolicy('enabled')
+SendForSignaturePolicy.other = SendForSignaturePolicy('other')
+
+SendForSignaturePolicyChangedDetails._new_value_validator = SendForSignaturePolicy_validator
+SendForSignaturePolicyChangedDetails._previous_value_validator = SendForSignaturePolicy_validator
+SendForSignaturePolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+SendForSignaturePolicyChangedDetails._all_fields_ = [
+    ('new_value', SendForSignaturePolicyChangedDetails._new_value_validator),
+    ('previous_value', SendForSignaturePolicyChangedDetails._previous_value_validator),
+]
+
+SendForSignaturePolicyChangedType._description_validator = bv.String()
+SendForSignaturePolicyChangedType._all_field_names_ = set(['description'])
+SendForSignaturePolicyChangedType._all_fields_ = [('description', SendForSignaturePolicyChangedType._description_validator)]
+
 SfAddGroupDetails._target_asset_index_validator = bv.UInt64()
 SfAddGroupDetails._original_folder_name_validator = bv.String()
 SfAddGroupDetails._sharing_permission_validator = bv.Nullable(bv.String())
@@ -102347,17 +103355,20 @@ SharedLinkViewType._description_validator = bv.String()
 SharedLinkViewType._all_field_names_ = set(['description'])
 SharedLinkViewType._all_fields_ = [('description', SharedLinkViewType._description_validator)]
 
+SharedLinkVisibility._no_one_validator = bv.Void()
 SharedLinkVisibility._password_validator = bv.Void()
 SharedLinkVisibility._public_validator = bv.Void()
 SharedLinkVisibility._team_only_validator = bv.Void()
 SharedLinkVisibility._other_validator = bv.Void()
 SharedLinkVisibility._tagmap = {
+    'no_one': SharedLinkVisibility._no_one_validator,
     'password': SharedLinkVisibility._password_validator,
     'public': SharedLinkVisibility._public_validator,
     'team_only': SharedLinkVisibility._team_only_validator,
     'other': SharedLinkVisibility._other_validator,
 }
 
+SharedLinkVisibility.no_one = SharedLinkVisibility('no_one')
 SharedLinkVisibility.password = SharedLinkVisibility('password')
 SharedLinkVisibility.public = SharedLinkVisibility('public')
 SharedLinkVisibility.team_only = SharedLinkVisibility('team_only')

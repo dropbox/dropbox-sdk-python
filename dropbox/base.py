@@ -1799,7 +1799,7 @@ class DropboxBase(object):
         upload path at any given time.  The POST request on the temporary upload
         link must have its Content-Type set to "application/octet-stream".
         Example temporary upload link consumption request:  curl -X POST
-        https://dl.dropboxusercontent.com/apitul/1/bNi2uIYF51cVBND --header
+        https://content.dropboxapi.com/apitul/1/bNi2uIYF51cVBND --header
         "Content-Type: application/octet-stream" --data-binary @local_file.txt
         A successful temporary upload link consumption request returns the
         content hash of the uploaded data in JSON format.  Example succesful
@@ -2776,8 +2776,9 @@ class DropboxBase(object):
                      max_results=100,
                      mode=files.SearchMode.filename):
         """
-        Searches for files and folders. Note: Recent changes may not immediately
-        be reflected in search results due to a short delay in indexing.
+        Searches for files and folders. Note: Recent changes will be reflected
+        in search results within a few seconds and older revisions of existing
+        files may still match your query for up to a few days.
 
         :param str path: The path in the user's Dropbox to search. Should
             probably be a folder.
@@ -2819,6 +2820,7 @@ class DropboxBase(object):
     def files_search_v2(self,
                         query,
                         options=None,
+                        match_field_options=None,
                         include_highlights=False):
         """
         Searches for files and folders. Note: :meth:`files_search_v2` along with
@@ -2831,7 +2833,10 @@ class DropboxBase(object):
             fields based on the request arguments. Query string may be rewritten
             to improve relevance of results.
         :param Nullable options: Options for more targeted search results.
-        :type include_highlights: bool
+        :param Nullable match_field_options: Options for search results match
+            fields.
+        :param bool include_highlights: Deprecated and moved this option to
+            SearchMatchFieldOptions.
         :rtype: :class:`dropbox.files.SearchV2Result`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2840,6 +2845,7 @@ class DropboxBase(object):
         """
         arg = files.SearchV2Arg(query,
                                 options,
+                                match_field_options,
                                 include_highlights)
         r = self.request(
             files.search_v2,
