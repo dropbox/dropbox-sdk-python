@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable=C,R,file-ignored,fixme,locally-disabled,protected-access,useless-else-on-loop,unnecessary-pass
+disable=C,R,file-ignored,fixme,locally-disabled,protected-access,useless-else-on-loop,unnecessary-pass,raise-missing-from
 enable=useless-suppression
 
 [REPORTS]

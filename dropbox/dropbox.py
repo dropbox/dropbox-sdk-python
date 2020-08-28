@@ -728,7 +728,7 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
         new_headers = self._headers.copy() if self._headers else {}
         new_headers[select_header_name] = team_member_id
         return Dropbox(
-            self._oauth2_access_token,
+            oauth2_access_token=self._oauth2_access_token,
             oauth2_refresh_token=self._oauth2_refresh_token,
             oauth2_access_token_expiration=self._oauth2_access_token_expiration,
             max_retries_on_error=self._max_retries_on_error,
@@ -737,6 +737,9 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
             user_agent=self._raw_user_agent,
             session=self._session,
             headers=new_headers,
+            app_key=self._app_key,
+            app_secret=self._app_secret,
+            scope=self._scope,
         )
 
 class BadInputException(Exception):

@@ -593,6 +593,7 @@ class Void(Primitive):
 class Nullable(Validator):
 
     def __init__(self, validator):
+        super(Nullable, self).__init__()
         assert isinstance(validator, (Primitive, Composite)), \
             'validator must be for a primitive or composite type'
         assert not isinstance(validator, Nullable), \
