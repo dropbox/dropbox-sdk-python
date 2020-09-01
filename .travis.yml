@@ -8,13 +8,12 @@ python:
     - "3.6"
     - "3.7"
     - "3.8"
-    - "3.9-dev"
     - pypy3
 install:
     - pip install tox-travis
 matrix:
     allow_failures:
-        - python: "3.4", "3.5", "3.9-dev"
+        - python: "3.4", "3.5"
 script:
     - tox
 after_success:
