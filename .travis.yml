@@ -1,21 +1,20 @@
 language:
     python
 python:
-    - 2.7
+    - "2.7"
     - pypy
-    - 3.4
-    - 3.5
-    - 3.6
-    - 3.7
-    - 3.8
+    - "3.4"
+    - "3.5"
+    - "3.6"
+    - "3.7"
+    - "3.8"
+    - "3.9-dev"
     - pypy3
 install:
     - pip install tox-travis
 matrix:
     allow_failures:
-        # PyPy 3k probably won't work until it acquires compatibility with
-        # >= 3.4
-        - python: 3.4, 3.5
+        - python: "3.4", "3.5", "3.9-dev"
 script:
     - tox
 after_success:
