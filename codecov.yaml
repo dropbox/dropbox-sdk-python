@@ -15,7 +15,7 @@ coverage:
         flags:
           - unit
         paths:
-          - "src"
+          - "dropbox"
         # advanced
         branches:
           - master
