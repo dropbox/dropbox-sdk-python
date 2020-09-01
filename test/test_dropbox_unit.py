@@ -18,6 +18,8 @@ REFRESH_TOKEN = 'dummy_refresh_token'
 EXPIRES_IN = 14400
 ACCOUNT_ID = 'dummy_account_id'
 USER_ID = 'dummy_user_id'
+ADMIN_ID = 'dummy_admin_id'
+TEAM_MEMBER_ID = 'dummy_team_member_id'
 SCOPE_LIST = ['files.metadata.read', 'files.metadata.write']
 EXPIRATION = datetime.utcnow() + timedelta(seconds=EXPIRES_IN)
 
@@ -356,3 +358,17 @@ class TestClient:
                       session=session_instance)
         dbx.check_and_refresh_access_token()
         session_instance.post.assert_called_once()
+
+    def test_team_client_as_admin(self, session_instance):
+        dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
+                      app_key=APP_KEY,
+                      app_secret=APP_SECRET,
+                      session=session_instance)
+        dbx.as_admin(ADMIN_ID)
+
+    def test_team_client_as_user(self, session_instance):
+        dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
+                      app_key=APP_KEY,
+                      app_secret=APP_SECRET,
+                      session=session_instance)
+        dbx.as_user(TEAM_MEMBER_ID)
