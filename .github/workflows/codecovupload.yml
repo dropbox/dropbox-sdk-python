@@ -1,0 +1,29 @@
+name: Publish CodeCov
+
+on:
+  push:
+    branch: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: codecov/codecov-actions@v1
+    - name: Publish CodeCov
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install codecov pytest coverage
+    - name: Publish Coverage
+      run: |
+        coverage run --rcfile=.coveragerc -m pytest test/test_dropbox_unit.py
+        coverage xml
+        codecov
