@@ -1,5 +1,5 @@
-language: python
-
+language:
+    python
 python:
     - "2.7"
     - pypy
@@ -9,15 +9,13 @@ python:
     - "3.7"
     - "3.8"
     - pypy3
-
 install:
     - pip install tox-travis
-
 matrix:
     allow_failures:
-        # PyPy 3k probably won't work until it acquires compatibility with
-        # >= 3.4
-        - python: pypy3
-
+        - python: "3.4"
+        - python: "3.5"
 script:
     - tox
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
