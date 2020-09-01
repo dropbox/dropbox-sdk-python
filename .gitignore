@@ -1,4 +1,8 @@
+# Coverage Files
 .coverage
+coverage.xml
+
+# Generic Python files
 /.cache/
 /.eggs/
 /.idea/
@@ -13,6 +17,8 @@ __pycache__/
 *.pyc
 *.pyo
 *~
+
+# Virtual Environments
 .venv
 venv/
 venv3/
