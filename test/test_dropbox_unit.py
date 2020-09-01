@@ -6,7 +6,7 @@ import pytest
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
-from dropbox.dropbox import BadInputException
+from dropbox.dropbox import BadInputException, DropboxTeam
 from dropbox.exceptions import AuthError
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 from datetime import datetime, timedelta
@@ -348,3 +348,11 @@ class TestClient:
             dbx.check_and_refresh_access_token()
             invalid_grant_session_instance.post.assert_called_once()
             assert e.error.is_invalid_access_token()
+
+    def test_team_client_refresh(self, session_instance):
+        dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
+                      app_key=APP_KEY,
+                      app_secret=APP_SECRET,
+                      session=session_instance)
+        dbx.check_and_refresh_access_token()
+        session_instance.post.assert_called_once()

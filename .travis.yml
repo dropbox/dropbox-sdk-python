@@ -2,6 +2,8 @@ language:
     python
 dist:
     xenial
+os:
+    linux
 python:
     - "2.7"
     - "3.4"
