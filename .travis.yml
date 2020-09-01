@@ -23,5 +23,3 @@ matrix:
         - python: "3.9-dev"
 script:
     - tox
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
