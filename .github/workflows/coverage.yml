@@ -1,0 +1,31 @@
+name: Coverage
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  schedule:
+    - cron: 0 0 * * *
+
+jobs:
+  Coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python environment
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - name: Install Requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r test/requirements.txt
+      - name: Generate Unit Test Coverage
+        run: |
+          tox -e codecov
+      - name: Publish Coverage
+        uses: codecov/codecov-action@v1.0.13
+        with:
+          flags: unit
+          fail_ci_if_error: true
