@@ -32,11 +32,11 @@ jobs:
           pip install -r test/requirements.txt
       - name: Run Linter
         run: |
-          tox -e lint
+          python -m tox -e lint
       - name: Run Misc Checks
         run: |
-          tox -e docs
-          tox -e check
+          python -m tox -e docs
+          python -m tox -e check
       - name: Run Unit Tests
         run: |
-          tox -e test_unit
+          python -m tox -e test_unit
