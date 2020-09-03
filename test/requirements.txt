@@ -2,4 +2,3 @@ pytest
 mock
 pytest-mock
 coverage
-tox
