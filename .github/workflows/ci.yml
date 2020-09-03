@@ -33,9 +33,6 @@ jobs:
       - name: Run Linter
         run: |
           python -m tox -e lint
-      - name: Run Misc Checks
-        run: |
-          python -m tox -e check
       - name: Run Unit Tests
         run: |
           python -m tox -e test_unit
@@ -55,3 +52,4 @@ jobs:
       - name: Test Doc Generation
         run: |
           python -m tox -e docs
+          python -m tox -e check

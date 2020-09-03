@@ -60,7 +60,6 @@ dist = setup(
     description='Official Dropbox API Client',
     license='MIT License',
     long_description=README,
-    long_description_content_type='text/x-rst',
     url='http://www.dropbox.com/developers',
     # From <https://pypi.python.org/pypi?%3Aaction=list_classifiers>
     classifiers=[
