@@ -27,15 +27,15 @@ jobs:
       - name: Install Requirements
         run: |
           python -m pip install --upgrade pip
-          pip install tox
+          pip install flake8 pytest
           pip install -r requirements.txt
           pip install -r test/requirements.txt
       - name: Run Linter
         run: |
-          python -m tox -e lint
+          flake8 setup.py dropbox example test
       - name: Run Unit Tests
         run: |
-          python -m tox -e test_unit
+          pytest test/test_dropbox_unit.py
   Docs:
     runs-on: macos-latest
     steps:
@@ -47,9 +47,13 @@ jobs:
       - name: Install Requirements
         run: |
           python -m pip install --upgrade pip
+          pip install twine sphinx
           pip install -r requirements.txt
           pip install -r test/requirements.txt
       - name: Test Doc Generation
         run: |
-          python -m tox -e docs
-          python -m tox -e check
+          sphinx-build -b html docs build/html
+      - name: Test Dist Generation
+        run: |
+          python setup.py sdist bdist_wheel
+          twine check dist/*
