@@ -288,7 +288,6 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         """
         Construct an instance.
 
-        Parameters
         :param str consumer_key: Your API app's "app key".
         :param str consumer_secret: Your API app's "app secret".
         :param str locale: The locale of the user of your application.  For
@@ -297,19 +296,19 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             By default, the server uses "en_US".
         :param str token_access_type: the type of token to be requested.
             From the following enum:
-            legacy - creates one long-lived token with no expiration
-            online - create one short-lived token with an expiration
-            offline - create one short-lived token with an expiration with a refresh token
+            * legacy - creates one long-lived token with no expiration
+            * online - create one short-lived token with an expiration
+            * offline - create one short-lived token with an expiration with a refresh token
         :param list scope: list of scopes to request in base oauth flow.  If left blank,
-            will default to all scopes for app
+            will default to all scopes for app.
         :param str include_granted_scopes: which scopes to include from previous grants
             From the following enum:
-            user - include user scopes in the grant
-            team - include team scopes in the grant
-            Note: if this user has never linked the app, include_granted_scopes must be None
+            * user - include user scopes in the grant
+            * team - include team scopes in the grant
+            * Note: if this user has never linked the app, include_granted_scopes must be None
         :param bool use_pkce: Whether or not to use Sha256 based PKCE. PKCE should be only use on
             client apps which doesn't call your server. It is less secure than non-PKCE flow but
-            can be used if you are unable to safely retrieve your app secret
+            can be used if you are unable to safely retrieve your app secret.
         :param Optional[float] timeout: Maximum duration in seconds that
             client will wait for any single packet from the
             server. After the timeout the client will give up on
@@ -391,15 +390,15 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             By default, the server uses "en_US".
         :param str token_access_type: the type of token to be requested.
             From the following enum:
-            legacy - creates one long-lived token with no expiration
-            online - create one short-lived token with an expiration
-            offline - create one short-lived token with an expiration with a refresh token
+            * legacy - creates one long-lived token with no expiration
+            * online - create one short-lived token with an expiration
+            * offline - create one short-lived token with an expiration with a refresh token
         :param list scope: list of scopes to request in base oauth flow.  If left blank,
-            will default to all scopes for app
+            will default to all scopes for app.
         :param str include_granted_scopes: which scopes to include from previous grants
             From the following enum:
-            user - include user scopes in the grant
-            team - include team scopes in the grant
+            * user - include user scopes in the grant
+            * team - include team scopes in the grant
             Note: if this user has never linked the app, include_granted_scopes must be None
         :param bool use_pkce: Whether or not to use Sha256 based PKCE
         :param Optional[float] timeout: Maximum duration in seconds that
