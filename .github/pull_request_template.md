@@ -14,4 +14,5 @@ Thank you for your pull request. Please provide a description below.
 - [ ] Example/Test Code Change
 
 **Validation**
-{Add language specific validation steps i.e. how to build/test/documentation/etc}
+- [ ] Does `tox` pass?
+- [ ] Do the tests pass?

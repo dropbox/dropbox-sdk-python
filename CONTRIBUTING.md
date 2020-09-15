@@ -1,4 +1,4 @@
-# Contributing to the Dropbox SDK for {language}
+# Contributing to the Dropbox SDK for Python
 We value and rely on the feedback from our community. This comes in the form of bug reports, feature requests, and general guidance. We welcome your issues and pull requests and try our hardest to be timely in both response and resolution. Please read through this document before submitting issues or pull requests to ensure we have the necessary information to help you resolve your issue.
 
 ## Filing Bug Reports
@@ -18,12 +18,50 @@ We are more than happy to recieve pull requests helping us improve the state of 
 
 2. Please add tests confirming the new functionality works. Pull requests will not be merged without passing continuous integration tests unless the pull requests aims to fix existing issues with these tests.
 
+## Updating Generated Code
+
+Generated code can be updated by running the following code:
+
+```
+$ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update --remote --recursive
+$ python generate_base_client.py
+```
+
+Note: Stone updates must be made by updating `requirements.txt` as it is no longer a submodule.
+
 ## Testing the Code
 
-{Language Specific Testing Guide}
+We use the [`tox`](https://tox.readthedocs.org/) package to run tests. To install and run the unit tests, you can use:
 
-[issues]: issues_link
-[pr]: pr_link
-[coc]: code_of_conduct_link
-[license]: license_link
+```
+$ pip install tox
+$ tox
+```
+
+Or if you would like to specify a specific target to run you can run this:
+
+```
+$ tox -e {TARGET}
+```
+
+If you want to run the integration tests, you can use the following:
+
+```
+$ export DROPBOX_REFRESH_TOKEN={fill in refresh token}
+$ export DROPBOX_APP_KEY={fill in app key}
+$ export DROPBOX_APP_SECRET={fill in app secret}
+$ export DROPBOX_TEAM_TOKEN={fill in team token}
+$ export DROPBOX_TOKEN={fill in access token}
+$ tox -e test_integration
+```
+Note: If you do not have all of these tokens available, we run integration tests as a part of pull request validation and you are able to rely on those if you are unable to obtain yourself.
+
+We do recommend developing in a virtual environment in order to ensure you have a clean testing environment.
+
+[issues]: https://github.com/dropbox/dropbox-sdk-python/issues
+[pr]: https://github.com/dropbox/dropbox-sdk-python/pulls
+[coc]: https://github.com/dropbox/dropbox-sdk-python/blob/master/CODE_OF_CONDUCT.md
+[license]: https://github.com/dropbox/dropbox-sdk-python/blob/master/LICENSE
 [cla]: https://opensource.dropbox.com/cla/
