@@ -47,11 +47,12 @@ class OAuth2FlowNoRedirectResult(object):
         :param str access_token: Token to be used to authenticate later requests.
         :param str account_id: The Dropbox user's account ID.
         :param str user_id: Deprecated (use :py:meth:account_id instead).
+        :param str user_id: Deprecated (use :attr:`account_id` instead).
         :param str refresh_token: Token to be used to acquire new access token when existing one
             expires.
         :param expiration: Either the number of seconds from now that the token expires in or the
             datetime at which the token expires.
-        :type expiration: int, datetime
+        :type expiration: int or datetime
         :param list scope: List of scopes to request in base oauth flow.
         """
         self.access_token = access_token
@@ -87,9 +88,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
         """
         Same as OAuth2FlowNoRedirectResult but with url_state.
 
-        Args:
-            url_state (str): The url state that was set by
-                :meth:`DropboxOAuth2Flow.start`.
+        :param str url_state: The url state that was set by :meth:`DropboxOAuth2Flow.start`.
         """
         super(OAuth2FlowResult, self).__init__(
             access_token=access_token,
