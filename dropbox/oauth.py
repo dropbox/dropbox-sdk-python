@@ -79,13 +79,13 @@ class OAuth2FlowNoRedirectResult(object):
 
 class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
     """
-    Authorization information for an OAuth2Flow with redirect.
+    Authorization information for an :class:OAuth2Flow with redirect.
     """
 
     def __init__(self, access_token, account_id, user_id, url_state, refresh_token,
                  expires_in, scope):
         """
-        Same as OAuth2FlowNoRedirectResult but with url_state.
+        Same as :class:OAuth2FlowNoRedirectResult but with url_state.
 
         :param str url_state: The url state that was set by :meth:`DropboxOAuth2Flow.start`.
         """
@@ -227,9 +227,8 @@ class DropboxOAuth2FlowBase(object):
     def build_path(self, target, params=None):
         """Build the path component for an API URL.
 
-        This method urlencodes the parameters, adds them
-        to the end of the target url, and puts a marker for the API
-        version in front.
+        This method urlencodes the parameters, adds them to the end of the target url, and puts a
+        marker for the API version in front.
 
         :param str target: A target url (e.g. '/files') to build upon.
         :param dict params: Optional dictionary of parameters (name to value).
@@ -256,8 +255,7 @@ class DropboxOAuth2FlowBase(object):
     def build_url(self, target, params=None, host=API_HOST):
         """Build an API URL.
 
-        This method adds scheme and hostname to the path
-        returned from build_path.
+        This method adds scheme and hostname to the path returned from build_path.
 
         :param str target: A target url (e.g. '/files') to build upon.
         :param dict params: Optional dictionary of parameters (name to value).
@@ -283,10 +281,9 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
 
         :param str consumer_key: Your API app's "app key".
         :param str consumer_secret: Your API app's "app secret".
-        :param str locale: The locale of the user of your application.  For
-            example "en" or "en_US". Some API calls return localized data and
-            error messages; this setting tells the server which locale to use.
-            By default, the server uses "en_US".
+        :param str locale: The locale of the user of your application.  For example "en" or "en_US".
+            Some API calls return localized data and error messages; this setting tells the server
+            which locale to use. By default, the server uses "en_US".
         :param str token_access_type: the type of token to be requested.
             From the following enum:
 
@@ -294,22 +291,21 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             * online - create one short-lived token with an expiration
             * offline - create one short-lived token with an expiration with a refresh token
 
-        :param list scope: list of scopes to request in base oauth flow.  If left blank,
-            will default to all scopes for app.
-        :param str include_granted_scopes: which scopes to include from previous grants
+        :param list scope: list of scopes to request in base oauth flow.
+            If left blank, will default to all scopes for app.
+        :param str include_granted_scopes: which scopes to include from previous grants.
             From the following enum:
 
             * user - include user scopes in the grant
             * team - include team scopes in the grant
-            * Note: if this user has never linked the app, include_granted_scopes must be None
+            * *Note*: if this user has never linked the app, include_granted_scopes must be None
 
         :param bool use_pkce: Whether or not to use Sha256 based PKCE. PKCE should be only use on
             client apps which doesn't call your server. It is less secure than non-PKCE flow but
             can be used if you are unable to safely retrieve your app secret.
         :param Optional[float] timeout: Maximum duration in seconds that
-            client will wait for any single packet from the
-            server. After the timeout the client will give up on
-            connection. If `None`, client will wait forever. Defaults
+            client will wait for any single packet from the server. After the timeout the client
+            will give up on connection. If `None`, client will wait forever. Defaults
             to 100 seconds.
         """
         super(DropboxOAuth2FlowNoRedirect, self).__init__(
@@ -327,10 +323,9 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         """
         Starts the OAuth 2 authorization process.
 
-        :return: The URL for a page on Dropbox's website.  This page will let
-            the user "approve" your app, which gives your app permission to
-            access the user's Dropbox account. Tell the user to visit this URL
-            and approve your app.
+        :return: The URL for a page on Dropbox's website.  This page will let the user "approve"
+            your app, which gives your app permission to access the user's Dropbox account.
+            Tell the user to visit this URL and approve your app.
         """
         return self._get_authorize_url(None, None, self.token_access_type,
                                        scope=self.scope,
@@ -339,13 +334,13 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
 
     def finish(self, code):
         """
-        If the user approves your app, they will be presented with an
-        "authorization code".  Have the user copy/paste that authorization code
-        into your app and then call this method to get an access token.
+        If the user approves your app, they will be presented with an "authorization code".
+        Have the user copy/paste that authorization code into your app and then call this method to
+        get an access token.
 
         :param str code: The authorization code shown to the user when they
             approved your app.
-        :rtype: OAuth2FlowNoRedirectResult
+        :rtype: :class:OAuth2FlowNoRedirectResult
         :raises: The same exceptions as :meth:`DropboxOAuth2Flow.finish()`.
         """
         return self._finish(code, None, self.code_verifier)
@@ -353,11 +348,10 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
 
 class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
     """
-    OAuth 2 authorization helper.  Use this for web apps.
+    OAuth 2 authorization helper. Use this for web apps.
 
-    OAuth 2 has a two-step authorization process.  The first step is having the
-    user authorize your app.  The second involves getting an OAuth 2 access
-    token from Dropbox.
+    OAuth 2 has a two-step authorization process. The first step is having the user authorize your
+    app. The second involves getting an OAuth 2 access token from Dropbox.
 
     See examples under `example/oauth <https://github.com/dropbox/dropbox-sdk-python/tree/master/example/oauth>`_
 
@@ -372,41 +366,38 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
         :param str consumer_key: Your API app's "app key".
         :param str consumer_secret: Your API app's "app secret".
-        :param str redirect_uri: The URI that the Dropbox server will redirect
-            the user to after the user finishes authorizing your app.  This URI
-            must be HTTPS-based and pre-registered with the Dropbox servers,
-            though localhost URIs are allowed without pre-registration and can
-            be either HTTP or HTTPS.
-        :param dict session: A dict-like object that represents the current
-            user's web session (will be used to save the CSRF token).
-        :param str csrf_token_session_key: The key to use when storing the CSRF
-            token in the session (for example: "dropbox-auth-csrf-token").
-        :param str locale: The locale of the user of your application.  For
-            example "en" or "en_US". Some API calls return localized data and
-            error messages; this setting tells the server which locale to use.
-            By default, the server uses "en_US".
-        :param str token_access_type: the type of token to be requested.
+        :param str redirect_uri: The URI that the Dropbox server will redirect the user to after the
+            user finishes authorizing your app.  This URI must be HTTPS-based and pre-registered
+            with the Dropbox servers, though localhost URIs are allowed without pre-registration and
+            can be either HTTP or HTTPS.
+        :param dict session: A dict-like object that represents the current user's web session
+            (Will be used to save the CSRF token).
+        :param str csrf_token_session_key: The key to use when storing the CSRF token in the session
+            (For example: "dropbox-auth-csrf-token").
+        :param str locale: The locale of the user of your application. For example "en" or "en_US".
+            Some API calls return localized data and error messages; this setting tells the server
+            which locale to use. By default, the server uses "en_US".
+        :param str token_access_type: The type of token to be requested.
             From the following enum:
 
             * legacy - creates one long-lived token with no expiration
             * online - create one short-lived token with an expiration
             * offline - create one short-lived token with an expiration with a refresh token
 
-        :param list scope: list of scopes to request in base oauth flow.  If left blank,
+        :param list scope: List of scopes to request in base oauth flow.  If left blank,
             will default to all scopes for app.
-        :param str include_granted_scopes: which scopes to include from previous grants
+        :param str include_granted_scopes: Which scopes to include from previous grants.
             From the following enum:
 
             * user - include user scopes in the grant
             * team - include team scopes in the grant
-            * Note: if this user has never linked the app, include_granted_scopes must be None
+            * *Note*: If this user has never linked the app, :attr:`include_granted_scopes` must \
+            be `None`
 
         :param bool use_pkce: Whether or not to use Sha256 based PKCE
-        :param Optional[float] timeout: Maximum duration in seconds that
-            client will wait for any single packet from the
-            server. After the timeout the client will give up on
-            connection. If `None`, client will wait forever. Defaults
-            to 100 seconds.
+        :param Optional[float] timeout: Maximum duration in seconds that client will wait for any
+            single packet from the server. After the timeout the client will give up on connection.
+            If `None`, client will wait forever. Defaults to 100 seconds.
         """
 
         super(DropboxOAuth2Flow, self).__init__(
@@ -427,24 +418,19 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         """
         Starts the OAuth 2 authorization process.
 
-        This function builds an "authorization URL".  You should redirect your
-        user's browser to this URL, which will give them an opportunity to
-        grant your app access to their Dropbox account.  When the user
-        completes this process, they will be automatically redirected to the
-        ``redirect_uri`` you passed in to the constructor.
+        This function builds an "authorization URL". You should redirect your user's browser to this
+            URL, which will give them an opportunity to grant your app access to their Dropbox
+            account. When the user completes this process, they will be automatically redirected to
+            the :attr:`redirect_uri` you passed in to the constructor. This function will also save
+            a CSRF token to :attr:`session[csrf_token_session_key]`
+            (as provided to the constructor). This CSRF token will be checked on :meth:`finish()`
+            to prevent request forgery.
 
-        This function will also save a CSRF token to
-        ``session[csrf_token_session_key]`` (as provided to the constructor).
-        This CSRF token will be checked on :meth:`finish()` to prevent request
-        forgery.
-
-        :param str url_state: Any data that you would like to keep in the URL
-            through the authorization process.  This exact value will be
-            returned to you by :meth:`finish()`.
-        :return: The URL for a page on Dropbox's website.  This page will let
-            the user "approve" your app, which gives your app permission to
-            access the user's Dropbox account. Tell the user to visit this URL
-            and approve your app.
+        :param str url_state: Any data that you would like to keep in the URL through the
+            authorization process. This exact value will be returned to you by :meth:`finish()`.
+        :return: The URL for a page on Dropbox's website. This page will let the user "approve" your
+            app, which gives your app permission to access the user's Dropbox account. Tell the user
+            to visit this URL and approve your app.
         """
         csrf_token = base64.urlsafe_b64encode(os.urandom(16)).decode('ascii')
         state = csrf_token
@@ -459,23 +445,19 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
     def finish(self, query_params):
         """
-        Call this after the user has visited the authorize URL (see
-        :meth:`start()`), approved your app and was redirected to your redirect
-        URI.
+        Call this after the user has visited the authorize URL (see :meth:`start()`), approved your
+        app and was redirected to your redirect URI.
 
-        :param dict query_params: The query parameters on the GET request to
-            your redirect URI.
+        :param dict query_params: The query parameters on the GET request to your redirect URI.
         :rtype: OAuth2FlowResult
-        :raises: :class:`BadRequestException` If the redirect URL was missing
-            parameters or if the given parameters were not valid.
-        :raises: :class:`BadStateException` If there's no CSRF token in the
-            session.
-        :raises: :class:`CsrfException` If the ``state`` query parameter
-            doesn't contain the CSRF token from the user's session.
-        :raises: :class:`NotApprovedException` If the user chose not to
-            approve your app.
-        :raises: :class:`ProviderException` If Dropbox redirected to your
-            redirect URI with some unexpected error identifier and error message.
+        :raises: :class:`BadRequestException` If the redirect URL was missing parameters or if the
+            given parameters were not valid.
+        :raises: :class:`BadStateException` If there's no CSRF token in the session.
+        :raises: :class:`CsrfException` If the :attr:`state` query parameter doesn't contain the
+            CSRF token from the user's session.
+        :raises: :class:`NotApprovedException` If the user chose not to approve your app.
+        :raises: :class:`ProviderException` If Dropbox redirected to your redirect URI with some
+            unexpected error identifier and error message.
         """
         # Check well-formedness of request.
 
@@ -546,8 +528,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
 class BadRequestException(Exception):
     """
-    Thrown if the redirect URL was missing parameters or if the
-    given parameters were not valid.
+    Thrown if the redirect URL was missing parameters or if the given parameters were not valid.
 
     The recommended action is to show an HTTP 400 error page.
     """
@@ -556,19 +537,18 @@ class BadRequestException(Exception):
 
 class BadStateException(Exception):
     """
-    Thrown if all the parameters are correct, but there's no CSRF token in the
-    session. This probably means that the session expired.
+    Thrown if all the parameters are correct, but there's no CSRF token in the session. This
+    probably means that the session expired.
 
-    The recommended action is to redirect the user's browser to try the
-    approval process again.
+    The recommended action is to redirect the user's browser to try the approval process again.
     """
     pass
 
 
 class CsrfException(Exception):
     """
-    Thrown if the given 'state' parameter doesn't contain the CSRF token from
-    the user's session. This is blocked to prevent CSRF attacks.
+    Thrown if the given 'state' parameter doesn't contain the CSRF token from the user's session.
+    This is blocked to prevent CSRF attacks.
 
     The recommended action is to respond with an HTTP 403 error page.
     """
@@ -584,11 +564,10 @@ class NotApprovedException(Exception):
 
 class ProviderException(Exception):
     """
-    Dropbox redirected to your redirect URI with some unexpected error
-    identifier and error message.
+    Dropbox redirected to your redirect URI with some unexpected error identifier and error message.
 
-    The recommended action is to log the error, tell the user something went
-    wrong, and let them try again.
+    The recommended action is to log the error, tell the user something went wrong, and let them try
+    again.
     """
     pass
 
@@ -614,11 +593,11 @@ def _safe_equals(a, b):
 
 def _params_to_urlencoded(params):
     """
-    Returns a application/x-www-form-urlencoded ``str`` representing the
-    key/value pairs in ``params``.
+    Returns a application/x-www-form-urlencoded :class:`str` representing the key/value pairs in
+    :attr:`params`.
 
-    Keys are values are ``str()``'d before calling ``urllib.urlencode``, with
-    the exception of unicode objects which are utf8-encoded.
+    Keys are values are ``str()``'d before calling :meth:`urllib.urlencode`, with the exception of
+    unicode objects which are utf8-encoded.
     """
     def encode(o):
         if isinstance(o, six.binary_type):
