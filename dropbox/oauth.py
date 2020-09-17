@@ -44,17 +44,15 @@ class OAuth2FlowNoRedirectResult(object):
 
     def __init__(self, access_token, account_id, user_id, refresh_token, expiration, scope):
         """
-        :arg str access_token: Token to be used to authenticate later requests.
-        :arg str refresh_token: Token to be used to acquire new access token when existing one
+        :param str access_token: Token to be used to authenticate later requests.
+        :param str account_id: The Dropbox user's account ID.
+        :param str user_id: Deprecated (use :py:meth:account_id instead).
+        :param str refresh_token: Token to be used to acquire new access token when existing one
             expires.
-        :arg expiration: Either the number of seconds from now that the token expires in or the
+        :param expiration: Either the number of seconds from now that the token expires in or the
             datetime at which the token expires.
         :type expiration: int, datetime
-        :arg str account_id: The Dropbox user's account ID.
-        :arg str user_id: Deprecated (use account_id instead).
-        :arg str refresh_token: Token to be used to acquire new access token when existing one
-            expires.
-        :arg list scope: List of scopes to request in base oauth flow.
+        :param list scope: List of scopes to request in base oauth flow.
         """
         self.access_token = access_token
         if not expiration:
