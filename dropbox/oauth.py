@@ -46,7 +46,6 @@ class OAuth2FlowNoRedirectResult(object):
         """
         :param str access_token: Token to be used to authenticate later requests.
         :param str account_id: The Dropbox user's account ID.
-        :param str user_id: Deprecated (use :py:meth:account_id instead).
         :param str user_id: Deprecated (use :attr:`account_id` instead).
         :param str refresh_token: Token to be used to acquire new access token when existing one
             expires.
