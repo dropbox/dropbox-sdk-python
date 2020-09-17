@@ -79,13 +79,13 @@ class OAuth2FlowNoRedirectResult(object):
 
 class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
     """
-    Authorization information for an :class:OAuth2Flow with redirect.
+    Authorization information for an :class:`OAuth2Flow` with redirect.
     """
 
     def __init__(self, access_token, account_id, user_id, url_state, refresh_token,
                  expires_in, scope):
         """
-        Same as :class:OAuth2FlowNoRedirectResult but with url_state.
+        Same as :class:`OAuth2FlowNoRedirectResult` but with url_state.
 
         :param str url_state: The url state that was set by :meth:`DropboxOAuth2Flow.start`.
         """
@@ -340,7 +340,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
 
         :param str code: The authorization code shown to the user when they
             approved your app.
-        :rtype: :class:OAuth2FlowNoRedirectResult
+        :rtype: :class:`OAuth2FlowNoRedirectResult`
         :raises: The same exceptions as :meth:`DropboxOAuth2Flow.finish()`.
         """
         return self._finish(code, None, self.code_verifier)
@@ -449,7 +449,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         app and was redirected to your redirect URI.
 
         :param dict query_params: The query parameters on the GET request to your redirect URI.
-        :rtype: OAuth2FlowResult
+        :rtype: class:`OAuth2FlowResult`
         :raises: :class:`BadRequestException` If the redirect URL was missing parameters or if the
             given parameters were not valid.
         :raises: :class:`BadStateException` If there's no CSRF token in the session.
