@@ -24,12 +24,6 @@ _cmdline_parser.add_argument(
     type=str,
     help='Path to API specifications. Each must have a .stone extension.',
 )
-_cmdline_parser.add_argument(
-    '-s',
-    '--stone',
-    type=str,
-    help='Path to clone of stone repository.',
-)
 
 def main():
     """The entry point for the program."""
@@ -46,10 +40,6 @@ def main():
 
     specs = [os.path.join(os.getcwd(), s) for s in specs]
 
-    stone_path = os.path.abspath('stone')
-    if args.stone:
-        stone_path = args.stone
-
     dropbox_pkg_path = os.path.abspath(
         os.path.join(os.path.dirname(sys.argv[0]), 'dropbox'))
     if verbose:
@@ -60,8 +50,7 @@ def main():
     subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_types', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style'] +
-         ['--', '-r', 'dropbox.dropbox.Dropbox.{ns}_{route}']),
-        cwd=stone_path)
+         ['--', '-r', 'dropbox.dropbox.Dropbox.{ns}_{route}']))
 
     if verbose:
         print('Generating Python client')
@@ -69,16 +58,14 @@ def main():
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
-         ['--', '-w', 'user,app,noauth', '-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox']),
-        cwd=stone_path)
+         ['--', '-w', 'user,app,noauth', '-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox']))
     if o:
         print('Output:', o)
 
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
-         ['--', '-w', 'team', '-m', 'base_team', '-c', 'DropboxTeamBase', '-t', 'dropbox']),
-        cwd=stone_path)
+         ['--', '-w', 'team', '-m', 'base_team', '-c', 'DropboxTeamBase', '-t', 'dropbox']))
     if o:
         print('Output:', o)
 
