@@ -12,12 +12,14 @@ than being added to a project.
 
 from __future__ import absolute_import, unicode_literals
 
-from abc import ABCMeta, abstractmethod
 import datetime
 import hashlib
 import math
 import numbers
 import re
+
+from abc import ABCMeta, abstractmethod
+
 import six
 
 _MYPY = False
@@ -102,7 +104,6 @@ class Validator(six.with_metaclass(ABCMeta, object)):
         Returns: A normalized value if validation succeeds.
         Raises: ValidationError
         """
-        pass
 
     def has_default(self):
         return False
@@ -111,10 +112,8 @@ class Validator(six.with_metaclass(ABCMeta, object)):
         raise AssertionError('No default available.')
 
 
-class Primitive(Validator):
+class Primitive(Validator):  # pylint: disable=abstract-method
     """A basic type that is defined by Stone."""
-    # pylint: disable=abstract-method
-    pass
 
 
 class Boolean(Primitive):
@@ -372,11 +371,9 @@ class Timestamp(Primitive):
         return val
 
 
-class Composite(Validator):
+class Composite(Validator):  # pylint: disable=abstract-method
     """Validator for a type that builds on other primitive and composite
     types."""
-    # pylint: disable=abstract-method
-    pass
 
 
 class List(Composite):
@@ -634,7 +631,6 @@ class Redactor(object):
         """Redacts information from annotated field.
         Returns: A redacted version of the string provided.
         """
-        pass
 
     def _get_matches(self, val):
         if not self.regex:
