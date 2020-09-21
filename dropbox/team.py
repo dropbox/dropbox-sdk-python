@@ -8851,6 +8851,8 @@ class LegalHoldsPolicyCreateError(LegalHoldsError):
         provided is already in use by another legal hold.
     :ivar team.LegalHoldsPolicyCreateError.team_exceeded_legal_hold_quota: Team
         exceeded legal hold quota.
+    :ivar team.LegalHoldsPolicyCreateError.invalid_date: The provided date is
+        invalid.
     """
 
     # Attribute is overwritten below the class definition
@@ -8867,6 +8869,8 @@ class LegalHoldsPolicyCreateError(LegalHoldsError):
     name_must_be_unique = None
     # Attribute is overwritten below the class definition
     team_exceeded_legal_hold_quota = None
+    # Attribute is overwritten below the class definition
+    invalid_date = None
 
     def is_start_date_is_later_than_end_date(self):
         """
@@ -8923,6 +8927,14 @@ class LegalHoldsPolicyCreateError(LegalHoldsError):
         :rtype: bool
         """
         return self._tag == 'team_exceeded_legal_hold_quota'
+
+    def is_invalid_date(self):
+        """
+        Check if the union tag is ``invalid_date``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_date'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -22187,6 +22199,7 @@ LegalHoldsPolicyCreateError._number_of_users_on_hold_is_greater_than_hold_limita
 LegalHoldsPolicyCreateError._transient_error_validator = bv.Void()
 LegalHoldsPolicyCreateError._name_must_be_unique_validator = bv.Void()
 LegalHoldsPolicyCreateError._team_exceeded_legal_hold_quota_validator = bv.Void()
+LegalHoldsPolicyCreateError._invalid_date_validator = bv.Void()
 LegalHoldsPolicyCreateError._tagmap = {
     'start_date_is_later_than_end_date': LegalHoldsPolicyCreateError._start_date_is_later_than_end_date_validator,
     'empty_members_list': LegalHoldsPolicyCreateError._empty_members_list_validator,
@@ -22195,6 +22208,7 @@ LegalHoldsPolicyCreateError._tagmap = {
     'transient_error': LegalHoldsPolicyCreateError._transient_error_validator,
     'name_must_be_unique': LegalHoldsPolicyCreateError._name_must_be_unique_validator,
     'team_exceeded_legal_hold_quota': LegalHoldsPolicyCreateError._team_exceeded_legal_hold_quota_validator,
+    'invalid_date': LegalHoldsPolicyCreateError._invalid_date_validator,
 }
 LegalHoldsPolicyCreateError._tagmap.update(LegalHoldsError._tagmap)
 
@@ -22205,6 +22219,7 @@ LegalHoldsPolicyCreateError.number_of_users_on_hold_is_greater_than_hold_limitat
 LegalHoldsPolicyCreateError.transient_error = LegalHoldsPolicyCreateError('transient_error')
 LegalHoldsPolicyCreateError.name_must_be_unique = LegalHoldsPolicyCreateError('name_must_be_unique')
 LegalHoldsPolicyCreateError.team_exceeded_legal_hold_quota = LegalHoldsPolicyCreateError('team_exceeded_legal_hold_quota')
+LegalHoldsPolicyCreateError.invalid_date = LegalHoldsPolicyCreateError('invalid_date')
 
 LegalHoldsPolicyReleaseArg._id_validator = LegalHoldId_validator
 LegalHoldsPolicyReleaseArg._all_field_names_ = set(['id'])

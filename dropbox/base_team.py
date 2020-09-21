@@ -11,7 +11,6 @@ from . import (
     async_,
     auth,
     check,
-    cloud_docs,
     common,
     contacts,
     file_properties,
@@ -46,9 +45,6 @@ class DropboxTeamBase(object):
 
     # ------------------------------------------
     # Routes in check namespace
-
-    # ------------------------------------------
-    # Routes in cloud_docs namespace
 
     # ------------------------------------------
     # Routes in contacts namespace
