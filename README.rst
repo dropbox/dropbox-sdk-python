@@ -1,5 +1,5 @@
-Dropbox Python SDK
-==================
+.. image:: https://cfl.dropboxstatic.com/static/images/sdk/python_banner.png
+    :target: https://github.com/dropbox/dropbox-sdk-python
 
 .. image:: https://img.shields.io/pypi/pyversions/dropbox.svg
     :target: https://pypi.python.org/pypi/dropbox
