@@ -41,54 +41,21 @@ class AccessMethodLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar SessionLogInfo AccessMethodLogInfo.end_user: End user session details.
-    :ivar WebSessionLogInfo AccessMethodLogInfo.sign_in_as: Sign in as session
-        details.
-    :ivar WebSessionLogInfo AccessMethodLogInfo.content_manager: Content manager
-        session details.
     :ivar WebSessionLogInfo AccessMethodLogInfo.admin_console: Admin console
         session details.
+    :ivar ApiSessionLogInfo AccessMethodLogInfo.api: Api session details.
+    :ivar WebSessionLogInfo AccessMethodLogInfo.content_manager: Content manager
+        session details.
+    :ivar SessionLogInfo AccessMethodLogInfo.end_user: End user session details.
     :ivar WebSessionLogInfo AccessMethodLogInfo.enterprise_console: Enterprise
         console session details.
-    :ivar ApiSessionLogInfo AccessMethodLogInfo.api: Api session details.
+    :ivar WebSessionLogInfo AccessMethodLogInfo.sign_in_as: Sign in as session
+        details.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
-
-    @classmethod
-    def end_user(cls, val):
-        """
-        Create an instance of this class set to the ``end_user`` tag with value
-        ``val``.
-
-        :param SessionLogInfo val:
-        :rtype: AccessMethodLogInfo
-        """
-        return cls('end_user', val)
-
-    @classmethod
-    def sign_in_as(cls, val):
-        """
-        Create an instance of this class set to the ``sign_in_as`` tag with
-        value ``val``.
-
-        :param WebSessionLogInfo val:
-        :rtype: AccessMethodLogInfo
-        """
-        return cls('sign_in_as', val)
-
-    @classmethod
-    def content_manager(cls, val):
-        """
-        Create an instance of this class set to the ``content_manager`` tag with
-        value ``val``.
-
-        :param WebSessionLogInfo val:
-        :rtype: AccessMethodLogInfo
-        """
-        return cls('content_manager', val)
 
     @classmethod
     def admin_console(cls, val):
@@ -102,6 +69,39 @@ class AccessMethodLogInfo(bb.Union):
         return cls('admin_console', val)
 
     @classmethod
+    def api(cls, val):
+        """
+        Create an instance of this class set to the ``api`` tag with value
+        ``val``.
+
+        :param ApiSessionLogInfo val:
+        :rtype: AccessMethodLogInfo
+        """
+        return cls('api', val)
+
+    @classmethod
+    def content_manager(cls, val):
+        """
+        Create an instance of this class set to the ``content_manager`` tag with
+        value ``val``.
+
+        :param WebSessionLogInfo val:
+        :rtype: AccessMethodLogInfo
+        """
+        return cls('content_manager', val)
+
+    @classmethod
+    def end_user(cls, val):
+        """
+        Create an instance of this class set to the ``end_user`` tag with value
+        ``val``.
+
+        :param SessionLogInfo val:
+        :rtype: AccessMethodLogInfo
+        """
+        return cls('end_user', val)
+
+    @classmethod
     def enterprise_console(cls, val):
         """
         Create an instance of this class set to the ``enterprise_console`` tag
@@ -113,39 +113,15 @@ class AccessMethodLogInfo(bb.Union):
         return cls('enterprise_console', val)
 
     @classmethod
-    def api(cls, val):
+    def sign_in_as(cls, val):
         """
-        Create an instance of this class set to the ``api`` tag with value
-        ``val``.
+        Create an instance of this class set to the ``sign_in_as`` tag with
+        value ``val``.
 
-        :param ApiSessionLogInfo val:
+        :param WebSessionLogInfo val:
         :rtype: AccessMethodLogInfo
         """
-        return cls('api', val)
-
-    def is_end_user(self):
-        """
-        Check if the union tag is ``end_user``.
-
-        :rtype: bool
-        """
-        return self._tag == 'end_user'
-
-    def is_sign_in_as(self):
-        """
-        Check if the union tag is ``sign_in_as``.
-
-        :rtype: bool
-        """
-        return self._tag == 'sign_in_as'
-
-    def is_content_manager(self):
-        """
-        Check if the union tag is ``content_manager``.
-
-        :rtype: bool
-        """
-        return self._tag == 'content_manager'
+        return cls('sign_in_as', val)
 
     def is_admin_console(self):
         """
@@ -155,6 +131,30 @@ class AccessMethodLogInfo(bb.Union):
         """
         return self._tag == 'admin_console'
 
+    def is_api(self):
+        """
+        Check if the union tag is ``api``.
+
+        :rtype: bool
+        """
+        return self._tag == 'api'
+
+    def is_content_manager(self):
+        """
+        Check if the union tag is ``content_manager``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_manager'
+
+    def is_end_user(self):
+        """
+        Check if the union tag is ``end_user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'end_user'
+
     def is_enterprise_console(self):
         """
         Check if the union tag is ``enterprise_console``.
@@ -163,13 +163,13 @@ class AccessMethodLogInfo(bb.Union):
         """
         return self._tag == 'enterprise_console'
 
-    def is_api(self):
+    def is_sign_in_as(self):
         """
-        Check if the union tag is ``api``.
+        Check if the union tag is ``sign_in_as``.
 
         :rtype: bool
         """
-        return self._tag == 'api'
+        return self._tag == 'sign_in_as'
 
     def is_other(self):
         """
@@ -179,28 +179,28 @@ class AccessMethodLogInfo(bb.Union):
         """
         return self._tag == 'other'
 
-    def get_end_user(self):
+    def get_admin_console(self):
         """
-        End user session details.
+        Admin console session details.
 
-        Only call this if :meth:`is_end_user` is true.
-
-        :rtype: SessionLogInfo
-        """
-        if not self.is_end_user():
-            raise AttributeError("tag 'end_user' not set")
-        return self._value
-
-    def get_sign_in_as(self):
-        """
-        Sign in as session details.
-
-        Only call this if :meth:`is_sign_in_as` is true.
+        Only call this if :meth:`is_admin_console` is true.
 
         :rtype: WebSessionLogInfo
         """
-        if not self.is_sign_in_as():
-            raise AttributeError("tag 'sign_in_as' not set")
+        if not self.is_admin_console():
+            raise AttributeError("tag 'admin_console' not set")
+        return self._value
+
+    def get_api(self):
+        """
+        Api session details.
+
+        Only call this if :meth:`is_api` is true.
+
+        :rtype: ApiSessionLogInfo
+        """
+        if not self.is_api():
+            raise AttributeError("tag 'api' not set")
         return self._value
 
     def get_content_manager(self):
@@ -215,16 +215,16 @@ class AccessMethodLogInfo(bb.Union):
             raise AttributeError("tag 'content_manager' not set")
         return self._value
 
-    def get_admin_console(self):
+    def get_end_user(self):
         """
-        Admin console session details.
+        End user session details.
 
-        Only call this if :meth:`is_admin_console` is true.
+        Only call this if :meth:`is_end_user` is true.
 
-        :rtype: WebSessionLogInfo
+        :rtype: SessionLogInfo
         """
-        if not self.is_admin_console():
-            raise AttributeError("tag 'admin_console' not set")
+        if not self.is_end_user():
+            raise AttributeError("tag 'end_user' not set")
         return self._value
 
     def get_enterprise_console(self):
@@ -239,16 +239,16 @@ class AccessMethodLogInfo(bb.Union):
             raise AttributeError("tag 'enterprise_console' not set")
         return self._value
 
-    def get_api(self):
+    def get_sign_in_as(self):
         """
-        Api session details.
+        Sign in as session details.
 
-        Only call this if :meth:`is_api` is true.
+        Only call this if :meth:`is_sign_in_as` is true.
 
-        :rtype: ApiSessionLogInfo
+        :rtype: WebSessionLogInfo
         """
-        if not self.is_api():
-            raise AttributeError("tag 'api' not set")
+        if not self.is_sign_in_as():
+            raise AttributeError("tag 'sign_in_as' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -268,19 +268,11 @@ class AccountCaptureAvailability(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    unavailable = None
-    # Attribute is overwritten below the class definition
     available = None
     # Attribute is overwritten below the class definition
+    unavailable = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_unavailable(self):
-        """
-        Check if the union tag is ``unavailable``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unavailable'
 
     def is_available(self):
         """
@@ -289,6 +281,14 @@ class AccountCaptureAvailability(bb.Union):
         :rtype: bool
         """
         return self._tag == 'available'
+
+    def is_unavailable(self):
+        """
+        Check if the union tag is ``unavailable``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unavailable'
 
     def is_other(self):
         """
@@ -834,19 +834,11 @@ class AccountCaptureNotificationType(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    proactive_warning_notification = None
-    # Attribute is overwritten below the class definition
     actionable_notification = None
     # Attribute is overwritten below the class definition
+    proactive_warning_notification = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_proactive_warning_notification(self):
-        """
-        Check if the union tag is ``proactive_warning_notification``.
-
-        :rtype: bool
-        """
-        return self._tag == 'proactive_warning_notification'
 
     def is_actionable_notification(self):
         """
@@ -855,6 +847,14 @@ class AccountCaptureNotificationType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'actionable_notification'
+
+    def is_proactive_warning_notification(self):
+        """
+        Check if the union tag is ``proactive_warning_notification``.
+
+        :rtype: bool
+        """
+        return self._tag == 'proactive_warning_notification'
 
     def is_other(self):
         """
@@ -881,13 +881,21 @@ class AccountCapturePolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    all_users = None
+    # Attribute is overwritten below the class definition
     disabled = None
     # Attribute is overwritten below the class definition
     invited_users = None
     # Attribute is overwritten below the class definition
-    all_users = None
-    # Attribute is overwritten below the class definition
     other = None
+
+    def is_all_users(self):
+        """
+        Check if the union tag is ``all_users``.
+
+        :rtype: bool
+        """
+        return self._tag == 'all_users'
 
     def is_disabled(self):
         """
@@ -904,14 +912,6 @@ class AccountCapturePolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'invited_users'
-
-    def is_all_users(self):
-        """
-        Check if the union tag is ``all_users``.
-
-        :rtype: bool
-        """
-        return self._tag == 'all_users'
 
     def is_other(self):
         """
@@ -1222,28 +1222,17 @@ class ActionDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar JoinTeamDetails ActionDetails.team_join_details: Additional
-        information relevant when a new member joins the team.
     :ivar MemberRemoveActionType ActionDetails.remove_action: Define how the
         user was removed from the team.
     :ivar TeamInviteDetails ActionDetails.team_invite_details: Additional
         information relevant when someone is invited to the team.
+    :ivar JoinTeamDetails ActionDetails.team_join_details: Additional
+        information relevant when a new member joins the team.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
-
-    @classmethod
-    def team_join_details(cls, val):
-        """
-        Create an instance of this class set to the ``team_join_details`` tag
-        with value ``val``.
-
-        :param JoinTeamDetails val:
-        :rtype: ActionDetails
-        """
-        return cls('team_join_details', val)
 
     @classmethod
     def remove_action(cls, val):
@@ -1267,13 +1256,16 @@ class ActionDetails(bb.Union):
         """
         return cls('team_invite_details', val)
 
-    def is_team_join_details(self):
+    @classmethod
+    def team_join_details(cls, val):
         """
-        Check if the union tag is ``team_join_details``.
+        Create an instance of this class set to the ``team_join_details`` tag
+        with value ``val``.
 
-        :rtype: bool
+        :param JoinTeamDetails val:
+        :rtype: ActionDetails
         """
-        return self._tag == 'team_join_details'
+        return cls('team_join_details', val)
 
     def is_remove_action(self):
         """
@@ -1291,6 +1283,14 @@ class ActionDetails(bb.Union):
         """
         return self._tag == 'team_invite_details'
 
+    def is_team_join_details(self):
+        """
+        Check if the union tag is ``team_join_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_join_details'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -1298,18 +1298,6 @@ class ActionDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
-
-    def get_team_join_details(self):
-        """
-        Additional information relevant when a new member joins the team.
-
-        Only call this if :meth:`is_team_join_details` is true.
-
-        :rtype: JoinTeamDetails
-        """
-        if not self.is_team_join_details():
-            raise AttributeError("tag 'team_join_details' not set")
-        return self._value
 
     def get_remove_action(self):
         """
@@ -1335,6 +1323,18 @@ class ActionDetails(bb.Union):
             raise AttributeError("tag 'team_invite_details' not set")
         return self._value
 
+    def get_team_join_details(self):
+        """
+        Additional information relevant when a new member joins the team.
+
+        Only call this if :meth:`is_team_join_details` is true.
+
+        :rtype: JoinTeamDetails
+        """
+        if not self.is_team_join_details():
+            raise AttributeError("tag 'team_join_details' not set")
+        return self._value
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ActionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
 
@@ -1351,32 +1351,21 @@ class ActorLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserLogInfo ActorLogInfo.user: The user who did the action.
     :ivar UserLogInfo ActorLogInfo.admin: The admin who did the action.
-    :ivar AppLogInfo ActorLogInfo.app: The application who did the action.
-    :ivar ResellerLogInfo ActorLogInfo.reseller: Action done by reseller.
-    :ivar team_log.ActorLogInfo.dropbox: Action done by Dropbox.
     :ivar team_log.ActorLogInfo.anonymous: Anonymous actor.
+    :ivar AppLogInfo ActorLogInfo.app: The application who did the action.
+    :ivar team_log.ActorLogInfo.dropbox: Action done by Dropbox.
+    :ivar ResellerLogInfo ActorLogInfo.reseller: Action done by reseller.
+    :ivar UserLogInfo ActorLogInfo.user: The user who did the action.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    dropbox = None
-    # Attribute is overwritten below the class definition
     anonymous = None
     # Attribute is overwritten below the class definition
+    dropbox = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    @classmethod
-    def user(cls, val):
-        """
-        Create an instance of this class set to the ``user`` tag with value
-        ``val``.
-
-        :param UserLogInfo val:
-        :rtype: ActorLogInfo
-        """
-        return cls('user', val)
 
     @classmethod
     def admin(cls, val):
@@ -1411,13 +1400,16 @@ class ActorLogInfo(bb.Union):
         """
         return cls('reseller', val)
 
-    def is_user(self):
+    @classmethod
+    def user(cls, val):
         """
-        Check if the union tag is ``user``.
+        Create an instance of this class set to the ``user`` tag with value
+        ``val``.
 
-        :rtype: bool
+        :param UserLogInfo val:
+        :rtype: ActorLogInfo
         """
-        return self._tag == 'user'
+        return cls('user', val)
 
     def is_admin(self):
         """
@@ -1427,6 +1419,14 @@ class ActorLogInfo(bb.Union):
         """
         return self._tag == 'admin'
 
+    def is_anonymous(self):
+        """
+        Check if the union tag is ``anonymous``.
+
+        :rtype: bool
+        """
+        return self._tag == 'anonymous'
+
     def is_app(self):
         """
         Check if the union tag is ``app``.
@@ -1434,14 +1434,6 @@ class ActorLogInfo(bb.Union):
         :rtype: bool
         """
         return self._tag == 'app'
-
-    def is_reseller(self):
-        """
-        Check if the union tag is ``reseller``.
-
-        :rtype: bool
-        """
-        return self._tag == 'reseller'
 
     def is_dropbox(self):
         """
@@ -1451,13 +1443,21 @@ class ActorLogInfo(bb.Union):
         """
         return self._tag == 'dropbox'
 
-    def is_anonymous(self):
+    def is_reseller(self):
         """
-        Check if the union tag is ``anonymous``.
+        Check if the union tag is ``reseller``.
 
         :rtype: bool
         """
-        return self._tag == 'anonymous'
+        return self._tag == 'reseller'
+
+    def is_user(self):
+        """
+        Check if the union tag is ``user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user'
 
     def is_other(self):
         """
@@ -1466,18 +1466,6 @@ class ActorLogInfo(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
-
-    def get_user(self):
-        """
-        The user who did the action.
-
-        Only call this if :meth:`is_user` is true.
-
-        :rtype: UserLogInfo
-        """
-        if not self.is_user():
-            raise AttributeError("tag 'user' not set")
-        return self._value
 
     def get_admin(self):
         """
@@ -1515,6 +1503,18 @@ class ActorLogInfo(bb.Union):
             raise AttributeError("tag 'reseller' not set")
         return self._value
 
+    def get_user(self):
+        """
+        The user who did the action.
+
+        Only call this if :meth:`is_user` is true.
+
+        :rtype: UserLogInfo
+        """
+        if not self.is_user():
+            raise AttributeError("tag 'user' not set")
+        return self._value
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ActorLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
@@ -1532,41 +1532,17 @@ class AdminRole(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    team_admin = None
-    # Attribute is overwritten below the class definition
-    user_management_admin = None
-    # Attribute is overwritten below the class definition
-    support_admin = None
-    # Attribute is overwritten below the class definition
     limited_admin = None
     # Attribute is overwritten below the class definition
     member_only = None
     # Attribute is overwritten below the class definition
+    support_admin = None
+    # Attribute is overwritten below the class definition
+    team_admin = None
+    # Attribute is overwritten below the class definition
+    user_management_admin = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_team_admin(self):
-        """
-        Check if the union tag is ``team_admin``.
-
-        :rtype: bool
-        """
-        return self._tag == 'team_admin'
-
-    def is_user_management_admin(self):
-        """
-        Check if the union tag is ``user_management_admin``.
-
-        :rtype: bool
-        """
-        return self._tag == 'user_management_admin'
-
-    def is_support_admin(self):
-        """
-        Check if the union tag is ``support_admin``.
-
-        :rtype: bool
-        """
-        return self._tag == 'support_admin'
 
     def is_limited_admin(self):
         """
@@ -1583,6 +1559,30 @@ class AdminRole(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_only'
+
+    def is_support_admin(self):
+        """
+        Check if the union tag is ``support_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'support_admin'
+
+    def is_team_admin(self):
+        """
+        Check if the union tag is ``team_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_admin'
+
+    def is_user_management_admin(self):
+        """
+        Check if the union tag is ``user_management_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_management_admin'
 
     def is_other(self):
         """
@@ -2479,6 +2479,55 @@ class AssetLogInfo(bb.Union):
         return 'AssetLogInfo(%r, %r)' % (self._tag, self._value)
 
 AssetLogInfo_validator = bv.Union(AssetLogInfo)
+
+class BackupStatus(bb.Union):
+    """
+    Backup status
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BackupStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'BackupStatus(%r, %r)' % (self._tag, self._value)
+
+BackupStatus_validator = bv.Union(BackupStatus)
 
 class BinderAddPageDetails(bb.Struct):
     """
@@ -5035,14 +5084,14 @@ class ContextLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar TeamMemberLogInfo ContextLogInfo.team_member: Action was done on
-        behalf of a team member.
+    :ivar team_log.ContextLogInfo.anonymous: Anonymous context.
     :ivar NonTeamMemberLogInfo ContextLogInfo.non_team_member: Action was done
         on behalf of a non team member.
-    :ivar team_log.ContextLogInfo.anonymous: Anonymous context.
-    :ivar team_log.ContextLogInfo.team: Action was done on behalf of the team.
     :ivar TeamLogInfo ContextLogInfo.organization_team: Action was done on
         behalf of a team that's part of an organization.
+    :ivar team_log.ContextLogInfo.team: Action was done on behalf of the team.
+    :ivar TeamMemberLogInfo ContextLogInfo.team_member: Action was done on
+        behalf of a team member.
     :ivar TrustedNonTeamMemberLogInfo ContextLogInfo.trusted_non_team_member:
         Action was done on behalf of a trusted non team member.
     """
@@ -5054,17 +5103,6 @@ class ContextLogInfo(bb.Union):
     team = None
     # Attribute is overwritten below the class definition
     other = None
-
-    @classmethod
-    def team_member(cls, val):
-        """
-        Create an instance of this class set to the ``team_member`` tag with
-        value ``val``.
-
-        :param TeamMemberLogInfo val:
-        :rtype: ContextLogInfo
-        """
-        return cls('team_member', val)
 
     @classmethod
     def non_team_member(cls, val):
@@ -5089,6 +5127,17 @@ class ContextLogInfo(bb.Union):
         return cls('organization_team', val)
 
     @classmethod
+    def team_member(cls, val):
+        """
+        Create an instance of this class set to the ``team_member`` tag with
+        value ``val``.
+
+        :param TeamMemberLogInfo val:
+        :rtype: ContextLogInfo
+        """
+        return cls('team_member', val)
+
+    @classmethod
     def trusted_non_team_member(cls, val):
         """
         Create an instance of this class set to the ``trusted_non_team_member``
@@ -5099,13 +5148,13 @@ class ContextLogInfo(bb.Union):
         """
         return cls('trusted_non_team_member', val)
 
-    def is_team_member(self):
+    def is_anonymous(self):
         """
-        Check if the union tag is ``team_member``.
+        Check if the union tag is ``anonymous``.
 
         :rtype: bool
         """
-        return self._tag == 'team_member'
+        return self._tag == 'anonymous'
 
     def is_non_team_member(self):
         """
@@ -5115,13 +5164,13 @@ class ContextLogInfo(bb.Union):
         """
         return self._tag == 'non_team_member'
 
-    def is_anonymous(self):
+    def is_organization_team(self):
         """
-        Check if the union tag is ``anonymous``.
+        Check if the union tag is ``organization_team``.
 
         :rtype: bool
         """
-        return self._tag == 'anonymous'
+        return self._tag == 'organization_team'
 
     def is_team(self):
         """
@@ -5131,13 +5180,13 @@ class ContextLogInfo(bb.Union):
         """
         return self._tag == 'team'
 
-    def is_organization_team(self):
+    def is_team_member(self):
         """
-        Check if the union tag is ``organization_team``.
+        Check if the union tag is ``team_member``.
 
         :rtype: bool
         """
-        return self._tag == 'organization_team'
+        return self._tag == 'team_member'
 
     def is_trusted_non_team_member(self):
         """
@@ -5154,18 +5203,6 @@ class ContextLogInfo(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
-
-    def get_team_member(self):
-        """
-        Action was done on behalf of a team member.
-
-        Only call this if :meth:`is_team_member` is true.
-
-        :rtype: TeamMemberLogInfo
-        """
-        if not self.is_team_member():
-            raise AttributeError("tag 'team_member' not set")
-        return self._value
 
     def get_non_team_member(self):
         """
@@ -5189,6 +5226,18 @@ class ContextLogInfo(bb.Union):
         """
         if not self.is_organization_team():
             raise AttributeError("tag 'organization_team' not set")
+        return self._value
+
+    def get_team_member(self):
+        """
+        Action was done on behalf of a team member.
+
+        Only call this if :meth:`is_team_member` is true.
+
+        :rtype: TeamMemberLogInfo
+        """
+        if not self.is_team_member():
+            raise AttributeError("tag 'team_member' not set")
         return self._value
 
     def get_trusted_non_team_member(self):
@@ -6861,19 +6910,11 @@ class DeviceApprovalsPolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    unlimited = None
-    # Attribute is overwritten below the class definition
     limited = None
     # Attribute is overwritten below the class definition
+    unlimited = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_unlimited(self):
-        """
-        Check if the union tag is ``unlimited``.
-
-        :rtype: bool
-        """
-        return self._tag == 'unlimited'
 
     def is_limited(self):
         """
@@ -6882,6 +6923,14 @@ class DeviceApprovalsPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'limited'
+
+    def is_unlimited(self):
+        """
+        Check if the union tag is ``unlimited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unlimited'
 
     def is_other(self):
         """
@@ -7969,6 +8018,175 @@ class DeviceManagementEnabledType(bb.Struct):
 
 DeviceManagementEnabledType_validator = bv.Struct(DeviceManagementEnabledType)
 
+class DeviceSyncBackupStatusChangedDetails(bb.Struct):
+    """
+    Enabled/disabled backup for computer.
+
+    :ivar
+        team_log.DeviceSyncBackupStatusChangedDetails.desktop_device_session_info:
+        Device's session logged information.
+    :ivar team_log.DeviceSyncBackupStatusChangedDetails.previous_value: Previous
+        status of computer backup on the device.
+    :ivar team_log.DeviceSyncBackupStatusChangedDetails.new_value: Next status
+        of computer backup on the device.
+    """
+
+    __slots__ = [
+        '_desktop_device_session_info_value',
+        '_desktop_device_session_info_present',
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 desktop_device_session_info=None,
+                 previous_value=None,
+                 new_value=None):
+        self._desktop_device_session_info_value = None
+        self._desktop_device_session_info_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if desktop_device_session_info is not None:
+            self.desktop_device_session_info = desktop_device_session_info
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def desktop_device_session_info(self):
+        """
+        Device's session logged information.
+
+        :rtype: DesktopDeviceSessionLogInfo
+        """
+        if self._desktop_device_session_info_present:
+            return self._desktop_device_session_info_value
+        else:
+            raise AttributeError("missing required field 'desktop_device_session_info'")
+
+    @desktop_device_session_info.setter
+    def desktop_device_session_info(self, val):
+        self._desktop_device_session_info_validator.validate_type_only(val)
+        self._desktop_device_session_info_value = val
+        self._desktop_device_session_info_present = True
+
+    @desktop_device_session_info.deleter
+    def desktop_device_session_info(self):
+        self._desktop_device_session_info_value = None
+        self._desktop_device_session_info_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous status of computer backup on the device.
+
+        :rtype: BackupStatus
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        Next status of computer backup on the device.
+
+        :rtype: BackupStatus
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeviceSyncBackupStatusChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeviceSyncBackupStatusChangedDetails(desktop_device_session_info={!r}, previous_value={!r}, new_value={!r})'.format(
+            self._desktop_device_session_info_value,
+            self._previous_value_value,
+            self._new_value_value,
+        )
+
+DeviceSyncBackupStatusChangedDetails_validator = bv.Struct(DeviceSyncBackupStatusChangedDetails)
+
+class DeviceSyncBackupStatusChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DeviceSyncBackupStatusChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DeviceSyncBackupStatusChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+DeviceSyncBackupStatusChangedType_validator = bv.Struct(DeviceSyncBackupStatusChangedType)
+
 class DeviceType(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -8152,19 +8370,11 @@ class DeviceUnlinkPolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    remove = None
-    # Attribute is overwritten below the class definition
     keep = None
     # Attribute is overwritten below the class definition
+    remove = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_remove(self):
-        """
-        Check if the union tag is ``remove``.
-
-        :rtype: bool
-        """
-        return self._tag == 'remove'
 
     def is_keep(self):
         """
@@ -8173,6 +8383,14 @@ class DeviceUnlinkPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'keep'
+
+    def is_remove(self):
+        """
+        Check if the union tag is ``remove``.
+
+        :rtype: bool
+        """
+        return self._tag == 'remove'
 
     def is_other(self):
         """
@@ -10468,6 +10686,8 @@ class EventCategory(bb.Union):
         apps.
     :ivar team_log.EventCategory.comments: Events that have to do with comments
         on files and Paper documents.
+    :ivar team_log.EventCategory.data_governance: Events that involve data
+        governance actions
     :ivar team_log.EventCategory.devices: Events that apply to linked devices on
         mobile, desktop and Web platforms.
     :ivar team_log.EventCategory.domains: Events that involve domain management
@@ -10477,8 +10697,6 @@ class EventCategory(bb.Union):
     :ivar team_log.EventCategory.file_requests: Events that apply to the file
         requests feature.
     :ivar team_log.EventCategory.groups: Events that involve group management.
-    :ivar team_log.EventCategory.legal_holds: Events that involve placing holds
-        on content for litigation reasons
     :ivar team_log.EventCategory.logins: Events that involve users signing in to
         or out of Dropbox.
     :ivar team_log.EventCategory.members: Events that involve team member
@@ -10514,6 +10732,8 @@ class EventCategory(bb.Union):
     # Attribute is overwritten below the class definition
     comments = None
     # Attribute is overwritten below the class definition
+    data_governance = None
+    # Attribute is overwritten below the class definition
     devices = None
     # Attribute is overwritten below the class definition
     domains = None
@@ -10523,8 +10743,6 @@ class EventCategory(bb.Union):
     file_requests = None
     # Attribute is overwritten below the class definition
     groups = None
-    # Attribute is overwritten below the class definition
-    legal_holds = None
     # Attribute is overwritten below the class definition
     logins = None
     # Attribute is overwritten below the class definition
@@ -10570,6 +10788,14 @@ class EventCategory(bb.Union):
         """
         return self._tag == 'comments'
 
+    def is_data_governance(self):
+        """
+        Check if the union tag is ``data_governance``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_governance'
+
     def is_devices(self):
         """
         Check if the union tag is ``devices``.
@@ -10609,14 +10835,6 @@ class EventCategory(bb.Union):
         :rtype: bool
         """
         return self._tag == 'groups'
-
-    def is_legal_holds(self):
-        """
-        Check if the union tag is ``legal_holds``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds'
 
     def is_logins(self):
         """
@@ -10909,6 +11127,193 @@ class EventDetails(bb.Union):
         return cls('file_unresolve_comment_details', val)
 
     @classmethod
+    def governance_policy_add_folders_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_add_folders_details`` tag with value ``val``.
+
+        :param GovernancePolicyAddFoldersDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_add_folders_details', val)
+
+    @classmethod
+    def governance_policy_create_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_create_details`` tag with value ``val``.
+
+        :param GovernancePolicyCreateDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_create_details', val)
+
+    @classmethod
+    def governance_policy_delete_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_delete_details`` tag with value ``val``.
+
+        :param GovernancePolicyDeleteDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_delete_details', val)
+
+    @classmethod
+    def governance_policy_edit_details_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_edit_details_details`` tag with value ``val``.
+
+        :param GovernancePolicyEditDetailsDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_edit_details_details', val)
+
+    @classmethod
+    def governance_policy_edit_duration_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_edit_duration_details`` tag with value ``val``.
+
+        :param GovernancePolicyEditDurationDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_edit_duration_details', val)
+
+    @classmethod
+    def governance_policy_remove_folders_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_remove_folders_details`` tag with value ``val``.
+
+        :param GovernancePolicyRemoveFoldersDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_remove_folders_details', val)
+
+    @classmethod
+    def legal_holds_activate_a_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_activate_a_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsActivateAHoldDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_activate_a_hold_details', val)
+
+    @classmethod
+    def legal_holds_add_members_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_add_members_details`` tag with value ``val``.
+
+        :param LegalHoldsAddMembersDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_add_members_details', val)
+
+    @classmethod
+    def legal_holds_change_hold_details_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_change_hold_details_details`` tag with value ``val``.
+
+        :param LegalHoldsChangeHoldDetailsDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_change_hold_details_details', val)
+
+    @classmethod
+    def legal_holds_change_hold_name_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_change_hold_name_details`` tag with value ``val``.
+
+        :param LegalHoldsChangeHoldNameDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_change_hold_name_details', val)
+
+    @classmethod
+    def legal_holds_export_a_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_a_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsExportAHoldDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_export_a_hold_details', val)
+
+    @classmethod
+    def legal_holds_export_cancelled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_cancelled_details`` tag with value ``val``.
+
+        :param LegalHoldsExportCancelledDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_export_cancelled_details', val)
+
+    @classmethod
+    def legal_holds_export_downloaded_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_downloaded_details`` tag with value ``val``.
+
+        :param LegalHoldsExportDownloadedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_export_downloaded_details', val)
+
+    @classmethod
+    def legal_holds_export_removed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_removed_details`` tag with value ``val``.
+
+        :param LegalHoldsExportRemovedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_export_removed_details', val)
+
+    @classmethod
+    def legal_holds_release_a_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_release_a_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsReleaseAHoldDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_release_a_hold_details', val)
+
+    @classmethod
+    def legal_holds_remove_members_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_remove_members_details`` tag with value ``val``.
+
+        :param LegalHoldsRemoveMembersDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_remove_members_details', val)
+
+    @classmethod
+    def legal_holds_report_a_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_report_a_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsReportAHoldDetails val:
+        :rtype: EventDetails
+        """
+        return cls('legal_holds_report_a_hold_details', val)
+
+    @classmethod
     def device_change_ip_desktop_details(cls, val):
         """
         Create an instance of this class set to the
@@ -11006,6 +11411,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('device_management_enabled_details', val)
+
+    @classmethod
+    def device_sync_backup_status_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``device_sync_backup_status_changed_details`` tag with value ``val``.
+
+        :param DeviceSyncBackupStatusChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('device_sync_backup_status_changed_details', val)
 
     @classmethod
     def device_unlink_details(cls, val):
@@ -11617,127 +12033,6 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('group_rename_details', val)
-
-    @classmethod
-    def legal_holds_activate_a_hold_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_activate_a_hold_details`` tag with value ``val``.
-
-        :param LegalHoldsActivateAHoldDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_activate_a_hold_details', val)
-
-    @classmethod
-    def legal_holds_add_members_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_add_members_details`` tag with value ``val``.
-
-        :param LegalHoldsAddMembersDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_add_members_details', val)
-
-    @classmethod
-    def legal_holds_change_hold_details_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_change_hold_details_details`` tag with value ``val``.
-
-        :param LegalHoldsChangeHoldDetailsDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_change_hold_details_details', val)
-
-    @classmethod
-    def legal_holds_change_hold_name_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_change_hold_name_details`` tag with value ``val``.
-
-        :param LegalHoldsChangeHoldNameDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_change_hold_name_details', val)
-
-    @classmethod
-    def legal_holds_export_a_hold_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_export_a_hold_details`` tag with value ``val``.
-
-        :param LegalHoldsExportAHoldDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_export_a_hold_details', val)
-
-    @classmethod
-    def legal_holds_export_cancelled_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_export_cancelled_details`` tag with value ``val``.
-
-        :param LegalHoldsExportCancelledDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_export_cancelled_details', val)
-
-    @classmethod
-    def legal_holds_export_downloaded_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_export_downloaded_details`` tag with value ``val``.
-
-        :param LegalHoldsExportDownloadedDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_export_downloaded_details', val)
-
-    @classmethod
-    def legal_holds_export_removed_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_export_removed_details`` tag with value ``val``.
-
-        :param LegalHoldsExportRemovedDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_export_removed_details', val)
-
-    @classmethod
-    def legal_holds_release_a_hold_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_release_a_hold_details`` tag with value ``val``.
-
-        :param LegalHoldsReleaseAHoldDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_release_a_hold_details', val)
-
-    @classmethod
-    def legal_holds_remove_members_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_remove_members_details`` tag with value ``val``.
-
-        :param LegalHoldsRemoveMembersDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_remove_members_details', val)
-
-    @classmethod
-    def legal_holds_report_a_hold_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_report_a_hold_details`` tag with value ``val``.
-
-        :param LegalHoldsReportAHoldDetails val:
-        :rtype: EventDetails
-        """
-        return cls('legal_holds_report_a_hold_details', val)
 
     @classmethod
     def account_lock_or_unlocked_details(cls, val):
@@ -13802,6 +14097,28 @@ class EventDetails(bb.Union):
         return cls('shared_note_opened_details', val)
 
     @classmethod
+    def shmodel_disable_downloads_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shmodel_disable_downloads_details`` tag with value ``val``.
+
+        :param ShmodelDisableDownloadsDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shmodel_disable_downloads_details', val)
+
+    @classmethod
+    def shmodel_enable_downloads_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shmodel_enable_downloads_details`` tag with value ``val``.
+
+        :param ShmodelEnableDownloadsDetails val:
+        :rtype: EventDetails
+        """
+        return cls('shmodel_enable_downloads_details', val)
+
+    @classmethod
     def shmodel_group_share_details(cls, val):
         """
         Create an instance of this class set to the
@@ -15638,6 +15955,142 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'file_unresolve_comment_details'
 
+    def is_governance_policy_add_folders_details(self):
+        """
+        Check if the union tag is ``governance_policy_add_folders_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_add_folders_details'
+
+    def is_governance_policy_create_details(self):
+        """
+        Check if the union tag is ``governance_policy_create_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_create_details'
+
+    def is_governance_policy_delete_details(self):
+        """
+        Check if the union tag is ``governance_policy_delete_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_delete_details'
+
+    def is_governance_policy_edit_details_details(self):
+        """
+        Check if the union tag is ``governance_policy_edit_details_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_edit_details_details'
+
+    def is_governance_policy_edit_duration_details(self):
+        """
+        Check if the union tag is ``governance_policy_edit_duration_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_edit_duration_details'
+
+    def is_governance_policy_remove_folders_details(self):
+        """
+        Check if the union tag is ``governance_policy_remove_folders_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_remove_folders_details'
+
+    def is_legal_holds_activate_a_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_activate_a_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_activate_a_hold_details'
+
+    def is_legal_holds_add_members_details(self):
+        """
+        Check if the union tag is ``legal_holds_add_members_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_add_members_details'
+
+    def is_legal_holds_change_hold_details_details(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_details_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_details_details'
+
+    def is_legal_holds_change_hold_name_details(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_name_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_name_details'
+
+    def is_legal_holds_export_a_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_export_a_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_a_hold_details'
+
+    def is_legal_holds_export_cancelled_details(self):
+        """
+        Check if the union tag is ``legal_holds_export_cancelled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_cancelled_details'
+
+    def is_legal_holds_export_downloaded_details(self):
+        """
+        Check if the union tag is ``legal_holds_export_downloaded_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_downloaded_details'
+
+    def is_legal_holds_export_removed_details(self):
+        """
+        Check if the union tag is ``legal_holds_export_removed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_removed_details'
+
+    def is_legal_holds_release_a_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_release_a_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_release_a_hold_details'
+
+    def is_legal_holds_remove_members_details(self):
+        """
+        Check if the union tag is ``legal_holds_remove_members_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_remove_members_details'
+
+    def is_legal_holds_report_a_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_report_a_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_report_a_hold_details'
+
     def is_device_change_ip_desktop_details(self):
         """
         Check if the union tag is ``device_change_ip_desktop_details``.
@@ -15709,6 +16162,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_management_enabled_details'
+
+    def is_device_sync_backup_status_changed_details(self):
+        """
+        Check if the union tag is ``device_sync_backup_status_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_sync_backup_status_changed_details'
 
     def is_device_unlink_details(self):
         """
@@ -16149,94 +16610,6 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'group_rename_details'
-
-    def is_legal_holds_activate_a_hold_details(self):
-        """
-        Check if the union tag is ``legal_holds_activate_a_hold_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_activate_a_hold_details'
-
-    def is_legal_holds_add_members_details(self):
-        """
-        Check if the union tag is ``legal_holds_add_members_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_add_members_details'
-
-    def is_legal_holds_change_hold_details_details(self):
-        """
-        Check if the union tag is ``legal_holds_change_hold_details_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_change_hold_details_details'
-
-    def is_legal_holds_change_hold_name_details(self):
-        """
-        Check if the union tag is ``legal_holds_change_hold_name_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_change_hold_name_details'
-
-    def is_legal_holds_export_a_hold_details(self):
-        """
-        Check if the union tag is ``legal_holds_export_a_hold_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_a_hold_details'
-
-    def is_legal_holds_export_cancelled_details(self):
-        """
-        Check if the union tag is ``legal_holds_export_cancelled_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_cancelled_details'
-
-    def is_legal_holds_export_downloaded_details(self):
-        """
-        Check if the union tag is ``legal_holds_export_downloaded_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_downloaded_details'
-
-    def is_legal_holds_export_removed_details(self):
-        """
-        Check if the union tag is ``legal_holds_export_removed_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_removed_details'
-
-    def is_legal_holds_release_a_hold_details(self):
-        """
-        Check if the union tag is ``legal_holds_release_a_hold_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_release_a_hold_details'
-
-    def is_legal_holds_remove_members_details(self):
-        """
-        Check if the union tag is ``legal_holds_remove_members_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_remove_members_details'
-
-    def is_legal_holds_report_a_hold_details(self):
-        """
-        Check if the union tag is ``legal_holds_report_a_hold_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_report_a_hold_details'
 
     def is_account_lock_or_unlocked_details(self):
         """
@@ -17726,6 +18099,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'shared_note_opened_details'
 
+    def is_shmodel_disable_downloads_details(self):
+        """
+        Check if the union tag is ``shmodel_disable_downloads_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shmodel_disable_downloads_details'
+
+    def is_shmodel_enable_downloads_details(self):
+        """
+        Check if the union tag is ``shmodel_enable_downloads_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shmodel_enable_downloads_details'
+
     def is_shmodel_group_share_details(self):
         """
         Check if the union tag is ``shmodel_group_share_details``.
@@ -19106,6 +19495,176 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'file_unresolve_comment_details' not set")
         return self._value
 
+    def get_governance_policy_add_folders_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_add_folders_details` is true.
+
+        :rtype: GovernancePolicyAddFoldersDetails
+        """
+        if not self.is_governance_policy_add_folders_details():
+            raise AttributeError("tag 'governance_policy_add_folders_details' not set")
+        return self._value
+
+    def get_governance_policy_create_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_create_details` is true.
+
+        :rtype: GovernancePolicyCreateDetails
+        """
+        if not self.is_governance_policy_create_details():
+            raise AttributeError("tag 'governance_policy_create_details' not set")
+        return self._value
+
+    def get_governance_policy_delete_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_delete_details` is true.
+
+        :rtype: GovernancePolicyDeleteDetails
+        """
+        if not self.is_governance_policy_delete_details():
+            raise AttributeError("tag 'governance_policy_delete_details' not set")
+        return self._value
+
+    def get_governance_policy_edit_details_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_edit_details_details` is true.
+
+        :rtype: GovernancePolicyEditDetailsDetails
+        """
+        if not self.is_governance_policy_edit_details_details():
+            raise AttributeError("tag 'governance_policy_edit_details_details' not set")
+        return self._value
+
+    def get_governance_policy_edit_duration_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_edit_duration_details` is true.
+
+        :rtype: GovernancePolicyEditDurationDetails
+        """
+        if not self.is_governance_policy_edit_duration_details():
+            raise AttributeError("tag 'governance_policy_edit_duration_details' not set")
+        return self._value
+
+    def get_governance_policy_remove_folders_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_remove_folders_details` is true.
+
+        :rtype: GovernancePolicyRemoveFoldersDetails
+        """
+        if not self.is_governance_policy_remove_folders_details():
+            raise AttributeError("tag 'governance_policy_remove_folders_details' not set")
+        return self._value
+
+    def get_legal_holds_activate_a_hold_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_activate_a_hold_details` is true.
+
+        :rtype: LegalHoldsActivateAHoldDetails
+        """
+        if not self.is_legal_holds_activate_a_hold_details():
+            raise AttributeError("tag 'legal_holds_activate_a_hold_details' not set")
+        return self._value
+
+    def get_legal_holds_add_members_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_add_members_details` is true.
+
+        :rtype: LegalHoldsAddMembersDetails
+        """
+        if not self.is_legal_holds_add_members_details():
+            raise AttributeError("tag 'legal_holds_add_members_details' not set")
+        return self._value
+
+    def get_legal_holds_change_hold_details_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_change_hold_details_details` is true.
+
+        :rtype: LegalHoldsChangeHoldDetailsDetails
+        """
+        if not self.is_legal_holds_change_hold_details_details():
+            raise AttributeError("tag 'legal_holds_change_hold_details_details' not set")
+        return self._value
+
+    def get_legal_holds_change_hold_name_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_change_hold_name_details` is true.
+
+        :rtype: LegalHoldsChangeHoldNameDetails
+        """
+        if not self.is_legal_holds_change_hold_name_details():
+            raise AttributeError("tag 'legal_holds_change_hold_name_details' not set")
+        return self._value
+
+    def get_legal_holds_export_a_hold_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_export_a_hold_details` is true.
+
+        :rtype: LegalHoldsExportAHoldDetails
+        """
+        if not self.is_legal_holds_export_a_hold_details():
+            raise AttributeError("tag 'legal_holds_export_a_hold_details' not set")
+        return self._value
+
+    def get_legal_holds_export_cancelled_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_export_cancelled_details` is true.
+
+        :rtype: LegalHoldsExportCancelledDetails
+        """
+        if not self.is_legal_holds_export_cancelled_details():
+            raise AttributeError("tag 'legal_holds_export_cancelled_details' not set")
+        return self._value
+
+    def get_legal_holds_export_downloaded_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_export_downloaded_details` is true.
+
+        :rtype: LegalHoldsExportDownloadedDetails
+        """
+        if not self.is_legal_holds_export_downloaded_details():
+            raise AttributeError("tag 'legal_holds_export_downloaded_details' not set")
+        return self._value
+
+    def get_legal_holds_export_removed_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_export_removed_details` is true.
+
+        :rtype: LegalHoldsExportRemovedDetails
+        """
+        if not self.is_legal_holds_export_removed_details():
+            raise AttributeError("tag 'legal_holds_export_removed_details' not set")
+        return self._value
+
+    def get_legal_holds_release_a_hold_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_release_a_hold_details` is true.
+
+        :rtype: LegalHoldsReleaseAHoldDetails
+        """
+        if not self.is_legal_holds_release_a_hold_details():
+            raise AttributeError("tag 'legal_holds_release_a_hold_details' not set")
+        return self._value
+
+    def get_legal_holds_remove_members_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_remove_members_details` is true.
+
+        :rtype: LegalHoldsRemoveMembersDetails
+        """
+        if not self.is_legal_holds_remove_members_details():
+            raise AttributeError("tag 'legal_holds_remove_members_details' not set")
+        return self._value
+
+    def get_legal_holds_report_a_hold_details(self):
+        """
+        Only call this if :meth:`is_legal_holds_report_a_hold_details` is true.
+
+        :rtype: LegalHoldsReportAHoldDetails
+        """
+        if not self.is_legal_holds_report_a_hold_details():
+            raise AttributeError("tag 'legal_holds_report_a_hold_details' not set")
+        return self._value
+
     def get_device_change_ip_desktop_details(self):
         """
         Only call this if :meth:`is_device_change_ip_desktop_details` is true.
@@ -19194,6 +19753,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_device_management_enabled_details():
             raise AttributeError("tag 'device_management_enabled_details' not set")
+        return self._value
+
+    def get_device_sync_backup_status_changed_details(self):
+        """
+        Only call this if :meth:`is_device_sync_backup_status_changed_details` is true.
+
+        :rtype: DeviceSyncBackupStatusChangedDetails
+        """
+        if not self.is_device_sync_backup_status_changed_details():
+            raise AttributeError("tag 'device_sync_backup_status_changed_details' not set")
         return self._value
 
     def get_device_unlink_details(self):
@@ -19744,116 +20313,6 @@ class EventDetails(bb.Union):
         """
         if not self.is_group_rename_details():
             raise AttributeError("tag 'group_rename_details' not set")
-        return self._value
-
-    def get_legal_holds_activate_a_hold_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_activate_a_hold_details` is true.
-
-        :rtype: LegalHoldsActivateAHoldDetails
-        """
-        if not self.is_legal_holds_activate_a_hold_details():
-            raise AttributeError("tag 'legal_holds_activate_a_hold_details' not set")
-        return self._value
-
-    def get_legal_holds_add_members_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_add_members_details` is true.
-
-        :rtype: LegalHoldsAddMembersDetails
-        """
-        if not self.is_legal_holds_add_members_details():
-            raise AttributeError("tag 'legal_holds_add_members_details' not set")
-        return self._value
-
-    def get_legal_holds_change_hold_details_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_change_hold_details_details` is true.
-
-        :rtype: LegalHoldsChangeHoldDetailsDetails
-        """
-        if not self.is_legal_holds_change_hold_details_details():
-            raise AttributeError("tag 'legal_holds_change_hold_details_details' not set")
-        return self._value
-
-    def get_legal_holds_change_hold_name_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_change_hold_name_details` is true.
-
-        :rtype: LegalHoldsChangeHoldNameDetails
-        """
-        if not self.is_legal_holds_change_hold_name_details():
-            raise AttributeError("tag 'legal_holds_change_hold_name_details' not set")
-        return self._value
-
-    def get_legal_holds_export_a_hold_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_export_a_hold_details` is true.
-
-        :rtype: LegalHoldsExportAHoldDetails
-        """
-        if not self.is_legal_holds_export_a_hold_details():
-            raise AttributeError("tag 'legal_holds_export_a_hold_details' not set")
-        return self._value
-
-    def get_legal_holds_export_cancelled_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_export_cancelled_details` is true.
-
-        :rtype: LegalHoldsExportCancelledDetails
-        """
-        if not self.is_legal_holds_export_cancelled_details():
-            raise AttributeError("tag 'legal_holds_export_cancelled_details' not set")
-        return self._value
-
-    def get_legal_holds_export_downloaded_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_export_downloaded_details` is true.
-
-        :rtype: LegalHoldsExportDownloadedDetails
-        """
-        if not self.is_legal_holds_export_downloaded_details():
-            raise AttributeError("tag 'legal_holds_export_downloaded_details' not set")
-        return self._value
-
-    def get_legal_holds_export_removed_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_export_removed_details` is true.
-
-        :rtype: LegalHoldsExportRemovedDetails
-        """
-        if not self.is_legal_holds_export_removed_details():
-            raise AttributeError("tag 'legal_holds_export_removed_details' not set")
-        return self._value
-
-    def get_legal_holds_release_a_hold_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_release_a_hold_details` is true.
-
-        :rtype: LegalHoldsReleaseAHoldDetails
-        """
-        if not self.is_legal_holds_release_a_hold_details():
-            raise AttributeError("tag 'legal_holds_release_a_hold_details' not set")
-        return self._value
-
-    def get_legal_holds_remove_members_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_remove_members_details` is true.
-
-        :rtype: LegalHoldsRemoveMembersDetails
-        """
-        if not self.is_legal_holds_remove_members_details():
-            raise AttributeError("tag 'legal_holds_remove_members_details' not set")
-        return self._value
-
-    def get_legal_holds_report_a_hold_details(self):
-        """
-        Only call this if :meth:`is_legal_holds_report_a_hold_details` is true.
-
-        :rtype: LegalHoldsReportAHoldDetails
-        """
-        if not self.is_legal_holds_report_a_hold_details():
-            raise AttributeError("tag 'legal_holds_report_a_hold_details' not set")
         return self._value
 
     def get_account_lock_or_unlocked_details(self):
@@ -21716,6 +22175,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shared_note_opened_details' not set")
         return self._value
 
+    def get_shmodel_disable_downloads_details(self):
+        """
+        Only call this if :meth:`is_shmodel_disable_downloads_details` is true.
+
+        :rtype: ShmodelDisableDownloadsDetails
+        """
+        if not self.is_shmodel_disable_downloads_details():
+            raise AttributeError("tag 'shmodel_disable_downloads_details' not set")
+        return self._value
+
+    def get_shmodel_enable_downloads_details(self):
+        """
+        Only call this if :meth:`is_shmodel_enable_downloads_details` is true.
+
+        :rtype: ShmodelEnableDownloadsDetails
+        """
+        if not self.is_shmodel_enable_downloads_details():
+            raise AttributeError("tag 'shmodel_enable_downloads_details' not set")
+        return self._value
+
     def get_shmodel_group_share_details(self):
         """
         Only call this if :meth:`is_shmodel_group_share_details` is true.
@@ -23302,6 +23781,46 @@ class EventType(bb.Union):
         Unliked file comment (deprecated, no longer logged)
     :ivar FileUnresolveCommentType EventType.file_unresolve_comment: (comments)
         Unresolved file comment
+    :ivar GovernancePolicyAddFoldersType
+        EventType.governance_policy_add_folders: (data_governance) Added folders
+        to policy
+    :ivar GovernancePolicyCreateType EventType.governance_policy_create:
+        (data_governance) Activated a new policy
+    :ivar GovernancePolicyDeleteType EventType.governance_policy_delete:
+        (data_governance) Deleted a policy
+    :ivar GovernancePolicyEditDetailsType
+        EventType.governance_policy_edit_details: (data_governance) Edited
+        policy
+    :ivar GovernancePolicyEditDurationType
+        EventType.governance_policy_edit_duration: (data_governance) Changed
+        policy duration
+    :ivar GovernancePolicyRemoveFoldersType
+        EventType.governance_policy_remove_folders: (data_governance) Removed
+        folders from policy
+    :ivar LegalHoldsActivateAHoldType EventType.legal_holds_activate_a_hold:
+        (data_governance) Activated a hold
+    :ivar LegalHoldsAddMembersType EventType.legal_holds_add_members:
+        (data_governance) Added members to a hold
+    :ivar LegalHoldsChangeHoldDetailsType
+        EventType.legal_holds_change_hold_details: (data_governance) Edited
+        details for a hold
+    :ivar LegalHoldsChangeHoldNameType EventType.legal_holds_change_hold_name:
+        (data_governance) Renamed a hold
+    :ivar LegalHoldsExportAHoldType EventType.legal_holds_export_a_hold:
+        (data_governance) Exported hold
+    :ivar LegalHoldsExportCancelledType EventType.legal_holds_export_cancelled:
+        (data_governance) Canceled export for a hold
+    :ivar LegalHoldsExportDownloadedType
+        EventType.legal_holds_export_downloaded: (data_governance) Downloaded
+        export for a hold
+    :ivar LegalHoldsExportRemovedType EventType.legal_holds_export_removed:
+        (data_governance) Removed export for a hold
+    :ivar LegalHoldsReleaseAHoldType EventType.legal_holds_release_a_hold:
+        (data_governance) Released a hold
+    :ivar LegalHoldsRemoveMembersType EventType.legal_holds_remove_members:
+        (data_governance) Removed members from a hold
+    :ivar LegalHoldsReportAHoldType EventType.legal_holds_report_a_hold:
+        (data_governance) Created a summary report for a hold
     :ivar DeviceChangeIpDesktopType EventType.device_change_ip_desktop:
         (devices) Changed IP address associated with active desktop session
     :ivar DeviceChangeIpMobileType EventType.device_change_ip_mobile: (devices)
@@ -23321,6 +23840,9 @@ class EventType(bb.Union):
         (devices) Disabled device management (deprecated, no longer logged)
     :ivar DeviceManagementEnabledType EventType.device_management_enabled:
         (devices) Enabled device management (deprecated, no longer logged)
+    :ivar DeviceSyncBackupStatusChangedType
+        EventType.device_sync_backup_status_changed: (devices) Enabled/disabled
+        backup for computer
     :ivar DeviceUnlinkType EventType.device_unlink: (devices) Disconnected
         device
     :ivar EmmRefreshAuthTokenType EventType.emm_refresh_auth_token: (devices)
@@ -23443,30 +23965,6 @@ class EventType(bb.Union):
     :ivar GroupRemoveMemberType EventType.group_remove_member: (groups) Removed
         team members from group
     :ivar GroupRenameType EventType.group_rename: (groups) Renamed group
-    :ivar LegalHoldsActivateAHoldType EventType.legal_holds_activate_a_hold:
-        (legal_holds) Activated a hold
-    :ivar LegalHoldsAddMembersType EventType.legal_holds_add_members:
-        (legal_holds) Added members to a hold
-    :ivar LegalHoldsChangeHoldDetailsType
-        EventType.legal_holds_change_hold_details: (legal_holds) Edited details
-        for a hold
-    :ivar LegalHoldsChangeHoldNameType EventType.legal_holds_change_hold_name:
-        (legal_holds) Renamed a hold
-    :ivar LegalHoldsExportAHoldType EventType.legal_holds_export_a_hold:
-        (legal_holds) Exported hold
-    :ivar LegalHoldsExportCancelledType EventType.legal_holds_export_cancelled:
-        (legal_holds) Canceled export for a hold
-    :ivar LegalHoldsExportDownloadedType
-        EventType.legal_holds_export_downloaded: (legal_holds) Downloaded export
-        for a hold
-    :ivar LegalHoldsExportRemovedType EventType.legal_holds_export_removed:
-        (legal_holds) Removed export for a hold
-    :ivar LegalHoldsReleaseAHoldType EventType.legal_holds_release_a_hold:
-        (legal_holds) Released a hold
-    :ivar LegalHoldsRemoveMembersType EventType.legal_holds_remove_members:
-        (legal_holds) Removed members from a hold
-    :ivar LegalHoldsReportAHoldType EventType.legal_holds_report_a_hold:
-        (legal_holds) Created a summary report for a hold
     :ivar AccountLockOrUnlockedType EventType.account_lock_or_unlocked: (logins)
         Unlocked/locked account after failed sign in attempts
     :ivar EmmErrorType EventType.emm_error: (logins) Failed to sign in via EMM
@@ -23672,11 +24170,11 @@ class EventType(bb.Union):
     :ivar ExportMembersReportFailType EventType.export_members_report_fail:
         (reports) Failed to create members data report
     :ivar ExternalSharingCreateReportType
-        EventType.external_sharing_create_report: (reports) Report created: Data
-        shared outside the team
+        EventType.external_sharing_create_report: (reports) Created External
+        sharing report
     :ivar ExternalSharingReportFailedType
         EventType.external_sharing_report_failed: (reports) Couldn't create
-        report: Data shared outside the team
+        External sharing report
     :ivar NoExpirationLinkGenCreateReportType
         EventType.no_expiration_link_gen_create_report: (reports) Report
         created: Links created with no expiration
@@ -23911,6 +24409,10 @@ class EventType(bb.Union):
         link
     :ivar SharedNoteOpenedType EventType.shared_note_opened: (sharing) Opened
         shared Paper doc (deprecated, no longer logged)
+    :ivar ShmodelDisableDownloadsType EventType.shmodel_disable_downloads:
+        (sharing) Disabled downloads for link (deprecated, no longer logged)
+    :ivar ShmodelEnableDownloadsType EventType.shmodel_enable_downloads:
+        (sharing) Enabled downloads for link (deprecated, no longer logged)
     :ivar ShmodelGroupShareType EventType.shmodel_group_share: (sharing) Shared
         link with group (deprecated, no longer logged)
     :ivar ShowcaseAccessGrantedType EventType.showcase_access_granted:
@@ -24468,6 +24970,193 @@ class EventType(bb.Union):
         return cls('file_unresolve_comment', val)
 
     @classmethod
+    def governance_policy_add_folders(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_add_folders`` tag with value ``val``.
+
+        :param GovernancePolicyAddFoldersType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_add_folders', val)
+
+    @classmethod
+    def governance_policy_create(cls, val):
+        """
+        Create an instance of this class set to the ``governance_policy_create``
+        tag with value ``val``.
+
+        :param GovernancePolicyCreateType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_create', val)
+
+    @classmethod
+    def governance_policy_delete(cls, val):
+        """
+        Create an instance of this class set to the ``governance_policy_delete``
+        tag with value ``val``.
+
+        :param GovernancePolicyDeleteType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_delete', val)
+
+    @classmethod
+    def governance_policy_edit_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_edit_details`` tag with value ``val``.
+
+        :param GovernancePolicyEditDetailsType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_edit_details', val)
+
+    @classmethod
+    def governance_policy_edit_duration(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_edit_duration`` tag with value ``val``.
+
+        :param GovernancePolicyEditDurationType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_edit_duration', val)
+
+    @classmethod
+    def governance_policy_remove_folders(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_remove_folders`` tag with value ``val``.
+
+        :param GovernancePolicyRemoveFoldersType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_remove_folders', val)
+
+    @classmethod
+    def legal_holds_activate_a_hold(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_activate_a_hold`` tag with value ``val``.
+
+        :param LegalHoldsActivateAHoldType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_activate_a_hold', val)
+
+    @classmethod
+    def legal_holds_add_members(cls, val):
+        """
+        Create an instance of this class set to the ``legal_holds_add_members``
+        tag with value ``val``.
+
+        :param LegalHoldsAddMembersType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_add_members', val)
+
+    @classmethod
+    def legal_holds_change_hold_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_change_hold_details`` tag with value ``val``.
+
+        :param LegalHoldsChangeHoldDetailsType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_change_hold_details', val)
+
+    @classmethod
+    def legal_holds_change_hold_name(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_change_hold_name`` tag with value ``val``.
+
+        :param LegalHoldsChangeHoldNameType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_change_hold_name', val)
+
+    @classmethod
+    def legal_holds_export_a_hold(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_a_hold`` tag with value ``val``.
+
+        :param LegalHoldsExportAHoldType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_export_a_hold', val)
+
+    @classmethod
+    def legal_holds_export_cancelled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_cancelled`` tag with value ``val``.
+
+        :param LegalHoldsExportCancelledType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_export_cancelled', val)
+
+    @classmethod
+    def legal_holds_export_downloaded(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_downloaded`` tag with value ``val``.
+
+        :param LegalHoldsExportDownloadedType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_export_downloaded', val)
+
+    @classmethod
+    def legal_holds_export_removed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_export_removed`` tag with value ``val``.
+
+        :param LegalHoldsExportRemovedType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_export_removed', val)
+
+    @classmethod
+    def legal_holds_release_a_hold(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_release_a_hold`` tag with value ``val``.
+
+        :param LegalHoldsReleaseAHoldType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_release_a_hold', val)
+
+    @classmethod
+    def legal_holds_remove_members(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_remove_members`` tag with value ``val``.
+
+        :param LegalHoldsRemoveMembersType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_remove_members', val)
+
+    @classmethod
+    def legal_holds_report_a_hold(cls, val):
+        """
+        Create an instance of this class set to the
+        ``legal_holds_report_a_hold`` tag with value ``val``.
+
+        :param LegalHoldsReportAHoldType val:
+        :rtype: EventType
+        """
+        return cls('legal_holds_report_a_hold', val)
+
+    @classmethod
     def device_change_ip_desktop(cls, val):
         """
         Create an instance of this class set to the ``device_change_ip_desktop``
@@ -24565,6 +25254,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('device_management_enabled', val)
+
+    @classmethod
+    def device_sync_backup_status_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``device_sync_backup_status_changed`` tag with value ``val``.
+
+        :param DeviceSyncBackupStatusChangedType val:
+        :rtype: EventType
+        """
+        return cls('device_sync_backup_status_changed', val)
 
     @classmethod
     def device_unlink(cls, val):
@@ -25172,127 +25872,6 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('group_rename', val)
-
-    @classmethod
-    def legal_holds_activate_a_hold(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_activate_a_hold`` tag with value ``val``.
-
-        :param LegalHoldsActivateAHoldType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_activate_a_hold', val)
-
-    @classmethod
-    def legal_holds_add_members(cls, val):
-        """
-        Create an instance of this class set to the ``legal_holds_add_members``
-        tag with value ``val``.
-
-        :param LegalHoldsAddMembersType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_add_members', val)
-
-    @classmethod
-    def legal_holds_change_hold_details(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_change_hold_details`` tag with value ``val``.
-
-        :param LegalHoldsChangeHoldDetailsType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_change_hold_details', val)
-
-    @classmethod
-    def legal_holds_change_hold_name(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_change_hold_name`` tag with value ``val``.
-
-        :param LegalHoldsChangeHoldNameType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_change_hold_name', val)
-
-    @classmethod
-    def legal_holds_export_a_hold(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_export_a_hold`` tag with value ``val``.
-
-        :param LegalHoldsExportAHoldType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_export_a_hold', val)
-
-    @classmethod
-    def legal_holds_export_cancelled(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_export_cancelled`` tag with value ``val``.
-
-        :param LegalHoldsExportCancelledType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_export_cancelled', val)
-
-    @classmethod
-    def legal_holds_export_downloaded(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_export_downloaded`` tag with value ``val``.
-
-        :param LegalHoldsExportDownloadedType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_export_downloaded', val)
-
-    @classmethod
-    def legal_holds_export_removed(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_export_removed`` tag with value ``val``.
-
-        :param LegalHoldsExportRemovedType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_export_removed', val)
-
-    @classmethod
-    def legal_holds_release_a_hold(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_release_a_hold`` tag with value ``val``.
-
-        :param LegalHoldsReleaseAHoldType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_release_a_hold', val)
-
-    @classmethod
-    def legal_holds_remove_members(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_remove_members`` tag with value ``val``.
-
-        :param LegalHoldsRemoveMembersType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_remove_members', val)
-
-    @classmethod
-    def legal_holds_report_a_hold(cls, val):
-        """
-        Create an instance of this class set to the
-        ``legal_holds_report_a_hold`` tag with value ``val``.
-
-        :param LegalHoldsReportAHoldType val:
-        :rtype: EventType
-        """
-        return cls('legal_holds_report_a_hold', val)
 
     @classmethod
     def account_lock_or_unlocked(cls, val):
@@ -27343,6 +27922,28 @@ class EventType(bb.Union):
         return cls('shared_note_opened', val)
 
     @classmethod
+    def shmodel_disable_downloads(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shmodel_disable_downloads`` tag with value ``val``.
+
+        :param ShmodelDisableDownloadsType val:
+        :rtype: EventType
+        """
+        return cls('shmodel_disable_downloads', val)
+
+    @classmethod
+    def shmodel_enable_downloads(cls, val):
+        """
+        Create an instance of this class set to the ``shmodel_enable_downloads``
+        tag with value ``val``.
+
+        :param ShmodelEnableDownloadsType val:
+        :rtype: EventType
+        """
+        return cls('shmodel_enable_downloads', val)
+
+    @classmethod
     def shmodel_group_share(cls, val):
         """
         Create an instance of this class set to the ``shmodel_group_share`` tag
@@ -29149,6 +29750,142 @@ class EventType(bb.Union):
         """
         return self._tag == 'file_unresolve_comment'
 
+    def is_governance_policy_add_folders(self):
+        """
+        Check if the union tag is ``governance_policy_add_folders``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_add_folders'
+
+    def is_governance_policy_create(self):
+        """
+        Check if the union tag is ``governance_policy_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_create'
+
+    def is_governance_policy_delete(self):
+        """
+        Check if the union tag is ``governance_policy_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_delete'
+
+    def is_governance_policy_edit_details(self):
+        """
+        Check if the union tag is ``governance_policy_edit_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_edit_details'
+
+    def is_governance_policy_edit_duration(self):
+        """
+        Check if the union tag is ``governance_policy_edit_duration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_edit_duration'
+
+    def is_governance_policy_remove_folders(self):
+        """
+        Check if the union tag is ``governance_policy_remove_folders``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_remove_folders'
+
+    def is_legal_holds_activate_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_activate_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_activate_a_hold'
+
+    def is_legal_holds_add_members(self):
+        """
+        Check if the union tag is ``legal_holds_add_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_add_members'
+
+    def is_legal_holds_change_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_details'
+
+    def is_legal_holds_change_hold_name(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_name'
+
+    def is_legal_holds_export_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_export_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_a_hold'
+
+    def is_legal_holds_export_cancelled(self):
+        """
+        Check if the union tag is ``legal_holds_export_cancelled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_cancelled'
+
+    def is_legal_holds_export_downloaded(self):
+        """
+        Check if the union tag is ``legal_holds_export_downloaded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_downloaded'
+
+    def is_legal_holds_export_removed(self):
+        """
+        Check if the union tag is ``legal_holds_export_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_removed'
+
+    def is_legal_holds_release_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_release_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_release_a_hold'
+
+    def is_legal_holds_remove_members(self):
+        """
+        Check if the union tag is ``legal_holds_remove_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_remove_members'
+
+    def is_legal_holds_report_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_report_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_report_a_hold'
+
     def is_device_change_ip_desktop(self):
         """
         Check if the union tag is ``device_change_ip_desktop``.
@@ -29220,6 +29957,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_management_enabled'
+
+    def is_device_sync_backup_status_changed(self):
+        """
+        Check if the union tag is ``device_sync_backup_status_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_sync_backup_status_changed'
 
     def is_device_unlink(self):
         """
@@ -29660,94 +30405,6 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'group_rename'
-
-    def is_legal_holds_activate_a_hold(self):
-        """
-        Check if the union tag is ``legal_holds_activate_a_hold``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_activate_a_hold'
-
-    def is_legal_holds_add_members(self):
-        """
-        Check if the union tag is ``legal_holds_add_members``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_add_members'
-
-    def is_legal_holds_change_hold_details(self):
-        """
-        Check if the union tag is ``legal_holds_change_hold_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_change_hold_details'
-
-    def is_legal_holds_change_hold_name(self):
-        """
-        Check if the union tag is ``legal_holds_change_hold_name``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_change_hold_name'
-
-    def is_legal_holds_export_a_hold(self):
-        """
-        Check if the union tag is ``legal_holds_export_a_hold``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_a_hold'
-
-    def is_legal_holds_export_cancelled(self):
-        """
-        Check if the union tag is ``legal_holds_export_cancelled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_cancelled'
-
-    def is_legal_holds_export_downloaded(self):
-        """
-        Check if the union tag is ``legal_holds_export_downloaded``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_downloaded'
-
-    def is_legal_holds_export_removed(self):
-        """
-        Check if the union tag is ``legal_holds_export_removed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_removed'
-
-    def is_legal_holds_release_a_hold(self):
-        """
-        Check if the union tag is ``legal_holds_release_a_hold``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_release_a_hold'
-
-    def is_legal_holds_remove_members(self):
-        """
-        Check if the union tag is ``legal_holds_remove_members``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_remove_members'
-
-    def is_legal_holds_report_a_hold(self):
-        """
-        Check if the union tag is ``legal_holds_report_a_hold``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_report_a_hold'
 
     def is_account_lock_or_unlocked(self):
         """
@@ -31237,6 +31894,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'shared_note_opened'
 
+    def is_shmodel_disable_downloads(self):
+        """
+        Check if the union tag is ``shmodel_disable_downloads``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shmodel_disable_downloads'
+
+    def is_shmodel_enable_downloads(self):
+        """
+        Check if the union tag is ``shmodel_enable_downloads``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shmodel_enable_downloads'
+
     def is_shmodel_group_share(self):
         """
         Check if the union tag is ``shmodel_group_share``.
@@ -32638,6 +33311,210 @@ class EventType(bb.Union):
             raise AttributeError("tag 'file_unresolve_comment' not set")
         return self._value
 
+    def get_governance_policy_add_folders(self):
+        """
+        (data_governance) Added folders to policy
+
+        Only call this if :meth:`is_governance_policy_add_folders` is true.
+
+        :rtype: GovernancePolicyAddFoldersType
+        """
+        if not self.is_governance_policy_add_folders():
+            raise AttributeError("tag 'governance_policy_add_folders' not set")
+        return self._value
+
+    def get_governance_policy_create(self):
+        """
+        (data_governance) Activated a new policy
+
+        Only call this if :meth:`is_governance_policy_create` is true.
+
+        :rtype: GovernancePolicyCreateType
+        """
+        if not self.is_governance_policy_create():
+            raise AttributeError("tag 'governance_policy_create' not set")
+        return self._value
+
+    def get_governance_policy_delete(self):
+        """
+        (data_governance) Deleted a policy
+
+        Only call this if :meth:`is_governance_policy_delete` is true.
+
+        :rtype: GovernancePolicyDeleteType
+        """
+        if not self.is_governance_policy_delete():
+            raise AttributeError("tag 'governance_policy_delete' not set")
+        return self._value
+
+    def get_governance_policy_edit_details(self):
+        """
+        (data_governance) Edited policy
+
+        Only call this if :meth:`is_governance_policy_edit_details` is true.
+
+        :rtype: GovernancePolicyEditDetailsType
+        """
+        if not self.is_governance_policy_edit_details():
+            raise AttributeError("tag 'governance_policy_edit_details' not set")
+        return self._value
+
+    def get_governance_policy_edit_duration(self):
+        """
+        (data_governance) Changed policy duration
+
+        Only call this if :meth:`is_governance_policy_edit_duration` is true.
+
+        :rtype: GovernancePolicyEditDurationType
+        """
+        if not self.is_governance_policy_edit_duration():
+            raise AttributeError("tag 'governance_policy_edit_duration' not set")
+        return self._value
+
+    def get_governance_policy_remove_folders(self):
+        """
+        (data_governance) Removed folders from policy
+
+        Only call this if :meth:`is_governance_policy_remove_folders` is true.
+
+        :rtype: GovernancePolicyRemoveFoldersType
+        """
+        if not self.is_governance_policy_remove_folders():
+            raise AttributeError("tag 'governance_policy_remove_folders' not set")
+        return self._value
+
+    def get_legal_holds_activate_a_hold(self):
+        """
+        (data_governance) Activated a hold
+
+        Only call this if :meth:`is_legal_holds_activate_a_hold` is true.
+
+        :rtype: LegalHoldsActivateAHoldType
+        """
+        if not self.is_legal_holds_activate_a_hold():
+            raise AttributeError("tag 'legal_holds_activate_a_hold' not set")
+        return self._value
+
+    def get_legal_holds_add_members(self):
+        """
+        (data_governance) Added members to a hold
+
+        Only call this if :meth:`is_legal_holds_add_members` is true.
+
+        :rtype: LegalHoldsAddMembersType
+        """
+        if not self.is_legal_holds_add_members():
+            raise AttributeError("tag 'legal_holds_add_members' not set")
+        return self._value
+
+    def get_legal_holds_change_hold_details(self):
+        """
+        (data_governance) Edited details for a hold
+
+        Only call this if :meth:`is_legal_holds_change_hold_details` is true.
+
+        :rtype: LegalHoldsChangeHoldDetailsType
+        """
+        if not self.is_legal_holds_change_hold_details():
+            raise AttributeError("tag 'legal_holds_change_hold_details' not set")
+        return self._value
+
+    def get_legal_holds_change_hold_name(self):
+        """
+        (data_governance) Renamed a hold
+
+        Only call this if :meth:`is_legal_holds_change_hold_name` is true.
+
+        :rtype: LegalHoldsChangeHoldNameType
+        """
+        if not self.is_legal_holds_change_hold_name():
+            raise AttributeError("tag 'legal_holds_change_hold_name' not set")
+        return self._value
+
+    def get_legal_holds_export_a_hold(self):
+        """
+        (data_governance) Exported hold
+
+        Only call this if :meth:`is_legal_holds_export_a_hold` is true.
+
+        :rtype: LegalHoldsExportAHoldType
+        """
+        if not self.is_legal_holds_export_a_hold():
+            raise AttributeError("tag 'legal_holds_export_a_hold' not set")
+        return self._value
+
+    def get_legal_holds_export_cancelled(self):
+        """
+        (data_governance) Canceled export for a hold
+
+        Only call this if :meth:`is_legal_holds_export_cancelled` is true.
+
+        :rtype: LegalHoldsExportCancelledType
+        """
+        if not self.is_legal_holds_export_cancelled():
+            raise AttributeError("tag 'legal_holds_export_cancelled' not set")
+        return self._value
+
+    def get_legal_holds_export_downloaded(self):
+        """
+        (data_governance) Downloaded export for a hold
+
+        Only call this if :meth:`is_legal_holds_export_downloaded` is true.
+
+        :rtype: LegalHoldsExportDownloadedType
+        """
+        if not self.is_legal_holds_export_downloaded():
+            raise AttributeError("tag 'legal_holds_export_downloaded' not set")
+        return self._value
+
+    def get_legal_holds_export_removed(self):
+        """
+        (data_governance) Removed export for a hold
+
+        Only call this if :meth:`is_legal_holds_export_removed` is true.
+
+        :rtype: LegalHoldsExportRemovedType
+        """
+        if not self.is_legal_holds_export_removed():
+            raise AttributeError("tag 'legal_holds_export_removed' not set")
+        return self._value
+
+    def get_legal_holds_release_a_hold(self):
+        """
+        (data_governance) Released a hold
+
+        Only call this if :meth:`is_legal_holds_release_a_hold` is true.
+
+        :rtype: LegalHoldsReleaseAHoldType
+        """
+        if not self.is_legal_holds_release_a_hold():
+            raise AttributeError("tag 'legal_holds_release_a_hold' not set")
+        return self._value
+
+    def get_legal_holds_remove_members(self):
+        """
+        (data_governance) Removed members from a hold
+
+        Only call this if :meth:`is_legal_holds_remove_members` is true.
+
+        :rtype: LegalHoldsRemoveMembersType
+        """
+        if not self.is_legal_holds_remove_members():
+            raise AttributeError("tag 'legal_holds_remove_members' not set")
+        return self._value
+
+    def get_legal_holds_report_a_hold(self):
+        """
+        (data_governance) Created a summary report for a hold
+
+        Only call this if :meth:`is_legal_holds_report_a_hold` is true.
+
+        :rtype: LegalHoldsReportAHoldType
+        """
+        if not self.is_legal_holds_report_a_hold():
+            raise AttributeError("tag 'legal_holds_report_a_hold' not set")
+        return self._value
+
     def get_device_change_ip_desktop(self):
         """
         (devices) Changed IP address associated with active desktop session
@@ -32744,6 +33621,18 @@ class EventType(bb.Union):
         """
         if not self.is_device_management_enabled():
             raise AttributeError("tag 'device_management_enabled' not set")
+        return self._value
+
+    def get_device_sync_backup_status_changed(self):
+        """
+        (devices) Enabled/disabled backup for computer
+
+        Only call this if :meth:`is_device_sync_backup_status_changed` is true.
+
+        :rtype: DeviceSyncBackupStatusChangedType
+        """
+        if not self.is_device_sync_backup_status_changed():
+            raise AttributeError("tag 'device_sync_backup_status_changed' not set")
         return self._value
 
     def get_device_unlink(self):
@@ -33408,138 +34297,6 @@ class EventType(bb.Union):
         """
         if not self.is_group_rename():
             raise AttributeError("tag 'group_rename' not set")
-        return self._value
-
-    def get_legal_holds_activate_a_hold(self):
-        """
-        (legal_holds) Activated a hold
-
-        Only call this if :meth:`is_legal_holds_activate_a_hold` is true.
-
-        :rtype: LegalHoldsActivateAHoldType
-        """
-        if not self.is_legal_holds_activate_a_hold():
-            raise AttributeError("tag 'legal_holds_activate_a_hold' not set")
-        return self._value
-
-    def get_legal_holds_add_members(self):
-        """
-        (legal_holds) Added members to a hold
-
-        Only call this if :meth:`is_legal_holds_add_members` is true.
-
-        :rtype: LegalHoldsAddMembersType
-        """
-        if not self.is_legal_holds_add_members():
-            raise AttributeError("tag 'legal_holds_add_members' not set")
-        return self._value
-
-    def get_legal_holds_change_hold_details(self):
-        """
-        (legal_holds) Edited details for a hold
-
-        Only call this if :meth:`is_legal_holds_change_hold_details` is true.
-
-        :rtype: LegalHoldsChangeHoldDetailsType
-        """
-        if not self.is_legal_holds_change_hold_details():
-            raise AttributeError("tag 'legal_holds_change_hold_details' not set")
-        return self._value
-
-    def get_legal_holds_change_hold_name(self):
-        """
-        (legal_holds) Renamed a hold
-
-        Only call this if :meth:`is_legal_holds_change_hold_name` is true.
-
-        :rtype: LegalHoldsChangeHoldNameType
-        """
-        if not self.is_legal_holds_change_hold_name():
-            raise AttributeError("tag 'legal_holds_change_hold_name' not set")
-        return self._value
-
-    def get_legal_holds_export_a_hold(self):
-        """
-        (legal_holds) Exported hold
-
-        Only call this if :meth:`is_legal_holds_export_a_hold` is true.
-
-        :rtype: LegalHoldsExportAHoldType
-        """
-        if not self.is_legal_holds_export_a_hold():
-            raise AttributeError("tag 'legal_holds_export_a_hold' not set")
-        return self._value
-
-    def get_legal_holds_export_cancelled(self):
-        """
-        (legal_holds) Canceled export for a hold
-
-        Only call this if :meth:`is_legal_holds_export_cancelled` is true.
-
-        :rtype: LegalHoldsExportCancelledType
-        """
-        if not self.is_legal_holds_export_cancelled():
-            raise AttributeError("tag 'legal_holds_export_cancelled' not set")
-        return self._value
-
-    def get_legal_holds_export_downloaded(self):
-        """
-        (legal_holds) Downloaded export for a hold
-
-        Only call this if :meth:`is_legal_holds_export_downloaded` is true.
-
-        :rtype: LegalHoldsExportDownloadedType
-        """
-        if not self.is_legal_holds_export_downloaded():
-            raise AttributeError("tag 'legal_holds_export_downloaded' not set")
-        return self._value
-
-    def get_legal_holds_export_removed(self):
-        """
-        (legal_holds) Removed export for a hold
-
-        Only call this if :meth:`is_legal_holds_export_removed` is true.
-
-        :rtype: LegalHoldsExportRemovedType
-        """
-        if not self.is_legal_holds_export_removed():
-            raise AttributeError("tag 'legal_holds_export_removed' not set")
-        return self._value
-
-    def get_legal_holds_release_a_hold(self):
-        """
-        (legal_holds) Released a hold
-
-        Only call this if :meth:`is_legal_holds_release_a_hold` is true.
-
-        :rtype: LegalHoldsReleaseAHoldType
-        """
-        if not self.is_legal_holds_release_a_hold():
-            raise AttributeError("tag 'legal_holds_release_a_hold' not set")
-        return self._value
-
-    def get_legal_holds_remove_members(self):
-        """
-        (legal_holds) Removed members from a hold
-
-        Only call this if :meth:`is_legal_holds_remove_members` is true.
-
-        :rtype: LegalHoldsRemoveMembersType
-        """
-        if not self.is_legal_holds_remove_members():
-            raise AttributeError("tag 'legal_holds_remove_members' not set")
-        return self._value
-
-    def get_legal_holds_report_a_hold(self):
-        """
-        (legal_holds) Created a summary report for a hold
-
-        Only call this if :meth:`is_legal_holds_report_a_hold` is true.
-
-        :rtype: LegalHoldsReportAHoldType
-        """
-        if not self.is_legal_holds_report_a_hold():
-            raise AttributeError("tag 'legal_holds_report_a_hold' not set")
         return self._value
 
     def get_account_lock_or_unlocked(self):
@@ -34672,7 +35429,7 @@ class EventType(bb.Union):
 
     def get_external_sharing_create_report(self):
         """
-        (reports) Report created: Data shared outside the team
+        (reports) Created External sharing report
 
         Only call this if :meth:`is_external_sharing_create_report` is true.
 
@@ -34684,7 +35441,7 @@ class EventType(bb.Union):
 
     def get_external_sharing_report_failed(self):
         """
-        (reports) Couldn't create report: Data shared outside the team
+        (reports) Couldn't create External sharing report
 
         Only call this if :meth:`is_external_sharing_report_failed` is true.
 
@@ -35809,6 +36566,30 @@ class EventType(bb.Union):
         """
         if not self.is_shared_note_opened():
             raise AttributeError("tag 'shared_note_opened' not set")
+        return self._value
+
+    def get_shmodel_disable_downloads(self):
+        """
+        (sharing) Disabled downloads for link (deprecated, no longer logged)
+
+        Only call this if :meth:`is_shmodel_disable_downloads` is true.
+
+        :rtype: ShmodelDisableDownloadsType
+        """
+        if not self.is_shmodel_disable_downloads():
+            raise AttributeError("tag 'shmodel_disable_downloads' not set")
+        return self._value
+
+    def get_shmodel_enable_downloads(self):
+        """
+        (sharing) Enabled downloads for link (deprecated, no longer logged)
+
+        Only call this if :meth:`is_shmodel_enable_downloads` is true.
+
+        :rtype: ShmodelEnableDownloadsType
+        """
+        if not self.is_shmodel_enable_downloads():
+            raise AttributeError("tag 'shmodel_enable_downloads' not set")
         return self._value
 
     def get_shmodel_group_share(self):
@@ -37724,6 +38505,40 @@ class EventTypeArg(bb.Union):
         comment (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.file_unresolve_comment: (comments) Unresolved
         file comment
+    :ivar team_log.EventTypeArg.governance_policy_add_folders: (data_governance)
+        Added folders to policy
+    :ivar team_log.EventTypeArg.governance_policy_create: (data_governance)
+        Activated a new policy
+    :ivar team_log.EventTypeArg.governance_policy_delete: (data_governance)
+        Deleted a policy
+    :ivar team_log.EventTypeArg.governance_policy_edit_details:
+        (data_governance) Edited policy
+    :ivar team_log.EventTypeArg.governance_policy_edit_duration:
+        (data_governance) Changed policy duration
+    :ivar team_log.EventTypeArg.governance_policy_remove_folders:
+        (data_governance) Removed folders from policy
+    :ivar team_log.EventTypeArg.legal_holds_activate_a_hold: (data_governance)
+        Activated a hold
+    :ivar team_log.EventTypeArg.legal_holds_add_members: (data_governance) Added
+        members to a hold
+    :ivar team_log.EventTypeArg.legal_holds_change_hold_details:
+        (data_governance) Edited details for a hold
+    :ivar team_log.EventTypeArg.legal_holds_change_hold_name: (data_governance)
+        Renamed a hold
+    :ivar team_log.EventTypeArg.legal_holds_export_a_hold: (data_governance)
+        Exported hold
+    :ivar team_log.EventTypeArg.legal_holds_export_cancelled: (data_governance)
+        Canceled export for a hold
+    :ivar team_log.EventTypeArg.legal_holds_export_downloaded: (data_governance)
+        Downloaded export for a hold
+    :ivar team_log.EventTypeArg.legal_holds_export_removed: (data_governance)
+        Removed export for a hold
+    :ivar team_log.EventTypeArg.legal_holds_release_a_hold: (data_governance)
+        Released a hold
+    :ivar team_log.EventTypeArg.legal_holds_remove_members: (data_governance)
+        Removed members from a hold
+    :ivar team_log.EventTypeArg.legal_holds_report_a_hold: (data_governance)
+        Created a summary report for a hold
     :ivar team_log.EventTypeArg.device_change_ip_desktop: (devices) Changed IP
         address associated with active desktop session
     :ivar team_log.EventTypeArg.device_change_ip_mobile: (devices) Changed IP
@@ -37741,6 +38556,8 @@ class EventTypeArg(bb.Union):
         device management (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.device_management_enabled: (devices) Enabled
         device management (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.device_sync_backup_status_changed: (devices)
+        Enabled/disabled backup for computer
     :ivar team_log.EventTypeArg.device_unlink: (devices) Disconnected device
     :ivar team_log.EventTypeArg.emm_refresh_auth_token: (devices) Refreshed auth
         token used for setting up EMM
@@ -37849,28 +38666,6 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.group_remove_member: (groups) Removed team
         members from group
     :ivar team_log.EventTypeArg.group_rename: (groups) Renamed group
-    :ivar team_log.EventTypeArg.legal_holds_activate_a_hold: (legal_holds)
-        Activated a hold
-    :ivar team_log.EventTypeArg.legal_holds_add_members: (legal_holds) Added
-        members to a hold
-    :ivar team_log.EventTypeArg.legal_holds_change_hold_details: (legal_holds)
-        Edited details for a hold
-    :ivar team_log.EventTypeArg.legal_holds_change_hold_name: (legal_holds)
-        Renamed a hold
-    :ivar team_log.EventTypeArg.legal_holds_export_a_hold: (legal_holds)
-        Exported hold
-    :ivar team_log.EventTypeArg.legal_holds_export_cancelled: (legal_holds)
-        Canceled export for a hold
-    :ivar team_log.EventTypeArg.legal_holds_export_downloaded: (legal_holds)
-        Downloaded export for a hold
-    :ivar team_log.EventTypeArg.legal_holds_export_removed: (legal_holds)
-        Removed export for a hold
-    :ivar team_log.EventTypeArg.legal_holds_release_a_hold: (legal_holds)
-        Released a hold
-    :ivar team_log.EventTypeArg.legal_holds_remove_members: (legal_holds)
-        Removed members from a hold
-    :ivar team_log.EventTypeArg.legal_holds_report_a_hold: (legal_holds) Created
-        a summary report for a hold
     :ivar team_log.EventTypeArg.account_lock_or_unlocked: (logins)
         Unlocked/locked account after failed sign in attempts
     :ivar team_log.EventTypeArg.emm_error: (logins) Failed to sign in via EMM
@@ -38050,10 +38845,10 @@ class EventTypeArg(bb.Union):
         data report
     :ivar team_log.EventTypeArg.export_members_report_fail: (reports) Failed to
         create members data report
-    :ivar team_log.EventTypeArg.external_sharing_create_report: (reports) Report
-        created: Data shared outside the team
+    :ivar team_log.EventTypeArg.external_sharing_create_report: (reports)
+        Created External sharing report
     :ivar team_log.EventTypeArg.external_sharing_report_failed: (reports)
-        Couldn't create report: Data shared outside the team
+        Couldn't create External sharing report
     :ivar team_log.EventTypeArg.no_expiration_link_gen_create_report: (reports)
         Report created: Links created with no expiration
     :ivar team_log.EventTypeArg.no_expiration_link_gen_report_failed: (reports)
@@ -38248,6 +39043,10 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.shared_link_view: (sharing) Opened shared link
     :ivar team_log.EventTypeArg.shared_note_opened: (sharing) Opened shared
         Paper doc (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.shmodel_disable_downloads: (sharing) Disabled
+        downloads for link (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.shmodel_enable_downloads: (sharing) Enabled
+        downloads for link (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.shmodel_group_share: (sharing) Shared link with
         group (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.showcase_access_granted: (showcase) Granted
@@ -38618,6 +39417,40 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     file_unresolve_comment = None
     # Attribute is overwritten below the class definition
+    governance_policy_add_folders = None
+    # Attribute is overwritten below the class definition
+    governance_policy_create = None
+    # Attribute is overwritten below the class definition
+    governance_policy_delete = None
+    # Attribute is overwritten below the class definition
+    governance_policy_edit_details = None
+    # Attribute is overwritten below the class definition
+    governance_policy_edit_duration = None
+    # Attribute is overwritten below the class definition
+    governance_policy_remove_folders = None
+    # Attribute is overwritten below the class definition
+    legal_holds_activate_a_hold = None
+    # Attribute is overwritten below the class definition
+    legal_holds_add_members = None
+    # Attribute is overwritten below the class definition
+    legal_holds_change_hold_details = None
+    # Attribute is overwritten below the class definition
+    legal_holds_change_hold_name = None
+    # Attribute is overwritten below the class definition
+    legal_holds_export_a_hold = None
+    # Attribute is overwritten below the class definition
+    legal_holds_export_cancelled = None
+    # Attribute is overwritten below the class definition
+    legal_holds_export_downloaded = None
+    # Attribute is overwritten below the class definition
+    legal_holds_export_removed = None
+    # Attribute is overwritten below the class definition
+    legal_holds_release_a_hold = None
+    # Attribute is overwritten below the class definition
+    legal_holds_remove_members = None
+    # Attribute is overwritten below the class definition
+    legal_holds_report_a_hold = None
+    # Attribute is overwritten below the class definition
     device_change_ip_desktop = None
     # Attribute is overwritten below the class definition
     device_change_ip_mobile = None
@@ -38635,6 +39468,8 @@ class EventTypeArg(bb.Union):
     device_management_disabled = None
     # Attribute is overwritten below the class definition
     device_management_enabled = None
+    # Attribute is overwritten below the class definition
+    device_sync_backup_status_changed = None
     # Attribute is overwritten below the class definition
     device_unlink = None
     # Attribute is overwritten below the class definition
@@ -38745,28 +39580,6 @@ class EventTypeArg(bb.Union):
     group_remove_member = None
     # Attribute is overwritten below the class definition
     group_rename = None
-    # Attribute is overwritten below the class definition
-    legal_holds_activate_a_hold = None
-    # Attribute is overwritten below the class definition
-    legal_holds_add_members = None
-    # Attribute is overwritten below the class definition
-    legal_holds_change_hold_details = None
-    # Attribute is overwritten below the class definition
-    legal_holds_change_hold_name = None
-    # Attribute is overwritten below the class definition
-    legal_holds_export_a_hold = None
-    # Attribute is overwritten below the class definition
-    legal_holds_export_cancelled = None
-    # Attribute is overwritten below the class definition
-    legal_holds_export_downloaded = None
-    # Attribute is overwritten below the class definition
-    legal_holds_export_removed = None
-    # Attribute is overwritten below the class definition
-    legal_holds_release_a_hold = None
-    # Attribute is overwritten below the class definition
-    legal_holds_remove_members = None
-    # Attribute is overwritten below the class definition
-    legal_holds_report_a_hold = None
     # Attribute is overwritten below the class definition
     account_lock_or_unlocked = None
     # Attribute is overwritten below the class definition
@@ -39139,6 +39952,10 @@ class EventTypeArg(bb.Union):
     shared_link_view = None
     # Attribute is overwritten below the class definition
     shared_note_opened = None
+    # Attribute is overwritten below the class definition
+    shmodel_disable_downloads = None
+    # Attribute is overwritten below the class definition
+    shmodel_enable_downloads = None
     # Attribute is overwritten below the class definition
     shmodel_group_share = None
     # Attribute is overwritten below the class definition
@@ -39560,6 +40377,142 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'file_unresolve_comment'
 
+    def is_governance_policy_add_folders(self):
+        """
+        Check if the union tag is ``governance_policy_add_folders``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_add_folders'
+
+    def is_governance_policy_create(self):
+        """
+        Check if the union tag is ``governance_policy_create``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_create'
+
+    def is_governance_policy_delete(self):
+        """
+        Check if the union tag is ``governance_policy_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_delete'
+
+    def is_governance_policy_edit_details(self):
+        """
+        Check if the union tag is ``governance_policy_edit_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_edit_details'
+
+    def is_governance_policy_edit_duration(self):
+        """
+        Check if the union tag is ``governance_policy_edit_duration``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_edit_duration'
+
+    def is_governance_policy_remove_folders(self):
+        """
+        Check if the union tag is ``governance_policy_remove_folders``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_remove_folders'
+
+    def is_legal_holds_activate_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_activate_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_activate_a_hold'
+
+    def is_legal_holds_add_members(self):
+        """
+        Check if the union tag is ``legal_holds_add_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_add_members'
+
+    def is_legal_holds_change_hold_details(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_details'
+
+    def is_legal_holds_change_hold_name(self):
+        """
+        Check if the union tag is ``legal_holds_change_hold_name``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_change_hold_name'
+
+    def is_legal_holds_export_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_export_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_a_hold'
+
+    def is_legal_holds_export_cancelled(self):
+        """
+        Check if the union tag is ``legal_holds_export_cancelled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_cancelled'
+
+    def is_legal_holds_export_downloaded(self):
+        """
+        Check if the union tag is ``legal_holds_export_downloaded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_downloaded'
+
+    def is_legal_holds_export_removed(self):
+        """
+        Check if the union tag is ``legal_holds_export_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_export_removed'
+
+    def is_legal_holds_release_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_release_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_release_a_hold'
+
+    def is_legal_holds_remove_members(self):
+        """
+        Check if the union tag is ``legal_holds_remove_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_remove_members'
+
+    def is_legal_holds_report_a_hold(self):
+        """
+        Check if the union tag is ``legal_holds_report_a_hold``.
+
+        :rtype: bool
+        """
+        return self._tag == 'legal_holds_report_a_hold'
+
     def is_device_change_ip_desktop(self):
         """
         Check if the union tag is ``device_change_ip_desktop``.
@@ -39631,6 +40584,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_management_enabled'
+
+    def is_device_sync_backup_status_changed(self):
+        """
+        Check if the union tag is ``device_sync_backup_status_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'device_sync_backup_status_changed'
 
     def is_device_unlink(self):
         """
@@ -40071,94 +41032,6 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'group_rename'
-
-    def is_legal_holds_activate_a_hold(self):
-        """
-        Check if the union tag is ``legal_holds_activate_a_hold``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_activate_a_hold'
-
-    def is_legal_holds_add_members(self):
-        """
-        Check if the union tag is ``legal_holds_add_members``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_add_members'
-
-    def is_legal_holds_change_hold_details(self):
-        """
-        Check if the union tag is ``legal_holds_change_hold_details``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_change_hold_details'
-
-    def is_legal_holds_change_hold_name(self):
-        """
-        Check if the union tag is ``legal_holds_change_hold_name``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_change_hold_name'
-
-    def is_legal_holds_export_a_hold(self):
-        """
-        Check if the union tag is ``legal_holds_export_a_hold``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_a_hold'
-
-    def is_legal_holds_export_cancelled(self):
-        """
-        Check if the union tag is ``legal_holds_export_cancelled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_cancelled'
-
-    def is_legal_holds_export_downloaded(self):
-        """
-        Check if the union tag is ``legal_holds_export_downloaded``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_downloaded'
-
-    def is_legal_holds_export_removed(self):
-        """
-        Check if the union tag is ``legal_holds_export_removed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_export_removed'
-
-    def is_legal_holds_release_a_hold(self):
-        """
-        Check if the union tag is ``legal_holds_release_a_hold``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_release_a_hold'
-
-    def is_legal_holds_remove_members(self):
-        """
-        Check if the union tag is ``legal_holds_remove_members``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_remove_members'
-
-    def is_legal_holds_report_a_hold(self):
-        """
-        Check if the union tag is ``legal_holds_report_a_hold``.
-
-        :rtype: bool
-        """
-        return self._tag == 'legal_holds_report_a_hold'
 
     def is_account_lock_or_unlocked(self):
         """
@@ -41647,6 +42520,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'shared_note_opened'
+
+    def is_shmodel_disable_downloads(self):
+        """
+        Check if the union tag is ``shmodel_disable_downloads``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shmodel_disable_downloads'
+
+    def is_shmodel_enable_downloads(self):
+        """
+        Check if the union tag is ``shmodel_enable_downloads``.
+
+        :rtype: bool
+        """
+        return self._tag == 'shmodel_enable_downloads'
 
     def is_shmodel_group_share(self):
         """
@@ -43267,7 +44156,7 @@ ExtendedVersionHistoryPolicy_validator = bv.Union(ExtendedVersionHistoryPolicy)
 
 class ExternalSharingCreateReportDetails(bb.Struct):
     """
-    Report created: Data shared outside the team.
+    Created External sharing report.
     """
 
     __slots__ = [
@@ -43335,7 +44224,7 @@ ExternalSharingCreateReportType_validator = bv.Struct(ExternalSharingCreateRepor
 
 class ExternalSharingReportFailedDetails(bb.Struct):
     """
-    Couldn't create report: Data shared outside the team.
+    Couldn't create External sharing report.
 
     :ivar team_log.ExternalSharingReportFailedDetails.failure_reason: Failure
         reason.
@@ -43626,19 +44515,11 @@ class FedAdminRole(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    not_enterprise_admin = None
-    # Attribute is overwritten below the class definition
     enterprise_admin = None
     # Attribute is overwritten below the class definition
+    not_enterprise_admin = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_not_enterprise_admin(self):
-        """
-        Check if the union tag is ``not_enterprise_admin``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_enterprise_admin'
 
     def is_enterprise_admin(self):
         """
@@ -43647,6 +44528,14 @@ class FedAdminRole(bb.Union):
         :rtype: bool
         """
         return self._tag == 'enterprise_admin'
+
+    def is_not_enterprise_admin(self):
+        """
+        Check if the union tag is ``not_enterprise_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_enterprise_admin'
 
     def is_other(self):
         """
@@ -43672,25 +44561,14 @@ class FedExtraDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar TeamDetails FedExtraDetails.team: More details about the team.
     :ivar OrganizationDetails FedExtraDetails.organization: More details about
         the organization.
+    :ivar TeamDetails FedExtraDetails.team: More details about the team.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
-
-    @classmethod
-    def team(cls, val):
-        """
-        Create an instance of this class set to the ``team`` tag with value
-        ``val``.
-
-        :param TeamDetails val:
-        :rtype: FedExtraDetails
-        """
-        return cls('team', val)
 
     @classmethod
     def organization(cls, val):
@@ -43703,13 +44581,16 @@ class FedExtraDetails(bb.Union):
         """
         return cls('organization', val)
 
-    def is_team(self):
+    @classmethod
+    def team(cls, val):
         """
-        Check if the union tag is ``team``.
+        Create an instance of this class set to the ``team`` tag with value
+        ``val``.
 
-        :rtype: bool
+        :param TeamDetails val:
+        :rtype: FedExtraDetails
         """
-        return self._tag == 'team'
+        return cls('team', val)
 
     def is_organization(self):
         """
@@ -43719,6 +44600,14 @@ class FedExtraDetails(bb.Union):
         """
         return self._tag == 'organization'
 
+    def is_team(self):
+        """
+        Check if the union tag is ``team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -43726,18 +44615,6 @@ class FedExtraDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
-
-    def get_team(self):
-        """
-        More details about the team.
-
-        Only call this if :meth:`is_team` is true.
-
-        :rtype: TeamDetails
-        """
-        if not self.is_team():
-            raise AttributeError("tag 'team' not set")
-        return self._value
 
     def get_organization(self):
         """
@@ -43749,6 +44626,18 @@ class FedExtraDetails(bb.Union):
         """
         if not self.is_organization():
             raise AttributeError("tag 'organization' not set")
+        return self._value
+
+    def get_team(self):
+        """
+        More details about the team.
+
+        Only call this if :meth:`is_team` is true.
+
+        :rtype: TeamDetails
+        """
+        if not self.is_team():
+            raise AttributeError("tag 'team' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -43768,27 +44657,19 @@ class FedHandshakeAction(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    invited = None
-    # Attribute is overwritten below the class definition
     accepted_invite = None
-    # Attribute is overwritten below the class definition
-    rejected_invite = None
     # Attribute is overwritten below the class definition
     canceled_invite = None
     # Attribute is overwritten below the class definition
-    removed_team = None
-    # Attribute is overwritten below the class definition
     invite_expired = None
     # Attribute is overwritten below the class definition
+    invited = None
+    # Attribute is overwritten below the class definition
+    rejected_invite = None
+    # Attribute is overwritten below the class definition
+    removed_team = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_invited(self):
-        """
-        Check if the union tag is ``invited``.
-
-        :rtype: bool
-        """
-        return self._tag == 'invited'
 
     def is_accepted_invite(self):
         """
@@ -43798,14 +44679,6 @@ class FedHandshakeAction(bb.Union):
         """
         return self._tag == 'accepted_invite'
 
-    def is_rejected_invite(self):
-        """
-        Check if the union tag is ``rejected_invite``.
-
-        :rtype: bool
-        """
-        return self._tag == 'rejected_invite'
-
     def is_canceled_invite(self):
         """
         Check if the union tag is ``canceled_invite``.
@@ -43814,14 +44687,6 @@ class FedHandshakeAction(bb.Union):
         """
         return self._tag == 'canceled_invite'
 
-    def is_removed_team(self):
-        """
-        Check if the union tag is ``removed_team``.
-
-        :rtype: bool
-        """
-        return self._tag == 'removed_team'
-
     def is_invite_expired(self):
         """
         Check if the union tag is ``invite_expired``.
@@ -43829,6 +44694,30 @@ class FedHandshakeAction(bb.Union):
         :rtype: bool
         """
         return self._tag == 'invite_expired'
+
+    def is_invited(self):
+        """
+        Check if the union tag is ``invited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invited'
+
+    def is_rejected_invite(self):
+        """
+        Check if the union tag is ``rejected_invite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'rejected_invite'
+
+    def is_removed_team(self):
+        """
+        Check if the union tag is ``removed_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'removed_team'
 
     def is_other(self):
         """
@@ -50077,6 +50966,1318 @@ class GoogleSsoPolicy(bb.Union):
 
 GoogleSsoPolicy_validator = bv.Union(GoogleSsoPolicy)
 
+class GovernancePolicyAddFoldersDetails(bb.Struct):
+    """
+    Added folders to policy.
+
+    :ivar team_log.GovernancePolicyAddFoldersDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyAddFoldersDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyAddFoldersDetails.policy_type: Policy type.
+    :ivar team_log.GovernancePolicyAddFoldersDetails.folders: Folders.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_governance_policy_id_present',
+        '_name_value',
+        '_name_present',
+        '_policy_type_value',
+        '_policy_type_present',
+        '_folders_value',
+        '_folders_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 policy_type=None,
+                 folders=None):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._policy_type_value = None
+        self._policy_type_present = False
+        self._folders_value = None
+        self._folders_present = False
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if folders is not None:
+            self.folders = folders
+
+    @property
+    def governance_policy_id(self):
+        """
+        Policy ID.
+
+        :rtype: str
+        """
+        if self._governance_policy_id_present:
+            return self._governance_policy_id_value
+        else:
+            raise AttributeError("missing required field 'governance_policy_id'")
+
+    @governance_policy_id.setter
+    def governance_policy_id(self, val):
+        val = self._governance_policy_id_validator.validate(val)
+        self._governance_policy_id_value = val
+        self._governance_policy_id_present = True
+
+    @governance_policy_id.deleter
+    def governance_policy_id(self):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+
+    @property
+    def name(self):
+        """
+        Policy name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def policy_type(self):
+        """
+        Policy type.
+
+        :rtype: PolicyType
+        """
+        if self._policy_type_present:
+            return self._policy_type_value
+        else:
+            return None
+
+    @policy_type.setter
+    def policy_type(self, val):
+        if val is None:
+            del self.policy_type
+            return
+        self._policy_type_validator.validate_type_only(val)
+        self._policy_type_value = val
+        self._policy_type_present = True
+
+    @policy_type.deleter
+    def policy_type(self):
+        self._policy_type_value = None
+        self._policy_type_present = False
+
+    @property
+    def folders(self):
+        """
+        Folders.
+
+        :rtype: list of [str]
+        """
+        if self._folders_present:
+            return self._folders_value
+        else:
+            return None
+
+    @folders.setter
+    def folders(self, val):
+        if val is None:
+            del self.folders
+            return
+        val = self._folders_validator.validate(val)
+        self._folders_value = val
+        self._folders_present = True
+
+    @folders.deleter
+    def folders(self):
+        self._folders_value = None
+        self._folders_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyAddFoldersDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyAddFoldersDetails(governance_policy_id={!r}, name={!r}, policy_type={!r}, folders={!r})'.format(
+            self._governance_policy_id_value,
+            self._name_value,
+            self._policy_type_value,
+            self._folders_value,
+        )
+
+GovernancePolicyAddFoldersDetails_validator = bv.Struct(GovernancePolicyAddFoldersDetails)
+
+class GovernancePolicyAddFoldersType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyAddFoldersType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyAddFoldersType(description={!r})'.format(
+            self._description_value,
+        )
+
+GovernancePolicyAddFoldersType_validator = bv.Struct(GovernancePolicyAddFoldersType)
+
+class GovernancePolicyCreateDetails(bb.Struct):
+    """
+    Activated a new policy.
+
+    :ivar team_log.GovernancePolicyCreateDetails.governance_policy_id: Policy
+        ID.
+    :ivar team_log.GovernancePolicyCreateDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyCreateDetails.policy_type: Policy type.
+    :ivar team_log.GovernancePolicyCreateDetails.duration: Duration in days.
+    :ivar team_log.GovernancePolicyCreateDetails.folders: Folders.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_governance_policy_id_present',
+        '_name_value',
+        '_name_present',
+        '_policy_type_value',
+        '_policy_type_present',
+        '_duration_value',
+        '_duration_present',
+        '_folders_value',
+        '_folders_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 duration=None,
+                 policy_type=None,
+                 folders=None):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._policy_type_value = None
+        self._policy_type_present = False
+        self._duration_value = None
+        self._duration_present = False
+        self._folders_value = None
+        self._folders_present = False
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if duration is not None:
+            self.duration = duration
+        if folders is not None:
+            self.folders = folders
+
+    @property
+    def governance_policy_id(self):
+        """
+        Policy ID.
+
+        :rtype: str
+        """
+        if self._governance_policy_id_present:
+            return self._governance_policy_id_value
+        else:
+            raise AttributeError("missing required field 'governance_policy_id'")
+
+    @governance_policy_id.setter
+    def governance_policy_id(self, val):
+        val = self._governance_policy_id_validator.validate(val)
+        self._governance_policy_id_value = val
+        self._governance_policy_id_present = True
+
+    @governance_policy_id.deleter
+    def governance_policy_id(self):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+
+    @property
+    def name(self):
+        """
+        Policy name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def policy_type(self):
+        """
+        Policy type.
+
+        :rtype: PolicyType
+        """
+        if self._policy_type_present:
+            return self._policy_type_value
+        else:
+            return None
+
+    @policy_type.setter
+    def policy_type(self, val):
+        if val is None:
+            del self.policy_type
+            return
+        self._policy_type_validator.validate_type_only(val)
+        self._policy_type_value = val
+        self._policy_type_present = True
+
+    @policy_type.deleter
+    def policy_type(self):
+        self._policy_type_value = None
+        self._policy_type_present = False
+
+    @property
+    def duration(self):
+        """
+        Duration in days.
+
+        :rtype: DurationLogInfo
+        """
+        if self._duration_present:
+            return self._duration_value
+        else:
+            raise AttributeError("missing required field 'duration'")
+
+    @duration.setter
+    def duration(self, val):
+        self._duration_validator.validate_type_only(val)
+        self._duration_value = val
+        self._duration_present = True
+
+    @duration.deleter
+    def duration(self):
+        self._duration_value = None
+        self._duration_present = False
+
+    @property
+    def folders(self):
+        """
+        Folders.
+
+        :rtype: list of [str]
+        """
+        if self._folders_present:
+            return self._folders_value
+        else:
+            return None
+
+    @folders.setter
+    def folders(self, val):
+        if val is None:
+            del self.folders
+            return
+        val = self._folders_validator.validate(val)
+        self._folders_value = val
+        self._folders_present = True
+
+    @folders.deleter
+    def folders(self):
+        self._folders_value = None
+        self._folders_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyCreateDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyCreateDetails(governance_policy_id={!r}, name={!r}, duration={!r}, policy_type={!r}, folders={!r})'.format(
+            self._governance_policy_id_value,
+            self._name_value,
+            self._duration_value,
+            self._policy_type_value,
+            self._folders_value,
+        )
+
+GovernancePolicyCreateDetails_validator = bv.Struct(GovernancePolicyCreateDetails)
+
+class GovernancePolicyCreateType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyCreateType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyCreateType(description={!r})'.format(
+            self._description_value,
+        )
+
+GovernancePolicyCreateType_validator = bv.Struct(GovernancePolicyCreateType)
+
+class GovernancePolicyDeleteDetails(bb.Struct):
+    """
+    Deleted a policy.
+
+    :ivar team_log.GovernancePolicyDeleteDetails.governance_policy_id: Policy
+        ID.
+    :ivar team_log.GovernancePolicyDeleteDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyDeleteDetails.policy_type: Policy type.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_governance_policy_id_present',
+        '_name_value',
+        '_name_present',
+        '_policy_type_value',
+        '_policy_type_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 policy_type=None):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._policy_type_value = None
+        self._policy_type_present = False
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+
+    @property
+    def governance_policy_id(self):
+        """
+        Policy ID.
+
+        :rtype: str
+        """
+        if self._governance_policy_id_present:
+            return self._governance_policy_id_value
+        else:
+            raise AttributeError("missing required field 'governance_policy_id'")
+
+    @governance_policy_id.setter
+    def governance_policy_id(self, val):
+        val = self._governance_policy_id_validator.validate(val)
+        self._governance_policy_id_value = val
+        self._governance_policy_id_present = True
+
+    @governance_policy_id.deleter
+    def governance_policy_id(self):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+
+    @property
+    def name(self):
+        """
+        Policy name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def policy_type(self):
+        """
+        Policy type.
+
+        :rtype: PolicyType
+        """
+        if self._policy_type_present:
+            return self._policy_type_value
+        else:
+            return None
+
+    @policy_type.setter
+    def policy_type(self, val):
+        if val is None:
+            del self.policy_type
+            return
+        self._policy_type_validator.validate_type_only(val)
+        self._policy_type_value = val
+        self._policy_type_present = True
+
+    @policy_type.deleter
+    def policy_type(self):
+        self._policy_type_value = None
+        self._policy_type_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyDeleteDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyDeleteDetails(governance_policy_id={!r}, name={!r}, policy_type={!r})'.format(
+            self._governance_policy_id_value,
+            self._name_value,
+            self._policy_type_value,
+        )
+
+GovernancePolicyDeleteDetails_validator = bv.Struct(GovernancePolicyDeleteDetails)
+
+class GovernancePolicyDeleteType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyDeleteType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyDeleteType(description={!r})'.format(
+            self._description_value,
+        )
+
+GovernancePolicyDeleteType_validator = bv.Struct(GovernancePolicyDeleteType)
+
+class GovernancePolicyEditDetailsDetails(bb.Struct):
+    """
+    Edited policy.
+
+    :ivar team_log.GovernancePolicyEditDetailsDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyEditDetailsDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyEditDetailsDetails.policy_type: Policy type.
+    :ivar team_log.GovernancePolicyEditDetailsDetails.attribute: Attribute.
+    :ivar team_log.GovernancePolicyEditDetailsDetails.previous_value: From.
+    :ivar team_log.GovernancePolicyEditDetailsDetails.new_value: To.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_governance_policy_id_present',
+        '_name_value',
+        '_name_present',
+        '_policy_type_value',
+        '_policy_type_present',
+        '_attribute_value',
+        '_attribute_present',
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 attribute=None,
+                 previous_value=None,
+                 new_value=None,
+                 policy_type=None):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._policy_type_value = None
+        self._policy_type_present = False
+        self._attribute_value = None
+        self._attribute_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if attribute is not None:
+            self.attribute = attribute
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def governance_policy_id(self):
+        """
+        Policy ID.
+
+        :rtype: str
+        """
+        if self._governance_policy_id_present:
+            return self._governance_policy_id_value
+        else:
+            raise AttributeError("missing required field 'governance_policy_id'")
+
+    @governance_policy_id.setter
+    def governance_policy_id(self, val):
+        val = self._governance_policy_id_validator.validate(val)
+        self._governance_policy_id_value = val
+        self._governance_policy_id_present = True
+
+    @governance_policy_id.deleter
+    def governance_policy_id(self):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+
+    @property
+    def name(self):
+        """
+        Policy name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def policy_type(self):
+        """
+        Policy type.
+
+        :rtype: PolicyType
+        """
+        if self._policy_type_present:
+            return self._policy_type_value
+        else:
+            return None
+
+    @policy_type.setter
+    def policy_type(self, val):
+        if val is None:
+            del self.policy_type
+            return
+        self._policy_type_validator.validate_type_only(val)
+        self._policy_type_value = val
+        self._policy_type_present = True
+
+    @policy_type.deleter
+    def policy_type(self):
+        self._policy_type_value = None
+        self._policy_type_present = False
+
+    @property
+    def attribute(self):
+        """
+        Attribute.
+
+        :rtype: str
+        """
+        if self._attribute_present:
+            return self._attribute_value
+        else:
+            raise AttributeError("missing required field 'attribute'")
+
+    @attribute.setter
+    def attribute(self, val):
+        val = self._attribute_validator.validate(val)
+        self._attribute_value = val
+        self._attribute_present = True
+
+    @attribute.deleter
+    def attribute(self):
+        self._attribute_value = None
+        self._attribute_present = False
+
+    @property
+    def previous_value(self):
+        """
+        From.
+
+        :rtype: str
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        val = self._previous_value_validator.validate(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        To.
+
+        :rtype: str
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        val = self._new_value_validator.validate(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyEditDetailsDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyEditDetailsDetails(governance_policy_id={!r}, name={!r}, attribute={!r}, previous_value={!r}, new_value={!r}, policy_type={!r})'.format(
+            self._governance_policy_id_value,
+            self._name_value,
+            self._attribute_value,
+            self._previous_value_value,
+            self._new_value_value,
+            self._policy_type_value,
+        )
+
+GovernancePolicyEditDetailsDetails_validator = bv.Struct(GovernancePolicyEditDetailsDetails)
+
+class GovernancePolicyEditDetailsType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyEditDetailsType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyEditDetailsType(description={!r})'.format(
+            self._description_value,
+        )
+
+GovernancePolicyEditDetailsType_validator = bv.Struct(GovernancePolicyEditDetailsType)
+
+class GovernancePolicyEditDurationDetails(bb.Struct):
+    """
+    Changed policy duration.
+
+    :ivar team_log.GovernancePolicyEditDurationDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyEditDurationDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyEditDurationDetails.policy_type: Policy type.
+    :ivar team_log.GovernancePolicyEditDurationDetails.previous_value: From.
+    :ivar team_log.GovernancePolicyEditDurationDetails.new_value: To.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_governance_policy_id_present',
+        '_name_value',
+        '_name_present',
+        '_policy_type_value',
+        '_policy_type_present',
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 previous_value=None,
+                 new_value=None,
+                 policy_type=None):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._policy_type_value = None
+        self._policy_type_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    @property
+    def governance_policy_id(self):
+        """
+        Policy ID.
+
+        :rtype: str
+        """
+        if self._governance_policy_id_present:
+            return self._governance_policy_id_value
+        else:
+            raise AttributeError("missing required field 'governance_policy_id'")
+
+    @governance_policy_id.setter
+    def governance_policy_id(self, val):
+        val = self._governance_policy_id_validator.validate(val)
+        self._governance_policy_id_value = val
+        self._governance_policy_id_present = True
+
+    @governance_policy_id.deleter
+    def governance_policy_id(self):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+
+    @property
+    def name(self):
+        """
+        Policy name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def policy_type(self):
+        """
+        Policy type.
+
+        :rtype: PolicyType
+        """
+        if self._policy_type_present:
+            return self._policy_type_value
+        else:
+            return None
+
+    @policy_type.setter
+    def policy_type(self, val):
+        if val is None:
+            del self.policy_type
+            return
+        self._policy_type_validator.validate_type_only(val)
+        self._policy_type_value = val
+        self._policy_type_present = True
+
+    @policy_type.deleter
+    def policy_type(self):
+        self._policy_type_value = None
+        self._policy_type_present = False
+
+    @property
+    def previous_value(self):
+        """
+        From.
+
+        :rtype: DurationLogInfo
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        To.
+
+        :rtype: DurationLogInfo
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyEditDurationDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyEditDurationDetails(governance_policy_id={!r}, name={!r}, previous_value={!r}, new_value={!r}, policy_type={!r})'.format(
+            self._governance_policy_id_value,
+            self._name_value,
+            self._previous_value_value,
+            self._new_value_value,
+            self._policy_type_value,
+        )
+
+GovernancePolicyEditDurationDetails_validator = bv.Struct(GovernancePolicyEditDurationDetails)
+
+class GovernancePolicyEditDurationType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyEditDurationType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyEditDurationType(description={!r})'.format(
+            self._description_value,
+        )
+
+GovernancePolicyEditDurationType_validator = bv.Struct(GovernancePolicyEditDurationType)
+
+class GovernancePolicyRemoveFoldersDetails(bb.Struct):
+    """
+    Removed folders from policy.
+
+    :ivar team_log.GovernancePolicyRemoveFoldersDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyRemoveFoldersDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyRemoveFoldersDetails.policy_type: Policy
+        type.
+    :ivar team_log.GovernancePolicyRemoveFoldersDetails.folders: Folders.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_governance_policy_id_present',
+        '_name_value',
+        '_name_present',
+        '_policy_type_value',
+        '_policy_type_present',
+        '_folders_value',
+        '_folders_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 policy_type=None,
+                 folders=None):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+        self._name_value = None
+        self._name_present = False
+        self._policy_type_value = None
+        self._policy_type_present = False
+        self._folders_value = None
+        self._folders_present = False
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if folders is not None:
+            self.folders = folders
+
+    @property
+    def governance_policy_id(self):
+        """
+        Policy ID.
+
+        :rtype: str
+        """
+        if self._governance_policy_id_present:
+            return self._governance_policy_id_value
+        else:
+            raise AttributeError("missing required field 'governance_policy_id'")
+
+    @governance_policy_id.setter
+    def governance_policy_id(self, val):
+        val = self._governance_policy_id_validator.validate(val)
+        self._governance_policy_id_value = val
+        self._governance_policy_id_present = True
+
+    @governance_policy_id.deleter
+    def governance_policy_id(self):
+        self._governance_policy_id_value = None
+        self._governance_policy_id_present = False
+
+    @property
+    def name(self):
+        """
+        Policy name.
+
+        :rtype: str
+        """
+        if self._name_present:
+            return self._name_value
+        else:
+            raise AttributeError("missing required field 'name'")
+
+    @name.setter
+    def name(self, val):
+        val = self._name_validator.validate(val)
+        self._name_value = val
+        self._name_present = True
+
+    @name.deleter
+    def name(self):
+        self._name_value = None
+        self._name_present = False
+
+    @property
+    def policy_type(self):
+        """
+        Policy type.
+
+        :rtype: PolicyType
+        """
+        if self._policy_type_present:
+            return self._policy_type_value
+        else:
+            return None
+
+    @policy_type.setter
+    def policy_type(self, val):
+        if val is None:
+            del self.policy_type
+            return
+        self._policy_type_validator.validate_type_only(val)
+        self._policy_type_value = val
+        self._policy_type_present = True
+
+    @policy_type.deleter
+    def policy_type(self):
+        self._policy_type_value = None
+        self._policy_type_present = False
+
+    @property
+    def folders(self):
+        """
+        Folders.
+
+        :rtype: list of [str]
+        """
+        if self._folders_present:
+            return self._folders_value
+        else:
+            return None
+
+    @folders.setter
+    def folders(self, val):
+        if val is None:
+            del self.folders
+            return
+        val = self._folders_validator.validate(val)
+        self._folders_value = val
+        self._folders_present = True
+
+    @folders.deleter
+    def folders(self):
+        self._folders_value = None
+        self._folders_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyRemoveFoldersDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyRemoveFoldersDetails(governance_policy_id={!r}, name={!r}, policy_type={!r}, folders={!r})'.format(
+            self._governance_policy_id_value,
+            self._name_value,
+            self._policy_type_value,
+            self._folders_value,
+        )
+
+GovernancePolicyRemoveFoldersDetails_validator = bv.Struct(GovernancePolicyRemoveFoldersDetails)
+
+class GovernancePolicyRemoveFoldersType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyRemoveFoldersType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'GovernancePolicyRemoveFoldersType(description={!r})'.format(
+            self._description_value,
+        )
+
+GovernancePolicyRemoveFoldersType_validator = bv.Struct(GovernancePolicyRemoveFoldersType)
+
 class GroupAddExternalIdDetails(bb.Struct):
     """
     Added external ID for group.
@@ -52820,13 +55021,23 @@ class InviteMethod(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    auto_approve = None
+    # Attribute is overwritten below the class definition
     invite_link = None
     # Attribute is overwritten below the class definition
-    auto_approve = None
+    member_invite = None
     # Attribute is overwritten below the class definition
     moved_from_another_team = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_auto_approve(self):
+        """
+        Check if the union tag is ``auto_approve``.
+
+        :rtype: bool
+        """
+        return self._tag == 'auto_approve'
 
     def is_invite_link(self):
         """
@@ -52836,13 +55047,13 @@ class InviteMethod(bb.Union):
         """
         return self._tag == 'invite_link'
 
-    def is_auto_approve(self):
+    def is_member_invite(self):
         """
-        Check if the union tag is ``auto_approve``.
+        Check if the union tag is ``member_invite``.
 
         :rtype: bool
         """
-        return self._tag == 'auto_approve'
+        return self._tag == 'member_invite'
 
     def is_moved_from_another_team(self):
         """
@@ -55412,31 +57623,20 @@ class LinkedDeviceLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar MobileDeviceSessionLogInfo LinkedDeviceLogInfo.mobile_device_session:
-        mobile device session's details.
     :ivar DesktopDeviceSessionLogInfo
         LinkedDeviceLogInfo.desktop_device_session: desktop device session's
         details.
-    :ivar WebDeviceSessionLogInfo LinkedDeviceLogInfo.web_device_session: web
-        device session's details.
     :ivar LegacyDeviceSessionLogInfo LinkedDeviceLogInfo.legacy_device_session:
         legacy device session's details.
+    :ivar MobileDeviceSessionLogInfo LinkedDeviceLogInfo.mobile_device_session:
+        mobile device session's details.
+    :ivar WebDeviceSessionLogInfo LinkedDeviceLogInfo.web_device_session: web
+        device session's details.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
-
-    @classmethod
-    def mobile_device_session(cls, val):
-        """
-        Create an instance of this class set to the ``mobile_device_session``
-        tag with value ``val``.
-
-        :param MobileDeviceSessionLogInfo val:
-        :rtype: LinkedDeviceLogInfo
-        """
-        return cls('mobile_device_session', val)
 
     @classmethod
     def desktop_device_session(cls, val):
@@ -55450,17 +57650,6 @@ class LinkedDeviceLogInfo(bb.Union):
         return cls('desktop_device_session', val)
 
     @classmethod
-    def web_device_session(cls, val):
-        """
-        Create an instance of this class set to the ``web_device_session`` tag
-        with value ``val``.
-
-        :param WebDeviceSessionLogInfo val:
-        :rtype: LinkedDeviceLogInfo
-        """
-        return cls('web_device_session', val)
-
-    @classmethod
     def legacy_device_session(cls, val):
         """
         Create an instance of this class set to the ``legacy_device_session``
@@ -55471,13 +57660,27 @@ class LinkedDeviceLogInfo(bb.Union):
         """
         return cls('legacy_device_session', val)
 
-    def is_mobile_device_session(self):
+    @classmethod
+    def mobile_device_session(cls, val):
         """
-        Check if the union tag is ``mobile_device_session``.
+        Create an instance of this class set to the ``mobile_device_session``
+        tag with value ``val``.
 
-        :rtype: bool
+        :param MobileDeviceSessionLogInfo val:
+        :rtype: LinkedDeviceLogInfo
         """
-        return self._tag == 'mobile_device_session'
+        return cls('mobile_device_session', val)
+
+    @classmethod
+    def web_device_session(cls, val):
+        """
+        Create an instance of this class set to the ``web_device_session`` tag
+        with value ``val``.
+
+        :param WebDeviceSessionLogInfo val:
+        :rtype: LinkedDeviceLogInfo
+        """
+        return cls('web_device_session', val)
 
     def is_desktop_device_session(self):
         """
@@ -55487,14 +57690,6 @@ class LinkedDeviceLogInfo(bb.Union):
         """
         return self._tag == 'desktop_device_session'
 
-    def is_web_device_session(self):
-        """
-        Check if the union tag is ``web_device_session``.
-
-        :rtype: bool
-        """
-        return self._tag == 'web_device_session'
-
     def is_legacy_device_session(self):
         """
         Check if the union tag is ``legacy_device_session``.
@@ -55503,6 +57698,22 @@ class LinkedDeviceLogInfo(bb.Union):
         """
         return self._tag == 'legacy_device_session'
 
+    def is_mobile_device_session(self):
+        """
+        Check if the union tag is ``mobile_device_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'mobile_device_session'
+
+    def is_web_device_session(self):
+        """
+        Check if the union tag is ``web_device_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_device_session'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -55510,18 +57721,6 @@ class LinkedDeviceLogInfo(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
-
-    def get_mobile_device_session(self):
-        """
-        mobile device session's details.
-
-        Only call this if :meth:`is_mobile_device_session` is true.
-
-        :rtype: MobileDeviceSessionLogInfo
-        """
-        if not self.is_mobile_device_session():
-            raise AttributeError("tag 'mobile_device_session' not set")
-        return self._value
 
     def get_desktop_device_session(self):
         """
@@ -55535,18 +57734,6 @@ class LinkedDeviceLogInfo(bb.Union):
             raise AttributeError("tag 'desktop_device_session' not set")
         return self._value
 
-    def get_web_device_session(self):
-        """
-        web device session's details.
-
-        Only call this if :meth:`is_web_device_session` is true.
-
-        :rtype: WebDeviceSessionLogInfo
-        """
-        if not self.is_web_device_session():
-            raise AttributeError("tag 'web_device_session' not set")
-        return self._value
-
     def get_legacy_device_session(self):
         """
         legacy device session's details.
@@ -55557,6 +57744,30 @@ class LinkedDeviceLogInfo(bb.Union):
         """
         if not self.is_legacy_device_session():
             raise AttributeError("tag 'legacy_device_session' not set")
+        return self._value
+
+    def get_mobile_device_session(self):
+        """
+        mobile device session's details.
+
+        Only call this if :meth:`is_mobile_device_session` is true.
+
+        :rtype: MobileDeviceSessionLogInfo
+        """
+        if not self.is_mobile_device_session():
+            raise AttributeError("tag 'mobile_device_session' not set")
+        return self._value
+
+    def get_web_device_session(self):
+        """
+        web device session's details.
+
+        Only call this if :meth:`is_web_device_session` is true.
+
+        :rtype: WebDeviceSessionLogInfo
+        """
+        if not self.is_web_device_session():
+            raise AttributeError("tag 'web_device_session' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -55795,71 +58006,23 @@ class LoginMethod(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    password = None
-    # Attribute is overwritten below the class definition
-    two_factor_authentication = None
-    # Attribute is overwritten below the class definition
-    saml = None
-    # Attribute is overwritten below the class definition
-    google_oauth = None
-    # Attribute is overwritten below the class definition
-    web_session = None
-    # Attribute is overwritten below the class definition
-    qr_code = None
-    # Attribute is overwritten below the class definition
     apple_oauth = None
     # Attribute is overwritten below the class definition
     first_party_token_exchange = None
     # Attribute is overwritten below the class definition
+    google_oauth = None
+    # Attribute is overwritten below the class definition
+    password = None
+    # Attribute is overwritten below the class definition
+    qr_code = None
+    # Attribute is overwritten below the class definition
+    saml = None
+    # Attribute is overwritten below the class definition
+    two_factor_authentication = None
+    # Attribute is overwritten below the class definition
+    web_session = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_password(self):
-        """
-        Check if the union tag is ``password``.
-
-        :rtype: bool
-        """
-        return self._tag == 'password'
-
-    def is_two_factor_authentication(self):
-        """
-        Check if the union tag is ``two_factor_authentication``.
-
-        :rtype: bool
-        """
-        return self._tag == 'two_factor_authentication'
-
-    def is_saml(self):
-        """
-        Check if the union tag is ``saml``.
-
-        :rtype: bool
-        """
-        return self._tag == 'saml'
-
-    def is_google_oauth(self):
-        """
-        Check if the union tag is ``google_oauth``.
-
-        :rtype: bool
-        """
-        return self._tag == 'google_oauth'
-
-    def is_web_session(self):
-        """
-        Check if the union tag is ``web_session``.
-
-        :rtype: bool
-        """
-        return self._tag == 'web_session'
-
-    def is_qr_code(self):
-        """
-        Check if the union tag is ``qr_code``.
-
-        :rtype: bool
-        """
-        return self._tag == 'qr_code'
 
     def is_apple_oauth(self):
         """
@@ -55876,6 +58039,54 @@ class LoginMethod(bb.Union):
         :rtype: bool
         """
         return self._tag == 'first_party_token_exchange'
+
+    def is_google_oauth(self):
+        """
+        Check if the union tag is ``google_oauth``.
+
+        :rtype: bool
+        """
+        return self._tag == 'google_oauth'
+
+    def is_password(self):
+        """
+        Check if the union tag is ``password``.
+
+        :rtype: bool
+        """
+        return self._tag == 'password'
+
+    def is_qr_code(self):
+        """
+        Check if the union tag is ``qr_code``.
+
+        :rtype: bool
+        """
+        return self._tag == 'qr_code'
+
+    def is_saml(self):
+        """
+        Check if the union tag is ``saml``.
+
+        :rtype: bool
+        """
+        return self._tag == 'saml'
+
+    def is_two_factor_authentication(self):
+        """
+        Check if the union tag is ``two_factor_authentication``.
+
+        :rtype: bool
+        """
+        return self._tag == 'two_factor_authentication'
+
+    def is_web_session(self):
+        """
+        Check if the union tag is ``web_session``.
+
+        :rtype: bool
+        """
+        return self._tag == 'web_session'
 
     def is_other(self):
         """
@@ -56034,21 +58245,57 @@ LoginSuccessType_validator = bv.Struct(LoginSuccessType)
 class LogoutDetails(bb.Struct):
     """
     Signed out.
+
+    :ivar team_log.LogoutDetails.login_id: Login session id.
     """
 
     __slots__ = [
+        '_login_id_value',
+        '_login_id_present',
     ]
 
     _has_required_fields = False
 
-    def __init__(self):
-        pass
+    def __init__(self,
+                 login_id=None):
+        self._login_id_value = None
+        self._login_id_present = False
+        if login_id is not None:
+            self.login_id = login_id
+
+    @property
+    def login_id(self):
+        """
+        Login session id.
+
+        :rtype: str
+        """
+        if self._login_id_present:
+            return self._login_id_value
+        else:
+            return None
+
+    @login_id.setter
+    def login_id(self, val):
+        if val is None:
+            del self.login_id
+            return
+        val = self._login_id_validator.validate(val)
+        self._login_id_value = val
+        self._login_id_present = True
+
+    @login_id.deleter
+    def login_id(self):
+        self._login_id_value = None
+        self._login_id_present = False
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LogoutDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'LogoutDetails()'
+        return 'LogoutDetails(login_id={!r})'.format(
+            self._login_id_value,
+        )
 
 LogoutDetails_validator = bv.Struct(LogoutDetails)
 
@@ -57453,9 +59700,9 @@ class MemberRemoveActionType(bb.Union):
     # Attribute is overwritten below the class definition
     delete = None
     # Attribute is overwritten below the class definition
-    offboard = None
-    # Attribute is overwritten below the class definition
     leave = None
+    # Attribute is overwritten below the class definition
+    offboard = None
     # Attribute is overwritten below the class definition
     offboard_and_retain_team_folders = None
     # Attribute is overwritten below the class definition
@@ -57469,14 +59716,6 @@ class MemberRemoveActionType(bb.Union):
         """
         return self._tag == 'delete'
 
-    def is_offboard(self):
-        """
-        Check if the union tag is ``offboard``.
-
-        :rtype: bool
-        """
-        return self._tag == 'offboard'
-
     def is_leave(self):
         """
         Check if the union tag is ``leave``.
@@ -57484,6 +59723,14 @@ class MemberRemoveActionType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'leave'
+
+    def is_offboard(self):
+        """
+        Check if the union tag is ``offboard``.
+
+        :rtype: bool
+        """
+        return self._tag == 'offboard'
 
     def is_offboard_and_retain_team_folders(self):
         """
@@ -57821,9 +60068,9 @@ class MemberSendInvitePolicy(bb.Union):
     # Attribute is overwritten below the class definition
     disabled = None
     # Attribute is overwritten below the class definition
-    specific_members = None
-    # Attribute is overwritten below the class definition
     everyone = None
+    # Attribute is overwritten below the class definition
+    specific_members = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -57835,14 +60082,6 @@ class MemberSendInvitePolicy(bb.Union):
         """
         return self._tag == 'disabled'
 
-    def is_specific_members(self):
-        """
-        Check if the union tag is ``specific_members``.
-
-        :rtype: bool
-        """
-        return self._tag == 'specific_members'
-
     def is_everyone(self):
         """
         Check if the union tag is ``everyone``.
@@ -57850,6 +60089,14 @@ class MemberSendInvitePolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'everyone'
+
+    def is_specific_members(self):
+        """
+        Check if the union tag is ``specific_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'specific_members'
 
     def is_other(self):
         """
@@ -58935,35 +61182,19 @@ class MemberStatus(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    not_joined = None
+    active = None
     # Attribute is overwritten below the class definition
     invited = None
     # Attribute is overwritten below the class definition
-    active = None
+    moved_to_another_team = None
     # Attribute is overwritten below the class definition
-    suspended = None
+    not_joined = None
     # Attribute is overwritten below the class definition
     removed = None
     # Attribute is overwritten below the class definition
-    moved_to_another_team = None
+    suspended = None
     # Attribute is overwritten below the class definition
     other = None
-
-    def is_not_joined(self):
-        """
-        Check if the union tag is ``not_joined``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_joined'
-
-    def is_invited(self):
-        """
-        Check if the union tag is ``invited``.
-
-        :rtype: bool
-        """
-        return self._tag == 'invited'
 
     def is_active(self):
         """
@@ -58973,13 +61204,29 @@ class MemberStatus(bb.Union):
         """
         return self._tag == 'active'
 
-    def is_suspended(self):
+    def is_invited(self):
         """
-        Check if the union tag is ``suspended``.
+        Check if the union tag is ``invited``.
 
         :rtype: bool
         """
-        return self._tag == 'suspended'
+        return self._tag == 'invited'
+
+    def is_moved_to_another_team(self):
+        """
+        Check if the union tag is ``moved_to_another_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'moved_to_another_team'
+
+    def is_not_joined(self):
+        """
+        Check if the union tag is ``not_joined``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_joined'
 
     def is_removed(self):
         """
@@ -58989,13 +61236,13 @@ class MemberStatus(bb.Union):
         """
         return self._tag == 'removed'
 
-    def is_moved_to_another_team(self):
+    def is_suspended(self):
         """
-        Check if the union tag is ``moved_to_another_team``.
+        Check if the union tag is ``suspended``.
 
         :rtype: bool
         """
-        return self._tag == 'moved_to_another_team'
+        return self._tag == 'suspended'
 
     def is_other(self):
         """
@@ -61985,21 +64232,13 @@ class PaperAccessType(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    viewer = None
-    # Attribute is overwritten below the class definition
     commenter = None
     # Attribute is overwritten below the class definition
     editor = None
     # Attribute is overwritten below the class definition
+    viewer = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_viewer(self):
-        """
-        Check if the union tag is ``viewer``.
-
-        :rtype: bool
-        """
-        return self._tag == 'viewer'
 
     def is_commenter(self):
         """
@@ -62016,6 +64255,14 @@ class PaperAccessType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'editor'
+
+    def is_viewer(self):
+        """
+        Check if the union tag is ``viewer``.
+
+        :rtype: bool
+        """
+        return self._tag == 'viewer'
 
     def is_other(self):
         """
@@ -68344,24 +70591,13 @@ class ParticipantLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserLogInfo ParticipantLogInfo.user: A user with a Dropbox account.
     :ivar GroupLogInfo ParticipantLogInfo.group: Group details.
+    :ivar UserLogInfo ParticipantLogInfo.user: A user with a Dropbox account.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
-
-    @classmethod
-    def user(cls, val):
-        """
-        Create an instance of this class set to the ``user`` tag with value
-        ``val``.
-
-        :param UserLogInfo val:
-        :rtype: ParticipantLogInfo
-        """
-        return cls('user', val)
 
     @classmethod
     def group(cls, val):
@@ -68374,13 +70610,16 @@ class ParticipantLogInfo(bb.Union):
         """
         return cls('group', val)
 
-    def is_user(self):
+    @classmethod
+    def user(cls, val):
         """
-        Check if the union tag is ``user``.
+        Create an instance of this class set to the ``user`` tag with value
+        ``val``.
 
-        :rtype: bool
+        :param UserLogInfo val:
+        :rtype: ParticipantLogInfo
         """
-        return self._tag == 'user'
+        return cls('user', val)
 
     def is_group(self):
         """
@@ -68390,6 +70629,14 @@ class ParticipantLogInfo(bb.Union):
         """
         return self._tag == 'group'
 
+    def is_user(self):
+        """
+        Check if the union tag is ``user``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -68397,18 +70644,6 @@ class ParticipantLogInfo(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
-
-    def get_user(self):
-        """
-        A user with a Dropbox account.
-
-        Only call this if :meth:`is_user` is true.
-
-        :rtype: UserLogInfo
-        """
-        if not self.is_user():
-            raise AttributeError("tag 'user' not set")
-        return self._value
 
     def get_group(self):
         """
@@ -68420,6 +70655,18 @@ class ParticipantLogInfo(bb.Union):
         """
         if not self.is_group():
             raise AttributeError("tag 'group' not set")
+        return self._value
+
+    def get_user(self):
+        """
+        A user with a Dropbox account.
+
+        Only call this if :meth:`is_user` is true.
+
+        :rtype: UserLogInfo
+        """
+        if not self.is_user():
+            raise AttributeError("tag 'user' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -68439,21 +70686,13 @@ class PassPolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    enabled = None
-    # Attribute is overwritten below the class definition
     allow = None
     # Attribute is overwritten below the class definition
     disabled = None
     # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_enabled(self):
-        """
-        Check if the union tag is ``enabled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'enabled'
 
     def is_allow(self):
         """
@@ -68470,6 +70709,14 @@ class PassPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
 
     def is_other(self):
         """
@@ -69227,6 +71474,43 @@ class PlacementRestriction(bb.Union):
         return 'PlacementRestriction(%r, %r)' % (self._tag, self._value)
 
 PlacementRestriction_validator = bv.Union(PlacementRestriction)
+
+class PolicyType(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    retention = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_retention(self):
+        """
+        Check if the union tag is ``retention``.
+
+        :rtype: bool
+        """
+        return self._tag == 'retention'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'PolicyType(%r, %r)' % (self._tag, self._value)
+
+PolicyType_validator = bv.Union(PolicyType)
 
 class PrimaryTeamRequestAcceptedDetails(bb.Struct):
     """
@@ -77106,19 +79390,11 @@ class SharedFolderMembersInheritancePolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    inherit_members = None
-    # Attribute is overwritten below the class definition
     dont_inherit_members = None
     # Attribute is overwritten below the class definition
+    inherit_members = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_inherit_members(self):
-        """
-        Check if the union tag is ``inherit_members``.
-
-        :rtype: bool
-        """
-        return self._tag == 'inherit_members'
 
     def is_dont_inherit_members(self):
         """
@@ -77127,6 +79403,14 @@ class SharedFolderMembersInheritancePolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'dont_inherit_members'
+
+    def is_inherit_members(self):
+        """
+        Check if the union tag is ``inherit_members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'inherit_members'
 
     def is_other(self):
         """
@@ -81047,6 +83331,216 @@ class SharingMemberPolicy(bb.Union):
         return 'SharingMemberPolicy(%r, %r)' % (self._tag, self._value)
 
 SharingMemberPolicy_validator = bv.Union(SharingMemberPolicy)
+
+class ShmodelDisableDownloadsDetails(bb.Struct):
+    """
+    Disabled downloads for link.
+
+    :ivar team_log.ShmodelDisableDownloadsDetails.shared_link_owner: Shared link
+        owner details. Might be missing due to historical data gap.
+    """
+
+    __slots__ = [
+        '_shared_link_owner_value',
+        '_shared_link_owner_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 shared_link_owner=None):
+        self._shared_link_owner_value = None
+        self._shared_link_owner_present = False
+        if shared_link_owner is not None:
+            self.shared_link_owner = shared_link_owner
+
+    @property
+    def shared_link_owner(self):
+        """
+        Shared link owner details. Might be missing due to historical data gap.
+
+        :rtype: UserLogInfo
+        """
+        if self._shared_link_owner_present:
+            return self._shared_link_owner_value
+        else:
+            return None
+
+    @shared_link_owner.setter
+    def shared_link_owner(self, val):
+        if val is None:
+            del self.shared_link_owner
+            return
+        self._shared_link_owner_validator.validate_type_only(val)
+        self._shared_link_owner_value = val
+        self._shared_link_owner_present = True
+
+    @shared_link_owner.deleter
+    def shared_link_owner(self):
+        self._shared_link_owner_value = None
+        self._shared_link_owner_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShmodelDisableDownloadsDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ShmodelDisableDownloadsDetails(shared_link_owner={!r})'.format(
+            self._shared_link_owner_value,
+        )
+
+ShmodelDisableDownloadsDetails_validator = bv.Struct(ShmodelDisableDownloadsDetails)
+
+class ShmodelDisableDownloadsType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShmodelDisableDownloadsType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ShmodelDisableDownloadsType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShmodelDisableDownloadsType_validator = bv.Struct(ShmodelDisableDownloadsType)
+
+class ShmodelEnableDownloadsDetails(bb.Struct):
+    """
+    Enabled downloads for link.
+
+    :ivar team_log.ShmodelEnableDownloadsDetails.shared_link_owner: Shared link
+        owner details. Might be missing due to historical data gap.
+    """
+
+    __slots__ = [
+        '_shared_link_owner_value',
+        '_shared_link_owner_present',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 shared_link_owner=None):
+        self._shared_link_owner_value = None
+        self._shared_link_owner_present = False
+        if shared_link_owner is not None:
+            self.shared_link_owner = shared_link_owner
+
+    @property
+    def shared_link_owner(self):
+        """
+        Shared link owner details. Might be missing due to historical data gap.
+
+        :rtype: UserLogInfo
+        """
+        if self._shared_link_owner_present:
+            return self._shared_link_owner_value
+        else:
+            return None
+
+    @shared_link_owner.setter
+    def shared_link_owner(self, val):
+        if val is None:
+            del self.shared_link_owner
+            return
+        self._shared_link_owner_validator.validate_type_only(val)
+        self._shared_link_owner_value = val
+        self._shared_link_owner_present = True
+
+    @shared_link_owner.deleter
+    def shared_link_owner(self):
+        self._shared_link_owner_value = None
+        self._shared_link_owner_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShmodelEnableDownloadsDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ShmodelEnableDownloadsDetails(shared_link_owner={!r})'.format(
+            self._shared_link_owner_value,
+        )
+
+ShmodelEnableDownloadsDetails_validator = bv.Struct(ShmodelEnableDownloadsDetails)
+
+class ShmodelEnableDownloadsType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShmodelEnableDownloadsType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ShmodelEnableDownloadsType(description={!r})'.format(
+            self._description_value,
+        )
+
+ShmodelEnableDownloadsType_validator = bv.Struct(ShmodelEnableDownloadsType)
 
 class ShmodelGroupShareDetails(bb.Struct):
     """
@@ -85266,21 +87760,13 @@ class SpaceLimitsStatus(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    within_quota = None
-    # Attribute is overwritten below the class definition
     near_quota = None
     # Attribute is overwritten below the class definition
     over_quota = None
     # Attribute is overwritten below the class definition
+    within_quota = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_within_quota(self):
-        """
-        Check if the union tag is ``within_quota``.
-
-        :rtype: bool
-        """
-        return self._tag == 'within_quota'
 
     def is_near_quota(self):
         """
@@ -85297,6 +87783,14 @@ class SpaceLimitsStatus(bb.Union):
         :rtype: bool
         """
         return self._tag == 'over_quota'
+
+    def is_within_quota(self):
+        """
+        Check if the union tag is ``within_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == 'within_quota'
 
     def is_other(self):
         """
@@ -88167,21 +90661,30 @@ class TeamInviteDetails(bb.Struct):
 
     :ivar team_log.TeamInviteDetails.invite_method: How the user was invited to
         the team.
+    :ivar team_log.TeamInviteDetails.additional_license_purchase: True if the
+        invitation incurred an additional license purchase.
     """
 
     __slots__ = [
         '_invite_method_value',
         '_invite_method_present',
+        '_additional_license_purchase_value',
+        '_additional_license_purchase_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 invite_method=None):
+                 invite_method=None,
+                 additional_license_purchase=None):
         self._invite_method_value = None
         self._invite_method_present = False
+        self._additional_license_purchase_value = None
+        self._additional_license_purchase_present = False
         if invite_method is not None:
             self.invite_method = invite_method
+        if additional_license_purchase is not None:
+            self.additional_license_purchase = additional_license_purchase
 
     @property
     def invite_method(self):
@@ -88206,12 +90709,39 @@ class TeamInviteDetails(bb.Struct):
         self._invite_method_value = None
         self._invite_method_present = False
 
+    @property
+    def additional_license_purchase(self):
+        """
+        True if the invitation incurred an additional license purchase.
+
+        :rtype: bool
+        """
+        if self._additional_license_purchase_present:
+            return self._additional_license_purchase_value
+        else:
+            return None
+
+    @additional_license_purchase.setter
+    def additional_license_purchase(self, val):
+        if val is None:
+            del self.additional_license_purchase
+            return
+        val = self._additional_license_purchase_validator.validate(val)
+        self._additional_license_purchase_value = val
+        self._additional_license_purchase_present = True
+
+    @additional_license_purchase.deleter
+    def additional_license_purchase(self):
+        self._additional_license_purchase_value = None
+        self._additional_license_purchase_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamInviteDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'TeamInviteDetails(invite_method={!r})'.format(
+        return 'TeamInviteDetails(invite_method={!r}, additional_license_purchase={!r})'.format(
             self._invite_method_value,
+            self._additional_license_purchase_value,
         )
 
 TeamInviteDetails_validator = bv.Struct(TeamInviteDetails)
@@ -88445,19 +90975,11 @@ class TeamMembershipType(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    full = None
-    # Attribute is overwritten below the class definition
     free = None
     # Attribute is overwritten below the class definition
+    full = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_full(self):
-        """
-        Check if the union tag is ``full``.
-
-        :rtype: bool
-        """
-        return self._tag == 'full'
 
     def is_free(self):
         """
@@ -88466,6 +90988,14 @@ class TeamMembershipType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'free'
+
+    def is_full(self):
+        """
+        Check if the union tag is ``full``.
+
+        :rtype: bool
+        """
+        return self._tag == 'full'
 
     def is_other(self):
         """
@@ -92804,15 +95334,23 @@ class TfaConfiguration(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    authenticator = None
+    # Attribute is overwritten below the class definition
     disabled = None
     # Attribute is overwritten below the class definition
     enabled = None
     # Attribute is overwritten below the class definition
     sms = None
     # Attribute is overwritten below the class definition
-    authenticator = None
-    # Attribute is overwritten below the class definition
     other = None
+
+    def is_authenticator(self):
+        """
+        Check if the union tag is ``authenticator``.
+
+        :rtype: bool
+        """
+        return self._tag == 'authenticator'
 
     def is_disabled(self):
         """
@@ -92837,14 +95375,6 @@ class TfaConfiguration(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sms'
-
-    def is_authenticator(self):
-        """
-        Check if the union tag is ``authenticator``.
-
-        :rtype: bool
-        """
-        return self._tag == 'authenticator'
 
     def is_other(self):
         """
@@ -93143,55 +95673,23 @@ class TimeUnit(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    milliseconds = None
-    # Attribute is overwritten below the class definition
-    seconds = None
-    # Attribute is overwritten below the class definition
-    minutes = None
+    days = None
     # Attribute is overwritten below the class definition
     hours = None
     # Attribute is overwritten below the class definition
-    days = None
+    milliseconds = None
     # Attribute is overwritten below the class definition
-    weeks = None
+    minutes = None
     # Attribute is overwritten below the class definition
     months = None
+    # Attribute is overwritten below the class definition
+    seconds = None
+    # Attribute is overwritten below the class definition
+    weeks = None
     # Attribute is overwritten below the class definition
     years = None
     # Attribute is overwritten below the class definition
     other = None
-
-    def is_milliseconds(self):
-        """
-        Check if the union tag is ``milliseconds``.
-
-        :rtype: bool
-        """
-        return self._tag == 'milliseconds'
-
-    def is_seconds(self):
-        """
-        Check if the union tag is ``seconds``.
-
-        :rtype: bool
-        """
-        return self._tag == 'seconds'
-
-    def is_minutes(self):
-        """
-        Check if the union tag is ``minutes``.
-
-        :rtype: bool
-        """
-        return self._tag == 'minutes'
-
-    def is_hours(self):
-        """
-        Check if the union tag is ``hours``.
-
-        :rtype: bool
-        """
-        return self._tag == 'hours'
 
     def is_days(self):
         """
@@ -93201,13 +95699,29 @@ class TimeUnit(bb.Union):
         """
         return self._tag == 'days'
 
-    def is_weeks(self):
+    def is_hours(self):
         """
-        Check if the union tag is ``weeks``.
+        Check if the union tag is ``hours``.
 
         :rtype: bool
         """
-        return self._tag == 'weeks'
+        return self._tag == 'hours'
+
+    def is_milliseconds(self):
+        """
+        Check if the union tag is ``milliseconds``.
+
+        :rtype: bool
+        """
+        return self._tag == 'milliseconds'
+
+    def is_minutes(self):
+        """
+        Check if the union tag is ``minutes``.
+
+        :rtype: bool
+        """
+        return self._tag == 'minutes'
 
     def is_months(self):
         """
@@ -93216,6 +95730,22 @@ class TimeUnit(bb.Union):
         :rtype: bool
         """
         return self._tag == 'months'
+
+    def is_seconds(self):
+        """
+        Check if the union tag is ``seconds``.
+
+        :rtype: bool
+        """
+        return self._tag == 'seconds'
+
+    def is_weeks(self):
+        """
+        Check if the union tag is ``weeks``.
+
+        :rtype: bool
+        """
+        return self._tag == 'weeks'
 
     def is_years(self):
         """
@@ -93247,8 +95777,8 @@ class TrustedNonTeamMemberLogInfo(UserLogInfo):
 
     :ivar team_log.TrustedNonTeamMemberLogInfo.trusted_non_team_member_type:
         Indicates the type of the member of a trusted team.
-    :ivar team_log.TrustedNonTeamMemberLogInfo.team: Details about this
-        useru2019s trusted team.
+    :ivar team_log.TrustedNonTeamMemberLogInfo.team: Details about this user's
+        trusted team.
     """
 
     __slots__ = [
@@ -93304,7 +95834,7 @@ class TrustedNonTeamMemberLogInfo(UserLogInfo):
     @property
     def team(self):
         """
-        Details about this useru2019s trusted team.
+        Details about this user's trusted team.
 
         :rtype: TeamLogInfo
         """
@@ -93350,19 +95880,11 @@ class TrustedNonTeamMemberType(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    multi_instance_admin = None
-    # Attribute is overwritten below the class definition
     enterprise_admin = None
     # Attribute is overwritten below the class definition
+    multi_instance_admin = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_multi_instance_admin(self):
-        """
-        Check if the union tag is ``multi_instance_admin``.
-
-        :rtype: bool
-        """
-        return self._tag == 'multi_instance_admin'
 
     def is_enterprise_admin(self):
         """
@@ -93371,6 +95893,14 @@ class TrustedNonTeamMemberType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'enterprise_admin'
+
+    def is_multi_instance_admin(self):
+        """
+        Check if the union tag is ``multi_instance_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'multi_instance_admin'
 
     def is_other(self):
         """
@@ -93397,41 +95927,17 @@ class TrustedTeamsRequestAction(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    invited = None
-    # Attribute is overwritten below the class definition
-    expired = None
-    # Attribute is overwritten below the class definition
-    revoked = None
-    # Attribute is overwritten below the class definition
     accepted = None
     # Attribute is overwritten below the class definition
     declined = None
     # Attribute is overwritten below the class definition
+    expired = None
+    # Attribute is overwritten below the class definition
+    invited = None
+    # Attribute is overwritten below the class definition
+    revoked = None
+    # Attribute is overwritten below the class definition
     other = None
-
-    def is_invited(self):
-        """
-        Check if the union tag is ``invited``.
-
-        :rtype: bool
-        """
-        return self._tag == 'invited'
-
-    def is_expired(self):
-        """
-        Check if the union tag is ``expired``.
-
-        :rtype: bool
-        """
-        return self._tag == 'expired'
-
-    def is_revoked(self):
-        """
-        Check if the union tag is ``revoked``.
-
-        :rtype: bool
-        """
-        return self._tag == 'revoked'
 
     def is_accepted(self):
         """
@@ -93448,6 +95954,30 @@ class TrustedTeamsRequestAction(bb.Union):
         :rtype: bool
         """
         return self._tag == 'declined'
+
+    def is_expired(self):
+        """
+        Check if the union tag is ``expired``.
+
+        :rtype: bool
+        """
+        return self._tag == 'expired'
+
+    def is_invited(self):
+        """
+        Check if the union tag is ``invited``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invited'
+
+    def is_revoked(self):
+        """
+        Check if the union tag is ``revoked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'revoked'
 
     def is_other(self):
         """
@@ -94975,36 +97505,36 @@ IpAddress_validator = bv.String()
 NamespaceId_validator = bv.String()
 RequestId_validator = bv.String()
 TeamEventList_validator = bv.List(TeamEvent_validator)
-AccessMethodLogInfo._end_user_validator = SessionLogInfo_validator
-AccessMethodLogInfo._sign_in_as_validator = WebSessionLogInfo_validator
-AccessMethodLogInfo._content_manager_validator = WebSessionLogInfo_validator
 AccessMethodLogInfo._admin_console_validator = WebSessionLogInfo_validator
-AccessMethodLogInfo._enterprise_console_validator = WebSessionLogInfo_validator
 AccessMethodLogInfo._api_validator = ApiSessionLogInfo_validator
+AccessMethodLogInfo._content_manager_validator = WebSessionLogInfo_validator
+AccessMethodLogInfo._end_user_validator = SessionLogInfo_validator
+AccessMethodLogInfo._enterprise_console_validator = WebSessionLogInfo_validator
+AccessMethodLogInfo._sign_in_as_validator = WebSessionLogInfo_validator
 AccessMethodLogInfo._other_validator = bv.Void()
 AccessMethodLogInfo._tagmap = {
-    'end_user': AccessMethodLogInfo._end_user_validator,
-    'sign_in_as': AccessMethodLogInfo._sign_in_as_validator,
-    'content_manager': AccessMethodLogInfo._content_manager_validator,
     'admin_console': AccessMethodLogInfo._admin_console_validator,
-    'enterprise_console': AccessMethodLogInfo._enterprise_console_validator,
     'api': AccessMethodLogInfo._api_validator,
+    'content_manager': AccessMethodLogInfo._content_manager_validator,
+    'end_user': AccessMethodLogInfo._end_user_validator,
+    'enterprise_console': AccessMethodLogInfo._enterprise_console_validator,
+    'sign_in_as': AccessMethodLogInfo._sign_in_as_validator,
     'other': AccessMethodLogInfo._other_validator,
 }
 
 AccessMethodLogInfo.other = AccessMethodLogInfo('other')
 
-AccountCaptureAvailability._unavailable_validator = bv.Void()
 AccountCaptureAvailability._available_validator = bv.Void()
+AccountCaptureAvailability._unavailable_validator = bv.Void()
 AccountCaptureAvailability._other_validator = bv.Void()
 AccountCaptureAvailability._tagmap = {
-    'unavailable': AccountCaptureAvailability._unavailable_validator,
     'available': AccountCaptureAvailability._available_validator,
+    'unavailable': AccountCaptureAvailability._unavailable_validator,
     'other': AccountCaptureAvailability._other_validator,
 }
 
-AccountCaptureAvailability.unavailable = AccountCaptureAvailability('unavailable')
 AccountCaptureAvailability.available = AccountCaptureAvailability('available')
+AccountCaptureAvailability.unavailable = AccountCaptureAvailability('unavailable')
 AccountCaptureAvailability.other = AccountCaptureAvailability('other')
 
 AccountCaptureChangeAvailabilityDetails._new_value_validator = AccountCaptureAvailability_validator
@@ -95060,33 +97590,33 @@ AccountCaptureNotificationEmailsSentType._description_validator = bv.String()
 AccountCaptureNotificationEmailsSentType._all_field_names_ = set(['description'])
 AccountCaptureNotificationEmailsSentType._all_fields_ = [('description', AccountCaptureNotificationEmailsSentType._description_validator)]
 
-AccountCaptureNotificationType._proactive_warning_notification_validator = bv.Void()
 AccountCaptureNotificationType._actionable_notification_validator = bv.Void()
+AccountCaptureNotificationType._proactive_warning_notification_validator = bv.Void()
 AccountCaptureNotificationType._other_validator = bv.Void()
 AccountCaptureNotificationType._tagmap = {
-    'proactive_warning_notification': AccountCaptureNotificationType._proactive_warning_notification_validator,
     'actionable_notification': AccountCaptureNotificationType._actionable_notification_validator,
+    'proactive_warning_notification': AccountCaptureNotificationType._proactive_warning_notification_validator,
     'other': AccountCaptureNotificationType._other_validator,
 }
 
-AccountCaptureNotificationType.proactive_warning_notification = AccountCaptureNotificationType('proactive_warning_notification')
 AccountCaptureNotificationType.actionable_notification = AccountCaptureNotificationType('actionable_notification')
+AccountCaptureNotificationType.proactive_warning_notification = AccountCaptureNotificationType('proactive_warning_notification')
 AccountCaptureNotificationType.other = AccountCaptureNotificationType('other')
 
+AccountCapturePolicy._all_users_validator = bv.Void()
 AccountCapturePolicy._disabled_validator = bv.Void()
 AccountCapturePolicy._invited_users_validator = bv.Void()
-AccountCapturePolicy._all_users_validator = bv.Void()
 AccountCapturePolicy._other_validator = bv.Void()
 AccountCapturePolicy._tagmap = {
+    'all_users': AccountCapturePolicy._all_users_validator,
     'disabled': AccountCapturePolicy._disabled_validator,
     'invited_users': AccountCapturePolicy._invited_users_validator,
-    'all_users': AccountCapturePolicy._all_users_validator,
     'other': AccountCapturePolicy._other_validator,
 }
 
+AccountCapturePolicy.all_users = AccountCapturePolicy('all_users')
 AccountCapturePolicy.disabled = AccountCapturePolicy('disabled')
 AccountCapturePolicy.invited_users = AccountCapturePolicy('invited_users')
-AccountCapturePolicy.all_users = AccountCapturePolicy('all_users')
 AccountCapturePolicy.other = AccountCapturePolicy('other')
 
 AccountCaptureRelinquishAccountDetails._domain_name_validator = bv.String()
@@ -95125,60 +97655,60 @@ AccountState.locked = AccountState('locked')
 AccountState.unlocked = AccountState('unlocked')
 AccountState.other = AccountState('other')
 
-ActionDetails._team_join_details_validator = JoinTeamDetails_validator
 ActionDetails._remove_action_validator = MemberRemoveActionType_validator
 ActionDetails._team_invite_details_validator = TeamInviteDetails_validator
+ActionDetails._team_join_details_validator = JoinTeamDetails_validator
 ActionDetails._other_validator = bv.Void()
 ActionDetails._tagmap = {
-    'team_join_details': ActionDetails._team_join_details_validator,
     'remove_action': ActionDetails._remove_action_validator,
     'team_invite_details': ActionDetails._team_invite_details_validator,
+    'team_join_details': ActionDetails._team_join_details_validator,
     'other': ActionDetails._other_validator,
 }
 
 ActionDetails.other = ActionDetails('other')
 
-ActorLogInfo._user_validator = UserLogInfo_validator
 ActorLogInfo._admin_validator = UserLogInfo_validator
-ActorLogInfo._app_validator = AppLogInfo_validator
-ActorLogInfo._reseller_validator = ResellerLogInfo_validator
-ActorLogInfo._dropbox_validator = bv.Void()
 ActorLogInfo._anonymous_validator = bv.Void()
+ActorLogInfo._app_validator = AppLogInfo_validator
+ActorLogInfo._dropbox_validator = bv.Void()
+ActorLogInfo._reseller_validator = ResellerLogInfo_validator
+ActorLogInfo._user_validator = UserLogInfo_validator
 ActorLogInfo._other_validator = bv.Void()
 ActorLogInfo._tagmap = {
-    'user': ActorLogInfo._user_validator,
     'admin': ActorLogInfo._admin_validator,
-    'app': ActorLogInfo._app_validator,
-    'reseller': ActorLogInfo._reseller_validator,
-    'dropbox': ActorLogInfo._dropbox_validator,
     'anonymous': ActorLogInfo._anonymous_validator,
+    'app': ActorLogInfo._app_validator,
+    'dropbox': ActorLogInfo._dropbox_validator,
+    'reseller': ActorLogInfo._reseller_validator,
+    'user': ActorLogInfo._user_validator,
     'other': ActorLogInfo._other_validator,
 }
 
-ActorLogInfo.dropbox = ActorLogInfo('dropbox')
 ActorLogInfo.anonymous = ActorLogInfo('anonymous')
+ActorLogInfo.dropbox = ActorLogInfo('dropbox')
 ActorLogInfo.other = ActorLogInfo('other')
 
-AdminRole._team_admin_validator = bv.Void()
-AdminRole._user_management_admin_validator = bv.Void()
-AdminRole._support_admin_validator = bv.Void()
 AdminRole._limited_admin_validator = bv.Void()
 AdminRole._member_only_validator = bv.Void()
+AdminRole._support_admin_validator = bv.Void()
+AdminRole._team_admin_validator = bv.Void()
+AdminRole._user_management_admin_validator = bv.Void()
 AdminRole._other_validator = bv.Void()
 AdminRole._tagmap = {
-    'team_admin': AdminRole._team_admin_validator,
-    'user_management_admin': AdminRole._user_management_admin_validator,
-    'support_admin': AdminRole._support_admin_validator,
     'limited_admin': AdminRole._limited_admin_validator,
     'member_only': AdminRole._member_only_validator,
+    'support_admin': AdminRole._support_admin_validator,
+    'team_admin': AdminRole._team_admin_validator,
+    'user_management_admin': AdminRole._user_management_admin_validator,
     'other': AdminRole._other_validator,
 }
 
-AdminRole.team_admin = AdminRole('team_admin')
-AdminRole.user_management_admin = AdminRole('user_management_admin')
-AdminRole.support_admin = AdminRole('support_admin')
 AdminRole.limited_admin = AdminRole('limited_admin')
 AdminRole.member_only = AdminRole('member_only')
+AdminRole.support_admin = AdminRole('support_admin')
+AdminRole.team_admin = AdminRole('team_admin')
+AdminRole.user_management_admin = AdminRole('user_management_admin')
 AdminRole.other = AdminRole('other')
 
 AllowDownloadDisabledDetails._all_field_names_ = set([])
@@ -95272,6 +97802,19 @@ AssetLogInfo._tagmap = {
 }
 
 AssetLogInfo.other = AssetLogInfo('other')
+
+BackupStatus._disabled_validator = bv.Void()
+BackupStatus._enabled_validator = bv.Void()
+BackupStatus._other_validator = bv.Void()
+BackupStatus._tagmap = {
+    'disabled': BackupStatus._disabled_validator,
+    'enabled': BackupStatus._enabled_validator,
+    'other': BackupStatus._other_validator,
+}
+
+BackupStatus.disabled = BackupStatus('disabled')
+BackupStatus.enabled = BackupStatus('enabled')
+BackupStatus.other = BackupStatus('other')
 
 BinderAddPageDetails._event_uuid_validator = bv.String()
 BinderAddPageDetails._doc_title_validator = bv.String()
@@ -95556,19 +98099,19 @@ ContentPermanentDeletePolicy.disabled = ContentPermanentDeletePolicy('disabled')
 ContentPermanentDeletePolicy.enabled = ContentPermanentDeletePolicy('enabled')
 ContentPermanentDeletePolicy.other = ContentPermanentDeletePolicy('other')
 
-ContextLogInfo._team_member_validator = TeamMemberLogInfo_validator
-ContextLogInfo._non_team_member_validator = NonTeamMemberLogInfo_validator
 ContextLogInfo._anonymous_validator = bv.Void()
-ContextLogInfo._team_validator = bv.Void()
+ContextLogInfo._non_team_member_validator = NonTeamMemberLogInfo_validator
 ContextLogInfo._organization_team_validator = TeamLogInfo_validator
+ContextLogInfo._team_validator = bv.Void()
+ContextLogInfo._team_member_validator = TeamMemberLogInfo_validator
 ContextLogInfo._trusted_non_team_member_validator = TrustedNonTeamMemberLogInfo_validator
 ContextLogInfo._other_validator = bv.Void()
 ContextLogInfo._tagmap = {
-    'team_member': ContextLogInfo._team_member_validator,
-    'non_team_member': ContextLogInfo._non_team_member_validator,
     'anonymous': ContextLogInfo._anonymous_validator,
-    'team': ContextLogInfo._team_validator,
+    'non_team_member': ContextLogInfo._non_team_member_validator,
     'organization_team': ContextLogInfo._organization_team_validator,
+    'team': ContextLogInfo._team_validator,
+    'team_member': ContextLogInfo._team_member_validator,
     'trusted_non_team_member': ContextLogInfo._trusted_non_team_member_validator,
     'other': ContextLogInfo._other_validator,
 }
@@ -95775,17 +98318,17 @@ DeviceApprovalsChangeUnlinkActionType._description_validator = bv.String()
 DeviceApprovalsChangeUnlinkActionType._all_field_names_ = set(['description'])
 DeviceApprovalsChangeUnlinkActionType._all_fields_ = [('description', DeviceApprovalsChangeUnlinkActionType._description_validator)]
 
-DeviceApprovalsPolicy._unlimited_validator = bv.Void()
 DeviceApprovalsPolicy._limited_validator = bv.Void()
+DeviceApprovalsPolicy._unlimited_validator = bv.Void()
 DeviceApprovalsPolicy._other_validator = bv.Void()
 DeviceApprovalsPolicy._tagmap = {
-    'unlimited': DeviceApprovalsPolicy._unlimited_validator,
     'limited': DeviceApprovalsPolicy._limited_validator,
+    'unlimited': DeviceApprovalsPolicy._unlimited_validator,
     'other': DeviceApprovalsPolicy._other_validator,
 }
 
-DeviceApprovalsPolicy.unlimited = DeviceApprovalsPolicy('unlimited')
 DeviceApprovalsPolicy.limited = DeviceApprovalsPolicy('limited')
+DeviceApprovalsPolicy.unlimited = DeviceApprovalsPolicy('unlimited')
 DeviceApprovalsPolicy.other = DeviceApprovalsPolicy('other')
 
 DeviceApprovalsRemoveExceptionDetails._all_field_names_ = set([])
@@ -95889,6 +98432,24 @@ DeviceManagementEnabledType._description_validator = bv.String()
 DeviceManagementEnabledType._all_field_names_ = set(['description'])
 DeviceManagementEnabledType._all_fields_ = [('description', DeviceManagementEnabledType._description_validator)]
 
+DeviceSyncBackupStatusChangedDetails._desktop_device_session_info_validator = DesktopDeviceSessionLogInfo_validator
+DeviceSyncBackupStatusChangedDetails._previous_value_validator = BackupStatus_validator
+DeviceSyncBackupStatusChangedDetails._new_value_validator = BackupStatus_validator
+DeviceSyncBackupStatusChangedDetails._all_field_names_ = set([
+    'desktop_device_session_info',
+    'previous_value',
+    'new_value',
+])
+DeviceSyncBackupStatusChangedDetails._all_fields_ = [
+    ('desktop_device_session_info', DeviceSyncBackupStatusChangedDetails._desktop_device_session_info_validator),
+    ('previous_value', DeviceSyncBackupStatusChangedDetails._previous_value_validator),
+    ('new_value', DeviceSyncBackupStatusChangedDetails._new_value_validator),
+]
+
+DeviceSyncBackupStatusChangedType._description_validator = bv.String()
+DeviceSyncBackupStatusChangedType._all_field_names_ = set(['description'])
+DeviceSyncBackupStatusChangedType._all_fields_ = [('description', DeviceSyncBackupStatusChangedType._description_validator)]
+
 DeviceType._desktop_validator = bv.Void()
 DeviceType._mobile_validator = bv.Void()
 DeviceType._other_validator = bv.Void()
@@ -95916,17 +98477,17 @@ DeviceUnlinkDetails._all_fields_ = [
     ('delete_data', DeviceUnlinkDetails._delete_data_validator),
 ]
 
-DeviceUnlinkPolicy._remove_validator = bv.Void()
 DeviceUnlinkPolicy._keep_validator = bv.Void()
+DeviceUnlinkPolicy._remove_validator = bv.Void()
 DeviceUnlinkPolicy._other_validator = bv.Void()
 DeviceUnlinkPolicy._tagmap = {
-    'remove': DeviceUnlinkPolicy._remove_validator,
     'keep': DeviceUnlinkPolicy._keep_validator,
+    'remove': DeviceUnlinkPolicy._remove_validator,
     'other': DeviceUnlinkPolicy._other_validator,
 }
 
-DeviceUnlinkPolicy.remove = DeviceUnlinkPolicy('remove')
 DeviceUnlinkPolicy.keep = DeviceUnlinkPolicy('keep')
+DeviceUnlinkPolicy.remove = DeviceUnlinkPolicy('remove')
 DeviceUnlinkPolicy.other = DeviceUnlinkPolicy('other')
 
 DeviceUnlinkType._description_validator = bv.String()
@@ -96169,12 +98730,12 @@ EnterpriseSettingsLockingType._all_fields_ = [('description', EnterpriseSettings
 
 EventCategory._apps_validator = bv.Void()
 EventCategory._comments_validator = bv.Void()
+EventCategory._data_governance_validator = bv.Void()
 EventCategory._devices_validator = bv.Void()
 EventCategory._domains_validator = bv.Void()
 EventCategory._file_operations_validator = bv.Void()
 EventCategory._file_requests_validator = bv.Void()
 EventCategory._groups_validator = bv.Void()
-EventCategory._legal_holds_validator = bv.Void()
 EventCategory._logins_validator = bv.Void()
 EventCategory._members_validator = bv.Void()
 EventCategory._paper_validator = bv.Void()
@@ -96192,12 +98753,12 @@ EventCategory._other_validator = bv.Void()
 EventCategory._tagmap = {
     'apps': EventCategory._apps_validator,
     'comments': EventCategory._comments_validator,
+    'data_governance': EventCategory._data_governance_validator,
     'devices': EventCategory._devices_validator,
     'domains': EventCategory._domains_validator,
     'file_operations': EventCategory._file_operations_validator,
     'file_requests': EventCategory._file_requests_validator,
     'groups': EventCategory._groups_validator,
-    'legal_holds': EventCategory._legal_holds_validator,
     'logins': EventCategory._logins_validator,
     'members': EventCategory._members_validator,
     'paper': EventCategory._paper_validator,
@@ -96216,12 +98777,12 @@ EventCategory._tagmap = {
 
 EventCategory.apps = EventCategory('apps')
 EventCategory.comments = EventCategory('comments')
+EventCategory.data_governance = EventCategory('data_governance')
 EventCategory.devices = EventCategory('devices')
 EventCategory.domains = EventCategory('domains')
 EventCategory.file_operations = EventCategory('file_operations')
 EventCategory.file_requests = EventCategory('file_requests')
 EventCategory.groups = EventCategory('groups')
-EventCategory.legal_holds = EventCategory('legal_holds')
 EventCategory.logins = EventCategory('logins')
 EventCategory.members = EventCategory('members')
 EventCategory.paper = EventCategory('paper')
@@ -96251,6 +98812,23 @@ EventDetails._file_like_comment_details_validator = FileLikeCommentDetails_valid
 EventDetails._file_resolve_comment_details_validator = FileResolveCommentDetails_validator
 EventDetails._file_unlike_comment_details_validator = FileUnlikeCommentDetails_validator
 EventDetails._file_unresolve_comment_details_validator = FileUnresolveCommentDetails_validator
+EventDetails._governance_policy_add_folders_details_validator = GovernancePolicyAddFoldersDetails_validator
+EventDetails._governance_policy_create_details_validator = GovernancePolicyCreateDetails_validator
+EventDetails._governance_policy_delete_details_validator = GovernancePolicyDeleteDetails_validator
+EventDetails._governance_policy_edit_details_details_validator = GovernancePolicyEditDetailsDetails_validator
+EventDetails._governance_policy_edit_duration_details_validator = GovernancePolicyEditDurationDetails_validator
+EventDetails._governance_policy_remove_folders_details_validator = GovernancePolicyRemoveFoldersDetails_validator
+EventDetails._legal_holds_activate_a_hold_details_validator = LegalHoldsActivateAHoldDetails_validator
+EventDetails._legal_holds_add_members_details_validator = LegalHoldsAddMembersDetails_validator
+EventDetails._legal_holds_change_hold_details_details_validator = LegalHoldsChangeHoldDetailsDetails_validator
+EventDetails._legal_holds_change_hold_name_details_validator = LegalHoldsChangeHoldNameDetails_validator
+EventDetails._legal_holds_export_a_hold_details_validator = LegalHoldsExportAHoldDetails_validator
+EventDetails._legal_holds_export_cancelled_details_validator = LegalHoldsExportCancelledDetails_validator
+EventDetails._legal_holds_export_downloaded_details_validator = LegalHoldsExportDownloadedDetails_validator
+EventDetails._legal_holds_export_removed_details_validator = LegalHoldsExportRemovedDetails_validator
+EventDetails._legal_holds_release_a_hold_details_validator = LegalHoldsReleaseAHoldDetails_validator
+EventDetails._legal_holds_remove_members_details_validator = LegalHoldsRemoveMembersDetails_validator
+EventDetails._legal_holds_report_a_hold_details_validator = LegalHoldsReportAHoldDetails_validator
 EventDetails._device_change_ip_desktop_details_validator = DeviceChangeIpDesktopDetails_validator
 EventDetails._device_change_ip_mobile_details_validator = DeviceChangeIpMobileDetails_validator
 EventDetails._device_change_ip_web_details_validator = DeviceChangeIpWebDetails_validator
@@ -96260,6 +98838,7 @@ EventDetails._device_link_fail_details_validator = DeviceLinkFailDetails_validat
 EventDetails._device_link_success_details_validator = DeviceLinkSuccessDetails_validator
 EventDetails._device_management_disabled_details_validator = DeviceManagementDisabledDetails_validator
 EventDetails._device_management_enabled_details_validator = DeviceManagementEnabledDetails_validator
+EventDetails._device_sync_backup_status_changed_details_validator = DeviceSyncBackupStatusChangedDetails_validator
 EventDetails._device_unlink_details_validator = DeviceUnlinkDetails_validator
 EventDetails._emm_refresh_auth_token_details_validator = EmmRefreshAuthTokenDetails_validator
 EventDetails._account_capture_change_availability_details_validator = AccountCaptureChangeAvailabilityDetails_validator
@@ -96315,17 +98894,6 @@ EventDetails._group_moved_details_validator = GroupMovedDetails_validator
 EventDetails._group_remove_external_id_details_validator = GroupRemoveExternalIdDetails_validator
 EventDetails._group_remove_member_details_validator = GroupRemoveMemberDetails_validator
 EventDetails._group_rename_details_validator = GroupRenameDetails_validator
-EventDetails._legal_holds_activate_a_hold_details_validator = LegalHoldsActivateAHoldDetails_validator
-EventDetails._legal_holds_add_members_details_validator = LegalHoldsAddMembersDetails_validator
-EventDetails._legal_holds_change_hold_details_details_validator = LegalHoldsChangeHoldDetailsDetails_validator
-EventDetails._legal_holds_change_hold_name_details_validator = LegalHoldsChangeHoldNameDetails_validator
-EventDetails._legal_holds_export_a_hold_details_validator = LegalHoldsExportAHoldDetails_validator
-EventDetails._legal_holds_export_cancelled_details_validator = LegalHoldsExportCancelledDetails_validator
-EventDetails._legal_holds_export_downloaded_details_validator = LegalHoldsExportDownloadedDetails_validator
-EventDetails._legal_holds_export_removed_details_validator = LegalHoldsExportRemovedDetails_validator
-EventDetails._legal_holds_release_a_hold_details_validator = LegalHoldsReleaseAHoldDetails_validator
-EventDetails._legal_holds_remove_members_details_validator = LegalHoldsRemoveMembersDetails_validator
-EventDetails._legal_holds_report_a_hold_details_validator = LegalHoldsReportAHoldDetails_validator
 EventDetails._account_lock_or_unlocked_details_validator = AccountLockOrUnlockedDetails_validator
 EventDetails._emm_error_details_validator = EmmErrorDetails_validator
 EventDetails._guest_admin_signed_in_via_trusted_teams_details_validator = GuestAdminSignedInViaTrustedTeamsDetails_validator
@@ -96512,6 +99080,8 @@ EventDetails._shared_link_settings_remove_password_details_validator = SharedLin
 EventDetails._shared_link_share_details_validator = SharedLinkShareDetails_validator
 EventDetails._shared_link_view_details_validator = SharedLinkViewDetails_validator
 EventDetails._shared_note_opened_details_validator = SharedNoteOpenedDetails_validator
+EventDetails._shmodel_disable_downloads_details_validator = ShmodelDisableDownloadsDetails_validator
+EventDetails._shmodel_enable_downloads_details_validator = ShmodelEnableDownloadsDetails_validator
 EventDetails._shmodel_group_share_details_validator = ShmodelGroupShareDetails_validator
 EventDetails._showcase_access_granted_details_validator = ShowcaseAccessGrantedDetails_validator
 EventDetails._showcase_add_member_details_validator = ShowcaseAddMemberDetails_validator
@@ -96682,6 +99252,23 @@ EventDetails._tagmap = {
     'file_resolve_comment_details': EventDetails._file_resolve_comment_details_validator,
     'file_unlike_comment_details': EventDetails._file_unlike_comment_details_validator,
     'file_unresolve_comment_details': EventDetails._file_unresolve_comment_details_validator,
+    'governance_policy_add_folders_details': EventDetails._governance_policy_add_folders_details_validator,
+    'governance_policy_create_details': EventDetails._governance_policy_create_details_validator,
+    'governance_policy_delete_details': EventDetails._governance_policy_delete_details_validator,
+    'governance_policy_edit_details_details': EventDetails._governance_policy_edit_details_details_validator,
+    'governance_policy_edit_duration_details': EventDetails._governance_policy_edit_duration_details_validator,
+    'governance_policy_remove_folders_details': EventDetails._governance_policy_remove_folders_details_validator,
+    'legal_holds_activate_a_hold_details': EventDetails._legal_holds_activate_a_hold_details_validator,
+    'legal_holds_add_members_details': EventDetails._legal_holds_add_members_details_validator,
+    'legal_holds_change_hold_details_details': EventDetails._legal_holds_change_hold_details_details_validator,
+    'legal_holds_change_hold_name_details': EventDetails._legal_holds_change_hold_name_details_validator,
+    'legal_holds_export_a_hold_details': EventDetails._legal_holds_export_a_hold_details_validator,
+    'legal_holds_export_cancelled_details': EventDetails._legal_holds_export_cancelled_details_validator,
+    'legal_holds_export_downloaded_details': EventDetails._legal_holds_export_downloaded_details_validator,
+    'legal_holds_export_removed_details': EventDetails._legal_holds_export_removed_details_validator,
+    'legal_holds_release_a_hold_details': EventDetails._legal_holds_release_a_hold_details_validator,
+    'legal_holds_remove_members_details': EventDetails._legal_holds_remove_members_details_validator,
+    'legal_holds_report_a_hold_details': EventDetails._legal_holds_report_a_hold_details_validator,
     'device_change_ip_desktop_details': EventDetails._device_change_ip_desktop_details_validator,
     'device_change_ip_mobile_details': EventDetails._device_change_ip_mobile_details_validator,
     'device_change_ip_web_details': EventDetails._device_change_ip_web_details_validator,
@@ -96691,6 +99278,7 @@ EventDetails._tagmap = {
     'device_link_success_details': EventDetails._device_link_success_details_validator,
     'device_management_disabled_details': EventDetails._device_management_disabled_details_validator,
     'device_management_enabled_details': EventDetails._device_management_enabled_details_validator,
+    'device_sync_backup_status_changed_details': EventDetails._device_sync_backup_status_changed_details_validator,
     'device_unlink_details': EventDetails._device_unlink_details_validator,
     'emm_refresh_auth_token_details': EventDetails._emm_refresh_auth_token_details_validator,
     'account_capture_change_availability_details': EventDetails._account_capture_change_availability_details_validator,
@@ -96746,17 +99334,6 @@ EventDetails._tagmap = {
     'group_remove_external_id_details': EventDetails._group_remove_external_id_details_validator,
     'group_remove_member_details': EventDetails._group_remove_member_details_validator,
     'group_rename_details': EventDetails._group_rename_details_validator,
-    'legal_holds_activate_a_hold_details': EventDetails._legal_holds_activate_a_hold_details_validator,
-    'legal_holds_add_members_details': EventDetails._legal_holds_add_members_details_validator,
-    'legal_holds_change_hold_details_details': EventDetails._legal_holds_change_hold_details_details_validator,
-    'legal_holds_change_hold_name_details': EventDetails._legal_holds_change_hold_name_details_validator,
-    'legal_holds_export_a_hold_details': EventDetails._legal_holds_export_a_hold_details_validator,
-    'legal_holds_export_cancelled_details': EventDetails._legal_holds_export_cancelled_details_validator,
-    'legal_holds_export_downloaded_details': EventDetails._legal_holds_export_downloaded_details_validator,
-    'legal_holds_export_removed_details': EventDetails._legal_holds_export_removed_details_validator,
-    'legal_holds_release_a_hold_details': EventDetails._legal_holds_release_a_hold_details_validator,
-    'legal_holds_remove_members_details': EventDetails._legal_holds_remove_members_details_validator,
-    'legal_holds_report_a_hold_details': EventDetails._legal_holds_report_a_hold_details_validator,
     'account_lock_or_unlocked_details': EventDetails._account_lock_or_unlocked_details_validator,
     'emm_error_details': EventDetails._emm_error_details_validator,
     'guest_admin_signed_in_via_trusted_teams_details': EventDetails._guest_admin_signed_in_via_trusted_teams_details_validator,
@@ -96943,6 +99520,8 @@ EventDetails._tagmap = {
     'shared_link_share_details': EventDetails._shared_link_share_details_validator,
     'shared_link_view_details': EventDetails._shared_link_view_details_validator,
     'shared_note_opened_details': EventDetails._shared_note_opened_details_validator,
+    'shmodel_disable_downloads_details': EventDetails._shmodel_disable_downloads_details_validator,
+    'shmodel_enable_downloads_details': EventDetails._shmodel_enable_downloads_details_validator,
     'shmodel_group_share_details': EventDetails._shmodel_group_share_details_validator,
     'showcase_access_granted_details': EventDetails._showcase_access_granted_details_validator,
     'showcase_add_member_details': EventDetails._showcase_add_member_details_validator,
@@ -97116,6 +99695,23 @@ EventType._file_like_comment_validator = FileLikeCommentType_validator
 EventType._file_resolve_comment_validator = FileResolveCommentType_validator
 EventType._file_unlike_comment_validator = FileUnlikeCommentType_validator
 EventType._file_unresolve_comment_validator = FileUnresolveCommentType_validator
+EventType._governance_policy_add_folders_validator = GovernancePolicyAddFoldersType_validator
+EventType._governance_policy_create_validator = GovernancePolicyCreateType_validator
+EventType._governance_policy_delete_validator = GovernancePolicyDeleteType_validator
+EventType._governance_policy_edit_details_validator = GovernancePolicyEditDetailsType_validator
+EventType._governance_policy_edit_duration_validator = GovernancePolicyEditDurationType_validator
+EventType._governance_policy_remove_folders_validator = GovernancePolicyRemoveFoldersType_validator
+EventType._legal_holds_activate_a_hold_validator = LegalHoldsActivateAHoldType_validator
+EventType._legal_holds_add_members_validator = LegalHoldsAddMembersType_validator
+EventType._legal_holds_change_hold_details_validator = LegalHoldsChangeHoldDetailsType_validator
+EventType._legal_holds_change_hold_name_validator = LegalHoldsChangeHoldNameType_validator
+EventType._legal_holds_export_a_hold_validator = LegalHoldsExportAHoldType_validator
+EventType._legal_holds_export_cancelled_validator = LegalHoldsExportCancelledType_validator
+EventType._legal_holds_export_downloaded_validator = LegalHoldsExportDownloadedType_validator
+EventType._legal_holds_export_removed_validator = LegalHoldsExportRemovedType_validator
+EventType._legal_holds_release_a_hold_validator = LegalHoldsReleaseAHoldType_validator
+EventType._legal_holds_remove_members_validator = LegalHoldsRemoveMembersType_validator
+EventType._legal_holds_report_a_hold_validator = LegalHoldsReportAHoldType_validator
 EventType._device_change_ip_desktop_validator = DeviceChangeIpDesktopType_validator
 EventType._device_change_ip_mobile_validator = DeviceChangeIpMobileType_validator
 EventType._device_change_ip_web_validator = DeviceChangeIpWebType_validator
@@ -97125,6 +99721,7 @@ EventType._device_link_fail_validator = DeviceLinkFailType_validator
 EventType._device_link_success_validator = DeviceLinkSuccessType_validator
 EventType._device_management_disabled_validator = DeviceManagementDisabledType_validator
 EventType._device_management_enabled_validator = DeviceManagementEnabledType_validator
+EventType._device_sync_backup_status_changed_validator = DeviceSyncBackupStatusChangedType_validator
 EventType._device_unlink_validator = DeviceUnlinkType_validator
 EventType._emm_refresh_auth_token_validator = EmmRefreshAuthTokenType_validator
 EventType._account_capture_change_availability_validator = AccountCaptureChangeAvailabilityType_validator
@@ -97180,17 +99777,6 @@ EventType._group_moved_validator = GroupMovedType_validator
 EventType._group_remove_external_id_validator = GroupRemoveExternalIdType_validator
 EventType._group_remove_member_validator = GroupRemoveMemberType_validator
 EventType._group_rename_validator = GroupRenameType_validator
-EventType._legal_holds_activate_a_hold_validator = LegalHoldsActivateAHoldType_validator
-EventType._legal_holds_add_members_validator = LegalHoldsAddMembersType_validator
-EventType._legal_holds_change_hold_details_validator = LegalHoldsChangeHoldDetailsType_validator
-EventType._legal_holds_change_hold_name_validator = LegalHoldsChangeHoldNameType_validator
-EventType._legal_holds_export_a_hold_validator = LegalHoldsExportAHoldType_validator
-EventType._legal_holds_export_cancelled_validator = LegalHoldsExportCancelledType_validator
-EventType._legal_holds_export_downloaded_validator = LegalHoldsExportDownloadedType_validator
-EventType._legal_holds_export_removed_validator = LegalHoldsExportRemovedType_validator
-EventType._legal_holds_release_a_hold_validator = LegalHoldsReleaseAHoldType_validator
-EventType._legal_holds_remove_members_validator = LegalHoldsRemoveMembersType_validator
-EventType._legal_holds_report_a_hold_validator = LegalHoldsReportAHoldType_validator
 EventType._account_lock_or_unlocked_validator = AccountLockOrUnlockedType_validator
 EventType._emm_error_validator = EmmErrorType_validator
 EventType._guest_admin_signed_in_via_trusted_teams_validator = GuestAdminSignedInViaTrustedTeamsType_validator
@@ -97377,6 +99963,8 @@ EventType._shared_link_settings_remove_password_validator = SharedLinkSettingsRe
 EventType._shared_link_share_validator = SharedLinkShareType_validator
 EventType._shared_link_view_validator = SharedLinkViewType_validator
 EventType._shared_note_opened_validator = SharedNoteOpenedType_validator
+EventType._shmodel_disable_downloads_validator = ShmodelDisableDownloadsType_validator
+EventType._shmodel_enable_downloads_validator = ShmodelEnableDownloadsType_validator
 EventType._shmodel_group_share_validator = ShmodelGroupShareType_validator
 EventType._showcase_access_granted_validator = ShowcaseAccessGrantedType_validator
 EventType._showcase_add_member_validator = ShowcaseAddMemberType_validator
@@ -97546,6 +100134,23 @@ EventType._tagmap = {
     'file_resolve_comment': EventType._file_resolve_comment_validator,
     'file_unlike_comment': EventType._file_unlike_comment_validator,
     'file_unresolve_comment': EventType._file_unresolve_comment_validator,
+    'governance_policy_add_folders': EventType._governance_policy_add_folders_validator,
+    'governance_policy_create': EventType._governance_policy_create_validator,
+    'governance_policy_delete': EventType._governance_policy_delete_validator,
+    'governance_policy_edit_details': EventType._governance_policy_edit_details_validator,
+    'governance_policy_edit_duration': EventType._governance_policy_edit_duration_validator,
+    'governance_policy_remove_folders': EventType._governance_policy_remove_folders_validator,
+    'legal_holds_activate_a_hold': EventType._legal_holds_activate_a_hold_validator,
+    'legal_holds_add_members': EventType._legal_holds_add_members_validator,
+    'legal_holds_change_hold_details': EventType._legal_holds_change_hold_details_validator,
+    'legal_holds_change_hold_name': EventType._legal_holds_change_hold_name_validator,
+    'legal_holds_export_a_hold': EventType._legal_holds_export_a_hold_validator,
+    'legal_holds_export_cancelled': EventType._legal_holds_export_cancelled_validator,
+    'legal_holds_export_downloaded': EventType._legal_holds_export_downloaded_validator,
+    'legal_holds_export_removed': EventType._legal_holds_export_removed_validator,
+    'legal_holds_release_a_hold': EventType._legal_holds_release_a_hold_validator,
+    'legal_holds_remove_members': EventType._legal_holds_remove_members_validator,
+    'legal_holds_report_a_hold': EventType._legal_holds_report_a_hold_validator,
     'device_change_ip_desktop': EventType._device_change_ip_desktop_validator,
     'device_change_ip_mobile': EventType._device_change_ip_mobile_validator,
     'device_change_ip_web': EventType._device_change_ip_web_validator,
@@ -97555,6 +100160,7 @@ EventType._tagmap = {
     'device_link_success': EventType._device_link_success_validator,
     'device_management_disabled': EventType._device_management_disabled_validator,
     'device_management_enabled': EventType._device_management_enabled_validator,
+    'device_sync_backup_status_changed': EventType._device_sync_backup_status_changed_validator,
     'device_unlink': EventType._device_unlink_validator,
     'emm_refresh_auth_token': EventType._emm_refresh_auth_token_validator,
     'account_capture_change_availability': EventType._account_capture_change_availability_validator,
@@ -97610,17 +100216,6 @@ EventType._tagmap = {
     'group_remove_external_id': EventType._group_remove_external_id_validator,
     'group_remove_member': EventType._group_remove_member_validator,
     'group_rename': EventType._group_rename_validator,
-    'legal_holds_activate_a_hold': EventType._legal_holds_activate_a_hold_validator,
-    'legal_holds_add_members': EventType._legal_holds_add_members_validator,
-    'legal_holds_change_hold_details': EventType._legal_holds_change_hold_details_validator,
-    'legal_holds_change_hold_name': EventType._legal_holds_change_hold_name_validator,
-    'legal_holds_export_a_hold': EventType._legal_holds_export_a_hold_validator,
-    'legal_holds_export_cancelled': EventType._legal_holds_export_cancelled_validator,
-    'legal_holds_export_downloaded': EventType._legal_holds_export_downloaded_validator,
-    'legal_holds_export_removed': EventType._legal_holds_export_removed_validator,
-    'legal_holds_release_a_hold': EventType._legal_holds_release_a_hold_validator,
-    'legal_holds_remove_members': EventType._legal_holds_remove_members_validator,
-    'legal_holds_report_a_hold': EventType._legal_holds_report_a_hold_validator,
     'account_lock_or_unlocked': EventType._account_lock_or_unlocked_validator,
     'emm_error': EventType._emm_error_validator,
     'guest_admin_signed_in_via_trusted_teams': EventType._guest_admin_signed_in_via_trusted_teams_validator,
@@ -97807,6 +100402,8 @@ EventType._tagmap = {
     'shared_link_share': EventType._shared_link_share_validator,
     'shared_link_view': EventType._shared_link_view_validator,
     'shared_note_opened': EventType._shared_note_opened_validator,
+    'shmodel_disable_downloads': EventType._shmodel_disable_downloads_validator,
+    'shmodel_enable_downloads': EventType._shmodel_enable_downloads_validator,
     'shmodel_group_share': EventType._shmodel_group_share_validator,
     'showcase_access_granted': EventType._showcase_access_granted_validator,
     'showcase_add_member': EventType._showcase_add_member_validator,
@@ -97979,6 +100576,23 @@ EventTypeArg._file_like_comment_validator = bv.Void()
 EventTypeArg._file_resolve_comment_validator = bv.Void()
 EventTypeArg._file_unlike_comment_validator = bv.Void()
 EventTypeArg._file_unresolve_comment_validator = bv.Void()
+EventTypeArg._governance_policy_add_folders_validator = bv.Void()
+EventTypeArg._governance_policy_create_validator = bv.Void()
+EventTypeArg._governance_policy_delete_validator = bv.Void()
+EventTypeArg._governance_policy_edit_details_validator = bv.Void()
+EventTypeArg._governance_policy_edit_duration_validator = bv.Void()
+EventTypeArg._governance_policy_remove_folders_validator = bv.Void()
+EventTypeArg._legal_holds_activate_a_hold_validator = bv.Void()
+EventTypeArg._legal_holds_add_members_validator = bv.Void()
+EventTypeArg._legal_holds_change_hold_details_validator = bv.Void()
+EventTypeArg._legal_holds_change_hold_name_validator = bv.Void()
+EventTypeArg._legal_holds_export_a_hold_validator = bv.Void()
+EventTypeArg._legal_holds_export_cancelled_validator = bv.Void()
+EventTypeArg._legal_holds_export_downloaded_validator = bv.Void()
+EventTypeArg._legal_holds_export_removed_validator = bv.Void()
+EventTypeArg._legal_holds_release_a_hold_validator = bv.Void()
+EventTypeArg._legal_holds_remove_members_validator = bv.Void()
+EventTypeArg._legal_holds_report_a_hold_validator = bv.Void()
 EventTypeArg._device_change_ip_desktop_validator = bv.Void()
 EventTypeArg._device_change_ip_mobile_validator = bv.Void()
 EventTypeArg._device_change_ip_web_validator = bv.Void()
@@ -97988,6 +100602,7 @@ EventTypeArg._device_link_fail_validator = bv.Void()
 EventTypeArg._device_link_success_validator = bv.Void()
 EventTypeArg._device_management_disabled_validator = bv.Void()
 EventTypeArg._device_management_enabled_validator = bv.Void()
+EventTypeArg._device_sync_backup_status_changed_validator = bv.Void()
 EventTypeArg._device_unlink_validator = bv.Void()
 EventTypeArg._emm_refresh_auth_token_validator = bv.Void()
 EventTypeArg._account_capture_change_availability_validator = bv.Void()
@@ -98043,17 +100658,6 @@ EventTypeArg._group_moved_validator = bv.Void()
 EventTypeArg._group_remove_external_id_validator = bv.Void()
 EventTypeArg._group_remove_member_validator = bv.Void()
 EventTypeArg._group_rename_validator = bv.Void()
-EventTypeArg._legal_holds_activate_a_hold_validator = bv.Void()
-EventTypeArg._legal_holds_add_members_validator = bv.Void()
-EventTypeArg._legal_holds_change_hold_details_validator = bv.Void()
-EventTypeArg._legal_holds_change_hold_name_validator = bv.Void()
-EventTypeArg._legal_holds_export_a_hold_validator = bv.Void()
-EventTypeArg._legal_holds_export_cancelled_validator = bv.Void()
-EventTypeArg._legal_holds_export_downloaded_validator = bv.Void()
-EventTypeArg._legal_holds_export_removed_validator = bv.Void()
-EventTypeArg._legal_holds_release_a_hold_validator = bv.Void()
-EventTypeArg._legal_holds_remove_members_validator = bv.Void()
-EventTypeArg._legal_holds_report_a_hold_validator = bv.Void()
 EventTypeArg._account_lock_or_unlocked_validator = bv.Void()
 EventTypeArg._emm_error_validator = bv.Void()
 EventTypeArg._guest_admin_signed_in_via_trusted_teams_validator = bv.Void()
@@ -98240,6 +100844,8 @@ EventTypeArg._shared_link_settings_remove_password_validator = bv.Void()
 EventTypeArg._shared_link_share_validator = bv.Void()
 EventTypeArg._shared_link_view_validator = bv.Void()
 EventTypeArg._shared_note_opened_validator = bv.Void()
+EventTypeArg._shmodel_disable_downloads_validator = bv.Void()
+EventTypeArg._shmodel_enable_downloads_validator = bv.Void()
 EventTypeArg._shmodel_group_share_validator = bv.Void()
 EventTypeArg._showcase_access_granted_validator = bv.Void()
 EventTypeArg._showcase_add_member_validator = bv.Void()
@@ -98409,6 +101015,23 @@ EventTypeArg._tagmap = {
     'file_resolve_comment': EventTypeArg._file_resolve_comment_validator,
     'file_unlike_comment': EventTypeArg._file_unlike_comment_validator,
     'file_unresolve_comment': EventTypeArg._file_unresolve_comment_validator,
+    'governance_policy_add_folders': EventTypeArg._governance_policy_add_folders_validator,
+    'governance_policy_create': EventTypeArg._governance_policy_create_validator,
+    'governance_policy_delete': EventTypeArg._governance_policy_delete_validator,
+    'governance_policy_edit_details': EventTypeArg._governance_policy_edit_details_validator,
+    'governance_policy_edit_duration': EventTypeArg._governance_policy_edit_duration_validator,
+    'governance_policy_remove_folders': EventTypeArg._governance_policy_remove_folders_validator,
+    'legal_holds_activate_a_hold': EventTypeArg._legal_holds_activate_a_hold_validator,
+    'legal_holds_add_members': EventTypeArg._legal_holds_add_members_validator,
+    'legal_holds_change_hold_details': EventTypeArg._legal_holds_change_hold_details_validator,
+    'legal_holds_change_hold_name': EventTypeArg._legal_holds_change_hold_name_validator,
+    'legal_holds_export_a_hold': EventTypeArg._legal_holds_export_a_hold_validator,
+    'legal_holds_export_cancelled': EventTypeArg._legal_holds_export_cancelled_validator,
+    'legal_holds_export_downloaded': EventTypeArg._legal_holds_export_downloaded_validator,
+    'legal_holds_export_removed': EventTypeArg._legal_holds_export_removed_validator,
+    'legal_holds_release_a_hold': EventTypeArg._legal_holds_release_a_hold_validator,
+    'legal_holds_remove_members': EventTypeArg._legal_holds_remove_members_validator,
+    'legal_holds_report_a_hold': EventTypeArg._legal_holds_report_a_hold_validator,
     'device_change_ip_desktop': EventTypeArg._device_change_ip_desktop_validator,
     'device_change_ip_mobile': EventTypeArg._device_change_ip_mobile_validator,
     'device_change_ip_web': EventTypeArg._device_change_ip_web_validator,
@@ -98418,6 +101041,7 @@ EventTypeArg._tagmap = {
     'device_link_success': EventTypeArg._device_link_success_validator,
     'device_management_disabled': EventTypeArg._device_management_disabled_validator,
     'device_management_enabled': EventTypeArg._device_management_enabled_validator,
+    'device_sync_backup_status_changed': EventTypeArg._device_sync_backup_status_changed_validator,
     'device_unlink': EventTypeArg._device_unlink_validator,
     'emm_refresh_auth_token': EventTypeArg._emm_refresh_auth_token_validator,
     'account_capture_change_availability': EventTypeArg._account_capture_change_availability_validator,
@@ -98473,17 +101097,6 @@ EventTypeArg._tagmap = {
     'group_remove_external_id': EventTypeArg._group_remove_external_id_validator,
     'group_remove_member': EventTypeArg._group_remove_member_validator,
     'group_rename': EventTypeArg._group_rename_validator,
-    'legal_holds_activate_a_hold': EventTypeArg._legal_holds_activate_a_hold_validator,
-    'legal_holds_add_members': EventTypeArg._legal_holds_add_members_validator,
-    'legal_holds_change_hold_details': EventTypeArg._legal_holds_change_hold_details_validator,
-    'legal_holds_change_hold_name': EventTypeArg._legal_holds_change_hold_name_validator,
-    'legal_holds_export_a_hold': EventTypeArg._legal_holds_export_a_hold_validator,
-    'legal_holds_export_cancelled': EventTypeArg._legal_holds_export_cancelled_validator,
-    'legal_holds_export_downloaded': EventTypeArg._legal_holds_export_downloaded_validator,
-    'legal_holds_export_removed': EventTypeArg._legal_holds_export_removed_validator,
-    'legal_holds_release_a_hold': EventTypeArg._legal_holds_release_a_hold_validator,
-    'legal_holds_remove_members': EventTypeArg._legal_holds_remove_members_validator,
-    'legal_holds_report_a_hold': EventTypeArg._legal_holds_report_a_hold_validator,
     'account_lock_or_unlocked': EventTypeArg._account_lock_or_unlocked_validator,
     'emm_error': EventTypeArg._emm_error_validator,
     'guest_admin_signed_in_via_trusted_teams': EventTypeArg._guest_admin_signed_in_via_trusted_teams_validator,
@@ -98670,6 +101283,8 @@ EventTypeArg._tagmap = {
     'shared_link_share': EventTypeArg._shared_link_share_validator,
     'shared_link_view': EventTypeArg._shared_link_view_validator,
     'shared_note_opened': EventTypeArg._shared_note_opened_validator,
+    'shmodel_disable_downloads': EventTypeArg._shmodel_disable_downloads_validator,
+    'shmodel_enable_downloads': EventTypeArg._shmodel_enable_downloads_validator,
     'shmodel_group_share': EventTypeArg._shmodel_group_share_validator,
     'showcase_access_granted': EventTypeArg._showcase_access_granted_validator,
     'showcase_add_member': EventTypeArg._showcase_add_member_validator,
@@ -98840,6 +101455,23 @@ EventTypeArg.file_like_comment = EventTypeArg('file_like_comment')
 EventTypeArg.file_resolve_comment = EventTypeArg('file_resolve_comment')
 EventTypeArg.file_unlike_comment = EventTypeArg('file_unlike_comment')
 EventTypeArg.file_unresolve_comment = EventTypeArg('file_unresolve_comment')
+EventTypeArg.governance_policy_add_folders = EventTypeArg('governance_policy_add_folders')
+EventTypeArg.governance_policy_create = EventTypeArg('governance_policy_create')
+EventTypeArg.governance_policy_delete = EventTypeArg('governance_policy_delete')
+EventTypeArg.governance_policy_edit_details = EventTypeArg('governance_policy_edit_details')
+EventTypeArg.governance_policy_edit_duration = EventTypeArg('governance_policy_edit_duration')
+EventTypeArg.governance_policy_remove_folders = EventTypeArg('governance_policy_remove_folders')
+EventTypeArg.legal_holds_activate_a_hold = EventTypeArg('legal_holds_activate_a_hold')
+EventTypeArg.legal_holds_add_members = EventTypeArg('legal_holds_add_members')
+EventTypeArg.legal_holds_change_hold_details = EventTypeArg('legal_holds_change_hold_details')
+EventTypeArg.legal_holds_change_hold_name = EventTypeArg('legal_holds_change_hold_name')
+EventTypeArg.legal_holds_export_a_hold = EventTypeArg('legal_holds_export_a_hold')
+EventTypeArg.legal_holds_export_cancelled = EventTypeArg('legal_holds_export_cancelled')
+EventTypeArg.legal_holds_export_downloaded = EventTypeArg('legal_holds_export_downloaded')
+EventTypeArg.legal_holds_export_removed = EventTypeArg('legal_holds_export_removed')
+EventTypeArg.legal_holds_release_a_hold = EventTypeArg('legal_holds_release_a_hold')
+EventTypeArg.legal_holds_remove_members = EventTypeArg('legal_holds_remove_members')
+EventTypeArg.legal_holds_report_a_hold = EventTypeArg('legal_holds_report_a_hold')
 EventTypeArg.device_change_ip_desktop = EventTypeArg('device_change_ip_desktop')
 EventTypeArg.device_change_ip_mobile = EventTypeArg('device_change_ip_mobile')
 EventTypeArg.device_change_ip_web = EventTypeArg('device_change_ip_web')
@@ -98849,6 +101481,7 @@ EventTypeArg.device_link_fail = EventTypeArg('device_link_fail')
 EventTypeArg.device_link_success = EventTypeArg('device_link_success')
 EventTypeArg.device_management_disabled = EventTypeArg('device_management_disabled')
 EventTypeArg.device_management_enabled = EventTypeArg('device_management_enabled')
+EventTypeArg.device_sync_backup_status_changed = EventTypeArg('device_sync_backup_status_changed')
 EventTypeArg.device_unlink = EventTypeArg('device_unlink')
 EventTypeArg.emm_refresh_auth_token = EventTypeArg('emm_refresh_auth_token')
 EventTypeArg.account_capture_change_availability = EventTypeArg('account_capture_change_availability')
@@ -98904,17 +101537,6 @@ EventTypeArg.group_moved = EventTypeArg('group_moved')
 EventTypeArg.group_remove_external_id = EventTypeArg('group_remove_external_id')
 EventTypeArg.group_remove_member = EventTypeArg('group_remove_member')
 EventTypeArg.group_rename = EventTypeArg('group_rename')
-EventTypeArg.legal_holds_activate_a_hold = EventTypeArg('legal_holds_activate_a_hold')
-EventTypeArg.legal_holds_add_members = EventTypeArg('legal_holds_add_members')
-EventTypeArg.legal_holds_change_hold_details = EventTypeArg('legal_holds_change_hold_details')
-EventTypeArg.legal_holds_change_hold_name = EventTypeArg('legal_holds_change_hold_name')
-EventTypeArg.legal_holds_export_a_hold = EventTypeArg('legal_holds_export_a_hold')
-EventTypeArg.legal_holds_export_cancelled = EventTypeArg('legal_holds_export_cancelled')
-EventTypeArg.legal_holds_export_downloaded = EventTypeArg('legal_holds_export_downloaded')
-EventTypeArg.legal_holds_export_removed = EventTypeArg('legal_holds_export_removed')
-EventTypeArg.legal_holds_release_a_hold = EventTypeArg('legal_holds_release_a_hold')
-EventTypeArg.legal_holds_remove_members = EventTypeArg('legal_holds_remove_members')
-EventTypeArg.legal_holds_report_a_hold = EventTypeArg('legal_holds_report_a_hold')
 EventTypeArg.account_lock_or_unlocked = EventTypeArg('account_lock_or_unlocked')
 EventTypeArg.emm_error = EventTypeArg('emm_error')
 EventTypeArg.guest_admin_signed_in_via_trusted_teams = EventTypeArg('guest_admin_signed_in_via_trusted_teams')
@@ -99101,6 +101723,8 @@ EventTypeArg.shared_link_settings_remove_password = EventTypeArg('shared_link_se
 EventTypeArg.shared_link_share = EventTypeArg('shared_link_share')
 EventTypeArg.shared_link_view = EventTypeArg('shared_link_view')
 EventTypeArg.shared_note_opened = EventTypeArg('shared_note_opened')
+EventTypeArg.shmodel_disable_downloads = EventTypeArg('shmodel_disable_downloads')
+EventTypeArg.shmodel_enable_downloads = EventTypeArg('shmodel_enable_downloads')
 EventTypeArg.shmodel_group_share = EventTypeArg('shmodel_group_share')
 EventTypeArg.showcase_access_granted = EventTypeArg('showcase_access_granted')
 EventTypeArg.showcase_add_member = EventTypeArg('showcase_add_member')
@@ -99342,53 +101966,53 @@ FailureDetailsLogInfo._all_fields_ = [
     ('technical_error_message', FailureDetailsLogInfo._technical_error_message_validator),
 ]
 
-FedAdminRole._not_enterprise_admin_validator = bv.Void()
 FedAdminRole._enterprise_admin_validator = bv.Void()
+FedAdminRole._not_enterprise_admin_validator = bv.Void()
 FedAdminRole._other_validator = bv.Void()
 FedAdminRole._tagmap = {
-    'not_enterprise_admin': FedAdminRole._not_enterprise_admin_validator,
     'enterprise_admin': FedAdminRole._enterprise_admin_validator,
+    'not_enterprise_admin': FedAdminRole._not_enterprise_admin_validator,
     'other': FedAdminRole._other_validator,
 }
 
-FedAdminRole.not_enterprise_admin = FedAdminRole('not_enterprise_admin')
 FedAdminRole.enterprise_admin = FedAdminRole('enterprise_admin')
+FedAdminRole.not_enterprise_admin = FedAdminRole('not_enterprise_admin')
 FedAdminRole.other = FedAdminRole('other')
 
-FedExtraDetails._team_validator = TeamDetails_validator
 FedExtraDetails._organization_validator = OrganizationDetails_validator
+FedExtraDetails._team_validator = TeamDetails_validator
 FedExtraDetails._other_validator = bv.Void()
 FedExtraDetails._tagmap = {
-    'team': FedExtraDetails._team_validator,
     'organization': FedExtraDetails._organization_validator,
+    'team': FedExtraDetails._team_validator,
     'other': FedExtraDetails._other_validator,
 }
 
 FedExtraDetails.other = FedExtraDetails('other')
 
-FedHandshakeAction._invited_validator = bv.Void()
 FedHandshakeAction._accepted_invite_validator = bv.Void()
-FedHandshakeAction._rejected_invite_validator = bv.Void()
 FedHandshakeAction._canceled_invite_validator = bv.Void()
-FedHandshakeAction._removed_team_validator = bv.Void()
 FedHandshakeAction._invite_expired_validator = bv.Void()
+FedHandshakeAction._invited_validator = bv.Void()
+FedHandshakeAction._rejected_invite_validator = bv.Void()
+FedHandshakeAction._removed_team_validator = bv.Void()
 FedHandshakeAction._other_validator = bv.Void()
 FedHandshakeAction._tagmap = {
-    'invited': FedHandshakeAction._invited_validator,
     'accepted_invite': FedHandshakeAction._accepted_invite_validator,
-    'rejected_invite': FedHandshakeAction._rejected_invite_validator,
     'canceled_invite': FedHandshakeAction._canceled_invite_validator,
-    'removed_team': FedHandshakeAction._removed_team_validator,
     'invite_expired': FedHandshakeAction._invite_expired_validator,
+    'invited': FedHandshakeAction._invited_validator,
+    'rejected_invite': FedHandshakeAction._rejected_invite_validator,
+    'removed_team': FedHandshakeAction._removed_team_validator,
     'other': FedHandshakeAction._other_validator,
 }
 
-FedHandshakeAction.invited = FedHandshakeAction('invited')
 FedHandshakeAction.accepted_invite = FedHandshakeAction('accepted_invite')
-FedHandshakeAction.rejected_invite = FedHandshakeAction('rejected_invite')
 FedHandshakeAction.canceled_invite = FedHandshakeAction('canceled_invite')
-FedHandshakeAction.removed_team = FedHandshakeAction('removed_team')
 FedHandshakeAction.invite_expired = FedHandshakeAction('invite_expired')
+FedHandshakeAction.invited = FedHandshakeAction('invited')
+FedHandshakeAction.rejected_invite = FedHandshakeAction('rejected_invite')
+FedHandshakeAction.removed_team = FedHandshakeAction('removed_team')
 FedHandshakeAction.other = FedHandshakeAction('other')
 
 FederationStatusChangeAdditionalInfo._connected_team_name_validator = ConnectedTeamName_validator
@@ -100047,6 +102671,141 @@ GoogleSsoPolicy.disabled = GoogleSsoPolicy('disabled')
 GoogleSsoPolicy.enabled = GoogleSsoPolicy('enabled')
 GoogleSsoPolicy.other = GoogleSsoPolicy('other')
 
+GovernancePolicyAddFoldersDetails._governance_policy_id_validator = bv.String()
+GovernancePolicyAddFoldersDetails._name_validator = bv.String()
+GovernancePolicyAddFoldersDetails._policy_type_validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyAddFoldersDetails._folders_validator = bv.Nullable(bv.List(bv.String()))
+GovernancePolicyAddFoldersDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'folders',
+])
+GovernancePolicyAddFoldersDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyAddFoldersDetails._governance_policy_id_validator),
+    ('name', GovernancePolicyAddFoldersDetails._name_validator),
+    ('policy_type', GovernancePolicyAddFoldersDetails._policy_type_validator),
+    ('folders', GovernancePolicyAddFoldersDetails._folders_validator),
+]
+
+GovernancePolicyAddFoldersType._description_validator = bv.String()
+GovernancePolicyAddFoldersType._all_field_names_ = set(['description'])
+GovernancePolicyAddFoldersType._all_fields_ = [('description', GovernancePolicyAddFoldersType._description_validator)]
+
+GovernancePolicyCreateDetails._governance_policy_id_validator = bv.String()
+GovernancePolicyCreateDetails._name_validator = bv.String()
+GovernancePolicyCreateDetails._policy_type_validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyCreateDetails._duration_validator = DurationLogInfo_validator
+GovernancePolicyCreateDetails._folders_validator = bv.Nullable(bv.List(bv.String()))
+GovernancePolicyCreateDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'duration',
+    'folders',
+])
+GovernancePolicyCreateDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyCreateDetails._governance_policy_id_validator),
+    ('name', GovernancePolicyCreateDetails._name_validator),
+    ('policy_type', GovernancePolicyCreateDetails._policy_type_validator),
+    ('duration', GovernancePolicyCreateDetails._duration_validator),
+    ('folders', GovernancePolicyCreateDetails._folders_validator),
+]
+
+GovernancePolicyCreateType._description_validator = bv.String()
+GovernancePolicyCreateType._all_field_names_ = set(['description'])
+GovernancePolicyCreateType._all_fields_ = [('description', GovernancePolicyCreateType._description_validator)]
+
+GovernancePolicyDeleteDetails._governance_policy_id_validator = bv.String()
+GovernancePolicyDeleteDetails._name_validator = bv.String()
+GovernancePolicyDeleteDetails._policy_type_validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyDeleteDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+])
+GovernancePolicyDeleteDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyDeleteDetails._governance_policy_id_validator),
+    ('name', GovernancePolicyDeleteDetails._name_validator),
+    ('policy_type', GovernancePolicyDeleteDetails._policy_type_validator),
+]
+
+GovernancePolicyDeleteType._description_validator = bv.String()
+GovernancePolicyDeleteType._all_field_names_ = set(['description'])
+GovernancePolicyDeleteType._all_fields_ = [('description', GovernancePolicyDeleteType._description_validator)]
+
+GovernancePolicyEditDetailsDetails._governance_policy_id_validator = bv.String()
+GovernancePolicyEditDetailsDetails._name_validator = bv.String()
+GovernancePolicyEditDetailsDetails._policy_type_validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyEditDetailsDetails._attribute_validator = bv.String()
+GovernancePolicyEditDetailsDetails._previous_value_validator = bv.String()
+GovernancePolicyEditDetailsDetails._new_value_validator = bv.String()
+GovernancePolicyEditDetailsDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'attribute',
+    'previous_value',
+    'new_value',
+])
+GovernancePolicyEditDetailsDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyEditDetailsDetails._governance_policy_id_validator),
+    ('name', GovernancePolicyEditDetailsDetails._name_validator),
+    ('policy_type', GovernancePolicyEditDetailsDetails._policy_type_validator),
+    ('attribute', GovernancePolicyEditDetailsDetails._attribute_validator),
+    ('previous_value', GovernancePolicyEditDetailsDetails._previous_value_validator),
+    ('new_value', GovernancePolicyEditDetailsDetails._new_value_validator),
+]
+
+GovernancePolicyEditDetailsType._description_validator = bv.String()
+GovernancePolicyEditDetailsType._all_field_names_ = set(['description'])
+GovernancePolicyEditDetailsType._all_fields_ = [('description', GovernancePolicyEditDetailsType._description_validator)]
+
+GovernancePolicyEditDurationDetails._governance_policy_id_validator = bv.String()
+GovernancePolicyEditDurationDetails._name_validator = bv.String()
+GovernancePolicyEditDurationDetails._policy_type_validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyEditDurationDetails._previous_value_validator = DurationLogInfo_validator
+GovernancePolicyEditDurationDetails._new_value_validator = DurationLogInfo_validator
+GovernancePolicyEditDurationDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'previous_value',
+    'new_value',
+])
+GovernancePolicyEditDurationDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyEditDurationDetails._governance_policy_id_validator),
+    ('name', GovernancePolicyEditDurationDetails._name_validator),
+    ('policy_type', GovernancePolicyEditDurationDetails._policy_type_validator),
+    ('previous_value', GovernancePolicyEditDurationDetails._previous_value_validator),
+    ('new_value', GovernancePolicyEditDurationDetails._new_value_validator),
+]
+
+GovernancePolicyEditDurationType._description_validator = bv.String()
+GovernancePolicyEditDurationType._all_field_names_ = set(['description'])
+GovernancePolicyEditDurationType._all_fields_ = [('description', GovernancePolicyEditDurationType._description_validator)]
+
+GovernancePolicyRemoveFoldersDetails._governance_policy_id_validator = bv.String()
+GovernancePolicyRemoveFoldersDetails._name_validator = bv.String()
+GovernancePolicyRemoveFoldersDetails._policy_type_validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyRemoveFoldersDetails._folders_validator = bv.Nullable(bv.List(bv.String()))
+GovernancePolicyRemoveFoldersDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'folders',
+])
+GovernancePolicyRemoveFoldersDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyRemoveFoldersDetails._governance_policy_id_validator),
+    ('name', GovernancePolicyRemoveFoldersDetails._name_validator),
+    ('policy_type', GovernancePolicyRemoveFoldersDetails._policy_type_validator),
+    ('folders', GovernancePolicyRemoveFoldersDetails._folders_validator),
+]
+
+GovernancePolicyRemoveFoldersType._description_validator = bv.String()
+GovernancePolicyRemoveFoldersType._all_field_names_ = set(['description'])
+GovernancePolicyRemoveFoldersType._all_fields_ = [('description', GovernancePolicyRemoveFoldersType._description_validator)]
+
 GroupAddExternalIdDetails._new_value_validator = team_common.GroupExternalId_validator
 GroupAddExternalIdDetails._all_field_names_ = set(['new_value'])
 GroupAddExternalIdDetails._all_fields_ = [('new_value', GroupAddExternalIdDetails._new_value_validator)]
@@ -100342,19 +103101,22 @@ IntegrationPolicyChangedType._description_validator = bv.String()
 IntegrationPolicyChangedType._all_field_names_ = set(['description'])
 IntegrationPolicyChangedType._all_fields_ = [('description', IntegrationPolicyChangedType._description_validator)]
 
-InviteMethod._invite_link_validator = bv.Void()
 InviteMethod._auto_approve_validator = bv.Void()
+InviteMethod._invite_link_validator = bv.Void()
+InviteMethod._member_invite_validator = bv.Void()
 InviteMethod._moved_from_another_team_validator = bv.Void()
 InviteMethod._other_validator = bv.Void()
 InviteMethod._tagmap = {
-    'invite_link': InviteMethod._invite_link_validator,
     'auto_approve': InviteMethod._auto_approve_validator,
+    'invite_link': InviteMethod._invite_link_validator,
+    'member_invite': InviteMethod._member_invite_validator,
     'moved_from_another_team': InviteMethod._moved_from_another_team_validator,
     'other': InviteMethod._other_validator,
 }
 
-InviteMethod.invite_link = InviteMethod('invite_link')
 InviteMethod.auto_approve = InviteMethod('auto_approve')
+InviteMethod.invite_link = InviteMethod('invite_link')
+InviteMethod.member_invite = InviteMethod('member_invite')
 InviteMethod.moved_from_another_team = InviteMethod('moved_from_another_team')
 InviteMethod.other = InviteMethod('other')
 
@@ -100622,16 +103384,16 @@ LegalHoldsReportAHoldType._description_validator = bv.String()
 LegalHoldsReportAHoldType._all_field_names_ = set(['description'])
 LegalHoldsReportAHoldType._all_fields_ = [('description', LegalHoldsReportAHoldType._description_validator)]
 
-LinkedDeviceLogInfo._mobile_device_session_validator = MobileDeviceSessionLogInfo_validator
 LinkedDeviceLogInfo._desktop_device_session_validator = DesktopDeviceSessionLogInfo_validator
-LinkedDeviceLogInfo._web_device_session_validator = WebDeviceSessionLogInfo_validator
 LinkedDeviceLogInfo._legacy_device_session_validator = LegacyDeviceSessionLogInfo_validator
+LinkedDeviceLogInfo._mobile_device_session_validator = MobileDeviceSessionLogInfo_validator
+LinkedDeviceLogInfo._web_device_session_validator = WebDeviceSessionLogInfo_validator
 LinkedDeviceLogInfo._other_validator = bv.Void()
 LinkedDeviceLogInfo._tagmap = {
-    'mobile_device_session': LinkedDeviceLogInfo._mobile_device_session_validator,
     'desktop_device_session': LinkedDeviceLogInfo._desktop_device_session_validator,
-    'web_device_session': LinkedDeviceLogInfo._web_device_session_validator,
     'legacy_device_session': LinkedDeviceLogInfo._legacy_device_session_validator,
+    'mobile_device_session': LinkedDeviceLogInfo._mobile_device_session_validator,
+    'web_device_session': LinkedDeviceLogInfo._web_device_session_validator,
     'other': LinkedDeviceLogInfo._other_validator,
 }
 
@@ -100668,35 +103430,35 @@ LoginFailType._description_validator = bv.String()
 LoginFailType._all_field_names_ = set(['description'])
 LoginFailType._all_fields_ = [('description', LoginFailType._description_validator)]
 
-LoginMethod._password_validator = bv.Void()
-LoginMethod._two_factor_authentication_validator = bv.Void()
-LoginMethod._saml_validator = bv.Void()
-LoginMethod._google_oauth_validator = bv.Void()
-LoginMethod._web_session_validator = bv.Void()
-LoginMethod._qr_code_validator = bv.Void()
 LoginMethod._apple_oauth_validator = bv.Void()
 LoginMethod._first_party_token_exchange_validator = bv.Void()
+LoginMethod._google_oauth_validator = bv.Void()
+LoginMethod._password_validator = bv.Void()
+LoginMethod._qr_code_validator = bv.Void()
+LoginMethod._saml_validator = bv.Void()
+LoginMethod._two_factor_authentication_validator = bv.Void()
+LoginMethod._web_session_validator = bv.Void()
 LoginMethod._other_validator = bv.Void()
 LoginMethod._tagmap = {
-    'password': LoginMethod._password_validator,
-    'two_factor_authentication': LoginMethod._two_factor_authentication_validator,
-    'saml': LoginMethod._saml_validator,
-    'google_oauth': LoginMethod._google_oauth_validator,
-    'web_session': LoginMethod._web_session_validator,
-    'qr_code': LoginMethod._qr_code_validator,
     'apple_oauth': LoginMethod._apple_oauth_validator,
     'first_party_token_exchange': LoginMethod._first_party_token_exchange_validator,
+    'google_oauth': LoginMethod._google_oauth_validator,
+    'password': LoginMethod._password_validator,
+    'qr_code': LoginMethod._qr_code_validator,
+    'saml': LoginMethod._saml_validator,
+    'two_factor_authentication': LoginMethod._two_factor_authentication_validator,
+    'web_session': LoginMethod._web_session_validator,
     'other': LoginMethod._other_validator,
 }
 
-LoginMethod.password = LoginMethod('password')
-LoginMethod.two_factor_authentication = LoginMethod('two_factor_authentication')
-LoginMethod.saml = LoginMethod('saml')
-LoginMethod.google_oauth = LoginMethod('google_oauth')
-LoginMethod.web_session = LoginMethod('web_session')
-LoginMethod.qr_code = LoginMethod('qr_code')
 LoginMethod.apple_oauth = LoginMethod('apple_oauth')
 LoginMethod.first_party_token_exchange = LoginMethod('first_party_token_exchange')
+LoginMethod.google_oauth = LoginMethod('google_oauth')
+LoginMethod.password = LoginMethod('password')
+LoginMethod.qr_code = LoginMethod('qr_code')
+LoginMethod.saml = LoginMethod('saml')
+LoginMethod.two_factor_authentication = LoginMethod('two_factor_authentication')
+LoginMethod.web_session = LoginMethod('web_session')
 LoginMethod.other = LoginMethod('other')
 
 LoginSuccessDetails._is_emm_managed_validator = bv.Nullable(bv.Boolean())
@@ -100714,8 +103476,9 @@ LoginSuccessType._description_validator = bv.String()
 LoginSuccessType._all_field_names_ = set(['description'])
 LoginSuccessType._all_fields_ = [('description', LoginSuccessType._description_validator)]
 
-LogoutDetails._all_field_names_ = set([])
-LogoutDetails._all_fields_ = []
+LogoutDetails._login_id_validator = bv.Nullable(bv.String())
+LogoutDetails._all_field_names_ = set(['login_id'])
+LogoutDetails._all_fields_ = [('login_id', LogoutDetails._login_id_validator)]
 
 LogoutType._description_validator = bv.String()
 LogoutType._all_field_names_ = set(['description'])
@@ -100858,21 +103621,21 @@ MemberPermanentlyDeleteAccountContentsType._all_field_names_ = set(['description
 MemberPermanentlyDeleteAccountContentsType._all_fields_ = [('description', MemberPermanentlyDeleteAccountContentsType._description_validator)]
 
 MemberRemoveActionType._delete_validator = bv.Void()
-MemberRemoveActionType._offboard_validator = bv.Void()
 MemberRemoveActionType._leave_validator = bv.Void()
+MemberRemoveActionType._offboard_validator = bv.Void()
 MemberRemoveActionType._offboard_and_retain_team_folders_validator = bv.Void()
 MemberRemoveActionType._other_validator = bv.Void()
 MemberRemoveActionType._tagmap = {
     'delete': MemberRemoveActionType._delete_validator,
-    'offboard': MemberRemoveActionType._offboard_validator,
     'leave': MemberRemoveActionType._leave_validator,
+    'offboard': MemberRemoveActionType._offboard_validator,
     'offboard_and_retain_team_folders': MemberRemoveActionType._offboard_and_retain_team_folders_validator,
     'other': MemberRemoveActionType._other_validator,
 }
 
 MemberRemoveActionType.delete = MemberRemoveActionType('delete')
-MemberRemoveActionType.offboard = MemberRemoveActionType('offboard')
 MemberRemoveActionType.leave = MemberRemoveActionType('leave')
+MemberRemoveActionType.offboard = MemberRemoveActionType('offboard')
 MemberRemoveActionType.offboard_and_retain_team_folders = MemberRemoveActionType('offboard_and_retain_team_folders')
 MemberRemoveActionType.other = MemberRemoveActionType('other')
 
@@ -100916,19 +103679,19 @@ MemberRequestsPolicy.require_approval = MemberRequestsPolicy('require_approval')
 MemberRequestsPolicy.other = MemberRequestsPolicy('other')
 
 MemberSendInvitePolicy._disabled_validator = bv.Void()
-MemberSendInvitePolicy._specific_members_validator = bv.Void()
 MemberSendInvitePolicy._everyone_validator = bv.Void()
+MemberSendInvitePolicy._specific_members_validator = bv.Void()
 MemberSendInvitePolicy._other_validator = bv.Void()
 MemberSendInvitePolicy._tagmap = {
     'disabled': MemberSendInvitePolicy._disabled_validator,
-    'specific_members': MemberSendInvitePolicy._specific_members_validator,
     'everyone': MemberSendInvitePolicy._everyone_validator,
+    'specific_members': MemberSendInvitePolicy._specific_members_validator,
     'other': MemberSendInvitePolicy._other_validator,
 }
 
 MemberSendInvitePolicy.disabled = MemberSendInvitePolicy('disabled')
-MemberSendInvitePolicy.specific_members = MemberSendInvitePolicy('specific_members')
 MemberSendInvitePolicy.everyone = MemberSendInvitePolicy('everyone')
+MemberSendInvitePolicy.specific_members = MemberSendInvitePolicy('specific_members')
 MemberSendInvitePolicy.other = MemberSendInvitePolicy('other')
 
 MemberSendInvitePolicyChangedDetails._new_value_validator = MemberSendInvitePolicy_validator
@@ -101042,29 +103805,29 @@ MemberSpaceLimitsRemoveExceptionType._description_validator = bv.String()
 MemberSpaceLimitsRemoveExceptionType._all_field_names_ = set(['description'])
 MemberSpaceLimitsRemoveExceptionType._all_fields_ = [('description', MemberSpaceLimitsRemoveExceptionType._description_validator)]
 
-MemberStatus._not_joined_validator = bv.Void()
-MemberStatus._invited_validator = bv.Void()
 MemberStatus._active_validator = bv.Void()
-MemberStatus._suspended_validator = bv.Void()
-MemberStatus._removed_validator = bv.Void()
+MemberStatus._invited_validator = bv.Void()
 MemberStatus._moved_to_another_team_validator = bv.Void()
+MemberStatus._not_joined_validator = bv.Void()
+MemberStatus._removed_validator = bv.Void()
+MemberStatus._suspended_validator = bv.Void()
 MemberStatus._other_validator = bv.Void()
 MemberStatus._tagmap = {
-    'not_joined': MemberStatus._not_joined_validator,
-    'invited': MemberStatus._invited_validator,
     'active': MemberStatus._active_validator,
-    'suspended': MemberStatus._suspended_validator,
-    'removed': MemberStatus._removed_validator,
+    'invited': MemberStatus._invited_validator,
     'moved_to_another_team': MemberStatus._moved_to_another_team_validator,
+    'not_joined': MemberStatus._not_joined_validator,
+    'removed': MemberStatus._removed_validator,
+    'suspended': MemberStatus._suspended_validator,
     'other': MemberStatus._other_validator,
 }
 
-MemberStatus.not_joined = MemberStatus('not_joined')
-MemberStatus.invited = MemberStatus('invited')
 MemberStatus.active = MemberStatus('active')
-MemberStatus.suspended = MemberStatus('suspended')
-MemberStatus.removed = MemberStatus('removed')
+MemberStatus.invited = MemberStatus('invited')
 MemberStatus.moved_to_another_team = MemberStatus('moved_to_another_team')
+MemberStatus.not_joined = MemberStatus('not_joined')
+MemberStatus.removed = MemberStatus('removed')
+MemberStatus.suspended = MemberStatus('suspended')
 MemberStatus.other = MemberStatus('other')
 
 MemberSuggestDetails._suggested_members_validator = bv.List(EmailAddress_validator)
@@ -101404,20 +104167,20 @@ OutdatedLinkViewReportFailedType._description_validator = bv.String()
 OutdatedLinkViewReportFailedType._all_field_names_ = set(['description'])
 OutdatedLinkViewReportFailedType._all_fields_ = [('description', OutdatedLinkViewReportFailedType._description_validator)]
 
-PaperAccessType._viewer_validator = bv.Void()
 PaperAccessType._commenter_validator = bv.Void()
 PaperAccessType._editor_validator = bv.Void()
+PaperAccessType._viewer_validator = bv.Void()
 PaperAccessType._other_validator = bv.Void()
 PaperAccessType._tagmap = {
-    'viewer': PaperAccessType._viewer_validator,
     'commenter': PaperAccessType._commenter_validator,
     'editor': PaperAccessType._editor_validator,
+    'viewer': PaperAccessType._viewer_validator,
     'other': PaperAccessType._other_validator,
 }
 
-PaperAccessType.viewer = PaperAccessType('viewer')
 PaperAccessType.commenter = PaperAccessType('commenter')
 PaperAccessType.editor = PaperAccessType('editor')
+PaperAccessType.viewer = PaperAccessType('viewer')
 PaperAccessType.other = PaperAccessType('other')
 
 PaperAdminExportStartDetails._all_field_names_ = set([])
@@ -102054,31 +104817,31 @@ PaperPublishedLinkViewType._description_validator = bv.String()
 PaperPublishedLinkViewType._all_field_names_ = set(['description'])
 PaperPublishedLinkViewType._all_fields_ = [('description', PaperPublishedLinkViewType._description_validator)]
 
-ParticipantLogInfo._user_validator = UserLogInfo_validator
 ParticipantLogInfo._group_validator = GroupLogInfo_validator
+ParticipantLogInfo._user_validator = UserLogInfo_validator
 ParticipantLogInfo._other_validator = bv.Void()
 ParticipantLogInfo._tagmap = {
-    'user': ParticipantLogInfo._user_validator,
     'group': ParticipantLogInfo._group_validator,
+    'user': ParticipantLogInfo._user_validator,
     'other': ParticipantLogInfo._other_validator,
 }
 
 ParticipantLogInfo.other = ParticipantLogInfo('other')
 
-PassPolicy._enabled_validator = bv.Void()
 PassPolicy._allow_validator = bv.Void()
 PassPolicy._disabled_validator = bv.Void()
+PassPolicy._enabled_validator = bv.Void()
 PassPolicy._other_validator = bv.Void()
 PassPolicy._tagmap = {
-    'enabled': PassPolicy._enabled_validator,
     'allow': PassPolicy._allow_validator,
     'disabled': PassPolicy._disabled_validator,
+    'enabled': PassPolicy._enabled_validator,
     'other': PassPolicy._other_validator,
 }
 
-PassPolicy.enabled = PassPolicy('enabled')
 PassPolicy.allow = PassPolicy('allow')
 PassPolicy.disabled = PassPolicy('disabled')
+PassPolicy.enabled = PassPolicy('enabled')
 PassPolicy.other = PassPolicy('other')
 
 PasswordChangeDetails._all_field_names_ = set([])
@@ -102169,6 +104932,16 @@ PlacementRestriction.europe_only = PlacementRestriction('europe_only')
 PlacementRestriction.japan_only = PlacementRestriction('japan_only')
 PlacementRestriction.none = PlacementRestriction('none')
 PlacementRestriction.other = PlacementRestriction('other')
+
+PolicyType._retention_validator = bv.Void()
+PolicyType._other_validator = bv.Void()
+PolicyType._tagmap = {
+    'retention': PolicyType._retention_validator,
+    'other': PolicyType._other_validator,
+}
+
+PolicyType.retention = PolicyType('retention')
+PolicyType.other = PolicyType('other')
 
 PrimaryTeamRequestAcceptedDetails._secondary_team_validator = bv.String()
 PrimaryTeamRequestAcceptedDetails._sent_by_validator = bv.String()
@@ -103022,17 +105795,17 @@ SharedFolderDeclineInvitationType._description_validator = bv.String()
 SharedFolderDeclineInvitationType._all_field_names_ = set(['description'])
 SharedFolderDeclineInvitationType._all_fields_ = [('description', SharedFolderDeclineInvitationType._description_validator)]
 
-SharedFolderMembersInheritancePolicy._inherit_members_validator = bv.Void()
 SharedFolderMembersInheritancePolicy._dont_inherit_members_validator = bv.Void()
+SharedFolderMembersInheritancePolicy._inherit_members_validator = bv.Void()
 SharedFolderMembersInheritancePolicy._other_validator = bv.Void()
 SharedFolderMembersInheritancePolicy._tagmap = {
-    'inherit_members': SharedFolderMembersInheritancePolicy._inherit_members_validator,
     'dont_inherit_members': SharedFolderMembersInheritancePolicy._dont_inherit_members_validator,
+    'inherit_members': SharedFolderMembersInheritancePolicy._inherit_members_validator,
     'other': SharedFolderMembersInheritancePolicy._other_validator,
 }
 
-SharedFolderMembersInheritancePolicy.inherit_members = SharedFolderMembersInheritancePolicy('inherit_members')
 SharedFolderMembersInheritancePolicy.dont_inherit_members = SharedFolderMembersInheritancePolicy('dont_inherit_members')
+SharedFolderMembersInheritancePolicy.inherit_members = SharedFolderMembersInheritancePolicy('inherit_members')
 SharedFolderMembersInheritancePolicy.other = SharedFolderMembersInheritancePolicy('other')
 
 SharedFolderMountDetails._all_field_names_ = set([])
@@ -103470,6 +106243,22 @@ SharingMemberPolicy.allow = SharingMemberPolicy('allow')
 SharingMemberPolicy.forbid = SharingMemberPolicy('forbid')
 SharingMemberPolicy.forbid_with_exclusions = SharingMemberPolicy('forbid_with_exclusions')
 SharingMemberPolicy.other = SharingMemberPolicy('other')
+
+ShmodelDisableDownloadsDetails._shared_link_owner_validator = bv.Nullable(UserLogInfo_validator)
+ShmodelDisableDownloadsDetails._all_field_names_ = set(['shared_link_owner'])
+ShmodelDisableDownloadsDetails._all_fields_ = [('shared_link_owner', ShmodelDisableDownloadsDetails._shared_link_owner_validator)]
+
+ShmodelDisableDownloadsType._description_validator = bv.String()
+ShmodelDisableDownloadsType._all_field_names_ = set(['description'])
+ShmodelDisableDownloadsType._all_fields_ = [('description', ShmodelDisableDownloadsType._description_validator)]
+
+ShmodelEnableDownloadsDetails._shared_link_owner_validator = bv.Nullable(UserLogInfo_validator)
+ShmodelEnableDownloadsDetails._all_field_names_ = set(['shared_link_owner'])
+ShmodelEnableDownloadsDetails._all_fields_ = [('shared_link_owner', ShmodelEnableDownloadsDetails._shared_link_owner_validator)]
+
+ShmodelEnableDownloadsType._description_validator = bv.String()
+ShmodelEnableDownloadsType._all_field_names_ = set(['description'])
+ShmodelEnableDownloadsType._all_fields_ = [('description', ShmodelEnableDownloadsType._description_validator)]
 
 ShmodelGroupShareDetails._all_field_names_ = set([])
 ShmodelGroupShareDetails._all_fields_ = []
@@ -103917,20 +106706,20 @@ SpaceCapsType.off = SpaceCapsType('off')
 SpaceCapsType.soft = SpaceCapsType('soft')
 SpaceCapsType.other = SpaceCapsType('other')
 
-SpaceLimitsStatus._within_quota_validator = bv.Void()
 SpaceLimitsStatus._near_quota_validator = bv.Void()
 SpaceLimitsStatus._over_quota_validator = bv.Void()
+SpaceLimitsStatus._within_quota_validator = bv.Void()
 SpaceLimitsStatus._other_validator = bv.Void()
 SpaceLimitsStatus._tagmap = {
-    'within_quota': SpaceLimitsStatus._within_quota_validator,
     'near_quota': SpaceLimitsStatus._near_quota_validator,
     'over_quota': SpaceLimitsStatus._over_quota_validator,
+    'within_quota': SpaceLimitsStatus._within_quota_validator,
     'other': SpaceLimitsStatus._other_validator,
 }
 
-SpaceLimitsStatus.within_quota = SpaceLimitsStatus('within_quota')
 SpaceLimitsStatus.near_quota = SpaceLimitsStatus('near_quota')
 SpaceLimitsStatus.over_quota = SpaceLimitsStatus('over_quota')
+SpaceLimitsStatus.within_quota = SpaceLimitsStatus('within_quota')
 SpaceLimitsStatus.other = SpaceLimitsStatus('other')
 
 SsoAddCertDetails._certificate_details_validator = Certificate_validator
@@ -104214,8 +107003,15 @@ TeamFolderRenameType._all_field_names_ = set(['description'])
 TeamFolderRenameType._all_fields_ = [('description', TeamFolderRenameType._description_validator)]
 
 TeamInviteDetails._invite_method_validator = InviteMethod_validator
-TeamInviteDetails._all_field_names_ = set(['invite_method'])
-TeamInviteDetails._all_fields_ = [('invite_method', TeamInviteDetails._invite_method_validator)]
+TeamInviteDetails._additional_license_purchase_validator = bv.Nullable(bv.Boolean())
+TeamInviteDetails._all_field_names_ = set([
+    'invite_method',
+    'additional_license_purchase',
+])
+TeamInviteDetails._all_fields_ = [
+    ('invite_method', TeamInviteDetails._invite_method_validator),
+    ('additional_license_purchase', TeamInviteDetails._additional_license_purchase_validator),
+]
 
 TeamLinkedAppLogInfo._field_names_ = set([])
 TeamLinkedAppLogInfo._all_field_names_ = AppLogInfo._all_field_names_.union(TeamLinkedAppLogInfo._field_names_)
@@ -104242,17 +107038,17 @@ TeamMemberLogInfo._fields_ = [
 ]
 TeamMemberLogInfo._all_fields_ = UserLogInfo._all_fields_ + TeamMemberLogInfo._fields_
 
-TeamMembershipType._full_validator = bv.Void()
 TeamMembershipType._free_validator = bv.Void()
+TeamMembershipType._full_validator = bv.Void()
 TeamMembershipType._other_validator = bv.Void()
 TeamMembershipType._tagmap = {
-    'full': TeamMembershipType._full_validator,
     'free': TeamMembershipType._free_validator,
+    'full': TeamMembershipType._full_validator,
     'other': TeamMembershipType._other_validator,
 }
 
-TeamMembershipType.full = TeamMembershipType('full')
 TeamMembershipType.free = TeamMembershipType('free')
+TeamMembershipType.full = TeamMembershipType('full')
 TeamMembershipType.other = TeamMembershipType('other')
 
 TeamMergeFromDetails._team_name_validator = bv.String()
@@ -104696,23 +107492,23 @@ TfaChangeStatusType._description_validator = bv.String()
 TfaChangeStatusType._all_field_names_ = set(['description'])
 TfaChangeStatusType._all_fields_ = [('description', TfaChangeStatusType._description_validator)]
 
+TfaConfiguration._authenticator_validator = bv.Void()
 TfaConfiguration._disabled_validator = bv.Void()
 TfaConfiguration._enabled_validator = bv.Void()
 TfaConfiguration._sms_validator = bv.Void()
-TfaConfiguration._authenticator_validator = bv.Void()
 TfaConfiguration._other_validator = bv.Void()
 TfaConfiguration._tagmap = {
+    'authenticator': TfaConfiguration._authenticator_validator,
     'disabled': TfaConfiguration._disabled_validator,
     'enabled': TfaConfiguration._enabled_validator,
     'sms': TfaConfiguration._sms_validator,
-    'authenticator': TfaConfiguration._authenticator_validator,
     'other': TfaConfiguration._other_validator,
 }
 
+TfaConfiguration.authenticator = TfaConfiguration('authenticator')
 TfaConfiguration.disabled = TfaConfiguration('disabled')
 TfaConfiguration.enabled = TfaConfiguration('enabled')
 TfaConfiguration.sms = TfaConfiguration('sms')
-TfaConfiguration.authenticator = TfaConfiguration('authenticator')
 TfaConfiguration.other = TfaConfiguration('other')
 
 TfaRemoveBackupPhoneDetails._all_field_names_ = set([])
@@ -104743,34 +107539,34 @@ TfaResetType._description_validator = bv.String()
 TfaResetType._all_field_names_ = set(['description'])
 TfaResetType._all_fields_ = [('description', TfaResetType._description_validator)]
 
-TimeUnit._milliseconds_validator = bv.Void()
-TimeUnit._seconds_validator = bv.Void()
-TimeUnit._minutes_validator = bv.Void()
-TimeUnit._hours_validator = bv.Void()
 TimeUnit._days_validator = bv.Void()
-TimeUnit._weeks_validator = bv.Void()
+TimeUnit._hours_validator = bv.Void()
+TimeUnit._milliseconds_validator = bv.Void()
+TimeUnit._minutes_validator = bv.Void()
 TimeUnit._months_validator = bv.Void()
+TimeUnit._seconds_validator = bv.Void()
+TimeUnit._weeks_validator = bv.Void()
 TimeUnit._years_validator = bv.Void()
 TimeUnit._other_validator = bv.Void()
 TimeUnit._tagmap = {
-    'milliseconds': TimeUnit._milliseconds_validator,
-    'seconds': TimeUnit._seconds_validator,
-    'minutes': TimeUnit._minutes_validator,
-    'hours': TimeUnit._hours_validator,
     'days': TimeUnit._days_validator,
-    'weeks': TimeUnit._weeks_validator,
+    'hours': TimeUnit._hours_validator,
+    'milliseconds': TimeUnit._milliseconds_validator,
+    'minutes': TimeUnit._minutes_validator,
     'months': TimeUnit._months_validator,
+    'seconds': TimeUnit._seconds_validator,
+    'weeks': TimeUnit._weeks_validator,
     'years': TimeUnit._years_validator,
     'other': TimeUnit._other_validator,
 }
 
-TimeUnit.milliseconds = TimeUnit('milliseconds')
-TimeUnit.seconds = TimeUnit('seconds')
-TimeUnit.minutes = TimeUnit('minutes')
-TimeUnit.hours = TimeUnit('hours')
 TimeUnit.days = TimeUnit('days')
-TimeUnit.weeks = TimeUnit('weeks')
+TimeUnit.hours = TimeUnit('hours')
+TimeUnit.milliseconds = TimeUnit('milliseconds')
+TimeUnit.minutes = TimeUnit('minutes')
 TimeUnit.months = TimeUnit('months')
+TimeUnit.seconds = TimeUnit('seconds')
+TimeUnit.weeks = TimeUnit('weeks')
 TimeUnit.years = TimeUnit('years')
 TimeUnit.other = TimeUnit('other')
 
@@ -104787,39 +107583,39 @@ TrustedNonTeamMemberLogInfo._fields_ = [
 ]
 TrustedNonTeamMemberLogInfo._all_fields_ = UserLogInfo._all_fields_ + TrustedNonTeamMemberLogInfo._fields_
 
-TrustedNonTeamMemberType._multi_instance_admin_validator = bv.Void()
 TrustedNonTeamMemberType._enterprise_admin_validator = bv.Void()
+TrustedNonTeamMemberType._multi_instance_admin_validator = bv.Void()
 TrustedNonTeamMemberType._other_validator = bv.Void()
 TrustedNonTeamMemberType._tagmap = {
-    'multi_instance_admin': TrustedNonTeamMemberType._multi_instance_admin_validator,
     'enterprise_admin': TrustedNonTeamMemberType._enterprise_admin_validator,
+    'multi_instance_admin': TrustedNonTeamMemberType._multi_instance_admin_validator,
     'other': TrustedNonTeamMemberType._other_validator,
 }
 
-TrustedNonTeamMemberType.multi_instance_admin = TrustedNonTeamMemberType('multi_instance_admin')
 TrustedNonTeamMemberType.enterprise_admin = TrustedNonTeamMemberType('enterprise_admin')
+TrustedNonTeamMemberType.multi_instance_admin = TrustedNonTeamMemberType('multi_instance_admin')
 TrustedNonTeamMemberType.other = TrustedNonTeamMemberType('other')
 
-TrustedTeamsRequestAction._invited_validator = bv.Void()
-TrustedTeamsRequestAction._expired_validator = bv.Void()
-TrustedTeamsRequestAction._revoked_validator = bv.Void()
 TrustedTeamsRequestAction._accepted_validator = bv.Void()
 TrustedTeamsRequestAction._declined_validator = bv.Void()
+TrustedTeamsRequestAction._expired_validator = bv.Void()
+TrustedTeamsRequestAction._invited_validator = bv.Void()
+TrustedTeamsRequestAction._revoked_validator = bv.Void()
 TrustedTeamsRequestAction._other_validator = bv.Void()
 TrustedTeamsRequestAction._tagmap = {
-    'invited': TrustedTeamsRequestAction._invited_validator,
-    'expired': TrustedTeamsRequestAction._expired_validator,
-    'revoked': TrustedTeamsRequestAction._revoked_validator,
     'accepted': TrustedTeamsRequestAction._accepted_validator,
     'declined': TrustedTeamsRequestAction._declined_validator,
+    'expired': TrustedTeamsRequestAction._expired_validator,
+    'invited': TrustedTeamsRequestAction._invited_validator,
+    'revoked': TrustedTeamsRequestAction._revoked_validator,
     'other': TrustedTeamsRequestAction._other_validator,
 }
 
-TrustedTeamsRequestAction.invited = TrustedTeamsRequestAction('invited')
-TrustedTeamsRequestAction.expired = TrustedTeamsRequestAction('expired')
-TrustedTeamsRequestAction.revoked = TrustedTeamsRequestAction('revoked')
 TrustedTeamsRequestAction.accepted = TrustedTeamsRequestAction('accepted')
 TrustedTeamsRequestAction.declined = TrustedTeamsRequestAction('declined')
+TrustedTeamsRequestAction.expired = TrustedTeamsRequestAction('expired')
+TrustedTeamsRequestAction.invited = TrustedTeamsRequestAction('invited')
+TrustedTeamsRequestAction.revoked = TrustedTeamsRequestAction('revoked')
 TrustedTeamsRequestAction.other = TrustedTeamsRequestAction('other')
 
 TrustedTeamsRequestState._invited_validator = bv.Void()

@@ -36,11 +36,11 @@ class Account(bb.Struct):
 
     :ivar users.Account.account_id: The user's unique Dropbox ID.
     :ivar users.Account.name: Details of a user's name.
-    :ivar users.Account.email: The user's e-mail address. Do not rely on this
+    :ivar users.Account.email: The user's email address. Do not rely on this
         without checking the ``email_verified`` field. Even then, it's possible
-        that the user has since lost access to their e-mail.
+        that the user has since lost access to their email.
     :ivar users.Account.email_verified: Whether the user has verified their
-        e-mail address.
+        email address.
     :ivar users.Account.profile_photo_url: URL for the photo representing the
         user, if one is set.
     :ivar users.Account.disabled: Whether the user has been disabled.
@@ -144,9 +144,9 @@ class Account(bb.Struct):
     @property
     def email(self):
         """
-        The user's e-mail address. Do not rely on this without checking the
+        The user's email address. Do not rely on this without checking the
         ``email_verified`` field. Even then, it's possible that the user has
-        since lost access to their e-mail.
+        since lost access to their email.
 
         :rtype: str
         """
@@ -169,7 +169,7 @@ class Account(bb.Struct):
     @property
     def email_verified(self):
         """
-        Whether the user has verified their e-mail address.
+        Whether the user has verified their email address.
 
         :rtype: bool
         """
