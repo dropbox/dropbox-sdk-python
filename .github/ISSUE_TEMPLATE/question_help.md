@@ -11,7 +11,7 @@ assignees: ''
 Have you checked StackOverflow, previous issues, and Dropbox Developer Forums for help?
 
 **What is your question?**
-A clear and concise description the question.
+A clear and concise description of the question.
 
 **Screenshots**
 If applicable, add screenshots to help explain your question.
