@@ -60,6 +60,14 @@ Note: If you do not have all of these tokens available, we run integration tests
 
 We do recommend developing in a virtual environment in order to ensure you have a clean testing environment.
 
+If you want to build the documentation locally, you can run this:
+
+```
+$ tox -e docs
+```
+
+The documentation will be built into `build/html`.
+
 [issues]: https://github.com/dropbox/dropbox-sdk-python/issues
 [pr]: https://github.com/dropbox/dropbox-sdk-python/pulls
 [coc]: https://github.com/dropbox/dropbox-sdk-python/blob/master/CODE_OF_CONDUCT.md
