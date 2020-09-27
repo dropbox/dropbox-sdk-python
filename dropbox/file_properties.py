@@ -8,11 +8,11 @@ This namespace contains helpers for property and template metadata endpoints.
 
 These endpoints enable you to tag arbitrary key/value data to Dropbox files.
 
-The most basic unit in this namespace is the :type:`PropertyField`. These fields encapsulate the actual key/value data.
+The most basic unit in this namespace is the :class:`PropertyField`. These fields encapsulate the actual key/value data.
 
-Fields are added to a Dropbox file using a :type:`PropertyGroup`. Property groups contain a reference to a Dropbox file and a :type:`PropertyGroupTemplate`. Property groups are uniquely identified by the combination of their associated Dropbox file and template.
+Fields are added to a Dropbox file using a :class:`PropertyGroup`. Property groups contain a reference to a Dropbox file and a :class:`PropertyGroupTemplate`. Property groups are uniquely identified by the combination of their associated Dropbox file and template.
 
-The :type:`PropertyGroupTemplate` is a way of restricting the possible key names and value types of the data within a property group. The possible key names and value types are explicitly enumerated using :type:`PropertyFieldTemplate` objects.
+The :class:`PropertyGroupTemplate` is a way of restricting the possible key names and value types of the data within a property group. The possible key names and value types are explicitly enumerated using :class:`PropertyFieldTemplate` objects.
 
 You can think of a property group template as a class definition for a particular key/value metadata object, and the property groups themselves as the instantiations of these objects.
 
