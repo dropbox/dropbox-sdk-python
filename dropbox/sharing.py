@@ -727,8 +727,10 @@ class AddFolderMemberError(bb.Union):
 
     :ivar SharedFolderAccessError AddFolderMemberError.access_error: Unable to
         access shared folder.
-    :ivar sharing.AddFolderMemberError.email_unverified: The current user's
-        e-mail address is unverified.
+    :ivar sharing.AddFolderMemberError.email_unverified: This user's email
+        address is not verified. This functionality is only available on
+        accounts with a verified email address. Users can verify their email
+        address `here <https://www.dropbox.com/help/317>`_.
     :ivar sharing.AddFolderMemberError.banned_member: The current user has been
         banned.
     :ivar AddMemberSelectorError AddFolderMemberError.bad_member:
@@ -1091,8 +1093,8 @@ class AddMemberSelectorError(bb.Union):
     :ivar str sharing.AddMemberSelectorError.invalid_email: The value is the
         e-email address that is malformed.
     :ivar str sharing.AddMemberSelectorError.unverified_dropbox_id: The value is
-        the ID of the Dropbox user with an unverified e-mail address.  Invite
-        unverified users by e-mail address instead of by their Dropbox ID.
+        the ID of the Dropbox user with an unverified email address. Invite
+        unverified users by email address instead of by their Dropbox ID.
     :ivar sharing.AddMemberSelectorError.group_deleted: At least one of the
         specified groups in ``AddFolderMemberArg.members`` is deleted.
     :ivar sharing.AddMemberSelectorError.group_not_on_team: Sharing to a group
@@ -1224,8 +1226,8 @@ class AddMemberSelectorError(bb.Union):
 
     def get_unverified_dropbox_id(self):
         """
-        The value is the ID of the Dropbox user with an unverified e-mail
-        address.  Invite unverified users by e-mail address instead of by their
+        The value is the ID of the Dropbox user with an unverified email
+        address. Invite unverified users by email address instead of by their
         Dropbox ID.
 
         Only call this if :meth:`is_unverified_dropbox_id` is true.
@@ -2063,8 +2065,10 @@ class CreateSharedLinkWithSettingsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar sharing.CreateSharedLinkWithSettingsError.email_not_verified: User's
-        email should be verified.
+    :ivar sharing.CreateSharedLinkWithSettingsError.email_not_verified: This
+        user's email address is not verified. This functionality is only
+        available on accounts with a verified email address. Users can verify
+        their email address `here <https://www.dropbox.com/help/317>`_.
     :ivar Optional[SharedLinkAlreadyExistsMetadata]
         sharing.CreateSharedLinkWithSettingsError.shared_link_already_exists:
         The shared link already exists. You can call :route:`list_shared_links`
@@ -5956,7 +5960,7 @@ class InviteeInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str sharing.InviteeInfo.email: E-mail address of invited user.
+    :ivar str sharing.InviteeInfo.email: Email address of invited user.
     """
 
     _catch_all = 'other'
@@ -5992,7 +5996,7 @@ class InviteeInfo(bb.Union):
 
     def get_email(self):
         """
-        E-mail address of invited user.
+        Email address of invited user.
 
         Only call this if :meth:`is_email` is true.
 
@@ -9657,7 +9661,7 @@ class MemberSelector(bb.Union):
 
     :ivar str sharing.MemberSelector.dropbox_id: Dropbox account, team member,
         or group ID of member.
-    :ivar str sharing.MemberSelector.email: E-mail address of member.
+    :ivar str sharing.MemberSelector.email: Email address of member.
     """
 
     _catch_all = 'other'
@@ -9724,7 +9728,7 @@ class MemberSelector(bb.Union):
 
     def get_email(self):
         """
-        E-mail address of member.
+        Email address of member.
 
         Only call this if :meth:`is_email` is true.
 
@@ -9869,8 +9873,10 @@ class ModifySharedLinkSettingsError(SharedLinkError):
 
     :ivar SharedLinkSettingsError ModifySharedLinkSettingsError.settings_error:
         There is an error with the given settings.
-    :ivar sharing.ModifySharedLinkSettingsError.email_not_verified: The caller's
-        email should be verified.
+    :ivar sharing.ModifySharedLinkSettingsError.email_not_verified: This user's
+        email address is not verified. This functionality is only available on
+        accounts with a verified email address. Users can verify their email
+        address `here <https://www.dropbox.com/help/317>`_.
     """
 
     # Attribute is overwritten below the class definition
@@ -12340,8 +12346,10 @@ class ShareFolderErrorBase(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar sharing.ShareFolderErrorBase.email_unverified: The current user's
-        e-mail address is unverified.
+    :ivar sharing.ShareFolderErrorBase.email_unverified: This user's email
+        address is not verified. This functionality is only available on
+        accounts with a verified email address. Users can verify their email
+        address `here <https://www.dropbox.com/help/317>`_.
     :ivar SharePathError ShareFolderErrorBase.bad_path: ``ShareFolderArg.path``
         is invalid.
     :ivar sharing.ShareFolderErrorBase.team_policy_disallows_member_policy: Team
@@ -14584,8 +14592,10 @@ class SharedLinkAccessFailureReason(bb.Union):
 
     :ivar sharing.SharedLinkAccessFailureReason.login_required: User is not
         logged in.
-    :ivar sharing.SharedLinkAccessFailureReason.email_verify_required: User's
-        email is not verified.
+    :ivar sharing.SharedLinkAccessFailureReason.email_verify_required: This
+        user's email address is not verified. This functionality is only
+        available on accounts with a verified email address. Users can verify
+        their email address `here <https://www.dropbox.com/help/317>`_.
     :ivar sharing.SharedLinkAccessFailureReason.password_required: The link is
         password protected.
     :ivar sharing.SharedLinkAccessFailureReason.team_only: Access is allowed for
@@ -15149,8 +15159,10 @@ class SharingUserError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar sharing.SharingUserError.email_unverified: The current user must
-        verify the account e-mail address before performing this action.
+    :ivar sharing.SharingUserError.email_unverified: This user's email address
+        is not verified. This functionality is only available on accounts with a
+        verified email address. Users can verify their email address `here
+        <https://www.dropbox.com/help/317>`_.
     """
 
     _catch_all = 'other'
@@ -15406,7 +15418,9 @@ class TransferFolderError(bb.Union):
     :ivar sharing.TransferFolderError.new_owner_unmounted: The new designated
         owner has not added the folder to their Dropbox.
     :ivar sharing.TransferFolderError.new_owner_email_unverified: The new
-        designated owner's e-mail address is unverified.
+        designated owner's email address is not verified. This functionality is
+        only available on accounts with a verified email address. Users can
+        verify their email address `here <https://www.dropbox.com/help/317>`_.
     :ivar sharing.TransferFolderError.team_folder: This action cannot be
         performed on a team shared folder.
     :ivar sharing.TransferFolderError.no_permission: The current user does not
