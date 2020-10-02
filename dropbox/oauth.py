@@ -105,16 +105,14 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
                    url_state, result.refresh_token, result.expires_at, result.scope)
 
     def __repr__(self):
-        return 'OAuth2FlowResult(%s, %s, %s, %s, %s, %s, %s, %s, %s)' % (
+        return 'OAuth2FlowResult(%s, %s, %s, %s, %s, %s, %s)' % (
             self.access_token,
-            self.refresh_token,
-            self.expires_at,
             self.account_id,
             self.user_id,
-            self.scope,
             self.url_state,
             self.refresh_token,
             self.expires_at,
+            self.scope,
         )
 
 
