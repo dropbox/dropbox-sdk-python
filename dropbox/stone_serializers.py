@@ -19,8 +19,9 @@ import datetime
 import functools
 import json
 import re
-import six
 import time
+
+import six
 
 try:
     from . import stone_base as bb  # noqa: F401 # pylint: disable=unused-import

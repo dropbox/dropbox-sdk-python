@@ -154,6 +154,8 @@ class CreateFileRequestArgs(bb.Struct):
     :ivar file_requests.CreateFileRequestArgs.open: Whether or not the file
         request should be open. If the file request is closed, it will not
         accept any file submissions, but it can be opened later.
+    :ivar file_requests.CreateFileRequestArgs.description: A description of the
+        file request.
     """
 
     __slots__ = [
@@ -165,6 +167,8 @@ class CreateFileRequestArgs(bb.Struct):
         '_deadline_present',
         '_open_value',
         '_open_present',
+        '_description_value',
+        '_description_present',
     ]
 
     _has_required_fields = True
@@ -173,7 +177,8 @@ class CreateFileRequestArgs(bb.Struct):
                  title=None,
                  destination=None,
                  deadline=None,
-                 open=None):
+                 open=None,
+                 description=None):
         self._title_value = None
         self._title_present = False
         self._destination_value = None
@@ -182,6 +187,8 @@ class CreateFileRequestArgs(bb.Struct):
         self._deadline_present = False
         self._open_value = None
         self._open_present = False
+        self._description_value = None
+        self._description_present = False
         if title is not None:
             self.title = title
         if destination is not None:
@@ -190,6 +197,8 @@ class CreateFileRequestArgs(bb.Struct):
             self.deadline = deadline
         if open is not None:
             self.open = open
+        if description is not None:
+            self.description = description
 
     @property
     def title(self):
@@ -291,15 +300,42 @@ class CreateFileRequestArgs(bb.Struct):
         self._open_value = None
         self._open_present = False
 
+    @property
+    def description(self):
+        """
+        A description of the file request.
+
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            return None
+
+    @description.setter
+    def description(self, val):
+        if val is None:
+            del self.description
+            return
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CreateFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'CreateFileRequestArgs(title={!r}, destination={!r}, deadline={!r}, open={!r})'.format(
+        return 'CreateFileRequestArgs(title={!r}, destination={!r}, deadline={!r}, open={!r}, description={!r})'.format(
             self._title_value,
             self._destination_value,
             self._deadline_value,
             self._open_value,
+            self._description_value,
         )
 
 CreateFileRequestArgs_validator = bv.Struct(CreateFileRequestArgs)
@@ -676,6 +712,8 @@ class FileRequest(bb.Struct):
         submissions.
     :ivar file_requests.FileRequest.file_count: The number of files this file
         request has received.
+    :ivar file_requests.FileRequest.description: A description of the file
+        request.
     """
 
     __slots__ = [
@@ -695,6 +733,8 @@ class FileRequest(bb.Struct):
         '_is_open_present',
         '_file_count_value',
         '_file_count_present',
+        '_description_value',
+        '_description_present',
     ]
 
     _has_required_fields = True
@@ -707,7 +747,8 @@ class FileRequest(bb.Struct):
                  is_open=None,
                  file_count=None,
                  destination=None,
-                 deadline=None):
+                 deadline=None,
+                 description=None):
         self._id_value = None
         self._id_present = False
         self._url_value = None
@@ -724,6 +765,8 @@ class FileRequest(bb.Struct):
         self._is_open_present = False
         self._file_count_value = None
         self._file_count_present = False
+        self._description_value = None
+        self._description_present = False
         if id is not None:
             self.id = id
         if url is not None:
@@ -740,6 +783,8 @@ class FileRequest(bb.Struct):
             self.is_open = is_open
         if file_count is not None:
             self.file_count = file_count
+        if description is not None:
+            self.description = description
 
     @property
     def id(self):
@@ -935,11 +980,37 @@ class FileRequest(bb.Struct):
         self._file_count_value = None
         self._file_count_present = False
 
+    @property
+    def description(self):
+        """
+        A description of the file request.
+
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            return None
+
+    @description.setter
+    def description(self, val):
+        if val is None:
+            del self.description
+            return
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileRequest, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'FileRequest(id={!r}, url={!r}, title={!r}, created={!r}, is_open={!r}, file_count={!r}, destination={!r}, deadline={!r})'.format(
+        return 'FileRequest(id={!r}, url={!r}, title={!r}, created={!r}, is_open={!r}, file_count={!r}, destination={!r}, deadline={!r}, description={!r})'.format(
             self._id_value,
             self._url_value,
             self._title_value,
@@ -948,6 +1019,7 @@ class FileRequest(bb.Struct):
             self._file_count_value,
             self._destination_value,
             self._deadline_value,
+            self._description_value,
         )
 
 FileRequest_validator = bv.Struct(FileRequest)
@@ -1552,6 +1624,8 @@ class UpdateFileRequestArgs(bb.Struct):
         accounts.
     :ivar file_requests.UpdateFileRequestArgs.open: Whether to set this file
         request as open or closed.
+    :ivar file_requests.UpdateFileRequestArgs.description: The description of
+        the file request.
     """
 
     __slots__ = [
@@ -1565,6 +1639,8 @@ class UpdateFileRequestArgs(bb.Struct):
         '_deadline_present',
         '_open_value',
         '_open_present',
+        '_description_value',
+        '_description_present',
     ]
 
     _has_required_fields = True
@@ -1574,7 +1650,8 @@ class UpdateFileRequestArgs(bb.Struct):
                  title=None,
                  destination=None,
                  deadline=None,
-                 open=None):
+                 open=None,
+                 description=None):
         self._id_value = None
         self._id_present = False
         self._title_value = None
@@ -1585,6 +1662,8 @@ class UpdateFileRequestArgs(bb.Struct):
         self._deadline_present = False
         self._open_value = None
         self._open_present = False
+        self._description_value = None
+        self._description_present = False
         if id is not None:
             self.id = id
         if title is not None:
@@ -1595,6 +1674,8 @@ class UpdateFileRequestArgs(bb.Struct):
             self.deadline = deadline
         if open is not None:
             self.open = open
+        if description is not None:
+            self.description = description
 
     @property
     def id(self):
@@ -1723,16 +1804,43 @@ class UpdateFileRequestArgs(bb.Struct):
         self._open_value = None
         self._open_present = False
 
+    @property
+    def description(self):
+        """
+        The description of the file request.
+
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            return None
+
+    @description.setter
+    def description(self, val):
+        if val is None:
+            del self.description
+            return
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdateFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'UpdateFileRequestArgs(id={!r}, title={!r}, destination={!r}, deadline={!r}, open={!r})'.format(
+        return 'UpdateFileRequestArgs(id={!r}, title={!r}, destination={!r}, deadline={!r}, open={!r}, description={!r})'.format(
             self._id_value,
             self._title_value,
             self._destination_value,
             self._deadline_value,
             self._open_value,
+            self._description_value,
         )
 
 UpdateFileRequestArgs_validator = bv.Struct(UpdateFileRequestArgs)
@@ -1852,17 +1960,20 @@ CreateFileRequestArgs._title_validator = bv.String(min_length=1)
 CreateFileRequestArgs._destination_validator = files.Path_validator
 CreateFileRequestArgs._deadline_validator = bv.Nullable(FileRequestDeadline_validator)
 CreateFileRequestArgs._open_validator = bv.Boolean()
+CreateFileRequestArgs._description_validator = bv.Nullable(bv.String())
 CreateFileRequestArgs._all_field_names_ = set([
     'title',
     'destination',
     'deadline',
     'open',
+    'description',
 ])
 CreateFileRequestArgs._all_fields_ = [
     ('title', CreateFileRequestArgs._title_validator),
     ('destination', CreateFileRequestArgs._destination_validator),
     ('deadline', CreateFileRequestArgs._deadline_validator),
     ('open', CreateFileRequestArgs._open_validator),
+    ('description', CreateFileRequestArgs._description_validator),
 ]
 
 FileRequestError._not_found_validator = bv.Void()
@@ -1931,6 +2042,7 @@ FileRequest._created_validator = common.DropboxTimestamp_validator
 FileRequest._deadline_validator = bv.Nullable(FileRequestDeadline_validator)
 FileRequest._is_open_validator = bv.Boolean()
 FileRequest._file_count_validator = bv.Int64()
+FileRequest._description_validator = bv.Nullable(bv.String())
 FileRequest._all_field_names_ = set([
     'id',
     'url',
@@ -1940,6 +2052,7 @@ FileRequest._all_field_names_ = set([
     'deadline',
     'is_open',
     'file_count',
+    'description',
 ])
 FileRequest._all_fields_ = [
     ('id', FileRequest._id_validator),
@@ -1950,6 +2063,7 @@ FileRequest._all_fields_ = [
     ('deadline', FileRequest._deadline_validator),
     ('is_open', FileRequest._is_open_validator),
     ('file_count', FileRequest._file_count_validator),
+    ('description', FileRequest._description_validator),
 ]
 
 FileRequestDeadline._deadline_validator = common.DropboxTimestamp_validator
@@ -2036,12 +2150,14 @@ UpdateFileRequestArgs._title_validator = bv.Nullable(bv.String(min_length=1))
 UpdateFileRequestArgs._destination_validator = bv.Nullable(files.Path_validator)
 UpdateFileRequestArgs._deadline_validator = UpdateFileRequestDeadline_validator
 UpdateFileRequestArgs._open_validator = bv.Nullable(bv.Boolean())
+UpdateFileRequestArgs._description_validator = bv.Nullable(bv.String())
 UpdateFileRequestArgs._all_field_names_ = set([
     'id',
     'title',
     'destination',
     'deadline',
     'open',
+    'description',
 ])
 UpdateFileRequestArgs._all_fields_ = [
     ('id', UpdateFileRequestArgs._id_validator),
@@ -2049,6 +2165,7 @@ UpdateFileRequestArgs._all_fields_ = [
     ('destination', UpdateFileRequestArgs._destination_validator),
     ('deadline', UpdateFileRequestArgs._deadline_validator),
     ('open', UpdateFileRequestArgs._open_validator),
+    ('description', UpdateFileRequestArgs._description_validator),
 ]
 
 UpdateFileRequestDeadline._no_update_validator = bv.Void()
