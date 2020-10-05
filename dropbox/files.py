@@ -408,7 +408,8 @@ class CommitInfo(bb.Struct):
         :class:`WriteMode` detects conflict. For example, always return a
         conflict error when ``mode`` = ``WriteMode.update`` and the given "rev"
         doesn't match the existing file's "rev", even if the existing file has
-        been deleted.
+        been deleted. This also forces a conflict even when the target path
+        refers to a file with identical contents.
     """
 
     __slots__ = [
@@ -625,7 +626,9 @@ class CommitInfo(bb.Struct):
         Be more strict about how each :class:`WriteMode` detects conflict. For
         example, always return a conflict error when ``mode`` =
         ``WriteMode.update`` and the given "rev" doesn't match the existing
-        file's "rev", even if the existing file has been deleted.
+        file's "rev", even if the existing file has been deleted. This also
+        forces a conflict even when the target path refers to a file with
+        identical contents.
 
         :rtype: bool
         """
@@ -5161,8 +5164,10 @@ class GetTemporaryLinkError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.GetTemporaryLinkError.email_not_verified: The user's email
-        address needs to be verified to use this functionality.
+    :ivar files.GetTemporaryLinkError.email_not_verified: This user's email
+        address is not verified. This functionality is only available on
+        accounts with a verified email address. Users can verify their email
+        address `here <https://www.dropbox.com/help/317>`_.
     :ivar files.GetTemporaryLinkError.unsupported_file: Cannot get temporary
         link to this file type; use :meth:`dropbox.dropbox.Dropbox.files_export`
         instead.
@@ -10320,12 +10325,16 @@ class RestoreError(bb.Union):
     :ivar WriteError RestoreError.path_write: An error occurs when trying to
         restore the file to that path.
     :ivar files.RestoreError.invalid_revision: The revision is invalid. It may
-        not exist.
+        not exist or may point to a deleted file.
+    :ivar files.RestoreError.in_progress: The restore is currently executing,
+        but has not yet completed.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     invalid_revision = None
+    # Attribute is overwritten below the class definition
+    in_progress = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -10374,6 +10383,14 @@ class RestoreError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'invalid_revision'
+
+    def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == 'in_progress'
 
     def is_other(self):
         """
@@ -15076,6 +15093,8 @@ class WriteError(bb.Union):
         folder because of its name.
     :ivar files.WriteError.team_folder: This endpoint cannot move or delete team
         folders.
+    :ivar files.WriteError.operation_suppressed: This file operation is not
+        allowed at this path.
     :ivar files.WriteError.too_many_write_operations: There are too many write
         operations in user's Dropbox. Please retry this request.
     """
@@ -15089,6 +15108,8 @@ class WriteError(bb.Union):
     disallowed_name = None
     # Attribute is overwritten below the class definition
     team_folder = None
+    # Attribute is overwritten below the class definition
+    operation_suppressed = None
     # Attribute is overwritten below the class definition
     too_many_write_operations = None
     # Attribute is overwritten below the class definition
@@ -15163,6 +15184,14 @@ class WriteError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_folder'
+
+    def is_operation_suppressed(self):
+        """
+        Check if the union tag is ``operation_suppressed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'operation_suppressed'
 
     def is_too_many_write_operations(self):
         """
@@ -16608,15 +16637,18 @@ RestoreArg._all_fields_ = [
 RestoreError._path_lookup_validator = LookupError_validator
 RestoreError._path_write_validator = WriteError_validator
 RestoreError._invalid_revision_validator = bv.Void()
+RestoreError._in_progress_validator = bv.Void()
 RestoreError._other_validator = bv.Void()
 RestoreError._tagmap = {
     'path_lookup': RestoreError._path_lookup_validator,
     'path_write': RestoreError._path_write_validator,
     'invalid_revision': RestoreError._invalid_revision_validator,
+    'in_progress': RestoreError._in_progress_validator,
     'other': RestoreError._other_validator,
 }
 
 RestoreError.invalid_revision = RestoreError('invalid_revision')
+RestoreError.in_progress = RestoreError('in_progress')
 RestoreError.other = RestoreError('other')
 
 SaveCopyReferenceArg._copy_reference_validator = bv.String()
@@ -17248,6 +17280,7 @@ WriteError._no_write_permission_validator = bv.Void()
 WriteError._insufficient_space_validator = bv.Void()
 WriteError._disallowed_name_validator = bv.Void()
 WriteError._team_folder_validator = bv.Void()
+WriteError._operation_suppressed_validator = bv.Void()
 WriteError._too_many_write_operations_validator = bv.Void()
 WriteError._other_validator = bv.Void()
 WriteError._tagmap = {
@@ -17257,6 +17290,7 @@ WriteError._tagmap = {
     'insufficient_space': WriteError._insufficient_space_validator,
     'disallowed_name': WriteError._disallowed_name_validator,
     'team_folder': WriteError._team_folder_validator,
+    'operation_suppressed': WriteError._operation_suppressed_validator,
     'too_many_write_operations': WriteError._too_many_write_operations_validator,
     'other': WriteError._other_validator,
 }
@@ -17265,6 +17299,7 @@ WriteError.no_write_permission = WriteError('no_write_permission')
 WriteError.insufficient_space = WriteError('insufficient_space')
 WriteError.disallowed_name = WriteError('disallowed_name')
 WriteError.team_folder = WriteError('team_folder')
+WriteError.operation_suppressed = WriteError('operation_suppressed')
 WriteError.too_many_write_operations = WriteError('too_many_write_operations')
 WriteError.other = WriteError('other')
 
