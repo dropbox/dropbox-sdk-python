@@ -6,4 +6,4 @@ six==1.14.0
 sphinx
 twine
 wheel
-stone==1.*
+stone==3.*
