@@ -9081,11 +9081,7 @@ RelocationPath_validator = bv.Struct(RelocationPath)
 
 class RelocationArg(RelocationPath):
     """
-    :ivar files.RelocationArg.allow_shared_folder: If true,
-        :meth:`dropbox.dropbox.Dropbox.files_copy` will copy contents in shared
-        folder, otherwise ``RelocationError.cant_copy_shared_folder`` will be
-        returned if ``from_path`` contains shared folder. This field is always
-        true for :meth:`dropbox.dropbox.Dropbox.files_move`.
+    :ivar files.RelocationArg.allow_shared_folder: This flag has no effect.
     :ivar files.RelocationArg.autorename: If there's a conflict, have the
         Dropbox server try to autorename the file to avoid the conflict.
     :ivar files.RelocationArg.allow_ownership_transfer: Allow moves by owner
@@ -9128,10 +9124,7 @@ class RelocationArg(RelocationPath):
     @property
     def allow_shared_folder(self):
         """
-        If true, :meth:`dropbox.dropbox.Dropbox.files_copy` will copy contents
-        in shared folder, otherwise ``RelocationError.cant_copy_shared_folder``
-        will be returned if ``from_path`` contains shared folder. This field is
-        always true for :meth:`dropbox.dropbox.Dropbox.files_move`.
+        This flag has no effect.
 
         :rtype: bool
         """
@@ -9215,12 +9208,7 @@ RelocationArg_validator = bv.Struct(RelocationArg)
 
 class RelocationBatchArg(RelocationBatchArgBase):
     """
-    :ivar files.RelocationBatchArg.allow_shared_folder: If true,
-        :meth:`dropbox.dropbox.Dropbox.files_copy_batch` will copy contents in
-        shared folder, otherwise ``RelocationError.cant_copy_shared_folder``
-        will be returned if ``RelocationPath.from_path`` contains shared folder.
-        This field is always true for
-        :meth:`dropbox.dropbox.Dropbox.files_move_batch`.
+    :ivar files.RelocationBatchArg.allow_shared_folder: This flag has no effect.
     :ivar files.RelocationBatchArg.allow_ownership_transfer: Allow moves by
         owner even if it would result in an ownership transfer for the content
         being moved. This does not apply to copies.
@@ -9254,11 +9242,7 @@ class RelocationBatchArg(RelocationBatchArgBase):
     @property
     def allow_shared_folder(self):
         """
-        If true, :meth:`dropbox.dropbox.Dropbox.files_copy_batch` will copy
-        contents in shared folder, otherwise
-        ``RelocationError.cant_copy_shared_folder`` will be returned if
-        ``RelocationPath.from_path`` contains shared folder. This field is
-        always true for :meth:`dropbox.dropbox.Dropbox.files_move_batch`.
+        This flag has no effect.
 
         :rtype: bool
         """
@@ -15451,7 +15435,7 @@ CreateFolderArg._all_fields_ = [
     ('autorename', CreateFolderArg._autorename_validator),
 ]
 
-CreateFolderBatchArg._paths_validator = bv.List(WritePath_validator)
+CreateFolderBatchArg._paths_validator = bv.List(WritePath_validator, max_items=10000)
 CreateFolderBatchArg._autorename_validator = bv.Boolean()
 CreateFolderBatchArg._force_async_validator = bv.Boolean()
 CreateFolderBatchArg._all_field_names_ = set([
@@ -16731,7 +16715,7 @@ SaveUrlResult._tagmap = {
 SaveUrlResult._tagmap.update(async_.LaunchResultBase._tagmap)
 
 SearchArg._path_validator = PathROrId_validator
-SearchArg._query_validator = bv.String()
+SearchArg._query_validator = bv.String(max_length=1000)
 SearchArg._start_validator = bv.UInt64(max_value=9999)
 SearchArg._max_results_validator = bv.UInt64(min_value=1, max_value=1000)
 SearchArg._mode_validator = SearchMode_validator
@@ -16853,7 +16837,7 @@ SearchResult._all_fields_ = [
     ('start', SearchResult._start_validator),
 ]
 
-SearchV2Arg._query_validator = bv.String()
+SearchV2Arg._query_validator = bv.String(max_length=1000)
 SearchV2Arg._options_validator = bv.Nullable(SearchOptions_validator)
 SearchV2Arg._match_field_options_validator = bv.Nullable(SearchMatchFieldOptions_validator)
 SearchV2Arg._include_highlights_validator = bv.Boolean()

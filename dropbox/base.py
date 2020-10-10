@@ -807,11 +807,7 @@ class DropboxBase(object):
         Copy a file or folder to a different location in the user's Dropbox. If
         the source path is a folder all its contents will be copied.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool autorename: If there's a conflict, have the Dropbox server
             try to autorename the file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
@@ -846,11 +842,7 @@ class DropboxBase(object):
         Copy a file or folder to a different location in the user's Dropbox. If
         the source path is a folder all its contents will be copied.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool autorename: If there's a conflict, have the Dropbox server
             try to autorename the file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
@@ -914,19 +906,11 @@ class DropboxBase(object):
                          allow_ownership_transfer=False):
         """
         Copy multiple files or folders to different locations at once in the
-        user's Dropbox. If ``RelocationBatchArg.allow_shared_folder`` is false,
-        this route is atomic. If one entry fails, the whole transaction will
-        abort. If ``RelocationBatchArg.allow_shared_folder`` is true, atomicity
-        is not guaranteed, but it allows you to copy the contents of shared
-        folders to new locations. This route will return job ID immediately and
-        do the async copy job in background. Please use
-        :meth:`files_copy_batch_check` to check the job status.
+        user's Dropbox. This route will return job ID immediately and do the
+        async copy job in background. Please use :meth:`files_copy_batch_check`
+        to check the job status.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
-            copy contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``RelocationPath.from_path`` contains shared folder. This field is
-            always true for :meth:`files_move_batch`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
             would result in an ownership transfer for the content being moved.
             This does not apply to copies.
@@ -2145,11 +2129,7 @@ class DropboxBase(object):
         the source path is a folder all its contents will be moved. Note that we
         do not currently support case-only renaming.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool autorename: If there's a conflict, have the Dropbox server
             try to autorename the file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
@@ -2184,11 +2164,7 @@ class DropboxBase(object):
         Move a file or folder to a different location in the user's Dropbox. If
         the source path is a folder all its contents will be moved.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool autorename: If there's a conflict, have the Dropbox server
             try to autorename the file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
@@ -2258,11 +2234,7 @@ class DropboxBase(object):
         async moving job in background. Please use
         :meth:`files_move_batch_check` to check the job status.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
-            copy contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``RelocationPath.from_path`` contains shared folder. This field is
-            always true for :meth:`files_move_batch`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
             would result in an ownership transfer for the content being moved.
             This does not apply to copies.
@@ -2339,8 +2311,10 @@ class DropboxBase(object):
                                  parent_rev=None):
         """
         Permanently delete the file or folder at a given path (see
-        https://www.dropbox.com/en/help/40). Note: This endpoint is only
-        available for Dropbox Business apps.
+        https://www.dropbox.com/en/help/40). If the given file or folder is not
+        yet deleted, this route will first delete it. It is possible for this
+        route to successfully delete, then fail to permanently delete. Note:
+        This endpoint is only available for Dropbox Business apps.
 
         :param str path: Path in the user's Dropbox to delete.
         :param Nullable parent_rev: Perform delete if given "rev" matches the
