@@ -12623,6 +12623,8 @@ class SharePathError(bb.Union):
         folder inside a Mac OS X package.
     :ivar sharing.SharePathError.is_vault: We do not support sharing the Vault
         folder.
+    :ivar sharing.SharePathError.is_family: We do not support sharing the Family
+        folder.
     """
 
     _catch_all = 'other'
@@ -12652,6 +12654,8 @@ class SharePathError(bb.Union):
     inside_osx_package = None
     # Attribute is overwritten below the class definition
     is_vault = None
+    # Attribute is overwritten below the class definition
+    is_family = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -12777,6 +12781,14 @@ class SharePathError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'is_vault'
+
+    def is_is_family(self):
+        """
+        Check if the union tag is ``is_family``.
+
+        :rtype: bool
+        """
+        return self._tag == 'is_family'
 
     def is_other(self):
         """
@@ -18923,6 +18935,7 @@ SharePathError._invalid_path_validator = bv.Void()
 SharePathError._is_osx_package_validator = bv.Void()
 SharePathError._inside_osx_package_validator = bv.Void()
 SharePathError._is_vault_validator = bv.Void()
+SharePathError._is_family_validator = bv.Void()
 SharePathError._other_validator = bv.Void()
 SharePathError._tagmap = {
     'is_file': SharePathError._is_file_validator,
@@ -18939,6 +18952,7 @@ SharePathError._tagmap = {
     'is_osx_package': SharePathError._is_osx_package_validator,
     'inside_osx_package': SharePathError._inside_osx_package_validator,
     'is_vault': SharePathError._is_vault_validator,
+    'is_family': SharePathError._is_family_validator,
     'other': SharePathError._other_validator,
 }
 
@@ -18955,6 +18969,7 @@ SharePathError.invalid_path = SharePathError('invalid_path')
 SharePathError.is_osx_package = SharePathError('is_osx_package')
 SharePathError.inside_osx_package = SharePathError('inside_osx_package')
 SharePathError.is_vault = SharePathError('is_vault')
+SharePathError.is_family = SharePathError('is_family')
 SharePathError.other = SharePathError('other')
 
 SharedContentLinkMetadata._audience_exceptions_validator = bv.Nullable(AudienceExceptions_validator)
