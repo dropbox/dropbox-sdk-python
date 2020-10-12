@@ -4838,6 +4838,200 @@ class CollectionShareType(bb.Struct):
 
 CollectionShareType_validator = bv.Struct(CollectionShareType)
 
+class ComputerBackupPolicy(bb.Union):
+    """
+    Policy for controlling team access to computer backup feature
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ComputerBackupPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ComputerBackupPolicy(%r, %r)' % (self._tag, self._value)
+
+ComputerBackupPolicy_validator = bv.Union(ComputerBackupPolicy)
+
+class ComputerBackupPolicyChangedDetails(bb.Struct):
+    """
+    Changed computer backup policy for team.
+
+    :ivar team_log.ComputerBackupPolicyChangedDetails.new_value: New computer
+        backup policy.
+    :ivar team_log.ComputerBackupPolicyChangedDetails.previous_value: Previous
+        computer backup policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New computer backup policy.
+
+        :rtype: ComputerBackupPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous computer backup policy.
+
+        :rtype: ComputerBackupPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ComputerBackupPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ComputerBackupPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+ComputerBackupPolicyChangedDetails_validator = bv.Struct(ComputerBackupPolicyChangedDetails)
+
+class ComputerBackupPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ComputerBackupPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ComputerBackupPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+ComputerBackupPolicyChangedType_validator = bv.Struct(ComputerBackupPolicyChangedType)
+
 class ConnectedTeamName(bb.Struct):
     """
     The name of the team
@@ -14614,6 +14808,17 @@ class EventDetails(bb.Union):
         return cls('camera_uploads_policy_changed_details', val)
 
     @classmethod
+    def computer_backup_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``computer_backup_policy_changed_details`` tag with value ``val``.
+
+        :param ComputerBackupPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('computer_backup_policy_changed_details', val)
+
+    @classmethod
     def content_administration_policy_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -18474,6 +18679,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'camera_uploads_policy_changed_details'
+
+    def is_computer_backup_policy_changed_details(self):
+        """
+        Check if the union tag is ``computer_backup_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'computer_backup_policy_changed_details'
 
     def is_content_administration_policy_changed_details(self):
         """
@@ -22645,6 +22858,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'camera_uploads_policy_changed_details' not set")
         return self._value
 
+    def get_computer_backup_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_computer_backup_policy_changed_details` is true.
+
+        :rtype: ComputerBackupPolicyChangedDetails
+        """
+        if not self.is_computer_backup_policy_changed_details():
+            raise AttributeError("tag 'computer_backup_policy_changed_details' not set")
+        return self._value
+
     def get_content_administration_policy_changed_details(self):
         """
         Only call this if :meth:`is_content_administration_policy_changed_details` is true.
@@ -24508,6 +24731,9 @@ class EventType(bb.Union):
     :ivar CameraUploadsPolicyChangedType
         EventType.camera_uploads_policy_changed: (team_policies) Changed camera
         uploads setting for team
+    :ivar ComputerBackupPolicyChangedType
+        EventType.computer_backup_policy_changed: (team_policies) Changed
+        computer backup policy for team
     :ivar ContentAdministrationPolicyChangedType
         EventType.content_administration_policy_changed: (team_policies) Changed
         content management setting
@@ -28439,6 +28665,17 @@ class EventType(bb.Union):
         return cls('camera_uploads_policy_changed', val)
 
     @classmethod
+    def computer_backup_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``computer_backup_policy_changed`` tag with value ``val``.
+
+        :param ComputerBackupPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('computer_backup_policy_changed', val)
+
+    @classmethod
     def content_administration_policy_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -32269,6 +32506,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'camera_uploads_policy_changed'
+
+    def is_computer_backup_policy_changed(self):
+        """
+        Check if the union tag is ``computer_backup_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'computer_backup_policy_changed'
 
     def is_content_administration_policy_changed(self):
         """
@@ -37134,6 +37379,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'camera_uploads_policy_changed' not set")
         return self._value
 
+    def get_computer_backup_policy_changed(self):
+        """
+        (team_policies) Changed computer backup policy for team
+
+        Only call this if :meth:`is_computer_backup_policy_changed` is true.
+
+        :rtype: ComputerBackupPolicyChangedType
+        """
+        if not self.is_computer_backup_policy_changed():
+            raise AttributeError("tag 'computer_backup_policy_changed' not set")
+        return self._value
+
     def get_content_administration_policy_changed(self):
         """
         (team_policies) Changed content management setting
@@ -39131,6 +39388,8 @@ class EventTypeArg(bb.Union):
         downloads (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.camera_uploads_policy_changed: (team_policies)
         Changed camera uploads setting for team
+    :ivar team_log.EventTypeArg.computer_backup_policy_changed: (team_policies)
+        Changed computer backup policy for team
     :ivar team_log.EventTypeArg.content_administration_policy_changed:
         (team_policies) Changed content management setting
     :ivar team_log.EventTypeArg.data_placement_restriction_change_policy:
@@ -40046,6 +40305,8 @@ class EventTypeArg(bb.Union):
     allow_download_enabled = None
     # Attribute is overwritten below the class definition
     camera_uploads_policy_changed = None
+    # Attribute is overwritten below the class definition
+    computer_backup_policy_changed = None
     # Attribute is overwritten below the class definition
     content_administration_policy_changed = None
     # Attribute is overwritten below the class definition
@@ -42896,6 +43157,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'camera_uploads_policy_changed'
+
+    def is_computer_backup_policy_changed(self):
+        """
+        Check if the union tag is ``computer_backup_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'computer_backup_policy_changed'
 
     def is_content_administration_policy_changed(self):
         """
@@ -98067,6 +98336,37 @@ CollectionShareType._description_validator = bv.String()
 CollectionShareType._all_field_names_ = set(['description'])
 CollectionShareType._all_fields_ = [('description', CollectionShareType._description_validator)]
 
+ComputerBackupPolicy._default_validator = bv.Void()
+ComputerBackupPolicy._disabled_validator = bv.Void()
+ComputerBackupPolicy._enabled_validator = bv.Void()
+ComputerBackupPolicy._other_validator = bv.Void()
+ComputerBackupPolicy._tagmap = {
+    'default': ComputerBackupPolicy._default_validator,
+    'disabled': ComputerBackupPolicy._disabled_validator,
+    'enabled': ComputerBackupPolicy._enabled_validator,
+    'other': ComputerBackupPolicy._other_validator,
+}
+
+ComputerBackupPolicy.default = ComputerBackupPolicy('default')
+ComputerBackupPolicy.disabled = ComputerBackupPolicy('disabled')
+ComputerBackupPolicy.enabled = ComputerBackupPolicy('enabled')
+ComputerBackupPolicy.other = ComputerBackupPolicy('other')
+
+ComputerBackupPolicyChangedDetails._new_value_validator = ComputerBackupPolicy_validator
+ComputerBackupPolicyChangedDetails._previous_value_validator = ComputerBackupPolicy_validator
+ComputerBackupPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+ComputerBackupPolicyChangedDetails._all_fields_ = [
+    ('new_value', ComputerBackupPolicyChangedDetails._new_value_validator),
+    ('previous_value', ComputerBackupPolicyChangedDetails._previous_value_validator),
+]
+
+ComputerBackupPolicyChangedType._description_validator = bv.String()
+ComputerBackupPolicyChangedType._all_field_names_ = set(['description'])
+ComputerBackupPolicyChangedType._all_fields_ = [('description', ComputerBackupPolicyChangedType._description_validator)]
+
 ConnectedTeamName._team_validator = bv.String()
 ConnectedTeamName._all_field_names_ = set(['team'])
 ConnectedTeamName._all_fields_ = [('team', ConnectedTeamName._team_validator)]
@@ -99127,6 +99427,7 @@ EventDetails._account_capture_change_policy_details_validator = AccountCaptureCh
 EventDetails._allow_download_disabled_details_validator = AllowDownloadDisabledDetails_validator
 EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDetails_validator
 EventDetails._camera_uploads_policy_changed_details_validator = CameraUploadsPolicyChangedDetails_validator
+EventDetails._computer_backup_policy_changed_details_validator = ComputerBackupPolicyChangedDetails_validator
 EventDetails._content_administration_policy_changed_details_validator = ContentAdministrationPolicyChangedDetails_validator
 EventDetails._data_placement_restriction_change_policy_details_validator = DataPlacementRestrictionChangePolicyDetails_validator
 EventDetails._data_placement_restriction_satisfy_policy_details_validator = DataPlacementRestrictionSatisfyPolicyDetails_validator
@@ -99567,6 +99868,7 @@ EventDetails._tagmap = {
     'allow_download_disabled_details': EventDetails._allow_download_disabled_details_validator,
     'allow_download_enabled_details': EventDetails._allow_download_enabled_details_validator,
     'camera_uploads_policy_changed_details': EventDetails._camera_uploads_policy_changed_details_validator,
+    'computer_backup_policy_changed_details': EventDetails._computer_backup_policy_changed_details_validator,
     'content_administration_policy_changed_details': EventDetails._content_administration_policy_changed_details_validator,
     'data_placement_restriction_change_policy_details': EventDetails._data_placement_restriction_change_policy_details_validator,
     'data_placement_restriction_satisfy_policy_details': EventDetails._data_placement_restriction_satisfy_policy_details_validator,
@@ -100010,6 +100312,7 @@ EventType._account_capture_change_policy_validator = AccountCaptureChangePolicyT
 EventType._allow_download_disabled_validator = AllowDownloadDisabledType_validator
 EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
 EventType._camera_uploads_policy_changed_validator = CameraUploadsPolicyChangedType_validator
+EventType._computer_backup_policy_changed_validator = ComputerBackupPolicyChangedType_validator
 EventType._content_administration_policy_changed_validator = ContentAdministrationPolicyChangedType_validator
 EventType._data_placement_restriction_change_policy_validator = DataPlacementRestrictionChangePolicyType_validator
 EventType._data_placement_restriction_satisfy_policy_validator = DataPlacementRestrictionSatisfyPolicyType_validator
@@ -100449,6 +100752,7 @@ EventType._tagmap = {
     'allow_download_disabled': EventType._allow_download_disabled_validator,
     'allow_download_enabled': EventType._allow_download_enabled_validator,
     'camera_uploads_policy_changed': EventType._camera_uploads_policy_changed_validator,
+    'computer_backup_policy_changed': EventType._computer_backup_policy_changed_validator,
     'content_administration_policy_changed': EventType._content_administration_policy_changed_validator,
     'data_placement_restriction_change_policy': EventType._data_placement_restriction_change_policy_validator,
     'data_placement_restriction_satisfy_policy': EventType._data_placement_restriction_satisfy_policy_validator,
@@ -100891,6 +101195,7 @@ EventTypeArg._account_capture_change_policy_validator = bv.Void()
 EventTypeArg._allow_download_disabled_validator = bv.Void()
 EventTypeArg._allow_download_enabled_validator = bv.Void()
 EventTypeArg._camera_uploads_policy_changed_validator = bv.Void()
+EventTypeArg._computer_backup_policy_changed_validator = bv.Void()
 EventTypeArg._content_administration_policy_changed_validator = bv.Void()
 EventTypeArg._data_placement_restriction_change_policy_validator = bv.Void()
 EventTypeArg._data_placement_restriction_satisfy_policy_validator = bv.Void()
@@ -101330,6 +101635,7 @@ EventTypeArg._tagmap = {
     'allow_download_disabled': EventTypeArg._allow_download_disabled_validator,
     'allow_download_enabled': EventTypeArg._allow_download_enabled_validator,
     'camera_uploads_policy_changed': EventTypeArg._camera_uploads_policy_changed_validator,
+    'computer_backup_policy_changed': EventTypeArg._computer_backup_policy_changed_validator,
     'content_administration_policy_changed': EventTypeArg._content_administration_policy_changed_validator,
     'data_placement_restriction_change_policy': EventTypeArg._data_placement_restriction_change_policy_validator,
     'data_placement_restriction_satisfy_policy': EventTypeArg._data_placement_restriction_satisfy_policy_validator,
@@ -101770,6 +102076,7 @@ EventTypeArg.account_capture_change_policy = EventTypeArg('account_capture_chang
 EventTypeArg.allow_download_disabled = EventTypeArg('allow_download_disabled')
 EventTypeArg.allow_download_enabled = EventTypeArg('allow_download_enabled')
 EventTypeArg.camera_uploads_policy_changed = EventTypeArg('camera_uploads_policy_changed')
+EventTypeArg.computer_backup_policy_changed = EventTypeArg('computer_backup_policy_changed')
 EventTypeArg.content_administration_policy_changed = EventTypeArg('content_administration_policy_changed')
 EventTypeArg.data_placement_restriction_change_policy = EventTypeArg('data_placement_restriction_change_policy')
 EventTypeArg.data_placement_restriction_satisfy_policy = EventTypeArg('data_placement_restriction_satisfy_policy')
