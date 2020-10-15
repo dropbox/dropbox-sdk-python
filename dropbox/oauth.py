@@ -33,7 +33,7 @@ else:
     url_path_quote = urllib.quote  # pylint: disable=no-member,useless-suppression
     url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
 
-TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
+TOKEN_ACCESS_TYPES = ['', 'offline', 'online', 'legacy']
 INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
 PKCE_VERIFIER_LENGTH = 128
 
@@ -156,7 +156,7 @@ class DropboxOAuth2FlowBase(object):
             params['state'] = state
         if token_access_type is not None:
             assert token_access_type in TOKEN_ACCESS_TYPES
-            if token_access_type != 'legacy':
+            if token_access_type != '':
                 params['token_access_type'] = token_access_type
         if code_challenge:
             params['code_challenge'] = code_challenge
@@ -286,6 +286,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         :param str token_access_type: the type of token to be requested.
             From the following enum:
 
+            * '' - creates a token with the app default (either legacy or online)
             * legacy - creates one long-lived token with no expiration
             * online - create one short-lived token with an expiration
             * offline - create one short-lived token with an expiration with a refresh token
@@ -380,6 +381,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         :param str token_access_type: The type of token to be requested.
             From the following enum:
 
+            * '' - creates a token with the app default (either legacy or online)
             * legacy - creates one long-lived token with no expiration
             * online - create one short-lived token with an expiration
             * offline - create one short-lived token with an expiration with a refresh token
