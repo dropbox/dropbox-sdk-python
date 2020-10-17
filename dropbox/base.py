@@ -2612,7 +2612,7 @@ class DropboxBase(object):
                         query,
                         options=None,
                         match_field_options=None,
-                        include_highlights=False):
+                        include_highlights=None):
         """
         Searches for files and folders. Note: :meth:`files_search_v2` along with
         :meth:`files_search_continue_v2` can only be used to retrieve a maximum
@@ -2626,7 +2626,7 @@ class DropboxBase(object):
         :param Nullable options: Options for more targeted search results.
         :param Nullable match_field_options: Options for search results match
             fields.
-        :param bool include_highlights: Deprecated and moved this option to
+        :param Nullable include_highlights: Deprecated and moved this option to
             SearchMatchFieldOptions.
         :rtype: :class:`dropbox.files.SearchV2Result`
         :raises: :class:`.exceptions.ApiError`
