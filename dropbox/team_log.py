@@ -15459,6 +15459,17 @@ class EventDetails(bb.Union):
         return cls('sso_change_policy_details', val)
 
     @classmethod
+    def team_branding_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_branding_policy_changed_details`` tag with value ``val``.
+
+        :param TeamBrandingPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_branding_policy_changed_details', val)
+
+    @classmethod
     def team_extensions_policy_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -19143,6 +19154,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sso_change_policy_details'
+
+    def is_team_branding_policy_changed_details(self):
+        """
+        Check if the union tag is ``team_branding_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_branding_policy_changed_details'
 
     def is_team_extensions_policy_changed_details(self):
         """
@@ -23438,6 +23457,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'sso_change_policy_details' not set")
         return self._value
 
+    def get_team_branding_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_team_branding_policy_changed_details` is true.
+
+        :rtype: TeamBrandingPolicyChangedDetails
+        """
+        if not self.is_team_branding_policy_changed_details():
+            raise AttributeError("tag 'team_branding_policy_changed_details' not set")
+        return self._value
+
     def get_team_extensions_policy_changed_details(self):
         """
         Only call this if :meth:`is_team_extensions_policy_changed_details` is true.
@@ -24896,6 +24925,8 @@ class EventType(bb.Union):
         Opted team out of Smart Sync
     :ivar SsoChangePolicyType EventType.sso_change_policy: (team_policies)
         Changed single sign-on setting for team
+    :ivar TeamBrandingPolicyChangedType EventType.team_branding_policy_changed:
+        (team_policies) Changed team branding policy for team
     :ivar TeamExtensionsPolicyChangedType
         EventType.team_extensions_policy_changed: (team_policies) Changed App
         Integrations setting for team
@@ -29303,6 +29334,17 @@ class EventType(bb.Union):
         return cls('sso_change_policy', val)
 
     @classmethod
+    def team_branding_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_branding_policy_changed`` tag with value ``val``.
+
+        :param TeamBrandingPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('team_branding_policy_changed', val)
+
+    @classmethod
     def team_extensions_policy_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -32970,6 +33012,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sso_change_policy'
+
+    def is_team_branding_policy_changed(self):
+        """
+        Check if the union tag is ``team_branding_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_branding_policy_changed'
 
     def is_team_extensions_policy_changed(self):
         """
@@ -38095,6 +38145,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'sso_change_policy' not set")
         return self._value
 
+    def get_team_branding_policy_changed(self):
+        """
+        (team_policies) Changed team branding policy for team
+
+        Only call this if :meth:`is_team_branding_policy_changed` is true.
+
+        :rtype: TeamBrandingPolicyChangedType
+        """
+        if not self.is_team_branding_policy_changed():
+            raise AttributeError("tag 'team_branding_policy_changed' not set")
+        return self._value
+
     def get_team_extensions_policy_changed(self):
         """
         (team_policies) Changed App Integrations setting for team
@@ -39518,6 +39580,8 @@ class EventTypeArg(bb.Union):
         out of Smart Sync
     :ivar team_log.EventTypeArg.sso_change_policy: (team_policies) Changed
         single sign-on setting for team
+    :ivar team_log.EventTypeArg.team_branding_policy_changed: (team_policies)
+        Changed team branding policy for team
     :ivar team_log.EventTypeArg.team_extensions_policy_changed: (team_policies)
         Changed App Integrations setting for team
     :ivar team_log.EventTypeArg.team_selective_sync_policy_changed:
@@ -40421,6 +40485,8 @@ class EventTypeArg(bb.Union):
     smart_sync_opt_out = None
     # Attribute is overwritten below the class definition
     sso_change_policy = None
+    # Attribute is overwritten below the class definition
+    team_branding_policy_changed = None
     # Attribute is overwritten below the class definition
     team_extensions_policy_changed = None
     # Attribute is overwritten below the class definition
@@ -43621,6 +43687,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sso_change_policy'
+
+    def is_team_branding_policy_changed(self):
+        """
+        Check if the union tag is ``team_branding_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_branding_policy_changed'
 
     def is_team_extensions_policy_changed(self):
         """
@@ -89789,6 +89863,190 @@ class TeamActivityCreateReportType(bb.Struct):
 
 TeamActivityCreateReportType_validator = bv.Struct(TeamActivityCreateReportType)
 
+class TeamBrandingPolicy(bb.Union):
+    """
+    Policy for controlling team access to setting up branding feature
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamBrandingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamBrandingPolicy(%r, %r)' % (self._tag, self._value)
+
+TeamBrandingPolicy_validator = bv.Union(TeamBrandingPolicy)
+
+class TeamBrandingPolicyChangedDetails(bb.Struct):
+    """
+    Changed team branding policy for team.
+
+    :ivar team_log.TeamBrandingPolicyChangedDetails.new_value: New team branding
+        policy.
+    :ivar team_log.TeamBrandingPolicyChangedDetails.previous_value: Previous
+        team branding policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New team branding policy.
+
+        :rtype: TeamBrandingPolicy
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous team branding policy.
+
+        :rtype: TeamBrandingPolicy
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamBrandingPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamBrandingPolicyChangedDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+TeamBrandingPolicyChangedDetails_validator = bv.Struct(TeamBrandingPolicyChangedDetails)
+
+class TeamBrandingPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamBrandingPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamBrandingPolicyChangedType(description={!r})'.format(
+            self._description_value,
+        )
+
+TeamBrandingPolicyChangedType_validator = bv.Struct(TeamBrandingPolicyChangedType)
+
 class TeamDetails(bb.Struct):
     """
     More details about the team.
@@ -99485,6 +99743,7 @@ EventDetails._smart_sync_change_policy_details_validator = SmartSyncChangePolicy
 EventDetails._smart_sync_not_opt_out_details_validator = SmartSyncNotOptOutDetails_validator
 EventDetails._smart_sync_opt_out_details_validator = SmartSyncOptOutDetails_validator
 EventDetails._sso_change_policy_details_validator = SsoChangePolicyDetails_validator
+EventDetails._team_branding_policy_changed_details_validator = TeamBrandingPolicyChangedDetails_validator
 EventDetails._team_extensions_policy_changed_details_validator = TeamExtensionsPolicyChangedDetails_validator
 EventDetails._team_selective_sync_policy_changed_details_validator = TeamSelectiveSyncPolicyChangedDetails_validator
 EventDetails._team_sharing_whitelist_subjects_changed_details_validator = TeamSharingWhitelistSubjectsChangedDetails_validator
@@ -99926,6 +100185,7 @@ EventDetails._tagmap = {
     'smart_sync_not_opt_out_details': EventDetails._smart_sync_not_opt_out_details_validator,
     'smart_sync_opt_out_details': EventDetails._smart_sync_opt_out_details_validator,
     'sso_change_policy_details': EventDetails._sso_change_policy_details_validator,
+    'team_branding_policy_changed_details': EventDetails._team_branding_policy_changed_details_validator,
     'team_extensions_policy_changed_details': EventDetails._team_extensions_policy_changed_details_validator,
     'team_selective_sync_policy_changed_details': EventDetails._team_selective_sync_policy_changed_details_validator,
     'team_sharing_whitelist_subjects_changed_details': EventDetails._team_sharing_whitelist_subjects_changed_details_validator,
@@ -100370,6 +100630,7 @@ EventType._smart_sync_change_policy_validator = SmartSyncChangePolicyType_valida
 EventType._smart_sync_not_opt_out_validator = SmartSyncNotOptOutType_validator
 EventType._smart_sync_opt_out_validator = SmartSyncOptOutType_validator
 EventType._sso_change_policy_validator = SsoChangePolicyType_validator
+EventType._team_branding_policy_changed_validator = TeamBrandingPolicyChangedType_validator
 EventType._team_extensions_policy_changed_validator = TeamExtensionsPolicyChangedType_validator
 EventType._team_selective_sync_policy_changed_validator = TeamSelectiveSyncPolicyChangedType_validator
 EventType._team_sharing_whitelist_subjects_changed_validator = TeamSharingWhitelistSubjectsChangedType_validator
@@ -100810,6 +101071,7 @@ EventType._tagmap = {
     'smart_sync_not_opt_out': EventType._smart_sync_not_opt_out_validator,
     'smart_sync_opt_out': EventType._smart_sync_opt_out_validator,
     'sso_change_policy': EventType._sso_change_policy_validator,
+    'team_branding_policy_changed': EventType._team_branding_policy_changed_validator,
     'team_extensions_policy_changed': EventType._team_extensions_policy_changed_validator,
     'team_selective_sync_policy_changed': EventType._team_selective_sync_policy_changed_validator,
     'team_sharing_whitelist_subjects_changed': EventType._team_sharing_whitelist_subjects_changed_validator,
@@ -101253,6 +101515,7 @@ EventTypeArg._smart_sync_change_policy_validator = bv.Void()
 EventTypeArg._smart_sync_not_opt_out_validator = bv.Void()
 EventTypeArg._smart_sync_opt_out_validator = bv.Void()
 EventTypeArg._sso_change_policy_validator = bv.Void()
+EventTypeArg._team_branding_policy_changed_validator = bv.Void()
 EventTypeArg._team_extensions_policy_changed_validator = bv.Void()
 EventTypeArg._team_selective_sync_policy_changed_validator = bv.Void()
 EventTypeArg._team_sharing_whitelist_subjects_changed_validator = bv.Void()
@@ -101693,6 +101956,7 @@ EventTypeArg._tagmap = {
     'smart_sync_not_opt_out': EventTypeArg._smart_sync_not_opt_out_validator,
     'smart_sync_opt_out': EventTypeArg._smart_sync_opt_out_validator,
     'sso_change_policy': EventTypeArg._sso_change_policy_validator,
+    'team_branding_policy_changed': EventTypeArg._team_branding_policy_changed_validator,
     'team_extensions_policy_changed': EventTypeArg._team_extensions_policy_changed_validator,
     'team_selective_sync_policy_changed': EventTypeArg._team_selective_sync_policy_changed_validator,
     'team_sharing_whitelist_subjects_changed': EventTypeArg._team_sharing_whitelist_subjects_changed_validator,
@@ -102134,6 +102398,7 @@ EventTypeArg.smart_sync_change_policy = EventTypeArg('smart_sync_change_policy')
 EventTypeArg.smart_sync_not_opt_out = EventTypeArg('smart_sync_not_opt_out')
 EventTypeArg.smart_sync_opt_out = EventTypeArg('smart_sync_opt_out')
 EventTypeArg.sso_change_policy = EventTypeArg('sso_change_policy')
+EventTypeArg.team_branding_policy_changed = EventTypeArg('team_branding_policy_changed')
 EventTypeArg.team_extensions_policy_changed = EventTypeArg('team_extensions_policy_changed')
 EventTypeArg.team_selective_sync_policy_changed = EventTypeArg('team_selective_sync_policy_changed')
 EventTypeArg.team_sharing_whitelist_subjects_changed = EventTypeArg('team_sharing_whitelist_subjects_changed')
@@ -107189,6 +107454,34 @@ TeamActivityCreateReportFailType._all_fields_ = [('description', TeamActivityCre
 TeamActivityCreateReportType._description_validator = bv.String()
 TeamActivityCreateReportType._all_field_names_ = set(['description'])
 TeamActivityCreateReportType._all_fields_ = [('description', TeamActivityCreateReportType._description_validator)]
+
+TeamBrandingPolicy._disabled_validator = bv.Void()
+TeamBrandingPolicy._enabled_validator = bv.Void()
+TeamBrandingPolicy._other_validator = bv.Void()
+TeamBrandingPolicy._tagmap = {
+    'disabled': TeamBrandingPolicy._disabled_validator,
+    'enabled': TeamBrandingPolicy._enabled_validator,
+    'other': TeamBrandingPolicy._other_validator,
+}
+
+TeamBrandingPolicy.disabled = TeamBrandingPolicy('disabled')
+TeamBrandingPolicy.enabled = TeamBrandingPolicy('enabled')
+TeamBrandingPolicy.other = TeamBrandingPolicy('other')
+
+TeamBrandingPolicyChangedDetails._new_value_validator = TeamBrandingPolicy_validator
+TeamBrandingPolicyChangedDetails._previous_value_validator = TeamBrandingPolicy_validator
+TeamBrandingPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+TeamBrandingPolicyChangedDetails._all_fields_ = [
+    ('new_value', TeamBrandingPolicyChangedDetails._new_value_validator),
+    ('previous_value', TeamBrandingPolicyChangedDetails._previous_value_validator),
+]
+
+TeamBrandingPolicyChangedType._description_validator = bv.String()
+TeamBrandingPolicyChangedType._all_field_names_ = set(['description'])
+TeamBrandingPolicyChangedType._all_fields_ = [('description', TeamBrandingPolicyChangedType._description_validator)]
 
 TeamDetails._team_validator = bv.String()
 TeamDetails._all_field_names_ = set(['team'])

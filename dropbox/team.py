@@ -24462,7 +24462,7 @@ properties_template_update = bb.Route(
 reports_get_activity = bb.Route(
     'reports/get_activity',
     1,
-    False,
+    True,
     DateRange_validator,
     GetActivityReport_validator,
     DateRangeError_validator,
@@ -24472,7 +24472,7 @@ reports_get_activity = bb.Route(
 reports_get_devices = bb.Route(
     'reports/get_devices',
     1,
-    False,
+    True,
     DateRange_validator,
     GetDevicesReport_validator,
     DateRangeError_validator,
@@ -24482,7 +24482,7 @@ reports_get_devices = bb.Route(
 reports_get_membership = bb.Route(
     'reports/get_membership',
     1,
-    False,
+    True,
     DateRange_validator,
     GetMembershipReport_validator,
     DateRangeError_validator,
@@ -24492,7 +24492,7 @@ reports_get_membership = bb.Route(
 reports_get_storage = bb.Route(
     'reports/get_storage',
     1,
-    False,
+    True,
     DateRange_validator,
     GetStorageReport_validator,
     DateRangeError_validator,
