@@ -33,7 +33,7 @@ else:
     url_path_quote = urllib.quote  # pylint: disable=no-member,useless-suppression
     url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
 
-TOKEN_ACCESS_TYPES = ['', 'offline', 'online', 'legacy']
+TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
 INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
 PKCE_VERIFIER_LENGTH = 128
 
@@ -118,7 +118,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 
 class DropboxOAuth2FlowBase(object):
 
-    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
+    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
                  scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):
         if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
             raise BadInputException("Scope list must be of type list")
@@ -146,7 +146,7 @@ class DropboxOAuth2FlowBase(object):
             self.code_verifier = None
             self.code_challenge = None
 
-    def _get_authorize_url(self, redirect_uri, state, token_access_type, scope=None,
+    def _get_authorize_url(self, redirect_uri, state, token_access_type=None, scope=None,
                            include_granted_scopes=None, code_challenge=None):
         params = dict(response_type='code',
                       client_id=self.consumer_key)
@@ -272,7 +272,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
 
     """
 
-    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
+    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
                  scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):  # noqa: E501;
         """
         Construct an instance.
@@ -359,7 +359,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
     def __init__(self, consumer_key, redirect_uri, session,
                  csrf_token_session_key, consumer_secret=None, locale=None,
-                 token_access_type='legacy', scope=None,
+                 token_access_type=None, scope=None,
                  include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):
         """
         Construct an instance.
