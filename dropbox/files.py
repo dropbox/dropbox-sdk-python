@@ -11454,10 +11454,89 @@ class SearchMatchType(bb.Union):
 
 SearchMatchType_validator = bv.Union(SearchMatchType)
 
+class SearchMatchTypeV2(bb.Union):
+    """
+    Indicates what type of match was found for a given item.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.SearchMatchTypeV2.filename: This item was matched on its file or
+        folder name.
+    :ivar files.SearchMatchTypeV2.file_content: This item was matched based on
+        its file contents.
+    :ivar files.SearchMatchTypeV2.filename_and_content: This item was matched
+        based on both its contents and its file name.
+    :ivar files.SearchMatchTypeV2.image_content: This item was matched on image
+        content.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    filename = None
+    # Attribute is overwritten below the class definition
+    file_content = None
+    # Attribute is overwritten below the class definition
+    filename_and_content = None
+    # Attribute is overwritten below the class definition
+    image_content = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_filename(self):
+        """
+        Check if the union tag is ``filename``.
+
+        :rtype: bool
+        """
+        return self._tag == 'filename'
+
+    def is_file_content(self):
+        """
+        Check if the union tag is ``file_content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_content'
+
+    def is_filename_and_content(self):
+        """
+        Check if the union tag is ``filename_and_content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'filename_and_content'
+
+    def is_image_content(self):
+        """
+        Check if the union tag is ``image_content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'image_content'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchMatchTypeV2, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SearchMatchTypeV2(%r, %r)' % (self._tag, self._value)
+
+SearchMatchTypeV2_validator = bv.Union(SearchMatchTypeV2)
+
 class SearchMatchV2(bb.Struct):
     """
     :ivar files.SearchMatchV2.metadata: The metadata for the matched file or
         folder.
+    :ivar files.SearchMatchV2.match_type: The type of the match.
     :ivar files.SearchMatchV2.highlight_spans: The list of HighlightSpan
         determines which parts of the file title should be highlighted.
     """
@@ -11465,6 +11544,8 @@ class SearchMatchV2(bb.Struct):
     __slots__ = [
         '_metadata_value',
         '_metadata_present',
+        '_match_type_value',
+        '_match_type_present',
         '_highlight_spans_value',
         '_highlight_spans_present',
     ]
@@ -11473,13 +11554,18 @@ class SearchMatchV2(bb.Struct):
 
     def __init__(self,
                  metadata=None,
+                 match_type=None,
                  highlight_spans=None):
         self._metadata_value = None
         self._metadata_present = False
+        self._match_type_value = None
+        self._match_type_present = False
         self._highlight_spans_value = None
         self._highlight_spans_present = False
         if metadata is not None:
             self.metadata = metadata
+        if match_type is not None:
+            self.match_type = match_type
         if highlight_spans is not None:
             self.highlight_spans = highlight_spans
 
@@ -11505,6 +11591,32 @@ class SearchMatchV2(bb.Struct):
     def metadata(self):
         self._metadata_value = None
         self._metadata_present = False
+
+    @property
+    def match_type(self):
+        """
+        The type of the match.
+
+        :rtype: SearchMatchTypeV2
+        """
+        if self._match_type_present:
+            return self._match_type_value
+        else:
+            return None
+
+    @match_type.setter
+    def match_type(self, val):
+        if val is None:
+            del self.match_type
+            return
+        self._match_type_validator.validate_type_only(val)
+        self._match_type_value = val
+        self._match_type_present = True
+
+    @match_type.deleter
+    def match_type(self):
+        self._match_type_value = None
+        self._match_type_present = False
 
     @property
     def highlight_spans(self):
@@ -11537,8 +11649,9 @@ class SearchMatchV2(bb.Struct):
         super(SearchMatchV2, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'SearchMatchV2(metadata={!r}, highlight_spans={!r})'.format(
+        return 'SearchMatchV2(metadata={!r}, match_type={!r}, highlight_spans={!r})'.format(
             self._metadata_value,
+            self._match_type_value,
             self._highlight_spans_value,
         )
 
@@ -11603,6 +11716,8 @@ class SearchOptions(bb.Struct):
         Dropbox. Searches the entire Dropbox if not specified.
     :ivar files.SearchOptions.max_results: The maximum number of search results
         to return.
+    :ivar files.SearchOptions.order_by: Specified property of the order of
+        search results. By default, results are sorted by relevance.
     :ivar files.SearchOptions.file_status: Restricts search to the given file
         status.
     :ivar files.SearchOptions.filename_only: Restricts search to only match on
@@ -11618,6 +11733,8 @@ class SearchOptions(bb.Struct):
         '_path_present',
         '_max_results_value',
         '_max_results_present',
+        '_order_by_value',
+        '_order_by_present',
         '_file_status_value',
         '_file_status_present',
         '_filename_only_value',
@@ -11633,6 +11750,7 @@ class SearchOptions(bb.Struct):
     def __init__(self,
                  path=None,
                  max_results=None,
+                 order_by=None,
                  file_status=None,
                  filename_only=None,
                  file_extensions=None,
@@ -11641,6 +11759,8 @@ class SearchOptions(bb.Struct):
         self._path_present = False
         self._max_results_value = None
         self._max_results_present = False
+        self._order_by_value = None
+        self._order_by_present = False
         self._file_status_value = None
         self._file_status_present = False
         self._filename_only_value = None
@@ -11653,6 +11773,8 @@ class SearchOptions(bb.Struct):
             self.path = path
         if max_results is not None:
             self.max_results = max_results
+        if order_by is not None:
+            self.order_by = order_by
         if file_status is not None:
             self.file_status = file_status
         if filename_only is not None:
@@ -11711,6 +11833,33 @@ class SearchOptions(bb.Struct):
     def max_results(self):
         self._max_results_value = None
         self._max_results_present = False
+
+    @property
+    def order_by(self):
+        """
+        Specified property of the order of search results. By default, results
+        are sorted by relevance.
+
+        :rtype: SearchOrderBy
+        """
+        if self._order_by_present:
+            return self._order_by_value
+        else:
+            return None
+
+    @order_by.setter
+    def order_by(self, val):
+        if val is None:
+            del self.order_by
+            return
+        self._order_by_validator.validate_type_only(val)
+        self._order_by_value = val
+        self._order_by_present = True
+
+    @order_by.deleter
+    def order_by(self):
+        self._order_by_value = None
+        self._order_by_present = False
 
     @property
     def file_status(self):
@@ -11816,9 +11965,10 @@ class SearchOptions(bb.Struct):
         super(SearchOptions, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'SearchOptions(path={!r}, max_results={!r}, file_status={!r}, filename_only={!r}, file_extensions={!r}, file_categories={!r})'.format(
+        return 'SearchOptions(path={!r}, max_results={!r}, order_by={!r}, file_status={!r}, filename_only={!r}, file_extensions={!r}, file_categories={!r})'.format(
             self._path_value,
             self._max_results_value,
+            self._order_by_value,
             self._file_status_value,
             self._filename_only_value,
             self._file_extensions_value,
@@ -11826,6 +11976,53 @@ class SearchOptions(bb.Struct):
         )
 
 SearchOptions_validator = bv.Struct(SearchOptions)
+
+class SearchOrderBy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    relevance = None
+    # Attribute is overwritten below the class definition
+    last_modified_time = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_relevance(self):
+        """
+        Check if the union tag is ``relevance``.
+
+        :rtype: bool
+        """
+        return self._tag == 'relevance'
+
+    def is_last_modified_time(self):
+        """
+        Check if the union tag is ``last_modified_time``.
+
+        :rtype: bool
+        """
+        return self._tag == 'last_modified_time'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SearchOrderBy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SearchOrderBy(%r, %r)' % (self._tag, self._value)
+
+SearchOrderBy_validator = bv.Union(SearchOrderBy)
 
 class SearchResult(bb.Struct):
     """
@@ -12086,10 +12283,13 @@ class SearchV2Arg(bb.Struct):
         if self._include_highlights_present:
             return self._include_highlights_value
         else:
-            return False
+            return None
 
     @include_highlights.setter
     def include_highlights(self, val):
+        if val is None:
+            del self.include_highlights
+            return
         val = self._include_highlights_validator.validate(val)
         self._include_highlights_value = val
         self._include_highlights_present = True
@@ -16776,14 +16976,36 @@ SearchMatchType.filename = SearchMatchType('filename')
 SearchMatchType.content = SearchMatchType('content')
 SearchMatchType.both = SearchMatchType('both')
 
+SearchMatchTypeV2._filename_validator = bv.Void()
+SearchMatchTypeV2._file_content_validator = bv.Void()
+SearchMatchTypeV2._filename_and_content_validator = bv.Void()
+SearchMatchTypeV2._image_content_validator = bv.Void()
+SearchMatchTypeV2._other_validator = bv.Void()
+SearchMatchTypeV2._tagmap = {
+    'filename': SearchMatchTypeV2._filename_validator,
+    'file_content': SearchMatchTypeV2._file_content_validator,
+    'filename_and_content': SearchMatchTypeV2._filename_and_content_validator,
+    'image_content': SearchMatchTypeV2._image_content_validator,
+    'other': SearchMatchTypeV2._other_validator,
+}
+
+SearchMatchTypeV2.filename = SearchMatchTypeV2('filename')
+SearchMatchTypeV2.file_content = SearchMatchTypeV2('file_content')
+SearchMatchTypeV2.filename_and_content = SearchMatchTypeV2('filename_and_content')
+SearchMatchTypeV2.image_content = SearchMatchTypeV2('image_content')
+SearchMatchTypeV2.other = SearchMatchTypeV2('other')
+
 SearchMatchV2._metadata_validator = MetadataV2_validator
+SearchMatchV2._match_type_validator = bv.Nullable(SearchMatchTypeV2_validator)
 SearchMatchV2._highlight_spans_validator = bv.Nullable(bv.List(HighlightSpan_validator))
 SearchMatchV2._all_field_names_ = set([
     'metadata',
+    'match_type',
     'highlight_spans',
 ])
 SearchMatchV2._all_fields_ = [
     ('metadata', SearchMatchV2._metadata_validator),
+    ('match_type', SearchMatchV2._match_type_validator),
     ('highlight_spans', SearchMatchV2._highlight_spans_validator),
 ]
 
@@ -16802,6 +17024,7 @@ SearchMode.deleted_filename = SearchMode('deleted_filename')
 
 SearchOptions._path_validator = bv.Nullable(PathROrId_validator)
 SearchOptions._max_results_validator = bv.UInt64(min_value=1, max_value=1000)
+SearchOptions._order_by_validator = bv.Nullable(SearchOrderBy_validator)
 SearchOptions._file_status_validator = FileStatus_validator
 SearchOptions._filename_only_validator = bv.Boolean()
 SearchOptions._file_extensions_validator = bv.Nullable(bv.List(bv.String()))
@@ -16809,6 +17032,7 @@ SearchOptions._file_categories_validator = bv.Nullable(bv.List(FileCategory_vali
 SearchOptions._all_field_names_ = set([
     'path',
     'max_results',
+    'order_by',
     'file_status',
     'filename_only',
     'file_extensions',
@@ -16817,11 +17041,25 @@ SearchOptions._all_field_names_ = set([
 SearchOptions._all_fields_ = [
     ('path', SearchOptions._path_validator),
     ('max_results', SearchOptions._max_results_validator),
+    ('order_by', SearchOptions._order_by_validator),
     ('file_status', SearchOptions._file_status_validator),
     ('filename_only', SearchOptions._filename_only_validator),
     ('file_extensions', SearchOptions._file_extensions_validator),
     ('file_categories', SearchOptions._file_categories_validator),
 ]
+
+SearchOrderBy._relevance_validator = bv.Void()
+SearchOrderBy._last_modified_time_validator = bv.Void()
+SearchOrderBy._other_validator = bv.Void()
+SearchOrderBy._tagmap = {
+    'relevance': SearchOrderBy._relevance_validator,
+    'last_modified_time': SearchOrderBy._last_modified_time_validator,
+    'other': SearchOrderBy._other_validator,
+}
+
+SearchOrderBy.relevance = SearchOrderBy('relevance')
+SearchOrderBy.last_modified_time = SearchOrderBy('last_modified_time')
+SearchOrderBy.other = SearchOrderBy('other')
 
 SearchResult._matches_validator = bv.List(SearchMatch_validator)
 SearchResult._more_validator = bv.Boolean()
@@ -16840,7 +17078,7 @@ SearchResult._all_fields_ = [
 SearchV2Arg._query_validator = bv.String(max_length=1000)
 SearchV2Arg._options_validator = bv.Nullable(SearchOptions_validator)
 SearchV2Arg._match_field_options_validator = bv.Nullable(SearchMatchFieldOptions_validator)
-SearchV2Arg._include_highlights_validator = bv.Boolean()
+SearchV2Arg._include_highlights_validator = bv.Nullable(bv.Boolean())
 SearchV2Arg._all_field_names_ = set([
     'query',
     'options',
