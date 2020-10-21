@@ -156,8 +156,7 @@ class DropboxOAuth2FlowBase(object):
             params['state'] = state
         if token_access_type is not None:
             assert token_access_type in TOKEN_ACCESS_TYPES
-            if token_access_type != '':
-                params['token_access_type'] = token_access_type
+            params['token_access_type'] = token_access_type
         if code_challenge:
             params['code_challenge'] = code_challenge
             params['code_challenge_method'] = 'S256'

@@ -32,7 +32,7 @@ class TestOAuth:
                                      'dummy_session', 'dbx-auth-csrf-token')
         for redirect_uri in [None, 'localhost']:
             for state in [None, 'state']:
-                for token_access_type in [None, '', 'legacy', 'offline', 'online']:
+                for token_access_type in [None, 'legacy', 'offline', 'online']:
                     for scope in [None, SCOPE_LIST]:
                         for include_granted_scopes in [None, 'user', 'team']:
                             for code_challenge in [None, 'mychallenge']:
@@ -58,7 +58,7 @@ class TestOAuth:
                                 else:
                                     assert 'state' not in authorization_url
 
-                                if token_access_type and token_access_type != '':
+                                if token_access_type:
                                     assert 'token_access_type={}'.format(token_access_type) \
                                         in authorization_url
                                 else:
