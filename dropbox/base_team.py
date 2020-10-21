@@ -1923,6 +1923,10 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_activity is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -1949,6 +1953,10 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_devices is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -1975,6 +1983,10 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_membership is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -2001,6 +2013,10 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_storage is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
