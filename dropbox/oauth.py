@@ -285,7 +285,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         :param str token_access_type: the type of token to be requested.
             From the following enum:
 
-            * '' - creates a token with the app default (either legacy or online)
+            * None - creates a token with the app default (either legacy or online)
             * legacy - creates one long-lived token with no expiration
             * online - create one short-lived token with an expiration
             * offline - create one short-lived token with an expiration with a refresh token
@@ -380,7 +380,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         :param str token_access_type: The type of token to be requested.
             From the following enum:
 
-            * '' - creates a token with the app default (either legacy or online)
+            * None - creates a token with the app default (either legacy or online)
             * legacy - creates one long-lived token with no expiration
             * online - create one short-lived token with an expiration
             * offline - create one short-lived token with an expiration with a refresh token
