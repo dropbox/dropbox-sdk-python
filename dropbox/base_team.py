@@ -20,7 +20,6 @@ from . import (
     secondary_emails,
     seen_state,
     sharing,
-    stone_fixtures,
     team,
     team_common,
     team_log,

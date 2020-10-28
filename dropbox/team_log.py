@@ -4737,6 +4737,262 @@ class ChangedEnterpriseConnectedTeamStatusType(bb.Struct):
 
 ChangedEnterpriseConnectedTeamStatusType_validator = bv.Struct(ChangedEnterpriseConnectedTeamStatusType)
 
+class ClassificationChangePolicyDetails(bb.Struct):
+    """
+    Changed classification policy for team.
+
+    :ivar team_log.ClassificationChangePolicyDetails.previous_value: Previous
+        classification policy.
+    :ivar team_log.ClassificationChangePolicyDetails.new_value: New
+        classification policy.
+    :ivar team_log.ClassificationChangePolicyDetails.classification_type: Policy
+        type.
+    """
+
+    __slots__ = [
+        '_previous_value_value',
+        '_previous_value_present',
+        '_new_value_value',
+        '_new_value_present',
+        '_classification_type_value',
+        '_classification_type_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None,
+                 classification_type=None):
+        self._previous_value_value = None
+        self._previous_value_present = False
+        self._new_value_value = None
+        self._new_value_present = False
+        self._classification_type_value = None
+        self._classification_type_present = False
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+        if classification_type is not None:
+            self.classification_type = classification_type
+
+    @property
+    def previous_value(self):
+        """
+        Previous classification policy.
+
+        :rtype: ClassificationPolicyEnumWrapper
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    @property
+    def new_value(self):
+        """
+        New classification policy.
+
+        :rtype: ClassificationPolicyEnumWrapper
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def classification_type(self):
+        """
+        Policy type.
+
+        :rtype: ClassificationType
+        """
+        if self._classification_type_present:
+            return self._classification_type_value
+        else:
+            raise AttributeError("missing required field 'classification_type'")
+
+    @classification_type.setter
+    def classification_type(self, val):
+        self._classification_type_validator.validate_type_only(val)
+        self._classification_type_value = val
+        self._classification_type_present = True
+
+    @classification_type.deleter
+    def classification_type(self):
+        self._classification_type_value = None
+        self._classification_type_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ClassificationChangePolicyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ClassificationChangePolicyDetails(previous_value={!r}, new_value={!r}, classification_type={!r})'.format(
+            self._previous_value_value,
+            self._new_value_value,
+            self._classification_type_value,
+        )
+
+ClassificationChangePolicyDetails_validator = bv.Struct(ClassificationChangePolicyDetails)
+
+class ClassificationChangePolicyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ClassificationChangePolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ClassificationChangePolicyType(description={!r})'.format(
+            self._description_value,
+        )
+
+ClassificationChangePolicyType_validator = bv.Struct(ClassificationChangePolicyType)
+
+class ClassificationPolicyEnumWrapper(bb.Union):
+    """
+    Policy for controlling team access to the classification feature
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ClassificationPolicyEnumWrapper, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ClassificationPolicyEnumWrapper(%r, %r)' % (self._tag, self._value)
+
+ClassificationPolicyEnumWrapper_validator = bv.Union(ClassificationPolicyEnumWrapper)
+
+class ClassificationType(bb.Union):
+    """
+    The type of classification (currently only PII)
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    pii = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_pii(self):
+        """
+        Check if the union tag is ``pii``.
+
+        :rtype: bool
+        """
+        return self._tag == 'pii'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ClassificationType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ClassificationType(%r, %r)' % (self._tag, self._value)
+
+ClassificationType_validator = bv.Union(ClassificationType)
+
 class CollectionShareDetails(bb.Struct):
     """
     Shared album.
@@ -9760,6 +10016,243 @@ class DownloadPolicyType(bb.Union):
 
 DownloadPolicyType_validator = bv.Union(DownloadPolicyType)
 
+class DropboxPasswordsExportedDetails(bb.Struct):
+    """
+    Exported passwords.
+
+    :ivar team_log.DropboxPasswordsExportedDetails.platform: The platform the
+        device runs export.
+    """
+
+    __slots__ = [
+        '_platform_value',
+        '_platform_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 platform=None):
+        self._platform_value = None
+        self._platform_present = False
+        if platform is not None:
+            self.platform = platform
+
+    @property
+    def platform(self):
+        """
+        The platform the device runs export.
+
+        :rtype: str
+        """
+        if self._platform_present:
+            return self._platform_value
+        else:
+            raise AttributeError("missing required field 'platform'")
+
+    @platform.setter
+    def platform(self, val):
+        val = self._platform_validator.validate(val)
+        self._platform_value = val
+        self._platform_present = True
+
+    @platform.deleter
+    def platform(self):
+        self._platform_value = None
+        self._platform_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsExportedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DropboxPasswordsExportedDetails(platform={!r})'.format(
+            self._platform_value,
+        )
+
+DropboxPasswordsExportedDetails_validator = bv.Struct(DropboxPasswordsExportedDetails)
+
+class DropboxPasswordsExportedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsExportedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DropboxPasswordsExportedType(description={!r})'.format(
+            self._description_value,
+        )
+
+DropboxPasswordsExportedType_validator = bv.Struct(DropboxPasswordsExportedType)
+
+class DropboxPasswordsNewDeviceEnrolledDetails(bb.Struct):
+    """
+    Enrolled new Dropbox Passwords device.
+
+    :ivar team_log.DropboxPasswordsNewDeviceEnrolledDetails.is_first_device:
+        Whether it's a first device enrolled.
+    :ivar team_log.DropboxPasswordsNewDeviceEnrolledDetails.platform: The
+        platform the device is enrolled.
+    """
+
+    __slots__ = [
+        '_is_first_device_value',
+        '_is_first_device_present',
+        '_platform_value',
+        '_platform_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 is_first_device=None,
+                 platform=None):
+        self._is_first_device_value = None
+        self._is_first_device_present = False
+        self._platform_value = None
+        self._platform_present = False
+        if is_first_device is not None:
+            self.is_first_device = is_first_device
+        if platform is not None:
+            self.platform = platform
+
+    @property
+    def is_first_device(self):
+        """
+        Whether it's a first device enrolled.
+
+        :rtype: bool
+        """
+        if self._is_first_device_present:
+            return self._is_first_device_value
+        else:
+            raise AttributeError("missing required field 'is_first_device'")
+
+    @is_first_device.setter
+    def is_first_device(self, val):
+        val = self._is_first_device_validator.validate(val)
+        self._is_first_device_value = val
+        self._is_first_device_present = True
+
+    @is_first_device.deleter
+    def is_first_device(self):
+        self._is_first_device_value = None
+        self._is_first_device_present = False
+
+    @property
+    def platform(self):
+        """
+        The platform the device is enrolled.
+
+        :rtype: str
+        """
+        if self._platform_present:
+            return self._platform_value
+        else:
+            raise AttributeError("missing required field 'platform'")
+
+    @platform.setter
+    def platform(self, val):
+        val = self._platform_validator.validate(val)
+        self._platform_value = val
+        self._platform_present = True
+
+    @platform.deleter
+    def platform(self):
+        self._platform_value = None
+        self._platform_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsNewDeviceEnrolledDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DropboxPasswordsNewDeviceEnrolledDetails(is_first_device={!r}, platform={!r})'.format(
+            self._is_first_device_value,
+            self._platform_value,
+        )
+
+DropboxPasswordsNewDeviceEnrolledDetails_validator = bv.Struct(DropboxPasswordsNewDeviceEnrolledDetails)
+
+class DropboxPasswordsNewDeviceEnrolledType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsNewDeviceEnrolledType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'DropboxPasswordsNewDeviceEnrolledType(description={!r})'.format(
+            self._description_value,
+        )
+
+DropboxPasswordsNewDeviceEnrolledType_validator = bv.Struct(DropboxPasswordsNewDeviceEnrolledType)
+
 class DurationLogInfo(bb.Struct):
     """
     Represents a time duration: unit and amount
@@ -11627,6 +12120,29 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('device_unlink_details', val)
+
+    @classmethod
+    def dropbox_passwords_exported_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``dropbox_passwords_exported_details`` tag with value ``val``.
+
+        :param DropboxPasswordsExportedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('dropbox_passwords_exported_details', val)
+
+    @classmethod
+    def dropbox_passwords_new_device_enrolled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``dropbox_passwords_new_device_enrolled_details`` tag with value
+        ``val``.
+
+        :param DropboxPasswordsNewDeviceEnrolledDetails val:
+        :rtype: EventDetails
+        """
+        return cls('dropbox_passwords_new_device_enrolled_details', val)
 
     @classmethod
     def emm_refresh_auth_token_details(cls, val):
@@ -14808,6 +15324,17 @@ class EventDetails(bb.Union):
         return cls('camera_uploads_policy_changed_details', val)
 
     @classmethod
+    def classification_change_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``classification_change_policy_details`` tag with value ``val``.
+
+        :param ClassificationChangePolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('classification_change_policy_details', val)
+
+    @classmethod
     def computer_backup_policy_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -16394,6 +16921,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_unlink_details'
+
+    def is_dropbox_passwords_exported_details(self):
+        """
+        Check if the union tag is ``dropbox_passwords_exported_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_exported_details'
+
+    def is_dropbox_passwords_new_device_enrolled_details(self):
+        """
+        Check if the union tag is ``dropbox_passwords_new_device_enrolled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_new_device_enrolled_details'
 
     def is_emm_refresh_auth_token_details(self):
         """
@@ -18691,6 +19234,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'camera_uploads_policy_changed_details'
 
+    def is_classification_change_policy_details(self):
+        """
+        Check if the union tag is ``classification_change_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_change_policy_details'
+
     def is_computer_backup_policy_changed_details(self):
         """
         Check if the union tag is ``computer_backup_policy_changed_details``.
@@ -20005,6 +20556,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_device_unlink_details():
             raise AttributeError("tag 'device_unlink_details' not set")
+        return self._value
+
+    def get_dropbox_passwords_exported_details(self):
+        """
+        Only call this if :meth:`is_dropbox_passwords_exported_details` is true.
+
+        :rtype: DropboxPasswordsExportedDetails
+        """
+        if not self.is_dropbox_passwords_exported_details():
+            raise AttributeError("tag 'dropbox_passwords_exported_details' not set")
+        return self._value
+
+    def get_dropbox_passwords_new_device_enrolled_details(self):
+        """
+        Only call this if :meth:`is_dropbox_passwords_new_device_enrolled_details` is true.
+
+        :rtype: DropboxPasswordsNewDeviceEnrolledDetails
+        """
+        if not self.is_dropbox_passwords_new_device_enrolled_details():
+            raise AttributeError("tag 'dropbox_passwords_new_device_enrolled_details' not set")
         return self._value
 
     def get_emm_refresh_auth_token_details(self):
@@ -22877,6 +23448,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'camera_uploads_policy_changed_details' not set")
         return self._value
 
+    def get_classification_change_policy_details(self):
+        """
+        Only call this if :meth:`is_classification_change_policy_details` is true.
+
+        :rtype: ClassificationChangePolicyDetails
+        """
+        if not self.is_classification_change_policy_details():
+            raise AttributeError("tag 'classification_change_policy_details' not set")
+        return self._value
+
     def get_computer_backup_policy_changed_details(self):
         """
         Only call this if :meth:`is_computer_backup_policy_changed_details` is true.
@@ -24097,6 +24678,11 @@ class EventType(bb.Union):
         backup for computer
     :ivar DeviceUnlinkType EventType.device_unlink: (devices) Disconnected
         device
+    :ivar DropboxPasswordsExportedType EventType.dropbox_passwords_exported:
+        (devices) Exported passwords
+    :ivar DropboxPasswordsNewDeviceEnrolledType
+        EventType.dropbox_passwords_new_device_enrolled: (devices) Enrolled new
+        Dropbox Passwords device
     :ivar EmmRefreshAuthTokenType EventType.emm_refresh_auth_token: (devices)
         Refreshed auth token used for setting up EMM
     :ivar AccountCaptureChangeAvailabilityType
@@ -24760,6 +25346,8 @@ class EventType(bb.Union):
     :ivar CameraUploadsPolicyChangedType
         EventType.camera_uploads_policy_changed: (team_policies) Changed camera
         uploads setting for team
+    :ivar ClassificationChangePolicyType EventType.classification_change_policy:
+        (team_policies) Changed classification policy for team
     :ivar ComputerBackupPolicyChangedType
         EventType.computer_backup_policy_changed: (team_policies) Changed
         computer backup policy for team
@@ -25533,6 +26121,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('device_unlink', val)
+
+    @classmethod
+    def dropbox_passwords_exported(cls, val):
+        """
+        Create an instance of this class set to the
+        ``dropbox_passwords_exported`` tag with value ``val``.
+
+        :param DropboxPasswordsExportedType val:
+        :rtype: EventType
+        """
+        return cls('dropbox_passwords_exported', val)
+
+    @classmethod
+    def dropbox_passwords_new_device_enrolled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``dropbox_passwords_new_device_enrolled`` tag with value ``val``.
+
+        :param DropboxPasswordsNewDeviceEnrolledType val:
+        :rtype: EventType
+        """
+        return cls('dropbox_passwords_new_device_enrolled', val)
 
     @classmethod
     def emm_refresh_auth_token(cls, val):
@@ -28696,6 +29306,17 @@ class EventType(bb.Union):
         return cls('camera_uploads_policy_changed', val)
 
     @classmethod
+    def classification_change_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``classification_change_policy`` tag with value ``val``.
+
+        :param ClassificationChangePolicyType val:
+        :rtype: EventType
+        """
+        return cls('classification_change_policy', val)
+
+    @classmethod
     def computer_backup_policy_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -30252,6 +30873,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_unlink'
+
+    def is_dropbox_passwords_exported(self):
+        """
+        Check if the union tag is ``dropbox_passwords_exported``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_exported'
+
+    def is_dropbox_passwords_new_device_enrolled(self):
+        """
+        Check if the union tag is ``dropbox_passwords_new_device_enrolled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_new_device_enrolled'
 
     def is_emm_refresh_auth_token(self):
         """
@@ -32549,6 +33186,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'camera_uploads_policy_changed'
 
+    def is_classification_change_policy(self):
+        """
+        Check if the union tag is ``classification_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_change_policy'
+
     def is_computer_backup_policy_changed(self):
         """
         Check if the union tag is ``computer_backup_policy_changed``.
@@ -33940,6 +34585,30 @@ class EventType(bb.Union):
         """
         if not self.is_device_unlink():
             raise AttributeError("tag 'device_unlink' not set")
+        return self._value
+
+    def get_dropbox_passwords_exported(self):
+        """
+        (devices) Exported passwords
+
+        Only call this if :meth:`is_dropbox_passwords_exported` is true.
+
+        :rtype: DropboxPasswordsExportedType
+        """
+        if not self.is_dropbox_passwords_exported():
+            raise AttributeError("tag 'dropbox_passwords_exported' not set")
+        return self._value
+
+    def get_dropbox_passwords_new_device_enrolled(self):
+        """
+        (devices) Enrolled new Dropbox Passwords device
+
+        Only call this if :meth:`is_dropbox_passwords_new_device_enrolled` is true.
+
+        :rtype: DropboxPasswordsNewDeviceEnrolledType
+        """
+        if not self.is_dropbox_passwords_new_device_enrolled():
+            raise AttributeError("tag 'dropbox_passwords_new_device_enrolled' not set")
         return self._value
 
     def get_emm_refresh_auth_token(self):
@@ -37429,6 +38098,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'camera_uploads_policy_changed' not set")
         return self._value
 
+    def get_classification_change_policy(self):
+        """
+        (team_policies) Changed classification policy for team
+
+        Only call this if :meth:`is_classification_change_policy` is true.
+
+        :rtype: ClassificationChangePolicyType
+        """
+        if not self.is_classification_change_policy():
+            raise AttributeError("tag 'classification_change_policy' not set")
+        return self._value
+
     def get_computer_backup_policy_changed(self):
         """
         (team_policies) Changed computer backup policy for team
@@ -38878,6 +39559,10 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.device_sync_backup_status_changed: (devices)
         Enabled/disabled backup for computer
     :ivar team_log.EventTypeArg.device_unlink: (devices) Disconnected device
+    :ivar team_log.EventTypeArg.dropbox_passwords_exported: (devices) Exported
+        passwords
+    :ivar team_log.EventTypeArg.dropbox_passwords_new_device_enrolled: (devices)
+        Enrolled new Dropbox Passwords device
     :ivar team_log.EventTypeArg.emm_refresh_auth_token: (devices) Refreshed auth
         token used for setting up EMM
     :ivar team_log.EventTypeArg.account_capture_change_availability: (domains)
@@ -39450,6 +40135,8 @@ class EventTypeArg(bb.Union):
         downloads (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.camera_uploads_policy_changed: (team_policies)
         Changed camera uploads setting for team
+    :ivar team_log.EventTypeArg.classification_change_policy: (team_policies)
+        Changed classification policy for team
     :ivar team_log.EventTypeArg.computer_backup_policy_changed: (team_policies)
         Changed computer backup policy for team
     :ivar team_log.EventTypeArg.content_administration_policy_changed:
@@ -39795,6 +40482,10 @@ class EventTypeArg(bb.Union):
     device_sync_backup_status_changed = None
     # Attribute is overwritten below the class definition
     device_unlink = None
+    # Attribute is overwritten below the class definition
+    dropbox_passwords_exported = None
+    # Attribute is overwritten below the class definition
+    dropbox_passwords_new_device_enrolled = None
     # Attribute is overwritten below the class definition
     emm_refresh_auth_token = None
     # Attribute is overwritten below the class definition
@@ -40370,6 +41061,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     camera_uploads_policy_changed = None
     # Attribute is overwritten below the class definition
+    classification_change_policy = None
+    # Attribute is overwritten below the class definition
     computer_backup_policy_changed = None
     # Attribute is overwritten below the class definition
     content_administration_policy_changed = None
@@ -40927,6 +41620,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'device_unlink'
+
+    def is_dropbox_passwords_exported(self):
+        """
+        Check if the union tag is ``dropbox_passwords_exported``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_exported'
+
+    def is_dropbox_passwords_new_device_enrolled(self):
+        """
+        Check if the union tag is ``dropbox_passwords_new_device_enrolled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_new_device_enrolled'
 
     def is_emm_refresh_auth_token(self):
         """
@@ -43223,6 +43932,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'camera_uploads_policy_changed'
+
+    def is_classification_change_policy(self):
+        """
+        Check if the union tag is ``classification_change_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_change_policy'
 
     def is_computer_backup_policy_changed(self):
         """
@@ -98586,6 +99303,47 @@ ChangedEnterpriseConnectedTeamStatusType._description_validator = bv.String()
 ChangedEnterpriseConnectedTeamStatusType._all_field_names_ = set(['description'])
 ChangedEnterpriseConnectedTeamStatusType._all_fields_ = [('description', ChangedEnterpriseConnectedTeamStatusType._description_validator)]
 
+ClassificationChangePolicyDetails._previous_value_validator = ClassificationPolicyEnumWrapper_validator
+ClassificationChangePolicyDetails._new_value_validator = ClassificationPolicyEnumWrapper_validator
+ClassificationChangePolicyDetails._classification_type_validator = ClassificationType_validator
+ClassificationChangePolicyDetails._all_field_names_ = set([
+    'previous_value',
+    'new_value',
+    'classification_type',
+])
+ClassificationChangePolicyDetails._all_fields_ = [
+    ('previous_value', ClassificationChangePolicyDetails._previous_value_validator),
+    ('new_value', ClassificationChangePolicyDetails._new_value_validator),
+    ('classification_type', ClassificationChangePolicyDetails._classification_type_validator),
+]
+
+ClassificationChangePolicyType._description_validator = bv.String()
+ClassificationChangePolicyType._all_field_names_ = set(['description'])
+ClassificationChangePolicyType._all_fields_ = [('description', ClassificationChangePolicyType._description_validator)]
+
+ClassificationPolicyEnumWrapper._disabled_validator = bv.Void()
+ClassificationPolicyEnumWrapper._enabled_validator = bv.Void()
+ClassificationPolicyEnumWrapper._other_validator = bv.Void()
+ClassificationPolicyEnumWrapper._tagmap = {
+    'disabled': ClassificationPolicyEnumWrapper._disabled_validator,
+    'enabled': ClassificationPolicyEnumWrapper._enabled_validator,
+    'other': ClassificationPolicyEnumWrapper._other_validator,
+}
+
+ClassificationPolicyEnumWrapper.disabled = ClassificationPolicyEnumWrapper('disabled')
+ClassificationPolicyEnumWrapper.enabled = ClassificationPolicyEnumWrapper('enabled')
+ClassificationPolicyEnumWrapper.other = ClassificationPolicyEnumWrapper('other')
+
+ClassificationType._pii_validator = bv.Void()
+ClassificationType._other_validator = bv.Void()
+ClassificationType._tagmap = {
+    'pii': ClassificationType._pii_validator,
+    'other': ClassificationType._other_validator,
+}
+
+ClassificationType.pii = ClassificationType('pii')
+ClassificationType.other = ClassificationType('other')
+
 CollectionShareDetails._album_name_validator = bv.String()
 CollectionShareDetails._all_field_names_ = set(['album_name'])
 CollectionShareDetails._all_fields_ = [('album_name', CollectionShareDetails._album_name_validator)]
@@ -99174,6 +99932,29 @@ DownloadPolicyType.allow = DownloadPolicyType('allow')
 DownloadPolicyType.disallow = DownloadPolicyType('disallow')
 DownloadPolicyType.other = DownloadPolicyType('other')
 
+DropboxPasswordsExportedDetails._platform_validator = bv.String()
+DropboxPasswordsExportedDetails._all_field_names_ = set(['platform'])
+DropboxPasswordsExportedDetails._all_fields_ = [('platform', DropboxPasswordsExportedDetails._platform_validator)]
+
+DropboxPasswordsExportedType._description_validator = bv.String()
+DropboxPasswordsExportedType._all_field_names_ = set(['description'])
+DropboxPasswordsExportedType._all_fields_ = [('description', DropboxPasswordsExportedType._description_validator)]
+
+DropboxPasswordsNewDeviceEnrolledDetails._is_first_device_validator = bv.Boolean()
+DropboxPasswordsNewDeviceEnrolledDetails._platform_validator = bv.String()
+DropboxPasswordsNewDeviceEnrolledDetails._all_field_names_ = set([
+    'is_first_device',
+    'platform',
+])
+DropboxPasswordsNewDeviceEnrolledDetails._all_fields_ = [
+    ('is_first_device', DropboxPasswordsNewDeviceEnrolledDetails._is_first_device_validator),
+    ('platform', DropboxPasswordsNewDeviceEnrolledDetails._platform_validator),
+]
+
+DropboxPasswordsNewDeviceEnrolledType._description_validator = bv.String()
+DropboxPasswordsNewDeviceEnrolledType._all_field_names_ = set(['description'])
+DropboxPasswordsNewDeviceEnrolledType._all_fields_ = [('description', DropboxPasswordsNewDeviceEnrolledType._description_validator)]
+
 DurationLogInfo._unit_validator = TimeUnit_validator
 DurationLogInfo._amount_validator = bv.UInt64()
 DurationLogInfo._all_field_names_ = set([
@@ -99398,6 +100179,8 @@ EventDetails._device_management_disabled_details_validator = DeviceManagementDis
 EventDetails._device_management_enabled_details_validator = DeviceManagementEnabledDetails_validator
 EventDetails._device_sync_backup_status_changed_details_validator = DeviceSyncBackupStatusChangedDetails_validator
 EventDetails._device_unlink_details_validator = DeviceUnlinkDetails_validator
+EventDetails._dropbox_passwords_exported_details_validator = DropboxPasswordsExportedDetails_validator
+EventDetails._dropbox_passwords_new_device_enrolled_details_validator = DropboxPasswordsNewDeviceEnrolledDetails_validator
 EventDetails._emm_refresh_auth_token_details_validator = EmmRefreshAuthTokenDetails_validator
 EventDetails._account_capture_change_availability_details_validator = AccountCaptureChangeAvailabilityDetails_validator
 EventDetails._account_capture_migrate_account_details_validator = AccountCaptureMigrateAccountDetails_validator
@@ -99685,6 +100468,7 @@ EventDetails._account_capture_change_policy_details_validator = AccountCaptureCh
 EventDetails._allow_download_disabled_details_validator = AllowDownloadDisabledDetails_validator
 EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDetails_validator
 EventDetails._camera_uploads_policy_changed_details_validator = CameraUploadsPolicyChangedDetails_validator
+EventDetails._classification_change_policy_details_validator = ClassificationChangePolicyDetails_validator
 EventDetails._computer_backup_policy_changed_details_validator = ComputerBackupPolicyChangedDetails_validator
 EventDetails._content_administration_policy_changed_details_validator = ContentAdministrationPolicyChangedDetails_validator
 EventDetails._data_placement_restriction_change_policy_details_validator = DataPlacementRestrictionChangePolicyDetails_validator
@@ -99840,6 +100624,8 @@ EventDetails._tagmap = {
     'device_management_enabled_details': EventDetails._device_management_enabled_details_validator,
     'device_sync_backup_status_changed_details': EventDetails._device_sync_backup_status_changed_details_validator,
     'device_unlink_details': EventDetails._device_unlink_details_validator,
+    'dropbox_passwords_exported_details': EventDetails._dropbox_passwords_exported_details_validator,
+    'dropbox_passwords_new_device_enrolled_details': EventDetails._dropbox_passwords_new_device_enrolled_details_validator,
     'emm_refresh_auth_token_details': EventDetails._emm_refresh_auth_token_details_validator,
     'account_capture_change_availability_details': EventDetails._account_capture_change_availability_details_validator,
     'account_capture_migrate_account_details': EventDetails._account_capture_migrate_account_details_validator,
@@ -100127,6 +100913,7 @@ EventDetails._tagmap = {
     'allow_download_disabled_details': EventDetails._allow_download_disabled_details_validator,
     'allow_download_enabled_details': EventDetails._allow_download_enabled_details_validator,
     'camera_uploads_policy_changed_details': EventDetails._camera_uploads_policy_changed_details_validator,
+    'classification_change_policy_details': EventDetails._classification_change_policy_details_validator,
     'computer_backup_policy_changed_details': EventDetails._computer_backup_policy_changed_details_validator,
     'content_administration_policy_changed_details': EventDetails._content_administration_policy_changed_details_validator,
     'data_placement_restriction_change_policy_details': EventDetails._data_placement_restriction_change_policy_details_validator,
@@ -100285,6 +101072,8 @@ EventType._device_management_disabled_validator = DeviceManagementDisabledType_v
 EventType._device_management_enabled_validator = DeviceManagementEnabledType_validator
 EventType._device_sync_backup_status_changed_validator = DeviceSyncBackupStatusChangedType_validator
 EventType._device_unlink_validator = DeviceUnlinkType_validator
+EventType._dropbox_passwords_exported_validator = DropboxPasswordsExportedType_validator
+EventType._dropbox_passwords_new_device_enrolled_validator = DropboxPasswordsNewDeviceEnrolledType_validator
 EventType._emm_refresh_auth_token_validator = EmmRefreshAuthTokenType_validator
 EventType._account_capture_change_availability_validator = AccountCaptureChangeAvailabilityType_validator
 EventType._account_capture_migrate_account_validator = AccountCaptureMigrateAccountType_validator
@@ -100572,6 +101361,7 @@ EventType._account_capture_change_policy_validator = AccountCaptureChangePolicyT
 EventType._allow_download_disabled_validator = AllowDownloadDisabledType_validator
 EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
 EventType._camera_uploads_policy_changed_validator = CameraUploadsPolicyChangedType_validator
+EventType._classification_change_policy_validator = ClassificationChangePolicyType_validator
 EventType._computer_backup_policy_changed_validator = ComputerBackupPolicyChangedType_validator
 EventType._content_administration_policy_changed_validator = ContentAdministrationPolicyChangedType_validator
 EventType._data_placement_restriction_change_policy_validator = DataPlacementRestrictionChangePolicyType_validator
@@ -100726,6 +101516,8 @@ EventType._tagmap = {
     'device_management_enabled': EventType._device_management_enabled_validator,
     'device_sync_backup_status_changed': EventType._device_sync_backup_status_changed_validator,
     'device_unlink': EventType._device_unlink_validator,
+    'dropbox_passwords_exported': EventType._dropbox_passwords_exported_validator,
+    'dropbox_passwords_new_device_enrolled': EventType._dropbox_passwords_new_device_enrolled_validator,
     'emm_refresh_auth_token': EventType._emm_refresh_auth_token_validator,
     'account_capture_change_availability': EventType._account_capture_change_availability_validator,
     'account_capture_migrate_account': EventType._account_capture_migrate_account_validator,
@@ -101013,6 +101805,7 @@ EventType._tagmap = {
     'allow_download_disabled': EventType._allow_download_disabled_validator,
     'allow_download_enabled': EventType._allow_download_enabled_validator,
     'camera_uploads_policy_changed': EventType._camera_uploads_policy_changed_validator,
+    'classification_change_policy': EventType._classification_change_policy_validator,
     'computer_backup_policy_changed': EventType._computer_backup_policy_changed_validator,
     'content_administration_policy_changed': EventType._content_administration_policy_changed_validator,
     'data_placement_restriction_change_policy': EventType._data_placement_restriction_change_policy_validator,
@@ -101170,6 +101963,8 @@ EventTypeArg._device_management_disabled_validator = bv.Void()
 EventTypeArg._device_management_enabled_validator = bv.Void()
 EventTypeArg._device_sync_backup_status_changed_validator = bv.Void()
 EventTypeArg._device_unlink_validator = bv.Void()
+EventTypeArg._dropbox_passwords_exported_validator = bv.Void()
+EventTypeArg._dropbox_passwords_new_device_enrolled_validator = bv.Void()
 EventTypeArg._emm_refresh_auth_token_validator = bv.Void()
 EventTypeArg._account_capture_change_availability_validator = bv.Void()
 EventTypeArg._account_capture_migrate_account_validator = bv.Void()
@@ -101457,6 +102252,7 @@ EventTypeArg._account_capture_change_policy_validator = bv.Void()
 EventTypeArg._allow_download_disabled_validator = bv.Void()
 EventTypeArg._allow_download_enabled_validator = bv.Void()
 EventTypeArg._camera_uploads_policy_changed_validator = bv.Void()
+EventTypeArg._classification_change_policy_validator = bv.Void()
 EventTypeArg._computer_backup_policy_changed_validator = bv.Void()
 EventTypeArg._content_administration_policy_changed_validator = bv.Void()
 EventTypeArg._data_placement_restriction_change_policy_validator = bv.Void()
@@ -101611,6 +102407,8 @@ EventTypeArg._tagmap = {
     'device_management_enabled': EventTypeArg._device_management_enabled_validator,
     'device_sync_backup_status_changed': EventTypeArg._device_sync_backup_status_changed_validator,
     'device_unlink': EventTypeArg._device_unlink_validator,
+    'dropbox_passwords_exported': EventTypeArg._dropbox_passwords_exported_validator,
+    'dropbox_passwords_new_device_enrolled': EventTypeArg._dropbox_passwords_new_device_enrolled_validator,
     'emm_refresh_auth_token': EventTypeArg._emm_refresh_auth_token_validator,
     'account_capture_change_availability': EventTypeArg._account_capture_change_availability_validator,
     'account_capture_migrate_account': EventTypeArg._account_capture_migrate_account_validator,
@@ -101898,6 +102696,7 @@ EventTypeArg._tagmap = {
     'allow_download_disabled': EventTypeArg._allow_download_disabled_validator,
     'allow_download_enabled': EventTypeArg._allow_download_enabled_validator,
     'camera_uploads_policy_changed': EventTypeArg._camera_uploads_policy_changed_validator,
+    'classification_change_policy': EventTypeArg._classification_change_policy_validator,
     'computer_backup_policy_changed': EventTypeArg._computer_backup_policy_changed_validator,
     'content_administration_policy_changed': EventTypeArg._content_administration_policy_changed_validator,
     'data_placement_restriction_change_policy': EventTypeArg._data_placement_restriction_change_policy_validator,
@@ -102053,6 +102852,8 @@ EventTypeArg.device_management_disabled = EventTypeArg('device_management_disabl
 EventTypeArg.device_management_enabled = EventTypeArg('device_management_enabled')
 EventTypeArg.device_sync_backup_status_changed = EventTypeArg('device_sync_backup_status_changed')
 EventTypeArg.device_unlink = EventTypeArg('device_unlink')
+EventTypeArg.dropbox_passwords_exported = EventTypeArg('dropbox_passwords_exported')
+EventTypeArg.dropbox_passwords_new_device_enrolled = EventTypeArg('dropbox_passwords_new_device_enrolled')
 EventTypeArg.emm_refresh_auth_token = EventTypeArg('emm_refresh_auth_token')
 EventTypeArg.account_capture_change_availability = EventTypeArg('account_capture_change_availability')
 EventTypeArg.account_capture_migrate_account = EventTypeArg('account_capture_migrate_account')
@@ -102340,6 +103141,7 @@ EventTypeArg.account_capture_change_policy = EventTypeArg('account_capture_chang
 EventTypeArg.allow_download_disabled = EventTypeArg('allow_download_disabled')
 EventTypeArg.allow_download_enabled = EventTypeArg('allow_download_enabled')
 EventTypeArg.camera_uploads_policy_changed = EventTypeArg('camera_uploads_policy_changed')
+EventTypeArg.classification_change_policy = EventTypeArg('classification_change_policy')
 EventTypeArg.computer_backup_policy_changed = EventTypeArg('computer_backup_policy_changed')
 EventTypeArg.content_administration_policy_changed = EventTypeArg('content_administration_policy_changed')
 EventTypeArg.data_placement_restriction_change_policy = EventTypeArg('data_placement_restriction_change_policy')
