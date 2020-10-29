@@ -118,7 +118,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 
 class DropboxOAuth2FlowBase(object):
 
-    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
+    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
                  scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):
         if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
             raise BadInputException("Scope list must be of type list")
@@ -146,7 +146,7 @@ class DropboxOAuth2FlowBase(object):
             self.code_verifier = None
             self.code_challenge = None
 
-    def _get_authorize_url(self, redirect_uri, state, token_access_type, scope=None,
+    def _get_authorize_url(self, redirect_uri, state, token_access_type=None, scope=None,
                            include_granted_scopes=None, code_challenge=None):
         params = dict(response_type='code',
                       client_id=self.consumer_key)
@@ -156,8 +156,7 @@ class DropboxOAuth2FlowBase(object):
             params['state'] = state
         if token_access_type is not None:
             assert token_access_type in TOKEN_ACCESS_TYPES
-            if token_access_type != 'legacy':
-                params['token_access_type'] = token_access_type
+            params['token_access_type'] = token_access_type
         if code_challenge:
             params['code_challenge'] = code_challenge
             params['code_challenge_method'] = 'S256'
@@ -273,7 +272,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
 
     """
 
-    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type='legacy',
+    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
                  scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):  # noqa: E501;
         """
         Construct an instance.
@@ -286,6 +285,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         :param str token_access_type: the type of token to be requested.
             From the following enum:
 
+            * None - creates a token with the app default (either legacy or online)
             * legacy - creates one long-lived token with no expiration
             * online - create one short-lived token with an expiration
             * offline - create one short-lived token with an expiration with a refresh token
@@ -359,7 +359,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
     def __init__(self, consumer_key, redirect_uri, session,
                  csrf_token_session_key, consumer_secret=None, locale=None,
-                 token_access_type='legacy', scope=None,
+                 token_access_type=None, scope=None,
                  include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):
         """
         Construct an instance.
@@ -380,6 +380,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         :param str token_access_type: The type of token to be requested.
             From the following enum:
 
+            * None - creates a token with the app default (either legacy or online)
             * legacy - creates one long-lived token with no expiration
             * online - create one short-lived token with an expiration
             * offline - create one short-lived token with an expiration with a refresh token

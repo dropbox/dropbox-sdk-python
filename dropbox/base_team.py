@@ -11,7 +11,6 @@ from . import (
     async_,
     auth,
     check,
-    cloud_docs,
     common,
     contacts,
     file_properties,
@@ -21,7 +20,6 @@ from . import (
     secondary_emails,
     seen_state,
     sharing,
-    stone_fixtures,
     team,
     team_common,
     team_log,
@@ -46,9 +44,6 @@ class DropboxTeamBase(object):
 
     # ------------------------------------------
     # Routes in check namespace
-
-    # ------------------------------------------
-    # Routes in cloud_docs namespace
 
     # ------------------------------------------
     # Routes in contacts namespace
@@ -1927,6 +1922,10 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_activity is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -1953,6 +1952,10 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_devices is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -1979,6 +1982,10 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_membership is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -2005,6 +2012,10 @@ class DropboxTeamBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_storage is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(

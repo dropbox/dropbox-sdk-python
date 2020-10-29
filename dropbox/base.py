@@ -11,7 +11,6 @@ from . import (
     async_,
     auth,
     check,
-    cloud_docs,
     common,
     contacts,
     file_properties,
@@ -21,7 +20,6 @@ from . import (
     secondary_emails,
     seen_state,
     sharing,
-    stone_fixtures,
     team,
     team_common,
     team_log,
@@ -151,194 +149,6 @@ class DropboxBase(object):
             'check',
             arg,
             None,
-        )
-        return r
-
-    # ------------------------------------------
-    # Routes in cloud_docs namespace
-
-    def cloud_docs_get_content(self,
-                               file_id):
-        """
-        Fetch the binary content of the requested document. This route requires
-        Cloud Docs auth. Please make a request to cloud_docs/authorize and
-        supply that token in the Authorization header.
-
-        :type file_id: str
-        :rtype: (None,
-                 :class:`requests.models.Response`)
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.cloud_docs.CloudDocsAccessError`
-
-        If you do not consume the entire response body, then you must call close
-        on the response object, otherwise you will max out your available
-        connections. We recommend using the `contextlib.closing
-        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
-        context manager to ensure this.
-        """
-        arg = cloud_docs.GetContentArg(file_id)
-        r = self.request(
-            cloud_docs.get_content,
-            'cloud_docs',
-            arg,
-            None,
-        )
-        return None
-
-    def cloud_docs_get_content_to_file(self,
-                                       download_path,
-                                       file_id):
-        """
-        Fetch the binary content of the requested document. This route requires
-        Cloud Docs auth. Please make a request to cloud_docs/authorize and
-        supply that token in the Authorization header.
-
-        :param str download_path: Path on local machine to save file.
-        :type file_id: str
-        :rtype: None
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.cloud_docs.CloudDocsAccessError`
-        """
-        arg = cloud_docs.GetContentArg(file_id)
-        r = self.request(
-            cloud_docs.get_content,
-            'cloud_docs',
-            arg,
-            None,
-        )
-        self._save_body_to_file(download_path, r[1])
-        return None
-
-    def cloud_docs_get_metadata(self,
-                                file_id=u''):
-        """
-        Fetches metadata associated with a Cloud Doc and user. This route
-        requires Cloud Docs auth. Please make a request to cloud_docs/authorize
-        and supply that token in the Authorization header.
-
-        :param str file_id: API ID ("id:...") associated with the Cloud Doc.
-        :rtype: :class:`dropbox.cloud_docs.GetMetadataResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.cloud_docs.GetMetadataError`
-        """
-        arg = cloud_docs.GetMetadataArg(file_id)
-        r = self.request(
-            cloud_docs.get_metadata,
-            'cloud_docs',
-            arg,
-            None,
-        )
-        return r
-
-    def cloud_docs_lock(self,
-                        file_id=u''):
-        """
-        Lock a Cloud Doc. This route requires Cloud Docs auth. Please make a
-        request to cloud_docs/authorize and supply that token in the
-        Authorization header.
-
-        :param str file_id: The API ID ("id:...") associated with the Cloud Doc
-        :rtype: :class:`dropbox.cloud_docs.LockResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.cloud_docs.LockingError`
-        """
-        arg = cloud_docs.LockArg(file_id)
-        r = self.request(
-            cloud_docs.lock,
-            'cloud_docs',
-            arg,
-            None,
-        )
-        return r
-
-    def cloud_docs_rename(self,
-                          file_id=u'',
-                          title=u''):
-        """
-        Update the title of a Cloud Doc. This route requires Cloud Docs auth.
-        Please make a request to cloud_docs/authorize and supply that token in
-        the Authorization header.
-
-        :param str file_id: The API ID ("id:...") associated with the Cloud Doc
-        :param str title: The new title of the doc, excluding extension
-        :rtype: :class:`dropbox.cloud_docs.RenameResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.cloud_docs.RenameError`
-        """
-        arg = cloud_docs.RenameArg(file_id,
-                                   title)
-        r = self.request(
-            cloud_docs.rename,
-            'cloud_docs',
-            arg,
-            None,
-        )
-        return r
-
-    def cloud_docs_unlock(self,
-                          file_id=u''):
-        """
-        Unlock a Cloud Doc. This route requires Cloud Docs auth. Please make a
-        request to cloud_docs/authorize and supply that token in the
-        Authorization header.
-
-        :param str file_id: The API ID ("id:...") associated with the Cloud Doc
-        :rtype: :class:`dropbox.cloud_docs.UnlockResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.cloud_docs.LockingError`
-        """
-        arg = cloud_docs.UnlockArg(file_id)
-        r = self.request(
-            cloud_docs.unlock,
-            'cloud_docs',
-            arg,
-            None,
-        )
-        return r
-
-    def cloud_docs_update_content(self,
-                                  f,
-                                  file_id,
-                                  actor_tokens,
-                                  additional_contents=None):
-        """
-        Update the contents of a Cloud Doc. This should be called for files with
-        a max size of 150MB. This route requires Cloud Docs auth. Please make a
-        request to cloud_docs/authorize and supply that token in the
-        Authorization header.
-
-        :param bytes f: Contents to upload.
-        :type file_id: str
-        :param list actor_tokens: A list of auth_tokens, one for each editor who
-            made changes to the document since the last call to update_content.
-        :param Nullable additional_contents: Currently, this will always be
-            empty until we implement upload_additional_content.
-        :rtype: :class:`dropbox.cloud_docs.UpdateContentResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.cloud_docs.UpdateContentError`
-        """
-        arg = cloud_docs.UpdateContentArg(file_id,
-                                          actor_tokens,
-                                          additional_contents)
-        r = self.request(
-            cloud_docs.update_content,
-            'cloud_docs',
-            arg,
-            f,
         )
         return r
 
@@ -719,7 +529,8 @@ class DropboxBase(object):
                              title,
                              destination,
                              deadline=None,
-                             open=True):
+                             open=True,
+                             description=None):
         """
         Creates a file request for this user.
 
@@ -732,6 +543,7 @@ class DropboxBase(object):
         :param bool open: Whether or not the file request should be open. If the
             file request is closed, it will not accept any file submissions, but
             it can be opened later.
+        :param Nullable description: A description of the file request.
         :rtype: :class:`dropbox.file_requests.FileRequest`
         :raises: :class:`.exceptions.ApiError`
 
@@ -741,7 +553,8 @@ class DropboxBase(object):
         arg = file_requests.CreateFileRequestArgs(title,
                                                   destination,
                                                   deadline,
-                                                  open)
+                                                  open,
+                                                  description)
         r = self.request(
             file_requests.create,
             'file_requests',
@@ -870,7 +683,8 @@ class DropboxBase(object):
                              title=None,
                              destination=None,
                              deadline=file_requests.UpdateFileRequestDeadline.no_update,
-                             open=None):
+                             open=None,
+                             description=None):
         """
         Update a file request.
 
@@ -885,13 +699,15 @@ class DropboxBase(object):
         :type deadline: :class:`dropbox.file_requests.UpdateFileRequestDeadline`
         :param Nullable open: Whether to set this file request as open or
             closed.
+        :param Nullable description: The description of the file request.
         :rtype: :class:`dropbox.file_requests.FileRequest`
         """
         arg = file_requests.UpdateFileRequestArgs(id,
                                                   title,
                                                   destination,
                                                   deadline,
-                                                  open)
+                                                  open,
+                                                  description)
         r = self.request(
             file_requests.update,
             'file_requests',
@@ -990,11 +806,7 @@ class DropboxBase(object):
         Copy a file or folder to a different location in the user's Dropbox. If
         the source path is a folder all its contents will be copied.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool autorename: If there's a conflict, have the Dropbox server
             try to autorename the file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
@@ -1029,11 +841,7 @@ class DropboxBase(object):
         Copy a file or folder to a different location in the user's Dropbox. If
         the source path is a folder all its contents will be copied.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool autorename: If there's a conflict, have the Dropbox server
             try to autorename the file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
@@ -1097,19 +905,11 @@ class DropboxBase(object):
                          allow_ownership_transfer=False):
         """
         Copy multiple files or folders to different locations at once in the
-        user's Dropbox. If ``RelocationBatchArg.allow_shared_folder`` is false,
-        this route is atomic. If one entry fails, the whole transaction will
-        abort. If ``RelocationBatchArg.allow_shared_folder`` is true, atomicity
-        is not guaranteed, but it allows you to copy the contents of shared
-        folders to new locations. This route will return job ID immediately and
-        do the async copy job in background. Please use
-        :meth:`files_copy_batch_check` to check the job status.
+        user's Dropbox. This route will return job ID immediately and do the
+        async copy job in background. Please use :meth:`files_copy_batch_check`
+        to check the job status.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
-            copy contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``RelocationPath.from_path`` contains shared folder. This field is
-            always true for :meth:`files_move_batch`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
             would result in an ownership transfer for the content being moved.
             This does not apply to copies.
@@ -2328,11 +2128,7 @@ class DropboxBase(object):
         the source path is a folder all its contents will be moved. Note that we
         do not currently support case-only renaming.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool autorename: If there's a conflict, have the Dropbox server
             try to autorename the file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
@@ -2367,11 +2163,7 @@ class DropboxBase(object):
         Move a file or folder to a different location in the user's Dropbox. If
         the source path is a folder all its contents will be moved.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy` will copy
-            contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``from_path`` contains shared folder. This field is always true for
-            :meth:`files_move`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool autorename: If there's a conflict, have the Dropbox server
             try to autorename the file to avoid the conflict.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
@@ -2441,11 +2233,7 @@ class DropboxBase(object):
         async moving job in background. Please use
         :meth:`files_move_batch_check` to check the job status.
 
-        :param bool allow_shared_folder: If true, :meth:`files_copy_batch` will
-            copy contents in shared folder, otherwise
-            ``RelocationError.cant_copy_shared_folder`` will be returned if
-            ``RelocationPath.from_path`` contains shared folder. This field is
-            always true for :meth:`files_move_batch`.
+        :param bool allow_shared_folder: This flag has no effect.
         :param bool allow_ownership_transfer: Allow moves by owner even if it
             would result in an ownership transfer for the content being moved.
             This does not apply to copies.
@@ -2522,8 +2310,10 @@ class DropboxBase(object):
                                  parent_rev=None):
         """
         Permanently delete the file or folder at a given path (see
-        https://www.dropbox.com/en/help/40). Note: This endpoint is only
-        available for Dropbox Business apps.
+        https://www.dropbox.com/en/help/40). If the given file or folder is not
+        yet deleted, this route will first delete it. It is possible for this
+        route to successfully delete, then fail to permanently delete. Note:
+        This endpoint is only available for Dropbox Business apps.
 
         :param str path: Path in the user's Dropbox to delete.
         :param Nullable parent_rev: Perform delete if given "rev" matches the
@@ -2821,7 +2611,7 @@ class DropboxBase(object):
                         query,
                         options=None,
                         match_field_options=None,
-                        include_highlights=False):
+                        include_highlights=None):
         """
         Searches for files and folders. Note: :meth:`files_search_v2` along with
         :meth:`files_search_continue_v2` can only be used to retrieve a maximum
@@ -2835,7 +2625,7 @@ class DropboxBase(object):
         :param Nullable options: Options for more targeted search results.
         :param Nullable match_field_options: Options for search results match
             fields.
-        :param bool include_highlights: Deprecated and moved this option to
+        :param Nullable include_highlights: Deprecated and moved this option to
             SearchMatchFieldOptions.
         :rtype: :class:`dropbox.files.SearchV2Result`
         :raises: :class:`.exceptions.ApiError`
@@ -2949,7 +2739,8 @@ class DropboxBase(object):
             :class:`dropbox.files.WriteMode` detects conflict. For example,
             always return a conflict error when ``mode`` = ``WriteMode.update``
             and the given "rev" doesn't match the existing file's "rev", even if
-            the existing file has been deleted.
+            the existing file has been deleted. This also forces a conflict even
+            when the target path refers to a file with identical contents.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4645,11 +4436,15 @@ class DropboxBase(object):
                                   direct_only=None):
         """
         List shared links of this user. If no path is given, returns a list of
-        all shared links for the current user. If a non-empty path is given,
-        returns a list of all shared links that allow access to the given path -
-        direct links to the given path and links to parent folders of the given
-        path. Links to parent folders can be suppressed by setting direct_only
-        to true.
+        all shared links for the current user. For members of business teams
+        using team space and member folders, returns all shared links in the
+        team member's home folder unless the team space ID is specified in the
+        request header. For more information, refer to the `Namespace Guide
+        <https://www.dropbox.com/developers/reference/namespace-guide>`_. If a
+        non-empty path is given, returns a list of all shared links that allow
+        access to the given path - direct links to the given path and links to
+        parent folders of the given path. Links to parent folders can be
+        suppressed by setting direct_only to true.
 
         :param Nullable path: See :meth:`sharing_list_shared_links` description.
         :param Nullable cursor: The cursor returned by your last call to

@@ -64,6 +64,70 @@ class CameraUploadsPolicyState(bb.Union):
 
 CameraUploadsPolicyState_validator = bv.Union(CameraUploadsPolicyState)
 
+class ComputerBackupPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.ComputerBackupPolicyState.disabled: Computer Backup
+        feature is disabled.
+    :ivar team_policies.ComputerBackupPolicyState.enabled: Computer Backup
+        feature is enabled.
+    :ivar team_policies.ComputerBackupPolicyState.default: Computer Backup
+        defaults to ON for SSB teams, and OFF for Enterprise teams.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ComputerBackupPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ComputerBackupPolicyState(%r, %r)' % (self._tag, self._value)
+
+ComputerBackupPolicyState_validator = bv.Union(ComputerBackupPolicyState)
+
 class EmmState(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -1155,6 +1219,58 @@ class SsoPolicy(bb.Union):
 
 SsoPolicy_validator = bv.Union(SsoPolicy)
 
+class SuggestMembersPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.SuggestMembersPolicy.disabled: Suggest members is
+        disabled.
+    :ivar team_policies.SuggestMembersPolicy.enabled: Suggest members is
+        enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SuggestMembersPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'SuggestMembersPolicy(%r, %r)' % (self._tag, self._value)
+
+SuggestMembersPolicy_validator = bv.Union(SuggestMembersPolicy)
+
 class TeamMemberPolicies(bb.Struct):
     """
     Policies governing team members.
@@ -1169,6 +1285,9 @@ class TeamMemberPolicies(bb.Struct):
         documentation.
     :ivar team_policies.TeamMemberPolicies.office_addin: The admin policy around
         the Dropbox Office Add-In for this team.
+    :ivar team_policies.TeamMemberPolicies.suggest_members_policy: The team
+        policy on if teammembers are allowed to suggest users for admins to
+        invite to the team.
     """
 
     __slots__ = [
@@ -1178,6 +1297,8 @@ class TeamMemberPolicies(bb.Struct):
         '_emm_state_present',
         '_office_addin_value',
         '_office_addin_present',
+        '_suggest_members_policy_value',
+        '_suggest_members_policy_present',
     ]
 
     _has_required_fields = True
@@ -1185,19 +1306,24 @@ class TeamMemberPolicies(bb.Struct):
     def __init__(self,
                  sharing=None,
                  emm_state=None,
-                 office_addin=None):
+                 office_addin=None,
+                 suggest_members_policy=None):
         self._sharing_value = None
         self._sharing_present = False
         self._emm_state_value = None
         self._emm_state_present = False
         self._office_addin_value = None
         self._office_addin_present = False
+        self._suggest_members_policy_value = None
+        self._suggest_members_policy_present = False
         if sharing is not None:
             self.sharing = sharing
         if emm_state is not None:
             self.emm_state = emm_state
         if office_addin is not None:
             self.office_addin = office_addin
+        if suggest_members_policy is not None:
+            self.suggest_members_policy = suggest_members_policy
 
     @property
     def sharing(self):
@@ -1273,14 +1399,39 @@ class TeamMemberPolicies(bb.Struct):
         self._office_addin_value = None
         self._office_addin_present = False
 
+    @property
+    def suggest_members_policy(self):
+        """
+        The team policy on if teammembers are allowed to suggest users for
+        admins to invite to the team.
+
+        :rtype: SuggestMembersPolicy
+        """
+        if self._suggest_members_policy_present:
+            return self._suggest_members_policy_value
+        else:
+            raise AttributeError("missing required field 'suggest_members_policy'")
+
+    @suggest_members_policy.setter
+    def suggest_members_policy(self, val):
+        self._suggest_members_policy_validator.validate_type_only(val)
+        self._suggest_members_policy_value = val
+        self._suggest_members_policy_present = True
+
+    @suggest_members_policy.deleter
+    def suggest_members_policy(self):
+        self._suggest_members_policy_value = None
+        self._suggest_members_policy_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMemberPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'TeamMemberPolicies(sharing={!r}, emm_state={!r}, office_addin={!r})'.format(
+        return 'TeamMemberPolicies(sharing={!r}, emm_state={!r}, office_addin={!r}, suggest_members_policy={!r})'.format(
             self._sharing_value,
             self._emm_state_value,
             self._office_addin_value,
+            self._suggest_members_policy_value,
         )
 
 TeamMemberPolicies_validator = bv.Struct(TeamMemberPolicies)
@@ -1534,6 +1685,22 @@ CameraUploadsPolicyState._tagmap = {
 CameraUploadsPolicyState.disabled = CameraUploadsPolicyState('disabled')
 CameraUploadsPolicyState.enabled = CameraUploadsPolicyState('enabled')
 CameraUploadsPolicyState.other = CameraUploadsPolicyState('other')
+
+ComputerBackupPolicyState._disabled_validator = bv.Void()
+ComputerBackupPolicyState._enabled_validator = bv.Void()
+ComputerBackupPolicyState._default_validator = bv.Void()
+ComputerBackupPolicyState._other_validator = bv.Void()
+ComputerBackupPolicyState._tagmap = {
+    'disabled': ComputerBackupPolicyState._disabled_validator,
+    'enabled': ComputerBackupPolicyState._enabled_validator,
+    'default': ComputerBackupPolicyState._default_validator,
+    'other': ComputerBackupPolicyState._other_validator,
+}
+
+ComputerBackupPolicyState.disabled = ComputerBackupPolicyState('disabled')
+ComputerBackupPolicyState.enabled = ComputerBackupPolicyState('enabled')
+ComputerBackupPolicyState.default = ComputerBackupPolicyState('default')
+ComputerBackupPolicyState.other = ComputerBackupPolicyState('other')
 
 EmmState._disabled_validator = bv.Void()
 EmmState._optional_validator = bv.Void()
@@ -1807,18 +1974,34 @@ SsoPolicy.optional = SsoPolicy('optional')
 SsoPolicy.required = SsoPolicy('required')
 SsoPolicy.other = SsoPolicy('other')
 
+SuggestMembersPolicy._disabled_validator = bv.Void()
+SuggestMembersPolicy._enabled_validator = bv.Void()
+SuggestMembersPolicy._other_validator = bv.Void()
+SuggestMembersPolicy._tagmap = {
+    'disabled': SuggestMembersPolicy._disabled_validator,
+    'enabled': SuggestMembersPolicy._enabled_validator,
+    'other': SuggestMembersPolicy._other_validator,
+}
+
+SuggestMembersPolicy.disabled = SuggestMembersPolicy('disabled')
+SuggestMembersPolicy.enabled = SuggestMembersPolicy('enabled')
+SuggestMembersPolicy.other = SuggestMembersPolicy('other')
+
 TeamMemberPolicies._sharing_validator = TeamSharingPolicies_validator
 TeamMemberPolicies._emm_state_validator = EmmState_validator
 TeamMemberPolicies._office_addin_validator = OfficeAddInPolicy_validator
+TeamMemberPolicies._suggest_members_policy_validator = SuggestMembersPolicy_validator
 TeamMemberPolicies._all_field_names_ = set([
     'sharing',
     'emm_state',
     'office_addin',
+    'suggest_members_policy',
 ])
 TeamMemberPolicies._all_fields_ = [
     ('sharing', TeamMemberPolicies._sharing_validator),
     ('emm_state', TeamMemberPolicies._emm_state_validator),
     ('office_addin', TeamMemberPolicies._office_addin_validator),
+    ('suggest_members_policy', TeamMemberPolicies._suggest_members_policy_validator),
 ]
 
 TeamSharingPolicies._shared_folder_member_policy_validator = SharedFolderMemberPolicy_validator

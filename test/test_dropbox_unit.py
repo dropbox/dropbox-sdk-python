@@ -58,7 +58,7 @@ class TestOAuth:
                                 else:
                                     assert 'state' not in authorization_url
 
-                                if token_access_type and token_access_type != 'legacy':
+                                if token_access_type:
                                     assert 'token_access_type={}'.format(token_access_type) \
                                         in authorization_url
                                 else:
