@@ -267,7 +267,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
     OAuth 2 authorization helper for apps that can't provide a redirect URI
     (such as the command-line example apps).
 
-    See examples under `example/oauth <https://github.com/dropbox/dropbox-sdk-python/tree/master/
+    See examples under `example/oauth <https://github.com/dropbox/dropbox-sdk-python/tree/main/
     example/oauth>`_
 
     """
@@ -352,7 +352,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
     OAuth 2 has a two-step authorization process. The first step is having the user authorize your
     app. The second involves getting an OAuth 2 access token from Dropbox.
 
-    See examples under `example/oauth <https://github.com/dropbox/dropbox-sdk-python/tree/master/
+    See examples under `example/oauth <https://github.com/dropbox/dropbox-sdk-python/tree/main/
     example/oauth>`_
 
     """
