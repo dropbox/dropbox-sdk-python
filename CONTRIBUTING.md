@@ -70,6 +70,6 @@ The documentation will be built into `build/html`.
 
 [issues]: https://github.com/dropbox/dropbox-sdk-python/issues
 [pr]: https://github.com/dropbox/dropbox-sdk-python/pulls
-[coc]: https://github.com/dropbox/dropbox-sdk-python/blob/master/CODE_OF_CONDUCT.md
-[license]: https://github.com/dropbox/dropbox-sdk-python/blob/master/LICENSE
+[coc]: https://github.com/dropbox/dropbox-sdk-python/blob/main/CODE_OF_CONDUCT.md
+[license]: https://github.com/dropbox/dropbox-sdk-python/blob/main/LICENSE
 [cla]: https://opensource.dropbox.com/cla/
