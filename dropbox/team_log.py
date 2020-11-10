@@ -1523,6 +1523,277 @@ class ActorLogInfo(bb.Union):
 
 ActorLogInfo_validator = bv.Union(ActorLogInfo)
 
+class AdminAlertingAlertConfiguration(bb.Struct):
+    """
+    Alert configurations
+
+    :ivar team_log.AdminAlertingAlertConfiguration.alert_state: Alert state.
+    """
+
+    __slots__ = [
+        '_alert_state_value',
+        '_alert_state_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 alert_state=None):
+        self._alert_state_value = None
+        self._alert_state_present = False
+        if alert_state is not None:
+            self.alert_state = alert_state
+
+    @property
+    def alert_state(self):
+        """
+        Alert state.
+
+        :rtype: AdminAlertingAlertStatePolicy
+        """
+        if self._alert_state_present:
+            return self._alert_state_value
+        else:
+            raise AttributeError("missing required field 'alert_state'")
+
+    @alert_state.setter
+    def alert_state(self, val):
+        self._alert_state_validator.validate_type_only(val)
+        self._alert_state_value = val
+        self._alert_state_present = True
+
+    @alert_state.deleter
+    def alert_state(self):
+        self._alert_state_value = None
+        self._alert_state_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingAlertConfiguration, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AdminAlertingAlertConfiguration(alert_state={!r})'.format(
+            self._alert_state_value,
+        )
+
+AdminAlertingAlertConfiguration_validator = bv.Struct(AdminAlertingAlertConfiguration)
+
+class AdminAlertingAlertStatePolicy(bb.Union):
+    """
+    Policy for controlling whether an alert can be triggered or not
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    off = None
+    # Attribute is overwritten below the class definition
+    on = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_off(self):
+        """
+        Check if the union tag is ``off``.
+
+        :rtype: bool
+        """
+        return self._tag == 'off'
+
+    def is_on(self):
+        """
+        Check if the union tag is ``on``.
+
+        :rtype: bool
+        """
+        return self._tag == 'on'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingAlertStatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AdminAlertingAlertStatePolicy(%r, %r)' % (self._tag, self._value)
+
+AdminAlertingAlertStatePolicy_validator = bv.Union(AdminAlertingAlertStatePolicy)
+
+class AdminAlertingChangedAlertConfigDetails(bb.Struct):
+    """
+    Changed an alert setting.
+
+    :ivar team_log.AdminAlertingChangedAlertConfigDetails.alert_name: Alert
+        Name.
+    :ivar team_log.AdminAlertingChangedAlertConfigDetails.previous_alert_config:
+        Previous alert configuration.
+    :ivar team_log.AdminAlertingChangedAlertConfigDetails.new_alert_config: New
+        alert configuration.
+    """
+
+    __slots__ = [
+        '_alert_name_value',
+        '_alert_name_present',
+        '_previous_alert_config_value',
+        '_previous_alert_config_present',
+        '_new_alert_config_value',
+        '_new_alert_config_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 alert_name=None,
+                 previous_alert_config=None,
+                 new_alert_config=None):
+        self._alert_name_value = None
+        self._alert_name_present = False
+        self._previous_alert_config_value = None
+        self._previous_alert_config_present = False
+        self._new_alert_config_value = None
+        self._new_alert_config_present = False
+        if alert_name is not None:
+            self.alert_name = alert_name
+        if previous_alert_config is not None:
+            self.previous_alert_config = previous_alert_config
+        if new_alert_config is not None:
+            self.new_alert_config = new_alert_config
+
+    @property
+    def alert_name(self):
+        """
+        Alert Name.
+
+        :rtype: str
+        """
+        if self._alert_name_present:
+            return self._alert_name_value
+        else:
+            raise AttributeError("missing required field 'alert_name'")
+
+    @alert_name.setter
+    def alert_name(self, val):
+        val = self._alert_name_validator.validate(val)
+        self._alert_name_value = val
+        self._alert_name_present = True
+
+    @alert_name.deleter
+    def alert_name(self):
+        self._alert_name_value = None
+        self._alert_name_present = False
+
+    @property
+    def previous_alert_config(self):
+        """
+        Previous alert configuration.
+
+        :rtype: AdminAlertingAlertConfiguration
+        """
+        if self._previous_alert_config_present:
+            return self._previous_alert_config_value
+        else:
+            raise AttributeError("missing required field 'previous_alert_config'")
+
+    @previous_alert_config.setter
+    def previous_alert_config(self, val):
+        self._previous_alert_config_validator.validate_type_only(val)
+        self._previous_alert_config_value = val
+        self._previous_alert_config_present = True
+
+    @previous_alert_config.deleter
+    def previous_alert_config(self):
+        self._previous_alert_config_value = None
+        self._previous_alert_config_present = False
+
+    @property
+    def new_alert_config(self):
+        """
+        New alert configuration.
+
+        :rtype: AdminAlertingAlertConfiguration
+        """
+        if self._new_alert_config_present:
+            return self._new_alert_config_value
+        else:
+            raise AttributeError("missing required field 'new_alert_config'")
+
+    @new_alert_config.setter
+    def new_alert_config(self, val):
+        self._new_alert_config_validator.validate_type_only(val)
+        self._new_alert_config_value = val
+        self._new_alert_config_present = True
+
+    @new_alert_config.deleter
+    def new_alert_config(self):
+        self._new_alert_config_value = None
+        self._new_alert_config_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingChangedAlertConfigDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AdminAlertingChangedAlertConfigDetails(alert_name={!r}, previous_alert_config={!r}, new_alert_config={!r})'.format(
+            self._alert_name_value,
+            self._previous_alert_config_value,
+            self._new_alert_config_value,
+        )
+
+AdminAlertingChangedAlertConfigDetails_validator = bv.Struct(AdminAlertingChangedAlertConfigDetails)
+
+class AdminAlertingChangedAlertConfigType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingChangedAlertConfigType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'AdminAlertingChangedAlertConfigType(description={!r})'.format(
+            self._description_value,
+        )
+
+AdminAlertingChangedAlertConfigType_validator = bv.Struct(AdminAlertingChangedAlertConfigType)
+
 class AdminRole(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -11369,6 +11640,8 @@ class EventCategory(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar team_log.EventCategory.admin_alerting: Events that involve team
+        related alerts.
     :ivar team_log.EventCategory.apps: Events that apply to management of linked
         apps.
     :ivar team_log.EventCategory.comments: Events that have to do with comments
@@ -11415,6 +11688,8 @@ class EventCategory(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    admin_alerting = None
+    # Attribute is overwritten below the class definition
     apps = None
     # Attribute is overwritten below the class definition
     comments = None
@@ -11458,6 +11733,14 @@ class EventCategory(bb.Union):
     trusted_teams = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_admin_alerting(self):
+        """
+        Check if the union tag is ``admin_alerting``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting'
 
     def is_apps(self):
         """
@@ -11658,6 +11941,17 @@ class EventDetails(bb.Union):
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
+
+    @classmethod
+    def admin_alerting_changed_alert_config_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``admin_alerting_changed_alert_config_details`` tag with value ``val``.
+
+        :param AdminAlertingChangedAlertConfigDetails val:
+        :rtype: EventDetails
+        """
+        return cls('admin_alerting_changed_alert_config_details', val)
 
     @classmethod
     def app_link_team_details(cls, val):
@@ -12976,6 +13270,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('member_change_name_details', val)
+
+    @classmethod
+    def member_change_reseller_role_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_change_reseller_role_details`` tag with value ``val``.
+
+        :param MemberChangeResellerRoleDetails val:
+        :rtype: EventDetails
+        """
+        return cls('member_change_reseller_role_details', val)
 
     @classmethod
     def member_change_status_details(cls, val):
@@ -16155,6 +16460,17 @@ class EventDetails(bb.Union):
         return cls('team_merge_to_details', val)
 
     @classmethod
+    def team_profile_add_background_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_profile_add_background_details`` tag with value ``val``.
+
+        :param TeamProfileAddBackgroundDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_profile_add_background_details', val)
+
+    @classmethod
     def team_profile_add_logo_details(cls, val):
         """
         Create an instance of this class set to the
@@ -16164,6 +16480,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('team_profile_add_logo_details', val)
+
+    @classmethod
+    def team_profile_change_background_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_profile_change_background_details`` tag with value ``val``.
+
+        :param TeamProfileChangeBackgroundDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_profile_change_background_details', val)
 
     @classmethod
     def team_profile_change_default_language_details(cls, val):
@@ -16197,6 +16524,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('team_profile_change_name_details', val)
+
+    @classmethod
+    def team_profile_remove_background_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_profile_remove_background_details`` tag with value ``val``.
+
+        :param TeamProfileRemoveBackgroundDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_profile_remove_background_details', val)
 
     @classmethod
     def team_profile_remove_logo_details(cls, val):
@@ -16585,6 +16923,14 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('missing_details', val)
+
+    def is_admin_alerting_changed_alert_config_details(self):
+        """
+        Check if the union tag is ``admin_alerting_changed_alert_config_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_changed_alert_config_details'
 
     def is_app_link_team_details(self):
         """
@@ -17537,6 +17883,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_change_name_details'
+
+    def is_member_change_reseller_role_details(self):
+        """
+        Check if the union tag is ``member_change_reseller_role_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_reseller_role_details'
 
     def is_member_change_status_details(self):
         """
@@ -19826,6 +20180,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'team_merge_to_details'
 
+    def is_team_profile_add_background_details(self):
+        """
+        Check if the union tag is ``team_profile_add_background_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_add_background_details'
+
     def is_team_profile_add_logo_details(self):
         """
         Check if the union tag is ``team_profile_add_logo_details``.
@@ -19833,6 +20195,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_profile_add_logo_details'
+
+    def is_team_profile_change_background_details(self):
+        """
+        Check if the union tag is ``team_profile_change_background_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_change_background_details'
 
     def is_team_profile_change_default_language_details(self):
         """
@@ -19857,6 +20227,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_profile_change_name_details'
+
+    def is_team_profile_remove_background_details(self):
+        """
+        Check if the union tag is ``team_profile_remove_background_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_remove_background_details'
 
     def is_team_profile_remove_logo_details(self):
         """
@@ -20137,6 +20515,16 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def get_admin_alerting_changed_alert_config_details(self):
+        """
+        Only call this if :meth:`is_admin_alerting_changed_alert_config_details` is true.
+
+        :rtype: AdminAlertingChangedAlertConfigDetails
+        """
+        if not self.is_admin_alerting_changed_alert_config_details():
+            raise AttributeError("tag 'admin_alerting_changed_alert_config_details' not set")
+        return self._value
 
     def get_app_link_team_details(self):
         """
@@ -21326,6 +21714,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_member_change_name_details():
             raise AttributeError("tag 'member_change_name_details' not set")
+        return self._value
+
+    def get_member_change_reseller_role_details(self):
+        """
+        Only call this if :meth:`is_member_change_reseller_role_details` is true.
+
+        :rtype: MemberChangeResellerRoleDetails
+        """
+        if not self.is_member_change_reseller_role_details():
+            raise AttributeError("tag 'member_change_reseller_role_details' not set")
         return self._value
 
     def get_member_change_status_details(self):
@@ -24188,6 +24586,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'team_merge_to_details' not set")
         return self._value
 
+    def get_team_profile_add_background_details(self):
+        """
+        Only call this if :meth:`is_team_profile_add_background_details` is true.
+
+        :rtype: TeamProfileAddBackgroundDetails
+        """
+        if not self.is_team_profile_add_background_details():
+            raise AttributeError("tag 'team_profile_add_background_details' not set")
+        return self._value
+
     def get_team_profile_add_logo_details(self):
         """
         Only call this if :meth:`is_team_profile_add_logo_details` is true.
@@ -24196,6 +24604,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_team_profile_add_logo_details():
             raise AttributeError("tag 'team_profile_add_logo_details' not set")
+        return self._value
+
+    def get_team_profile_change_background_details(self):
+        """
+        Only call this if :meth:`is_team_profile_change_background_details` is true.
+
+        :rtype: TeamProfileChangeBackgroundDetails
+        """
+        if not self.is_team_profile_change_background_details():
+            raise AttributeError("tag 'team_profile_change_background_details' not set")
         return self._value
 
     def get_team_profile_change_default_language_details(self):
@@ -24226,6 +24644,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_team_profile_change_name_details():
             raise AttributeError("tag 'team_profile_change_name_details' not set")
+        return self._value
+
+    def get_team_profile_remove_background_details(self):
+        """
+        Only call this if :meth:`is_team_profile_remove_background_details` is true.
+
+        :rtype: TeamProfileRemoveBackgroundDetails
+        """
+        if not self.is_team_profile_remove_background_details():
+            raise AttributeError("tag 'team_profile_remove_background_details' not set")
         return self._value
 
     def get_team_profile_remove_logo_details(self):
@@ -24587,6 +25015,9 @@ class EventType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar AdminAlertingChangedAlertConfigType
+        EventType.admin_alerting_changed_alert_config: (admin_alerting) Changed
+        an alert setting
     :ivar AppLinkTeamType EventType.app_link_team: (apps) Linked app for team
     :ivar AppLinkUserType EventType.app_link_user: (apps) Linked app for member
     :ivar AppUnlinkTeamType EventType.app_unlink_team: (apps) Unlinked app for
@@ -24846,6 +25277,8 @@ class EventType(bb.Union):
         type (limited/full) of member (deprecated, no longer logged)
     :ivar MemberChangeNameType EventType.member_change_name: (members) Changed
         team member name
+    :ivar MemberChangeResellerRoleType EventType.member_change_reseller_role:
+        (members) Changed team member reseller role
     :ivar MemberChangeStatusType EventType.member_change_status: (members)
         Changed member status (invited, joined, suspended, etc.)
     :ivar MemberDeleteManualContactsType
@@ -25550,8 +25983,13 @@ class EventType(bb.Union):
         another team into this team
     :ivar TeamMergeToType EventType.team_merge_to: (team_profile) Merged this
         team into another team
+    :ivar TeamProfileAddBackgroundType EventType.team_profile_add_background:
+        (team_profile) Added team background to display on shared link headers
     :ivar TeamProfileAddLogoType EventType.team_profile_add_logo: (team_profile)
         Added team logo to display on shared link headers
+    :ivar TeamProfileChangeBackgroundType
+        EventType.team_profile_change_background: (team_profile) Changed team
+        background displayed on shared link headers
     :ivar TeamProfileChangeDefaultLanguageType
         EventType.team_profile_change_default_language: (team_profile) Changed
         default language for team
@@ -25559,6 +25997,9 @@ class EventType(bb.Union):
         (team_profile) Changed team logo displayed on shared link headers
     :ivar TeamProfileChangeNameType EventType.team_profile_change_name:
         (team_profile) Changed team name
+    :ivar TeamProfileRemoveBackgroundType
+        EventType.team_profile_remove_background: (team_profile) Removed team
+        background displayed on shared link headers
     :ivar TeamProfileRemoveLogoType EventType.team_profile_remove_logo:
         (team_profile) Removed team logo displayed on shared link headers
     :ivar TfaAddBackupPhoneType EventType.tfa_add_backup_phone: (tfa) Added
@@ -25659,6 +26100,17 @@ class EventType(bb.Union):
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
+
+    @classmethod
+    def admin_alerting_changed_alert_config(cls, val):
+        """
+        Create an instance of this class set to the
+        ``admin_alerting_changed_alert_config`` tag with value ``val``.
+
+        :param AdminAlertingChangedAlertConfigType val:
+        :rtype: EventType
+        """
+        return cls('admin_alerting_changed_alert_config', val)
 
     @classmethod
     def app_link_team(cls, val):
@@ -26970,6 +27422,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('member_change_name', val)
+
+    @classmethod
+    def member_change_reseller_role(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_change_reseller_role`` tag with value ``val``.
+
+        :param MemberChangeResellerRoleType val:
+        :rtype: EventType
+        """
+        return cls('member_change_reseller_role', val)
 
     @classmethod
     def member_change_status(cls, val):
@@ -30120,6 +30583,17 @@ class EventType(bb.Union):
         return cls('team_merge_to', val)
 
     @classmethod
+    def team_profile_add_background(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_profile_add_background`` tag with value ``val``.
+
+        :param TeamProfileAddBackgroundType val:
+        :rtype: EventType
+        """
+        return cls('team_profile_add_background', val)
+
+    @classmethod
     def team_profile_add_logo(cls, val):
         """
         Create an instance of this class set to the ``team_profile_add_logo``
@@ -30129,6 +30603,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('team_profile_add_logo', val)
+
+    @classmethod
+    def team_profile_change_background(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_profile_change_background`` tag with value ``val``.
+
+        :param TeamProfileChangeBackgroundType val:
+        :rtype: EventType
+        """
+        return cls('team_profile_change_background', val)
 
     @classmethod
     def team_profile_change_default_language(cls, val):
@@ -30162,6 +30647,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('team_profile_change_name', val)
+
+    @classmethod
+    def team_profile_remove_background(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_profile_remove_background`` tag with value ``val``.
+
+        :param TeamProfileRemoveBackgroundType val:
+        :rtype: EventType
+        """
+        return cls('team_profile_remove_background', val)
 
     @classmethod
     def team_profile_remove_logo(cls, val):
@@ -30537,6 +31033,14 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('team_merge_request_sent_shown_to_secondary_team', val)
+
+    def is_admin_alerting_changed_alert_config(self):
+        """
+        Check if the union tag is ``admin_alerting_changed_alert_config``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_changed_alert_config'
 
     def is_app_link_team(self):
         """
@@ -31489,6 +31993,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_change_name'
+
+    def is_member_change_reseller_role(self):
+        """
+        Check if the union tag is ``member_change_reseller_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_reseller_role'
 
     def is_member_change_status(self):
         """
@@ -33778,6 +34290,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'team_merge_to'
 
+    def is_team_profile_add_background(self):
+        """
+        Check if the union tag is ``team_profile_add_background``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_add_background'
+
     def is_team_profile_add_logo(self):
         """
         Check if the union tag is ``team_profile_add_logo``.
@@ -33785,6 +34305,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_profile_add_logo'
+
+    def is_team_profile_change_background(self):
+        """
+        Check if the union tag is ``team_profile_change_background``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_change_background'
 
     def is_team_profile_change_default_language(self):
         """
@@ -33809,6 +34337,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_profile_change_name'
+
+    def is_team_profile_remove_background(self):
+        """
+        Check if the union tag is ``team_profile_remove_background``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_remove_background'
 
     def is_team_profile_remove_logo(self):
         """
@@ -34081,6 +34617,18 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'other'
+
+    def get_admin_alerting_changed_alert_config(self):
+        """
+        (admin_alerting) Changed an alert setting
+
+        Only call this if :meth:`is_admin_alerting_changed_alert_config` is true.
+
+        :rtype: AdminAlertingChangedAlertConfigType
+        """
+        if not self.is_admin_alerting_changed_alert_config():
+            raise AttributeError("tag 'admin_alerting_changed_alert_config' not set")
+        return self._value
 
     def get_app_link_team(self):
         """
@@ -35516,6 +36064,18 @@ class EventType(bb.Union):
         """
         if not self.is_member_change_name():
             raise AttributeError("tag 'member_change_name' not set")
+        return self._value
+
+    def get_member_change_reseller_role(self):
+        """
+        (members) Changed team member reseller role
+
+        Only call this if :meth:`is_member_change_reseller_role` is true.
+
+        :rtype: MemberChangeResellerRoleType
+        """
+        if not self.is_member_change_reseller_role():
+            raise AttributeError("tag 'member_change_reseller_role' not set")
         return self._value
 
     def get_member_change_status(self):
@@ -39011,6 +39571,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'team_merge_to' not set")
         return self._value
 
+    def get_team_profile_add_background(self):
+        """
+        (team_profile) Added team background to display on shared link headers
+
+        Only call this if :meth:`is_team_profile_add_background` is true.
+
+        :rtype: TeamProfileAddBackgroundType
+        """
+        if not self.is_team_profile_add_background():
+            raise AttributeError("tag 'team_profile_add_background' not set")
+        return self._value
+
     def get_team_profile_add_logo(self):
         """
         (team_profile) Added team logo to display on shared link headers
@@ -39021,6 +39593,18 @@ class EventType(bb.Union):
         """
         if not self.is_team_profile_add_logo():
             raise AttributeError("tag 'team_profile_add_logo' not set")
+        return self._value
+
+    def get_team_profile_change_background(self):
+        """
+        (team_profile) Changed team background displayed on shared link headers
+
+        Only call this if :meth:`is_team_profile_change_background` is true.
+
+        :rtype: TeamProfileChangeBackgroundType
+        """
+        if not self.is_team_profile_change_background():
+            raise AttributeError("tag 'team_profile_change_background' not set")
         return self._value
 
     def get_team_profile_change_default_language(self):
@@ -39057,6 +39641,18 @@ class EventType(bb.Union):
         """
         if not self.is_team_profile_change_name():
             raise AttributeError("tag 'team_profile_change_name' not set")
+        return self._value
+
+    def get_team_profile_remove_background(self):
+        """
+        (team_profile) Removed team background displayed on shared link headers
+
+        Only call this if :meth:`is_team_profile_remove_background` is true.
+
+        :rtype: TeamProfileRemoveBackgroundType
+        """
+        if not self.is_team_profile_remove_background():
+            raise AttributeError("tag 'team_profile_remove_background' not set")
         return self._value
 
     def get_team_profile_remove_logo(self):
@@ -39482,6 +40078,8 @@ class EventTypeArg(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar team_log.EventTypeArg.admin_alerting_changed_alert_config:
+        (admin_alerting) Changed an alert setting
     :ivar team_log.EventTypeArg.app_link_team: (apps) Linked app for team
     :ivar team_log.EventTypeArg.app_link_user: (apps) Linked app for member
     :ivar team_log.EventTypeArg.app_unlink_team: (apps) Unlinked app for team
@@ -39709,6 +40307,8 @@ class EventTypeArg(bb.Union):
         membership type (limited/full) of member (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.member_change_name: (members) Changed team
         member name
+    :ivar team_log.EventTypeArg.member_change_reseller_role: (members) Changed
+        team member reseller role
     :ivar team_log.EventTypeArg.member_change_status: (members) Changed member
         status (invited, joined, suspended, etc.)
     :ivar team_log.EventTypeArg.member_delete_manual_contacts: (members) Cleared
@@ -40300,14 +40900,20 @@ class EventTypeArg(bb.Union):
         team into this team
     :ivar team_log.EventTypeArg.team_merge_to: (team_profile) Merged this team
         into another team
+    :ivar team_log.EventTypeArg.team_profile_add_background: (team_profile)
+        Added team background to display on shared link headers
     :ivar team_log.EventTypeArg.team_profile_add_logo: (team_profile) Added team
         logo to display on shared link headers
+    :ivar team_log.EventTypeArg.team_profile_change_background: (team_profile)
+        Changed team background displayed on shared link headers
     :ivar team_log.EventTypeArg.team_profile_change_default_language:
         (team_profile) Changed default language for team
     :ivar team_log.EventTypeArg.team_profile_change_logo: (team_profile) Changed
         team logo displayed on shared link headers
     :ivar team_log.EventTypeArg.team_profile_change_name: (team_profile) Changed
         team name
+    :ivar team_log.EventTypeArg.team_profile_remove_background: (team_profile)
+        Removed team background displayed on shared link headers
     :ivar team_log.EventTypeArg.team_profile_remove_logo: (team_profile) Removed
         team logo displayed on shared link headers
     :ivar team_log.EventTypeArg.tfa_add_backup_phone: (tfa) Added backup phone
@@ -40398,6 +41004,8 @@ class EventTypeArg(bb.Union):
     """
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    admin_alerting_changed_alert_config = None
     # Attribute is overwritten below the class definition
     app_link_team = None
     # Attribute is overwritten below the class definition
@@ -40636,6 +41244,8 @@ class EventTypeArg(bb.Union):
     member_change_membership_type = None
     # Attribute is overwritten below the class definition
     member_change_name = None
+    # Attribute is overwritten below the class definition
+    member_change_reseller_role = None
     # Attribute is overwritten below the class definition
     member_change_status = None
     # Attribute is overwritten below the class definition
@@ -41209,13 +41819,19 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     team_merge_to = None
     # Attribute is overwritten below the class definition
+    team_profile_add_background = None
+    # Attribute is overwritten below the class definition
     team_profile_add_logo = None
+    # Attribute is overwritten below the class definition
+    team_profile_change_background = None
     # Attribute is overwritten below the class definition
     team_profile_change_default_language = None
     # Attribute is overwritten below the class definition
     team_profile_change_logo = None
     # Attribute is overwritten below the class definition
     team_profile_change_name = None
+    # Attribute is overwritten below the class definition
+    team_profile_remove_background = None
     # Attribute is overwritten below the class definition
     team_profile_remove_logo = None
     # Attribute is overwritten below the class definition
@@ -41284,6 +41900,14 @@ class EventTypeArg(bb.Union):
     team_merge_request_sent_shown_to_secondary_team = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_admin_alerting_changed_alert_config(self):
+        """
+        Check if the union tag is ``admin_alerting_changed_alert_config``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_changed_alert_config'
 
     def is_app_link_team(self):
         """
@@ -42236,6 +42860,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_change_name'
+
+    def is_member_change_reseller_role(self):
+        """
+        Check if the union tag is ``member_change_reseller_role``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_change_reseller_role'
 
     def is_member_change_status(self):
         """
@@ -44525,6 +45157,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'team_merge_to'
 
+    def is_team_profile_add_background(self):
+        """
+        Check if the union tag is ``team_profile_add_background``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_add_background'
+
     def is_team_profile_add_logo(self):
         """
         Check if the union tag is ``team_profile_add_logo``.
@@ -44532,6 +45172,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_profile_add_logo'
+
+    def is_team_profile_change_background(self):
+        """
+        Check if the union tag is ``team_profile_change_background``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_change_background'
 
     def is_team_profile_change_default_language(self):
         """
@@ -44556,6 +45204,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_profile_change_name'
+
+    def is_team_profile_remove_background(self):
+        """
+        Check if the union tag is ``team_profile_remove_background``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_profile_remove_background'
 
     def is_team_profile_remove_logo(self):
         """
@@ -53143,6 +53799,7 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
     :ivar team_log.GovernancePolicyRemoveFoldersDetails.policy_type: Policy
         type.
     :ivar team_log.GovernancePolicyRemoveFoldersDetails.folders: Folders.
+    :ivar team_log.GovernancePolicyRemoveFoldersDetails.reason: Reason.
     """
 
     __slots__ = [
@@ -53154,6 +53811,8 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
         '_policy_type_present',
         '_folders_value',
         '_folders_present',
+        '_reason_value',
+        '_reason_present',
     ]
 
     _has_required_fields = True
@@ -53162,7 +53821,8 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
                  governance_policy_id=None,
                  name=None,
                  policy_type=None,
-                 folders=None):
+                 folders=None,
+                 reason=None):
         self._governance_policy_id_value = None
         self._governance_policy_id_present = False
         self._name_value = None
@@ -53171,6 +53831,8 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
         self._policy_type_present = False
         self._folders_value = None
         self._folders_present = False
+        self._reason_value = None
+        self._reason_present = False
         if governance_policy_id is not None:
             self.governance_policy_id = governance_policy_id
         if name is not None:
@@ -53179,6 +53841,8 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
             self.policy_type = policy_type
         if folders is not None:
             self.folders = folders
+        if reason is not None:
+            self.reason = reason
 
     @property
     def governance_policy_id(self):
@@ -53278,15 +53942,42 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
         self._folders_value = None
         self._folders_present = False
 
+    @property
+    def reason(self):
+        """
+        Reason.
+
+        :rtype: str
+        """
+        if self._reason_present:
+            return self._reason_value
+        else:
+            return None
+
+    @reason.setter
+    def reason(self, val):
+        if val is None:
+            del self.reason
+            return
+        val = self._reason_validator.validate(val)
+        self._reason_value = val
+        self._reason_present = True
+
+    @reason.deleter
+    def reason(self):
+        self._reason_value = None
+        self._reason_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GovernancePolicyRemoveFoldersDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'GovernancePolicyRemoveFoldersDetails(governance_policy_id={!r}, name={!r}, policy_type={!r}, folders={!r})'.format(
+        return 'GovernancePolicyRemoveFoldersDetails(governance_policy_id={!r}, name={!r}, policy_type={!r}, folders={!r}, reason={!r})'.format(
             self._governance_policy_id_value,
             self._name_value,
             self._policy_type_value,
             self._folders_value,
+            self._reason_value,
         )
 
 GovernancePolicyRemoveFoldersDetails_validator = bv.Struct(GovernancePolicyRemoveFoldersDetails)
@@ -60295,6 +60986,144 @@ class MemberChangeNameType(bb.Struct):
         )
 
 MemberChangeNameType_validator = bv.Struct(MemberChangeNameType)
+
+class MemberChangeResellerRoleDetails(bb.Struct):
+    """
+    Changed team member reseller role.
+
+    :ivar team_log.MemberChangeResellerRoleDetails.new_value: New reseller role.
+        This field is relevant when the reseller role is changed.
+    :ivar team_log.MemberChangeResellerRoleDetails.previous_value: Previous
+        reseller role. This field is relevant when the reseller role is changed
+        or when the reseller role is removed.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_new_value_present',
+        '_previous_value_value',
+        '_previous_value_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = None
+        self._new_value_present = False
+        self._previous_value_value = None
+        self._previous_value_present = False
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    @property
+    def new_value(self):
+        """
+        New reseller role. This field is relevant when the reseller role is
+        changed.
+
+        :rtype: ResellerRole
+        """
+        if self._new_value_present:
+            return self._new_value_value
+        else:
+            raise AttributeError("missing required field 'new_value'")
+
+    @new_value.setter
+    def new_value(self, val):
+        self._new_value_validator.validate_type_only(val)
+        self._new_value_value = val
+        self._new_value_present = True
+
+    @new_value.deleter
+    def new_value(self):
+        self._new_value_value = None
+        self._new_value_present = False
+
+    @property
+    def previous_value(self):
+        """
+        Previous reseller role. This field is relevant when the reseller role is
+        changed or when the reseller role is removed.
+
+        :rtype: ResellerRole
+        """
+        if self._previous_value_present:
+            return self._previous_value_value
+        else:
+            raise AttributeError("missing required field 'previous_value'")
+
+    @previous_value.setter
+    def previous_value(self, val):
+        self._previous_value_validator.validate_type_only(val)
+        self._previous_value_value = val
+        self._previous_value_present = True
+
+    @previous_value.deleter
+    def previous_value(self):
+        self._previous_value_value = None
+        self._previous_value_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberChangeResellerRoleDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberChangeResellerRoleDetails(new_value={!r}, previous_value={!r})'.format(
+            self._new_value_value,
+            self._previous_value_value,
+        )
+
+MemberChangeResellerRoleDetails_validator = bv.Struct(MemberChangeResellerRoleDetails)
+
+class MemberChangeResellerRoleType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberChangeResellerRoleType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'MemberChangeResellerRoleType(description={!r})'.format(
+            self._description_value,
+        )
+
+MemberChangeResellerRoleType_validator = bv.Struct(MemberChangeResellerRoleType)
 
 class MemberChangeStatusDetails(bb.Struct):
     """
@@ -73187,6 +74016,53 @@ class ResellerLogInfo(bb.Struct):
         )
 
 ResellerLogInfo_validator = bv.Struct(ResellerLogInfo)
+
+class ResellerRole(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    not_reseller = None
+    # Attribute is overwritten below the class definition
+    reseller_admin = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_not_reseller(self):
+        """
+        Check if the union tag is ``not_reseller``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_reseller'
+
+    def is_reseller_admin(self):
+        """
+        Check if the union tag is ``reseller_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reseller_admin'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ResellerRole, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ResellerRole(%r, %r)' % (self._tag, self._value)
+
+ResellerRole_validator = bv.Union(ResellerRole)
 
 class ResellerSupportChangePolicyDetails(bb.Struct):
     """
@@ -95048,6 +95924,74 @@ class TeamName(bb.Struct):
 
 TeamName_validator = bv.Struct(TeamName)
 
+class TeamProfileAddBackgroundDetails(bb.Struct):
+    """
+    Added team background to display on shared link headers.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamProfileAddBackgroundDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamProfileAddBackgroundDetails()'
+
+TeamProfileAddBackgroundDetails_validator = bv.Struct(TeamProfileAddBackgroundDetails)
+
+class TeamProfileAddBackgroundType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamProfileAddBackgroundType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamProfileAddBackgroundType(description={!r})'.format(
+            self._description_value,
+        )
+
+TeamProfileAddBackgroundType_validator = bv.Struct(TeamProfileAddBackgroundType)
+
 class TeamProfileAddLogoDetails(bb.Struct):
     """
     Added team logo to display on shared link headers.
@@ -95115,6 +96059,74 @@ class TeamProfileAddLogoType(bb.Struct):
         )
 
 TeamProfileAddLogoType_validator = bv.Struct(TeamProfileAddLogoType)
+
+class TeamProfileChangeBackgroundDetails(bb.Struct):
+    """
+    Changed team background displayed on shared link headers.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamProfileChangeBackgroundDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamProfileChangeBackgroundDetails()'
+
+TeamProfileChangeBackgroundDetails_validator = bv.Struct(TeamProfileChangeBackgroundDetails)
+
+class TeamProfileChangeBackgroundType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamProfileChangeBackgroundType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamProfileChangeBackgroundType(description={!r})'.format(
+            self._description_value,
+        )
+
+TeamProfileChangeBackgroundType_validator = bv.Struct(TeamProfileChangeBackgroundType)
 
 class TeamProfileChangeDefaultLanguageDetails(bb.Struct):
     """
@@ -95455,6 +96467,74 @@ class TeamProfileChangeNameType(bb.Struct):
         )
 
 TeamProfileChangeNameType_validator = bv.Struct(TeamProfileChangeNameType)
+
+class TeamProfileRemoveBackgroundDetails(bb.Struct):
+    """
+    Removed team background displayed on shared link headers.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamProfileRemoveBackgroundDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamProfileRemoveBackgroundDetails()'
+
+TeamProfileRemoveBackgroundDetails_validator = bv.Struct(TeamProfileRemoveBackgroundDetails)
+
+class TeamProfileRemoveBackgroundType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamProfileRemoveBackgroundType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'TeamProfileRemoveBackgroundType(description={!r})'.format(
+            self._description_value,
+        )
+
+TeamProfileRemoveBackgroundType_validator = bv.Struct(TeamProfileRemoveBackgroundType)
 
 class TeamProfileRemoveLogoDetails(bb.Struct):
     """
@@ -98933,6 +100013,41 @@ ActorLogInfo.anonymous = ActorLogInfo('anonymous')
 ActorLogInfo.dropbox = ActorLogInfo('dropbox')
 ActorLogInfo.other = ActorLogInfo('other')
 
+AdminAlertingAlertConfiguration._alert_state_validator = AdminAlertingAlertStatePolicy_validator
+AdminAlertingAlertConfiguration._all_field_names_ = set(['alert_state'])
+AdminAlertingAlertConfiguration._all_fields_ = [('alert_state', AdminAlertingAlertConfiguration._alert_state_validator)]
+
+AdminAlertingAlertStatePolicy._off_validator = bv.Void()
+AdminAlertingAlertStatePolicy._on_validator = bv.Void()
+AdminAlertingAlertStatePolicy._other_validator = bv.Void()
+AdminAlertingAlertStatePolicy._tagmap = {
+    'off': AdminAlertingAlertStatePolicy._off_validator,
+    'on': AdminAlertingAlertStatePolicy._on_validator,
+    'other': AdminAlertingAlertStatePolicy._other_validator,
+}
+
+AdminAlertingAlertStatePolicy.off = AdminAlertingAlertStatePolicy('off')
+AdminAlertingAlertStatePolicy.on = AdminAlertingAlertStatePolicy('on')
+AdminAlertingAlertStatePolicy.other = AdminAlertingAlertStatePolicy('other')
+
+AdminAlertingChangedAlertConfigDetails._alert_name_validator = bv.String()
+AdminAlertingChangedAlertConfigDetails._previous_alert_config_validator = AdminAlertingAlertConfiguration_validator
+AdminAlertingChangedAlertConfigDetails._new_alert_config_validator = AdminAlertingAlertConfiguration_validator
+AdminAlertingChangedAlertConfigDetails._all_field_names_ = set([
+    'alert_name',
+    'previous_alert_config',
+    'new_alert_config',
+])
+AdminAlertingChangedAlertConfigDetails._all_fields_ = [
+    ('alert_name', AdminAlertingChangedAlertConfigDetails._alert_name_validator),
+    ('previous_alert_config', AdminAlertingChangedAlertConfigDetails._previous_alert_config_validator),
+    ('new_alert_config', AdminAlertingChangedAlertConfigDetails._new_alert_config_validator),
+]
+
+AdminAlertingChangedAlertConfigType._description_validator = bv.String()
+AdminAlertingChangedAlertConfigType._all_field_names_ = set(['description'])
+AdminAlertingChangedAlertConfigType._all_fields_ = [('description', AdminAlertingChangedAlertConfigType._description_validator)]
+
 AdminRole._limited_admin_validator = bv.Void()
 AdminRole._member_only_validator = bv.Void()
 AdminRole._support_admin_validator = bv.Void()
@@ -100067,6 +101182,7 @@ EnterpriseSettingsLockingType._description_validator = bv.String()
 EnterpriseSettingsLockingType._all_field_names_ = set(['description'])
 EnterpriseSettingsLockingType._all_fields_ = [('description', EnterpriseSettingsLockingType._description_validator)]
 
+EventCategory._admin_alerting_validator = bv.Void()
 EventCategory._apps_validator = bv.Void()
 EventCategory._comments_validator = bv.Void()
 EventCategory._data_governance_validator = bv.Void()
@@ -100090,6 +101206,7 @@ EventCategory._tfa_validator = bv.Void()
 EventCategory._trusted_teams_validator = bv.Void()
 EventCategory._other_validator = bv.Void()
 EventCategory._tagmap = {
+    'admin_alerting': EventCategory._admin_alerting_validator,
     'apps': EventCategory._apps_validator,
     'comments': EventCategory._comments_validator,
     'data_governance': EventCategory._data_governance_validator,
@@ -100114,6 +101231,7 @@ EventCategory._tagmap = {
     'other': EventCategory._other_validator,
 }
 
+EventCategory.admin_alerting = EventCategory('admin_alerting')
 EventCategory.apps = EventCategory('apps')
 EventCategory.comments = EventCategory('comments')
 EventCategory.data_governance = EventCategory('data_governance')
@@ -100137,6 +101255,7 @@ EventCategory.tfa = EventCategory('tfa')
 EventCategory.trusted_teams = EventCategory('trusted_teams')
 EventCategory.other = EventCategory('other')
 
+EventDetails._admin_alerting_changed_alert_config_details_validator = AdminAlertingChangedAlertConfigDetails_validator
 EventDetails._app_link_team_details_validator = AppLinkTeamDetails_validator
 EventDetails._app_link_user_details_validator = AppLinkUserDetails_validator
 EventDetails._app_unlink_team_details_validator = AppUnlinkTeamDetails_validator
@@ -100256,6 +101375,7 @@ EventDetails._member_change_email_details_validator = MemberChangeEmailDetails_v
 EventDetails._member_change_external_id_details_validator = MemberChangeExternalIdDetails_validator
 EventDetails._member_change_membership_type_details_validator = MemberChangeMembershipTypeDetails_validator
 EventDetails._member_change_name_details_validator = MemberChangeNameDetails_validator
+EventDetails._member_change_reseller_role_details_validator = MemberChangeResellerRoleDetails_validator
 EventDetails._member_change_status_details_validator = MemberChangeStatusDetails_validator
 EventDetails._member_delete_manual_contacts_details_validator = MemberDeleteManualContactsDetails_validator
 EventDetails._member_delete_profile_photo_details_validator = MemberDeleteProfilePhotoDetails_validator
@@ -100542,10 +101662,13 @@ EventDetails._web_sessions_change_fixed_length_policy_details_validator = WebSes
 EventDetails._web_sessions_change_idle_length_policy_details_validator = WebSessionsChangeIdleLengthPolicyDetails_validator
 EventDetails._team_merge_from_details_validator = TeamMergeFromDetails_validator
 EventDetails._team_merge_to_details_validator = TeamMergeToDetails_validator
+EventDetails._team_profile_add_background_details_validator = TeamProfileAddBackgroundDetails_validator
 EventDetails._team_profile_add_logo_details_validator = TeamProfileAddLogoDetails_validator
+EventDetails._team_profile_change_background_details_validator = TeamProfileChangeBackgroundDetails_validator
 EventDetails._team_profile_change_default_language_details_validator = TeamProfileChangeDefaultLanguageDetails_validator
 EventDetails._team_profile_change_logo_details_validator = TeamProfileChangeLogoDetails_validator
 EventDetails._team_profile_change_name_details_validator = TeamProfileChangeNameDetails_validator
+EventDetails._team_profile_remove_background_details_validator = TeamProfileRemoveBackgroundDetails_validator
 EventDetails._team_profile_remove_logo_details_validator = TeamProfileRemoveLogoDetails_validator
 EventDetails._tfa_add_backup_phone_details_validator = TfaAddBackupPhoneDetails_validator
 EventDetails._tfa_add_security_key_details_validator = TfaAddSecurityKeyDetails_validator
@@ -100582,6 +101705,7 @@ EventDetails._team_merge_request_sent_shown_to_secondary_team_details_validator 
 EventDetails._missing_details_validator = MissingDetails_validator
 EventDetails._other_validator = bv.Void()
 EventDetails._tagmap = {
+    'admin_alerting_changed_alert_config_details': EventDetails._admin_alerting_changed_alert_config_details_validator,
     'app_link_team_details': EventDetails._app_link_team_details_validator,
     'app_link_user_details': EventDetails._app_link_user_details_validator,
     'app_unlink_team_details': EventDetails._app_unlink_team_details_validator,
@@ -100701,6 +101825,7 @@ EventDetails._tagmap = {
     'member_change_external_id_details': EventDetails._member_change_external_id_details_validator,
     'member_change_membership_type_details': EventDetails._member_change_membership_type_details_validator,
     'member_change_name_details': EventDetails._member_change_name_details_validator,
+    'member_change_reseller_role_details': EventDetails._member_change_reseller_role_details_validator,
     'member_change_status_details': EventDetails._member_change_status_details_validator,
     'member_delete_manual_contacts_details': EventDetails._member_delete_manual_contacts_details_validator,
     'member_delete_profile_photo_details': EventDetails._member_delete_profile_photo_details_validator,
@@ -100987,10 +102112,13 @@ EventDetails._tagmap = {
     'web_sessions_change_idle_length_policy_details': EventDetails._web_sessions_change_idle_length_policy_details_validator,
     'team_merge_from_details': EventDetails._team_merge_from_details_validator,
     'team_merge_to_details': EventDetails._team_merge_to_details_validator,
+    'team_profile_add_background_details': EventDetails._team_profile_add_background_details_validator,
     'team_profile_add_logo_details': EventDetails._team_profile_add_logo_details_validator,
+    'team_profile_change_background_details': EventDetails._team_profile_change_background_details_validator,
     'team_profile_change_default_language_details': EventDetails._team_profile_change_default_language_details_validator,
     'team_profile_change_logo_details': EventDetails._team_profile_change_logo_details_validator,
     'team_profile_change_name_details': EventDetails._team_profile_change_name_details_validator,
+    'team_profile_remove_background_details': EventDetails._team_profile_remove_background_details_validator,
     'team_profile_remove_logo_details': EventDetails._team_profile_remove_logo_details_validator,
     'tfa_add_backup_phone_details': EventDetails._tfa_add_backup_phone_details_validator,
     'tfa_add_security_key_details': EventDetails._tfa_add_security_key_details_validator,
@@ -101030,6 +102158,7 @@ EventDetails._tagmap = {
 
 EventDetails.other = EventDetails('other')
 
+EventType._admin_alerting_changed_alert_config_validator = AdminAlertingChangedAlertConfigType_validator
 EventType._app_link_team_validator = AppLinkTeamType_validator
 EventType._app_link_user_validator = AppLinkUserType_validator
 EventType._app_unlink_team_validator = AppUnlinkTeamType_validator
@@ -101149,6 +102278,7 @@ EventType._member_change_email_validator = MemberChangeEmailType_validator
 EventType._member_change_external_id_validator = MemberChangeExternalIdType_validator
 EventType._member_change_membership_type_validator = MemberChangeMembershipTypeType_validator
 EventType._member_change_name_validator = MemberChangeNameType_validator
+EventType._member_change_reseller_role_validator = MemberChangeResellerRoleType_validator
 EventType._member_change_status_validator = MemberChangeStatusType_validator
 EventType._member_delete_manual_contacts_validator = MemberDeleteManualContactsType_validator
 EventType._member_delete_profile_photo_validator = MemberDeleteProfilePhotoType_validator
@@ -101435,10 +102565,13 @@ EventType._web_sessions_change_fixed_length_policy_validator = WebSessionsChange
 EventType._web_sessions_change_idle_length_policy_validator = WebSessionsChangeIdleLengthPolicyType_validator
 EventType._team_merge_from_validator = TeamMergeFromType_validator
 EventType._team_merge_to_validator = TeamMergeToType_validator
+EventType._team_profile_add_background_validator = TeamProfileAddBackgroundType_validator
 EventType._team_profile_add_logo_validator = TeamProfileAddLogoType_validator
+EventType._team_profile_change_background_validator = TeamProfileChangeBackgroundType_validator
 EventType._team_profile_change_default_language_validator = TeamProfileChangeDefaultLanguageType_validator
 EventType._team_profile_change_logo_validator = TeamProfileChangeLogoType_validator
 EventType._team_profile_change_name_validator = TeamProfileChangeNameType_validator
+EventType._team_profile_remove_background_validator = TeamProfileRemoveBackgroundType_validator
 EventType._team_profile_remove_logo_validator = TeamProfileRemoveLogoType_validator
 EventType._tfa_add_backup_phone_validator = TfaAddBackupPhoneType_validator
 EventType._tfa_add_security_key_validator = TfaAddSecurityKeyType_validator
@@ -101474,6 +102607,7 @@ EventType._team_merge_request_sent_shown_to_primary_team_validator = TeamMergeRe
 EventType._team_merge_request_sent_shown_to_secondary_team_validator = TeamMergeRequestSentShownToSecondaryTeamType_validator
 EventType._other_validator = bv.Void()
 EventType._tagmap = {
+    'admin_alerting_changed_alert_config': EventType._admin_alerting_changed_alert_config_validator,
     'app_link_team': EventType._app_link_team_validator,
     'app_link_user': EventType._app_link_user_validator,
     'app_unlink_team': EventType._app_unlink_team_validator,
@@ -101593,6 +102727,7 @@ EventType._tagmap = {
     'member_change_external_id': EventType._member_change_external_id_validator,
     'member_change_membership_type': EventType._member_change_membership_type_validator,
     'member_change_name': EventType._member_change_name_validator,
+    'member_change_reseller_role': EventType._member_change_reseller_role_validator,
     'member_change_status': EventType._member_change_status_validator,
     'member_delete_manual_contacts': EventType._member_delete_manual_contacts_validator,
     'member_delete_profile_photo': EventType._member_delete_profile_photo_validator,
@@ -101879,10 +103014,13 @@ EventType._tagmap = {
     'web_sessions_change_idle_length_policy': EventType._web_sessions_change_idle_length_policy_validator,
     'team_merge_from': EventType._team_merge_from_validator,
     'team_merge_to': EventType._team_merge_to_validator,
+    'team_profile_add_background': EventType._team_profile_add_background_validator,
     'team_profile_add_logo': EventType._team_profile_add_logo_validator,
+    'team_profile_change_background': EventType._team_profile_change_background_validator,
     'team_profile_change_default_language': EventType._team_profile_change_default_language_validator,
     'team_profile_change_logo': EventType._team_profile_change_logo_validator,
     'team_profile_change_name': EventType._team_profile_change_name_validator,
+    'team_profile_remove_background': EventType._team_profile_remove_background_validator,
     'team_profile_remove_logo': EventType._team_profile_remove_logo_validator,
     'tfa_add_backup_phone': EventType._tfa_add_backup_phone_validator,
     'tfa_add_security_key': EventType._tfa_add_security_key_validator,
@@ -101921,6 +103059,7 @@ EventType._tagmap = {
 
 EventType.other = EventType('other')
 
+EventTypeArg._admin_alerting_changed_alert_config_validator = bv.Void()
 EventTypeArg._app_link_team_validator = bv.Void()
 EventTypeArg._app_link_user_validator = bv.Void()
 EventTypeArg._app_unlink_team_validator = bv.Void()
@@ -102040,6 +103179,7 @@ EventTypeArg._member_change_email_validator = bv.Void()
 EventTypeArg._member_change_external_id_validator = bv.Void()
 EventTypeArg._member_change_membership_type_validator = bv.Void()
 EventTypeArg._member_change_name_validator = bv.Void()
+EventTypeArg._member_change_reseller_role_validator = bv.Void()
 EventTypeArg._member_change_status_validator = bv.Void()
 EventTypeArg._member_delete_manual_contacts_validator = bv.Void()
 EventTypeArg._member_delete_profile_photo_validator = bv.Void()
@@ -102326,10 +103466,13 @@ EventTypeArg._web_sessions_change_fixed_length_policy_validator = bv.Void()
 EventTypeArg._web_sessions_change_idle_length_policy_validator = bv.Void()
 EventTypeArg._team_merge_from_validator = bv.Void()
 EventTypeArg._team_merge_to_validator = bv.Void()
+EventTypeArg._team_profile_add_background_validator = bv.Void()
 EventTypeArg._team_profile_add_logo_validator = bv.Void()
+EventTypeArg._team_profile_change_background_validator = bv.Void()
 EventTypeArg._team_profile_change_default_language_validator = bv.Void()
 EventTypeArg._team_profile_change_logo_validator = bv.Void()
 EventTypeArg._team_profile_change_name_validator = bv.Void()
+EventTypeArg._team_profile_remove_background_validator = bv.Void()
 EventTypeArg._team_profile_remove_logo_validator = bv.Void()
 EventTypeArg._tfa_add_backup_phone_validator = bv.Void()
 EventTypeArg._tfa_add_security_key_validator = bv.Void()
@@ -102365,6 +103508,7 @@ EventTypeArg._team_merge_request_sent_shown_to_primary_team_validator = bv.Void(
 EventTypeArg._team_merge_request_sent_shown_to_secondary_team_validator = bv.Void()
 EventTypeArg._other_validator = bv.Void()
 EventTypeArg._tagmap = {
+    'admin_alerting_changed_alert_config': EventTypeArg._admin_alerting_changed_alert_config_validator,
     'app_link_team': EventTypeArg._app_link_team_validator,
     'app_link_user': EventTypeArg._app_link_user_validator,
     'app_unlink_team': EventTypeArg._app_unlink_team_validator,
@@ -102484,6 +103628,7 @@ EventTypeArg._tagmap = {
     'member_change_external_id': EventTypeArg._member_change_external_id_validator,
     'member_change_membership_type': EventTypeArg._member_change_membership_type_validator,
     'member_change_name': EventTypeArg._member_change_name_validator,
+    'member_change_reseller_role': EventTypeArg._member_change_reseller_role_validator,
     'member_change_status': EventTypeArg._member_change_status_validator,
     'member_delete_manual_contacts': EventTypeArg._member_delete_manual_contacts_validator,
     'member_delete_profile_photo': EventTypeArg._member_delete_profile_photo_validator,
@@ -102770,10 +103915,13 @@ EventTypeArg._tagmap = {
     'web_sessions_change_idle_length_policy': EventTypeArg._web_sessions_change_idle_length_policy_validator,
     'team_merge_from': EventTypeArg._team_merge_from_validator,
     'team_merge_to': EventTypeArg._team_merge_to_validator,
+    'team_profile_add_background': EventTypeArg._team_profile_add_background_validator,
     'team_profile_add_logo': EventTypeArg._team_profile_add_logo_validator,
+    'team_profile_change_background': EventTypeArg._team_profile_change_background_validator,
     'team_profile_change_default_language': EventTypeArg._team_profile_change_default_language_validator,
     'team_profile_change_logo': EventTypeArg._team_profile_change_logo_validator,
     'team_profile_change_name': EventTypeArg._team_profile_change_name_validator,
+    'team_profile_remove_background': EventTypeArg._team_profile_remove_background_validator,
     'team_profile_remove_logo': EventTypeArg._team_profile_remove_logo_validator,
     'tfa_add_backup_phone': EventTypeArg._tfa_add_backup_phone_validator,
     'tfa_add_security_key': EventTypeArg._tfa_add_security_key_validator,
@@ -102810,6 +103958,7 @@ EventTypeArg._tagmap = {
     'other': EventTypeArg._other_validator,
 }
 
+EventTypeArg.admin_alerting_changed_alert_config = EventTypeArg('admin_alerting_changed_alert_config')
 EventTypeArg.app_link_team = EventTypeArg('app_link_team')
 EventTypeArg.app_link_user = EventTypeArg('app_link_user')
 EventTypeArg.app_unlink_team = EventTypeArg('app_unlink_team')
@@ -102929,6 +104078,7 @@ EventTypeArg.member_change_email = EventTypeArg('member_change_email')
 EventTypeArg.member_change_external_id = EventTypeArg('member_change_external_id')
 EventTypeArg.member_change_membership_type = EventTypeArg('member_change_membership_type')
 EventTypeArg.member_change_name = EventTypeArg('member_change_name')
+EventTypeArg.member_change_reseller_role = EventTypeArg('member_change_reseller_role')
 EventTypeArg.member_change_status = EventTypeArg('member_change_status')
 EventTypeArg.member_delete_manual_contacts = EventTypeArg('member_delete_manual_contacts')
 EventTypeArg.member_delete_profile_photo = EventTypeArg('member_delete_profile_photo')
@@ -103215,10 +104365,13 @@ EventTypeArg.web_sessions_change_fixed_length_policy = EventTypeArg('web_session
 EventTypeArg.web_sessions_change_idle_length_policy = EventTypeArg('web_sessions_change_idle_length_policy')
 EventTypeArg.team_merge_from = EventTypeArg('team_merge_from')
 EventTypeArg.team_merge_to = EventTypeArg('team_merge_to')
+EventTypeArg.team_profile_add_background = EventTypeArg('team_profile_add_background')
 EventTypeArg.team_profile_add_logo = EventTypeArg('team_profile_add_logo')
+EventTypeArg.team_profile_change_background = EventTypeArg('team_profile_change_background')
 EventTypeArg.team_profile_change_default_language = EventTypeArg('team_profile_change_default_language')
 EventTypeArg.team_profile_change_logo = EventTypeArg('team_profile_change_logo')
 EventTypeArg.team_profile_change_name = EventTypeArg('team_profile_change_name')
+EventTypeArg.team_profile_remove_background = EventTypeArg('team_profile_remove_background')
 EventTypeArg.team_profile_remove_logo = EventTypeArg('team_profile_remove_logo')
 EventTypeArg.tfa_add_backup_phone = EventTypeArg('tfa_add_backup_phone')
 EventTypeArg.tfa_add_security_key = EventTypeArg('tfa_add_security_key')
@@ -104163,17 +105316,20 @@ GovernancePolicyRemoveFoldersDetails._governance_policy_id_validator = bv.String
 GovernancePolicyRemoveFoldersDetails._name_validator = bv.String()
 GovernancePolicyRemoveFoldersDetails._policy_type_validator = bv.Nullable(PolicyType_validator)
 GovernancePolicyRemoveFoldersDetails._folders_validator = bv.Nullable(bv.List(bv.String()))
+GovernancePolicyRemoveFoldersDetails._reason_validator = bv.Nullable(bv.String())
 GovernancePolicyRemoveFoldersDetails._all_field_names_ = set([
     'governance_policy_id',
     'name',
     'policy_type',
     'folders',
+    'reason',
 ])
 GovernancePolicyRemoveFoldersDetails._all_fields_ = [
     ('governance_policy_id', GovernancePolicyRemoveFoldersDetails._governance_policy_id_validator),
     ('name', GovernancePolicyRemoveFoldersDetails._name_validator),
     ('policy_type', GovernancePolicyRemoveFoldersDetails._policy_type_validator),
     ('folders', GovernancePolicyRemoveFoldersDetails._folders_validator),
+    ('reason', GovernancePolicyRemoveFoldersDetails._reason_validator),
 ]
 
 GovernancePolicyRemoveFoldersType._description_validator = bv.String()
@@ -104948,6 +106104,21 @@ MemberChangeNameDetails._all_fields_ = [
 MemberChangeNameType._description_validator = bv.String()
 MemberChangeNameType._all_field_names_ = set(['description'])
 MemberChangeNameType._all_fields_ = [('description', MemberChangeNameType._description_validator)]
+
+MemberChangeResellerRoleDetails._new_value_validator = ResellerRole_validator
+MemberChangeResellerRoleDetails._previous_value_validator = ResellerRole_validator
+MemberChangeResellerRoleDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+MemberChangeResellerRoleDetails._all_fields_ = [
+    ('new_value', MemberChangeResellerRoleDetails._new_value_validator),
+    ('previous_value', MemberChangeResellerRoleDetails._previous_value_validator),
+]
+
+MemberChangeResellerRoleType._description_validator = bv.String()
+MemberChangeResellerRoleType._all_field_names_ = set(['description'])
+MemberChangeResellerRoleType._all_fields_ = [('description', MemberChangeResellerRoleType._description_validator)]
 
 MemberChangeStatusDetails._previous_value_validator = bv.Nullable(MemberStatus_validator)
 MemberChangeStatusDetails._new_value_validator = MemberStatus_validator
@@ -106407,6 +107578,19 @@ ResellerLogInfo._all_fields_ = [
     ('reseller_name', ResellerLogInfo._reseller_name_validator),
     ('reseller_email', ResellerLogInfo._reseller_email_validator),
 ]
+
+ResellerRole._not_reseller_validator = bv.Void()
+ResellerRole._reseller_admin_validator = bv.Void()
+ResellerRole._other_validator = bv.Void()
+ResellerRole._tagmap = {
+    'not_reseller': ResellerRole._not_reseller_validator,
+    'reseller_admin': ResellerRole._reseller_admin_validator,
+    'other': ResellerRole._other_validator,
+}
+
+ResellerRole.not_reseller = ResellerRole('not_reseller')
+ResellerRole.reseller_admin = ResellerRole('reseller_admin')
+ResellerRole.other = ResellerRole('other')
 
 ResellerSupportChangePolicyDetails._new_value_validator = ResellerSupportPolicy_validator
 ResellerSupportChangePolicyDetails._previous_value_validator = ResellerSupportPolicy_validator
@@ -108724,12 +109908,26 @@ TeamName._all_fields_ = [
     ('team_legal_name', TeamName._team_legal_name_validator),
 ]
 
+TeamProfileAddBackgroundDetails._all_field_names_ = set([])
+TeamProfileAddBackgroundDetails._all_fields_ = []
+
+TeamProfileAddBackgroundType._description_validator = bv.String()
+TeamProfileAddBackgroundType._all_field_names_ = set(['description'])
+TeamProfileAddBackgroundType._all_fields_ = [('description', TeamProfileAddBackgroundType._description_validator)]
+
 TeamProfileAddLogoDetails._all_field_names_ = set([])
 TeamProfileAddLogoDetails._all_fields_ = []
 
 TeamProfileAddLogoType._description_validator = bv.String()
 TeamProfileAddLogoType._all_field_names_ = set(['description'])
 TeamProfileAddLogoType._all_fields_ = [('description', TeamProfileAddLogoType._description_validator)]
+
+TeamProfileChangeBackgroundDetails._all_field_names_ = set([])
+TeamProfileChangeBackgroundDetails._all_fields_ = []
+
+TeamProfileChangeBackgroundType._description_validator = bv.String()
+TeamProfileChangeBackgroundType._all_field_names_ = set(['description'])
+TeamProfileChangeBackgroundType._all_fields_ = [('description', TeamProfileChangeBackgroundType._description_validator)]
 
 TeamProfileChangeDefaultLanguageDetails._new_value_validator = common.LanguageCode_validator
 TeamProfileChangeDefaultLanguageDetails._previous_value_validator = common.LanguageCode_validator
@@ -108767,6 +109965,13 @@ TeamProfileChangeNameDetails._all_fields_ = [
 TeamProfileChangeNameType._description_validator = bv.String()
 TeamProfileChangeNameType._all_field_names_ = set(['description'])
 TeamProfileChangeNameType._all_fields_ = [('description', TeamProfileChangeNameType._description_validator)]
+
+TeamProfileRemoveBackgroundDetails._all_field_names_ = set([])
+TeamProfileRemoveBackgroundDetails._all_fields_ = []
+
+TeamProfileRemoveBackgroundType._description_validator = bv.String()
+TeamProfileRemoveBackgroundType._all_field_names_ = set(['description'])
+TeamProfileRemoveBackgroundType._all_fields_ = [('description', TeamProfileRemoveBackgroundType._description_validator)]
 
 TeamProfileRemoveLogoDetails._all_field_names_ = set([])
 TeamProfileRemoveLogoDetails._all_fields_ = []

@@ -14616,6 +14616,12 @@ class UploadSessionFinishError(bb.Union):
     :ivar files.UploadSessionFinishError.too_many_write_operations: There are
         too many write operations happening in the user's Dropbox. You should
         retry uploading this file.
+    :ivar files.UploadSessionFinishError.concurrent_session_data_not_allowed:
+        Uploading data not allowed when finishing concurrent upload session.
+    :ivar files.UploadSessionFinishError.concurrent_session_not_closed:
+        Concurrent upload sessions need to be closed before finishing.
+    :ivar files.UploadSessionFinishError.concurrent_session_missing_data: Not
+        all pieces of data were uploaded before trying to finish the session.
     """
 
     _catch_all = 'other'
@@ -14623,6 +14629,12 @@ class UploadSessionFinishError(bb.Union):
     too_many_shared_folder_targets = None
     # Attribute is overwritten below the class definition
     too_many_write_operations = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_data_not_allowed = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_not_closed = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_missing_data = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -14699,6 +14711,30 @@ class UploadSessionFinishError(bb.Union):
         """
         return self._tag == 'too_many_write_operations'
 
+    def is_concurrent_session_data_not_allowed(self):
+        """
+        Check if the union tag is ``concurrent_session_data_not_allowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_data_not_allowed'
+
+    def is_concurrent_session_not_closed(self):
+        """
+        Check if the union tag is ``concurrent_session_not_closed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_not_closed'
+
+    def is_concurrent_session_missing_data(self):
+        """
+        Check if the union tag is ``concurrent_session_missing_data``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_missing_data'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -14774,6 +14810,12 @@ class UploadSessionLookupError(bb.Union):
     :ivar files.UploadSessionLookupError.too_large: You can not append to the
         upload session because the size of a file should not reach the max file
         size limit (i.e. 350GB).
+    :ivar files.UploadSessionLookupError.concurrent_session_invalid_offset: For
+        concurrent upload sessions, offset needs to be multiple of 4194304
+        bytes.
+    :ivar files.UploadSessionLookupError.concurrent_session_invalid_data_size:
+        For concurrent upload sessions, only chunks with size multiple of
+        4194304 bytes can be uploaded.
     """
 
     _catch_all = 'other'
@@ -14785,6 +14827,10 @@ class UploadSessionLookupError(bb.Union):
     not_closed = None
     # Attribute is overwritten below the class definition
     too_large = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_invalid_offset = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_invalid_data_size = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -14838,6 +14884,22 @@ class UploadSessionLookupError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'too_large'
+
+    def is_concurrent_session_invalid_offset(self):
+        """
+        Check if the union tag is ``concurrent_session_invalid_offset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_invalid_offset'
+
+    def is_concurrent_session_invalid_data_size(self):
+        """
+        Check if the union tag is ``concurrent_session_invalid_data_size``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_invalid_data_size'
 
     def is_other(self):
         """
@@ -14929,21 +14991,31 @@ class UploadSessionStartArg(bb.Struct):
         be closed, at which point you won't be able to call
         :meth:`dropbox.dropbox.Dropbox.files_upload_session_append` anymore with
         the current session.
+    :ivar files.UploadSessionStartArg.session_type: Type of upload session you
+        want to start. If not specified, default is
+        ``UploadSessionType.sequential``.
     """
 
     __slots__ = [
         '_close_value',
         '_close_present',
+        '_session_type_value',
+        '_session_type_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
-                 close=None):
+                 close=None,
+                 session_type=None):
         self._close_value = None
         self._close_present = False
+        self._session_type_value = None
+        self._session_type_present = False
         if close is not None:
             self.close = close
+        if session_type is not None:
+            self.session_type = session_type
 
     @property
     def close(self):
@@ -14970,15 +15042,95 @@ class UploadSessionStartArg(bb.Struct):
         self._close_value = None
         self._close_present = False
 
+    @property
+    def session_type(self):
+        """
+        Type of upload session you want to start. If not specified, default is
+        ``UploadSessionType.sequential``.
+
+        :rtype: UploadSessionType
+        """
+        if self._session_type_present:
+            return self._session_type_value
+        else:
+            return None
+
+    @session_type.setter
+    def session_type(self, val):
+        if val is None:
+            del self.session_type
+            return
+        self._session_type_validator.validate_type_only(val)
+        self._session_type_value = val
+        self._session_type_present = True
+
+    @session_type.deleter
+    def session_type(self):
+        self._session_type_value = None
+        self._session_type_present = False
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UploadSessionStartArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
     def __repr__(self):
-        return 'UploadSessionStartArg(close={!r})'.format(
+        return 'UploadSessionStartArg(close={!r}, session_type={!r})'.format(
             self._close_value,
+            self._session_type_value,
         )
 
 UploadSessionStartArg_validator = bv.Struct(UploadSessionStartArg)
+
+class UploadSessionStartError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.UploadSessionStartError.concurrent_session_data_not_allowed:
+        Uploading data not allowed when starting concurrent upload session.
+    :ivar files.UploadSessionStartError.concurrent_session_close_not_allowed:
+        Can not start a closed concurrent upload session.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    concurrent_session_data_not_allowed = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_close_not_allowed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_concurrent_session_data_not_allowed(self):
+        """
+        Check if the union tag is ``concurrent_session_data_not_allowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_data_not_allowed'
+
+    def is_concurrent_session_close_not_allowed(self):
+        """
+        Check if the union tag is ``concurrent_session_close_not_allowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_close_not_allowed'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionStartError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UploadSessionStartError(%r, %r)' % (self._tag, self._value)
+
+UploadSessionStartError_validator = bv.Union(UploadSessionStartError)
 
 class UploadSessionStartResult(bb.Struct):
     """
@@ -15036,6 +15188,58 @@ class UploadSessionStartResult(bb.Struct):
         )
 
 UploadSessionStartResult_validator = bv.Struct(UploadSessionStartResult)
+
+class UploadSessionType(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.UploadSessionType.sequential: Pieces of content are uploaded
+        sequentially one after another. This is the default behavior.
+    :ivar files.UploadSessionType.concurrent: Pieces of data can be uploaded in
+        concurrent RPCs in any order.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    sequential = None
+    # Attribute is overwritten below the class definition
+    concurrent = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_sequential(self):
+        """
+        Check if the union tag is ``sequential``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sequential'
+
+    def is_concurrent(self):
+        """
+        Check if the union tag is ``concurrent``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'UploadSessionType(%r, %r)' % (self._tag, self._value)
+
+UploadSessionType_validator = bv.Union(UploadSessionType)
 
 class UploadWriteFailed(bb.Struct):
     """
@@ -17416,6 +17620,9 @@ UploadSessionFinishError._path_validator = WriteError_validator
 UploadSessionFinishError._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
 UploadSessionFinishError._too_many_shared_folder_targets_validator = bv.Void()
 UploadSessionFinishError._too_many_write_operations_validator = bv.Void()
+UploadSessionFinishError._concurrent_session_data_not_allowed_validator = bv.Void()
+UploadSessionFinishError._concurrent_session_not_closed_validator = bv.Void()
+UploadSessionFinishError._concurrent_session_missing_data_validator = bv.Void()
 UploadSessionFinishError._other_validator = bv.Void()
 UploadSessionFinishError._tagmap = {
     'lookup_failed': UploadSessionFinishError._lookup_failed_validator,
@@ -17423,11 +17630,17 @@ UploadSessionFinishError._tagmap = {
     'properties_error': UploadSessionFinishError._properties_error_validator,
     'too_many_shared_folder_targets': UploadSessionFinishError._too_many_shared_folder_targets_validator,
     'too_many_write_operations': UploadSessionFinishError._too_many_write_operations_validator,
+    'concurrent_session_data_not_allowed': UploadSessionFinishError._concurrent_session_data_not_allowed_validator,
+    'concurrent_session_not_closed': UploadSessionFinishError._concurrent_session_not_closed_validator,
+    'concurrent_session_missing_data': UploadSessionFinishError._concurrent_session_missing_data_validator,
     'other': UploadSessionFinishError._other_validator,
 }
 
 UploadSessionFinishError.too_many_shared_folder_targets = UploadSessionFinishError('too_many_shared_folder_targets')
 UploadSessionFinishError.too_many_write_operations = UploadSessionFinishError('too_many_write_operations')
+UploadSessionFinishError.concurrent_session_data_not_allowed = UploadSessionFinishError('concurrent_session_data_not_allowed')
+UploadSessionFinishError.concurrent_session_not_closed = UploadSessionFinishError('concurrent_session_not_closed')
+UploadSessionFinishError.concurrent_session_missing_data = UploadSessionFinishError('concurrent_session_missing_data')
 UploadSessionFinishError.other = UploadSessionFinishError('other')
 
 UploadSessionLookupError._not_found_validator = bv.Void()
@@ -17435,6 +17648,8 @@ UploadSessionLookupError._incorrect_offset_validator = UploadSessionOffsetError_
 UploadSessionLookupError._closed_validator = bv.Void()
 UploadSessionLookupError._not_closed_validator = bv.Void()
 UploadSessionLookupError._too_large_validator = bv.Void()
+UploadSessionLookupError._concurrent_session_invalid_offset_validator = bv.Void()
+UploadSessionLookupError._concurrent_session_invalid_data_size_validator = bv.Void()
 UploadSessionLookupError._other_validator = bv.Void()
 UploadSessionLookupError._tagmap = {
     'not_found': UploadSessionLookupError._not_found_validator,
@@ -17442,6 +17657,8 @@ UploadSessionLookupError._tagmap = {
     'closed': UploadSessionLookupError._closed_validator,
     'not_closed': UploadSessionLookupError._not_closed_validator,
     'too_large': UploadSessionLookupError._too_large_validator,
+    'concurrent_session_invalid_offset': UploadSessionLookupError._concurrent_session_invalid_offset_validator,
+    'concurrent_session_invalid_data_size': UploadSessionLookupError._concurrent_session_invalid_data_size_validator,
     'other': UploadSessionLookupError._other_validator,
 }
 
@@ -17449,6 +17666,8 @@ UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
 UploadSessionLookupError.closed = UploadSessionLookupError('closed')
 UploadSessionLookupError.not_closed = UploadSessionLookupError('not_closed')
 UploadSessionLookupError.too_large = UploadSessionLookupError('too_large')
+UploadSessionLookupError.concurrent_session_invalid_offset = UploadSessionLookupError('concurrent_session_invalid_offset')
+UploadSessionLookupError.concurrent_session_invalid_data_size = UploadSessionLookupError('concurrent_session_invalid_data_size')
 UploadSessionLookupError.other = UploadSessionLookupError('other')
 
 UploadSessionOffsetError._correct_offset_validator = bv.UInt64()
@@ -17456,12 +17675,45 @@ UploadSessionOffsetError._all_field_names_ = set(['correct_offset'])
 UploadSessionOffsetError._all_fields_ = [('correct_offset', UploadSessionOffsetError._correct_offset_validator)]
 
 UploadSessionStartArg._close_validator = bv.Boolean()
-UploadSessionStartArg._all_field_names_ = set(['close'])
-UploadSessionStartArg._all_fields_ = [('close', UploadSessionStartArg._close_validator)]
+UploadSessionStartArg._session_type_validator = bv.Nullable(UploadSessionType_validator)
+UploadSessionStartArg._all_field_names_ = set([
+    'close',
+    'session_type',
+])
+UploadSessionStartArg._all_fields_ = [
+    ('close', UploadSessionStartArg._close_validator),
+    ('session_type', UploadSessionStartArg._session_type_validator),
+]
+
+UploadSessionStartError._concurrent_session_data_not_allowed_validator = bv.Void()
+UploadSessionStartError._concurrent_session_close_not_allowed_validator = bv.Void()
+UploadSessionStartError._other_validator = bv.Void()
+UploadSessionStartError._tagmap = {
+    'concurrent_session_data_not_allowed': UploadSessionStartError._concurrent_session_data_not_allowed_validator,
+    'concurrent_session_close_not_allowed': UploadSessionStartError._concurrent_session_close_not_allowed_validator,
+    'other': UploadSessionStartError._other_validator,
+}
+
+UploadSessionStartError.concurrent_session_data_not_allowed = UploadSessionStartError('concurrent_session_data_not_allowed')
+UploadSessionStartError.concurrent_session_close_not_allowed = UploadSessionStartError('concurrent_session_close_not_allowed')
+UploadSessionStartError.other = UploadSessionStartError('other')
 
 UploadSessionStartResult._session_id_validator = bv.String()
 UploadSessionStartResult._all_field_names_ = set(['session_id'])
 UploadSessionStartResult._all_fields_ = [('session_id', UploadSessionStartResult._session_id_validator)]
+
+UploadSessionType._sequential_validator = bv.Void()
+UploadSessionType._concurrent_validator = bv.Void()
+UploadSessionType._other_validator = bv.Void()
+UploadSessionType._tagmap = {
+    'sequential': UploadSessionType._sequential_validator,
+    'concurrent': UploadSessionType._concurrent_validator,
+    'other': UploadSessionType._other_validator,
+}
+
+UploadSessionType.sequential = UploadSessionType('sequential')
+UploadSessionType.concurrent = UploadSessionType('concurrent')
+UploadSessionType.other = UploadSessionType('other')
 
 UploadWriteFailed._reason_validator = WriteError_validator
 UploadWriteFailed._upload_session_id_validator = bv.String()
@@ -18153,7 +18405,7 @@ upload_session_start = bb.Route(
     False,
     UploadSessionStartArg_validator,
     UploadSessionStartResult_validator,
-    bv.Void(),
+    UploadSessionStartError_validator,
     {'host': u'content',
      'style': u'upload'},
 )

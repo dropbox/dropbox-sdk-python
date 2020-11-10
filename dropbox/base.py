@@ -2936,7 +2936,8 @@ class DropboxBase(object):
 
     def files_upload_session_start(self,
                                    f,
-                                   close=False):
+                                   close=False,
+                                   session_type=None):
         """
         Upload sessions allow you to upload a single file in one or more
         requests, for example where the size of the file is greater than 150 MB.
@@ -2955,15 +2956,40 @@ class DropboxBase(object):
         allowed per month. For more information, see the `Data transport limit
         page
         <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
+        By default, upload sessions require you to send content of the file in
+        sequential order via consecutive :meth:`files_upload_session_start`,
+        :meth:`files_upload_session_append_v2`,
+        :meth:`files_upload_session_finish` calls. For better performance, you
+        can instead optionally use a ``UploadSessionType.concurrent`` upload
+        session. To start a new concurrent session, set
+        ``UploadSessionStartArg.session_type`` to
+        ``UploadSessionType.concurrent``. After that, you can send file data in
+        concurrent :meth:`files_upload_session_append_v2` requests. Finally
+        finish the session with :meth:`files_upload_session_finish`. There are
+        couple of constraints with concurrent sessions to make them work. You
+        can not send data with :meth:`files_upload_session_start` or
+        :meth:`files_upload_session_finish` call, only with
+        :meth:`files_upload_session_append_v2` call. Also data uploaded in
+        :meth:`files_upload_session_append_v2` call must be multiple of 4194304
+        bytes (except for last :meth:`files_upload_session_append_v2` with
+        ``UploadSessionStartArg.close`` to ``True``, that may contain any
+        remaining data).
 
         :param bytes f: Contents to upload.
         :param bool close: If true, the current session will be closed, at which
             point you won't be able to call
             :meth:`files_upload_session_append_v2` anymore with the current
             session.
+        :param Nullable session_type: Type of upload session you want to start.
+            If not specified, default is ``UploadSessionType.sequential``.
         :rtype: :class:`dropbox.files.UploadSessionStartResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.UploadSessionStartError`
         """
-        arg = files.UploadSessionStartArg(close)
+        arg = files.UploadSessionStartArg(close,
+                                          session_type)
         r = self.request(
             files.upload_session_start,
             'files',
