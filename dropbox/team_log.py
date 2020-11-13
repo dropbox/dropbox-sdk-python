@@ -5176,6 +5176,176 @@ class ClassificationChangePolicyType(bb.Struct):
 
 ClassificationChangePolicyType_validator = bv.Struct(ClassificationChangePolicyType)
 
+class ClassificationCreateReportDetails(bb.Struct):
+    """
+    Created Classification report.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ClassificationCreateReportDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ClassificationCreateReportDetails()'
+
+ClassificationCreateReportDetails_validator = bv.Struct(ClassificationCreateReportDetails)
+
+class ClassificationCreateReportFailDetails(bb.Struct):
+    """
+    Couldn't create Classification report.
+
+    :ivar team_log.ClassificationCreateReportFailDetails.failure_reason: Failure
+        reason.
+    """
+
+    __slots__ = [
+        '_failure_reason_value',
+        '_failure_reason_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 failure_reason=None):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+        if failure_reason is not None:
+            self.failure_reason = failure_reason
+
+    @property
+    def failure_reason(self):
+        """
+        Failure reason.
+
+        :rtype: team.TeamReportFailureReason
+        """
+        if self._failure_reason_present:
+            return self._failure_reason_value
+        else:
+            raise AttributeError("missing required field 'failure_reason'")
+
+    @failure_reason.setter
+    def failure_reason(self, val):
+        self._failure_reason_validator.validate_type_only(val)
+        self._failure_reason_value = val
+        self._failure_reason_present = True
+
+    @failure_reason.deleter
+    def failure_reason(self):
+        self._failure_reason_value = None
+        self._failure_reason_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ClassificationCreateReportFailDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ClassificationCreateReportFailDetails(failure_reason={!r})'.format(
+            self._failure_reason_value,
+        )
+
+ClassificationCreateReportFailDetails_validator = bv.Struct(ClassificationCreateReportFailDetails)
+
+class ClassificationCreateReportFailType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ClassificationCreateReportFailType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ClassificationCreateReportFailType(description={!r})'.format(
+            self._description_value,
+        )
+
+ClassificationCreateReportFailType_validator = bv.Struct(ClassificationCreateReportFailType)
+
+class ClassificationCreateReportType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+        '_description_present',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = None
+        self._description_present = False
+        if description is not None:
+            self.description = description
+
+    @property
+    def description(self):
+        """
+        :rtype: str
+        """
+        if self._description_present:
+            return self._description_value
+        else:
+            raise AttributeError("missing required field 'description'")
+
+    @description.setter
+    def description(self, val):
+        val = self._description_validator.validate(val)
+        self._description_value = val
+        self._description_present = True
+
+    @description.deleter
+    def description(self):
+        self._description_value = None
+        self._description_present = False
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ClassificationCreateReportType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+    def __repr__(self):
+        return 'ClassificationCreateReportType(description={!r})'.format(
+            self._description_value,
+        )
+
+ClassificationCreateReportType_validator = bv.Struct(ClassificationCreateReportType)
+
 class ClassificationPolicyEnumWrapper(bb.Union):
     """
     Policy for controlling team access to the classification feature
@@ -14035,6 +14205,28 @@ class EventDetails(bb.Union):
         return cls('password_reset_all_details', val)
 
     @classmethod
+    def classification_create_report_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``classification_create_report_details`` tag with value ``val``.
+
+        :param ClassificationCreateReportDetails val:
+        :rtype: EventDetails
+        """
+        return cls('classification_create_report_details', val)
+
+    @classmethod
+    def classification_create_report_fail_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``classification_create_report_fail_details`` tag with value ``val``.
+
+        :param ClassificationCreateReportFailDetails val:
+        :rtype: EventDetails
+        """
+        return cls('classification_create_report_fail_details', val)
+
+    @classmethod
     def emm_create_exceptions_report_details(cls, val):
         """
         Create an instance of this class set to the
@@ -18436,6 +18628,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'password_reset_all_details'
 
+    def is_classification_create_report_details(self):
+        """
+        Check if the union tag is ``classification_create_report_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_create_report_details'
+
+    def is_classification_create_report_fail_details(self):
+        """
+        Check if the union tag is ``classification_create_report_fail_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_create_report_fail_details'
+
     def is_emm_create_exceptions_report_details(self):
         """
         Check if the union tag is ``emm_create_exceptions_report_details``.
@@ -22406,6 +22614,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'password_reset_all_details' not set")
         return self._value
 
+    def get_classification_create_report_details(self):
+        """
+        Only call this if :meth:`is_classification_create_report_details` is true.
+
+        :rtype: ClassificationCreateReportDetails
+        """
+        if not self.is_classification_create_report_details():
+            raise AttributeError("tag 'classification_create_report_details' not set")
+        return self._value
+
+    def get_classification_create_report_fail_details(self):
+        """
+        Only call this if :meth:`is_classification_create_report_fail_details` is true.
+
+        :rtype: ClassificationCreateReportFailDetails
+        """
+        if not self.is_classification_create_report_fail_details():
+            raise AttributeError("tag 'classification_create_report_fail_details' not set")
+        return self._value
+
     def get_emm_create_exceptions_report_details(self):
         """
         Only call this if :meth:`is_emm_create_exceptions_report_details` is true.
@@ -25432,6 +25660,11 @@ class EventType(bb.Union):
     :ivar PasswordResetType EventType.password_reset: (passwords) Reset password
     :ivar PasswordResetAllType EventType.password_reset_all: (passwords) Reset
         all team member passwords
+    :ivar ClassificationCreateReportType EventType.classification_create_report:
+        (reports) Created Classification report
+    :ivar ClassificationCreateReportFailType
+        EventType.classification_create_report_fail: (reports) Couldn't create
+        Classification report
     :ivar EmmCreateExceptionsReportType EventType.emm_create_exceptions_report:
         (reports) Created EMM-excluded users report
     :ivar EmmCreateUsageReportType EventType.emm_create_usage_report: (reports)
@@ -28181,6 +28414,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('password_reset_all', val)
+
+    @classmethod
+    def classification_create_report(cls, val):
+        """
+        Create an instance of this class set to the
+        ``classification_create_report`` tag with value ``val``.
+
+        :param ClassificationCreateReportType val:
+        :rtype: EventType
+        """
+        return cls('classification_create_report', val)
+
+    @classmethod
+    def classification_create_report_fail(cls, val):
+        """
+        Create an instance of this class set to the
+        ``classification_create_report_fail`` tag with value ``val``.
+
+        :param ClassificationCreateReportFailType val:
+        :rtype: EventType
+        """
+        return cls('classification_create_report_fail', val)
 
     @classmethod
     def emm_create_exceptions_report(cls, val):
@@ -32546,6 +32801,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'password_reset_all'
 
+    def is_classification_create_report(self):
+        """
+        Check if the union tag is ``classification_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_create_report'
+
+    def is_classification_create_report_fail(self):
+        """
+        Check if the union tag is ``classification_create_report_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_create_report_fail'
+
     def is_emm_create_exceptions_report(self):
         """
         Check if the union tag is ``emm_create_exceptions_report``.
@@ -36903,6 +37174,30 @@ class EventType(bb.Union):
             raise AttributeError("tag 'password_reset_all' not set")
         return self._value
 
+    def get_classification_create_report(self):
+        """
+        (reports) Created Classification report
+
+        Only call this if :meth:`is_classification_create_report` is true.
+
+        :rtype: ClassificationCreateReportType
+        """
+        if not self.is_classification_create_report():
+            raise AttributeError("tag 'classification_create_report' not set")
+        return self._value
+
+    def get_classification_create_report_fail(self):
+        """
+        (reports) Couldn't create Classification report
+
+        Only call this if :meth:`is_classification_create_report_fail` is true.
+
+        :rtype: ClassificationCreateReportFailType
+        """
+        if not self.is_classification_create_report_fail():
+            raise AttributeError("tag 'classification_create_report_fail' not set")
+        return self._value
+
     def get_emm_create_exceptions_report(self):
         """
         (reports) Created EMM-excluded users report
@@ -40441,6 +40736,10 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.password_reset: (passwords) Reset password
     :ivar team_log.EventTypeArg.password_reset_all: (passwords) Reset all team
         member passwords
+    :ivar team_log.EventTypeArg.classification_create_report: (reports) Created
+        Classification report
+    :ivar team_log.EventTypeArg.classification_create_report_fail: (reports)
+        Couldn't create Classification report
     :ivar team_log.EventTypeArg.emm_create_exceptions_report: (reports) Created
         EMM-excluded users report
     :ivar team_log.EventTypeArg.emm_create_usage_report: (reports) Created EMM
@@ -41382,6 +41681,10 @@ class EventTypeArg(bb.Union):
     password_reset = None
     # Attribute is overwritten below the class definition
     password_reset_all = None
+    # Attribute is overwritten below the class definition
+    classification_create_report = None
+    # Attribute is overwritten below the class definition
+    classification_create_report_fail = None
     # Attribute is overwritten below the class definition
     emm_create_exceptions_report = None
     # Attribute is overwritten below the class definition
@@ -43412,6 +43715,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'password_reset_all'
+
+    def is_classification_create_report(self):
+        """
+        Check if the union tag is ``classification_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_create_report'
+
+    def is_classification_create_report_fail(self):
+        """
+        Check if the union tag is ``classification_create_report_fail``.
+
+        :rtype: bool
+        """
+        return self._tag == 'classification_create_report_fail'
 
     def is_emm_create_exceptions_report(self):
         """
@@ -100436,6 +100755,21 @@ ClassificationChangePolicyType._description_validator = bv.String()
 ClassificationChangePolicyType._all_field_names_ = set(['description'])
 ClassificationChangePolicyType._all_fields_ = [('description', ClassificationChangePolicyType._description_validator)]
 
+ClassificationCreateReportDetails._all_field_names_ = set([])
+ClassificationCreateReportDetails._all_fields_ = []
+
+ClassificationCreateReportFailDetails._failure_reason_validator = team.TeamReportFailureReason_validator
+ClassificationCreateReportFailDetails._all_field_names_ = set(['failure_reason'])
+ClassificationCreateReportFailDetails._all_fields_ = [('failure_reason', ClassificationCreateReportFailDetails._failure_reason_validator)]
+
+ClassificationCreateReportFailType._description_validator = bv.String()
+ClassificationCreateReportFailType._all_field_names_ = set(['description'])
+ClassificationCreateReportFailType._all_fields_ = [('description', ClassificationCreateReportFailType._description_validator)]
+
+ClassificationCreateReportType._description_validator = bv.String()
+ClassificationCreateReportType._all_field_names_ = set(['description'])
+ClassificationCreateReportType._all_fields_ = [('description', ClassificationCreateReportType._description_validator)]
+
 ClassificationPolicyEnumWrapper._disabled_validator = bv.Void()
 ClassificationPolicyEnumWrapper._enabled_validator = bv.Void()
 ClassificationPolicyEnumWrapper._other_validator = bv.Void()
@@ -101444,6 +101778,8 @@ EventDetails._paper_published_link_view_details_validator = PaperPublishedLinkVi
 EventDetails._password_change_details_validator = PasswordChangeDetails_validator
 EventDetails._password_reset_details_validator = PasswordResetDetails_validator
 EventDetails._password_reset_all_details_validator = PasswordResetAllDetails_validator
+EventDetails._classification_create_report_details_validator = ClassificationCreateReportDetails_validator
+EventDetails._classification_create_report_fail_details_validator = ClassificationCreateReportFailDetails_validator
 EventDetails._emm_create_exceptions_report_details_validator = EmmCreateExceptionsReportDetails_validator
 EventDetails._emm_create_usage_report_details_validator = EmmCreateUsageReportDetails_validator
 EventDetails._export_members_report_details_validator = ExportMembersReportDetails_validator
@@ -101894,6 +102230,8 @@ EventDetails._tagmap = {
     'password_change_details': EventDetails._password_change_details_validator,
     'password_reset_details': EventDetails._password_reset_details_validator,
     'password_reset_all_details': EventDetails._password_reset_all_details_validator,
+    'classification_create_report_details': EventDetails._classification_create_report_details_validator,
+    'classification_create_report_fail_details': EventDetails._classification_create_report_fail_details_validator,
     'emm_create_exceptions_report_details': EventDetails._emm_create_exceptions_report_details_validator,
     'emm_create_usage_report_details': EventDetails._emm_create_usage_report_details_validator,
     'export_members_report_details': EventDetails._export_members_report_details_validator,
@@ -102347,6 +102685,8 @@ EventType._paper_published_link_view_validator = PaperPublishedLinkViewType_vali
 EventType._password_change_validator = PasswordChangeType_validator
 EventType._password_reset_validator = PasswordResetType_validator
 EventType._password_reset_all_validator = PasswordResetAllType_validator
+EventType._classification_create_report_validator = ClassificationCreateReportType_validator
+EventType._classification_create_report_fail_validator = ClassificationCreateReportFailType_validator
 EventType._emm_create_exceptions_report_validator = EmmCreateExceptionsReportType_validator
 EventType._emm_create_usage_report_validator = EmmCreateUsageReportType_validator
 EventType._export_members_report_validator = ExportMembersReportType_validator
@@ -102796,6 +103136,8 @@ EventType._tagmap = {
     'password_change': EventType._password_change_validator,
     'password_reset': EventType._password_reset_validator,
     'password_reset_all': EventType._password_reset_all_validator,
+    'classification_create_report': EventType._classification_create_report_validator,
+    'classification_create_report_fail': EventType._classification_create_report_fail_validator,
     'emm_create_exceptions_report': EventType._emm_create_exceptions_report_validator,
     'emm_create_usage_report': EventType._emm_create_usage_report_validator,
     'export_members_report': EventType._export_members_report_validator,
@@ -103248,6 +103590,8 @@ EventTypeArg._paper_published_link_view_validator = bv.Void()
 EventTypeArg._password_change_validator = bv.Void()
 EventTypeArg._password_reset_validator = bv.Void()
 EventTypeArg._password_reset_all_validator = bv.Void()
+EventTypeArg._classification_create_report_validator = bv.Void()
+EventTypeArg._classification_create_report_fail_validator = bv.Void()
 EventTypeArg._emm_create_exceptions_report_validator = bv.Void()
 EventTypeArg._emm_create_usage_report_validator = bv.Void()
 EventTypeArg._export_members_report_validator = bv.Void()
@@ -103697,6 +104041,8 @@ EventTypeArg._tagmap = {
     'password_change': EventTypeArg._password_change_validator,
     'password_reset': EventTypeArg._password_reset_validator,
     'password_reset_all': EventTypeArg._password_reset_all_validator,
+    'classification_create_report': EventTypeArg._classification_create_report_validator,
+    'classification_create_report_fail': EventTypeArg._classification_create_report_fail_validator,
     'emm_create_exceptions_report': EventTypeArg._emm_create_exceptions_report_validator,
     'emm_create_usage_report': EventTypeArg._emm_create_usage_report_validator,
     'export_members_report': EventTypeArg._export_members_report_validator,
@@ -104147,6 +104493,8 @@ EventTypeArg.paper_published_link_view = EventTypeArg('paper_published_link_view
 EventTypeArg.password_change = EventTypeArg('password_change')
 EventTypeArg.password_reset = EventTypeArg('password_reset')
 EventTypeArg.password_reset_all = EventTypeArg('password_reset_all')
+EventTypeArg.classification_create_report = EventTypeArg('classification_create_report')
+EventTypeArg.classification_create_report_fail = EventTypeArg('classification_create_report_fail')
 EventTypeArg.emm_create_exceptions_report = EventTypeArg('emm_create_exceptions_report')
 EventTypeArg.emm_create_usage_report = EventTypeArg('emm_create_usage_report')
 EventTypeArg.export_members_report = EventTypeArg('export_members_report')
