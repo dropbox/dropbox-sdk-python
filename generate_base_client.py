@@ -50,7 +50,7 @@ def main():
     subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_types', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style'] +
-         ['--', '-r', 'dropbox.dropbox.Dropbox.{ns}_{route}']))
+         ['--', '-r', 'dropbox.dropbox_client.Dropbox.{ns}_{route}', '-p', 'dropbox']))
 
     if verbose:
         print('Generating Python client')

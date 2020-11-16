@@ -7,14 +7,9 @@
 This namespace contains common data types used within the users namespace.
 """
 
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class AccountType(bb.Union):
     """
@@ -63,9 +58,6 @@ class AccountType(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AccountType, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'AccountType(%r, %r)' % (self._tag, self._value)
 
 AccountType_validator = bv.Union(AccountType)
 

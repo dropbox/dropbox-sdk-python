@@ -7,23 +7,12 @@
 This namespace contains endpoints and data types for file request operations.
 """
 
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
-try:
-    from . import (
-        common,
-        files,
-    )
-except (ImportError, SystemError, ValueError):
-    import common
-    import files
+from dropbox import common
+from dropbox import files
 
 class GeneralFileRequestsError(bb.Union):
     """
@@ -62,9 +51,6 @@ class GeneralFileRequestsError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GeneralFileRequestsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GeneralFileRequestsError(%r, %r)' % (self._tag, self._value)
-
 GeneralFileRequestsError_validator = bv.Union(GeneralFileRequestsError)
 
 class CountFileRequestsError(GeneralFileRequestsError):
@@ -79,14 +65,11 @@ class CountFileRequestsError(GeneralFileRequestsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CountFileRequestsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'CountFileRequestsError(%r, %r)' % (self._tag, self._value)
-
 CountFileRequestsError_validator = bv.Union(CountFileRequestsError)
 
 class CountFileRequestsResult(bb.Struct):
     """
-    Result for :meth:`dropbox.dropbox.Dropbox.file_requests_count`.
+    Result for :meth:`dropbox.dropbox_client.Dropbox.file_requests_count`.
 
     :ivar file_requests.CountFileRequestsResult.file_request_count: The number
         file requests owner by this user.
@@ -94,54 +77,27 @@ class CountFileRequestsResult(bb.Struct):
 
     __slots__ = [
         '_file_request_count_value',
-        '_file_request_count_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  file_request_count=None):
-        self._file_request_count_value = None
-        self._file_request_count_present = False
+        self._file_request_count_value = bb.NOT_SET
         if file_request_count is not None:
             self.file_request_count = file_request_count
 
-    @property
-    def file_request_count(self):
-        """
-        The number file requests owner by this user.
-
-        :rtype: int
-        """
-        if self._file_request_count_present:
-            return self._file_request_count_value
-        else:
-            raise AttributeError("missing required field 'file_request_count'")
-
-    @file_request_count.setter
-    def file_request_count(self, val):
-        val = self._file_request_count_validator.validate(val)
-        self._file_request_count_value = val
-        self._file_request_count_present = True
-
-    @file_request_count.deleter
-    def file_request_count(self):
-        self._file_request_count_value = None
-        self._file_request_count_present = False
+    # Instance attribute type: int (validator is set below)
+    file_request_count = bb.Attribute("file_request_count")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CountFileRequestsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'CountFileRequestsResult(file_request_count={!r})'.format(
-            self._file_request_count_value,
-        )
 
 CountFileRequestsResult_validator = bv.Struct(CountFileRequestsResult)
 
 class CreateFileRequestArgs(bb.Struct):
     """
-    Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_create`.
+    Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_create`.
 
     :ivar file_requests.CreateFileRequestArgs.title: The title of the file
         request. Must not be empty.
@@ -160,15 +116,10 @@ class CreateFileRequestArgs(bb.Struct):
 
     __slots__ = [
         '_title_value',
-        '_title_present',
         '_destination_value',
-        '_destination_present',
         '_deadline_value',
-        '_deadline_present',
         '_open_value',
-        '_open_present',
         '_description_value',
-        '_description_present',
     ]
 
     _has_required_fields = True
@@ -179,16 +130,11 @@ class CreateFileRequestArgs(bb.Struct):
                  deadline=None,
                  open=None,
                  description=None):
-        self._title_value = None
-        self._title_present = False
-        self._destination_value = None
-        self._destination_present = False
-        self._deadline_value = None
-        self._deadline_present = False
-        self._open_value = None
-        self._open_present = False
-        self._description_value = None
-        self._description_present = False
+        self._title_value = bb.NOT_SET
+        self._destination_value = bb.NOT_SET
+        self._deadline_value = bb.NOT_SET
+        self._open_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
         if title is not None:
             self.title = title
         if destination is not None:
@@ -200,143 +146,23 @@ class CreateFileRequestArgs(bb.Struct):
         if description is not None:
             self.description = description
 
-    @property
-    def title(self):
-        """
-        The title of the file request. Must not be empty.
+    # Instance attribute type: str (validator is set below)
+    title = bb.Attribute("title")
 
-        :rtype: str
-        """
-        if self._title_present:
-            return self._title_value
-        else:
-            raise AttributeError("missing required field 'title'")
+    # Instance attribute type: str (validator is set below)
+    destination = bb.Attribute("destination")
 
-    @title.setter
-    def title(self, val):
-        val = self._title_validator.validate(val)
-        self._title_value = val
-        self._title_present = True
+    # Instance attribute type: FileRequestDeadline (validator is set below)
+    deadline = bb.Attribute("deadline", nullable=True, user_defined=True)
 
-    @title.deleter
-    def title(self):
-        self._title_value = None
-        self._title_present = False
+    # Instance attribute type: bool (validator is set below)
+    open = bb.Attribute("open")
 
-    @property
-    def destination(self):
-        """
-        The path of the folder in the Dropbox where uploaded files will be sent.
-        For apps with the app folder permission, this will be relative to the
-        app folder.
-
-        :rtype: str
-        """
-        if self._destination_present:
-            return self._destination_value
-        else:
-            raise AttributeError("missing required field 'destination'")
-
-    @destination.setter
-    def destination(self, val):
-        val = self._destination_validator.validate(val)
-        self._destination_value = val
-        self._destination_present = True
-
-    @destination.deleter
-    def destination(self):
-        self._destination_value = None
-        self._destination_present = False
-
-    @property
-    def deadline(self):
-        """
-        The deadline for the file request. Deadlines can only be set by
-        Professional and Business accounts.
-
-        :rtype: FileRequestDeadline
-        """
-        if self._deadline_present:
-            return self._deadline_value
-        else:
-            return None
-
-    @deadline.setter
-    def deadline(self, val):
-        if val is None:
-            del self.deadline
-            return
-        self._deadline_validator.validate_type_only(val)
-        self._deadline_value = val
-        self._deadline_present = True
-
-    @deadline.deleter
-    def deadline(self):
-        self._deadline_value = None
-        self._deadline_present = False
-
-    @property
-    def open(self):
-        """
-        Whether or not the file request should be open. If the file request is
-        closed, it will not accept any file submissions, but it can be opened
-        later.
-
-        :rtype: bool
-        """
-        if self._open_present:
-            return self._open_value
-        else:
-            return True
-
-    @open.setter
-    def open(self, val):
-        val = self._open_validator.validate(val)
-        self._open_value = val
-        self._open_present = True
-
-    @open.deleter
-    def open(self):
-        self._open_value = None
-        self._open_present = False
-
-    @property
-    def description(self):
-        """
-        A description of the file request.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            return None
-
-    @description.setter
-    def description(self, val):
-        if val is None:
-            del self.description
-            return
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CreateFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'CreateFileRequestArgs(title={!r}, destination={!r}, deadline={!r}, open={!r}, description={!r})'.format(
-            self._title_value,
-            self._destination_value,
-            self._deadline_value,
-            self._open_value,
-            self._description_value,
-        )
 
 CreateFileRequestArgs_validator = bv.Struct(CreateFileRequestArgs)
 
@@ -430,9 +256,6 @@ class FileRequestError(GeneralFileRequestsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'FileRequestError(%r, %r)' % (self._tag, self._value)
-
 FileRequestError_validator = bv.Union(FileRequestError)
 
 class CreateFileRequestError(FileRequestError):
@@ -474,9 +297,6 @@ class CreateFileRequestError(FileRequestError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CreateFileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'CreateFileRequestError(%r, %r)' % (self._tag, self._value)
-
 CreateFileRequestError_validator = bv.Union(CreateFileRequestError)
 
 class DeleteAllClosedFileRequestsError(FileRequestError):
@@ -491,14 +311,12 @@ class DeleteAllClosedFileRequestsError(FileRequestError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteAllClosedFileRequestsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'DeleteAllClosedFileRequestsError(%r, %r)' % (self._tag, self._value)
-
 DeleteAllClosedFileRequestsError_validator = bv.Union(DeleteAllClosedFileRequestsError)
 
 class DeleteAllClosedFileRequestsResult(bb.Struct):
     """
-    Result for :meth:`dropbox.dropbox.Dropbox.file_requests_delete_all_closed`.
+    Result for
+    :meth:`dropbox.dropbox_client.Dropbox.file_requests_delete_all_closed`.
 
     :ivar file_requests.DeleteAllClosedFileRequestsResult.file_requests: The
         file requests deleted for this user.
@@ -506,54 +324,27 @@ class DeleteAllClosedFileRequestsResult(bb.Struct):
 
     __slots__ = [
         '_file_requests_value',
-        '_file_requests_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  file_requests=None):
-        self._file_requests_value = None
-        self._file_requests_present = False
+        self._file_requests_value = bb.NOT_SET
         if file_requests is not None:
             self.file_requests = file_requests
 
-    @property
-    def file_requests(self):
-        """
-        The file requests deleted for this user.
-
-        :rtype: list of [FileRequest]
-        """
-        if self._file_requests_present:
-            return self._file_requests_value
-        else:
-            raise AttributeError("missing required field 'file_requests'")
-
-    @file_requests.setter
-    def file_requests(self, val):
-        val = self._file_requests_validator.validate(val)
-        self._file_requests_value = val
-        self._file_requests_present = True
-
-    @file_requests.deleter
-    def file_requests(self):
-        self._file_requests_value = None
-        self._file_requests_present = False
+    # Instance attribute type: list of [FileRequest] (validator is set below)
+    file_requests = bb.Attribute("file_requests")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteAllClosedFileRequestsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DeleteAllClosedFileRequestsResult(file_requests={!r})'.format(
-            self._file_requests_value,
-        )
 
 DeleteAllClosedFileRequestsResult_validator = bv.Struct(DeleteAllClosedFileRequestsResult)
 
 class DeleteFileRequestArgs(bb.Struct):
     """
-    Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_delete`.
+    Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_delete`.
 
     :ivar file_requests.DeleteFileRequestArgs.ids: List IDs of the file requests
         to delete.
@@ -561,48 +352,21 @@ class DeleteFileRequestArgs(bb.Struct):
 
     __slots__ = [
         '_ids_value',
-        '_ids_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  ids=None):
-        self._ids_value = None
-        self._ids_present = False
+        self._ids_value = bb.NOT_SET
         if ids is not None:
             self.ids = ids
 
-    @property
-    def ids(self):
-        """
-        List IDs of the file requests to delete.
-
-        :rtype: list of [str]
-        """
-        if self._ids_present:
-            return self._ids_value
-        else:
-            raise AttributeError("missing required field 'ids'")
-
-    @ids.setter
-    def ids(self, val):
-        val = self._ids_validator.validate(val)
-        self._ids_value = val
-        self._ids_present = True
-
-    @ids.deleter
-    def ids(self):
-        self._ids_value = None
-        self._ids_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    ids = bb.Attribute("ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DeleteFileRequestArgs(ids={!r})'.format(
-            self._ids_value,
-        )
 
 DeleteFileRequestArgs_validator = bv.Struct(DeleteFileRequestArgs)
 
@@ -632,14 +396,11 @@ class DeleteFileRequestError(FileRequestError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteFileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'DeleteFileRequestError(%r, %r)' % (self._tag, self._value)
-
 DeleteFileRequestError_validator = bv.Union(DeleteFileRequestError)
 
 class DeleteFileRequestsResult(bb.Struct):
     """
-    Result for :meth:`dropbox.dropbox.Dropbox.file_requests_delete`.
+    Result for :meth:`dropbox.dropbox_client.Dropbox.file_requests_delete`.
 
     :ivar file_requests.DeleteFileRequestsResult.file_requests: The file
         requests deleted by the request.
@@ -647,48 +408,21 @@ class DeleteFileRequestsResult(bb.Struct):
 
     __slots__ = [
         '_file_requests_value',
-        '_file_requests_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  file_requests=None):
-        self._file_requests_value = None
-        self._file_requests_present = False
+        self._file_requests_value = bb.NOT_SET
         if file_requests is not None:
             self.file_requests = file_requests
 
-    @property
-    def file_requests(self):
-        """
-        The file requests deleted by the request.
-
-        :rtype: list of [FileRequest]
-        """
-        if self._file_requests_present:
-            return self._file_requests_value
-        else:
-            raise AttributeError("missing required field 'file_requests'")
-
-    @file_requests.setter
-    def file_requests(self, val):
-        val = self._file_requests_validator.validate(val)
-        self._file_requests_value = val
-        self._file_requests_present = True
-
-    @file_requests.deleter
-    def file_requests(self):
-        self._file_requests_value = None
-        self._file_requests_present = False
+    # Instance attribute type: list of [FileRequest] (validator is set below)
+    file_requests = bb.Attribute("file_requests")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteFileRequestsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DeleteFileRequestsResult(file_requests={!r})'.format(
-            self._file_requests_value,
-        )
 
 DeleteFileRequestsResult_validator = bv.Struct(DeleteFileRequestsResult)
 
@@ -718,23 +452,14 @@ class FileRequest(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
         '_url_value',
-        '_url_present',
         '_title_value',
-        '_title_present',
         '_destination_value',
-        '_destination_present',
         '_created_value',
-        '_created_present',
         '_deadline_value',
-        '_deadline_present',
         '_is_open_value',
-        '_is_open_present',
         '_file_count_value',
-        '_file_count_present',
         '_description_value',
-        '_description_present',
     ]
 
     _has_required_fields = True
@@ -749,24 +474,15 @@ class FileRequest(bb.Struct):
                  destination=None,
                  deadline=None,
                  description=None):
-        self._id_value = None
-        self._id_present = False
-        self._url_value = None
-        self._url_present = False
-        self._title_value = None
-        self._title_present = False
-        self._destination_value = None
-        self._destination_present = False
-        self._created_value = None
-        self._created_present = False
-        self._deadline_value = None
-        self._deadline_present = False
-        self._is_open_value = None
-        self._is_open_present = False
-        self._file_count_value = None
-        self._file_count_present = False
-        self._description_value = None
-        self._description_present = False
+        self._id_value = bb.NOT_SET
+        self._url_value = bb.NOT_SET
+        self._title_value = bb.NOT_SET
+        self._destination_value = bb.NOT_SET
+        self._created_value = bb.NOT_SET
+        self._deadline_value = bb.NOT_SET
+        self._is_open_value = bb.NOT_SET
+        self._file_count_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if url is not None:
@@ -786,241 +502,35 @@ class FileRequest(bb.Struct):
         if description is not None:
             self.description = description
 
-    @property
-    def id(self):
-        """
-        The ID of the file request.
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
+    # Instance attribute type: str (validator is set below)
+    url = bb.Attribute("url")
 
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
+    # Instance attribute type: str (validator is set below)
+    title = bb.Attribute("title")
 
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
+    # Instance attribute type: str (validator is set below)
+    destination = bb.Attribute("destination", nullable=True)
 
-    @property
-    def url(self):
-        """
-        The URL of the file request.
+    # Instance attribute type: datetime.datetime (validator is set below)
+    created = bb.Attribute("created")
 
-        :rtype: str
-        """
-        if self._url_present:
-            return self._url_value
-        else:
-            raise AttributeError("missing required field 'url'")
+    # Instance attribute type: FileRequestDeadline (validator is set below)
+    deadline = bb.Attribute("deadline", nullable=True, user_defined=True)
 
-    @url.setter
-    def url(self, val):
-        val = self._url_validator.validate(val)
-        self._url_value = val
-        self._url_present = True
+    # Instance attribute type: bool (validator is set below)
+    is_open = bb.Attribute("is_open")
 
-    @url.deleter
-    def url(self):
-        self._url_value = None
-        self._url_present = False
+    # Instance attribute type: int (validator is set below)
+    file_count = bb.Attribute("file_count")
 
-    @property
-    def title(self):
-        """
-        The title of the file request.
-
-        :rtype: str
-        """
-        if self._title_present:
-            return self._title_value
-        else:
-            raise AttributeError("missing required field 'title'")
-
-    @title.setter
-    def title(self, val):
-        val = self._title_validator.validate(val)
-        self._title_value = val
-        self._title_present = True
-
-    @title.deleter
-    def title(self):
-        self._title_value = None
-        self._title_present = False
-
-    @property
-    def destination(self):
-        """
-        The path of the folder in the Dropbox where uploaded files will be sent.
-        This can be None if the destination was removed. For apps with the app
-        folder permission, this will be relative to the app folder.
-
-        :rtype: str
-        """
-        if self._destination_present:
-            return self._destination_value
-        else:
-            return None
-
-    @destination.setter
-    def destination(self, val):
-        if val is None:
-            del self.destination
-            return
-        val = self._destination_validator.validate(val)
-        self._destination_value = val
-        self._destination_present = True
-
-    @destination.deleter
-    def destination(self):
-        self._destination_value = None
-        self._destination_present = False
-
-    @property
-    def created(self):
-        """
-        When this file request was created.
-
-        :rtype: datetime.datetime
-        """
-        if self._created_present:
-            return self._created_value
-        else:
-            raise AttributeError("missing required field 'created'")
-
-    @created.setter
-    def created(self, val):
-        val = self._created_validator.validate(val)
-        self._created_value = val
-        self._created_present = True
-
-    @created.deleter
-    def created(self):
-        self._created_value = None
-        self._created_present = False
-
-    @property
-    def deadline(self):
-        """
-        The deadline for this file request. Only set if the request has a
-        deadline.
-
-        :rtype: FileRequestDeadline
-        """
-        if self._deadline_present:
-            return self._deadline_value
-        else:
-            return None
-
-    @deadline.setter
-    def deadline(self, val):
-        if val is None:
-            del self.deadline
-            return
-        self._deadline_validator.validate_type_only(val)
-        self._deadline_value = val
-        self._deadline_present = True
-
-    @deadline.deleter
-    def deadline(self):
-        self._deadline_value = None
-        self._deadline_present = False
-
-    @property
-    def is_open(self):
-        """
-        Whether or not the file request is open. If the file request is closed,
-        it will not accept any more file submissions.
-
-        :rtype: bool
-        """
-        if self._is_open_present:
-            return self._is_open_value
-        else:
-            raise AttributeError("missing required field 'is_open'")
-
-    @is_open.setter
-    def is_open(self, val):
-        val = self._is_open_validator.validate(val)
-        self._is_open_value = val
-        self._is_open_present = True
-
-    @is_open.deleter
-    def is_open(self):
-        self._is_open_value = None
-        self._is_open_present = False
-
-    @property
-    def file_count(self):
-        """
-        The number of files this file request has received.
-
-        :rtype: int
-        """
-        if self._file_count_present:
-            return self._file_count_value
-        else:
-            raise AttributeError("missing required field 'file_count'")
-
-    @file_count.setter
-    def file_count(self, val):
-        val = self._file_count_validator.validate(val)
-        self._file_count_value = val
-        self._file_count_present = True
-
-    @file_count.deleter
-    def file_count(self):
-        self._file_count_value = None
-        self._file_count_present = False
-
-    @property
-    def description(self):
-        """
-        A description of the file request.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            return None
-
-    @description.setter
-    def description(self, val):
-        if val is None:
-            del self.description
-            return
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileRequest, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'FileRequest(id={!r}, url={!r}, title={!r}, created={!r}, is_open={!r}, file_count={!r}, destination={!r}, deadline={!r}, description={!r})'.format(
-            self._id_value,
-            self._url_value,
-            self._title_value,
-            self._created_value,
-            self._is_open_value,
-            self._file_count_value,
-            self._destination_value,
-            self._deadline_value,
-            self._description_value,
-        )
 
 FileRequest_validator = bv.Struct(FileRequest)
 
@@ -1035,9 +545,7 @@ class FileRequestDeadline(bb.Struct):
 
     __slots__ = [
         '_deadline_value',
-        '_deadline_present',
         '_allow_late_uploads_value',
-        '_allow_late_uploads_present',
     ]
 
     _has_required_fields = True
@@ -1045,79 +553,27 @@ class FileRequestDeadline(bb.Struct):
     def __init__(self,
                  deadline=None,
                  allow_late_uploads=None):
-        self._deadline_value = None
-        self._deadline_present = False
-        self._allow_late_uploads_value = None
-        self._allow_late_uploads_present = False
+        self._deadline_value = bb.NOT_SET
+        self._allow_late_uploads_value = bb.NOT_SET
         if deadline is not None:
             self.deadline = deadline
         if allow_late_uploads is not None:
             self.allow_late_uploads = allow_late_uploads
 
-    @property
-    def deadline(self):
-        """
-        The deadline for this file request.
+    # Instance attribute type: datetime.datetime (validator is set below)
+    deadline = bb.Attribute("deadline")
 
-        :rtype: datetime.datetime
-        """
-        if self._deadline_present:
-            return self._deadline_value
-        else:
-            raise AttributeError("missing required field 'deadline'")
-
-    @deadline.setter
-    def deadline(self, val):
-        val = self._deadline_validator.validate(val)
-        self._deadline_value = val
-        self._deadline_present = True
-
-    @deadline.deleter
-    def deadline(self):
-        self._deadline_value = None
-        self._deadline_present = False
-
-    @property
-    def allow_late_uploads(self):
-        """
-        If set, allow uploads after the deadline has passed. These     uploads
-        will be marked overdue.
-
-        :rtype: GracePeriod
-        """
-        if self._allow_late_uploads_present:
-            return self._allow_late_uploads_value
-        else:
-            return None
-
-    @allow_late_uploads.setter
-    def allow_late_uploads(self, val):
-        if val is None:
-            del self.allow_late_uploads
-            return
-        self._allow_late_uploads_validator.validate_type_only(val)
-        self._allow_late_uploads_value = val
-        self._allow_late_uploads_present = True
-
-    @allow_late_uploads.deleter
-    def allow_late_uploads(self):
-        self._allow_late_uploads_value = None
-        self._allow_late_uploads_present = False
+    # Instance attribute type: GracePeriod (validator is set below)
+    allow_late_uploads = bb.Attribute("allow_late_uploads", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileRequestDeadline, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'FileRequestDeadline(deadline={!r}, allow_late_uploads={!r})'.format(
-            self._deadline_value,
-            self._allow_late_uploads_value,
-        )
 
 FileRequestDeadline_validator = bv.Struct(FileRequestDeadline)
 
 class GetFileRequestArgs(bb.Struct):
     """
-    Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_get`.
+    Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_get`.
 
     :ivar file_requests.GetFileRequestArgs.id: The ID of the file request to
         retrieve.
@@ -1125,48 +581,21 @@ class GetFileRequestArgs(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  id=None):
-        self._id_value = None
-        self._id_present = False
+        self._id_value = bb.NOT_SET
         if id is not None:
             self.id = id
 
-    @property
-    def id(self):
-        """
-        The ID of the file request to retrieve.
-
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
-
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetFileRequestArgs(id={!r})'.format(
-            self._id_value,
-        )
 
 GetFileRequestArgs_validator = bv.Struct(GetFileRequestArgs)
 
@@ -1181,9 +610,6 @@ class GetFileRequestError(FileRequestError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetFileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetFileRequestError(%r, %r)' % (self._tag, self._value)
 
 GetFileRequestError_validator = bv.Union(GetFileRequestError)
 
@@ -1259,14 +685,11 @@ class GracePeriod(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GracePeriod, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GracePeriod(%r, %r)' % (self._tag, self._value)
-
 GracePeriod_validator = bv.Union(GracePeriod)
 
 class ListFileRequestsArg(bb.Struct):
     """
-    Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_list`.
+    Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_list`.
 
     :ivar file_requests.ListFileRequestsArg.limit: The maximum number of file
         requests that should be returned per request.
@@ -1274,48 +697,21 @@ class ListFileRequestsArg(bb.Struct):
 
     __slots__ = [
         '_limit_value',
-        '_limit_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  limit=None):
-        self._limit_value = None
-        self._limit_present = False
+        self._limit_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
 
-    @property
-    def limit(self):
-        """
-        The maximum number of file requests that should be returned per request.
-
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListFileRequestsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListFileRequestsArg(limit={!r})'.format(
-            self._limit_value,
-        )
 
 ListFileRequestsArg_validator = bv.Struct(ListFileRequestsArg)
 
@@ -1327,49 +723,21 @@ class ListFileRequestsContinueArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        The cursor returned by the previous API call specified in the endpoint
-        description.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListFileRequestsContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListFileRequestsContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 ListFileRequestsContinueArg_validator = bv.Struct(ListFileRequestsContinueArg)
 
@@ -1399,9 +767,6 @@ class ListFileRequestsContinueError(GeneralFileRequestsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListFileRequestsContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ListFileRequestsContinueError(%r, %r)' % (self._tag, self._value)
-
 ListFileRequestsContinueError_validator = bv.Union(ListFileRequestsContinueError)
 
 class ListFileRequestsError(GeneralFileRequestsError):
@@ -1416,14 +781,11 @@ class ListFileRequestsError(GeneralFileRequestsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListFileRequestsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ListFileRequestsError(%r, %r)' % (self._tag, self._value)
-
 ListFileRequestsError_validator = bv.Union(ListFileRequestsError)
 
 class ListFileRequestsResult(bb.Struct):
     """
-    Result for :meth:`dropbox.dropbox.Dropbox.file_requests_list`.
+    Result for :meth:`dropbox.dropbox_client.Dropbox.file_requests_list`.
 
     :ivar file_requests.ListFileRequestsResult.file_requests: The file requests
         owned by this user. Apps with the app folder permission will only see
@@ -1432,63 +794,35 @@ class ListFileRequestsResult(bb.Struct):
 
     __slots__ = [
         '_file_requests_value',
-        '_file_requests_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  file_requests=None):
-        self._file_requests_value = None
-        self._file_requests_present = False
+        self._file_requests_value = bb.NOT_SET
         if file_requests is not None:
             self.file_requests = file_requests
 
-    @property
-    def file_requests(self):
-        """
-        The file requests owned by this user. Apps with the app folder
-        permission will only see file requests in their app folder.
-
-        :rtype: list of [FileRequest]
-        """
-        if self._file_requests_present:
-            return self._file_requests_value
-        else:
-            raise AttributeError("missing required field 'file_requests'")
-
-    @file_requests.setter
-    def file_requests(self, val):
-        val = self._file_requests_validator.validate(val)
-        self._file_requests_value = val
-        self._file_requests_present = True
-
-    @file_requests.deleter
-    def file_requests(self):
-        self._file_requests_value = None
-        self._file_requests_present = False
+    # Instance attribute type: list of [FileRequest] (validator is set below)
+    file_requests = bb.Attribute("file_requests")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListFileRequestsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListFileRequestsResult(file_requests={!r})'.format(
-            self._file_requests_value,
-        )
 
 ListFileRequestsResult_validator = bv.Struct(ListFileRequestsResult)
 
 class ListFileRequestsV2Result(bb.Struct):
     """
-    Result for :meth:`dropbox.dropbox.Dropbox.file_requests_list` and
-    :meth:`dropbox.dropbox.Dropbox.file_requests_list_continue`.
+    Result for :meth:`dropbox.dropbox_client.Dropbox.file_requests_list` and
+    :meth:`dropbox.dropbox_client.Dropbox.file_requests_list_continue`.
 
     :ivar file_requests.ListFileRequestsV2Result.file_requests: The file
         requests owned by this user. Apps with the app folder permission will
         only see file requests in their app folder.
     :ivar file_requests.ListFileRequestsV2Result.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.file_requests_list_continue` to obtain
-        additional file requests.
+        :meth:`dropbox.dropbox_client.Dropbox.file_requests_list_continue` to
+        obtain additional file requests.
     :ivar file_requests.ListFileRequestsV2Result.has_more: Is true if there are
         additional file requests that have not been returned yet. An additional
         call to :route:list/continue` can retrieve them.
@@ -1496,11 +830,8 @@ class ListFileRequestsV2Result(bb.Struct):
 
     __slots__ = [
         '_file_requests_value',
-        '_file_requests_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -1509,12 +840,9 @@ class ListFileRequestsV2Result(bb.Struct):
                  file_requests=None,
                  cursor=None,
                  has_more=None):
-        self._file_requests_value = None
-        self._file_requests_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._file_requests_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if file_requests is not None:
             self.file_requests = file_requests
         if cursor is not None:
@@ -1522,95 +850,23 @@ class ListFileRequestsV2Result(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def file_requests(self):
-        """
-        The file requests owned by this user. Apps with the app folder
-        permission will only see file requests in their app folder.
+    # Instance attribute type: list of [FileRequest] (validator is set below)
+    file_requests = bb.Attribute("file_requests")
 
-        :rtype: list of [FileRequest]
-        """
-        if self._file_requests_present:
-            return self._file_requests_value
-        else:
-            raise AttributeError("missing required field 'file_requests'")
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-    @file_requests.setter
-    def file_requests(self, val):
-        val = self._file_requests_validator.validate(val)
-        self._file_requests_value = val
-        self._file_requests_present = True
-
-    @file_requests.deleter
-    def file_requests(self):
-        self._file_requests_value = None
-        self._file_requests_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.file_requests_list_continue` to obtain
-        additional file requests.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Is true if there are additional file requests that have not been
-        returned yet. An additional call to :route:list/continue` can retrieve
-        them.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListFileRequestsV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListFileRequestsV2Result(file_requests={!r}, cursor={!r}, has_more={!r})'.format(
-            self._file_requests_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
 
 ListFileRequestsV2Result_validator = bv.Struct(ListFileRequestsV2Result)
 
 class UpdateFileRequestArgs(bb.Struct):
     """
-    Arguments for :meth:`dropbox.dropbox.Dropbox.file_requests_update`.
+    Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_update`.
 
     :ivar file_requests.UpdateFileRequestArgs.id: The ID of the file request to
         update.
@@ -1630,17 +886,11 @@ class UpdateFileRequestArgs(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
         '_title_value',
-        '_title_present',
         '_destination_value',
-        '_destination_present',
         '_deadline_value',
-        '_deadline_present',
         '_open_value',
-        '_open_present',
         '_description_value',
-        '_description_present',
     ]
 
     _has_required_fields = True
@@ -1652,18 +902,12 @@ class UpdateFileRequestArgs(bb.Struct):
                  deadline=None,
                  open=None,
                  description=None):
-        self._id_value = None
-        self._id_present = False
-        self._title_value = None
-        self._title_present = False
-        self._destination_value = None
-        self._destination_present = False
-        self._deadline_value = None
-        self._deadline_present = False
-        self._open_value = None
-        self._open_present = False
-        self._description_value = None
-        self._description_present = False
+        self._id_value = bb.NOT_SET
+        self._title_value = bb.NOT_SET
+        self._destination_value = bb.NOT_SET
+        self._deadline_value = bb.NOT_SET
+        self._open_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if title is not None:
@@ -1677,171 +921,26 @@ class UpdateFileRequestArgs(bb.Struct):
         if description is not None:
             self.description = description
 
-    @property
-    def id(self):
-        """
-        The ID of the file request to update.
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
+    # Instance attribute type: str (validator is set below)
+    title = bb.Attribute("title", nullable=True)
 
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
+    # Instance attribute type: str (validator is set below)
+    destination = bb.Attribute("destination", nullable=True)
 
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
+    # Instance attribute type: UpdateFileRequestDeadline (validator is set below)
+    deadline = bb.Attribute("deadline", user_defined=True)
 
-    @property
-    def title(self):
-        """
-        The new title of the file request. Must not be empty.
+    # Instance attribute type: bool (validator is set below)
+    open = bb.Attribute("open", nullable=True)
 
-        :rtype: str
-        """
-        if self._title_present:
-            return self._title_value
-        else:
-            return None
-
-    @title.setter
-    def title(self, val):
-        if val is None:
-            del self.title
-            return
-        val = self._title_validator.validate(val)
-        self._title_value = val
-        self._title_present = True
-
-    @title.deleter
-    def title(self):
-        self._title_value = None
-        self._title_present = False
-
-    @property
-    def destination(self):
-        """
-        The new path of the folder in the Dropbox where uploaded files will be
-        sent. For apps with the app folder permission, this will be relative to
-        the app folder.
-
-        :rtype: str
-        """
-        if self._destination_present:
-            return self._destination_value
-        else:
-            return None
-
-    @destination.setter
-    def destination(self, val):
-        if val is None:
-            del self.destination
-            return
-        val = self._destination_validator.validate(val)
-        self._destination_value = val
-        self._destination_present = True
-
-    @destination.deleter
-    def destination(self):
-        self._destination_value = None
-        self._destination_present = False
-
-    @property
-    def deadline(self):
-        """
-        The new deadline for the file request. Deadlines can only be set by
-        Professional and Business accounts.
-
-        :rtype: UpdateFileRequestDeadline
-        """
-        if self._deadline_present:
-            return self._deadline_value
-        else:
-            return UpdateFileRequestDeadline.no_update
-
-    @deadline.setter
-    def deadline(self, val):
-        self._deadline_validator.validate_type_only(val)
-        self._deadline_value = val
-        self._deadline_present = True
-
-    @deadline.deleter
-    def deadline(self):
-        self._deadline_value = None
-        self._deadline_present = False
-
-    @property
-    def open(self):
-        """
-        Whether to set this file request as open or closed.
-
-        :rtype: bool
-        """
-        if self._open_present:
-            return self._open_value
-        else:
-            return None
-
-    @open.setter
-    def open(self, val):
-        if val is None:
-            del self.open
-            return
-        val = self._open_validator.validate(val)
-        self._open_value = val
-        self._open_present = True
-
-    @open.deleter
-    def open(self):
-        self._open_value = None
-        self._open_present = False
-
-    @property
-    def description(self):
-        """
-        The description of the file request.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            return None
-
-    @description.setter
-    def description(self, val):
-        if val is None:
-            del self.description
-            return
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdateFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UpdateFileRequestArgs(id={!r}, title={!r}, destination={!r}, deadline={!r}, open={!r}, description={!r})'.format(
-            self._id_value,
-            self._title_value,
-            self._destination_value,
-            self._deadline_value,
-            self._open_value,
-            self._description_value,
-        )
 
 UpdateFileRequestArgs_validator = bv.Struct(UpdateFileRequestArgs)
 
@@ -1914,9 +1013,6 @@ class UpdateFileRequestDeadline(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdateFileRequestDeadline, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UpdateFileRequestDeadline(%r, %r)' % (self._tag, self._value)
-
 UpdateFileRequestDeadline_validator = bv.Union(UpdateFileRequestDeadline)
 
 class UpdateFileRequestError(FileRequestError):
@@ -1930,9 +1026,6 @@ class UpdateFileRequestError(FileRequestError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdateFileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UpdateFileRequestError(%r, %r)' % (self._tag, self._value)
 
 UpdateFileRequestError_validator = bv.Union(UpdateFileRequestError)
 
@@ -1952,15 +1045,15 @@ CountFileRequestsError._tagmap = {
 }
 CountFileRequestsError._tagmap.update(GeneralFileRequestsError._tagmap)
 
-CountFileRequestsResult._file_request_count_validator = bv.UInt64()
+CountFileRequestsResult.file_request_count.validator = bv.UInt64()
 CountFileRequestsResult._all_field_names_ = set(['file_request_count'])
-CountFileRequestsResult._all_fields_ = [('file_request_count', CountFileRequestsResult._file_request_count_validator)]
+CountFileRequestsResult._all_fields_ = [('file_request_count', CountFileRequestsResult.file_request_count.validator)]
 
-CreateFileRequestArgs._title_validator = bv.String(min_length=1)
-CreateFileRequestArgs._destination_validator = files.Path_validator
-CreateFileRequestArgs._deadline_validator = bv.Nullable(FileRequestDeadline_validator)
-CreateFileRequestArgs._open_validator = bv.Boolean()
-CreateFileRequestArgs._description_validator = bv.Nullable(bv.String())
+CreateFileRequestArgs.title.validator = bv.String(min_length=1)
+CreateFileRequestArgs.destination.validator = files.Path_validator
+CreateFileRequestArgs.deadline.validator = bv.Nullable(FileRequestDeadline_validator)
+CreateFileRequestArgs.open.validator = bv.Boolean()
+CreateFileRequestArgs.description.validator = bv.Nullable(bv.String())
 CreateFileRequestArgs._all_field_names_ = set([
     'title',
     'destination',
@@ -1969,11 +1062,11 @@ CreateFileRequestArgs._all_field_names_ = set([
     'description',
 ])
 CreateFileRequestArgs._all_fields_ = [
-    ('title', CreateFileRequestArgs._title_validator),
-    ('destination', CreateFileRequestArgs._destination_validator),
-    ('deadline', CreateFileRequestArgs._deadline_validator),
-    ('open', CreateFileRequestArgs._open_validator),
-    ('description', CreateFileRequestArgs._description_validator),
+    ('title', CreateFileRequestArgs.title.validator),
+    ('destination', CreateFileRequestArgs.destination.validator),
+    ('deadline', CreateFileRequestArgs.deadline.validator),
+    ('open', CreateFileRequestArgs.open.validator),
+    ('description', CreateFileRequestArgs.description.validator),
 ]
 
 FileRequestError._not_found_validator = bv.Void()
@@ -2014,13 +1107,13 @@ DeleteAllClosedFileRequestsError._tagmap = {
 }
 DeleteAllClosedFileRequestsError._tagmap.update(FileRequestError._tagmap)
 
-DeleteAllClosedFileRequestsResult._file_requests_validator = bv.List(FileRequest_validator)
+DeleteAllClosedFileRequestsResult.file_requests.validator = bv.List(FileRequest_validator)
 DeleteAllClosedFileRequestsResult._all_field_names_ = set(['file_requests'])
-DeleteAllClosedFileRequestsResult._all_fields_ = [('file_requests', DeleteAllClosedFileRequestsResult._file_requests_validator)]
+DeleteAllClosedFileRequestsResult._all_fields_ = [('file_requests', DeleteAllClosedFileRequestsResult.file_requests.validator)]
 
-DeleteFileRequestArgs._ids_validator = bv.List(FileRequestId_validator)
+DeleteFileRequestArgs.ids.validator = bv.List(FileRequestId_validator)
 DeleteFileRequestArgs._all_field_names_ = set(['ids'])
-DeleteFileRequestArgs._all_fields_ = [('ids', DeleteFileRequestArgs._ids_validator)]
+DeleteFileRequestArgs._all_fields_ = [('ids', DeleteFileRequestArgs.ids.validator)]
 
 DeleteFileRequestError._file_request_open_validator = bv.Void()
 DeleteFileRequestError._tagmap = {
@@ -2030,19 +1123,19 @@ DeleteFileRequestError._tagmap.update(FileRequestError._tagmap)
 
 DeleteFileRequestError.file_request_open = DeleteFileRequestError('file_request_open')
 
-DeleteFileRequestsResult._file_requests_validator = bv.List(FileRequest_validator)
+DeleteFileRequestsResult.file_requests.validator = bv.List(FileRequest_validator)
 DeleteFileRequestsResult._all_field_names_ = set(['file_requests'])
-DeleteFileRequestsResult._all_fields_ = [('file_requests', DeleteFileRequestsResult._file_requests_validator)]
+DeleteFileRequestsResult._all_fields_ = [('file_requests', DeleteFileRequestsResult.file_requests.validator)]
 
-FileRequest._id_validator = FileRequestId_validator
-FileRequest._url_validator = bv.String(min_length=1)
-FileRequest._title_validator = bv.String(min_length=1)
-FileRequest._destination_validator = bv.Nullable(files.Path_validator)
-FileRequest._created_validator = common.DropboxTimestamp_validator
-FileRequest._deadline_validator = bv.Nullable(FileRequestDeadline_validator)
-FileRequest._is_open_validator = bv.Boolean()
-FileRequest._file_count_validator = bv.Int64()
-FileRequest._description_validator = bv.Nullable(bv.String())
+FileRequest.id.validator = FileRequestId_validator
+FileRequest.url.validator = bv.String(min_length=1)
+FileRequest.title.validator = bv.String(min_length=1)
+FileRequest.destination.validator = bv.Nullable(files.Path_validator)
+FileRequest.created.validator = common.DropboxTimestamp_validator
+FileRequest.deadline.validator = bv.Nullable(FileRequestDeadline_validator)
+FileRequest.is_open.validator = bv.Boolean()
+FileRequest.file_count.validator = bv.Int64()
+FileRequest.description.validator = bv.Nullable(bv.String())
 FileRequest._all_field_names_ = set([
     'id',
     'url',
@@ -2055,31 +1148,31 @@ FileRequest._all_field_names_ = set([
     'description',
 ])
 FileRequest._all_fields_ = [
-    ('id', FileRequest._id_validator),
-    ('url', FileRequest._url_validator),
-    ('title', FileRequest._title_validator),
-    ('destination', FileRequest._destination_validator),
-    ('created', FileRequest._created_validator),
-    ('deadline', FileRequest._deadline_validator),
-    ('is_open', FileRequest._is_open_validator),
-    ('file_count', FileRequest._file_count_validator),
-    ('description', FileRequest._description_validator),
+    ('id', FileRequest.id.validator),
+    ('url', FileRequest.url.validator),
+    ('title', FileRequest.title.validator),
+    ('destination', FileRequest.destination.validator),
+    ('created', FileRequest.created.validator),
+    ('deadline', FileRequest.deadline.validator),
+    ('is_open', FileRequest.is_open.validator),
+    ('file_count', FileRequest.file_count.validator),
+    ('description', FileRequest.description.validator),
 ]
 
-FileRequestDeadline._deadline_validator = common.DropboxTimestamp_validator
-FileRequestDeadline._allow_late_uploads_validator = bv.Nullable(GracePeriod_validator)
+FileRequestDeadline.deadline.validator = common.DropboxTimestamp_validator
+FileRequestDeadline.allow_late_uploads.validator = bv.Nullable(GracePeriod_validator)
 FileRequestDeadline._all_field_names_ = set([
     'deadline',
     'allow_late_uploads',
 ])
 FileRequestDeadline._all_fields_ = [
-    ('deadline', FileRequestDeadline._deadline_validator),
-    ('allow_late_uploads', FileRequestDeadline._allow_late_uploads_validator),
+    ('deadline', FileRequestDeadline.deadline.validator),
+    ('allow_late_uploads', FileRequestDeadline.allow_late_uploads.validator),
 ]
 
-GetFileRequestArgs._id_validator = FileRequestId_validator
+GetFileRequestArgs.id.validator = FileRequestId_validator
 GetFileRequestArgs._all_field_names_ = set(['id'])
-GetFileRequestArgs._all_fields_ = [('id', GetFileRequestArgs._id_validator)]
+GetFileRequestArgs._all_fields_ = [('id', GetFileRequestArgs.id.validator)]
 
 GetFileRequestError._tagmap = {
 }
@@ -2107,13 +1200,13 @@ GracePeriod.thirty_days = GracePeriod('thirty_days')
 GracePeriod.always = GracePeriod('always')
 GracePeriod.other = GracePeriod('other')
 
-ListFileRequestsArg._limit_validator = bv.UInt64()
+ListFileRequestsArg.limit.validator = bv.UInt64()
 ListFileRequestsArg._all_field_names_ = set(['limit'])
-ListFileRequestsArg._all_fields_ = [('limit', ListFileRequestsArg._limit_validator)]
+ListFileRequestsArg._all_fields_ = [('limit', ListFileRequestsArg.limit.validator)]
 
-ListFileRequestsContinueArg._cursor_validator = bv.String()
+ListFileRequestsContinueArg.cursor.validator = bv.String()
 ListFileRequestsContinueArg._all_field_names_ = set(['cursor'])
-ListFileRequestsContinueArg._all_fields_ = [('cursor', ListFileRequestsContinueArg._cursor_validator)]
+ListFileRequestsContinueArg._all_fields_ = [('cursor', ListFileRequestsContinueArg.cursor.validator)]
 
 ListFileRequestsContinueError._invalid_cursor_validator = bv.Void()
 ListFileRequestsContinueError._tagmap = {
@@ -2127,30 +1220,30 @@ ListFileRequestsError._tagmap = {
 }
 ListFileRequestsError._tagmap.update(GeneralFileRequestsError._tagmap)
 
-ListFileRequestsResult._file_requests_validator = bv.List(FileRequest_validator)
+ListFileRequestsResult.file_requests.validator = bv.List(FileRequest_validator)
 ListFileRequestsResult._all_field_names_ = set(['file_requests'])
-ListFileRequestsResult._all_fields_ = [('file_requests', ListFileRequestsResult._file_requests_validator)]
+ListFileRequestsResult._all_fields_ = [('file_requests', ListFileRequestsResult.file_requests.validator)]
 
-ListFileRequestsV2Result._file_requests_validator = bv.List(FileRequest_validator)
-ListFileRequestsV2Result._cursor_validator = bv.String()
-ListFileRequestsV2Result._has_more_validator = bv.Boolean()
+ListFileRequestsV2Result.file_requests.validator = bv.List(FileRequest_validator)
+ListFileRequestsV2Result.cursor.validator = bv.String()
+ListFileRequestsV2Result.has_more.validator = bv.Boolean()
 ListFileRequestsV2Result._all_field_names_ = set([
     'file_requests',
     'cursor',
     'has_more',
 ])
 ListFileRequestsV2Result._all_fields_ = [
-    ('file_requests', ListFileRequestsV2Result._file_requests_validator),
-    ('cursor', ListFileRequestsV2Result._cursor_validator),
-    ('has_more', ListFileRequestsV2Result._has_more_validator),
+    ('file_requests', ListFileRequestsV2Result.file_requests.validator),
+    ('cursor', ListFileRequestsV2Result.cursor.validator),
+    ('has_more', ListFileRequestsV2Result.has_more.validator),
 ]
 
-UpdateFileRequestArgs._id_validator = FileRequestId_validator
-UpdateFileRequestArgs._title_validator = bv.Nullable(bv.String(min_length=1))
-UpdateFileRequestArgs._destination_validator = bv.Nullable(files.Path_validator)
-UpdateFileRequestArgs._deadline_validator = UpdateFileRequestDeadline_validator
-UpdateFileRequestArgs._open_validator = bv.Nullable(bv.Boolean())
-UpdateFileRequestArgs._description_validator = bv.Nullable(bv.String())
+UpdateFileRequestArgs.id.validator = FileRequestId_validator
+UpdateFileRequestArgs.title.validator = bv.Nullable(bv.String(min_length=1))
+UpdateFileRequestArgs.destination.validator = bv.Nullable(files.Path_validator)
+UpdateFileRequestArgs.deadline.validator = UpdateFileRequestDeadline_validator
+UpdateFileRequestArgs.open.validator = bv.Nullable(bv.Boolean())
+UpdateFileRequestArgs.description.validator = bv.Nullable(bv.String())
 UpdateFileRequestArgs._all_field_names_ = set([
     'id',
     'title',
@@ -2160,12 +1253,12 @@ UpdateFileRequestArgs._all_field_names_ = set([
     'description',
 ])
 UpdateFileRequestArgs._all_fields_ = [
-    ('id', UpdateFileRequestArgs._id_validator),
-    ('title', UpdateFileRequestArgs._title_validator),
-    ('destination', UpdateFileRequestArgs._destination_validator),
-    ('deadline', UpdateFileRequestArgs._deadline_validator),
-    ('open', UpdateFileRequestArgs._open_validator),
-    ('description', UpdateFileRequestArgs._description_validator),
+    ('id', UpdateFileRequestArgs.id.validator),
+    ('title', UpdateFileRequestArgs.title.validator),
+    ('destination', UpdateFileRequestArgs.destination.validator),
+    ('deadline', UpdateFileRequestArgs.deadline.validator),
+    ('open', UpdateFileRequestArgs.open.validator),
+    ('description', UpdateFileRequestArgs.description.validator),
 ]
 
 UpdateFileRequestDeadline._no_update_validator = bv.Void()
@@ -2184,6 +1277,9 @@ UpdateFileRequestError._tagmap = {
 }
 UpdateFileRequestError._tagmap.update(FileRequestError._tagmap)
 
+CreateFileRequestArgs.open.default = True
+ListFileRequestsArg.limit.default = 1000
+UpdateFileRequestArgs.deadline.default = UpdateFileRequestDeadline.no_update
 count = bb.Route(
     'count',
     1,

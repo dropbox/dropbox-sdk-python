@@ -17,7 +17,7 @@ except ImportError:
 
 from setuptools import setup
 
-dbx_mod_path = os.path.join(os.path.dirname(__file__), 'dropbox/dropbox.py')
+dbx_mod_path = os.path.join(os.path.dirname(__file__), 'dropbox/dropbox_client.py')
 line = '= "UNKNOWN"'
 for line in open(dbx_mod_path):
     if line.startswith('__version__'):

@@ -3,14 +3,9 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class PlatformType(bb.Union):
     """
@@ -119,9 +114,6 @@ class PlatformType(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PlatformType, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PlatformType(%r, %r)' % (self._tag, self._value)
 
 PlatformType_validator = bv.Union(PlatformType)
 
