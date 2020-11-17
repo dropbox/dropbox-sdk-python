@@ -382,7 +382,7 @@ class UserRootInfo(RootInfo):
 UserRootInfo_validator = bv.Struct(UserRootInfo)
 
 Date_validator = bv.Timestamp(u'%Y-%m-%d')
-DisplayName_validator = bv.String(min_length=1, pattern=u'[^/:?*<>"|]*')
+DisplayName_validator = bv.String(pattern=u'[^/:?*<>"|]*')
 DisplayNameLegacy_validator = bv.String()
 DropboxTimestamp_validator = bv.Timestamp(u'%Y-%m-%dT%H:%M:%SZ')
 EmailAddress_validator = bv.String(max_length=255, pattern=u"^['&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*\\.[A-Za-z]{2,15}$")
