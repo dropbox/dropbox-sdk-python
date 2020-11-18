@@ -1,6 +1,7 @@
 # Upgrading the Dropbox SDK
 
-This document is designed to show you how to upgrade to the latest version of the SDK accomodating any breaking changes introduced by major version updates.  If you find any issues with either this guide on upgrading or the changes introduced in the new version, please see [CONTRIBUTING.md][contributing]
+This document is designed to show you how to upgrade to the latest version of the SDK accomodating any breaking changes introduced by major version updates.
+If you find any issues with either this guide on upgrading or the changes introduced in the new version, please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 # Upgrading from v10.X.X to v11.0.0
 The major change that happened in this new version is that we regenerated the client files using Stone 3.2.0,
