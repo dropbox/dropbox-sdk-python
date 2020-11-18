@@ -3,39 +3,20 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
-try:
-    from . import (
-        account,
-        async_,
-        common,
-        file_properties,
-        files,
-        secondary_emails,
-        team_common,
-        team_policies,
-        users,
-        users_common,
-    )
-except (ImportError, SystemError, ValueError):
-    import account
-    import async_
-    import common
-    import file_properties
-    import files
-    import secondary_emails
-    import team_common
-    import team_policies
-    import users
-    import users_common
+from dropbox import account
+from dropbox import async_
+from dropbox import common
+from dropbox import file_properties
+from dropbox import files
+from dropbox import secondary_emails
+from dropbox import team_common
+from dropbox import team_policies
+from dropbox import users
+from dropbox import users_common
 
 class DeviceSession(bb.Struct):
     """
@@ -51,15 +32,10 @@ class DeviceSession(bb.Struct):
 
     __slots__ = [
         '_session_id_value',
-        '_session_id_present',
         '_ip_address_value',
-        '_ip_address_present',
         '_country_value',
-        '_country_present',
         '_created_value',
-        '_created_present',
         '_updated_value',
-        '_updated_present',
     ]
 
     _has_required_fields = True
@@ -70,16 +46,11 @@ class DeviceSession(bb.Struct):
                  country=None,
                  created=None,
                  updated=None):
-        self._session_id_value = None
-        self._session_id_present = False
-        self._ip_address_value = None
-        self._ip_address_present = False
-        self._country_value = None
-        self._country_present = False
-        self._created_value = None
-        self._created_present = False
-        self._updated_value = None
-        self._updated_present = False
+        self._session_id_value = bb.NOT_SET
+        self._ip_address_value = bb.NOT_SET
+        self._country_value = bb.NOT_SET
+        self._created_value = bb.NOT_SET
+        self._updated_value = bb.NOT_SET
         if session_id is not None:
             self.session_id = session_id
         if ip_address is not None:
@@ -91,144 +62,23 @@ class DeviceSession(bb.Struct):
         if updated is not None:
             self.updated = updated
 
-    @property
-    def session_id(self):
-        """
-        The session id.
+    # Instance attribute type: str (validator is set below)
+    session_id = bb.Attribute("session_id")
 
-        :rtype: str
-        """
-        if self._session_id_present:
-            return self._session_id_value
-        else:
-            raise AttributeError("missing required field 'session_id'")
+    # Instance attribute type: str (validator is set below)
+    ip_address = bb.Attribute("ip_address", nullable=True)
 
-    @session_id.setter
-    def session_id(self, val):
-        val = self._session_id_validator.validate(val)
-        self._session_id_value = val
-        self._session_id_present = True
+    # Instance attribute type: str (validator is set below)
+    country = bb.Attribute("country", nullable=True)
 
-    @session_id.deleter
-    def session_id(self):
-        self._session_id_value = None
-        self._session_id_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    created = bb.Attribute("created", nullable=True)
 
-    @property
-    def ip_address(self):
-        """
-        The IP address of the last activity from this session.
-
-        :rtype: str
-        """
-        if self._ip_address_present:
-            return self._ip_address_value
-        else:
-            return None
-
-    @ip_address.setter
-    def ip_address(self, val):
-        if val is None:
-            del self.ip_address
-            return
-        val = self._ip_address_validator.validate(val)
-        self._ip_address_value = val
-        self._ip_address_present = True
-
-    @ip_address.deleter
-    def ip_address(self):
-        self._ip_address_value = None
-        self._ip_address_present = False
-
-    @property
-    def country(self):
-        """
-        The country from which the last activity from this session was made.
-
-        :rtype: str
-        """
-        if self._country_present:
-            return self._country_value
-        else:
-            return None
-
-    @country.setter
-    def country(self, val):
-        if val is None:
-            del self.country
-            return
-        val = self._country_validator.validate(val)
-        self._country_value = val
-        self._country_present = True
-
-    @country.deleter
-    def country(self):
-        self._country_value = None
-        self._country_present = False
-
-    @property
-    def created(self):
-        """
-        The time this session was created.
-
-        :rtype: datetime.datetime
-        """
-        if self._created_present:
-            return self._created_value
-        else:
-            return None
-
-    @created.setter
-    def created(self, val):
-        if val is None:
-            del self.created
-            return
-        val = self._created_validator.validate(val)
-        self._created_value = val
-        self._created_present = True
-
-    @created.deleter
-    def created(self):
-        self._created_value = None
-        self._created_present = False
-
-    @property
-    def updated(self):
-        """
-        The time of the last activity from this session.
-
-        :rtype: datetime.datetime
-        """
-        if self._updated_present:
-            return self._updated_value
-        else:
-            return None
-
-    @updated.setter
-    def updated(self, val):
-        if val is None:
-            del self.updated
-            return
-        val = self._updated_validator.validate(val)
-        self._updated_value = val
-        self._updated_present = True
-
-    @updated.deleter
-    def updated(self):
-        self._updated_value = None
-        self._updated_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    updated = bb.Attribute("updated", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeviceSession, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DeviceSession(session_id={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r})'.format(
-            self._session_id_value,
-            self._ip_address_value,
-            self._country_value,
-            self._created_value,
-            self._updated_value,
-        )
 
 DeviceSession_validator = bv.Struct(DeviceSession)
 
@@ -245,13 +95,9 @@ class ActiveWebSession(DeviceSession):
 
     __slots__ = [
         '_user_agent_value',
-        '_user_agent_present',
         '_os_value',
-        '_os_present',
         '_browser_value',
-        '_browser_present',
         '_expires_value',
-        '_expires_present',
     ]
 
     _has_required_fields = True
@@ -271,14 +117,10 @@ class ActiveWebSession(DeviceSession):
                                                country,
                                                created,
                                                updated)
-        self._user_agent_value = None
-        self._user_agent_present = False
-        self._os_value = None
-        self._os_present = False
-        self._browser_value = None
-        self._browser_present = False
-        self._expires_value = None
-        self._expires_present = False
+        self._user_agent_value = bb.NOT_SET
+        self._os_value = bb.NOT_SET
+        self._browser_value = bb.NOT_SET
+        self._expires_value = bb.NOT_SET
         if user_agent is not None:
             self.user_agent = user_agent
         if os is not None:
@@ -288,116 +130,20 @@ class ActiveWebSession(DeviceSession):
         if expires is not None:
             self.expires = expires
 
-    @property
-    def user_agent(self):
-        """
-        Information on the hosting device.
+    # Instance attribute type: str (validator is set below)
+    user_agent = bb.Attribute("user_agent")
 
-        :rtype: str
-        """
-        if self._user_agent_present:
-            return self._user_agent_value
-        else:
-            raise AttributeError("missing required field 'user_agent'")
+    # Instance attribute type: str (validator is set below)
+    os = bb.Attribute("os")
 
-    @user_agent.setter
-    def user_agent(self, val):
-        val = self._user_agent_validator.validate(val)
-        self._user_agent_value = val
-        self._user_agent_present = True
+    # Instance attribute type: str (validator is set below)
+    browser = bb.Attribute("browser")
 
-    @user_agent.deleter
-    def user_agent(self):
-        self._user_agent_value = None
-        self._user_agent_present = False
-
-    @property
-    def os(self):
-        """
-        Information on the hosting operating system.
-
-        :rtype: str
-        """
-        if self._os_present:
-            return self._os_value
-        else:
-            raise AttributeError("missing required field 'os'")
-
-    @os.setter
-    def os(self, val):
-        val = self._os_validator.validate(val)
-        self._os_value = val
-        self._os_present = True
-
-    @os.deleter
-    def os(self):
-        self._os_value = None
-        self._os_present = False
-
-    @property
-    def browser(self):
-        """
-        Information on the browser used for this web session.
-
-        :rtype: str
-        """
-        if self._browser_present:
-            return self._browser_value
-        else:
-            raise AttributeError("missing required field 'browser'")
-
-    @browser.setter
-    def browser(self, val):
-        val = self._browser_validator.validate(val)
-        self._browser_value = val
-        self._browser_present = True
-
-    @browser.deleter
-    def browser(self):
-        self._browser_value = None
-        self._browser_present = False
-
-    @property
-    def expires(self):
-        """
-        The time this session expires.
-
-        :rtype: datetime.datetime
-        """
-        if self._expires_present:
-            return self._expires_value
-        else:
-            return None
-
-    @expires.setter
-    def expires(self, val):
-        if val is None:
-            del self.expires
-            return
-        val = self._expires_validator.validate(val)
-        self._expires_value = val
-        self._expires_present = True
-
-    @expires.deleter
-    def expires(self):
-        self._expires_value = None
-        self._expires_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    expires = bb.Attribute("expires", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ActiveWebSession, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ActiveWebSession(session_id={!r}, user_agent={!r}, os={!r}, browser={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r}, expires={!r})'.format(
-            self._session_id_value,
-            self._user_agent_value,
-            self._os_value,
-            self._browser_value,
-            self._ip_address_value,
-            self._country_value,
-            self._created_value,
-            self._updated_value,
-            self._expires_value,
-        )
 
 ActiveWebSession_validator = bv.Struct(ActiveWebSession)
 
@@ -727,9 +473,6 @@ class AddSecondaryEmailResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddSecondaryEmailResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'AddSecondaryEmailResult(%r, %r)' % (self._tag, self._value)
-
 AddSecondaryEmailResult_validator = bv.Union(AddSecondaryEmailResult)
 
 class AddSecondaryEmailsArg(bb.Struct):
@@ -740,48 +483,21 @@ class AddSecondaryEmailsArg(bb.Struct):
 
     __slots__ = [
         '_new_secondary_emails_value',
-        '_new_secondary_emails_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  new_secondary_emails=None):
-        self._new_secondary_emails_value = None
-        self._new_secondary_emails_present = False
+        self._new_secondary_emails_value = bb.NOT_SET
         if new_secondary_emails is not None:
             self.new_secondary_emails = new_secondary_emails
 
-    @property
-    def new_secondary_emails(self):
-        """
-        List of users and secondary emails to add.
-
-        :rtype: list of [UserSecondaryEmailsArg]
-        """
-        if self._new_secondary_emails_present:
-            return self._new_secondary_emails_value
-        else:
-            raise AttributeError("missing required field 'new_secondary_emails'")
-
-    @new_secondary_emails.setter
-    def new_secondary_emails(self, val):
-        val = self._new_secondary_emails_validator.validate(val)
-        self._new_secondary_emails_value = val
-        self._new_secondary_emails_present = True
-
-    @new_secondary_emails.deleter
-    def new_secondary_emails(self):
-        self._new_secondary_emails_value = None
-        self._new_secondary_emails_present = False
+    # Instance attribute type: list of [UserSecondaryEmailsArg] (validator is set below)
+    new_secondary_emails = bb.Attribute("new_secondary_emails")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddSecondaryEmailsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'AddSecondaryEmailsArg(new_secondary_emails={!r})'.format(
-            self._new_secondary_emails_value,
-        )
 
 AddSecondaryEmailsArg_validator = bv.Struct(AddSecondaryEmailsArg)
 
@@ -834,9 +550,6 @@ class AddSecondaryEmailsError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddSecondaryEmailsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'AddSecondaryEmailsError(%r, %r)' % (self._tag, self._value)
-
 AddSecondaryEmailsError_validator = bv.Union(AddSecondaryEmailsError)
 
 class AddSecondaryEmailsResult(bb.Struct):
@@ -847,48 +560,21 @@ class AddSecondaryEmailsResult(bb.Struct):
 
     __slots__ = [
         '_results_value',
-        '_results_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  results=None):
-        self._results_value = None
-        self._results_present = False
+        self._results_value = bb.NOT_SET
         if results is not None:
             self.results = results
 
-    @property
-    def results(self):
-        """
-        List of users and secondary email results.
-
-        :rtype: list of [UserAddResult]
-        """
-        if self._results_present:
-            return self._results_value
-        else:
-            raise AttributeError("missing required field 'results'")
-
-    @results.setter
-    def results(self, val):
-        val = self._results_validator.validate(val)
-        self._results_value = val
-        self._results_present = True
-
-    @results.deleter
-    def results(self):
-        self._results_value = None
-        self._results_present = False
+    # Instance attribute type: list of [UserAddResult] (validator is set below)
+    results = bb.Attribute("results")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddSecondaryEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'AddSecondaryEmailsResult(results={!r})'.format(
-            self._results_value,
-        )
 
 AddSecondaryEmailsResult_validator = bv.Struct(AddSecondaryEmailsResult)
 
@@ -954,9 +640,6 @@ class AdminTier(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AdminTier, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'AdminTier(%r, %r)' % (self._tag, self._value)
-
 AdminTier_validator = bv.Union(AdminTier)
 
 class ApiApp(bb.Struct):
@@ -974,17 +657,11 @@ class ApiApp(bb.Struct):
 
     __slots__ = [
         '_app_id_value',
-        '_app_id_present',
         '_app_name_value',
-        '_app_name_present',
         '_publisher_value',
-        '_publisher_present',
         '_publisher_url_value',
-        '_publisher_url_present',
         '_linked_value',
-        '_linked_present',
         '_is_app_folder_value',
-        '_is_app_folder_present',
     ]
 
     _has_required_fields = True
@@ -996,18 +673,12 @@ class ApiApp(bb.Struct):
                  publisher=None,
                  publisher_url=None,
                  linked=None):
-        self._app_id_value = None
-        self._app_id_present = False
-        self._app_name_value = None
-        self._app_name_present = False
-        self._publisher_value = None
-        self._publisher_present = False
-        self._publisher_url_value = None
-        self._publisher_url_present = False
-        self._linked_value = None
-        self._linked_present = False
-        self._is_app_folder_value = None
-        self._is_app_folder_present = False
+        self._app_id_value = bb.NOT_SET
+        self._app_name_value = bb.NOT_SET
+        self._publisher_value = bb.NOT_SET
+        self._publisher_url_value = bb.NOT_SET
+        self._linked_value = bb.NOT_SET
+        self._is_app_folder_value = bb.NOT_SET
         if app_id is not None:
             self.app_id = app_id
         if app_name is not None:
@@ -1021,165 +692,26 @@ class ApiApp(bb.Struct):
         if is_app_folder is not None:
             self.is_app_folder = is_app_folder
 
-    @property
-    def app_id(self):
-        """
-        The application unique id.
+    # Instance attribute type: str (validator is set below)
+    app_id = bb.Attribute("app_id")
 
-        :rtype: str
-        """
-        if self._app_id_present:
-            return self._app_id_value
-        else:
-            raise AttributeError("missing required field 'app_id'")
+    # Instance attribute type: str (validator is set below)
+    app_name = bb.Attribute("app_name")
 
-    @app_id.setter
-    def app_id(self, val):
-        val = self._app_id_validator.validate(val)
-        self._app_id_value = val
-        self._app_id_present = True
+    # Instance attribute type: str (validator is set below)
+    publisher = bb.Attribute("publisher", nullable=True)
 
-    @app_id.deleter
-    def app_id(self):
-        self._app_id_value = None
-        self._app_id_present = False
+    # Instance attribute type: str (validator is set below)
+    publisher_url = bb.Attribute("publisher_url", nullable=True)
 
-    @property
-    def app_name(self):
-        """
-        The application name.
+    # Instance attribute type: datetime.datetime (validator is set below)
+    linked = bb.Attribute("linked", nullable=True)
 
-        :rtype: str
-        """
-        if self._app_name_present:
-            return self._app_name_value
-        else:
-            raise AttributeError("missing required field 'app_name'")
-
-    @app_name.setter
-    def app_name(self, val):
-        val = self._app_name_validator.validate(val)
-        self._app_name_value = val
-        self._app_name_present = True
-
-    @app_name.deleter
-    def app_name(self):
-        self._app_name_value = None
-        self._app_name_present = False
-
-    @property
-    def publisher(self):
-        """
-        The application publisher name.
-
-        :rtype: str
-        """
-        if self._publisher_present:
-            return self._publisher_value
-        else:
-            return None
-
-    @publisher.setter
-    def publisher(self, val):
-        if val is None:
-            del self.publisher
-            return
-        val = self._publisher_validator.validate(val)
-        self._publisher_value = val
-        self._publisher_present = True
-
-    @publisher.deleter
-    def publisher(self):
-        self._publisher_value = None
-        self._publisher_present = False
-
-    @property
-    def publisher_url(self):
-        """
-        The publisher's URL.
-
-        :rtype: str
-        """
-        if self._publisher_url_present:
-            return self._publisher_url_value
-        else:
-            return None
-
-    @publisher_url.setter
-    def publisher_url(self, val):
-        if val is None:
-            del self.publisher_url
-            return
-        val = self._publisher_url_validator.validate(val)
-        self._publisher_url_value = val
-        self._publisher_url_present = True
-
-    @publisher_url.deleter
-    def publisher_url(self):
-        self._publisher_url_value = None
-        self._publisher_url_present = False
-
-    @property
-    def linked(self):
-        """
-        The time this application was linked.
-
-        :rtype: datetime.datetime
-        """
-        if self._linked_present:
-            return self._linked_value
-        else:
-            return None
-
-    @linked.setter
-    def linked(self, val):
-        if val is None:
-            del self.linked
-            return
-        val = self._linked_validator.validate(val)
-        self._linked_value = val
-        self._linked_present = True
-
-    @linked.deleter
-    def linked(self):
-        self._linked_value = None
-        self._linked_present = False
-
-    @property
-    def is_app_folder(self):
-        """
-        Whether the linked application uses a dedicated folder.
-
-        :rtype: bool
-        """
-        if self._is_app_folder_present:
-            return self._is_app_folder_value
-        else:
-            raise AttributeError("missing required field 'is_app_folder'")
-
-    @is_app_folder.setter
-    def is_app_folder(self, val):
-        val = self._is_app_folder_validator.validate(val)
-        self._is_app_folder_value = val
-        self._is_app_folder_present = True
-
-    @is_app_folder.deleter
-    def is_app_folder(self):
-        self._is_app_folder_value = None
-        self._is_app_folder_present = False
+    # Instance attribute type: bool (validator is set below)
+    is_app_folder = bb.Attribute("is_app_folder")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ApiApp, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ApiApp(app_id={!r}, app_name={!r}, is_app_folder={!r}, publisher={!r}, publisher_url={!r}, linked={!r})'.format(
-            self._app_id_value,
-            self._app_name_value,
-            self._is_app_folder_value,
-            self._publisher_value,
-            self._publisher_url_value,
-            self._linked_value,
-        )
 
 ApiApp_validator = bv.Struct(ApiApp)
 
@@ -1193,48 +725,21 @@ class BaseDfbReport(bb.Struct):
 
     __slots__ = [
         '_start_date_value',
-        '_start_date_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  start_date=None):
-        self._start_date_value = None
-        self._start_date_present = False
+        self._start_date_value = bb.NOT_SET
         if start_date is not None:
             self.start_date = start_date
 
-    @property
-    def start_date(self):
-        """
-        First date present in the results as 'YYYY-MM-DD' or None.
-
-        :rtype: str
-        """
-        if self._start_date_present:
-            return self._start_date_value
-        else:
-            raise AttributeError("missing required field 'start_date'")
-
-    @start_date.setter
-    def start_date(self, val):
-        val = self._start_date_validator.validate(val)
-        self._start_date_value = val
-        self._start_date_present = True
-
-    @start_date.deleter
-    def start_date(self):
-        self._start_date_value = None
-        self._start_date_present = False
+    # Instance attribute type: str (validator is set below)
+    start_date = bb.Attribute("start_date")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(BaseDfbReport, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'BaseDfbReport(start_date={!r})'.format(
-            self._start_date_value,
-        )
 
 BaseDfbReport_validator = bv.Struct(BaseDfbReport)
 
@@ -1349,9 +854,6 @@ class BaseTeamFolderError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(BaseTeamFolderError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'BaseTeamFolderError(%r, %r)' % (self._tag, self._value)
-
 BaseTeamFolderError_validator = bv.Union(BaseTeamFolderError)
 
 class CustomQuotaError(bb.Union):
@@ -1390,9 +892,6 @@ class CustomQuotaError(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CustomQuotaError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'CustomQuotaError(%r, %r)' % (self._tag, self._value)
 
 CustomQuotaError_validator = bv.Union(CustomQuotaError)
 
@@ -1486,9 +985,6 @@ class CustomQuotaResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CustomQuotaResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'CustomQuotaResult(%r, %r)' % (self._tag, self._value)
-
 CustomQuotaResult_validator = bv.Union(CustomQuotaResult)
 
 class CustomQuotaUsersArg(bb.Struct):
@@ -1498,48 +994,21 @@ class CustomQuotaUsersArg(bb.Struct):
 
     __slots__ = [
         '_users_value',
-        '_users_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  users=None):
-        self._users_value = None
-        self._users_present = False
+        self._users_value = bb.NOT_SET
         if users is not None:
             self.users = users
 
-    @property
-    def users(self):
-        """
-        List of users.
-
-        :rtype: list of [UserSelectorArg]
-        """
-        if self._users_present:
-            return self._users_value
-        else:
-            raise AttributeError("missing required field 'users'")
-
-    @users.setter
-    def users(self, val):
-        val = self._users_validator.validate(val)
-        self._users_value = val
-        self._users_present = True
-
-    @users.deleter
-    def users(self):
-        self._users_value = None
-        self._users_present = False
+    # Instance attribute type: list of [UserSelectorArg] (validator is set below)
+    users = bb.Attribute("users")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CustomQuotaUsersArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'CustomQuotaUsersArg(users={!r})'.format(
-            self._users_value,
-        )
 
 CustomQuotaUsersArg_validator = bv.Struct(CustomQuotaUsersArg)
 
@@ -1555,9 +1024,7 @@ class DateRange(bb.Struct):
 
     __slots__ = [
         '_start_date_value',
-        '_start_date_present',
         '_end_date_value',
-        '_end_date_present',
     ]
 
     _has_required_fields = False
@@ -1565,76 +1032,21 @@ class DateRange(bb.Struct):
     def __init__(self,
                  start_date=None,
                  end_date=None):
-        self._start_date_value = None
-        self._start_date_present = False
-        self._end_date_value = None
-        self._end_date_present = False
+        self._start_date_value = bb.NOT_SET
+        self._end_date_value = bb.NOT_SET
         if start_date is not None:
             self.start_date = start_date
         if end_date is not None:
             self.end_date = end_date
 
-    @property
-    def start_date(self):
-        """
-        Optional starting date (inclusive). If start_date is None or too long
-        ago, this field will  be set to 6 months ago.
+    # Instance attribute type: datetime.datetime (validator is set below)
+    start_date = bb.Attribute("start_date", nullable=True)
 
-        :rtype: datetime.datetime
-        """
-        if self._start_date_present:
-            return self._start_date_value
-        else:
-            return None
-
-    @start_date.setter
-    def start_date(self, val):
-        if val is None:
-            del self.start_date
-            return
-        val = self._start_date_validator.validate(val)
-        self._start_date_value = val
-        self._start_date_present = True
-
-    @start_date.deleter
-    def start_date(self):
-        self._start_date_value = None
-        self._start_date_present = False
-
-    @property
-    def end_date(self):
-        """
-        Optional ending date (exclusive).
-
-        :rtype: datetime.datetime
-        """
-        if self._end_date_present:
-            return self._end_date_value
-        else:
-            return None
-
-    @end_date.setter
-    def end_date(self, val):
-        if val is None:
-            del self.end_date
-            return
-        val = self._end_date_validator.validate(val)
-        self._end_date_value = val
-        self._end_date_present = True
-
-    @end_date.deleter
-    def end_date(self):
-        self._end_date_value = None
-        self._end_date_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    end_date = bb.Attribute("end_date", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DateRange, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DateRange(start_date={!r}, end_date={!r})'.format(
-            self._start_date_value,
-            self._end_date_value,
-        )
 
 DateRange_validator = bv.Struct(DateRange)
 
@@ -1661,9 +1073,6 @@ class DateRangeError(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DateRangeError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DateRangeError(%r, %r)' % (self._tag, self._value)
 
 DateRangeError_validator = bv.Union(DateRangeError)
 
@@ -1795,9 +1204,6 @@ class DeleteSecondaryEmailResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteSecondaryEmailResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'DeleteSecondaryEmailResult(%r, %r)' % (self._tag, self._value)
-
 DeleteSecondaryEmailResult_validator = bv.Union(DeleteSecondaryEmailResult)
 
 class DeleteSecondaryEmailsArg(bb.Struct):
@@ -1808,48 +1214,21 @@ class DeleteSecondaryEmailsArg(bb.Struct):
 
     __slots__ = [
         '_emails_to_delete_value',
-        '_emails_to_delete_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  emails_to_delete=None):
-        self._emails_to_delete_value = None
-        self._emails_to_delete_present = False
+        self._emails_to_delete_value = bb.NOT_SET
         if emails_to_delete is not None:
             self.emails_to_delete = emails_to_delete
 
-    @property
-    def emails_to_delete(self):
-        """
-        List of users and their secondary emails to delete.
-
-        :rtype: list of [UserSecondaryEmailsArg]
-        """
-        if self._emails_to_delete_present:
-            return self._emails_to_delete_value
-        else:
-            raise AttributeError("missing required field 'emails_to_delete'")
-
-    @emails_to_delete.setter
-    def emails_to_delete(self, val):
-        val = self._emails_to_delete_validator.validate(val)
-        self._emails_to_delete_value = val
-        self._emails_to_delete_present = True
-
-    @emails_to_delete.deleter
-    def emails_to_delete(self):
-        self._emails_to_delete_value = None
-        self._emails_to_delete_present = False
+    # Instance attribute type: list of [UserSecondaryEmailsArg] (validator is set below)
+    emails_to_delete = bb.Attribute("emails_to_delete")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteSecondaryEmailsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DeleteSecondaryEmailsArg(emails_to_delete={!r})'.format(
-            self._emails_to_delete_value,
-        )
 
 DeleteSecondaryEmailsArg_validator = bv.Struct(DeleteSecondaryEmailsArg)
 
@@ -1857,46 +1236,21 @@ class DeleteSecondaryEmailsResult(bb.Struct):
 
     __slots__ = [
         '_results_value',
-        '_results_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  results=None):
-        self._results_value = None
-        self._results_present = False
+        self._results_value = bb.NOT_SET
         if results is not None:
             self.results = results
 
-    @property
-    def results(self):
-        """
-        :rtype: list of [UserDeleteResult]
-        """
-        if self._results_present:
-            return self._results_value
-        else:
-            raise AttributeError("missing required field 'results'")
-
-    @results.setter
-    def results(self, val):
-        val = self._results_validator.validate(val)
-        self._results_value = val
-        self._results_present = True
-
-    @results.deleter
-    def results(self):
-        self._results_value = None
-        self._results_present = False
+    # Instance attribute type: list of [UserDeleteResult] (validator is set below)
+    results = bb.Attribute("results")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteSecondaryEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DeleteSecondaryEmailsResult(results={!r})'.format(
-            self._results_value,
-        )
 
 DeleteSecondaryEmailsResult_validator = bv.Struct(DeleteSecondaryEmailsResult)
 
@@ -1916,15 +1270,10 @@ class DesktopClientSession(DeviceSession):
 
     __slots__ = [
         '_host_name_value',
-        '_host_name_present',
         '_client_type_value',
-        '_client_type_present',
         '_client_version_value',
-        '_client_version_present',
         '_platform_value',
-        '_platform_present',
         '_is_delete_on_unlink_supported_value',
-        '_is_delete_on_unlink_supported_present',
     ]
 
     _has_required_fields = True
@@ -1945,16 +1294,11 @@ class DesktopClientSession(DeviceSession):
                                                    country,
                                                    created,
                                                    updated)
-        self._host_name_value = None
-        self._host_name_present = False
-        self._client_type_value = None
-        self._client_type_present = False
-        self._client_version_value = None
-        self._client_version_present = False
-        self._platform_value = None
-        self._platform_present = False
-        self._is_delete_on_unlink_supported_value = None
-        self._is_delete_on_unlink_supported_present = False
+        self._host_name_value = bb.NOT_SET
+        self._client_type_value = bb.NOT_SET
+        self._client_version_value = bb.NOT_SET
+        self._platform_value = bb.NOT_SET
+        self._is_delete_on_unlink_supported_value = bb.NOT_SET
         if host_name is not None:
             self.host_name = host_name
         if client_type is not None:
@@ -1966,137 +1310,23 @@ class DesktopClientSession(DeviceSession):
         if is_delete_on_unlink_supported is not None:
             self.is_delete_on_unlink_supported = is_delete_on_unlink_supported
 
-    @property
-    def host_name(self):
-        """
-        Name of the hosting desktop.
+    # Instance attribute type: str (validator is set below)
+    host_name = bb.Attribute("host_name")
 
-        :rtype: str
-        """
-        if self._host_name_present:
-            return self._host_name_value
-        else:
-            raise AttributeError("missing required field 'host_name'")
+    # Instance attribute type: DesktopPlatform (validator is set below)
+    client_type = bb.Attribute("client_type", user_defined=True)
 
-    @host_name.setter
-    def host_name(self, val):
-        val = self._host_name_validator.validate(val)
-        self._host_name_value = val
-        self._host_name_present = True
+    # Instance attribute type: str (validator is set below)
+    client_version = bb.Attribute("client_version")
 
-    @host_name.deleter
-    def host_name(self):
-        self._host_name_value = None
-        self._host_name_present = False
+    # Instance attribute type: str (validator is set below)
+    platform = bb.Attribute("platform")
 
-    @property
-    def client_type(self):
-        """
-        The Dropbox desktop client type.
-
-        :rtype: DesktopPlatform
-        """
-        if self._client_type_present:
-            return self._client_type_value
-        else:
-            raise AttributeError("missing required field 'client_type'")
-
-    @client_type.setter
-    def client_type(self, val):
-        self._client_type_validator.validate_type_only(val)
-        self._client_type_value = val
-        self._client_type_present = True
-
-    @client_type.deleter
-    def client_type(self):
-        self._client_type_value = None
-        self._client_type_present = False
-
-    @property
-    def client_version(self):
-        """
-        The Dropbox client version.
-
-        :rtype: str
-        """
-        if self._client_version_present:
-            return self._client_version_value
-        else:
-            raise AttributeError("missing required field 'client_version'")
-
-    @client_version.setter
-    def client_version(self, val):
-        val = self._client_version_validator.validate(val)
-        self._client_version_value = val
-        self._client_version_present = True
-
-    @client_version.deleter
-    def client_version(self):
-        self._client_version_value = None
-        self._client_version_present = False
-
-    @property
-    def platform(self):
-        """
-        Information on the hosting platform.
-
-        :rtype: str
-        """
-        if self._platform_present:
-            return self._platform_value
-        else:
-            raise AttributeError("missing required field 'platform'")
-
-    @platform.setter
-    def platform(self, val):
-        val = self._platform_validator.validate(val)
-        self._platform_value = val
-        self._platform_present = True
-
-    @platform.deleter
-    def platform(self):
-        self._platform_value = None
-        self._platform_present = False
-
-    @property
-    def is_delete_on_unlink_supported(self):
-        """
-        Whether it's possible to delete all of the account files upon unlinking.
-
-        :rtype: bool
-        """
-        if self._is_delete_on_unlink_supported_present:
-            return self._is_delete_on_unlink_supported_value
-        else:
-            raise AttributeError("missing required field 'is_delete_on_unlink_supported'")
-
-    @is_delete_on_unlink_supported.setter
-    def is_delete_on_unlink_supported(self, val):
-        val = self._is_delete_on_unlink_supported_validator.validate(val)
-        self._is_delete_on_unlink_supported_value = val
-        self._is_delete_on_unlink_supported_present = True
-
-    @is_delete_on_unlink_supported.deleter
-    def is_delete_on_unlink_supported(self):
-        self._is_delete_on_unlink_supported_value = None
-        self._is_delete_on_unlink_supported_present = False
+    # Instance attribute type: bool (validator is set below)
+    is_delete_on_unlink_supported = bb.Attribute("is_delete_on_unlink_supported")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DesktopClientSession, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DesktopClientSession(session_id={!r}, host_name={!r}, client_type={!r}, client_version={!r}, platform={!r}, is_delete_on_unlink_supported={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r})'.format(
-            self._session_id_value,
-            self._host_name_value,
-            self._client_type_value,
-            self._client_version_value,
-            self._platform_value,
-            self._is_delete_on_unlink_supported_value,
-            self._ip_address_value,
-            self._country_value,
-            self._created_value,
-            self._updated_value,
-        )
 
 DesktopClientSession_validator = bv.Struct(DesktopClientSession)
 
@@ -2156,9 +1386,6 @@ class DesktopPlatform(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DesktopPlatform, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'DesktopPlatform(%r, %r)' % (self._tag, self._value)
-
 DesktopPlatform_validator = bv.Union(DesktopPlatform)
 
 class DeviceSessionArg(bb.Struct):
@@ -2170,9 +1397,7 @@ class DeviceSessionArg(bb.Struct):
 
     __slots__ = [
         '_session_id_value',
-        '_session_id_present',
         '_team_member_id_value',
-        '_team_member_id_present',
     ]
 
     _has_required_fields = True
@@ -2180,69 +1405,21 @@ class DeviceSessionArg(bb.Struct):
     def __init__(self,
                  session_id=None,
                  team_member_id=None):
-        self._session_id_value = None
-        self._session_id_present = False
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+        self._session_id_value = bb.NOT_SET
+        self._team_member_id_value = bb.NOT_SET
         if session_id is not None:
             self.session_id = session_id
         if team_member_id is not None:
             self.team_member_id = team_member_id
 
-    @property
-    def session_id(self):
-        """
-        The session id.
+    # Instance attribute type: str (validator is set below)
+    session_id = bb.Attribute("session_id")
 
-        :rtype: str
-        """
-        if self._session_id_present:
-            return self._session_id_value
-        else:
-            raise AttributeError("missing required field 'session_id'")
-
-    @session_id.setter
-    def session_id(self, val):
-        val = self._session_id_validator.validate(val)
-        self._session_id_value = val
-        self._session_id_present = True
-
-    @session_id.deleter
-    def session_id(self):
-        self._session_id_value = None
-        self._session_id_present = False
-
-    @property
-    def team_member_id(self):
-        """
-        The unique id of the member owning the device.
-
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            raise AttributeError("missing required field 'team_member_id'")
-
-    @team_member_id.setter
-    def team_member_id(self, val):
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
-
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeviceSessionArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DeviceSessionArg(session_id={!r}, team_member_id={!r})'.format(
-            self._session_id_value,
-            self._team_member_id_value,
-        )
 
 DeviceSessionArg_validator = bv.Struct(DeviceSessionArg)
 
@@ -2270,19 +1447,12 @@ class DevicesActive(bb.Struct):
 
     __slots__ = [
         '_windows_value',
-        '_windows_present',
         '_macos_value',
-        '_macos_present',
         '_linux_value',
-        '_linux_present',
         '_ios_value',
-        '_ios_present',
         '_android_value',
-        '_android_present',
         '_other_value',
-        '_other_present',
         '_total_value',
-        '_total_present',
     ]
 
     _has_required_fields = True
@@ -2295,20 +1465,13 @@ class DevicesActive(bb.Struct):
                  android=None,
                  other=None,
                  total=None):
-        self._windows_value = None
-        self._windows_present = False
-        self._macos_value = None
-        self._macos_present = False
-        self._linux_value = None
-        self._linux_present = False
-        self._ios_value = None
-        self._ios_present = False
-        self._android_value = None
-        self._android_present = False
-        self._other_value = None
-        self._other_present = False
-        self._total_value = None
-        self._total_present = False
+        self._windows_value = bb.NOT_SET
+        self._macos_value = bb.NOT_SET
+        self._linux_value = bb.NOT_SET
+        self._ios_value = bb.NOT_SET
+        self._android_value = bb.NOT_SET
+        self._other_value = bb.NOT_SET
+        self._total_value = bb.NOT_SET
         if windows is not None:
             self.windows = windows
         if macos is not None:
@@ -2324,181 +1487,29 @@ class DevicesActive(bb.Struct):
         if total is not None:
             self.total = total
 
-    @property
-    def windows(self):
-        """
-        Array of number of linked windows (desktop) clients with activity.
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    windows = bb.Attribute("windows")
 
-        :rtype: list of [Optional[int]]
-        """
-        if self._windows_present:
-            return self._windows_value
-        else:
-            raise AttributeError("missing required field 'windows'")
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    macos = bb.Attribute("macos")
 
-    @windows.setter
-    def windows(self, val):
-        val = self._windows_validator.validate(val)
-        self._windows_value = val
-        self._windows_present = True
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    linux = bb.Attribute("linux")
 
-    @windows.deleter
-    def windows(self):
-        self._windows_value = None
-        self._windows_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    ios = bb.Attribute("ios")
 
-    @property
-    def macos(self):
-        """
-        Array of number of linked mac (desktop) clients with activity.
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    android = bb.Attribute("android")
 
-        :rtype: list of [Optional[int]]
-        """
-        if self._macos_present:
-            return self._macos_value
-        else:
-            raise AttributeError("missing required field 'macos'")
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    other = bb.Attribute("other")
 
-    @macos.setter
-    def macos(self, val):
-        val = self._macos_validator.validate(val)
-        self._macos_value = val
-        self._macos_present = True
-
-    @macos.deleter
-    def macos(self):
-        self._macos_value = None
-        self._macos_present = False
-
-    @property
-    def linux(self):
-        """
-        Array of number of linked linus (desktop) clients with activity.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._linux_present:
-            return self._linux_value
-        else:
-            raise AttributeError("missing required field 'linux'")
-
-    @linux.setter
-    def linux(self, val):
-        val = self._linux_validator.validate(val)
-        self._linux_value = val
-        self._linux_present = True
-
-    @linux.deleter
-    def linux(self):
-        self._linux_value = None
-        self._linux_present = False
-
-    @property
-    def ios(self):
-        """
-        Array of number of linked ios devices with activity.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._ios_present:
-            return self._ios_value
-        else:
-            raise AttributeError("missing required field 'ios'")
-
-    @ios.setter
-    def ios(self, val):
-        val = self._ios_validator.validate(val)
-        self._ios_value = val
-        self._ios_present = True
-
-    @ios.deleter
-    def ios(self):
-        self._ios_value = None
-        self._ios_present = False
-
-    @property
-    def android(self):
-        """
-        Array of number of linked android devices with activity.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._android_present:
-            return self._android_value
-        else:
-            raise AttributeError("missing required field 'android'")
-
-    @android.setter
-    def android(self, val):
-        val = self._android_validator.validate(val)
-        self._android_value = val
-        self._android_present = True
-
-    @android.deleter
-    def android(self):
-        self._android_value = None
-        self._android_present = False
-
-    @property
-    def other(self):
-        """
-        Array of number of other linked devices (blackberry, windows phone, etc)
-        with activity.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._other_present:
-            return self._other_value
-        else:
-            raise AttributeError("missing required field 'other'")
-
-    @other.setter
-    def other(self, val):
-        val = self._other_validator.validate(val)
-        self._other_value = val
-        self._other_present = True
-
-    @other.deleter
-    def other(self):
-        self._other_value = None
-        self._other_present = False
-
-    @property
-    def total(self):
-        """
-        Array of total number of linked clients with activity.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._total_present:
-            return self._total_value
-        else:
-            raise AttributeError("missing required field 'total'")
-
-    @total.setter
-    def total(self, val):
-        val = self._total_validator.validate(val)
-        self._total_value = val
-        self._total_present = True
-
-    @total.deleter
-    def total(self):
-        self._total_value = None
-        self._total_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    total = bb.Attribute("total")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DevicesActive, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DevicesActive(windows={!r}, macos={!r}, linux={!r}, ios={!r}, android={!r}, other={!r}, total={!r})'.format(
-            self._windows_value,
-            self._macos_value,
-            self._linux_value,
-            self._ios_value,
-            self._android_value,
-            self._other_value,
-            self._total_value,
-        )
 
 DevicesActive_validator = bv.Struct(DevicesActive)
 
@@ -2511,48 +1522,21 @@ class ExcludedUsersListArg(bb.Struct):
 
     __slots__ = [
         '_limit_value',
-        '_limit_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  limit=None):
-        self._limit_value = None
-        self._limit_present = False
+        self._limit_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
 
-    @property
-    def limit(self):
-        """
-        Number of results to return per call.
-
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ExcludedUsersListArg(limit={!r})'.format(
-            self._limit_value,
-        )
 
 ExcludedUsersListArg_validator = bv.Struct(ExcludedUsersListArg)
 
@@ -2566,48 +1550,21 @@ class ExcludedUsersListContinueArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        Indicates from what point to get the next set of users.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ExcludedUsersListContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 ExcludedUsersListContinueArg_validator = bv.Struct(ExcludedUsersListContinueArg)
 
@@ -2648,9 +1605,6 @@ class ExcludedUsersListContinueError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ExcludedUsersListContinueError(%r, %r)' % (self._tag, self._value)
-
 ExcludedUsersListContinueError_validator = bv.Union(ExcludedUsersListContinueError)
 
 class ExcludedUsersListError(bb.Union):
@@ -2689,9 +1643,6 @@ class ExcludedUsersListError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersListError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ExcludedUsersListError(%r, %r)' % (self._tag, self._value)
-
 ExcludedUsersListError_validator = bv.Union(ExcludedUsersListError)
 
 class ExcludedUsersListResult(bb.Struct):
@@ -2699,21 +1650,18 @@ class ExcludedUsersListResult(bb.Struct):
     Excluded users list result.
 
     :ivar team.ExcludedUsersListResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_member_space_limits_excluded_users_list_continue`
+        :meth:`dropbox.dropbox_client.Dropbox.team_member_space_limits_excluded_users_list_continue`
         to obtain additional excluded users.
     :ivar team.ExcludedUsersListResult.has_more: Is true if there are additional
         excluded users that have not been returned yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_member_space_limits_excluded_users_list_continue`
+        :meth:`dropbox.dropbox_client.Dropbox.team_member_space_limits_excluded_users_list_continue`
         can retrieve them.
     """
 
     __slots__ = [
         '_users_value',
-        '_users_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -2722,12 +1670,9 @@ class ExcludedUsersListResult(bb.Struct):
                  users=None,
                  has_more=None,
                  cursor=None):
-        self._users_value = None
-        self._users_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._users_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if users is not None:
             self.users = users
         if cursor is not None:
@@ -2735,90 +1680,17 @@ class ExcludedUsersListResult(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def users(self):
-        """
-        :rtype: list of [MemberProfile]
-        """
-        if self._users_present:
-            return self._users_value
-        else:
-            raise AttributeError("missing required field 'users'")
+    # Instance attribute type: list of [MemberProfile] (validator is set below)
+    users = bb.Attribute("users")
 
-    @users.setter
-    def users(self, val):
-        val = self._users_validator.validate(val)
-        self._users_value = val
-        self._users_present = True
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
-    @users.deleter
-    def users(self):
-        self._users_value = None
-        self._users_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_member_space_limits_excluded_users_list_continue`
-        to obtain additional excluded users.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Is true if there are additional excluded users that have not been
-        returned yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_member_space_limits_excluded_users_list_continue`
-        can retrieve them.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ExcludedUsersListResult(users={!r}, has_more={!r}, cursor={!r})'.format(
-            self._users_value,
-            self._has_more_value,
-            self._cursor_value,
-        )
 
 ExcludedUsersListResult_validator = bv.Struct(ExcludedUsersListResult)
 
@@ -2833,51 +1705,21 @@ class ExcludedUsersUpdateArg(bb.Struct):
 
     __slots__ = [
         '_users_value',
-        '_users_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  users=None):
-        self._users_value = None
-        self._users_present = False
+        self._users_value = bb.NOT_SET
         if users is not None:
             self.users = users
 
-    @property
-    def users(self):
-        """
-        List of users to be added/removed.
-
-        :rtype: list of [UserSelectorArg]
-        """
-        if self._users_present:
-            return self._users_value
-        else:
-            return None
-
-    @users.setter
-    def users(self, val):
-        if val is None:
-            del self.users
-            return
-        val = self._users_validator.validate(val)
-        self._users_value = val
-        self._users_present = True
-
-    @users.deleter
-    def users(self):
-        self._users_value = None
-        self._users_present = False
+    # Instance attribute type: list of [UserSelectorArg] (validator is set below)
+    users = bb.Attribute("users", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersUpdateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ExcludedUsersUpdateArg(users={!r})'.format(
-            self._users_value,
-        )
 
 ExcludedUsersUpdateArg_validator = bv.Struct(ExcludedUsersUpdateArg)
 
@@ -2930,9 +1772,6 @@ class ExcludedUsersUpdateError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ExcludedUsersUpdateError(%r, %r)' % (self._tag, self._value)
-
 ExcludedUsersUpdateError_validator = bv.Union(ExcludedUsersUpdateError)
 
 class ExcludedUsersUpdateResult(bb.Struct):
@@ -2944,48 +1783,21 @@ class ExcludedUsersUpdateResult(bb.Struct):
 
     __slots__ = [
         '_status_value',
-        '_status_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  status=None):
-        self._status_value = None
-        self._status_present = False
+        self._status_value = bb.NOT_SET
         if status is not None:
             self.status = status
 
-    @property
-    def status(self):
-        """
-        Update status.
-
-        :rtype: ExcludedUsersUpdateStatus
-        """
-        if self._status_present:
-            return self._status_value
-        else:
-            raise AttributeError("missing required field 'status'")
-
-    @status.setter
-    def status(self, val):
-        self._status_validator.validate_type_only(val)
-        self._status_value = val
-        self._status_present = True
-
-    @status.deleter
-    def status(self):
-        self._status_value = None
-        self._status_present = False
+    # Instance attribute type: ExcludedUsersUpdateStatus (validator is set below)
+    status = bb.Attribute("status", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersUpdateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ExcludedUsersUpdateResult(status={!r})'.format(
-            self._status_value,
-        )
 
 ExcludedUsersUpdateResult_validator = bv.Struct(ExcludedUsersUpdateResult)
 
@@ -3024,9 +1836,6 @@ class ExcludedUsersUpdateStatus(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExcludedUsersUpdateStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ExcludedUsersUpdateStatus(%r, %r)' % (self._tag, self._value)
 
 ExcludedUsersUpdateStatus_validator = bv.Union(ExcludedUsersUpdateStatus)
 
@@ -3101,9 +1910,6 @@ class Feature(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Feature, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'Feature(%r, %r)' % (self._tag, self._value)
 
 Feature_validator = bv.Union(Feature)
 
@@ -3248,9 +2054,6 @@ class FeatureValue(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FeatureValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'FeatureValue(%r, %r)' % (self._tag, self._value)
-
 FeatureValue_validator = bv.Union(FeatureValue)
 
 class FeaturesGetValuesBatchArg(bb.Struct):
@@ -3262,49 +2065,21 @@ class FeaturesGetValuesBatchArg(bb.Struct):
 
     __slots__ = [
         '_features_value',
-        '_features_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  features=None):
-        self._features_value = None
-        self._features_present = False
+        self._features_value = bb.NOT_SET
         if features is not None:
             self.features = features
 
-    @property
-    def features(self):
-        """
-        A list of features in :class:`Feature`. If the list is empty, this route
-        will return :class:`FeaturesGetValuesBatchError`.
-
-        :rtype: list of [Feature]
-        """
-        if self._features_present:
-            return self._features_value
-        else:
-            raise AttributeError("missing required field 'features'")
-
-    @features.setter
-    def features(self, val):
-        val = self._features_validator.validate(val)
-        self._features_value = val
-        self._features_present = True
-
-    @features.deleter
-    def features(self):
-        self._features_value = None
-        self._features_present = False
+    # Instance attribute type: list of [Feature] (validator is set below)
+    features = bb.Attribute("features")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FeaturesGetValuesBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'FeaturesGetValuesBatchArg(features={!r})'.format(
-            self._features_value,
-        )
 
 FeaturesGetValuesBatchArg_validator = bv.Struct(FeaturesGetValuesBatchArg)
 
@@ -3344,55 +2119,27 @@ class FeaturesGetValuesBatchError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FeaturesGetValuesBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'FeaturesGetValuesBatchError(%r, %r)' % (self._tag, self._value)
-
 FeaturesGetValuesBatchError_validator = bv.Union(FeaturesGetValuesBatchError)
 
 class FeaturesGetValuesBatchResult(bb.Struct):
 
     __slots__ = [
         '_values_value',
-        '_values_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  values=None):
-        self._values_value = None
-        self._values_present = False
+        self._values_value = bb.NOT_SET
         if values is not None:
             self.values = values
 
-    @property
-    def values(self):
-        """
-        :rtype: list of [FeatureValue]
-        """
-        if self._values_present:
-            return self._values_value
-        else:
-            raise AttributeError("missing required field 'values'")
-
-    @values.setter
-    def values(self, val):
-        val = self._values_validator.validate(val)
-        self._values_value = val
-        self._values_present = True
-
-    @values.deleter
-    def values(self):
-        self._values_value = None
-        self._values_present = False
+    # Instance attribute type: list of [FeatureValue] (validator is set below)
+    values = bb.Attribute("values")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FeaturesGetValuesBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'FeaturesGetValuesBatchResult(values={!r})'.format(
-            self._values_value,
-        )
 
 FeaturesGetValuesBatchResult_validator = bv.Struct(FeaturesGetValuesBatchResult)
 
@@ -3437,33 +2184,19 @@ class GetActivityReport(BaseDfbReport):
 
     __slots__ = [
         '_adds_value',
-        '_adds_present',
         '_edits_value',
-        '_edits_present',
         '_deletes_value',
-        '_deletes_present',
         '_active_users_28_day_value',
-        '_active_users_28_day_present',
         '_active_users_7_day_value',
-        '_active_users_7_day_present',
         '_active_users_1_day_value',
-        '_active_users_1_day_present',
         '_active_shared_folders_28_day_value',
-        '_active_shared_folders_28_day_present',
         '_active_shared_folders_7_day_value',
-        '_active_shared_folders_7_day_present',
         '_active_shared_folders_1_day_value',
-        '_active_shared_folders_1_day_present',
         '_shared_links_created_value',
-        '_shared_links_created_present',
         '_shared_links_viewed_by_team_value',
-        '_shared_links_viewed_by_team_present',
         '_shared_links_viewed_by_outside_user_value',
-        '_shared_links_viewed_by_outside_user_present',
         '_shared_links_viewed_by_not_logged_in_value',
-        '_shared_links_viewed_by_not_logged_in_present',
         '_shared_links_viewed_total_value',
-        '_shared_links_viewed_total_present',
     ]
 
     _has_required_fields = True
@@ -3485,34 +2218,20 @@ class GetActivityReport(BaseDfbReport):
                  shared_links_viewed_by_not_logged_in=None,
                  shared_links_viewed_total=None):
         super(GetActivityReport, self).__init__(start_date)
-        self._adds_value = None
-        self._adds_present = False
-        self._edits_value = None
-        self._edits_present = False
-        self._deletes_value = None
-        self._deletes_present = False
-        self._active_users_28_day_value = None
-        self._active_users_28_day_present = False
-        self._active_users_7_day_value = None
-        self._active_users_7_day_present = False
-        self._active_users_1_day_value = None
-        self._active_users_1_day_present = False
-        self._active_shared_folders_28_day_value = None
-        self._active_shared_folders_28_day_present = False
-        self._active_shared_folders_7_day_value = None
-        self._active_shared_folders_7_day_present = False
-        self._active_shared_folders_1_day_value = None
-        self._active_shared_folders_1_day_present = False
-        self._shared_links_created_value = None
-        self._shared_links_created_present = False
-        self._shared_links_viewed_by_team_value = None
-        self._shared_links_viewed_by_team_present = False
-        self._shared_links_viewed_by_outside_user_value = None
-        self._shared_links_viewed_by_outside_user_present = False
-        self._shared_links_viewed_by_not_logged_in_value = None
-        self._shared_links_viewed_by_not_logged_in_present = False
-        self._shared_links_viewed_total_value = None
-        self._shared_links_viewed_total_present = False
+        self._adds_value = bb.NOT_SET
+        self._edits_value = bb.NOT_SET
+        self._deletes_value = bb.NOT_SET
+        self._active_users_28_day_value = bb.NOT_SET
+        self._active_users_7_day_value = bb.NOT_SET
+        self._active_users_1_day_value = bb.NOT_SET
+        self._active_shared_folders_28_day_value = bb.NOT_SET
+        self._active_shared_folders_7_day_value = bb.NOT_SET
+        self._active_shared_folders_1_day_value = bb.NOT_SET
+        self._shared_links_created_value = bb.NOT_SET
+        self._shared_links_viewed_by_team_value = bb.NOT_SET
+        self._shared_links_viewed_by_outside_user_value = bb.NOT_SET
+        self._shared_links_viewed_by_not_logged_in_value = bb.NOT_SET
+        self._shared_links_viewed_total_value = bb.NOT_SET
         if adds is not None:
             self.adds = adds
         if edits is not None:
@@ -3542,356 +2261,50 @@ class GetActivityReport(BaseDfbReport):
         if shared_links_viewed_total is not None:
             self.shared_links_viewed_total = shared_links_viewed_total
 
-    @property
-    def adds(self):
-        """
-        Array of total number of adds by team members.
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    adds = bb.Attribute("adds")
 
-        :rtype: list of [Optional[int]]
-        """
-        if self._adds_present:
-            return self._adds_value
-        else:
-            raise AttributeError("missing required field 'adds'")
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    edits = bb.Attribute("edits")
 
-    @adds.setter
-    def adds(self, val):
-        val = self._adds_validator.validate(val)
-        self._adds_value = val
-        self._adds_present = True
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    deletes = bb.Attribute("deletes")
 
-    @adds.deleter
-    def adds(self):
-        self._adds_value = None
-        self._adds_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    active_users_28_day = bb.Attribute("active_users_28_day")
 
-    @property
-    def edits(self):
-        """
-        Array of number of edits by team members. If the same user edits the
-        same file multiple times this is counted as a single edit.
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    active_users_7_day = bb.Attribute("active_users_7_day")
 
-        :rtype: list of [Optional[int]]
-        """
-        if self._edits_present:
-            return self._edits_value
-        else:
-            raise AttributeError("missing required field 'edits'")
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    active_users_1_day = bb.Attribute("active_users_1_day")
 
-    @edits.setter
-    def edits(self, val):
-        val = self._edits_validator.validate(val)
-        self._edits_value = val
-        self._edits_present = True
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    active_shared_folders_28_day = bb.Attribute("active_shared_folders_28_day")
 
-    @edits.deleter
-    def edits(self):
-        self._edits_value = None
-        self._edits_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    active_shared_folders_7_day = bb.Attribute("active_shared_folders_7_day")
 
-    @property
-    def deletes(self):
-        """
-        Array of total number of deletes by team members.
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    active_shared_folders_1_day = bb.Attribute("active_shared_folders_1_day")
 
-        :rtype: list of [Optional[int]]
-        """
-        if self._deletes_present:
-            return self._deletes_value
-        else:
-            raise AttributeError("missing required field 'deletes'")
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    shared_links_created = bb.Attribute("shared_links_created")
 
-    @deletes.setter
-    def deletes(self, val):
-        val = self._deletes_validator.validate(val)
-        self._deletes_value = val
-        self._deletes_present = True
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    shared_links_viewed_by_team = bb.Attribute("shared_links_viewed_by_team")
 
-    @deletes.deleter
-    def deletes(self):
-        self._deletes_value = None
-        self._deletes_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    shared_links_viewed_by_outside_user = bb.Attribute("shared_links_viewed_by_outside_user")
 
-    @property
-    def active_users_28_day(self):
-        """
-        Array of the number of users who have been active in the last 28 days.
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    shared_links_viewed_by_not_logged_in = bb.Attribute("shared_links_viewed_by_not_logged_in")
 
-        :rtype: list of [Optional[int]]
-        """
-        if self._active_users_28_day_present:
-            return self._active_users_28_day_value
-        else:
-            raise AttributeError("missing required field 'active_users_28_day'")
-
-    @active_users_28_day.setter
-    def active_users_28_day(self, val):
-        val = self._active_users_28_day_validator.validate(val)
-        self._active_users_28_day_value = val
-        self._active_users_28_day_present = True
-
-    @active_users_28_day.deleter
-    def active_users_28_day(self):
-        self._active_users_28_day_value = None
-        self._active_users_28_day_present = False
-
-    @property
-    def active_users_7_day(self):
-        """
-        Array of the number of users who have been active in the last week.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._active_users_7_day_present:
-            return self._active_users_7_day_value
-        else:
-            raise AttributeError("missing required field 'active_users_7_day'")
-
-    @active_users_7_day.setter
-    def active_users_7_day(self, val):
-        val = self._active_users_7_day_validator.validate(val)
-        self._active_users_7_day_value = val
-        self._active_users_7_day_present = True
-
-    @active_users_7_day.deleter
-    def active_users_7_day(self):
-        self._active_users_7_day_value = None
-        self._active_users_7_day_present = False
-
-    @property
-    def active_users_1_day(self):
-        """
-        Array of the number of users who have been active in the last day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._active_users_1_day_present:
-            return self._active_users_1_day_value
-        else:
-            raise AttributeError("missing required field 'active_users_1_day'")
-
-    @active_users_1_day.setter
-    def active_users_1_day(self, val):
-        val = self._active_users_1_day_validator.validate(val)
-        self._active_users_1_day_value = val
-        self._active_users_1_day_present = True
-
-    @active_users_1_day.deleter
-    def active_users_1_day(self):
-        self._active_users_1_day_value = None
-        self._active_users_1_day_present = False
-
-    @property
-    def active_shared_folders_28_day(self):
-        """
-        Array of the number of shared folders with some activity in the last 28
-        days.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._active_shared_folders_28_day_present:
-            return self._active_shared_folders_28_day_value
-        else:
-            raise AttributeError("missing required field 'active_shared_folders_28_day'")
-
-    @active_shared_folders_28_day.setter
-    def active_shared_folders_28_day(self, val):
-        val = self._active_shared_folders_28_day_validator.validate(val)
-        self._active_shared_folders_28_day_value = val
-        self._active_shared_folders_28_day_present = True
-
-    @active_shared_folders_28_day.deleter
-    def active_shared_folders_28_day(self):
-        self._active_shared_folders_28_day_value = None
-        self._active_shared_folders_28_day_present = False
-
-    @property
-    def active_shared_folders_7_day(self):
-        """
-        Array of the number of shared folders with some activity in the last
-        week.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._active_shared_folders_7_day_present:
-            return self._active_shared_folders_7_day_value
-        else:
-            raise AttributeError("missing required field 'active_shared_folders_7_day'")
-
-    @active_shared_folders_7_day.setter
-    def active_shared_folders_7_day(self, val):
-        val = self._active_shared_folders_7_day_validator.validate(val)
-        self._active_shared_folders_7_day_value = val
-        self._active_shared_folders_7_day_present = True
-
-    @active_shared_folders_7_day.deleter
-    def active_shared_folders_7_day(self):
-        self._active_shared_folders_7_day_value = None
-        self._active_shared_folders_7_day_present = False
-
-    @property
-    def active_shared_folders_1_day(self):
-        """
-        Array of the number of shared folders with some activity in the last
-        day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._active_shared_folders_1_day_present:
-            return self._active_shared_folders_1_day_value
-        else:
-            raise AttributeError("missing required field 'active_shared_folders_1_day'")
-
-    @active_shared_folders_1_day.setter
-    def active_shared_folders_1_day(self, val):
-        val = self._active_shared_folders_1_day_validator.validate(val)
-        self._active_shared_folders_1_day_value = val
-        self._active_shared_folders_1_day_present = True
-
-    @active_shared_folders_1_day.deleter
-    def active_shared_folders_1_day(self):
-        self._active_shared_folders_1_day_value = None
-        self._active_shared_folders_1_day_present = False
-
-    @property
-    def shared_links_created(self):
-        """
-        Array of the number of shared links created.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._shared_links_created_present:
-            return self._shared_links_created_value
-        else:
-            raise AttributeError("missing required field 'shared_links_created'")
-
-    @shared_links_created.setter
-    def shared_links_created(self, val):
-        val = self._shared_links_created_validator.validate(val)
-        self._shared_links_created_value = val
-        self._shared_links_created_present = True
-
-    @shared_links_created.deleter
-    def shared_links_created(self):
-        self._shared_links_created_value = None
-        self._shared_links_created_present = False
-
-    @property
-    def shared_links_viewed_by_team(self):
-        """
-        Array of the number of views by team users to shared links created by
-        the team.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._shared_links_viewed_by_team_present:
-            return self._shared_links_viewed_by_team_value
-        else:
-            raise AttributeError("missing required field 'shared_links_viewed_by_team'")
-
-    @shared_links_viewed_by_team.setter
-    def shared_links_viewed_by_team(self, val):
-        val = self._shared_links_viewed_by_team_validator.validate(val)
-        self._shared_links_viewed_by_team_value = val
-        self._shared_links_viewed_by_team_present = True
-
-    @shared_links_viewed_by_team.deleter
-    def shared_links_viewed_by_team(self):
-        self._shared_links_viewed_by_team_value = None
-        self._shared_links_viewed_by_team_present = False
-
-    @property
-    def shared_links_viewed_by_outside_user(self):
-        """
-        Array of the number of views by users outside of the team to shared
-        links created by the team.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._shared_links_viewed_by_outside_user_present:
-            return self._shared_links_viewed_by_outside_user_value
-        else:
-            raise AttributeError("missing required field 'shared_links_viewed_by_outside_user'")
-
-    @shared_links_viewed_by_outside_user.setter
-    def shared_links_viewed_by_outside_user(self, val):
-        val = self._shared_links_viewed_by_outside_user_validator.validate(val)
-        self._shared_links_viewed_by_outside_user_value = val
-        self._shared_links_viewed_by_outside_user_present = True
-
-    @shared_links_viewed_by_outside_user.deleter
-    def shared_links_viewed_by_outside_user(self):
-        self._shared_links_viewed_by_outside_user_value = None
-        self._shared_links_viewed_by_outside_user_present = False
-
-    @property
-    def shared_links_viewed_by_not_logged_in(self):
-        """
-        Array of the number of views by non-logged-in users to shared links
-        created by the team.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._shared_links_viewed_by_not_logged_in_present:
-            return self._shared_links_viewed_by_not_logged_in_value
-        else:
-            raise AttributeError("missing required field 'shared_links_viewed_by_not_logged_in'")
-
-    @shared_links_viewed_by_not_logged_in.setter
-    def shared_links_viewed_by_not_logged_in(self, val):
-        val = self._shared_links_viewed_by_not_logged_in_validator.validate(val)
-        self._shared_links_viewed_by_not_logged_in_value = val
-        self._shared_links_viewed_by_not_logged_in_present = True
-
-    @shared_links_viewed_by_not_logged_in.deleter
-    def shared_links_viewed_by_not_logged_in(self):
-        self._shared_links_viewed_by_not_logged_in_value = None
-        self._shared_links_viewed_by_not_logged_in_present = False
-
-    @property
-    def shared_links_viewed_total(self):
-        """
-        Array of the total number of views to shared links created by the team.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._shared_links_viewed_total_present:
-            return self._shared_links_viewed_total_value
-        else:
-            raise AttributeError("missing required field 'shared_links_viewed_total'")
-
-    @shared_links_viewed_total.setter
-    def shared_links_viewed_total(self, val):
-        val = self._shared_links_viewed_total_validator.validate(val)
-        self._shared_links_viewed_total_value = val
-        self._shared_links_viewed_total_present = True
-
-    @shared_links_viewed_total.deleter
-    def shared_links_viewed_total(self):
-        self._shared_links_viewed_total_value = None
-        self._shared_links_viewed_total_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    shared_links_viewed_total = bb.Attribute("shared_links_viewed_total")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetActivityReport, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetActivityReport(start_date={!r}, adds={!r}, edits={!r}, deletes={!r}, active_users_28_day={!r}, active_users_7_day={!r}, active_users_1_day={!r}, active_shared_folders_28_day={!r}, active_shared_folders_7_day={!r}, active_shared_folders_1_day={!r}, shared_links_created={!r}, shared_links_viewed_by_team={!r}, shared_links_viewed_by_outside_user={!r}, shared_links_viewed_by_not_logged_in={!r}, shared_links_viewed_total={!r})'.format(
-            self._start_date_value,
-            self._adds_value,
-            self._edits_value,
-            self._deletes_value,
-            self._active_users_28_day_value,
-            self._active_users_7_day_value,
-            self._active_users_1_day_value,
-            self._active_shared_folders_28_day_value,
-            self._active_shared_folders_7_day_value,
-            self._active_shared_folders_1_day_value,
-            self._shared_links_created_value,
-            self._shared_links_viewed_by_team_value,
-            self._shared_links_viewed_by_outside_user_value,
-            self._shared_links_viewed_by_not_logged_in_value,
-            self._shared_links_viewed_total_value,
-        )
 
 GetActivityReport_validator = bv.Struct(GetActivityReport)
 
@@ -3912,11 +2325,8 @@ class GetDevicesReport(BaseDfbReport):
 
     __slots__ = [
         '_active_1_day_value',
-        '_active_1_day_present',
         '_active_7_day_value',
-        '_active_7_day_present',
         '_active_28_day_value',
-        '_active_28_day_present',
     ]
 
     _has_required_fields = True
@@ -3927,12 +2337,9 @@ class GetDevicesReport(BaseDfbReport):
                  active_7_day=None,
                  active_28_day=None):
         super(GetDevicesReport, self).__init__(start_date)
-        self._active_1_day_value = None
-        self._active_1_day_present = False
-        self._active_7_day_value = None
-        self._active_7_day_present = False
-        self._active_28_day_value = None
-        self._active_28_day_present = False
+        self._active_1_day_value = bb.NOT_SET
+        self._active_7_day_value = bb.NOT_SET
+        self._active_28_day_value = bb.NOT_SET
         if active_1_day is not None:
             self.active_1_day = active_1_day
         if active_7_day is not None:
@@ -3940,85 +2347,17 @@ class GetDevicesReport(BaseDfbReport):
         if active_28_day is not None:
             self.active_28_day = active_28_day
 
-    @property
-    def active_1_day(self):
-        """
-        Report of the number of devices active in the last day.
+    # Instance attribute type: DevicesActive (validator is set below)
+    active_1_day = bb.Attribute("active_1_day", user_defined=True)
 
-        :rtype: DevicesActive
-        """
-        if self._active_1_day_present:
-            return self._active_1_day_value
-        else:
-            raise AttributeError("missing required field 'active_1_day'")
+    # Instance attribute type: DevicesActive (validator is set below)
+    active_7_day = bb.Attribute("active_7_day", user_defined=True)
 
-    @active_1_day.setter
-    def active_1_day(self, val):
-        self._active_1_day_validator.validate_type_only(val)
-        self._active_1_day_value = val
-        self._active_1_day_present = True
-
-    @active_1_day.deleter
-    def active_1_day(self):
-        self._active_1_day_value = None
-        self._active_1_day_present = False
-
-    @property
-    def active_7_day(self):
-        """
-        Report of the number of devices active in the last 7 days.
-
-        :rtype: DevicesActive
-        """
-        if self._active_7_day_present:
-            return self._active_7_day_value
-        else:
-            raise AttributeError("missing required field 'active_7_day'")
-
-    @active_7_day.setter
-    def active_7_day(self, val):
-        self._active_7_day_validator.validate_type_only(val)
-        self._active_7_day_value = val
-        self._active_7_day_present = True
-
-    @active_7_day.deleter
-    def active_7_day(self):
-        self._active_7_day_value = None
-        self._active_7_day_present = False
-
-    @property
-    def active_28_day(self):
-        """
-        Report of the number of devices active in the last 28 days.
-
-        :rtype: DevicesActive
-        """
-        if self._active_28_day_present:
-            return self._active_28_day_value
-        else:
-            raise AttributeError("missing required field 'active_28_day'")
-
-    @active_28_day.setter
-    def active_28_day(self, val):
-        self._active_28_day_validator.validate_type_only(val)
-        self._active_28_day_value = val
-        self._active_28_day_present = True
-
-    @active_28_day.deleter
-    def active_28_day(self):
-        self._active_28_day_value = None
-        self._active_28_day_present = False
+    # Instance attribute type: DevicesActive (validator is set below)
+    active_28_day = bb.Attribute("active_28_day", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetDevicesReport, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetDevicesReport(start_date={!r}, active_1_day={!r}, active_7_day={!r}, active_28_day={!r})'.format(
-            self._start_date_value,
-            self._active_1_day_value,
-            self._active_7_day_value,
-            self._active_28_day_value,
-        )
 
 GetDevicesReport_validator = bv.Struct(GetDevicesReport)
 
@@ -4041,15 +2380,10 @@ class GetMembershipReport(BaseDfbReport):
 
     __slots__ = [
         '_team_size_value',
-        '_team_size_present',
         '_pending_invites_value',
-        '_pending_invites_present',
         '_members_joined_value',
-        '_members_joined_present',
         '_suspended_members_value',
-        '_suspended_members_present',
         '_licenses_value',
-        '_licenses_present',
     ]
 
     _has_required_fields = True
@@ -4062,16 +2396,11 @@ class GetMembershipReport(BaseDfbReport):
                  suspended_members=None,
                  licenses=None):
         super(GetMembershipReport, self).__init__(start_date)
-        self._team_size_value = None
-        self._team_size_present = False
-        self._pending_invites_value = None
-        self._pending_invites_present = False
-        self._members_joined_value = None
-        self._members_joined_present = False
-        self._suspended_members_value = None
-        self._suspended_members_present = False
-        self._licenses_value = None
-        self._licenses_present = False
+        self._team_size_value = bb.NOT_SET
+        self._pending_invites_value = bb.NOT_SET
+        self._members_joined_value = bb.NOT_SET
+        self._suspended_members_value = bb.NOT_SET
+        self._licenses_value = bb.NOT_SET
         if team_size is not None:
             self.team_size = team_size
         if pending_invites is not None:
@@ -4083,133 +2412,23 @@ class GetMembershipReport(BaseDfbReport):
         if licenses is not None:
             self.licenses = licenses
 
-    @property
-    def team_size(self):
-        """
-        Team size, for each day.
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    team_size = bb.Attribute("team_size")
 
-        :rtype: list of [Optional[int]]
-        """
-        if self._team_size_present:
-            return self._team_size_value
-        else:
-            raise AttributeError("missing required field 'team_size'")
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    pending_invites = bb.Attribute("pending_invites")
 
-    @team_size.setter
-    def team_size(self, val):
-        val = self._team_size_validator.validate(val)
-        self._team_size_value = val
-        self._team_size_present = True
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    members_joined = bb.Attribute("members_joined")
 
-    @team_size.deleter
-    def team_size(self):
-        self._team_size_value = None
-        self._team_size_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    suspended_members = bb.Attribute("suspended_members")
 
-    @property
-    def pending_invites(self):
-        """
-        The number of pending invites to the team, for each day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._pending_invites_present:
-            return self._pending_invites_value
-        else:
-            raise AttributeError("missing required field 'pending_invites'")
-
-    @pending_invites.setter
-    def pending_invites(self, val):
-        val = self._pending_invites_validator.validate(val)
-        self._pending_invites_value = val
-        self._pending_invites_present = True
-
-    @pending_invites.deleter
-    def pending_invites(self):
-        self._pending_invites_value = None
-        self._pending_invites_present = False
-
-    @property
-    def members_joined(self):
-        """
-        The number of members that joined the team, for each day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._members_joined_present:
-            return self._members_joined_value
-        else:
-            raise AttributeError("missing required field 'members_joined'")
-
-    @members_joined.setter
-    def members_joined(self, val):
-        val = self._members_joined_validator.validate(val)
-        self._members_joined_value = val
-        self._members_joined_present = True
-
-    @members_joined.deleter
-    def members_joined(self):
-        self._members_joined_value = None
-        self._members_joined_present = False
-
-    @property
-    def suspended_members(self):
-        """
-        The number of suspended team members, for each day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._suspended_members_present:
-            return self._suspended_members_value
-        else:
-            raise AttributeError("missing required field 'suspended_members'")
-
-    @suspended_members.setter
-    def suspended_members(self, val):
-        val = self._suspended_members_validator.validate(val)
-        self._suspended_members_value = val
-        self._suspended_members_present = True
-
-    @suspended_members.deleter
-    def suspended_members(self):
-        self._suspended_members_value = None
-        self._suspended_members_present = False
-
-    @property
-    def licenses(self):
-        """
-        The total number of licenses the team has, for each day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._licenses_present:
-            return self._licenses_value
-        else:
-            raise AttributeError("missing required field 'licenses'")
-
-    @licenses.setter
-    def licenses(self, val):
-        val = self._licenses_validator.validate(val)
-        self._licenses_value = val
-        self._licenses_present = True
-
-    @licenses.deleter
-    def licenses(self):
-        self._licenses_value = None
-        self._licenses_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    licenses = bb.Attribute("licenses")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetMembershipReport, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetMembershipReport(start_date={!r}, team_size={!r}, pending_invites={!r}, members_joined={!r}, suspended_members={!r}, licenses={!r})'.format(
-            self._start_date_value,
-            self._team_size_value,
-            self._pending_invites_value,
-            self._members_joined_value,
-            self._suspended_members_value,
-            self._licenses_value,
-        )
 
 GetMembershipReport_validator = bv.Struct(GetMembershipReport)
 
@@ -4237,15 +2456,10 @@ class GetStorageReport(BaseDfbReport):
 
     __slots__ = [
         '_total_usage_value',
-        '_total_usage_present',
         '_shared_usage_value',
-        '_shared_usage_present',
         '_unshared_usage_value',
-        '_unshared_usage_present',
         '_shared_folders_value',
-        '_shared_folders_present',
         '_member_storage_map_value',
-        '_member_storage_map_present',
     ]
 
     _has_required_fields = True
@@ -4258,16 +2472,11 @@ class GetStorageReport(BaseDfbReport):
                  shared_folders=None,
                  member_storage_map=None):
         super(GetStorageReport, self).__init__(start_date)
-        self._total_usage_value = None
-        self._total_usage_present = False
-        self._shared_usage_value = None
-        self._shared_usage_present = False
-        self._unshared_usage_value = None
-        self._unshared_usage_present = False
-        self._shared_folders_value = None
-        self._shared_folders_present = False
-        self._member_storage_map_value = None
-        self._member_storage_map_present = False
+        self._total_usage_value = bb.NOT_SET
+        self._shared_usage_value = bb.NOT_SET
+        self._unshared_usage_value = bb.NOT_SET
+        self._shared_folders_value = bb.NOT_SET
+        self._member_storage_map_value = bb.NOT_SET
         if total_usage is not None:
             self.total_usage = total_usage
         if shared_usage is not None:
@@ -4279,141 +2488,23 @@ class GetStorageReport(BaseDfbReport):
         if member_storage_map is not None:
             self.member_storage_map = member_storage_map
 
-    @property
-    def total_usage(self):
-        """
-        Sum of the shared, unshared, and datastore usages, for each day.
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    total_usage = bb.Attribute("total_usage")
 
-        :rtype: list of [Optional[int]]
-        """
-        if self._total_usage_present:
-            return self._total_usage_value
-        else:
-            raise AttributeError("missing required field 'total_usage'")
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    shared_usage = bb.Attribute("shared_usage")
 
-    @total_usage.setter
-    def total_usage(self, val):
-        val = self._total_usage_validator.validate(val)
-        self._total_usage_value = val
-        self._total_usage_present = True
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    unshared_usage = bb.Attribute("unshared_usage")
 
-    @total_usage.deleter
-    def total_usage(self):
-        self._total_usage_value = None
-        self._total_usage_present = False
+    # Instance attribute type: list of [Optional[int]] (validator is set below)
+    shared_folders = bb.Attribute("shared_folders")
 
-    @property
-    def shared_usage(self):
-        """
-        Array of the combined size (bytes) of team members' shared folders, for
-        each day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._shared_usage_present:
-            return self._shared_usage_value
-        else:
-            raise AttributeError("missing required field 'shared_usage'")
-
-    @shared_usage.setter
-    def shared_usage(self, val):
-        val = self._shared_usage_validator.validate(val)
-        self._shared_usage_value = val
-        self._shared_usage_present = True
-
-    @shared_usage.deleter
-    def shared_usage(self):
-        self._shared_usage_value = None
-        self._shared_usage_present = False
-
-    @property
-    def unshared_usage(self):
-        """
-        Array of the combined size (bytes) of team members' root namespaces, for
-        each day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._unshared_usage_present:
-            return self._unshared_usage_value
-        else:
-            raise AttributeError("missing required field 'unshared_usage'")
-
-    @unshared_usage.setter
-    def unshared_usage(self, val):
-        val = self._unshared_usage_validator.validate(val)
-        self._unshared_usage_value = val
-        self._unshared_usage_present = True
-
-    @unshared_usage.deleter
-    def unshared_usage(self):
-        self._unshared_usage_value = None
-        self._unshared_usage_present = False
-
-    @property
-    def shared_folders(self):
-        """
-        Array of the number of shared folders owned by team members, for each
-        day.
-
-        :rtype: list of [Optional[int]]
-        """
-        if self._shared_folders_present:
-            return self._shared_folders_value
-        else:
-            raise AttributeError("missing required field 'shared_folders'")
-
-    @shared_folders.setter
-    def shared_folders(self, val):
-        val = self._shared_folders_validator.validate(val)
-        self._shared_folders_value = val
-        self._shared_folders_present = True
-
-    @shared_folders.deleter
-    def shared_folders(self):
-        self._shared_folders_value = None
-        self._shared_folders_present = False
-
-    @property
-    def member_storage_map(self):
-        """
-        Array of storage summaries of team members' account sizes. Each storage
-        summary is an array of key, value pairs, where each pair describes a
-        storage bucket. The key indicates the upper bound of the bucket and the
-        value is the number of users in that bucket. There is one such summary
-        per day. If there is no data for a day, the storage summary will be
-        empty.
-
-        :rtype: list of [list of [StorageBucket]]
-        """
-        if self._member_storage_map_present:
-            return self._member_storage_map_value
-        else:
-            raise AttributeError("missing required field 'member_storage_map'")
-
-    @member_storage_map.setter
-    def member_storage_map(self, val):
-        val = self._member_storage_map_validator.validate(val)
-        self._member_storage_map_value = val
-        self._member_storage_map_present = True
-
-    @member_storage_map.deleter
-    def member_storage_map(self):
-        self._member_storage_map_value = None
-        self._member_storage_map_present = False
+    # Instance attribute type: list of [list of [StorageBucket]] (validator is set below)
+    member_storage_map = bb.Attribute("member_storage_map")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetStorageReport, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetStorageReport(start_date={!r}, total_usage={!r}, shared_usage={!r}, unshared_usage={!r}, shared_folders={!r}, member_storage_map={!r})'.format(
-            self._start_date_value,
-            self._total_usage_value,
-            self._shared_usage_value,
-            self._unshared_usage_value,
-            self._shared_folders_value,
-            self._member_storage_map_value,
-        )
 
 GetStorageReport_validator = bv.Struct(GetStorageReport)
 
@@ -4456,9 +2547,6 @@ class GroupAccessType(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupAccessType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupAccessType(%r, %r)' % (self._tag, self._value)
-
 GroupAccessType_validator = bv.Union(GroupAccessType)
 
 class GroupCreateArg(bb.Struct):
@@ -4474,13 +2562,9 @@ class GroupCreateArg(bb.Struct):
 
     __slots__ = [
         '_group_name_value',
-        '_group_name_present',
         '_add_creator_as_owner_value',
-        '_add_creator_as_owner_present',
         '_group_external_id_value',
-        '_group_external_id_present',
         '_group_management_type_value',
-        '_group_management_type_present',
     ]
 
     _has_required_fields = True
@@ -4490,14 +2574,10 @@ class GroupCreateArg(bb.Struct):
                  add_creator_as_owner=None,
                  group_external_id=None,
                  group_management_type=None):
-        self._group_name_value = None
-        self._group_name_present = False
-        self._add_creator_as_owner_value = None
-        self._add_creator_as_owner_present = False
-        self._group_external_id_value = None
-        self._group_external_id_present = False
-        self._group_management_type_value = None
-        self._group_management_type_present = False
+        self._group_name_value = bb.NOT_SET
+        self._add_creator_as_owner_value = bb.NOT_SET
+        self._group_external_id_value = bb.NOT_SET
+        self._group_management_type_value = bb.NOT_SET
         if group_name is not None:
             self.group_name = group_name
         if add_creator_as_owner is not None:
@@ -4507,116 +2587,20 @@ class GroupCreateArg(bb.Struct):
         if group_management_type is not None:
             self.group_management_type = group_management_type
 
-    @property
-    def group_name(self):
-        """
-        Group name.
+    # Instance attribute type: str (validator is set below)
+    group_name = bb.Attribute("group_name")
 
-        :rtype: str
-        """
-        if self._group_name_present:
-            return self._group_name_value
-        else:
-            raise AttributeError("missing required field 'group_name'")
+    # Instance attribute type: bool (validator is set below)
+    add_creator_as_owner = bb.Attribute("add_creator_as_owner")
 
-    @group_name.setter
-    def group_name(self, val):
-        val = self._group_name_validator.validate(val)
-        self._group_name_value = val
-        self._group_name_present = True
+    # Instance attribute type: str (validator is set below)
+    group_external_id = bb.Attribute("group_external_id", nullable=True)
 
-    @group_name.deleter
-    def group_name(self):
-        self._group_name_value = None
-        self._group_name_present = False
-
-    @property
-    def add_creator_as_owner(self):
-        """
-        Automatically add the creator of the group.
-
-        :rtype: bool
-        """
-        if self._add_creator_as_owner_present:
-            return self._add_creator_as_owner_value
-        else:
-            return False
-
-    @add_creator_as_owner.setter
-    def add_creator_as_owner(self, val):
-        val = self._add_creator_as_owner_validator.validate(val)
-        self._add_creator_as_owner_value = val
-        self._add_creator_as_owner_present = True
-
-    @add_creator_as_owner.deleter
-    def add_creator_as_owner(self):
-        self._add_creator_as_owner_value = None
-        self._add_creator_as_owner_present = False
-
-    @property
-    def group_external_id(self):
-        """
-        The creator of a team can associate an arbitrary external ID to the
-        group.
-
-        :rtype: str
-        """
-        if self._group_external_id_present:
-            return self._group_external_id_value
-        else:
-            return None
-
-    @group_external_id.setter
-    def group_external_id(self, val):
-        if val is None:
-            del self.group_external_id
-            return
-        val = self._group_external_id_validator.validate(val)
-        self._group_external_id_value = val
-        self._group_external_id_present = True
-
-    @group_external_id.deleter
-    def group_external_id(self):
-        self._group_external_id_value = None
-        self._group_external_id_present = False
-
-    @property
-    def group_management_type(self):
-        """
-        Whether the team can be managed by selected users, or only by team
-        admins.
-
-        :rtype: team_common.GroupManagementType
-        """
-        if self._group_management_type_present:
-            return self._group_management_type_value
-        else:
-            return None
-
-    @group_management_type.setter
-    def group_management_type(self, val):
-        if val is None:
-            del self.group_management_type
-            return
-        self._group_management_type_validator.validate_type_only(val)
-        self._group_management_type_value = val
-        self._group_management_type_present = True
-
-    @group_management_type.deleter
-    def group_management_type(self):
-        self._group_management_type_value = None
-        self._group_management_type_present = False
+    # Instance attribute type: team_common.GroupManagementType (validator is set below)
+    group_management_type = bb.Attribute("group_management_type", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupCreateArg(group_name={!r}, add_creator_as_owner={!r}, group_external_id={!r}, group_management_type={!r})'.format(
-            self._group_name_value,
-            self._add_creator_as_owner_value,
-            self._group_external_id_value,
-            self._group_management_type_value,
-        )
 
 GroupCreateArg_validator = bv.Struct(GroupCreateArg)
 
@@ -4691,9 +2675,6 @@ class GroupCreateError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupCreateError(%r, %r)' % (self._tag, self._value)
-
 GroupCreateError_validator = bv.Union(GroupCreateError)
 
 class GroupSelectorError(bb.Union):
@@ -4733,9 +2714,6 @@ class GroupSelectorError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupSelectorError(%r, %r)' % (self._tag, self._value)
-
 GroupSelectorError_validator = bv.Union(GroupSelectorError)
 
 class GroupSelectorWithTeamGroupError(GroupSelectorError):
@@ -4765,9 +2743,6 @@ class GroupSelectorWithTeamGroupError(GroupSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupSelectorWithTeamGroupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupSelectorWithTeamGroupError(%r, %r)' % (self._tag, self._value)
-
 GroupSelectorWithTeamGroupError_validator = bv.Union(GroupSelectorWithTeamGroupError)
 
 class GroupDeleteError(GroupSelectorWithTeamGroupError):
@@ -4794,9 +2769,6 @@ class GroupDeleteError(GroupSelectorWithTeamGroupError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupDeleteError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupDeleteError(%r, %r)' % (self._tag, self._value)
-
 GroupDeleteError_validator = bv.Union(GroupDeleteError)
 
 class GroupFullInfo(team_common.GroupSummary):
@@ -4810,9 +2782,7 @@ class GroupFullInfo(team_common.GroupSummary):
 
     __slots__ = [
         '_members_value',
-        '_members_present',
         '_created_value',
-        '_created_present',
     ]
 
     _has_required_fields = True
@@ -4830,78 +2800,21 @@ class GroupFullInfo(team_common.GroupSummary):
                                             group_management_type,
                                             group_external_id,
                                             member_count)
-        self._members_value = None
-        self._members_present = False
-        self._created_value = None
-        self._created_present = False
+        self._members_value = bb.NOT_SET
+        self._created_value = bb.NOT_SET
         if members is not None:
             self.members = members
         if created is not None:
             self.created = created
 
-    @property
-    def members(self):
-        """
-        List of group members.
+    # Instance attribute type: list of [GroupMemberInfo] (validator is set below)
+    members = bb.Attribute("members", nullable=True)
 
-        :rtype: list of [GroupMemberInfo]
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            return None
-
-    @members.setter
-    def members(self, val):
-        if val is None:
-            del self.members
-            return
-        val = self._members_validator.validate(val)
-        self._members_value = val
-        self._members_present = True
-
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
-
-    @property
-    def created(self):
-        """
-        The group creation time as a UTC timestamp in milliseconds since the
-        Unix epoch.
-
-        :rtype: int
-        """
-        if self._created_present:
-            return self._created_value
-        else:
-            raise AttributeError("missing required field 'created'")
-
-    @created.setter
-    def created(self, val):
-        val = self._created_validator.validate(val)
-        self._created_value = val
-        self._created_present = True
-
-    @created.deleter
-    def created(self):
-        self._created_value = None
-        self._created_present = False
+    # Instance attribute type: int (validator is set below)
+    created = bb.Attribute("created")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupFullInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupFullInfo(group_name={!r}, group_id={!r}, group_management_type={!r}, created={!r}, group_external_id={!r}, member_count={!r}, members={!r})'.format(
-            self._group_name_value,
-            self._group_id_value,
-            self._group_management_type_value,
-            self._created_value,
-            self._group_external_id_value,
-            self._member_count_value,
-            self._members_value,
-        )
 
 GroupFullInfo_validator = bv.Struct(GroupFullInfo)
 
@@ -4916,9 +2829,7 @@ class GroupMemberInfo(bb.Struct):
 
     __slots__ = [
         '_profile_value',
-        '_profile_present',
         '_access_type_value',
-        '_access_type_present',
     ]
 
     _has_required_fields = True
@@ -4926,69 +2837,21 @@ class GroupMemberInfo(bb.Struct):
     def __init__(self,
                  profile=None,
                  access_type=None):
-        self._profile_value = None
-        self._profile_present = False
-        self._access_type_value = None
-        self._access_type_present = False
+        self._profile_value = bb.NOT_SET
+        self._access_type_value = bb.NOT_SET
         if profile is not None:
             self.profile = profile
         if access_type is not None:
             self.access_type = access_type
 
-    @property
-    def profile(self):
-        """
-        Profile of group member.
+    # Instance attribute type: MemberProfile (validator is set below)
+    profile = bb.Attribute("profile", user_defined=True)
 
-        :rtype: MemberProfile
-        """
-        if self._profile_present:
-            return self._profile_value
-        else:
-            raise AttributeError("missing required field 'profile'")
-
-    @profile.setter
-    def profile(self, val):
-        self._profile_validator.validate_type_only(val)
-        self._profile_value = val
-        self._profile_present = True
-
-    @profile.deleter
-    def profile(self):
-        self._profile_value = None
-        self._profile_present = False
-
-    @property
-    def access_type(self):
-        """
-        The role that the user has in the group.
-
-        :rtype: GroupAccessType
-        """
-        if self._access_type_present:
-            return self._access_type_value
-        else:
-            raise AttributeError("missing required field 'access_type'")
-
-    @access_type.setter
-    def access_type(self, val):
-        self._access_type_validator.validate_type_only(val)
-        self._access_type_value = val
-        self._access_type_present = True
-
-    @access_type.deleter
-    def access_type(self):
-        self._access_type_value = None
-        self._access_type_present = False
+    # Instance attribute type: GroupAccessType (validator is set below)
+    access_type = bb.Attribute("access_type", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMemberInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupMemberInfo(profile={!r}, access_type={!r})'.format(
-            self._profile_value,
-            self._access_type_value,
-        )
 
 GroupMemberInfo_validator = bv.Struct(GroupMemberInfo)
 
@@ -5003,9 +2866,7 @@ class GroupMemberSelector(bb.Struct):
 
     __slots__ = [
         '_group_value',
-        '_group_present',
         '_user_value',
-        '_user_present',
     ]
 
     _has_required_fields = True
@@ -5013,69 +2874,21 @@ class GroupMemberSelector(bb.Struct):
     def __init__(self,
                  group=None,
                  user=None):
-        self._group_value = None
-        self._group_present = False
-        self._user_value = None
-        self._user_present = False
+        self._group_value = bb.NOT_SET
+        self._user_value = bb.NOT_SET
         if group is not None:
             self.group = group
         if user is not None:
             self.user = user
 
-    @property
-    def group(self):
-        """
-        Specify a group.
+    # Instance attribute type: GroupSelector (validator is set below)
+    group = bb.Attribute("group", user_defined=True)
 
-        :rtype: GroupSelector
-        """
-        if self._group_present:
-            return self._group_value
-        else:
-            raise AttributeError("missing required field 'group'")
-
-    @group.setter
-    def group(self, val):
-        self._group_validator.validate_type_only(val)
-        self._group_value = val
-        self._group_present = True
-
-    @group.deleter
-    def group(self):
-        self._group_value = None
-        self._group_present = False
-
-    @property
-    def user(self):
-        """
-        Identity of a user that is a member of ``group``.
-
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMemberSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupMemberSelector(group={!r}, user={!r})'.format(
-            self._group_value,
-            self._user_value,
-        )
 
 GroupMemberSelector_validator = bv.Struct(GroupMemberSelector)
 
@@ -5106,9 +2919,6 @@ class GroupMemberSelectorError(GroupSelectorWithTeamGroupError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMemberSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupMemberSelectorError(%r, %r)' % (self._tag, self._value)
-
 GroupMemberSelectorError_validator = bv.Union(GroupMemberSelectorError)
 
 class GroupMemberSetAccessTypeError(GroupMemberSelectorError):
@@ -5136,9 +2946,6 @@ class GroupMemberSetAccessTypeError(GroupMemberSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMemberSetAccessTypeError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupMemberSetAccessTypeError(%r, %r)' % (self._tag, self._value)
-
 GroupMemberSetAccessTypeError_validator = bv.Union(GroupMemberSetAccessTypeError)
 
 class IncludeMembersArg(bb.Struct):
@@ -5151,50 +2958,21 @@ class IncludeMembersArg(bb.Struct):
 
     __slots__ = [
         '_return_members_value',
-        '_return_members_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  return_members=None):
-        self._return_members_value = None
-        self._return_members_present = False
+        self._return_members_value = bb.NOT_SET
         if return_members is not None:
             self.return_members = return_members
 
-    @property
-    def return_members(self):
-        """
-        Whether to return the list of members in the group.  Note that the
-        default value will cause all the group members  to be returned in the
-        response. This may take a long time for large groups.
-
-        :rtype: bool
-        """
-        if self._return_members_present:
-            return self._return_members_value
-        else:
-            return True
-
-    @return_members.setter
-    def return_members(self, val):
-        val = self._return_members_validator.validate(val)
-        self._return_members_value = val
-        self._return_members_present = True
-
-    @return_members.deleter
-    def return_members(self):
-        self._return_members_value = None
-        self._return_members_present = False
+    # Instance attribute type: bool (validator is set below)
+    return_members = bb.Attribute("return_members")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(IncludeMembersArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'IncludeMembersArg(return_members={!r})'.format(
-            self._return_members_value,
-        )
 
 IncludeMembersArg_validator = bv.Struct(IncludeMembersArg)
 
@@ -5207,9 +2985,7 @@ class GroupMembersAddArg(IncludeMembersArg):
 
     __slots__ = [
         '_group_value',
-        '_group_present',
         '_members_value',
-        '_members_present',
     ]
 
     _has_required_fields = True
@@ -5219,70 +2995,21 @@ class GroupMembersAddArg(IncludeMembersArg):
                  members=None,
                  return_members=None):
         super(GroupMembersAddArg, self).__init__(return_members)
-        self._group_value = None
-        self._group_present = False
-        self._members_value = None
-        self._members_present = False
+        self._group_value = bb.NOT_SET
+        self._members_value = bb.NOT_SET
         if group is not None:
             self.group = group
         if members is not None:
             self.members = members
 
-    @property
-    def group(self):
-        """
-        Group to which users will be added.
+    # Instance attribute type: GroupSelector (validator is set below)
+    group = bb.Attribute("group", user_defined=True)
 
-        :rtype: GroupSelector
-        """
-        if self._group_present:
-            return self._group_value
-        else:
-            raise AttributeError("missing required field 'group'")
-
-    @group.setter
-    def group(self, val):
-        self._group_validator.validate_type_only(val)
-        self._group_value = val
-        self._group_present = True
-
-    @group.deleter
-    def group(self):
-        self._group_value = None
-        self._group_present = False
-
-    @property
-    def members(self):
-        """
-        List of users to be added to the group.
-
-        :rtype: list of [MemberAccess]
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            raise AttributeError("missing required field 'members'")
-
-    @members.setter
-    def members(self, val):
-        val = self._members_validator.validate(val)
-        self._members_value = val
-        self._members_present = True
-
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
+    # Instance attribute type: list of [MemberAccess] (validator is set below)
+    members = bb.Attribute("members")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMembersAddArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupMembersAddArg(group={!r}, members={!r}, return_members={!r})'.format(
-            self._group_value,
-            self._members_value,
-            self._return_members_value,
-        )
 
 GroupMembersAddArg_validator = bv.Struct(GroupMembersAddArg)
 
@@ -5405,8 +3132,8 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
         These members are not part of your team. Currently, you cannot add
         members to a group if they are not part of your team, though this may
         change in a subsequent version. To add new members to your Dropbox
-        Business team, use the :meth:`dropbox.dropbox.Dropbox.team_members_add`
-        endpoint.
+        Business team, use the
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_add` endpoint.
 
         Only call this if :meth:`is_members_not_in_team` is true.
 
@@ -5443,15 +3170,13 @@ class GroupMembersAddError(GroupSelectorWithTeamGroupError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMembersAddError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupMembersAddError(%r, %r)' % (self._tag, self._value)
-
 GroupMembersAddError_validator = bv.Union(GroupMembersAddError)
 
 class GroupMembersChangeResult(bb.Struct):
     """
-    Result returned by :meth:`dropbox.dropbox.Dropbox.team_groups_members_add`
-    and :meth:`dropbox.dropbox.Dropbox.team_groups_members_remove`.
+    Result returned by
+    :meth:`dropbox.dropbox_client.Dropbox.team_groups_members_add` and
+    :meth:`dropbox.dropbox_client.Dropbox.team_groups_members_remove`.
 
     :ivar team.GroupMembersChangeResult.group_info: The group info after member
         change operation has been performed.
@@ -5464,9 +3189,7 @@ class GroupMembersChangeResult(bb.Struct):
 
     __slots__ = [
         '_group_info_value',
-        '_group_info_present',
         '_async_job_id_value',
-        '_async_job_id_present',
     ]
 
     _has_required_fields = True
@@ -5474,72 +3197,21 @@ class GroupMembersChangeResult(bb.Struct):
     def __init__(self,
                  group_info=None,
                  async_job_id=None):
-        self._group_info_value = None
-        self._group_info_present = False
-        self._async_job_id_value = None
-        self._async_job_id_present = False
+        self._group_info_value = bb.NOT_SET
+        self._async_job_id_value = bb.NOT_SET
         if group_info is not None:
             self.group_info = group_info
         if async_job_id is not None:
             self.async_job_id = async_job_id
 
-    @property
-    def group_info(self):
-        """
-        The group info after member change operation has been performed.
+    # Instance attribute type: GroupFullInfo (validator is set below)
+    group_info = bb.Attribute("group_info", user_defined=True)
 
-        :rtype: GroupFullInfo
-        """
-        if self._group_info_present:
-            return self._group_info_value
-        else:
-            raise AttributeError("missing required field 'group_info'")
-
-    @group_info.setter
-    def group_info(self, val):
-        self._group_info_validator.validate_type_only(val)
-        self._group_info_value = val
-        self._group_info_present = True
-
-    @group_info.deleter
-    def group_info(self):
-        self._group_info_value = None
-        self._group_info_present = False
-
-    @property
-    def async_job_id(self):
-        """
-        For legacy purposes async_job_id will always return one space ' '.
-        Formerly, it was an ID that was used to obtain the status of
-        granting/revoking group-owned resources. It's no longer necessary
-        because the async processing now happens automatically.
-
-        :rtype: str
-        """
-        if self._async_job_id_present:
-            return self._async_job_id_value
-        else:
-            raise AttributeError("missing required field 'async_job_id'")
-
-    @async_job_id.setter
-    def async_job_id(self, val):
-        val = self._async_job_id_validator.validate(val)
-        self._async_job_id_value = val
-        self._async_job_id_present = True
-
-    @async_job_id.deleter
-    def async_job_id(self):
-        self._async_job_id_value = None
-        self._async_job_id_present = False
+    # Instance attribute type: str (validator is set below)
+    async_job_id = bb.Attribute("async_job_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMembersChangeResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupMembersChangeResult(group_info={!r}, async_job_id={!r})'.format(
-            self._group_info_value,
-            self._async_job_id_value,
-        )
 
 GroupMembersChangeResult_validator = bv.Struct(GroupMembersChangeResult)
 
@@ -5553,9 +3225,7 @@ class GroupMembersRemoveArg(IncludeMembersArg):
 
     __slots__ = [
         '_group_value',
-        '_group_present',
         '_users_value',
-        '_users_present',
     ]
 
     _has_required_fields = True
@@ -5565,70 +3235,21 @@ class GroupMembersRemoveArg(IncludeMembersArg):
                  users=None,
                  return_members=None):
         super(GroupMembersRemoveArg, self).__init__(return_members)
-        self._group_value = None
-        self._group_present = False
-        self._users_value = None
-        self._users_present = False
+        self._group_value = bb.NOT_SET
+        self._users_value = bb.NOT_SET
         if group is not None:
             self.group = group
         if users is not None:
             self.users = users
 
-    @property
-    def group(self):
-        """
-        Group from which users will be removed.
+    # Instance attribute type: GroupSelector (validator is set below)
+    group = bb.Attribute("group", user_defined=True)
 
-        :rtype: GroupSelector
-        """
-        if self._group_present:
-            return self._group_value
-        else:
-            raise AttributeError("missing required field 'group'")
-
-    @group.setter
-    def group(self, val):
-        self._group_validator.validate_type_only(val)
-        self._group_value = val
-        self._group_present = True
-
-    @group.deleter
-    def group(self):
-        self._group_value = None
-        self._group_present = False
-
-    @property
-    def users(self):
-        """
-        List of users to be removed from the group.
-
-        :rtype: list of [UserSelectorArg]
-        """
-        if self._users_present:
-            return self._users_value
-        else:
-            raise AttributeError("missing required field 'users'")
-
-    @users.setter
-    def users(self, val):
-        val = self._users_validator.validate(val)
-        self._users_value = val
-        self._users_present = True
-
-    @users.deleter
-    def users(self):
-        self._users_value = None
-        self._users_present = False
+    # Instance attribute type: list of [UserSelectorArg] (validator is set below)
+    users = bb.Attribute("users")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMembersRemoveArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupMembersRemoveArg(group={!r}, users={!r}, return_members={!r})'.format(
-            self._group_value,
-            self._users_value,
-            self._return_members_value,
-        )
 
 GroupMembersRemoveArg_validator = bv.Struct(GroupMembersRemoveArg)
 
@@ -5658,9 +3279,6 @@ class GroupMembersSelectorError(GroupSelectorWithTeamGroupError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMembersSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupMembersSelectorError(%r, %r)' % (self._tag, self._value)
 
 GroupMembersSelectorError_validator = bv.Union(GroupMembersSelectorError)
 
@@ -5755,9 +3373,6 @@ class GroupMembersRemoveError(GroupMembersSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMembersRemoveError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupMembersRemoveError(%r, %r)' % (self._tag, self._value)
-
 GroupMembersRemoveError_validator = bv.Union(GroupMembersRemoveError)
 
 class GroupMembersSelector(bb.Struct):
@@ -5771,9 +3386,7 @@ class GroupMembersSelector(bb.Struct):
 
     __slots__ = [
         '_group_value',
-        '_group_present',
         '_users_value',
-        '_users_present',
     ]
 
     _has_required_fields = True
@@ -5781,69 +3394,21 @@ class GroupMembersSelector(bb.Struct):
     def __init__(self,
                  group=None,
                  users=None):
-        self._group_value = None
-        self._group_present = False
-        self._users_value = None
-        self._users_present = False
+        self._group_value = bb.NOT_SET
+        self._users_value = bb.NOT_SET
         if group is not None:
             self.group = group
         if users is not None:
             self.users = users
 
-    @property
-    def group(self):
-        """
-        Specify a group.
+    # Instance attribute type: GroupSelector (validator is set below)
+    group = bb.Attribute("group", user_defined=True)
 
-        :rtype: GroupSelector
-        """
-        if self._group_present:
-            return self._group_value
-        else:
-            raise AttributeError("missing required field 'group'")
-
-    @group.setter
-    def group(self, val):
-        self._group_validator.validate_type_only(val)
-        self._group_value = val
-        self._group_present = True
-
-    @group.deleter
-    def group(self):
-        self._group_value = None
-        self._group_present = False
-
-    @property
-    def users(self):
-        """
-        A list of users that are members of ``group``.
-
-        :rtype: UsersSelectorArg
-        """
-        if self._users_present:
-            return self._users_value
-        else:
-            raise AttributeError("missing required field 'users'")
-
-    @users.setter
-    def users(self, val):
-        self._users_validator.validate_type_only(val)
-        self._users_value = val
-        self._users_present = True
-
-    @users.deleter
-    def users(self):
-        self._users_value = None
-        self._users_present = False
+    # Instance attribute type: UsersSelectorArg (validator is set below)
+    users = bb.Attribute("users", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMembersSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupMembersSelector(group={!r}, users={!r})'.format(
-            self._group_value,
-            self._users_value,
-        )
 
 GroupMembersSelector_validator = bv.Struct(GroupMembersSelector)
 
@@ -5859,9 +3424,7 @@ class GroupMembersSetAccessTypeArg(GroupMemberSelector):
 
     __slots__ = [
         '_access_type_value',
-        '_access_type_present',
         '_return_members_value',
-        '_return_members_present',
     ]
 
     _has_required_fields = True
@@ -5873,73 +3436,21 @@ class GroupMembersSetAccessTypeArg(GroupMemberSelector):
                  return_members=None):
         super(GroupMembersSetAccessTypeArg, self).__init__(group,
                                                            user)
-        self._access_type_value = None
-        self._access_type_present = False
-        self._return_members_value = None
-        self._return_members_present = False
+        self._access_type_value = bb.NOT_SET
+        self._return_members_value = bb.NOT_SET
         if access_type is not None:
             self.access_type = access_type
         if return_members is not None:
             self.return_members = return_members
 
-    @property
-    def access_type(self):
-        """
-        New group access type the user will have.
+    # Instance attribute type: GroupAccessType (validator is set below)
+    access_type = bb.Attribute("access_type", user_defined=True)
 
-        :rtype: GroupAccessType
-        """
-        if self._access_type_present:
-            return self._access_type_value
-        else:
-            raise AttributeError("missing required field 'access_type'")
-
-    @access_type.setter
-    def access_type(self, val):
-        self._access_type_validator.validate_type_only(val)
-        self._access_type_value = val
-        self._access_type_present = True
-
-    @access_type.deleter
-    def access_type(self):
-        self._access_type_value = None
-        self._access_type_present = False
-
-    @property
-    def return_members(self):
-        """
-        Whether to return the list of members in the group.  Note that the
-        default value will cause all the group members  to be returned in the
-        response. This may take a long time for large groups.
-
-        :rtype: bool
-        """
-        if self._return_members_present:
-            return self._return_members_value
-        else:
-            return True
-
-    @return_members.setter
-    def return_members(self, val):
-        val = self._return_members_validator.validate(val)
-        self._return_members_value = val
-        self._return_members_present = True
-
-    @return_members.deleter
-    def return_members(self):
-        self._return_members_value = None
-        self._return_members_present = False
+    # Instance attribute type: bool (validator is set below)
+    return_members = bb.Attribute("return_members")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupMembersSetAccessTypeArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupMembersSetAccessTypeArg(group={!r}, user={!r}, access_type={!r}, return_members={!r})'.format(
-            self._group_value,
-            self._user_value,
-            self._access_type_value,
-            self._return_members_value,
-        )
 
 GroupMembersSetAccessTypeArg_validator = bv.Struct(GroupMembersSetAccessTypeArg)
 
@@ -6023,9 +3534,6 @@ class GroupSelector(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupSelector(%r, %r)' % (self._tag, self._value)
-
 GroupSelector_validator = bv.Union(GroupSelector)
 
 class GroupUpdateArgs(IncludeMembersArg):
@@ -6043,13 +3551,9 @@ class GroupUpdateArgs(IncludeMembersArg):
 
     __slots__ = [
         '_group_value',
-        '_group_present',
         '_new_group_name_value',
-        '_new_group_name_present',
         '_new_group_external_id_value',
-        '_new_group_external_id_present',
         '_new_group_management_type_value',
-        '_new_group_management_type_present',
     ]
 
     _has_required_fields = True
@@ -6061,14 +3565,10 @@ class GroupUpdateArgs(IncludeMembersArg):
                  new_group_external_id=None,
                  new_group_management_type=None):
         super(GroupUpdateArgs, self).__init__(return_members)
-        self._group_value = None
-        self._group_present = False
-        self._new_group_name_value = None
-        self._new_group_name_present = False
-        self._new_group_external_id_value = None
-        self._new_group_external_id_present = False
-        self._new_group_management_type_value = None
-        self._new_group_management_type_present = False
+        self._group_value = bb.NOT_SET
+        self._new_group_name_value = bb.NOT_SET
+        self._new_group_external_id_value = bb.NOT_SET
+        self._new_group_management_type_value = bb.NOT_SET
         if group is not None:
             self.group = group
         if new_group_name is not None:
@@ -6078,120 +3578,20 @@ class GroupUpdateArgs(IncludeMembersArg):
         if new_group_management_type is not None:
             self.new_group_management_type = new_group_management_type
 
-    @property
-    def group(self):
-        """
-        Specify a group.
+    # Instance attribute type: GroupSelector (validator is set below)
+    group = bb.Attribute("group", user_defined=True)
 
-        :rtype: GroupSelector
-        """
-        if self._group_present:
-            return self._group_value
-        else:
-            raise AttributeError("missing required field 'group'")
+    # Instance attribute type: str (validator is set below)
+    new_group_name = bb.Attribute("new_group_name", nullable=True)
 
-    @group.setter
-    def group(self, val):
-        self._group_validator.validate_type_only(val)
-        self._group_value = val
-        self._group_present = True
+    # Instance attribute type: str (validator is set below)
+    new_group_external_id = bb.Attribute("new_group_external_id", nullable=True)
 
-    @group.deleter
-    def group(self):
-        self._group_value = None
-        self._group_present = False
-
-    @property
-    def new_group_name(self):
-        """
-        Optional argument. Set group name to this if provided.
-
-        :rtype: str
-        """
-        if self._new_group_name_present:
-            return self._new_group_name_value
-        else:
-            return None
-
-    @new_group_name.setter
-    def new_group_name(self, val):
-        if val is None:
-            del self.new_group_name
-            return
-        val = self._new_group_name_validator.validate(val)
-        self._new_group_name_value = val
-        self._new_group_name_present = True
-
-    @new_group_name.deleter
-    def new_group_name(self):
-        self._new_group_name_value = None
-        self._new_group_name_present = False
-
-    @property
-    def new_group_external_id(self):
-        """
-        Optional argument. New group external ID. If the argument is None, the
-        group's external_id won't be updated. If the argument is empty string,
-        the group's external id will be cleared.
-
-        :rtype: str
-        """
-        if self._new_group_external_id_present:
-            return self._new_group_external_id_value
-        else:
-            return None
-
-    @new_group_external_id.setter
-    def new_group_external_id(self, val):
-        if val is None:
-            del self.new_group_external_id
-            return
-        val = self._new_group_external_id_validator.validate(val)
-        self._new_group_external_id_value = val
-        self._new_group_external_id_present = True
-
-    @new_group_external_id.deleter
-    def new_group_external_id(self):
-        self._new_group_external_id_value = None
-        self._new_group_external_id_present = False
-
-    @property
-    def new_group_management_type(self):
-        """
-        Set new group management type, if provided.
-
-        :rtype: team_common.GroupManagementType
-        """
-        if self._new_group_management_type_present:
-            return self._new_group_management_type_value
-        else:
-            return None
-
-    @new_group_management_type.setter
-    def new_group_management_type(self, val):
-        if val is None:
-            del self.new_group_management_type
-            return
-        self._new_group_management_type_validator.validate_type_only(val)
-        self._new_group_management_type_value = val
-        self._new_group_management_type_present = True
-
-    @new_group_management_type.deleter
-    def new_group_management_type(self):
-        self._new_group_management_type_value = None
-        self._new_group_management_type_present = False
+    # Instance attribute type: team_common.GroupManagementType (validator is set below)
+    new_group_management_type = bb.Attribute("new_group_management_type", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupUpdateArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupUpdateArgs(group={!r}, return_members={!r}, new_group_name={!r}, new_group_external_id={!r}, new_group_management_type={!r})'.format(
-            self._group_value,
-            self._return_members_value,
-            self._new_group_name_value,
-            self._new_group_external_id_value,
-            self._new_group_management_type_value,
-        )
 
 GroupUpdateArgs_validator = bv.Struct(GroupUpdateArgs)
 
@@ -6243,9 +3643,6 @@ class GroupUpdateError(GroupSelectorWithTeamGroupError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupUpdateError(%r, %r)' % (self._tag, self._value)
-
 GroupUpdateError_validator = bv.Union(GroupUpdateError)
 
 class GroupsGetInfoError(bb.Union):
@@ -6282,9 +3679,6 @@ class GroupsGetInfoError(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsGetInfoError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupsGetInfoError(%r, %r)' % (self._tag, self._value)
 
 GroupsGetInfoError_validator = bv.Union(GroupsGetInfoError)
 
@@ -6344,9 +3738,9 @@ class GroupsGetInfoItem(bb.Union):
     def get_id_not_found(self):
         """
         An ID that was provided as a parameter to
-        :meth:`dropbox.dropbox.Dropbox.team_groups_get_info`, and did not match
-        a corresponding group. The ID can be a group ID, or an external ID,
-        depending on how the method was called.
+        :meth:`dropbox.dropbox_client.Dropbox.team_groups_get_info`, and did not
+        match a corresponding group. The ID can be a group ID, or an external
+        ID, depending on how the method was called.
 
         Only call this if :meth:`is_id_not_found` is true.
 
@@ -6371,9 +3765,6 @@ class GroupsGetInfoItem(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsGetInfoItem, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupsGetInfoItem(%r, %r)' % (self._tag, self._value)
-
 GroupsGetInfoItem_validator = bv.Union(GroupsGetInfoItem)
 
 class GroupsListArg(bb.Struct):
@@ -6383,48 +3774,21 @@ class GroupsListArg(bb.Struct):
 
     __slots__ = [
         '_limit_value',
-        '_limit_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  limit=None):
-        self._limit_value = None
-        self._limit_present = False
+        self._limit_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
 
-    @property
-    def limit(self):
-        """
-        Number of results to return per call.
-
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupsListArg(limit={!r})'.format(
-            self._limit_value,
-        )
 
 GroupsListArg_validator = bv.Struct(GroupsListArg)
 
@@ -6436,48 +3800,21 @@ class GroupsListContinueArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        Indicates from what point to get the next set of groups.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupsListContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 GroupsListContinueArg_validator = bv.Struct(GroupsListContinueArg)
 
@@ -6515,29 +3852,23 @@ class GroupsListContinueError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupsListContinueError(%r, %r)' % (self._tag, self._value)
-
 GroupsListContinueError_validator = bv.Union(GroupsListContinueError)
 
 class GroupsListResult(bb.Struct):
     """
     :ivar team.GroupsListResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` to obtain the
-        additional groups.
+        :meth:`dropbox.dropbox_client.Dropbox.team_groups_list_continue` to
+        obtain the additional groups.
     :ivar team.GroupsListResult.has_more: Is true if there are additional groups
         that have not been returned yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` can retrieve
-        them.
+        :meth:`dropbox.dropbox_client.Dropbox.team_groups_list_continue` can
+        retrieve them.
     """
 
     __slots__ = [
         '_groups_value',
-        '_groups_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -6546,12 +3877,9 @@ class GroupsListResult(bb.Struct):
                  groups=None,
                  cursor=None,
                  has_more=None):
-        self._groups_value = None
-        self._groups_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._groups_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if groups is not None:
             self.groups = groups
         if cursor is not None:
@@ -6559,87 +3887,17 @@ class GroupsListResult(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def groups(self):
-        """
-        :rtype: list of [team_common.GroupSummary]
-        """
-        if self._groups_present:
-            return self._groups_value
-        else:
-            raise AttributeError("missing required field 'groups'")
+    # Instance attribute type: list of [team_common.GroupSummary] (validator is set below)
+    groups = bb.Attribute("groups")
 
-    @groups.setter
-    def groups(self, val):
-        val = self._groups_validator.validate(val)
-        self._groups_value = val
-        self._groups_present = True
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-    @groups.deleter
-    def groups(self):
-        self._groups_value = None
-        self._groups_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` to obtain the
-        additional groups.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Is true if there are additional groups that have not been returned yet.
-        An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_groups_list_continue` can retrieve
-        them.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupsListResult(groups={!r}, cursor={!r}, has_more={!r})'.format(
-            self._groups_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
 
 GroupsListResult_validator = bv.Struct(GroupsListResult)
 
@@ -6652,9 +3910,7 @@ class GroupsMembersListArg(bb.Struct):
 
     __slots__ = [
         '_group_value',
-        '_group_present',
         '_limit_value',
-        '_limit_present',
     ]
 
     _has_required_fields = True
@@ -6662,69 +3918,21 @@ class GroupsMembersListArg(bb.Struct):
     def __init__(self,
                  group=None,
                  limit=None):
-        self._group_value = None
-        self._group_present = False
-        self._limit_value = None
-        self._limit_present = False
+        self._group_value = bb.NOT_SET
+        self._limit_value = bb.NOT_SET
         if group is not None:
             self.group = group
         if limit is not None:
             self.limit = limit
 
-    @property
-    def group(self):
-        """
-        The group whose members are to be listed.
+    # Instance attribute type: GroupSelector (validator is set below)
+    group = bb.Attribute("group", user_defined=True)
 
-        :rtype: GroupSelector
-        """
-        if self._group_present:
-            return self._group_value
-        else:
-            raise AttributeError("missing required field 'group'")
-
-    @group.setter
-    def group(self, val):
-        self._group_validator.validate_type_only(val)
-        self._group_value = val
-        self._group_present = True
-
-    @group.deleter
-    def group(self):
-        self._group_value = None
-        self._group_present = False
-
-    @property
-    def limit(self):
-        """
-        Number of results to return per call.
-
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsMembersListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupsMembersListArg(group={!r}, limit={!r})'.format(
-            self._group_value,
-            self._limit_value,
-        )
 
 GroupsMembersListArg_validator = bv.Struct(GroupsMembersListArg)
 
@@ -6736,48 +3944,21 @@ class GroupsMembersListContinueArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        Indicates from what point to get the next set of groups.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsMembersListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupsMembersListContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 GroupsMembersListContinueArg_validator = bv.Struct(GroupsMembersListContinueArg)
 
@@ -6816,29 +3997,23 @@ class GroupsMembersListContinueError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsMembersListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupsMembersListContinueError(%r, %r)' % (self._tag, self._value)
-
 GroupsMembersListContinueError_validator = bv.Union(GroupsMembersListContinueError)
 
 class GroupsMembersListResult(bb.Struct):
     """
     :ivar team.GroupsMembersListResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` to
-        obtain additional group members.
+        :meth:`dropbox.dropbox_client.Dropbox.team_groups_members_list_continue`
+        to obtain additional group members.
     :ivar team.GroupsMembersListResult.has_more: Is true if there are additional
         group members that have not been returned yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` can
-        retrieve them.
+        :meth:`dropbox.dropbox_client.Dropbox.team_groups_members_list_continue`
+        can retrieve them.
     """
 
     __slots__ = [
         '_members_value',
-        '_members_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -6847,12 +4022,9 @@ class GroupsMembersListResult(bb.Struct):
                  members=None,
                  cursor=None,
                  has_more=None):
-        self._members_value = None
-        self._members_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._members_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if members is not None:
             self.members = members
         if cursor is not None:
@@ -6860,87 +4032,17 @@ class GroupsMembersListResult(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def members(self):
-        """
-        :rtype: list of [GroupMemberInfo]
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            raise AttributeError("missing required field 'members'")
+    # Instance attribute type: list of [GroupMemberInfo] (validator is set below)
+    members = bb.Attribute("members")
 
-    @members.setter
-    def members(self, val):
-        val = self._members_validator.validate(val)
-        self._members_value = val
-        self._members_present = True
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` to
-        obtain additional group members.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Is true if there are additional group members that have not been
-        returned yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_groups_members_list_continue` can
-        retrieve them.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsMembersListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupsMembersListResult(members={!r}, cursor={!r}, has_more={!r})'.format(
-            self._members_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
 
 GroupsMembersListResult_validator = bv.Struct(GroupsMembersListResult)
 
@@ -6967,9 +4069,6 @@ class GroupsPollError(async_.PollError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsPollError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupsPollError(%r, %r)' % (self._tag, self._value)
 
 GroupsPollError_validator = bv.Union(GroupsPollError)
 
@@ -7054,9 +4153,6 @@ class GroupsSelector(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupsSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GroupsSelector(%r, %r)' % (self._tag, self._value)
-
 GroupsSelector_validator = bv.Union(GroupsSelector)
 
 class HasTeamFileEventsValue(bb.Union):
@@ -7116,9 +4212,6 @@ class HasTeamFileEventsValue(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(HasTeamFileEventsValue, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'HasTeamFileEventsValue(%r, %r)' % (self._tag, self._value)
 
 HasTeamFileEventsValue_validator = bv.Union(HasTeamFileEventsValue)
 
@@ -7180,9 +4273,6 @@ class HasTeamSelectiveSyncValue(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(HasTeamSelectiveSyncValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'HasTeamSelectiveSyncValue(%r, %r)' % (self._tag, self._value)
-
 HasTeamSelectiveSyncValue_validator = bv.Union(HasTeamSelectiveSyncValue)
 
 class HasTeamSharedDropboxValue(bb.Union):
@@ -7243,9 +4333,6 @@ class HasTeamSharedDropboxValue(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(HasTeamSharedDropboxValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'HasTeamSharedDropboxValue(%r, %r)' % (self._tag, self._value)
-
 HasTeamSharedDropboxValue_validator = bv.Union(HasTeamSharedDropboxValue)
 
 class LegalHoldHeldRevisionMetadata(bb.Struct):
@@ -7275,25 +4362,15 @@ class LegalHoldHeldRevisionMetadata(bb.Struct):
 
     __slots__ = [
         '_new_filename_value',
-        '_new_filename_present',
         '_original_revision_id_value',
-        '_original_revision_id_present',
         '_original_file_path_value',
-        '_original_file_path_present',
         '_server_modified_value',
-        '_server_modified_present',
         '_author_member_id_value',
-        '_author_member_id_present',
         '_author_member_status_value',
-        '_author_member_status_present',
         '_author_email_value',
-        '_author_email_present',
         '_file_type_value',
-        '_file_type_present',
         '_size_value',
-        '_size_present',
         '_content_hash_value',
-        '_content_hash_present',
     ]
 
     _has_required_fields = True
@@ -7309,26 +4386,16 @@ class LegalHoldHeldRevisionMetadata(bb.Struct):
                  file_type=None,
                  size=None,
                  content_hash=None):
-        self._new_filename_value = None
-        self._new_filename_present = False
-        self._original_revision_id_value = None
-        self._original_revision_id_present = False
-        self._original_file_path_value = None
-        self._original_file_path_present = False
-        self._server_modified_value = None
-        self._server_modified_present = False
-        self._author_member_id_value = None
-        self._author_member_id_present = False
-        self._author_member_status_value = None
-        self._author_member_status_present = False
-        self._author_email_value = None
-        self._author_email_present = False
-        self._file_type_value = None
-        self._file_type_present = False
-        self._size_value = None
-        self._size_present = False
-        self._content_hash_value = None
-        self._content_hash_present = False
+        self._new_filename_value = bb.NOT_SET
+        self._original_revision_id_value = bb.NOT_SET
+        self._original_file_path_value = bb.NOT_SET
+        self._server_modified_value = bb.NOT_SET
+        self._author_member_id_value = bb.NOT_SET
+        self._author_member_status_value = bb.NOT_SET
+        self._author_email_value = bb.NOT_SET
+        self._file_type_value = bb.NOT_SET
+        self._size_value = bb.NOT_SET
+        self._content_hash_value = bb.NOT_SET
         if new_filename is not None:
             self.new_filename = new_filename
         if original_revision_id is not None:
@@ -7350,254 +4417,38 @@ class LegalHoldHeldRevisionMetadata(bb.Struct):
         if content_hash is not None:
             self.content_hash = content_hash
 
-    @property
-    def new_filename(self):
-        """
-        The held revision filename.
+    # Instance attribute type: str (validator is set below)
+    new_filename = bb.Attribute("new_filename")
 
-        :rtype: str
-        """
-        if self._new_filename_present:
-            return self._new_filename_value
-        else:
-            raise AttributeError("missing required field 'new_filename'")
+    # Instance attribute type: str (validator is set below)
+    original_revision_id = bb.Attribute("original_revision_id")
 
-    @new_filename.setter
-    def new_filename(self, val):
-        val = self._new_filename_validator.validate(val)
-        self._new_filename_value = val
-        self._new_filename_present = True
+    # Instance attribute type: str (validator is set below)
+    original_file_path = bb.Attribute("original_file_path")
 
-    @new_filename.deleter
-    def new_filename(self):
-        self._new_filename_value = None
-        self._new_filename_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    server_modified = bb.Attribute("server_modified")
 
-    @property
-    def original_revision_id(self):
-        """
-        The id of the held revision.
+    # Instance attribute type: str (validator is set below)
+    author_member_id = bb.Attribute("author_member_id")
 
-        :rtype: str
-        """
-        if self._original_revision_id_present:
-            return self._original_revision_id_value
-        else:
-            raise AttributeError("missing required field 'original_revision_id'")
+    # Instance attribute type: TeamMemberStatus (validator is set below)
+    author_member_status = bb.Attribute("author_member_status", user_defined=True)
 
-    @original_revision_id.setter
-    def original_revision_id(self, val):
-        val = self._original_revision_id_validator.validate(val)
-        self._original_revision_id_value = val
-        self._original_revision_id_present = True
+    # Instance attribute type: str (validator is set below)
+    author_email = bb.Attribute("author_email")
 
-    @original_revision_id.deleter
-    def original_revision_id(self):
-        self._original_revision_id_value = None
-        self._original_revision_id_present = False
+    # Instance attribute type: str (validator is set below)
+    file_type = bb.Attribute("file_type")
 
-    @property
-    def original_file_path(self):
-        """
-        The original path of the held revision.
+    # Instance attribute type: int (validator is set below)
+    size = bb.Attribute("size")
 
-        :rtype: str
-        """
-        if self._original_file_path_present:
-            return self._original_file_path_value
-        else:
-            raise AttributeError("missing required field 'original_file_path'")
-
-    @original_file_path.setter
-    def original_file_path(self, val):
-        val = self._original_file_path_validator.validate(val)
-        self._original_file_path_value = val
-        self._original_file_path_present = True
-
-    @original_file_path.deleter
-    def original_file_path(self):
-        self._original_file_path_value = None
-        self._original_file_path_present = False
-
-    @property
-    def server_modified(self):
-        """
-        The last time the file was modified on Dropbox.
-
-        :rtype: datetime.datetime
-        """
-        if self._server_modified_present:
-            return self._server_modified_value
-        else:
-            raise AttributeError("missing required field 'server_modified'")
-
-    @server_modified.setter
-    def server_modified(self, val):
-        val = self._server_modified_validator.validate(val)
-        self._server_modified_value = val
-        self._server_modified_present = True
-
-    @server_modified.deleter
-    def server_modified(self):
-        self._server_modified_value = None
-        self._server_modified_present = False
-
-    @property
-    def author_member_id(self):
-        """
-        The member id of the revision's author.
-
-        :rtype: str
-        """
-        if self._author_member_id_present:
-            return self._author_member_id_value
-        else:
-            raise AttributeError("missing required field 'author_member_id'")
-
-    @author_member_id.setter
-    def author_member_id(self, val):
-        val = self._author_member_id_validator.validate(val)
-        self._author_member_id_value = val
-        self._author_member_id_present = True
-
-    @author_member_id.deleter
-    def author_member_id(self):
-        self._author_member_id_value = None
-        self._author_member_id_present = False
-
-    @property
-    def author_member_status(self):
-        """
-        The member status of the revision's author.
-
-        :rtype: TeamMemberStatus
-        """
-        if self._author_member_status_present:
-            return self._author_member_status_value
-        else:
-            raise AttributeError("missing required field 'author_member_status'")
-
-    @author_member_status.setter
-    def author_member_status(self, val):
-        self._author_member_status_validator.validate_type_only(val)
-        self._author_member_status_value = val
-        self._author_member_status_present = True
-
-    @author_member_status.deleter
-    def author_member_status(self):
-        self._author_member_status_value = None
-        self._author_member_status_present = False
-
-    @property
-    def author_email(self):
-        """
-        The email address of the held revision author.
-
-        :rtype: str
-        """
-        if self._author_email_present:
-            return self._author_email_value
-        else:
-            raise AttributeError("missing required field 'author_email'")
-
-    @author_email.setter
-    def author_email(self, val):
-        val = self._author_email_validator.validate(val)
-        self._author_email_value = val
-        self._author_email_present = True
-
-    @author_email.deleter
-    def author_email(self):
-        self._author_email_value = None
-        self._author_email_present = False
-
-    @property
-    def file_type(self):
-        """
-        The type of the held revision's file.
-
-        :rtype: str
-        """
-        if self._file_type_present:
-            return self._file_type_value
-        else:
-            raise AttributeError("missing required field 'file_type'")
-
-    @file_type.setter
-    def file_type(self, val):
-        val = self._file_type_validator.validate(val)
-        self._file_type_value = val
-        self._file_type_present = True
-
-    @file_type.deleter
-    def file_type(self):
-        self._file_type_value = None
-        self._file_type_present = False
-
-    @property
-    def size(self):
-        """
-        The file size in bytes.
-
-        :rtype: int
-        """
-        if self._size_present:
-            return self._size_value
-        else:
-            raise AttributeError("missing required field 'size'")
-
-    @size.setter
-    def size(self, val):
-        val = self._size_validator.validate(val)
-        self._size_value = val
-        self._size_present = True
-
-    @size.deleter
-    def size(self):
-        self._size_value = None
-        self._size_present = False
-
-    @property
-    def content_hash(self):
-        """
-        A hash of the file content. This field can be used to verify data
-        integrity. For more information see our `Content hash
-        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
-
-        :rtype: str
-        """
-        if self._content_hash_present:
-            return self._content_hash_value
-        else:
-            raise AttributeError("missing required field 'content_hash'")
-
-    @content_hash.setter
-    def content_hash(self, val):
-        val = self._content_hash_validator.validate(val)
-        self._content_hash_value = val
-        self._content_hash_present = True
-
-    @content_hash.deleter
-    def content_hash(self):
-        self._content_hash_value = None
-        self._content_hash_present = False
+    # Instance attribute type: str (validator is set below)
+    content_hash = bb.Attribute("content_hash")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldHeldRevisionMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldHeldRevisionMetadata(new_filename={!r}, original_revision_id={!r}, original_file_path={!r}, server_modified={!r}, author_member_id={!r}, author_member_status={!r}, author_email={!r}, file_type={!r}, size={!r}, content_hash={!r})'.format(
-            self._new_filename_value,
-            self._original_revision_id_value,
-            self._original_file_path_value,
-            self._server_modified_value,
-            self._author_member_id_value,
-            self._author_member_status_value,
-            self._author_email_value,
-            self._file_type_value,
-            self._size_value,
-            self._content_hash_value,
-        )
 
 LegalHoldHeldRevisionMetadata_validator = bv.Struct(LegalHoldHeldRevisionMetadata)
 
@@ -7618,21 +4469,13 @@ class LegalHoldPolicy(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
         '_name_value',
-        '_name_present',
         '_description_value',
-        '_description_present',
         '_activation_time_value',
-        '_activation_time_present',
         '_members_value',
-        '_members_present',
         '_status_value',
-        '_status_present',
         '_start_date_value',
-        '_start_date_present',
         '_end_date_value',
-        '_end_date_present',
     ]
 
     _has_required_fields = True
@@ -7646,22 +4489,14 @@ class LegalHoldPolicy(bb.Struct):
                  description=None,
                  activation_time=None,
                  end_date=None):
-        self._id_value = None
-        self._id_present = False
-        self._name_value = None
-        self._name_present = False
-        self._description_value = None
-        self._description_present = False
-        self._activation_time_value = None
-        self._activation_time_present = False
-        self._members_value = None
-        self._members_present = False
-        self._status_value = None
-        self._status_present = False
-        self._start_date_value = None
-        self._start_date_present = False
-        self._end_date_value = None
-        self._end_date_present = False
+        self._id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
+        self._activation_time_value = bb.NOT_SET
+        self._members_value = bb.NOT_SET
+        self._status_value = bb.NOT_SET
+        self._start_date_value = bb.NOT_SET
+        self._end_date_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if name is not None:
@@ -7679,213 +4514,32 @@ class LegalHoldPolicy(bb.Struct):
         if end_date is not None:
             self.end_date = end_date
 
-    @property
-    def id(self):
-        """
-        The legal hold id.
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description", nullable=True)
 
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    activation_time = bb.Attribute("activation_time", nullable=True)
 
-    @property
-    def name(self):
-        """
-        Policy name.
+    # Instance attribute type: MembersInfo (validator is set below)
+    members = bb.Attribute("members", user_defined=True)
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
+    # Instance attribute type: LegalHoldStatus (validator is set below)
+    status = bb.Attribute("status", user_defined=True)
 
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
+    # Instance attribute type: datetime.datetime (validator is set below)
+    start_date = bb.Attribute("start_date")
 
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def description(self):
-        """
-        A description of the legal hold policy.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            return None
-
-    @description.setter
-    def description(self, val):
-        if val is None:
-            del self.description
-            return
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    @property
-    def activation_time(self):
-        """
-        The time at which the legal hold was activated.
-
-        :rtype: datetime.datetime
-        """
-        if self._activation_time_present:
-            return self._activation_time_value
-        else:
-            return None
-
-    @activation_time.setter
-    def activation_time(self, val):
-        if val is None:
-            del self.activation_time
-            return
-        val = self._activation_time_validator.validate(val)
-        self._activation_time_value = val
-        self._activation_time_present = True
-
-    @activation_time.deleter
-    def activation_time(self):
-        self._activation_time_value = None
-        self._activation_time_present = False
-
-    @property
-    def members(self):
-        """
-        Team members IDs and number of permanetly deleted members under hold.
-
-        :rtype: MembersInfo
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            raise AttributeError("missing required field 'members'")
-
-    @members.setter
-    def members(self, val):
-        self._members_validator.validate_type_only(val)
-        self._members_value = val
-        self._members_present = True
-
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
-
-    @property
-    def status(self):
-        """
-        The current state of the hold.
-
-        :rtype: LegalHoldStatus
-        """
-        if self._status_present:
-            return self._status_value
-        else:
-            raise AttributeError("missing required field 'status'")
-
-    @status.setter
-    def status(self, val):
-        self._status_validator.validate_type_only(val)
-        self._status_value = val
-        self._status_present = True
-
-    @status.deleter
-    def status(self):
-        self._status_value = None
-        self._status_present = False
-
-    @property
-    def start_date(self):
-        """
-        Start date of the legal hold policy.
-
-        :rtype: datetime.datetime
-        """
-        if self._start_date_present:
-            return self._start_date_value
-        else:
-            raise AttributeError("missing required field 'start_date'")
-
-    @start_date.setter
-    def start_date(self, val):
-        val = self._start_date_validator.validate(val)
-        self._start_date_value = val
-        self._start_date_present = True
-
-    @start_date.deleter
-    def start_date(self):
-        self._start_date_value = None
-        self._start_date_present = False
-
-    @property
-    def end_date(self):
-        """
-        End date of the legal hold policy.
-
-        :rtype: datetime.datetime
-        """
-        if self._end_date_present:
-            return self._end_date_value
-        else:
-            return None
-
-    @end_date.setter
-    def end_date(self, val):
-        if val is None:
-            del self.end_date
-            return
-        val = self._end_date_validator.validate(val)
-        self._end_date_value = val
-        self._end_date_present = True
-
-    @end_date.deleter
-    def end_date(self):
-        self._end_date_value = None
-        self._end_date_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    end_date = bb.Attribute("end_date", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldPolicy(id={!r}, name={!r}, members={!r}, status={!r}, start_date={!r}, description={!r}, activation_time={!r}, end_date={!r})'.format(
-            self._id_value,
-            self._name_value,
-            self._members_value,
-            self._status_value,
-            self._start_date_value,
-            self._description_value,
-            self._activation_time_value,
-            self._end_date_value,
-        )
 
 LegalHoldPolicy_validator = bv.Struct(LegalHoldPolicy)
 
@@ -7978,9 +4632,6 @@ class LegalHoldStatus(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LegalHoldStatus(%r, %r)' % (self._tag, self._value)
-
 LegalHoldStatus_validator = bv.Union(LegalHoldStatus)
 
 class LegalHoldsError(bb.Union):
@@ -8030,9 +4681,6 @@ class LegalHoldsError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LegalHoldsError(%r, %r)' % (self._tag, self._value)
-
 LegalHoldsError_validator = bv.Union(LegalHoldsError)
 
 class LegalHoldsGetPolicyArg(bb.Struct):
@@ -8042,48 +4690,21 @@ class LegalHoldsGetPolicyArg(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  id=None):
-        self._id_value = None
-        self._id_present = False
+        self._id_value = bb.NOT_SET
         if id is not None:
             self.id = id
 
-    @property
-    def id(self):
-        """
-        The legal hold Id.
-
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
-
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsGetPolicyArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsGetPolicyArg(id={!r})'.format(
-            self._id_value,
-        )
 
 LegalHoldsGetPolicyArg_validator = bv.Struct(LegalHoldsGetPolicyArg)
 
@@ -8111,9 +4732,6 @@ class LegalHoldsGetPolicyError(LegalHoldsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsGetPolicyError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LegalHoldsGetPolicyError(%r, %r)' % (self._tag, self._value)
-
 LegalHoldsGetPolicyError_validator = bv.Union(LegalHoldsGetPolicyError)
 
 class LegalHoldsListHeldRevisionResult(bb.Struct):
@@ -8131,11 +4749,8 @@ class LegalHoldsListHeldRevisionResult(bb.Struct):
 
     __slots__ = [
         '_entries_value',
-        '_entries_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -8144,12 +4759,9 @@ class LegalHoldsListHeldRevisionResult(bb.Struct):
                  entries=None,
                  has_more=None,
                  cursor=None):
-        self._entries_value = None
-        self._entries_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._entries_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if entries is not None:
             self.entries = entries
         if cursor is not None:
@@ -8157,91 +4769,17 @@ class LegalHoldsListHeldRevisionResult(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def entries(self):
-        """
-        List of file entries that under the hold.
+    # Instance attribute type: list of [LegalHoldHeldRevisionMetadata] (validator is set below)
+    entries = bb.Attribute("entries")
 
-        :rtype: list of [LegalHoldHeldRevisionMetadata]
-        """
-        if self._entries_present:
-            return self._entries_value
-        else:
-            raise AttributeError("missing required field 'entries'")
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
-    @entries.setter
-    def entries(self, val):
-        val = self._entries_validator.validate(val)
-        self._entries_value = val
-        self._entries_present = True
-
-    @entries.deleter
-    def entries(self):
-        self._entries_value = None
-        self._entries_present = False
-
-    @property
-    def cursor(self):
-        """
-        The cursor idicates where to continue reading file metadata entries for
-        the next API call. When there are no more entries, the cursor will
-        return none. Pass the cursor into
-        /2/team/legal_holds/list_held_revisions/continue.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        True if there are more file entries that haven't been returned. You can
-        retrieve them with a call to /legal_holds/list_held_revisions_continue.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListHeldRevisionResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsListHeldRevisionResult(entries={!r}, has_more={!r}, cursor={!r})'.format(
-            self._entries_value,
-            self._has_more_value,
-            self._cursor_value,
-        )
 
 LegalHoldsListHeldRevisionResult_validator = bv.Struct(LegalHoldsListHeldRevisionResult)
 
@@ -8252,48 +4790,21 @@ class LegalHoldsListHeldRevisionsArg(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  id=None):
-        self._id_value = None
-        self._id_present = False
+        self._id_value = bb.NOT_SET
         if id is not None:
             self.id = id
 
-    @property
-    def id(self):
-        """
-        The legal hold Id.
-
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
-
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListHeldRevisionsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsListHeldRevisionsArg(id={!r})'.format(
-            self._id_value,
-        )
 
 LegalHoldsListHeldRevisionsArg_validator = bv.Struct(LegalHoldsListHeldRevisionsArg)
 
@@ -8307,9 +4818,7 @@ class LegalHoldsListHeldRevisionsContinueArg(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
@@ -8317,74 +4826,21 @@ class LegalHoldsListHeldRevisionsContinueArg(bb.Struct):
     def __init__(self,
                  id=None,
                  cursor=None):
-        self._id_value = None
-        self._id_present = False
-        self._cursor_value = None
-        self._cursor_present = False
+        self._id_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def id(self):
-        """
-        The legal hold Id.
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
-
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def cursor(self):
-        """
-        The cursor idicates where to continue reading file metadata entries for
-        the next API call. When there are no more entries, the cursor will
-        return none.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListHeldRevisionsContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsListHeldRevisionsContinueArg(id={!r}, cursor={!r})'.format(
-            self._id_value,
-            self._cursor_value,
-        )
 
 LegalHoldsListHeldRevisionsContinueArg_validator = bv.Struct(LegalHoldsListHeldRevisionsContinueArg)
 
@@ -8401,7 +4857,7 @@ class LegalHoldsListHeldRevisionsContinueError(bb.Union):
         Temporary infrastructure failure, please retry.
     :ivar team.LegalHoldsListHeldRevisionsContinueError.reset: Indicates that
         the cursor has been invalidated. Call
-        :meth:`dropbox.dropbox.Dropbox.team_legal_holds_list_held_revisions_continue`
+        :meth:`dropbox.dropbox_client.Dropbox.team_legal_holds_list_held_revisions_continue`
         again with an empty cursor to obtain a new cursor.
     """
 
@@ -8449,9 +4905,6 @@ class LegalHoldsListHeldRevisionsContinueError(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListHeldRevisionsContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsListHeldRevisionsContinueError(%r, %r)' % (self._tag, self._value)
 
 LegalHoldsListHeldRevisionsContinueError_validator = bv.Union(LegalHoldsListHeldRevisionsContinueError)
 
@@ -8503,9 +4956,6 @@ class LegalHoldsListHeldRevisionsError(LegalHoldsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListHeldRevisionsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LegalHoldsListHeldRevisionsError(%r, %r)' % (self._tag, self._value)
-
 LegalHoldsListHeldRevisionsError_validator = bv.Union(LegalHoldsListHeldRevisionsError)
 
 class LegalHoldsListPoliciesArg(bb.Struct):
@@ -8516,48 +4966,21 @@ class LegalHoldsListPoliciesArg(bb.Struct):
 
     __slots__ = [
         '_include_released_value',
-        '_include_released_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  include_released=None):
-        self._include_released_value = None
-        self._include_released_present = False
+        self._include_released_value = bb.NOT_SET
         if include_released is not None:
             self.include_released = include_released
 
-    @property
-    def include_released(self):
-        """
-        Whether to return holds that were released.
-
-        :rtype: bool
-        """
-        if self._include_released_present:
-            return self._include_released_value
-        else:
-            return False
-
-    @include_released.setter
-    def include_released(self, val):
-        val = self._include_released_validator.validate(val)
-        self._include_released_value = val
-        self._include_released_present = True
-
-    @include_released.deleter
-    def include_released(self):
-        self._include_released_value = None
-        self._include_released_present = False
+    # Instance attribute type: bool (validator is set below)
+    include_released = bb.Attribute("include_released")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListPoliciesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsListPoliciesArg(include_released={!r})'.format(
-            self._include_released_value,
-        )
 
 LegalHoldsListPoliciesArg_validator = bv.Struct(LegalHoldsListPoliciesArg)
 
@@ -8585,55 +5008,27 @@ class LegalHoldsListPoliciesError(LegalHoldsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListPoliciesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LegalHoldsListPoliciesError(%r, %r)' % (self._tag, self._value)
-
 LegalHoldsListPoliciesError_validator = bv.Union(LegalHoldsListPoliciesError)
 
 class LegalHoldsListPoliciesResult(bb.Struct):
 
     __slots__ = [
         '_policies_value',
-        '_policies_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  policies=None):
-        self._policies_value = None
-        self._policies_present = False
+        self._policies_value = bb.NOT_SET
         if policies is not None:
             self.policies = policies
 
-    @property
-    def policies(self):
-        """
-        :rtype: list of [LegalHoldPolicy]
-        """
-        if self._policies_present:
-            return self._policies_value
-        else:
-            raise AttributeError("missing required field 'policies'")
-
-    @policies.setter
-    def policies(self, val):
-        val = self._policies_validator.validate(val)
-        self._policies_value = val
-        self._policies_present = True
-
-    @policies.deleter
-    def policies(self):
-        self._policies_value = None
-        self._policies_present = False
+    # Instance attribute type: list of [LegalHoldPolicy] (validator is set below)
+    policies = bb.Attribute("policies")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsListPoliciesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsListPoliciesResult(policies={!r})'.format(
-            self._policies_value,
-        )
 
 LegalHoldsListPoliciesResult_validator = bv.Struct(LegalHoldsListPoliciesResult)
 
@@ -8652,15 +5047,10 @@ class LegalHoldsPolicyCreateArg(bb.Struct):
 
     __slots__ = [
         '_name_value',
-        '_name_present',
         '_description_value',
-        '_description_present',
         '_members_value',
-        '_members_present',
         '_start_date_value',
-        '_start_date_present',
         '_end_date_value',
-        '_end_date_present',
     ]
 
     _has_required_fields = True
@@ -8671,16 +5061,11 @@ class LegalHoldsPolicyCreateArg(bb.Struct):
                  description=None,
                  start_date=None,
                  end_date=None):
-        self._name_value = None
-        self._name_present = False
-        self._description_value = None
-        self._description_present = False
-        self._members_value = None
-        self._members_present = False
-        self._start_date_value = None
-        self._start_date_present = False
-        self._end_date_value = None
-        self._end_date_present = False
+        self._name_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
+        self._members_value = bb.NOT_SET
+        self._start_date_value = bb.NOT_SET
+        self._end_date_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if description is not None:
@@ -8692,141 +5077,23 @@ class LegalHoldsPolicyCreateArg(bb.Struct):
         if end_date is not None:
             self.end_date = end_date
 
-    @property
-    def name(self):
-        """
-        Policy name.
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description", nullable=True)
 
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
+    # Instance attribute type: list of [str] (validator is set below)
+    members = bb.Attribute("members")
 
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    start_date = bb.Attribute("start_date", nullable=True)
 
-    @property
-    def description(self):
-        """
-        A description of the legal hold policy.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            return None
-
-    @description.setter
-    def description(self, val):
-        if val is None:
-            del self.description
-            return
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    @property
-    def members(self):
-        """
-        List of team member IDs added to the hold.
-
-        :rtype: list of [str]
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            raise AttributeError("missing required field 'members'")
-
-    @members.setter
-    def members(self, val):
-        val = self._members_validator.validate(val)
-        self._members_value = val
-        self._members_present = True
-
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
-
-    @property
-    def start_date(self):
-        """
-        start date of the legal hold policy.
-
-        :rtype: datetime.datetime
-        """
-        if self._start_date_present:
-            return self._start_date_value
-        else:
-            return None
-
-    @start_date.setter
-    def start_date(self, val):
-        if val is None:
-            del self.start_date
-            return
-        val = self._start_date_validator.validate(val)
-        self._start_date_value = val
-        self._start_date_present = True
-
-    @start_date.deleter
-    def start_date(self):
-        self._start_date_value = None
-        self._start_date_present = False
-
-    @property
-    def end_date(self):
-        """
-        end date of the legal hold policy.
-
-        :rtype: datetime.datetime
-        """
-        if self._end_date_present:
-            return self._end_date_value
-        else:
-            return None
-
-    @end_date.setter
-    def end_date(self, val):
-        if val is None:
-            del self.end_date
-            return
-        val = self._end_date_validator.validate(val)
-        self._end_date_value = val
-        self._end_date_present = True
-
-    @end_date.deleter
-    def end_date(self):
-        self._end_date_value = None
-        self._end_date_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    end_date = bb.Attribute("end_date", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsPolicyCreateArg(name={!r}, members={!r}, description={!r}, start_date={!r}, end_date={!r})'.format(
-            self._name_value,
-            self._members_value,
-            self._description_value,
-            self._start_date_value,
-            self._end_date_value,
-        )
 
 LegalHoldsPolicyCreateArg_validator = bv.Struct(LegalHoldsPolicyCreateArg)
 
@@ -8939,9 +5206,6 @@ class LegalHoldsPolicyCreateError(LegalHoldsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LegalHoldsPolicyCreateError(%r, %r)' % (self._tag, self._value)
-
 LegalHoldsPolicyCreateError_validator = bv.Union(LegalHoldsPolicyCreateError)
 
 class LegalHoldsPolicyReleaseArg(bb.Struct):
@@ -8951,48 +5215,21 @@ class LegalHoldsPolicyReleaseArg(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  id=None):
-        self._id_value = None
-        self._id_present = False
+        self._id_value = bb.NOT_SET
         if id is not None:
             self.id = id
 
-    @property
-    def id(self):
-        """
-        The legal hold Id.
-
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
-
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyReleaseArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsPolicyReleaseArg(id={!r})'.format(
-            self._id_value,
-        )
 
 LegalHoldsPolicyReleaseArg_validator = bv.Struct(LegalHoldsPolicyReleaseArg)
 
@@ -9045,9 +5282,6 @@ class LegalHoldsPolicyReleaseError(LegalHoldsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyReleaseError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LegalHoldsPolicyReleaseError(%r, %r)' % (self._tag, self._value)
-
 LegalHoldsPolicyReleaseError_validator = bv.Union(LegalHoldsPolicyReleaseError)
 
 class LegalHoldsPolicyUpdateArg(bb.Struct):
@@ -9061,13 +5295,9 @@ class LegalHoldsPolicyUpdateArg(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
         '_name_value',
-        '_name_present',
         '_description_value',
-        '_description_present',
         '_members_value',
-        '_members_present',
     ]
 
     _has_required_fields = True
@@ -9077,14 +5307,10 @@ class LegalHoldsPolicyUpdateArg(bb.Struct):
                  name=None,
                  description=None,
                  members=None):
-        self._id_value = None
-        self._id_present = False
-        self._name_value = None
-        self._name_present = False
-        self._description_value = None
-        self._description_present = False
-        self._members_value = None
-        self._members_present = False
+        self._id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
+        self._members_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if name is not None:
@@ -9094,117 +5320,20 @@ class LegalHoldsPolicyUpdateArg(bb.Struct):
         if members is not None:
             self.members = members
 
-    @property
-    def id(self):
-        """
-        The legal hold Id.
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name", nullable=True)
 
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description", nullable=True)
 
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def name(self):
-        """
-        Policy new name.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            return None
-
-    @name.setter
-    def name(self, val):
-        if val is None:
-            del self.name
-            return
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def description(self):
-        """
-        Policy new description.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            return None
-
-    @description.setter
-    def description(self, val):
-        if val is None:
-            del self.description
-            return
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    @property
-    def members(self):
-        """
-        List of team member IDs to apply the policy on.
-
-        :rtype: list of [str]
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            return None
-
-    @members.setter
-    def members(self, val):
-        if val is None:
-            del self.members
-            return
-        val = self._members_validator.validate(val)
-        self._members_value = val
-        self._members_present = True
-
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    members = bb.Attribute("members", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyUpdateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LegalHoldsPolicyUpdateArg(id={!r}, name={!r}, description={!r}, members={!r})'.format(
-            self._id_value,
-            self._name_value,
-            self._description_value,
-            self._members_value,
-        )
 
 LegalHoldsPolicyUpdateArg_validator = bv.Struct(LegalHoldsPolicyUpdateArg)
 
@@ -9306,9 +5435,6 @@ class LegalHoldsPolicyUpdateError(LegalHoldsError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LegalHoldsPolicyUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LegalHoldsPolicyUpdateError(%r, %r)' % (self._tag, self._value)
-
 LegalHoldsPolicyUpdateError_validator = bv.Union(LegalHoldsPolicyUpdateError)
 
 class ListMemberAppsArg(bb.Struct):
@@ -9318,55 +5444,28 @@ class ListMemberAppsArg(bb.Struct):
 
     __slots__ = [
         '_team_member_id_value',
-        '_team_member_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  team_member_id=None):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+        self._team_member_id_value = bb.NOT_SET
         if team_member_id is not None:
             self.team_member_id = team_member_id
 
-    @property
-    def team_member_id(self):
-        """
-        The team member id.
-
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            raise AttributeError("missing required field 'team_member_id'")
-
-    @team_member_id.setter
-    def team_member_id(self, val):
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
-
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMemberAppsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListMemberAppsArg(team_member_id={!r})'.format(
-            self._team_member_id_value,
-        )
 
 ListMemberAppsArg_validator = bv.Struct(ListMemberAppsArg)
 
 class ListMemberAppsError(bb.Union):
     """
     Error returned by
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_member_linked_apps`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_member_linked_apps`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -9400,9 +5499,6 @@ class ListMemberAppsError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMemberAppsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ListMemberAppsError(%r, %r)' % (self._tag, self._value)
-
 ListMemberAppsError_validator = bv.Union(ListMemberAppsError)
 
 class ListMemberAppsResult(bb.Struct):
@@ -9413,48 +5509,21 @@ class ListMemberAppsResult(bb.Struct):
 
     __slots__ = [
         '_linked_api_apps_value',
-        '_linked_api_apps_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  linked_api_apps=None):
-        self._linked_api_apps_value = None
-        self._linked_api_apps_present = False
+        self._linked_api_apps_value = bb.NOT_SET
         if linked_api_apps is not None:
             self.linked_api_apps = linked_api_apps
 
-    @property
-    def linked_api_apps(self):
-        """
-        List of third party applications linked by this team member.
-
-        :rtype: list of [ApiApp]
-        """
-        if self._linked_api_apps_present:
-            return self._linked_api_apps_value
-        else:
-            raise AttributeError("missing required field 'linked_api_apps'")
-
-    @linked_api_apps.setter
-    def linked_api_apps(self, val):
-        val = self._linked_api_apps_validator.validate(val)
-        self._linked_api_apps_value = val
-        self._linked_api_apps_present = True
-
-    @linked_api_apps.deleter
-    def linked_api_apps(self):
-        self._linked_api_apps_value = None
-        self._linked_api_apps_present = False
+    # Instance attribute type: list of [ApiApp] (validator is set below)
+    linked_api_apps = bb.Attribute("linked_api_apps")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMemberAppsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListMemberAppsResult(linked_api_apps={!r})'.format(
-            self._linked_api_apps_value,
-        )
 
 ListMemberAppsResult_validator = bv.Struct(ListMemberAppsResult)
 
@@ -9471,13 +5540,9 @@ class ListMemberDevicesArg(bb.Struct):
 
     __slots__ = [
         '_team_member_id_value',
-        '_team_member_id_present',
         '_include_web_sessions_value',
-        '_include_web_sessions_present',
         '_include_desktop_clients_value',
-        '_include_desktop_clients_present',
         '_include_mobile_clients_value',
-        '_include_mobile_clients_present',
     ]
 
     _has_required_fields = True
@@ -9487,14 +5552,10 @@ class ListMemberDevicesArg(bb.Struct):
                  include_web_sessions=None,
                  include_desktop_clients=None,
                  include_mobile_clients=None):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-        self._include_web_sessions_value = None
-        self._include_web_sessions_present = False
-        self._include_desktop_clients_value = None
-        self._include_desktop_clients_present = False
-        self._include_mobile_clients_value = None
-        self._include_mobile_clients_present = False
+        self._team_member_id_value = bb.NOT_SET
+        self._include_web_sessions_value = bb.NOT_SET
+        self._include_desktop_clients_value = bb.NOT_SET
+        self._include_mobile_clients_value = bb.NOT_SET
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if include_web_sessions is not None:
@@ -9504,108 +5565,20 @@ class ListMemberDevicesArg(bb.Struct):
         if include_mobile_clients is not None:
             self.include_mobile_clients = include_mobile_clients
 
-    @property
-    def team_member_id(self):
-        """
-        The team's member id.
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
 
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            raise AttributeError("missing required field 'team_member_id'")
+    # Instance attribute type: bool (validator is set below)
+    include_web_sessions = bb.Attribute("include_web_sessions")
 
-    @team_member_id.setter
-    def team_member_id(self, val):
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
+    # Instance attribute type: bool (validator is set below)
+    include_desktop_clients = bb.Attribute("include_desktop_clients")
 
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-
-    @property
-    def include_web_sessions(self):
-        """
-        Whether to list web sessions of the team's member.
-
-        :rtype: bool
-        """
-        if self._include_web_sessions_present:
-            return self._include_web_sessions_value
-        else:
-            return True
-
-    @include_web_sessions.setter
-    def include_web_sessions(self, val):
-        val = self._include_web_sessions_validator.validate(val)
-        self._include_web_sessions_value = val
-        self._include_web_sessions_present = True
-
-    @include_web_sessions.deleter
-    def include_web_sessions(self):
-        self._include_web_sessions_value = None
-        self._include_web_sessions_present = False
-
-    @property
-    def include_desktop_clients(self):
-        """
-        Whether to list linked desktop devices of the team's member.
-
-        :rtype: bool
-        """
-        if self._include_desktop_clients_present:
-            return self._include_desktop_clients_value
-        else:
-            return True
-
-    @include_desktop_clients.setter
-    def include_desktop_clients(self, val):
-        val = self._include_desktop_clients_validator.validate(val)
-        self._include_desktop_clients_value = val
-        self._include_desktop_clients_present = True
-
-    @include_desktop_clients.deleter
-    def include_desktop_clients(self):
-        self._include_desktop_clients_value = None
-        self._include_desktop_clients_present = False
-
-    @property
-    def include_mobile_clients(self):
-        """
-        Whether to list linked mobile devices of the team's member.
-
-        :rtype: bool
-        """
-        if self._include_mobile_clients_present:
-            return self._include_mobile_clients_value
-        else:
-            return True
-
-    @include_mobile_clients.setter
-    def include_mobile_clients(self, val):
-        val = self._include_mobile_clients_validator.validate(val)
-        self._include_mobile_clients_value = val
-        self._include_mobile_clients_present = True
-
-    @include_mobile_clients.deleter
-    def include_mobile_clients(self):
-        self._include_mobile_clients_value = None
-        self._include_mobile_clients_present = False
+    # Instance attribute type: bool (validator is set below)
+    include_mobile_clients = bb.Attribute("include_mobile_clients")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMemberDevicesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListMemberDevicesArg(team_member_id={!r}, include_web_sessions={!r}, include_desktop_clients={!r}, include_mobile_clients={!r})'.format(
-            self._team_member_id_value,
-            self._include_web_sessions_value,
-            self._include_desktop_clients_value,
-            self._include_mobile_clients_value,
-        )
 
 ListMemberDevicesArg_validator = bv.Struct(ListMemberDevicesArg)
 
@@ -9643,9 +5616,6 @@ class ListMemberDevicesError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMemberDevicesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ListMemberDevicesError(%r, %r)' % (self._tag, self._value)
-
 ListMemberDevicesError_validator = bv.Union(ListMemberDevicesError)
 
 class ListMemberDevicesResult(bb.Struct):
@@ -9660,11 +5630,8 @@ class ListMemberDevicesResult(bb.Struct):
 
     __slots__ = [
         '_active_web_sessions_value',
-        '_active_web_sessions_present',
         '_desktop_client_sessions_value',
-        '_desktop_client_sessions_present',
         '_mobile_client_sessions_value',
-        '_mobile_client_sessions_present',
     ]
 
     _has_required_fields = False
@@ -9673,12 +5640,9 @@ class ListMemberDevicesResult(bb.Struct):
                  active_web_sessions=None,
                  desktop_client_sessions=None,
                  mobile_client_sessions=None):
-        self._active_web_sessions_value = None
-        self._active_web_sessions_present = False
-        self._desktop_client_sessions_value = None
-        self._desktop_client_sessions_present = False
-        self._mobile_client_sessions_value = None
-        self._mobile_client_sessions_present = False
+        self._active_web_sessions_value = bb.NOT_SET
+        self._desktop_client_sessions_value = bb.NOT_SET
+        self._mobile_client_sessions_value = bb.NOT_SET
         if active_web_sessions is not None:
             self.active_web_sessions = active_web_sessions
         if desktop_client_sessions is not None:
@@ -9686,103 +5650,27 @@ class ListMemberDevicesResult(bb.Struct):
         if mobile_client_sessions is not None:
             self.mobile_client_sessions = mobile_client_sessions
 
-    @property
-    def active_web_sessions(self):
-        """
-        List of web sessions made by this team member.
+    # Instance attribute type: list of [ActiveWebSession] (validator is set below)
+    active_web_sessions = bb.Attribute("active_web_sessions", nullable=True)
 
-        :rtype: list of [ActiveWebSession]
-        """
-        if self._active_web_sessions_present:
-            return self._active_web_sessions_value
-        else:
-            return None
+    # Instance attribute type: list of [DesktopClientSession] (validator is set below)
+    desktop_client_sessions = bb.Attribute("desktop_client_sessions", nullable=True)
 
-    @active_web_sessions.setter
-    def active_web_sessions(self, val):
-        if val is None:
-            del self.active_web_sessions
-            return
-        val = self._active_web_sessions_validator.validate(val)
-        self._active_web_sessions_value = val
-        self._active_web_sessions_present = True
-
-    @active_web_sessions.deleter
-    def active_web_sessions(self):
-        self._active_web_sessions_value = None
-        self._active_web_sessions_present = False
-
-    @property
-    def desktop_client_sessions(self):
-        """
-        List of desktop clients used by this team member.
-
-        :rtype: list of [DesktopClientSession]
-        """
-        if self._desktop_client_sessions_present:
-            return self._desktop_client_sessions_value
-        else:
-            return None
-
-    @desktop_client_sessions.setter
-    def desktop_client_sessions(self, val):
-        if val is None:
-            del self.desktop_client_sessions
-            return
-        val = self._desktop_client_sessions_validator.validate(val)
-        self._desktop_client_sessions_value = val
-        self._desktop_client_sessions_present = True
-
-    @desktop_client_sessions.deleter
-    def desktop_client_sessions(self):
-        self._desktop_client_sessions_value = None
-        self._desktop_client_sessions_present = False
-
-    @property
-    def mobile_client_sessions(self):
-        """
-        List of mobile client used by this team member.
-
-        :rtype: list of [MobileClientSession]
-        """
-        if self._mobile_client_sessions_present:
-            return self._mobile_client_sessions_value
-        else:
-            return None
-
-    @mobile_client_sessions.setter
-    def mobile_client_sessions(self, val):
-        if val is None:
-            del self.mobile_client_sessions
-            return
-        val = self._mobile_client_sessions_validator.validate(val)
-        self._mobile_client_sessions_value = val
-        self._mobile_client_sessions_present = True
-
-    @mobile_client_sessions.deleter
-    def mobile_client_sessions(self):
-        self._mobile_client_sessions_value = None
-        self._mobile_client_sessions_present = False
+    # Instance attribute type: list of [MobileClientSession] (validator is set below)
+    mobile_client_sessions = bb.Attribute("mobile_client_sessions", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMemberDevicesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListMemberDevicesResult(active_web_sessions={!r}, desktop_client_sessions={!r}, mobile_client_sessions={!r})'.format(
-            self._active_web_sessions_value,
-            self._desktop_client_sessions_value,
-            self._mobile_client_sessions_value,
-        )
 
 ListMemberDevicesResult_validator = bv.Struct(ListMemberDevicesResult)
 
 class ListMembersAppsArg(bb.Struct):
     """
     Arguments for
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_members_linked_apps`.
 
     :ivar team.ListMembersAppsArg.cursor: At the first call to the
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_members_linked_apps`
         the cursor shouldn't be passed. Then, if the result of the call includes
         a cursor, the following requests should include the received cursors in
         order to receive the next sub list of the team applications.
@@ -9790,62 +5678,28 @@ class ListMembersAppsArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        At the first call to the
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
-        the cursor shouldn't be passed. Then, if the result of the call includes
-        a cursor, the following requests should include the received cursors in
-        order to receive the next sub list of the team applications.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMembersAppsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListMembersAppsArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 ListMembersAppsArg_validator = bv.Struct(ListMembersAppsArg)
 
 class ListMembersAppsError(bb.Union):
     """
     Error returned by
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_members_linked_apps`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -9853,7 +5707,7 @@ class ListMembersAppsError(bb.Union):
 
     :ivar team.ListMembersAppsError.reset: Indicates that the cursor has been
         invalidated. Call
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_members_linked_apps`
         again with an empty cursor to obtain a new cursor.
     """
 
@@ -9882,34 +5736,28 @@ class ListMembersAppsError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMembersAppsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ListMembersAppsError(%r, %r)' % (self._tag, self._value)
-
 ListMembersAppsError_validator = bv.Union(ListMembersAppsError)
 
 class ListMembersAppsResult(bb.Struct):
     """
     Information returned by
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_members_linked_apps`.
 
     :ivar team.ListMembersAppsResult.apps: The linked applications of each
         member of the team.
     :ivar team.ListMembersAppsResult.has_more: If true, then there are more apps
         available. Pass the cursor to
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_members_linked_apps`
         to retrieve the rest.
     :ivar team.ListMembersAppsResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
+        :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_members_linked_apps`
         to receive the next sub list of team's applications.
     """
 
     __slots__ = [
         '_apps_value',
-        '_apps_present',
         '_has_more_value',
-        '_has_more_present',
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
@@ -9918,12 +5766,9 @@ class ListMembersAppsResult(bb.Struct):
                  apps=None,
                  has_more=None,
                  cursor=None):
-        self._apps_value = None
-        self._apps_present = False
-        self._has_more_value = None
-        self._has_more_present = False
-        self._cursor_value = None
-        self._cursor_present = False
+        self._apps_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
         if apps is not None:
             self.apps = apps
         if has_more is not None:
@@ -9931,100 +5776,26 @@ class ListMembersAppsResult(bb.Struct):
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def apps(self):
-        """
-        The linked applications of each member of the team.
+    # Instance attribute type: list of [MemberLinkedApps] (validator is set below)
+    apps = bb.Attribute("apps")
 
-        :rtype: list of [MemberLinkedApps]
-        """
-        if self._apps_present:
-            return self._apps_value
-        else:
-            raise AttributeError("missing required field 'apps'")
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
-    @apps.setter
-    def apps(self, val):
-        val = self._apps_validator.validate(val)
-        self._apps_value = val
-        self._apps_present = True
-
-    @apps.deleter
-    def apps(self):
-        self._apps_value = None
-        self._apps_present = False
-
-    @property
-    def has_more(self):
-        """
-        If true, then there are more apps available. Pass the cursor to
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
-        to retrieve the rest.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_members_linked_apps`
-        to receive the next sub list of team's applications.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMembersAppsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListMembersAppsResult(apps={!r}, has_more={!r}, cursor={!r})'.format(
-            self._apps_value,
-            self._has_more_value,
-            self._cursor_value,
-        )
 
 ListMembersAppsResult_validator = bv.Struct(ListMembersAppsResult)
 
 class ListMembersDevicesArg(bb.Struct):
     """
     :ivar team.ListMembersDevicesArg.cursor: At the first call to the
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` the
-        cursor shouldn't be passed. Then, if the result of the call includes a
-        cursor, the following requests should include the received cursors in
+        :meth:`dropbox.dropbox_client.Dropbox.team_devices_list_members_devices`
+        the cursor shouldn't be passed. Then, if the result of the call includes
+        a cursor, the following requests should include the received cursors in
         order to receive the next sub list of team devices.
     :ivar team.ListMembersDevicesArg.include_web_sessions: Whether to list web
         sessions of the team members.
@@ -10036,13 +5807,9 @@ class ListMembersDevicesArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
         '_include_web_sessions_value',
-        '_include_web_sessions_present',
         '_include_desktop_clients_value',
-        '_include_desktop_clients_present',
         '_include_mobile_clients_value',
-        '_include_mobile_clients_present',
     ]
 
     _has_required_fields = False
@@ -10052,14 +5819,10 @@ class ListMembersDevicesArg(bb.Struct):
                  include_web_sessions=None,
                  include_desktop_clients=None,
                  include_mobile_clients=None):
-        self._cursor_value = None
-        self._cursor_present = False
-        self._include_web_sessions_value = None
-        self._include_web_sessions_present = False
-        self._include_desktop_clients_value = None
-        self._include_desktop_clients_present = False
-        self._include_mobile_clients_value = None
-        self._include_mobile_clients_present = False
+        self._cursor_value = bb.NOT_SET
+        self._include_web_sessions_value = bb.NOT_SET
+        self._include_desktop_clients_value = bb.NOT_SET
+        self._include_mobile_clients_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
         if include_web_sessions is not None:
@@ -10069,115 +5832,20 @@ class ListMembersDevicesArg(bb.Struct):
         if include_mobile_clients is not None:
             self.include_mobile_clients = include_mobile_clients
 
-    @property
-    def cursor(self):
-        """
-        At the first call to the
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` the
-        cursor shouldn't be passed. Then, if the result of the call includes a
-        cursor, the following requests should include the received cursors in
-        order to receive the next sub list of team devices.
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
+    # Instance attribute type: bool (validator is set below)
+    include_web_sessions = bb.Attribute("include_web_sessions")
 
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
+    # Instance attribute type: bool (validator is set below)
+    include_desktop_clients = bb.Attribute("include_desktop_clients")
 
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def include_web_sessions(self):
-        """
-        Whether to list web sessions of the team members.
-
-        :rtype: bool
-        """
-        if self._include_web_sessions_present:
-            return self._include_web_sessions_value
-        else:
-            return True
-
-    @include_web_sessions.setter
-    def include_web_sessions(self, val):
-        val = self._include_web_sessions_validator.validate(val)
-        self._include_web_sessions_value = val
-        self._include_web_sessions_present = True
-
-    @include_web_sessions.deleter
-    def include_web_sessions(self):
-        self._include_web_sessions_value = None
-        self._include_web_sessions_present = False
-
-    @property
-    def include_desktop_clients(self):
-        """
-        Whether to list desktop clients of the team members.
-
-        :rtype: bool
-        """
-        if self._include_desktop_clients_present:
-            return self._include_desktop_clients_value
-        else:
-            return True
-
-    @include_desktop_clients.setter
-    def include_desktop_clients(self, val):
-        val = self._include_desktop_clients_validator.validate(val)
-        self._include_desktop_clients_value = val
-        self._include_desktop_clients_present = True
-
-    @include_desktop_clients.deleter
-    def include_desktop_clients(self):
-        self._include_desktop_clients_value = None
-        self._include_desktop_clients_present = False
-
-    @property
-    def include_mobile_clients(self):
-        """
-        Whether to list mobile clients of the team members.
-
-        :rtype: bool
-        """
-        if self._include_mobile_clients_present:
-            return self._include_mobile_clients_value
-        else:
-            return True
-
-    @include_mobile_clients.setter
-    def include_mobile_clients(self, val):
-        val = self._include_mobile_clients_validator.validate(val)
-        self._include_mobile_clients_value = val
-        self._include_mobile_clients_present = True
-
-    @include_mobile_clients.deleter
-    def include_mobile_clients(self):
-        self._include_mobile_clients_value = None
-        self._include_mobile_clients_present = False
+    # Instance attribute type: bool (validator is set below)
+    include_mobile_clients = bb.Attribute("include_mobile_clients")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMembersDevicesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListMembersDevicesArg(cursor={!r}, include_web_sessions={!r}, include_desktop_clients={!r}, include_mobile_clients={!r})'.format(
-            self._cursor_value,
-            self._include_web_sessions_value,
-            self._include_desktop_clients_value,
-            self._include_mobile_clients_value,
-        )
 
 ListMembersDevicesArg_validator = bv.Struct(ListMembersDevicesArg)
 
@@ -10189,8 +5857,8 @@ class ListMembersDevicesError(bb.Union):
 
     :ivar team.ListMembersDevicesError.reset: Indicates that the cursor has been
         invalidated. Call
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` again
-        with an empty cursor to obtain a new cursor.
+        :meth:`dropbox.dropbox_client.Dropbox.team_devices_list_members_devices`
+        again with an empty cursor to obtain a new cursor.
     """
 
     _catch_all = 'other'
@@ -10218,9 +5886,6 @@ class ListMembersDevicesError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMembersDevicesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ListMembersDevicesError(%r, %r)' % (self._tag, self._value)
-
 ListMembersDevicesError_validator = bv.Union(ListMembersDevicesError)
 
 class ListMembersDevicesResult(bb.Struct):
@@ -10229,20 +5894,17 @@ class ListMembersDevicesResult(bb.Struct):
         the team.
     :ivar team.ListMembersDevicesResult.has_more: If true, then there are more
         devices available. Pass the cursor to
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
-        retrieve the rest.
+        :meth:`dropbox.dropbox_client.Dropbox.team_devices_list_members_devices`
+        to retrieve the rest.
     :ivar team.ListMembersDevicesResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
-        receive the next sub list of team's devices.
+        :meth:`dropbox.dropbox_client.Dropbox.team_devices_list_members_devices`
+        to receive the next sub list of team's devices.
     """
 
     __slots__ = [
         '_devices_value',
-        '_devices_present',
         '_has_more_value',
-        '_has_more_present',
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
@@ -10251,12 +5913,9 @@ class ListMembersDevicesResult(bb.Struct):
                  devices=None,
                  has_more=None,
                  cursor=None):
-        self._devices_value = None
-        self._devices_present = False
-        self._has_more_value = None
-        self._has_more_present = False
-        self._cursor_value = None
-        self._cursor_present = False
+        self._devices_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
         if devices is not None:
             self.devices = devices
         if has_more is not None:
@@ -10264,101 +5923,27 @@ class ListMembersDevicesResult(bb.Struct):
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def devices(self):
-        """
-        The devices of each member of the team.
+    # Instance attribute type: list of [MemberDevices] (validator is set below)
+    devices = bb.Attribute("devices")
 
-        :rtype: list of [MemberDevices]
-        """
-        if self._devices_present:
-            return self._devices_value
-        else:
-            raise AttributeError("missing required field 'devices'")
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
-    @devices.setter
-    def devices(self, val):
-        val = self._devices_validator.validate(val)
-        self._devices_value = val
-        self._devices_present = True
-
-    @devices.deleter
-    def devices(self):
-        self._devices_value = None
-        self._devices_present = False
-
-    @property
-    def has_more(self):
-        """
-        If true, then there are more devices available. Pass the cursor to
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
-        retrieve the rest.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_members_devices` to
-        receive the next sub list of team's devices.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListMembersDevicesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListMembersDevicesResult(devices={!r}, has_more={!r}, cursor={!r})'.format(
-            self._devices_value,
-            self._has_more_value,
-            self._cursor_value,
-        )
 
 ListMembersDevicesResult_validator = bv.Struct(ListMembersDevicesResult)
 
 class ListTeamAppsArg(bb.Struct):
     """
     Arguments for
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_team_linked_apps`.
 
     :ivar team.ListTeamAppsArg.cursor: At the first call to the
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_team_linked_apps`
         the cursor shouldn't be passed. Then, if the result of the call includes
         a cursor, the following requests should include the received cursors in
         order to receive the next sub list of the team applications.
@@ -10366,62 +5951,28 @@ class ListTeamAppsArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        At the first call to the
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
-        the cursor shouldn't be passed. Then, if the result of the call includes
-        a cursor, the following requests should include the received cursors in
-        order to receive the next sub list of the team applications.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListTeamAppsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListTeamAppsArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 ListTeamAppsArg_validator = bv.Struct(ListTeamAppsArg)
 
 class ListTeamAppsError(bb.Union):
     """
     Error returned by
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_team_linked_apps`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -10429,7 +5980,7 @@ class ListTeamAppsError(bb.Union):
 
     :ivar team.ListTeamAppsError.reset: Indicates that the cursor has been
         invalidated. Call
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_team_linked_apps`
         again with an empty cursor to obtain a new cursor.
     """
 
@@ -10458,34 +6009,28 @@ class ListTeamAppsError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListTeamAppsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ListTeamAppsError(%r, %r)' % (self._tag, self._value)
-
 ListTeamAppsError_validator = bv.Union(ListTeamAppsError)
 
 class ListTeamAppsResult(bb.Struct):
     """
     Information returned by
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_team_linked_apps`.
 
     :ivar team.ListTeamAppsResult.apps: The linked applications of each member
         of the team.
     :ivar team.ListTeamAppsResult.has_more: If true, then there are more apps
         available. Pass the cursor to
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_team_linked_apps`
         to retrieve the rest.
     :ivar team.ListTeamAppsResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
+        :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_list_team_linked_apps`
         to receive the next sub list of team's applications.
     """
 
     __slots__ = [
         '_apps_value',
-        '_apps_present',
         '_has_more_value',
-        '_has_more_present',
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
@@ -10494,12 +6039,9 @@ class ListTeamAppsResult(bb.Struct):
                  apps=None,
                  has_more=None,
                  cursor=None):
-        self._apps_value = None
-        self._apps_present = False
-        self._has_more_value = None
-        self._has_more_present = False
-        self._cursor_value = None
-        self._cursor_present = False
+        self._apps_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
         if apps is not None:
             self.apps = apps
         if has_more is not None:
@@ -10507,100 +6049,26 @@ class ListTeamAppsResult(bb.Struct):
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def apps(self):
-        """
-        The linked applications of each member of the team.
+    # Instance attribute type: list of [MemberLinkedApps] (validator is set below)
+    apps = bb.Attribute("apps")
 
-        :rtype: list of [MemberLinkedApps]
-        """
-        if self._apps_present:
-            return self._apps_value
-        else:
-            raise AttributeError("missing required field 'apps'")
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
-    @apps.setter
-    def apps(self, val):
-        val = self._apps_validator.validate(val)
-        self._apps_value = val
-        self._apps_present = True
-
-    @apps.deleter
-    def apps(self):
-        self._apps_value = None
-        self._apps_present = False
-
-    @property
-    def has_more(self):
-        """
-        If true, then there are more apps available. Pass the cursor to
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
-        to retrieve the rest.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_linked_apps_list_team_linked_apps`
-        to receive the next sub list of team's applications.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListTeamAppsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListTeamAppsResult(apps={!r}, has_more={!r}, cursor={!r})'.format(
-            self._apps_value,
-            self._has_more_value,
-            self._cursor_value,
-        )
 
 ListTeamAppsResult_validator = bv.Struct(ListTeamAppsResult)
 
 class ListTeamDevicesArg(bb.Struct):
     """
     :ivar team.ListTeamDevicesArg.cursor: At the first call to the
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` the
-        cursor shouldn't be passed. Then, if the result of the call includes a
-        cursor, the following requests should include the received cursors in
+        :meth:`dropbox.dropbox_client.Dropbox.team_devices_list_team_devices`
+        the cursor shouldn't be passed. Then, if the result of the call includes
+        a cursor, the following requests should include the received cursors in
         order to receive the next sub list of team devices.
     :ivar team.ListTeamDevicesArg.include_web_sessions: Whether to list web
         sessions of the team members.
@@ -10612,13 +6080,9 @@ class ListTeamDevicesArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
         '_include_web_sessions_value',
-        '_include_web_sessions_present',
         '_include_desktop_clients_value',
-        '_include_desktop_clients_present',
         '_include_mobile_clients_value',
-        '_include_mobile_clients_present',
     ]
 
     _has_required_fields = False
@@ -10628,14 +6092,10 @@ class ListTeamDevicesArg(bb.Struct):
                  include_web_sessions=None,
                  include_desktop_clients=None,
                  include_mobile_clients=None):
-        self._cursor_value = None
-        self._cursor_present = False
-        self._include_web_sessions_value = None
-        self._include_web_sessions_present = False
-        self._include_desktop_clients_value = None
-        self._include_desktop_clients_present = False
-        self._include_mobile_clients_value = None
-        self._include_mobile_clients_present = False
+        self._cursor_value = bb.NOT_SET
+        self._include_web_sessions_value = bb.NOT_SET
+        self._include_desktop_clients_value = bb.NOT_SET
+        self._include_mobile_clients_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
         if include_web_sessions is not None:
@@ -10645,115 +6105,20 @@ class ListTeamDevicesArg(bb.Struct):
         if include_mobile_clients is not None:
             self.include_mobile_clients = include_mobile_clients
 
-    @property
-    def cursor(self):
-        """
-        At the first call to the
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` the
-        cursor shouldn't be passed. Then, if the result of the call includes a
-        cursor, the following requests should include the received cursors in
-        order to receive the next sub list of team devices.
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
+    # Instance attribute type: bool (validator is set below)
+    include_web_sessions = bb.Attribute("include_web_sessions")
 
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
+    # Instance attribute type: bool (validator is set below)
+    include_desktop_clients = bb.Attribute("include_desktop_clients")
 
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def include_web_sessions(self):
-        """
-        Whether to list web sessions of the team members.
-
-        :rtype: bool
-        """
-        if self._include_web_sessions_present:
-            return self._include_web_sessions_value
-        else:
-            return True
-
-    @include_web_sessions.setter
-    def include_web_sessions(self, val):
-        val = self._include_web_sessions_validator.validate(val)
-        self._include_web_sessions_value = val
-        self._include_web_sessions_present = True
-
-    @include_web_sessions.deleter
-    def include_web_sessions(self):
-        self._include_web_sessions_value = None
-        self._include_web_sessions_present = False
-
-    @property
-    def include_desktop_clients(self):
-        """
-        Whether to list desktop clients of the team members.
-
-        :rtype: bool
-        """
-        if self._include_desktop_clients_present:
-            return self._include_desktop_clients_value
-        else:
-            return True
-
-    @include_desktop_clients.setter
-    def include_desktop_clients(self, val):
-        val = self._include_desktop_clients_validator.validate(val)
-        self._include_desktop_clients_value = val
-        self._include_desktop_clients_present = True
-
-    @include_desktop_clients.deleter
-    def include_desktop_clients(self):
-        self._include_desktop_clients_value = None
-        self._include_desktop_clients_present = False
-
-    @property
-    def include_mobile_clients(self):
-        """
-        Whether to list mobile clients of the team members.
-
-        :rtype: bool
-        """
-        if self._include_mobile_clients_present:
-            return self._include_mobile_clients_value
-        else:
-            return True
-
-    @include_mobile_clients.setter
-    def include_mobile_clients(self, val):
-        val = self._include_mobile_clients_validator.validate(val)
-        self._include_mobile_clients_value = val
-        self._include_mobile_clients_present = True
-
-    @include_mobile_clients.deleter
-    def include_mobile_clients(self):
-        self._include_mobile_clients_value = None
-        self._include_mobile_clients_present = False
+    # Instance attribute type: bool (validator is set below)
+    include_mobile_clients = bb.Attribute("include_mobile_clients")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListTeamDevicesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListTeamDevicesArg(cursor={!r}, include_web_sessions={!r}, include_desktop_clients={!r}, include_mobile_clients={!r})'.format(
-            self._cursor_value,
-            self._include_web_sessions_value,
-            self._include_desktop_clients_value,
-            self._include_mobile_clients_value,
-        )
 
 ListTeamDevicesArg_validator = bv.Struct(ListTeamDevicesArg)
 
@@ -10765,8 +6130,8 @@ class ListTeamDevicesError(bb.Union):
 
     :ivar team.ListTeamDevicesError.reset: Indicates that the cursor has been
         invalidated. Call
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` again
-        with an empty cursor to obtain a new cursor.
+        :meth:`dropbox.dropbox_client.Dropbox.team_devices_list_team_devices`
+        again with an empty cursor to obtain a new cursor.
     """
 
     _catch_all = 'other'
@@ -10794,9 +6159,6 @@ class ListTeamDevicesError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListTeamDevicesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ListTeamDevicesError(%r, %r)' % (self._tag, self._value)
-
 ListTeamDevicesError_validator = bv.Union(ListTeamDevicesError)
 
 class ListTeamDevicesResult(bb.Struct):
@@ -10805,20 +6167,17 @@ class ListTeamDevicesResult(bb.Struct):
         team.
     :ivar team.ListTeamDevicesResult.has_more: If true, then there are more
         devices available. Pass the cursor to
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
+        :meth:`dropbox.dropbox_client.Dropbox.team_devices_list_team_devices` to
         retrieve the rest.
     :ivar team.ListTeamDevicesResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
+        :meth:`dropbox.dropbox_client.Dropbox.team_devices_list_team_devices` to
         receive the next sub list of team's devices.
     """
 
     __slots__ = [
         '_devices_value',
-        '_devices_present',
         '_has_more_value',
-        '_has_more_present',
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
@@ -10827,12 +6186,9 @@ class ListTeamDevicesResult(bb.Struct):
                  devices=None,
                  has_more=None,
                  cursor=None):
-        self._devices_value = None
-        self._devices_present = False
-        self._has_more_value = None
-        self._has_more_present = False
-        self._cursor_value = None
-        self._cursor_present = False
+        self._devices_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
         if devices is not None:
             self.devices = devices
         if has_more is not None:
@@ -10840,91 +6196,17 @@ class ListTeamDevicesResult(bb.Struct):
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def devices(self):
-        """
-        The devices of each member of the team.
+    # Instance attribute type: list of [MemberDevices] (validator is set below)
+    devices = bb.Attribute("devices")
 
-        :rtype: list of [MemberDevices]
-        """
-        if self._devices_present:
-            return self._devices_value
-        else:
-            raise AttributeError("missing required field 'devices'")
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
-    @devices.setter
-    def devices(self, val):
-        val = self._devices_validator.validate(val)
-        self._devices_value = val
-        self._devices_present = True
-
-    @devices.deleter
-    def devices(self):
-        self._devices_value = None
-        self._devices_present = False
-
-    @property
-    def has_more(self):
-        """
-        If true, then there are more devices available. Pass the cursor to
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
-        retrieve the rest.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_devices_list_team_devices` to
-        receive the next sub list of team's devices.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListTeamDevicesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListTeamDevicesResult(devices={!r}, has_more={!r}, cursor={!r})'.format(
-            self._devices_value,
-            self._has_more_value,
-            self._cursor_value,
-        )
 
 ListTeamDevicesResult_validator = bv.Struct(ListTeamDevicesResult)
 
@@ -10938,9 +6220,7 @@ class MemberAccess(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_access_type_value',
-        '_access_type_present',
     ]
 
     _has_required_fields = True
@@ -10948,69 +6228,21 @@ class MemberAccess(bb.Struct):
     def __init__(self,
                  user=None,
                  access_type=None):
-        self._user_value = None
-        self._user_present = False
-        self._access_type_value = None
-        self._access_type_present = False
+        self._user_value = bb.NOT_SET
+        self._access_type_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if access_type is not None:
             self.access_type = access_type
 
-    @property
-    def user(self):
-        """
-        Identity of a user.
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def access_type(self):
-        """
-        Access type.
-
-        :rtype: GroupAccessType
-        """
-        if self._access_type_present:
-            return self._access_type_value
-        else:
-            raise AttributeError("missing required field 'access_type'")
-
-    @access_type.setter
-    def access_type(self, val):
-        self._access_type_validator.validate_type_only(val)
-        self._access_type_value = val
-        self._access_type_present = True
-
-    @access_type.deleter
-    def access_type(self):
-        self._access_type_value = None
-        self._access_type_present = False
+    # Instance attribute type: GroupAccessType (validator is set below)
+    access_type = bb.Attribute("access_type", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberAccess, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MemberAccess(user={!r}, access_type={!r})'.format(
-            self._user_value,
-            self._access_type_value,
-        )
 
 MemberAccess_validator = bv.Struct(MemberAccess)
 
@@ -11031,21 +6263,13 @@ class MemberAddArg(bb.Struct):
 
     __slots__ = [
         '_member_email_value',
-        '_member_email_present',
         '_member_given_name_value',
-        '_member_given_name_present',
         '_member_surname_value',
-        '_member_surname_present',
         '_member_external_id_value',
-        '_member_external_id_present',
         '_member_persistent_id_value',
-        '_member_persistent_id_present',
         '_send_welcome_email_value',
-        '_send_welcome_email_present',
         '_role_value',
-        '_role_present',
         '_is_directory_restricted_value',
-        '_is_directory_restricted_present',
     ]
 
     _has_required_fields = True
@@ -11059,22 +6283,14 @@ class MemberAddArg(bb.Struct):
                  send_welcome_email=None,
                  role=None,
                  is_directory_restricted=None):
-        self._member_email_value = None
-        self._member_email_present = False
-        self._member_given_name_value = None
-        self._member_given_name_present = False
-        self._member_surname_value = None
-        self._member_surname_present = False
-        self._member_external_id_value = None
-        self._member_external_id_present = False
-        self._member_persistent_id_value = None
-        self._member_persistent_id_present = False
-        self._send_welcome_email_value = None
-        self._send_welcome_email_present = False
-        self._role_value = None
-        self._role_present = False
-        self._is_directory_restricted_value = None
-        self._is_directory_restricted_present = False
+        self._member_email_value = bb.NOT_SET
+        self._member_given_name_value = bb.NOT_SET
+        self._member_surname_value = bb.NOT_SET
+        self._member_external_id_value = bb.NOT_SET
+        self._member_persistent_id_value = bb.NOT_SET
+        self._send_welcome_email_value = bb.NOT_SET
+        self._role_value = bb.NOT_SET
+        self._is_directory_restricted_value = bb.NOT_SET
         if member_email is not None:
             self.member_email = member_email
         if member_given_name is not None:
@@ -11092,219 +6308,32 @@ class MemberAddArg(bb.Struct):
         if is_directory_restricted is not None:
             self.is_directory_restricted = is_directory_restricted
 
-    @property
-    def member_email(self):
-        """
-        :rtype: str
-        """
-        if self._member_email_present:
-            return self._member_email_value
-        else:
-            raise AttributeError("missing required field 'member_email'")
+    # Instance attribute type: str (validator is set below)
+    member_email = bb.Attribute("member_email")
 
-    @member_email.setter
-    def member_email(self, val):
-        val = self._member_email_validator.validate(val)
-        self._member_email_value = val
-        self._member_email_present = True
+    # Instance attribute type: str (validator is set below)
+    member_given_name = bb.Attribute("member_given_name", nullable=True)
 
-    @member_email.deleter
-    def member_email(self):
-        self._member_email_value = None
-        self._member_email_present = False
+    # Instance attribute type: str (validator is set below)
+    member_surname = bb.Attribute("member_surname", nullable=True)
 
-    @property
-    def member_given_name(self):
-        """
-        Member's first name.
+    # Instance attribute type: str (validator is set below)
+    member_external_id = bb.Attribute("member_external_id", nullable=True)
 
-        :rtype: str
-        """
-        if self._member_given_name_present:
-            return self._member_given_name_value
-        else:
-            return None
+    # Instance attribute type: str (validator is set below)
+    member_persistent_id = bb.Attribute("member_persistent_id", nullable=True)
 
-    @member_given_name.setter
-    def member_given_name(self, val):
-        if val is None:
-            del self.member_given_name
-            return
-        val = self._member_given_name_validator.validate(val)
-        self._member_given_name_value = val
-        self._member_given_name_present = True
+    # Instance attribute type: bool (validator is set below)
+    send_welcome_email = bb.Attribute("send_welcome_email")
 
-    @member_given_name.deleter
-    def member_given_name(self):
-        self._member_given_name_value = None
-        self._member_given_name_present = False
+    # Instance attribute type: AdminTier (validator is set below)
+    role = bb.Attribute("role", user_defined=True)
 
-    @property
-    def member_surname(self):
-        """
-        Member's last name.
-
-        :rtype: str
-        """
-        if self._member_surname_present:
-            return self._member_surname_value
-        else:
-            return None
-
-    @member_surname.setter
-    def member_surname(self, val):
-        if val is None:
-            del self.member_surname
-            return
-        val = self._member_surname_validator.validate(val)
-        self._member_surname_value = val
-        self._member_surname_present = True
-
-    @member_surname.deleter
-    def member_surname(self):
-        self._member_surname_value = None
-        self._member_surname_present = False
-
-    @property
-    def member_external_id(self):
-        """
-        External ID for member.
-
-        :rtype: str
-        """
-        if self._member_external_id_present:
-            return self._member_external_id_value
-        else:
-            return None
-
-    @member_external_id.setter
-    def member_external_id(self, val):
-        if val is None:
-            del self.member_external_id
-            return
-        val = self._member_external_id_validator.validate(val)
-        self._member_external_id_value = val
-        self._member_external_id_present = True
-
-    @member_external_id.deleter
-    def member_external_id(self):
-        self._member_external_id_value = None
-        self._member_external_id_present = False
-
-    @property
-    def member_persistent_id(self):
-        """
-        Persistent ID for member. This field is only available to teams using
-        persistent ID SAML configuration.
-
-        :rtype: str
-        """
-        if self._member_persistent_id_present:
-            return self._member_persistent_id_value
-        else:
-            return None
-
-    @member_persistent_id.setter
-    def member_persistent_id(self, val):
-        if val is None:
-            del self.member_persistent_id
-            return
-        val = self._member_persistent_id_validator.validate(val)
-        self._member_persistent_id_value = val
-        self._member_persistent_id_present = True
-
-    @member_persistent_id.deleter
-    def member_persistent_id(self):
-        self._member_persistent_id_value = None
-        self._member_persistent_id_present = False
-
-    @property
-    def send_welcome_email(self):
-        """
-        Whether to send a welcome email to the member. If send_welcome_email is
-        false, no email invitation will be sent to the user. This may be useful
-        for apps using single sign-on (SSO) flows for onboarding that want to
-        handle announcements themselves.
-
-        :rtype: bool
-        """
-        if self._send_welcome_email_present:
-            return self._send_welcome_email_value
-        else:
-            return True
-
-    @send_welcome_email.setter
-    def send_welcome_email(self, val):
-        val = self._send_welcome_email_validator.validate(val)
-        self._send_welcome_email_value = val
-        self._send_welcome_email_present = True
-
-    @send_welcome_email.deleter
-    def send_welcome_email(self):
-        self._send_welcome_email_value = None
-        self._send_welcome_email_present = False
-
-    @property
-    def role(self):
-        """
-        :rtype: AdminTier
-        """
-        if self._role_present:
-            return self._role_value
-        else:
-            return AdminTier.member_only
-
-    @role.setter
-    def role(self, val):
-        self._role_validator.validate_type_only(val)
-        self._role_value = val
-        self._role_present = True
-
-    @role.deleter
-    def role(self):
-        self._role_value = None
-        self._role_present = False
-
-    @property
-    def is_directory_restricted(self):
-        """
-        Whether a user is directory restricted.
-
-        :rtype: bool
-        """
-        if self._is_directory_restricted_present:
-            return self._is_directory_restricted_value
-        else:
-            return None
-
-    @is_directory_restricted.setter
-    def is_directory_restricted(self, val):
-        if val is None:
-            del self.is_directory_restricted
-            return
-        val = self._is_directory_restricted_validator.validate(val)
-        self._is_directory_restricted_value = val
-        self._is_directory_restricted_present = True
-
-    @is_directory_restricted.deleter
-    def is_directory_restricted(self):
-        self._is_directory_restricted_value = None
-        self._is_directory_restricted_present = False
+    # Instance attribute type: bool (validator is set below)
+    is_directory_restricted = bb.Attribute("is_directory_restricted", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberAddArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MemberAddArg(member_email={!r}, member_given_name={!r}, member_surname={!r}, member_external_id={!r}, member_persistent_id={!r}, send_welcome_email={!r}, role={!r}, is_directory_restricted={!r})'.format(
-            self._member_email_value,
-            self._member_given_name_value,
-            self._member_surname_value,
-            self._member_external_id_value,
-            self._member_persistent_id_value,
-            self._send_welcome_email_value,
-            self._role_value,
-            self._is_directory_restricted_value,
-        )
 
 MemberAddArg_validator = bv.Struct(MemberAddArg)
 
@@ -11701,9 +6730,6 @@ class MemberAddResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberAddResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MemberAddResult(%r, %r)' % (self._tag, self._value)
-
 MemberAddResult_validator = bv.Union(MemberAddResult)
 
 class MemberDevices(bb.Struct):
@@ -11721,13 +6747,9 @@ class MemberDevices(bb.Struct):
 
     __slots__ = [
         '_team_member_id_value',
-        '_team_member_id_present',
         '_web_sessions_value',
-        '_web_sessions_present',
         '_desktop_clients_value',
-        '_desktop_clients_present',
         '_mobile_clients_value',
-        '_mobile_clients_present',
     ]
 
     _has_required_fields = True
@@ -11737,14 +6759,10 @@ class MemberDevices(bb.Struct):
                  web_sessions=None,
                  desktop_clients=None,
                  mobile_clients=None):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-        self._web_sessions_value = None
-        self._web_sessions_present = False
-        self._desktop_clients_value = None
-        self._desktop_clients_present = False
-        self._mobile_clients_value = None
-        self._mobile_clients_present = False
+        self._team_member_id_value = bb.NOT_SET
+        self._web_sessions_value = bb.NOT_SET
+        self._desktop_clients_value = bb.NOT_SET
+        self._mobile_clients_value = bb.NOT_SET
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if web_sessions is not None:
@@ -11754,117 +6772,20 @@ class MemberDevices(bb.Struct):
         if mobile_clients is not None:
             self.mobile_clients = mobile_clients
 
-    @property
-    def team_member_id(self):
-        """
-        The member unique Id.
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
 
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            raise AttributeError("missing required field 'team_member_id'")
+    # Instance attribute type: list of [ActiveWebSession] (validator is set below)
+    web_sessions = bb.Attribute("web_sessions", nullable=True)
 
-    @team_member_id.setter
-    def team_member_id(self, val):
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
+    # Instance attribute type: list of [DesktopClientSession] (validator is set below)
+    desktop_clients = bb.Attribute("desktop_clients", nullable=True)
 
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-
-    @property
-    def web_sessions(self):
-        """
-        List of web sessions made by this team member.
-
-        :rtype: list of [ActiveWebSession]
-        """
-        if self._web_sessions_present:
-            return self._web_sessions_value
-        else:
-            return None
-
-    @web_sessions.setter
-    def web_sessions(self, val):
-        if val is None:
-            del self.web_sessions
-            return
-        val = self._web_sessions_validator.validate(val)
-        self._web_sessions_value = val
-        self._web_sessions_present = True
-
-    @web_sessions.deleter
-    def web_sessions(self):
-        self._web_sessions_value = None
-        self._web_sessions_present = False
-
-    @property
-    def desktop_clients(self):
-        """
-        List of desktop clients by this team member.
-
-        :rtype: list of [DesktopClientSession]
-        """
-        if self._desktop_clients_present:
-            return self._desktop_clients_value
-        else:
-            return None
-
-    @desktop_clients.setter
-    def desktop_clients(self, val):
-        if val is None:
-            del self.desktop_clients
-            return
-        val = self._desktop_clients_validator.validate(val)
-        self._desktop_clients_value = val
-        self._desktop_clients_present = True
-
-    @desktop_clients.deleter
-    def desktop_clients(self):
-        self._desktop_clients_value = None
-        self._desktop_clients_present = False
-
-    @property
-    def mobile_clients(self):
-        """
-        List of mobile clients by this team member.
-
-        :rtype: list of [MobileClientSession]
-        """
-        if self._mobile_clients_present:
-            return self._mobile_clients_value
-        else:
-            return None
-
-    @mobile_clients.setter
-    def mobile_clients(self, val):
-        if val is None:
-            del self.mobile_clients
-            return
-        val = self._mobile_clients_validator.validate(val)
-        self._mobile_clients_value = val
-        self._mobile_clients_present = True
-
-    @mobile_clients.deleter
-    def mobile_clients(self):
-        self._mobile_clients_value = None
-        self._mobile_clients_present = False
+    # Instance attribute type: list of [MobileClientSession] (validator is set below)
+    mobile_clients = bb.Attribute("mobile_clients", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberDevices, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MemberDevices(team_member_id={!r}, web_sessions={!r}, desktop_clients={!r}, mobile_clients={!r})'.format(
-            self._team_member_id_value,
-            self._web_sessions_value,
-            self._desktop_clients_value,
-            self._mobile_clients_value,
-        )
 
 MemberDevices_validator = bv.Struct(MemberDevices)
 
@@ -11879,9 +6800,7 @@ class MemberLinkedApps(bb.Struct):
 
     __slots__ = [
         '_team_member_id_value',
-        '_team_member_id_present',
         '_linked_api_apps_value',
-        '_linked_api_apps_present',
     ]
 
     _has_required_fields = True
@@ -11889,69 +6808,21 @@ class MemberLinkedApps(bb.Struct):
     def __init__(self,
                  team_member_id=None,
                  linked_api_apps=None):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-        self._linked_api_apps_value = None
-        self._linked_api_apps_present = False
+        self._team_member_id_value = bb.NOT_SET
+        self._linked_api_apps_value = bb.NOT_SET
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if linked_api_apps is not None:
             self.linked_api_apps = linked_api_apps
 
-    @property
-    def team_member_id(self):
-        """
-        The member unique Id.
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
 
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            raise AttributeError("missing required field 'team_member_id'")
-
-    @team_member_id.setter
-    def team_member_id(self, val):
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
-
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-
-    @property
-    def linked_api_apps(self):
-        """
-        List of third party applications linked by this team member.
-
-        :rtype: list of [ApiApp]
-        """
-        if self._linked_api_apps_present:
-            return self._linked_api_apps_value
-        else:
-            raise AttributeError("missing required field 'linked_api_apps'")
-
-    @linked_api_apps.setter
-    def linked_api_apps(self, val):
-        val = self._linked_api_apps_validator.validate(val)
-        self._linked_api_apps_value = val
-        self._linked_api_apps_present = True
-
-    @linked_api_apps.deleter
-    def linked_api_apps(self):
-        self._linked_api_apps_value = None
-        self._linked_api_apps_present = False
+    # Instance attribute type: list of [ApiApp] (validator is set below)
+    linked_api_apps = bb.Attribute("linked_api_apps")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberLinkedApps, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MemberLinkedApps(team_member_id={!r}, linked_api_apps={!r})'.format(
-            self._team_member_id_value,
-            self._linked_api_apps_value,
-        )
 
 MemberLinkedApps_validator = bv.Struct(MemberLinkedApps)
 
@@ -11993,35 +6864,20 @@ class MemberProfile(bb.Struct):
 
     __slots__ = [
         '_team_member_id_value',
-        '_team_member_id_present',
         '_external_id_value',
-        '_external_id_present',
         '_account_id_value',
-        '_account_id_present',
         '_email_value',
-        '_email_present',
         '_email_verified_value',
-        '_email_verified_present',
         '_secondary_emails_value',
-        '_secondary_emails_present',
         '_status_value',
-        '_status_present',
         '_name_value',
-        '_name_present',
         '_membership_type_value',
-        '_membership_type_present',
         '_invited_on_value',
-        '_invited_on_present',
         '_joined_on_value',
-        '_joined_on_present',
         '_suspended_on_value',
-        '_suspended_on_present',
         '_persistent_id_value',
-        '_persistent_id_present',
         '_is_directory_restricted_value',
-        '_is_directory_restricted_present',
         '_profile_photo_url_value',
-        '_profile_photo_url_present',
     ]
 
     _has_required_fields = True
@@ -12042,36 +6898,21 @@ class MemberProfile(bb.Struct):
                  persistent_id=None,
                  is_directory_restricted=None,
                  profile_photo_url=None):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-        self._external_id_value = None
-        self._external_id_present = False
-        self._account_id_value = None
-        self._account_id_present = False
-        self._email_value = None
-        self._email_present = False
-        self._email_verified_value = None
-        self._email_verified_present = False
-        self._secondary_emails_value = None
-        self._secondary_emails_present = False
-        self._status_value = None
-        self._status_present = False
-        self._name_value = None
-        self._name_present = False
-        self._membership_type_value = None
-        self._membership_type_present = False
-        self._invited_on_value = None
-        self._invited_on_present = False
-        self._joined_on_value = None
-        self._joined_on_present = False
-        self._suspended_on_value = None
-        self._suspended_on_present = False
-        self._persistent_id_value = None
-        self._persistent_id_present = False
-        self._is_directory_restricted_value = None
-        self._is_directory_restricted_present = False
-        self._profile_photo_url_value = None
-        self._profile_photo_url_present = False
+        self._team_member_id_value = bb.NOT_SET
+        self._external_id_value = bb.NOT_SET
+        self._account_id_value = bb.NOT_SET
+        self._email_value = bb.NOT_SET
+        self._email_verified_value = bb.NOT_SET
+        self._secondary_emails_value = bb.NOT_SET
+        self._status_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._membership_type_value = bb.NOT_SET
+        self._invited_on_value = bb.NOT_SET
+        self._joined_on_value = bb.NOT_SET
+        self._suspended_on_value = bb.NOT_SET
+        self._persistent_id_value = bb.NOT_SET
+        self._is_directory_restricted_value = bb.NOT_SET
+        self._profile_photo_url_value = bb.NOT_SET
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if external_id is not None:
@@ -12103,405 +6944,53 @@ class MemberProfile(bb.Struct):
         if profile_photo_url is not None:
             self.profile_photo_url = profile_photo_url
 
-    @property
-    def team_member_id(self):
-        """
-        ID of user as a member of a team.
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
 
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            raise AttributeError("missing required field 'team_member_id'")
+    # Instance attribute type: str (validator is set below)
+    external_id = bb.Attribute("external_id", nullable=True)
 
-    @team_member_id.setter
-    def team_member_id(self, val):
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
+    # Instance attribute type: str (validator is set below)
+    account_id = bb.Attribute("account_id", nullable=True)
 
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+    # Instance attribute type: str (validator is set below)
+    email = bb.Attribute("email")
 
-    @property
-    def external_id(self):
-        """
-        External ID that a team can attach to the user. An application using the
-        API may find it easier to use their own IDs instead of Dropbox IDs like
-        account_id or team_member_id.
+    # Instance attribute type: bool (validator is set below)
+    email_verified = bb.Attribute("email_verified")
 
-        :rtype: str
-        """
-        if self._external_id_present:
-            return self._external_id_value
-        else:
-            return None
+    # Instance attribute type: list of [secondary_emails.SecondaryEmail] (validator is set below)
+    secondary_emails = bb.Attribute("secondary_emails", nullable=True)
 
-    @external_id.setter
-    def external_id(self, val):
-        if val is None:
-            del self.external_id
-            return
-        val = self._external_id_validator.validate(val)
-        self._external_id_value = val
-        self._external_id_present = True
+    # Instance attribute type: TeamMemberStatus (validator is set below)
+    status = bb.Attribute("status", user_defined=True)
 
-    @external_id.deleter
-    def external_id(self):
-        self._external_id_value = None
-        self._external_id_present = False
+    # Instance attribute type: users.Name (validator is set below)
+    name = bb.Attribute("name", user_defined=True)
 
-    @property
-    def account_id(self):
-        """
-        A user's account identifier.
+    # Instance attribute type: TeamMembershipType (validator is set below)
+    membership_type = bb.Attribute("membership_type", user_defined=True)
 
-        :rtype: str
-        """
-        if self._account_id_present:
-            return self._account_id_value
-        else:
-            return None
+    # Instance attribute type: datetime.datetime (validator is set below)
+    invited_on = bb.Attribute("invited_on", nullable=True)
 
-    @account_id.setter
-    def account_id(self, val):
-        if val is None:
-            del self.account_id
-            return
-        val = self._account_id_validator.validate(val)
-        self._account_id_value = val
-        self._account_id_present = True
+    # Instance attribute type: datetime.datetime (validator is set below)
+    joined_on = bb.Attribute("joined_on", nullable=True)
 
-    @account_id.deleter
-    def account_id(self):
-        self._account_id_value = None
-        self._account_id_present = False
+    # Instance attribute type: datetime.datetime (validator is set below)
+    suspended_on = bb.Attribute("suspended_on", nullable=True)
 
-    @property
-    def email(self):
-        """
-        Email address of user.
+    # Instance attribute type: str (validator is set below)
+    persistent_id = bb.Attribute("persistent_id", nullable=True)
 
-        :rtype: str
-        """
-        if self._email_present:
-            return self._email_value
-        else:
-            raise AttributeError("missing required field 'email'")
+    # Instance attribute type: bool (validator is set below)
+    is_directory_restricted = bb.Attribute("is_directory_restricted", nullable=True)
 
-    @email.setter
-    def email(self, val):
-        val = self._email_validator.validate(val)
-        self._email_value = val
-        self._email_present = True
-
-    @email.deleter
-    def email(self):
-        self._email_value = None
-        self._email_present = False
-
-    @property
-    def email_verified(self):
-        """
-        Is true if the user's email is verified to be owned by the user.
-
-        :rtype: bool
-        """
-        if self._email_verified_present:
-            return self._email_verified_value
-        else:
-            raise AttributeError("missing required field 'email_verified'")
-
-    @email_verified.setter
-    def email_verified(self, val):
-        val = self._email_verified_validator.validate(val)
-        self._email_verified_value = val
-        self._email_verified_present = True
-
-    @email_verified.deleter
-    def email_verified(self):
-        self._email_verified_value = None
-        self._email_verified_present = False
-
-    @property
-    def secondary_emails(self):
-        """
-        Secondary emails of a user.
-
-        :rtype: list of [secondary_emails.SecondaryEmail]
-        """
-        if self._secondary_emails_present:
-            return self._secondary_emails_value
-        else:
-            return None
-
-    @secondary_emails.setter
-    def secondary_emails(self, val):
-        if val is None:
-            del self.secondary_emails
-            return
-        val = self._secondary_emails_validator.validate(val)
-        self._secondary_emails_value = val
-        self._secondary_emails_present = True
-
-    @secondary_emails.deleter
-    def secondary_emails(self):
-        self._secondary_emails_value = None
-        self._secondary_emails_present = False
-
-    @property
-    def status(self):
-        """
-        The user's status as a member of a specific team.
-
-        :rtype: TeamMemberStatus
-        """
-        if self._status_present:
-            return self._status_value
-        else:
-            raise AttributeError("missing required field 'status'")
-
-    @status.setter
-    def status(self, val):
-        self._status_validator.validate_type_only(val)
-        self._status_value = val
-        self._status_present = True
-
-    @status.deleter
-    def status(self):
-        self._status_value = None
-        self._status_present = False
-
-    @property
-    def name(self):
-        """
-        Representations for a person's name.
-
-        :rtype: users.Name
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        self._name_validator.validate_type_only(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def membership_type(self):
-        """
-        The user's membership type: full (normal team member) vs limited (does
-        not use a license; no access to the team's shared quota).
-
-        :rtype: TeamMembershipType
-        """
-        if self._membership_type_present:
-            return self._membership_type_value
-        else:
-            raise AttributeError("missing required field 'membership_type'")
-
-    @membership_type.setter
-    def membership_type(self, val):
-        self._membership_type_validator.validate_type_only(val)
-        self._membership_type_value = val
-        self._membership_type_present = True
-
-    @membership_type.deleter
-    def membership_type(self):
-        self._membership_type_value = None
-        self._membership_type_present = False
-
-    @property
-    def invited_on(self):
-        """
-        The date and time the user was invited to the team (contains value only
-        when the member's status matches ``TeamMemberStatus.invited``).
-
-        :rtype: datetime.datetime
-        """
-        if self._invited_on_present:
-            return self._invited_on_value
-        else:
-            return None
-
-    @invited_on.setter
-    def invited_on(self, val):
-        if val is None:
-            del self.invited_on
-            return
-        val = self._invited_on_validator.validate(val)
-        self._invited_on_value = val
-        self._invited_on_present = True
-
-    @invited_on.deleter
-    def invited_on(self):
-        self._invited_on_value = None
-        self._invited_on_present = False
-
-    @property
-    def joined_on(self):
-        """
-        The date and time the user joined as a member of a specific team.
-
-        :rtype: datetime.datetime
-        """
-        if self._joined_on_present:
-            return self._joined_on_value
-        else:
-            return None
-
-    @joined_on.setter
-    def joined_on(self, val):
-        if val is None:
-            del self.joined_on
-            return
-        val = self._joined_on_validator.validate(val)
-        self._joined_on_value = val
-        self._joined_on_present = True
-
-    @joined_on.deleter
-    def joined_on(self):
-        self._joined_on_value = None
-        self._joined_on_present = False
-
-    @property
-    def suspended_on(self):
-        """
-        The date and time the user was suspended from the team (contains value
-        only when the member's status matches ``TeamMemberStatus.suspended``).
-
-        :rtype: datetime.datetime
-        """
-        if self._suspended_on_present:
-            return self._suspended_on_value
-        else:
-            return None
-
-    @suspended_on.setter
-    def suspended_on(self, val):
-        if val is None:
-            del self.suspended_on
-            return
-        val = self._suspended_on_validator.validate(val)
-        self._suspended_on_value = val
-        self._suspended_on_present = True
-
-    @suspended_on.deleter
-    def suspended_on(self):
-        self._suspended_on_value = None
-        self._suspended_on_present = False
-
-    @property
-    def persistent_id(self):
-        """
-        Persistent ID that a team can attach to the user. The persistent ID is
-        unique ID to be used for SAML authentication.
-
-        :rtype: str
-        """
-        if self._persistent_id_present:
-            return self._persistent_id_value
-        else:
-            return None
-
-    @persistent_id.setter
-    def persistent_id(self, val):
-        if val is None:
-            del self.persistent_id
-            return
-        val = self._persistent_id_validator.validate(val)
-        self._persistent_id_value = val
-        self._persistent_id_present = True
-
-    @persistent_id.deleter
-    def persistent_id(self):
-        self._persistent_id_value = None
-        self._persistent_id_present = False
-
-    @property
-    def is_directory_restricted(self):
-        """
-        Whether the user is a directory restricted user.
-
-        :rtype: bool
-        """
-        if self._is_directory_restricted_present:
-            return self._is_directory_restricted_value
-        else:
-            return None
-
-    @is_directory_restricted.setter
-    def is_directory_restricted(self, val):
-        if val is None:
-            del self.is_directory_restricted
-            return
-        val = self._is_directory_restricted_validator.validate(val)
-        self._is_directory_restricted_value = val
-        self._is_directory_restricted_present = True
-
-    @is_directory_restricted.deleter
-    def is_directory_restricted(self):
-        self._is_directory_restricted_value = None
-        self._is_directory_restricted_present = False
-
-    @property
-    def profile_photo_url(self):
-        """
-        URL for the photo representing the user, if one is set.
-
-        :rtype: str
-        """
-        if self._profile_photo_url_present:
-            return self._profile_photo_url_value
-        else:
-            return None
-
-    @profile_photo_url.setter
-    def profile_photo_url(self, val):
-        if val is None:
-            del self.profile_photo_url
-            return
-        val = self._profile_photo_url_validator.validate(val)
-        self._profile_photo_url_value = val
-        self._profile_photo_url_present = True
-
-    @profile_photo_url.deleter
-    def profile_photo_url(self):
-        self._profile_photo_url_value = None
-        self._profile_photo_url_present = False
+    # Instance attribute type: str (validator is set below)
+    profile_photo_url = bb.Attribute("profile_photo_url", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberProfile, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, external_id={!r}, account_id={!r}, secondary_emails={!r}, invited_on={!r}, joined_on={!r}, suspended_on={!r}, persistent_id={!r}, is_directory_restricted={!r}, profile_photo_url={!r})'.format(
-            self._team_member_id_value,
-            self._email_value,
-            self._email_verified_value,
-            self._status_value,
-            self._name_value,
-            self._membership_type_value,
-            self._external_id_value,
-            self._account_id_value,
-            self._secondary_emails_value,
-            self._invited_on_value,
-            self._joined_on_value,
-            self._suspended_on_value,
-            self._persistent_id_value,
-            self._is_directory_restricted_value,
-            self._profile_photo_url_value,
-        )
 
 MemberProfile_validator = bv.Struct(MemberProfile)
 
@@ -12534,9 +7023,6 @@ class UserSelectorError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UserSelectorError(%r, %r)' % (self._tag, self._value)
-
 UserSelectorError_validator = bv.Union(UserSelectorError)
 
 class MemberSelectorError(UserSelectorError):
@@ -12563,9 +7049,6 @@ class MemberSelectorError(UserSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberSelectorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MemberSelectorError(%r, %r)' % (self._tag, self._value)
-
 MemberSelectorError_validator = bv.Union(MemberSelectorError)
 
 class MembersAddArg(bb.Struct):
@@ -12578,9 +7061,7 @@ class MembersAddArg(bb.Struct):
 
     __slots__ = [
         '_new_members_value',
-        '_new_members_present',
         '_force_async_value',
-        '_force_async_present',
     ]
 
     _has_required_fields = True
@@ -12588,69 +7069,21 @@ class MembersAddArg(bb.Struct):
     def __init__(self,
                  new_members=None,
                  force_async=None):
-        self._new_members_value = None
-        self._new_members_present = False
-        self._force_async_value = None
-        self._force_async_present = False
+        self._new_members_value = bb.NOT_SET
+        self._force_async_value = bb.NOT_SET
         if new_members is not None:
             self.new_members = new_members
         if force_async is not None:
             self.force_async = force_async
 
-    @property
-    def new_members(self):
-        """
-        Details of new members to be added to the team.
+    # Instance attribute type: list of [MemberAddArg] (validator is set below)
+    new_members = bb.Attribute("new_members")
 
-        :rtype: list of [MemberAddArg]
-        """
-        if self._new_members_present:
-            return self._new_members_value
-        else:
-            raise AttributeError("missing required field 'new_members'")
-
-    @new_members.setter
-    def new_members(self, val):
-        val = self._new_members_validator.validate(val)
-        self._new_members_value = val
-        self._new_members_present = True
-
-    @new_members.deleter
-    def new_members(self):
-        self._new_members_value = None
-        self._new_members_present = False
-
-    @property
-    def force_async(self):
-        """
-        Whether to force the add to happen asynchronously.
-
-        :rtype: bool
-        """
-        if self._force_async_present:
-            return self._force_async_value
-        else:
-            return False
-
-    @force_async.setter
-    def force_async(self, val):
-        val = self._force_async_validator.validate(val)
-        self._force_async_value = val
-        self._force_async_present = True
-
-    @force_async.deleter
-    def force_async(self):
-        self._force_async_value = None
-        self._force_async_present = False
+    # Instance attribute type: bool (validator is set below)
+    force_async = bb.Attribute("force_async")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersAddArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersAddArg(new_members={!r}, force_async={!r})'.format(
-            self._new_members_value,
-            self._force_async_value,
-        )
 
 MembersAddArg_validator = bv.Struct(MembersAddArg)
 
@@ -12710,8 +7143,8 @@ class MembersAddJobStatus(async_.PollResultBase):
         """
         The asynchronous job has finished. For each member that was specified in
         the parameter :class:`MembersAddArg` that was provided to
-        :meth:`dropbox.dropbox.Dropbox.team_members_add`, a corresponding item
-        is returned in this list.
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_add`, a corresponding
+        item is returned in this list.
 
         Only call this if :meth:`is_complete` is true.
 
@@ -12736,9 +7169,6 @@ class MembersAddJobStatus(async_.PollResultBase):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersAddJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersAddJobStatus(%r, %r)' % (self._tag, self._value)
 
 MembersAddJobStatus_validator = bv.Union(MembersAddJobStatus)
 
@@ -12781,9 +7211,6 @@ class MembersAddLaunch(async_.LaunchResultBase):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersAddLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersAddLaunch(%r, %r)' % (self._tag, self._value)
-
 MembersAddLaunch_validator = bv.Union(MembersAddLaunch)
 
 class MembersDeactivateBaseArg(bb.Struct):
@@ -12797,48 +7224,21 @@ class MembersDeactivateBaseArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  user=None):
-        self._user_value = None
-        self._user_present = False
+        self._user_value = bb.NOT_SET
         if user is not None:
             self.user = user
 
-    @property
-    def user(self):
-        """
-        Identity of user to remove/suspend/have their files moved.
-
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersDeactivateBaseArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersDeactivateBaseArg(user={!r})'.format(
-            self._user_value,
-        )
 
 MembersDeactivateBaseArg_validator = bv.Struct(MembersDeactivateBaseArg)
 
@@ -12852,9 +7252,7 @@ class MembersDataTransferArg(MembersDeactivateBaseArg):
 
     __slots__ = [
         '_transfer_dest_id_value',
-        '_transfer_dest_id_present',
         '_transfer_admin_id_value',
-        '_transfer_admin_id_present',
     ]
 
     _has_required_fields = True
@@ -12864,70 +7262,21 @@ class MembersDataTransferArg(MembersDeactivateBaseArg):
                  transfer_dest_id=None,
                  transfer_admin_id=None):
         super(MembersDataTransferArg, self).__init__(user)
-        self._transfer_dest_id_value = None
-        self._transfer_dest_id_present = False
-        self._transfer_admin_id_value = None
-        self._transfer_admin_id_present = False
+        self._transfer_dest_id_value = bb.NOT_SET
+        self._transfer_admin_id_value = bb.NOT_SET
         if transfer_dest_id is not None:
             self.transfer_dest_id = transfer_dest_id
         if transfer_admin_id is not None:
             self.transfer_admin_id = transfer_admin_id
 
-    @property
-    def transfer_dest_id(self):
-        """
-        Files from the deleted member account will be transferred to this user.
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    transfer_dest_id = bb.Attribute("transfer_dest_id", user_defined=True)
 
-        :rtype: UserSelectorArg
-        """
-        if self._transfer_dest_id_present:
-            return self._transfer_dest_id_value
-        else:
-            raise AttributeError("missing required field 'transfer_dest_id'")
-
-    @transfer_dest_id.setter
-    def transfer_dest_id(self, val):
-        self._transfer_dest_id_validator.validate_type_only(val)
-        self._transfer_dest_id_value = val
-        self._transfer_dest_id_present = True
-
-    @transfer_dest_id.deleter
-    def transfer_dest_id(self):
-        self._transfer_dest_id_value = None
-        self._transfer_dest_id_present = False
-
-    @property
-    def transfer_admin_id(self):
-        """
-        Errors during the transfer process will be sent via email to this user.
-
-        :rtype: UserSelectorArg
-        """
-        if self._transfer_admin_id_present:
-            return self._transfer_admin_id_value
-        else:
-            raise AttributeError("missing required field 'transfer_admin_id'")
-
-    @transfer_admin_id.setter
-    def transfer_admin_id(self, val):
-        self._transfer_admin_id_validator.validate_type_only(val)
-        self._transfer_admin_id_value = val
-        self._transfer_admin_id_present = True
-
-    @transfer_admin_id.deleter
-    def transfer_admin_id(self):
-        self._transfer_admin_id_value = None
-        self._transfer_admin_id_present = False
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    transfer_admin_id = bb.Attribute("transfer_admin_id", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersDataTransferArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersDataTransferArg(user={!r}, transfer_dest_id={!r}, transfer_admin_id={!r})'.format(
-            self._user_value,
-            self._transfer_dest_id_value,
-            self._transfer_admin_id_value,
-        )
 
 MembersDataTransferArg_validator = bv.Struct(MembersDataTransferArg)
 
@@ -12939,7 +7288,6 @@ class MembersDeactivateArg(MembersDeactivateBaseArg):
 
     __slots__ = [
         '_wipe_data_value',
-        '_wipe_data_present',
     ]
 
     _has_required_fields = True
@@ -12948,43 +7296,15 @@ class MembersDeactivateArg(MembersDeactivateBaseArg):
                  user=None,
                  wipe_data=None):
         super(MembersDeactivateArg, self).__init__(user)
-        self._wipe_data_value = None
-        self._wipe_data_present = False
+        self._wipe_data_value = bb.NOT_SET
         if wipe_data is not None:
             self.wipe_data = wipe_data
 
-    @property
-    def wipe_data(self):
-        """
-        If provided, controls if the user's data will be deleted on their linked
-        devices.
-
-        :rtype: bool
-        """
-        if self._wipe_data_present:
-            return self._wipe_data_value
-        else:
-            return True
-
-    @wipe_data.setter
-    def wipe_data(self, val):
-        val = self._wipe_data_validator.validate(val)
-        self._wipe_data_value = val
-        self._wipe_data_present = True
-
-    @wipe_data.deleter
-    def wipe_data(self):
-        self._wipe_data_value = None
-        self._wipe_data_present = False
+    # Instance attribute type: bool (validator is set below)
+    wipe_data = bb.Attribute("wipe_data")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersDeactivateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersDeactivateArg(user={!r}, wipe_data={!r})'.format(
-            self._user_value,
-            self._wipe_data_value,
-        )
 
 MembersDeactivateArg_validator = bv.Struct(MembersDeactivateArg)
 
@@ -13023,9 +7343,6 @@ class MembersDeactivateError(UserSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersDeactivateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersDeactivateError(%r, %r)' % (self._tag, self._value)
-
 MembersDeactivateError_validator = bv.Union(MembersDeactivateError)
 
 class MembersDeleteProfilePhotoArg(bb.Struct):
@@ -13036,48 +7353,21 @@ class MembersDeleteProfilePhotoArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  user=None):
-        self._user_value = None
-        self._user_present = False
+        self._user_value = bb.NOT_SET
         if user is not None:
             self.user = user
 
-    @property
-    def user(self):
-        """
-        Identity of the user whose profile photo will be deleted.
-
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersDeleteProfilePhotoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersDeleteProfilePhotoArg(user={!r})'.format(
-            self._user_value,
-        )
 
 MembersDeleteProfilePhotoArg_validator = bv.Struct(MembersDeleteProfilePhotoArg)
 
@@ -13116,9 +7406,6 @@ class MembersDeleteProfilePhotoError(MemberSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersDeleteProfilePhotoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersDeleteProfilePhotoError(%r, %r)' % (self._tag, self._value)
-
 MembersDeleteProfilePhotoError_validator = bv.Union(MembersDeleteProfilePhotoError)
 
 class MembersGetInfoArgs(bb.Struct):
@@ -13128,48 +7415,21 @@ class MembersGetInfoArgs(bb.Struct):
 
     __slots__ = [
         '_members_value',
-        '_members_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  members=None):
-        self._members_value = None
-        self._members_present = False
+        self._members_value = bb.NOT_SET
         if members is not None:
             self.members = members
 
-    @property
-    def members(self):
-        """
-        List of team members.
-
-        :rtype: list of [UserSelectorArg]
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            raise AttributeError("missing required field 'members'")
-
-    @members.setter
-    def members(self, val):
-        val = self._members_validator.validate(val)
-        self._members_value = val
-        self._members_present = True
-
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
+    # Instance attribute type: list of [UserSelectorArg] (validator is set below)
+    members = bb.Attribute("members")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersGetInfoArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersGetInfoArgs(members={!r})'.format(
-            self._members_value,
-        )
 
 MembersGetInfoArgs_validator = bv.Struct(MembersGetInfoArgs)
 
@@ -13195,15 +7455,12 @@ class MembersGetInfoError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersGetInfoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersGetInfoError(%r, %r)' % (self._tag, self._value)
-
 MembersGetInfoError_validator = bv.Union(MembersGetInfoError)
 
 class MembersGetInfoItem(bb.Union):
     """
     Describes a result obtained for a single user whose id was specified in the
-    parameter of :meth:`dropbox.dropbox.Dropbox.team_members_get_info`.
+    parameter of :meth:`dropbox.dropbox_client.Dropbox.team_members_get_info`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -13260,9 +7517,9 @@ class MembersGetInfoItem(bb.Union):
     def get_id_not_found(self):
         """
         An ID that was provided as a parameter to
-        :meth:`dropbox.dropbox.Dropbox.team_members_get_info`, and did not match
-        a corresponding user. This might be a team_member_id, an email, or an
-        external ID, depending on how the method was called.
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_get_info`, and did
+        not match a corresponding user. This might be a team_member_id, an
+        email, or an external ID, depending on how the method was called.
 
         Only call this if :meth:`is_id_not_found` is true.
 
@@ -13287,9 +7544,6 @@ class MembersGetInfoItem(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersGetInfoItem, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersGetInfoItem(%r, %r)' % (self._tag, self._value)
-
 MembersGetInfoItem_validator = bv.Union(MembersGetInfoItem)
 
 class MembersInfo(bb.Struct):
@@ -13302,9 +7556,7 @@ class MembersInfo(bb.Struct):
 
     __slots__ = [
         '_team_member_ids_value',
-        '_team_member_ids_present',
         '_permanently_deleted_users_value',
-        '_permanently_deleted_users_present',
     ]
 
     _has_required_fields = True
@@ -13312,69 +7564,21 @@ class MembersInfo(bb.Struct):
     def __init__(self,
                  team_member_ids=None,
                  permanently_deleted_users=None):
-        self._team_member_ids_value = None
-        self._team_member_ids_present = False
-        self._permanently_deleted_users_value = None
-        self._permanently_deleted_users_present = False
+        self._team_member_ids_value = bb.NOT_SET
+        self._permanently_deleted_users_value = bb.NOT_SET
         if team_member_ids is not None:
             self.team_member_ids = team_member_ids
         if permanently_deleted_users is not None:
             self.permanently_deleted_users = permanently_deleted_users
 
-    @property
-    def team_member_ids(self):
-        """
-        Team member IDs of the users under this hold.
+    # Instance attribute type: list of [str] (validator is set below)
+    team_member_ids = bb.Attribute("team_member_ids")
 
-        :rtype: list of [str]
-        """
-        if self._team_member_ids_present:
-            return self._team_member_ids_value
-        else:
-            raise AttributeError("missing required field 'team_member_ids'")
-
-    @team_member_ids.setter
-    def team_member_ids(self, val):
-        val = self._team_member_ids_validator.validate(val)
-        self._team_member_ids_value = val
-        self._team_member_ids_present = True
-
-    @team_member_ids.deleter
-    def team_member_ids(self):
-        self._team_member_ids_value = None
-        self._team_member_ids_present = False
-
-    @property
-    def permanently_deleted_users(self):
-        """
-        The number of permanently deleted users that were under this hold.
-
-        :rtype: int
-        """
-        if self._permanently_deleted_users_present:
-            return self._permanently_deleted_users_value
-        else:
-            raise AttributeError("missing required field 'permanently_deleted_users'")
-
-    @permanently_deleted_users.setter
-    def permanently_deleted_users(self, val):
-        val = self._permanently_deleted_users_validator.validate(val)
-        self._permanently_deleted_users_value = val
-        self._permanently_deleted_users_present = True
-
-    @permanently_deleted_users.deleter
-    def permanently_deleted_users(self):
-        self._permanently_deleted_users_value = None
-        self._permanently_deleted_users_present = False
+    # Instance attribute type: int (validator is set below)
+    permanently_deleted_users = bb.Attribute("permanently_deleted_users")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersInfo(team_member_ids={!r}, permanently_deleted_users={!r})'.format(
-            self._team_member_ids_value,
-            self._permanently_deleted_users_value,
-        )
 
 MembersInfo_validator = bv.Struct(MembersInfo)
 
@@ -13387,9 +7591,7 @@ class MembersListArg(bb.Struct):
 
     __slots__ = [
         '_limit_value',
-        '_limit_present',
         '_include_removed_value',
-        '_include_removed_present',
     ]
 
     _has_required_fields = False
@@ -13397,69 +7599,21 @@ class MembersListArg(bb.Struct):
     def __init__(self,
                  limit=None,
                  include_removed=None):
-        self._limit_value = None
-        self._limit_present = False
-        self._include_removed_value = None
-        self._include_removed_present = False
+        self._limit_value = bb.NOT_SET
+        self._include_removed_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
         if include_removed is not None:
             self.include_removed = include_removed
 
-    @property
-    def limit(self):
-        """
-        Number of results to return per call.
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
-
-    @property
-    def include_removed(self):
-        """
-        Whether to return removed members.
-
-        :rtype: bool
-        """
-        if self._include_removed_present:
-            return self._include_removed_value
-        else:
-            return False
-
-    @include_removed.setter
-    def include_removed(self, val):
-        val = self._include_removed_validator.validate(val)
-        self._include_removed_value = val
-        self._include_removed_present = True
-
-    @include_removed.deleter
-    def include_removed(self):
-        self._include_removed_value = None
-        self._include_removed_present = False
+    # Instance attribute type: bool (validator is set below)
+    include_removed = bb.Attribute("include_removed")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersListArg(limit={!r}, include_removed={!r})'.format(
-            self._limit_value,
-            self._include_removed_value,
-        )
 
 MembersListArg_validator = bv.Struct(MembersListArg)
 
@@ -13471,48 +7625,21 @@ class MembersListContinueArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        Indicates from what point to get the next set of members.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersListContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 MembersListContinueArg_validator = bv.Struct(MembersListContinueArg)
 
@@ -13550,9 +7677,6 @@ class MembersListContinueError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersListContinueError(%r, %r)' % (self._tag, self._value)
-
 MembersListContinueError_validator = bv.Union(MembersListContinueError)
 
 class MembersListError(bb.Union):
@@ -13577,30 +7701,24 @@ class MembersListError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersListError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersListError(%r, %r)' % (self._tag, self._value)
-
 MembersListError_validator = bv.Union(MembersListError)
 
 class MembersListResult(bb.Struct):
     """
     :ivar team.MembersListResult.members: List of team members.
     :ivar team.MembersListResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` to obtain the
-        additional members.
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_list_continue` to
+        obtain the additional members.
     :ivar team.MembersListResult.has_more: Is true if there are additional team
         members that have not been returned yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` can retrieve
-        them.
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_list_continue` can
+        retrieve them.
     """
 
     __slots__ = [
         '_members_value',
-        '_members_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -13609,12 +7727,9 @@ class MembersListResult(bb.Struct):
                  members=None,
                  cursor=None,
                  has_more=None):
-        self._members_value = None
-        self._members_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._members_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if members is not None:
             self.members = members
         if cursor is not None:
@@ -13622,89 +7737,17 @@ class MembersListResult(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def members(self):
-        """
-        List of team members.
+    # Instance attribute type: list of [TeamMemberInfo] (validator is set below)
+    members = bb.Attribute("members")
 
-        :rtype: list of [TeamMemberInfo]
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            raise AttributeError("missing required field 'members'")
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-    @members.setter
-    def members(self, val):
-        val = self._members_validator.validate(val)
-        self._members_value = val
-        self._members_present = True
-
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` to obtain the
-        additional members.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Is true if there are additional team members that have not been returned
-        yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_members_list_continue` can retrieve
-        them.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersListResult(members={!r}, cursor={!r}, has_more={!r})'.format(
-            self._members_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
 
 MembersListResult_validator = bv.Struct(MembersListResult)
 
@@ -13718,48 +7761,21 @@ class MembersRecoverArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  user=None):
-        self._user_value = None
-        self._user_present = False
+        self._user_value = bb.NOT_SET
         if user is not None:
             self.user = user
 
-    @property
-    def user(self):
-        """
-        Identity of user to recover.
-
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersRecoverArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersRecoverArg(user={!r})'.format(
-            self._user_value,
-        )
 
 MembersRecoverArg_validator = bv.Struct(MembersRecoverArg)
 
@@ -13822,9 +7838,6 @@ class MembersRecoverError(UserSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersRecoverError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersRecoverError(%r, %r)' % (self._tag, self._value)
-
 MembersRecoverError_validator = bv.Union(MembersRecoverError)
 
 class MembersRemoveArg(MembersDeactivateArg):
@@ -13851,13 +7864,9 @@ class MembersRemoveArg(MembersDeactivateArg):
 
     __slots__ = [
         '_transfer_dest_id_value',
-        '_transfer_dest_id_present',
         '_transfer_admin_id_value',
-        '_transfer_admin_id_present',
         '_keep_account_value',
-        '_keep_account_present',
         '_retain_team_shares_value',
-        '_retain_team_shares_present',
     ]
 
     _has_required_fields = True
@@ -13871,14 +7880,10 @@ class MembersRemoveArg(MembersDeactivateArg):
                  retain_team_shares=None):
         super(MembersRemoveArg, self).__init__(user,
                                                wipe_data)
-        self._transfer_dest_id_value = None
-        self._transfer_dest_id_present = False
-        self._transfer_admin_id_value = None
-        self._transfer_admin_id_present = False
-        self._keep_account_value = None
-        self._keep_account_present = False
-        self._retain_team_shares_value = None
-        self._retain_team_shares_present = False
+        self._transfer_dest_id_value = bb.NOT_SET
+        self._transfer_admin_id_value = bb.NOT_SET
+        self._keep_account_value = bb.NOT_SET
+        self._retain_team_shares_value = bb.NOT_SET
         if transfer_dest_id is not None:
             self.transfer_dest_id = transfer_dest_id
         if transfer_admin_id is not None:
@@ -13888,127 +7893,20 @@ class MembersRemoveArg(MembersDeactivateArg):
         if retain_team_shares is not None:
             self.retain_team_shares = retain_team_shares
 
-    @property
-    def transfer_dest_id(self):
-        """
-        If provided, files from the deleted member account will be transferred
-        to this user.
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    transfer_dest_id = bb.Attribute("transfer_dest_id", nullable=True, user_defined=True)
 
-        :rtype: UserSelectorArg
-        """
-        if self._transfer_dest_id_present:
-            return self._transfer_dest_id_value
-        else:
-            return None
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    transfer_admin_id = bb.Attribute("transfer_admin_id", nullable=True, user_defined=True)
 
-    @transfer_dest_id.setter
-    def transfer_dest_id(self, val):
-        if val is None:
-            del self.transfer_dest_id
-            return
-        self._transfer_dest_id_validator.validate_type_only(val)
-        self._transfer_dest_id_value = val
-        self._transfer_dest_id_present = True
+    # Instance attribute type: bool (validator is set below)
+    keep_account = bb.Attribute("keep_account")
 
-    @transfer_dest_id.deleter
-    def transfer_dest_id(self):
-        self._transfer_dest_id_value = None
-        self._transfer_dest_id_present = False
-
-    @property
-    def transfer_admin_id(self):
-        """
-        If provided, errors during the transfer process will be sent via email
-        to this user. If the transfer_dest_id argument was provided, then this
-        argument must be provided as well.
-
-        :rtype: UserSelectorArg
-        """
-        if self._transfer_admin_id_present:
-            return self._transfer_admin_id_value
-        else:
-            return None
-
-    @transfer_admin_id.setter
-    def transfer_admin_id(self, val):
-        if val is None:
-            del self.transfer_admin_id
-            return
-        self._transfer_admin_id_validator.validate_type_only(val)
-        self._transfer_admin_id_value = val
-        self._transfer_admin_id_present = True
-
-    @transfer_admin_id.deleter
-    def transfer_admin_id(self):
-        self._transfer_admin_id_value = None
-        self._transfer_admin_id_present = False
-
-    @property
-    def keep_account(self):
-        """
-        Downgrade the member to a Basic account. The user will retain the email
-        address associated with their Dropbox  account and data in their account
-        that is not restricted to team members. In order to keep the account the
-        argument ``wipe_data`` should be set to ``False``.
-
-        :rtype: bool
-        """
-        if self._keep_account_present:
-            return self._keep_account_value
-        else:
-            return False
-
-    @keep_account.setter
-    def keep_account(self, val):
-        val = self._keep_account_validator.validate(val)
-        self._keep_account_value = val
-        self._keep_account_present = True
-
-    @keep_account.deleter
-    def keep_account(self):
-        self._keep_account_value = None
-        self._keep_account_present = False
-
-    @property
-    def retain_team_shares(self):
-        """
-        If provided, allows removed users to keep access to Dropbox folders (not
-        Dropbox Paper folders) already explicitly shared with them (not via a
-        group) when they are downgraded to a Basic account. Users will not
-        retain access to folders that do not allow external sharing. In order to
-        keep the sharing relationships, the arguments ``wipe_data`` should be
-        set to ``False`` and ``keep_account`` should be set to ``True``.
-
-        :rtype: bool
-        """
-        if self._retain_team_shares_present:
-            return self._retain_team_shares_value
-        else:
-            return False
-
-    @retain_team_shares.setter
-    def retain_team_shares(self, val):
-        val = self._retain_team_shares_validator.validate(val)
-        self._retain_team_shares_value = val
-        self._retain_team_shares_present = True
-
-    @retain_team_shares.deleter
-    def retain_team_shares(self):
-        self._retain_team_shares_value = None
-        self._retain_team_shares_present = False
+    # Instance attribute type: bool (validator is set below)
+    retain_team_shares = bb.Attribute("retain_team_shares")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersRemoveArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersRemoveArg(user={!r}, wipe_data={!r}, transfer_dest_id={!r}, transfer_admin_id={!r}, keep_account={!r}, retain_team_shares={!r})'.format(
-            self._user_value,
-            self._wipe_data_value,
-            self._transfer_dest_id_value,
-            self._transfer_admin_id_value,
-            self._keep_account_value,
-            self._retain_team_shares_value,
-        )
 
 MembersRemoveArg_validator = bv.Struct(MembersRemoveArg)
 
@@ -14134,9 +8032,6 @@ class MembersTransferFilesError(MembersDeactivateError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersTransferFilesError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersTransferFilesError(%r, %r)' % (self._tag, self._value)
 
 MembersTransferFilesError_validator = bv.Union(MembersTransferFilesError)
 
@@ -14291,9 +8186,6 @@ class MembersRemoveError(MembersTransferFilesError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersRemoveError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersRemoveError(%r, %r)' % (self._tag, self._value)
-
 MembersRemoveError_validator = bv.Union(MembersRemoveError)
 
 class MembersSendWelcomeError(MemberSelectorError):
@@ -14318,9 +8210,6 @@ class MembersSendWelcomeError(MemberSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSendWelcomeError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersSendWelcomeError(%r, %r)' % (self._tag, self._value)
-
 MembersSendWelcomeError_validator = bv.Union(MembersSendWelcomeError)
 
 class MembersSetPermissionsArg(bb.Struct):
@@ -14335,9 +8224,7 @@ class MembersSetPermissionsArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_new_role_value',
-        '_new_role_present',
     ]
 
     _has_required_fields = True
@@ -14345,69 +8232,21 @@ class MembersSetPermissionsArg(bb.Struct):
     def __init__(self,
                  user=None,
                  new_role=None):
-        self._user_value = None
-        self._user_present = False
-        self._new_role_value = None
-        self._new_role_present = False
+        self._user_value = bb.NOT_SET
+        self._new_role_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if new_role is not None:
             self.new_role = new_role
 
-    @property
-    def user(self):
-        """
-        Identity of user whose role will be set.
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def new_role(self):
-        """
-        The new role of the member.
-
-        :rtype: AdminTier
-        """
-        if self._new_role_present:
-            return self._new_role_value
-        else:
-            raise AttributeError("missing required field 'new_role'")
-
-    @new_role.setter
-    def new_role(self, val):
-        self._new_role_validator.validate_type_only(val)
-        self._new_role_value = val
-        self._new_role_present = True
-
-    @new_role.deleter
-    def new_role(self):
-        self._new_role_value = None
-        self._new_role_present = False
+    # Instance attribute type: AdminTier (validator is set below)
+    new_role = bb.Attribute("new_role", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSetPermissionsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersSetPermissionsArg(user={!r}, new_role={!r})'.format(
-            self._user_value,
-            self._new_role_value,
-        )
 
 MembersSetPermissionsArg_validator = bv.Struct(MembersSetPermissionsArg)
 
@@ -14482,9 +8321,6 @@ class MembersSetPermissionsError(UserSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSetPermissionsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersSetPermissionsError(%r, %r)' % (self._tag, self._value)
-
 MembersSetPermissionsError_validator = bv.Union(MembersSetPermissionsError)
 
 class MembersSetPermissionsResult(bb.Struct):
@@ -14496,9 +8332,7 @@ class MembersSetPermissionsResult(bb.Struct):
 
     __slots__ = [
         '_team_member_id_value',
-        '_team_member_id_present',
         '_role_value',
-        '_role_present',
     ]
 
     _has_required_fields = True
@@ -14506,69 +8340,21 @@ class MembersSetPermissionsResult(bb.Struct):
     def __init__(self,
                  team_member_id=None,
                  role=None):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-        self._role_value = None
-        self._role_present = False
+        self._team_member_id_value = bb.NOT_SET
+        self._role_value = bb.NOT_SET
         if team_member_id is not None:
             self.team_member_id = team_member_id
         if role is not None:
             self.role = role
 
-    @property
-    def team_member_id(self):
-        """
-        The member ID of the user to which the change was applied.
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
 
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            raise AttributeError("missing required field 'team_member_id'")
-
-    @team_member_id.setter
-    def team_member_id(self, val):
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
-
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-
-    @property
-    def role(self):
-        """
-        The role after the change.
-
-        :rtype: AdminTier
-        """
-        if self._role_present:
-            return self._role_value
-        else:
-            raise AttributeError("missing required field 'role'")
-
-    @role.setter
-    def role(self, val):
-        self._role_validator.validate_type_only(val)
-        self._role_value = val
-        self._role_present = True
-
-    @role.deleter
-    def role(self):
-        self._role_value = None
-        self._role_present = False
+    # Instance attribute type: AdminTier (validator is set below)
+    role = bb.Attribute("role", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSetPermissionsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersSetPermissionsResult(team_member_id={!r}, role={!r})'.format(
-            self._team_member_id_value,
-            self._role_value,
-        )
 
 MembersSetPermissionsResult_validator = bv.Struct(MembersSetPermissionsResult)
 
@@ -14592,19 +8378,12 @@ class MembersSetProfileArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_new_email_value',
-        '_new_email_present',
         '_new_external_id_value',
-        '_new_external_id_present',
         '_new_given_name_value',
-        '_new_given_name_present',
         '_new_surname_value',
-        '_new_surname_present',
         '_new_persistent_id_value',
-        '_new_persistent_id_present',
         '_new_is_directory_restricted_value',
-        '_new_is_directory_restricted_present',
     ]
 
     _has_required_fields = True
@@ -14617,20 +8396,13 @@ class MembersSetProfileArg(bb.Struct):
                  new_surname=None,
                  new_persistent_id=None,
                  new_is_directory_restricted=None):
-        self._user_value = None
-        self._user_present = False
-        self._new_email_value = None
-        self._new_email_present = False
-        self._new_external_id_value = None
-        self._new_external_id_present = False
-        self._new_given_name_value = None
-        self._new_given_name_present = False
-        self._new_surname_value = None
-        self._new_surname_present = False
-        self._new_persistent_id_value = None
-        self._new_persistent_id_present = False
-        self._new_is_directory_restricted_value = None
-        self._new_is_directory_restricted_present = False
+        self._user_value = bb.NOT_SET
+        self._new_email_value = bb.NOT_SET
+        self._new_external_id_value = bb.NOT_SET
+        self._new_given_name_value = bb.NOT_SET
+        self._new_surname_value = bb.NOT_SET
+        self._new_persistent_id_value = bb.NOT_SET
+        self._new_is_directory_restricted_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if new_email is not None:
@@ -14646,199 +8418,29 @@ class MembersSetProfileArg(bb.Struct):
         if new_is_directory_restricted is not None:
             self.new_is_directory_restricted = new_is_directory_restricted
 
-    @property
-    def user(self):
-        """
-        Identity of user whose profile will be set.
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
+    # Instance attribute type: str (validator is set below)
+    new_email = bb.Attribute("new_email", nullable=True)
 
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
+    # Instance attribute type: str (validator is set below)
+    new_external_id = bb.Attribute("new_external_id", nullable=True)
 
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
+    # Instance attribute type: str (validator is set below)
+    new_given_name = bb.Attribute("new_given_name", nullable=True)
 
-    @property
-    def new_email(self):
-        """
-        New email for member.
+    # Instance attribute type: str (validator is set below)
+    new_surname = bb.Attribute("new_surname", nullable=True)
 
-        :rtype: str
-        """
-        if self._new_email_present:
-            return self._new_email_value
-        else:
-            return None
+    # Instance attribute type: str (validator is set below)
+    new_persistent_id = bb.Attribute("new_persistent_id", nullable=True)
 
-    @new_email.setter
-    def new_email(self, val):
-        if val is None:
-            del self.new_email
-            return
-        val = self._new_email_validator.validate(val)
-        self._new_email_value = val
-        self._new_email_present = True
-
-    @new_email.deleter
-    def new_email(self):
-        self._new_email_value = None
-        self._new_email_present = False
-
-    @property
-    def new_external_id(self):
-        """
-        New external ID for member.
-
-        :rtype: str
-        """
-        if self._new_external_id_present:
-            return self._new_external_id_value
-        else:
-            return None
-
-    @new_external_id.setter
-    def new_external_id(self, val):
-        if val is None:
-            del self.new_external_id
-            return
-        val = self._new_external_id_validator.validate(val)
-        self._new_external_id_value = val
-        self._new_external_id_present = True
-
-    @new_external_id.deleter
-    def new_external_id(self):
-        self._new_external_id_value = None
-        self._new_external_id_present = False
-
-    @property
-    def new_given_name(self):
-        """
-        New given name for member.
-
-        :rtype: str
-        """
-        if self._new_given_name_present:
-            return self._new_given_name_value
-        else:
-            return None
-
-    @new_given_name.setter
-    def new_given_name(self, val):
-        if val is None:
-            del self.new_given_name
-            return
-        val = self._new_given_name_validator.validate(val)
-        self._new_given_name_value = val
-        self._new_given_name_present = True
-
-    @new_given_name.deleter
-    def new_given_name(self):
-        self._new_given_name_value = None
-        self._new_given_name_present = False
-
-    @property
-    def new_surname(self):
-        """
-        New surname for member.
-
-        :rtype: str
-        """
-        if self._new_surname_present:
-            return self._new_surname_value
-        else:
-            return None
-
-    @new_surname.setter
-    def new_surname(self, val):
-        if val is None:
-            del self.new_surname
-            return
-        val = self._new_surname_validator.validate(val)
-        self._new_surname_value = val
-        self._new_surname_present = True
-
-    @new_surname.deleter
-    def new_surname(self):
-        self._new_surname_value = None
-        self._new_surname_present = False
-
-    @property
-    def new_persistent_id(self):
-        """
-        New persistent ID. This field only available to teams using persistent
-        ID SAML configuration.
-
-        :rtype: str
-        """
-        if self._new_persistent_id_present:
-            return self._new_persistent_id_value
-        else:
-            return None
-
-    @new_persistent_id.setter
-    def new_persistent_id(self, val):
-        if val is None:
-            del self.new_persistent_id
-            return
-        val = self._new_persistent_id_validator.validate(val)
-        self._new_persistent_id_value = val
-        self._new_persistent_id_present = True
-
-    @new_persistent_id.deleter
-    def new_persistent_id(self):
-        self._new_persistent_id_value = None
-        self._new_persistent_id_present = False
-
-    @property
-    def new_is_directory_restricted(self):
-        """
-        New value for whether the user is a directory restricted user.
-
-        :rtype: bool
-        """
-        if self._new_is_directory_restricted_present:
-            return self._new_is_directory_restricted_value
-        else:
-            return None
-
-    @new_is_directory_restricted.setter
-    def new_is_directory_restricted(self, val):
-        if val is None:
-            del self.new_is_directory_restricted
-            return
-        val = self._new_is_directory_restricted_validator.validate(val)
-        self._new_is_directory_restricted_value = val
-        self._new_is_directory_restricted_present = True
-
-    @new_is_directory_restricted.deleter
-    def new_is_directory_restricted(self):
-        self._new_is_directory_restricted_value = None
-        self._new_is_directory_restricted_present = False
+    # Instance attribute type: bool (validator is set below)
+    new_is_directory_restricted = bb.Attribute("new_is_directory_restricted", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSetProfileArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersSetProfileArg(user={!r}, new_email={!r}, new_external_id={!r}, new_given_name={!r}, new_surname={!r}, new_persistent_id={!r}, new_is_directory_restricted={!r})'.format(
-            self._user_value,
-            self._new_email_value,
-            self._new_external_id_value,
-            self._new_given_name_value,
-            self._new_surname_value,
-            self._new_persistent_id_value,
-            self._new_is_directory_restricted_value,
-        )
 
 MembersSetProfileArg_validator = bv.Struct(MembersSetProfileArg)
 
@@ -14974,9 +8576,6 @@ class MembersSetProfileError(MemberSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSetProfileError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersSetProfileError(%r, %r)' % (self._tag, self._value)
-
 MembersSetProfileError_validator = bv.Union(MembersSetProfileError)
 
 class MembersSetProfilePhotoArg(bb.Struct):
@@ -14989,9 +8588,7 @@ class MembersSetProfilePhotoArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_photo_value',
-        '_photo_present',
     ]
 
     _has_required_fields = True
@@ -14999,69 +8596,21 @@ class MembersSetProfilePhotoArg(bb.Struct):
     def __init__(self,
                  user=None,
                  photo=None):
-        self._user_value = None
-        self._user_present = False
-        self._photo_value = None
-        self._photo_present = False
+        self._user_value = bb.NOT_SET
+        self._photo_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if photo is not None:
             self.photo = photo
 
-    @property
-    def user(self):
-        """
-        Identity of the user whose profile photo will be set.
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def photo(self):
-        """
-        Image to set as the member's new profile photo.
-
-        :rtype: account.PhotoSourceArg
-        """
-        if self._photo_present:
-            return self._photo_value
-        else:
-            raise AttributeError("missing required field 'photo'")
-
-    @photo.setter
-    def photo(self, val):
-        self._photo_validator.validate_type_only(val)
-        self._photo_value = val
-        self._photo_present = True
-
-    @photo.deleter
-    def photo(self):
-        self._photo_value = None
-        self._photo_present = False
+    # Instance attribute type: account.PhotoSourceArg (validator is set below)
+    photo = bb.Attribute("photo", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSetProfilePhotoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersSetProfilePhotoArg(user={!r}, photo={!r})'.format(
-            self._user_value,
-            self._photo_value,
-        )
 
 MembersSetProfilePhotoArg_validator = bv.Struct(MembersSetProfilePhotoArg)
 
@@ -15129,9 +8678,6 @@ class MembersSetProfilePhotoError(MemberSelectorError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSetProfilePhotoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersSetProfilePhotoError(%r, %r)' % (self._tag, self._value)
-
 MembersSetProfilePhotoError_validator = bv.Union(MembersSetProfilePhotoError)
 
 class MembersSuspendError(MembersDeactivateError):
@@ -15181,9 +8727,6 @@ class MembersSuspendError(MembersDeactivateError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersSuspendError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersSuspendError(%r, %r)' % (self._tag, self._value)
 
 MembersSuspendError_validator = bv.Union(MembersSuspendError)
 
@@ -15251,9 +8794,6 @@ class MembersTransferFormerMembersFilesError(MembersTransferFilesError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersTransferFormerMembersFilesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MembersTransferFormerMembersFilesError(%r, %r)' % (self._tag, self._value)
-
 MembersTransferFormerMembersFilesError_validator = bv.Union(MembersTransferFormerMembersFilesError)
 
 class MembersUnsuspendArg(bb.Struct):
@@ -15266,48 +8806,21 @@ class MembersUnsuspendArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  user=None):
-        self._user_value = None
-        self._user_present = False
+        self._user_value = bb.NOT_SET
         if user is not None:
             self.user = user
 
-    @property
-    def user(self):
-        """
-        Identity of user to unsuspend.
-
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
-
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersUnsuspendArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersUnsuspendArg(user={!r})'.format(
-            self._user_value,
-        )
 
 MembersUnsuspendArg_validator = bv.Struct(MembersUnsuspendArg)
 
@@ -15346,9 +8859,6 @@ class MembersUnsuspendError(MembersDeactivateError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersUnsuspendError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MembersUnsuspendError(%r, %r)' % (self._tag, self._value)
 
 MembersUnsuspendError_validator = bv.Union(MembersUnsuspendError)
 
@@ -15432,9 +8942,6 @@ class MobileClientPlatform(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MobileClientPlatform, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'MobileClientPlatform(%r, %r)' % (self._tag, self._value)
-
 MobileClientPlatform_validator = bv.Union(MobileClientPlatform)
 
 class MobileClientSession(DeviceSession):
@@ -15451,15 +8958,10 @@ class MobileClientSession(DeviceSession):
 
     __slots__ = [
         '_device_name_value',
-        '_device_name_present',
         '_client_type_value',
-        '_client_type_present',
         '_client_version_value',
-        '_client_version_present',
         '_os_version_value',
-        '_os_version_present',
         '_last_carrier_value',
-        '_last_carrier_present',
     ]
 
     _has_required_fields = True
@@ -15480,16 +8982,11 @@ class MobileClientSession(DeviceSession):
                                                   country,
                                                   created,
                                                   updated)
-        self._device_name_value = None
-        self._device_name_present = False
-        self._client_type_value = None
-        self._client_type_present = False
-        self._client_version_value = None
-        self._client_version_present = False
-        self._os_version_value = None
-        self._os_version_present = False
-        self._last_carrier_value = None
-        self._last_carrier_present = False
+        self._device_name_value = bb.NOT_SET
+        self._client_type_value = bb.NOT_SET
+        self._client_version_value = bb.NOT_SET
+        self._os_version_value = bb.NOT_SET
+        self._last_carrier_value = bb.NOT_SET
         if device_name is not None:
             self.device_name = device_name
         if client_type is not None:
@@ -15501,146 +8998,23 @@ class MobileClientSession(DeviceSession):
         if last_carrier is not None:
             self.last_carrier = last_carrier
 
-    @property
-    def device_name(self):
-        """
-        The device name.
+    # Instance attribute type: str (validator is set below)
+    device_name = bb.Attribute("device_name")
 
-        :rtype: str
-        """
-        if self._device_name_present:
-            return self._device_name_value
-        else:
-            raise AttributeError("missing required field 'device_name'")
+    # Instance attribute type: MobileClientPlatform (validator is set below)
+    client_type = bb.Attribute("client_type", user_defined=True)
 
-    @device_name.setter
-    def device_name(self, val):
-        val = self._device_name_validator.validate(val)
-        self._device_name_value = val
-        self._device_name_present = True
+    # Instance attribute type: str (validator is set below)
+    client_version = bb.Attribute("client_version", nullable=True)
 
-    @device_name.deleter
-    def device_name(self):
-        self._device_name_value = None
-        self._device_name_present = False
+    # Instance attribute type: str (validator is set below)
+    os_version = bb.Attribute("os_version", nullable=True)
 
-    @property
-    def client_type(self):
-        """
-        The mobile application type.
-
-        :rtype: MobileClientPlatform
-        """
-        if self._client_type_present:
-            return self._client_type_value
-        else:
-            raise AttributeError("missing required field 'client_type'")
-
-    @client_type.setter
-    def client_type(self, val):
-        self._client_type_validator.validate_type_only(val)
-        self._client_type_value = val
-        self._client_type_present = True
-
-    @client_type.deleter
-    def client_type(self):
-        self._client_type_value = None
-        self._client_type_present = False
-
-    @property
-    def client_version(self):
-        """
-        The dropbox client version.
-
-        :rtype: str
-        """
-        if self._client_version_present:
-            return self._client_version_value
-        else:
-            return None
-
-    @client_version.setter
-    def client_version(self, val):
-        if val is None:
-            del self.client_version
-            return
-        val = self._client_version_validator.validate(val)
-        self._client_version_value = val
-        self._client_version_present = True
-
-    @client_version.deleter
-    def client_version(self):
-        self._client_version_value = None
-        self._client_version_present = False
-
-    @property
-    def os_version(self):
-        """
-        The hosting OS version.
-
-        :rtype: str
-        """
-        if self._os_version_present:
-            return self._os_version_value
-        else:
-            return None
-
-    @os_version.setter
-    def os_version(self, val):
-        if val is None:
-            del self.os_version
-            return
-        val = self._os_version_validator.validate(val)
-        self._os_version_value = val
-        self._os_version_present = True
-
-    @os_version.deleter
-    def os_version(self):
-        self._os_version_value = None
-        self._os_version_present = False
-
-    @property
-    def last_carrier(self):
-        """
-        last carrier used by the device.
-
-        :rtype: str
-        """
-        if self._last_carrier_present:
-            return self._last_carrier_value
-        else:
-            return None
-
-    @last_carrier.setter
-    def last_carrier(self, val):
-        if val is None:
-            del self.last_carrier
-            return
-        val = self._last_carrier_validator.validate(val)
-        self._last_carrier_value = val
-        self._last_carrier_present = True
-
-    @last_carrier.deleter
-    def last_carrier(self):
-        self._last_carrier_value = None
-        self._last_carrier_present = False
+    # Instance attribute type: str (validator is set below)
+    last_carrier = bb.Attribute("last_carrier", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MobileClientSession, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'MobileClientSession(session_id={!r}, device_name={!r}, client_type={!r}, ip_address={!r}, country={!r}, created={!r}, updated={!r}, client_version={!r}, os_version={!r}, last_carrier={!r})'.format(
-            self._session_id_value,
-            self._device_name_value,
-            self._client_type_value,
-            self._ip_address_value,
-            self._country_value,
-            self._created_value,
-            self._updated_value,
-            self._client_version_value,
-            self._os_version_value,
-            self._last_carrier_value,
-        )
 
 MobileClientSession_validator = bv.Struct(MobileClientSession)
 
@@ -15658,13 +9032,9 @@ class NamespaceMetadata(bb.Struct):
 
     __slots__ = [
         '_name_value',
-        '_name_present',
         '_namespace_id_value',
-        '_namespace_id_present',
         '_namespace_type_value',
-        '_namespace_type_present',
         '_team_member_id_value',
-        '_team_member_id_present',
     ]
 
     _has_required_fields = True
@@ -15674,14 +9044,10 @@ class NamespaceMetadata(bb.Struct):
                  namespace_id=None,
                  namespace_type=None,
                  team_member_id=None):
-        self._name_value = None
-        self._name_present = False
-        self._namespace_id_value = None
-        self._namespace_id_present = False
-        self._namespace_type_value = None
-        self._namespace_type_present = False
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+        self._name_value = bb.NOT_SET
+        self._namespace_id_value = bb.NOT_SET
+        self._namespace_type_value = bb.NOT_SET
+        self._team_member_id_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if namespace_id is not None:
@@ -15691,112 +9057,20 @@ class NamespaceMetadata(bb.Struct):
         if team_member_id is not None:
             self.team_member_id = team_member_id
 
-    @property
-    def name(self):
-        """
-        The name of this namespace.
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
+    # Instance attribute type: str (validator is set below)
+    namespace_id = bb.Attribute("namespace_id")
 
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
+    # Instance attribute type: NamespaceType (validator is set below)
+    namespace_type = bb.Attribute("namespace_type", user_defined=True)
 
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def namespace_id(self):
-        """
-        The ID of this namespace.
-
-        :rtype: str
-        """
-        if self._namespace_id_present:
-            return self._namespace_id_value
-        else:
-            raise AttributeError("missing required field 'namespace_id'")
-
-    @namespace_id.setter
-    def namespace_id(self, val):
-        val = self._namespace_id_validator.validate(val)
-        self._namespace_id_value = val
-        self._namespace_id_present = True
-
-    @namespace_id.deleter
-    def namespace_id(self):
-        self._namespace_id_value = None
-        self._namespace_id_present = False
-
-    @property
-    def namespace_type(self):
-        """
-        The type of this namespace.
-
-        :rtype: NamespaceType
-        """
-        if self._namespace_type_present:
-            return self._namespace_type_value
-        else:
-            raise AttributeError("missing required field 'namespace_type'")
-
-    @namespace_type.setter
-    def namespace_type(self, val):
-        self._namespace_type_validator.validate_type_only(val)
-        self._namespace_type_value = val
-        self._namespace_type_present = True
-
-    @namespace_type.deleter
-    def namespace_type(self):
-        self._namespace_type_value = None
-        self._namespace_type_present = False
-
-    @property
-    def team_member_id(self):
-        """
-        If this is a team member or app folder, the ID of the owning team
-        member. Otherwise, this field is not present.
-
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            return None
-
-    @team_member_id.setter
-    def team_member_id(self, val):
-        if val is None:
-            del self.team_member_id
-            return
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
-
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(NamespaceMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'NamespaceMetadata(name={!r}, namespace_id={!r}, namespace_type={!r}, team_member_id={!r})'.format(
-            self._name_value,
-            self._namespace_id_value,
-            self._namespace_type_value,
-            self._team_member_id_value,
-        )
 
 NamespaceMetadata_validator = bv.Struct(NamespaceMetadata)
 
@@ -15866,9 +9140,6 @@ class NamespaceType(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(NamespaceType, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'NamespaceType(%r, %r)' % (self._tag, self._value)
 
 NamespaceType_validator = bv.Union(NamespaceType)
 
@@ -15963,9 +9234,6 @@ class RemoveCustomQuotaResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RemoveCustomQuotaResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'RemoveCustomQuotaResult(%r, %r)' % (self._tag, self._value)
-
 RemoveCustomQuotaResult_validator = bv.Union(RemoveCustomQuotaResult)
 
 class RemovedStatus(bb.Struct):
@@ -15978,9 +9246,7 @@ class RemovedStatus(bb.Struct):
 
     __slots__ = [
         '_is_recoverable_value',
-        '_is_recoverable_present',
         '_is_disconnected_value',
-        '_is_disconnected_present',
     ]
 
     _has_required_fields = True
@@ -15988,69 +9254,21 @@ class RemovedStatus(bb.Struct):
     def __init__(self,
                  is_recoverable=None,
                  is_disconnected=None):
-        self._is_recoverable_value = None
-        self._is_recoverable_present = False
-        self._is_disconnected_value = None
-        self._is_disconnected_present = False
+        self._is_recoverable_value = bb.NOT_SET
+        self._is_disconnected_value = bb.NOT_SET
         if is_recoverable is not None:
             self.is_recoverable = is_recoverable
         if is_disconnected is not None:
             self.is_disconnected = is_disconnected
 
-    @property
-    def is_recoverable(self):
-        """
-        True if the removed team member is recoverable.
+    # Instance attribute type: bool (validator is set below)
+    is_recoverable = bb.Attribute("is_recoverable")
 
-        :rtype: bool
-        """
-        if self._is_recoverable_present:
-            return self._is_recoverable_value
-        else:
-            raise AttributeError("missing required field 'is_recoverable'")
-
-    @is_recoverable.setter
-    def is_recoverable(self, val):
-        val = self._is_recoverable_validator.validate(val)
-        self._is_recoverable_value = val
-        self._is_recoverable_present = True
-
-    @is_recoverable.deleter
-    def is_recoverable(self):
-        self._is_recoverable_value = None
-        self._is_recoverable_present = False
-
-    @property
-    def is_disconnected(self):
-        """
-        True if the team member's account was converted to individual account.
-
-        :rtype: bool
-        """
-        if self._is_disconnected_present:
-            return self._is_disconnected_value
-        else:
-            raise AttributeError("missing required field 'is_disconnected'")
-
-    @is_disconnected.setter
-    def is_disconnected(self, val):
-        val = self._is_disconnected_validator.validate(val)
-        self._is_disconnected_value = val
-        self._is_disconnected_present = True
-
-    @is_disconnected.deleter
-    def is_disconnected(self):
-        self._is_disconnected_value = None
-        self._is_disconnected_present = False
+    # Instance attribute type: bool (validator is set below)
+    is_disconnected = bb.Attribute("is_disconnected")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RemovedStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RemovedStatus(is_recoverable={!r}, is_disconnected={!r})'.format(
-            self._is_recoverable_value,
-            self._is_disconnected_value,
-        )
 
 RemovedStatus_validator = bv.Struct(RemovedStatus)
 
@@ -16183,9 +9401,6 @@ class ResendSecondaryEmailResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ResendSecondaryEmailResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ResendSecondaryEmailResult(%r, %r)' % (self._tag, self._value)
-
 ResendSecondaryEmailResult_validator = bv.Union(ResendSecondaryEmailResult)
 
 class ResendVerificationEmailArg(bb.Struct):
@@ -16196,48 +9411,21 @@ class ResendVerificationEmailArg(bb.Struct):
 
     __slots__ = [
         '_emails_to_resend_value',
-        '_emails_to_resend_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  emails_to_resend=None):
-        self._emails_to_resend_value = None
-        self._emails_to_resend_present = False
+        self._emails_to_resend_value = bb.NOT_SET
         if emails_to_resend is not None:
             self.emails_to_resend = emails_to_resend
 
-    @property
-    def emails_to_resend(self):
-        """
-        List of users and secondary emails to resend verification emails to.
-
-        :rtype: list of [UserSecondaryEmailsArg]
-        """
-        if self._emails_to_resend_present:
-            return self._emails_to_resend_value
-        else:
-            raise AttributeError("missing required field 'emails_to_resend'")
-
-    @emails_to_resend.setter
-    def emails_to_resend(self, val):
-        val = self._emails_to_resend_validator.validate(val)
-        self._emails_to_resend_value = val
-        self._emails_to_resend_present = True
-
-    @emails_to_resend.deleter
-    def emails_to_resend(self):
-        self._emails_to_resend_value = None
-        self._emails_to_resend_present = False
+    # Instance attribute type: list of [UserSecondaryEmailsArg] (validator is set below)
+    emails_to_resend = bb.Attribute("emails_to_resend")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ResendVerificationEmailArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ResendVerificationEmailArg(emails_to_resend={!r})'.format(
-            self._emails_to_resend_value,
-        )
 
 ResendVerificationEmailArg_validator = bv.Struct(ResendVerificationEmailArg)
 
@@ -16248,46 +9436,21 @@ class ResendVerificationEmailResult(bb.Struct):
 
     __slots__ = [
         '_results_value',
-        '_results_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  results=None):
-        self._results_value = None
-        self._results_present = False
+        self._results_value = bb.NOT_SET
         if results is not None:
             self.results = results
 
-    @property
-    def results(self):
-        """
-        :rtype: list of [UserResendResult]
-        """
-        if self._results_present:
-            return self._results_value
-        else:
-            raise AttributeError("missing required field 'results'")
-
-    @results.setter
-    def results(self, val):
-        val = self._results_validator.validate(val)
-        self._results_value = val
-        self._results_present = True
-
-    @results.deleter
-    def results(self):
-        self._results_value = None
-        self._results_present = False
+    # Instance attribute type: list of [UserResendResult] (validator is set below)
+    results = bb.Attribute("results")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ResendVerificationEmailResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ResendVerificationEmailResult(results={!r})'.format(
-            self._results_value,
-        )
 
 ResendVerificationEmailResult_validator = bv.Struct(ResendVerificationEmailResult)
 
@@ -16300,7 +9463,6 @@ class RevokeDesktopClientArg(DeviceSessionArg):
 
     __slots__ = [
         '_delete_on_unlink_value',
-        '_delete_on_unlink_present',
     ]
 
     _has_required_fields = True
@@ -16311,45 +9473,15 @@ class RevokeDesktopClientArg(DeviceSessionArg):
                  delete_on_unlink=None):
         super(RevokeDesktopClientArg, self).__init__(session_id,
                                                      team_member_id)
-        self._delete_on_unlink_value = None
-        self._delete_on_unlink_present = False
+        self._delete_on_unlink_value = bb.NOT_SET
         if delete_on_unlink is not None:
             self.delete_on_unlink = delete_on_unlink
 
-    @property
-    def delete_on_unlink(self):
-        """
-        Whether to delete all files of the account (this is possible only if
-        supported by the desktop client and  will be made the next time the
-        client access the account).
-
-        :rtype: bool
-        """
-        if self._delete_on_unlink_present:
-            return self._delete_on_unlink_value
-        else:
-            return False
-
-    @delete_on_unlink.setter
-    def delete_on_unlink(self, val):
-        val = self._delete_on_unlink_validator.validate(val)
-        self._delete_on_unlink_value = val
-        self._delete_on_unlink_present = True
-
-    @delete_on_unlink.deleter
-    def delete_on_unlink(self):
-        self._delete_on_unlink_value = None
-        self._delete_on_unlink_present = False
+    # Instance attribute type: bool (validator is set below)
+    delete_on_unlink = bb.Attribute("delete_on_unlink")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeDesktopClientArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RevokeDesktopClientArg(session_id={!r}, team_member_id={!r}, delete_on_unlink={!r})'.format(
-            self._session_id_value,
-            self._team_member_id_value,
-            self._delete_on_unlink_value,
-        )
 
 RevokeDesktopClientArg_validator = bv.Struct(RevokeDesktopClientArg)
 
@@ -16465,55 +9597,27 @@ class RevokeDeviceSessionArg(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeDeviceSessionArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'RevokeDeviceSessionArg(%r, %r)' % (self._tag, self._value)
-
 RevokeDeviceSessionArg_validator = bv.Union(RevokeDeviceSessionArg)
 
 class RevokeDeviceSessionBatchArg(bb.Struct):
 
     __slots__ = [
         '_revoke_devices_value',
-        '_revoke_devices_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  revoke_devices=None):
-        self._revoke_devices_value = None
-        self._revoke_devices_present = False
+        self._revoke_devices_value = bb.NOT_SET
         if revoke_devices is not None:
             self.revoke_devices = revoke_devices
 
-    @property
-    def revoke_devices(self):
-        """
-        :rtype: list of [RevokeDeviceSessionArg]
-        """
-        if self._revoke_devices_present:
-            return self._revoke_devices_value
-        else:
-            raise AttributeError("missing required field 'revoke_devices'")
-
-    @revoke_devices.setter
-    def revoke_devices(self, val):
-        val = self._revoke_devices_validator.validate(val)
-        self._revoke_devices_value = val
-        self._revoke_devices_present = True
-
-    @revoke_devices.deleter
-    def revoke_devices(self):
-        self._revoke_devices_value = None
-        self._revoke_devices_present = False
+    # Instance attribute type: list of [RevokeDeviceSessionArg] (validator is set below)
+    revoke_devices = bb.Attribute("revoke_devices")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeDeviceSessionBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RevokeDeviceSessionBatchArg(revoke_devices={!r})'.format(
-            self._revoke_devices_value,
-        )
 
 RevokeDeviceSessionBatchArg_validator = bv.Struct(RevokeDeviceSessionBatchArg)
 
@@ -16539,55 +9643,27 @@ class RevokeDeviceSessionBatchError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeDeviceSessionBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'RevokeDeviceSessionBatchError(%r, %r)' % (self._tag, self._value)
-
 RevokeDeviceSessionBatchError_validator = bv.Union(RevokeDeviceSessionBatchError)
 
 class RevokeDeviceSessionBatchResult(bb.Struct):
 
     __slots__ = [
         '_revoke_devices_status_value',
-        '_revoke_devices_status_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  revoke_devices_status=None):
-        self._revoke_devices_status_value = None
-        self._revoke_devices_status_present = False
+        self._revoke_devices_status_value = bb.NOT_SET
         if revoke_devices_status is not None:
             self.revoke_devices_status = revoke_devices_status
 
-    @property
-    def revoke_devices_status(self):
-        """
-        :rtype: list of [RevokeDeviceSessionStatus]
-        """
-        if self._revoke_devices_status_present:
-            return self._revoke_devices_status_value
-        else:
-            raise AttributeError("missing required field 'revoke_devices_status'")
-
-    @revoke_devices_status.setter
-    def revoke_devices_status(self, val):
-        val = self._revoke_devices_status_validator.validate(val)
-        self._revoke_devices_status_value = val
-        self._revoke_devices_status_present = True
-
-    @revoke_devices_status.deleter
-    def revoke_devices_status(self):
-        self._revoke_devices_status_value = None
-        self._revoke_devices_status_present = False
+    # Instance attribute type: list of [RevokeDeviceSessionStatus] (validator is set below)
+    revoke_devices_status = bb.Attribute("revoke_devices_status")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeDeviceSessionBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RevokeDeviceSessionBatchResult(revoke_devices_status={!r})'.format(
-            self._revoke_devices_status_value,
-        )
 
 RevokeDeviceSessionBatchResult_validator = bv.Struct(RevokeDeviceSessionBatchResult)
 
@@ -16637,9 +9713,6 @@ class RevokeDeviceSessionError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeDeviceSessionError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'RevokeDeviceSessionError(%r, %r)' % (self._tag, self._value)
-
 RevokeDeviceSessionError_validator = bv.Union(RevokeDeviceSessionError)
 
 class RevokeDeviceSessionStatus(bb.Struct):
@@ -16652,9 +9725,7 @@ class RevokeDeviceSessionStatus(bb.Struct):
 
     __slots__ = [
         '_success_value',
-        '_success_present',
         '_error_type_value',
-        '_error_type_present',
     ]
 
     _has_required_fields = True
@@ -16662,72 +9733,21 @@ class RevokeDeviceSessionStatus(bb.Struct):
     def __init__(self,
                  success=None,
                  error_type=None):
-        self._success_value = None
-        self._success_present = False
-        self._error_type_value = None
-        self._error_type_present = False
+        self._success_value = bb.NOT_SET
+        self._error_type_value = bb.NOT_SET
         if success is not None:
             self.success = success
         if error_type is not None:
             self.error_type = error_type
 
-    @property
-    def success(self):
-        """
-        Result of the revoking request.
+    # Instance attribute type: bool (validator is set below)
+    success = bb.Attribute("success")
 
-        :rtype: bool
-        """
-        if self._success_present:
-            return self._success_value
-        else:
-            raise AttributeError("missing required field 'success'")
-
-    @success.setter
-    def success(self, val):
-        val = self._success_validator.validate(val)
-        self._success_value = val
-        self._success_present = True
-
-    @success.deleter
-    def success(self):
-        self._success_value = None
-        self._success_present = False
-
-    @property
-    def error_type(self):
-        """
-        The error cause in case of a failure.
-
-        :rtype: RevokeDeviceSessionError
-        """
-        if self._error_type_present:
-            return self._error_type_value
-        else:
-            return None
-
-    @error_type.setter
-    def error_type(self, val):
-        if val is None:
-            del self.error_type
-            return
-        self._error_type_validator.validate_type_only(val)
-        self._error_type_value = val
-        self._error_type_present = True
-
-    @error_type.deleter
-    def error_type(self):
-        self._error_type_value = None
-        self._error_type_present = False
+    # Instance attribute type: RevokeDeviceSessionError (validator is set below)
+    error_type = bb.Attribute("error_type", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeDeviceSessionStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RevokeDeviceSessionStatus(success={!r}, error_type={!r})'.format(
-            self._success_value,
-            self._error_type_value,
-        )
 
 RevokeDeviceSessionStatus_validator = bv.Struct(RevokeDeviceSessionStatus)
 
@@ -16743,11 +9763,8 @@ class RevokeLinkedApiAppArg(bb.Struct):
 
     __slots__ = [
         '_app_id_value',
-        '_app_id_present',
         '_team_member_id_value',
-        '_team_member_id_present',
         '_keep_app_folder_value',
-        '_keep_app_folder_present',
     ]
 
     _has_required_fields = True
@@ -16756,12 +9773,9 @@ class RevokeLinkedApiAppArg(bb.Struct):
                  app_id=None,
                  team_member_id=None,
                  keep_app_folder=None):
-        self._app_id_value = None
-        self._app_id_present = False
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-        self._keep_app_folder_value = None
-        self._keep_app_folder_present = False
+        self._app_id_value = bb.NOT_SET
+        self._team_member_id_value = bb.NOT_SET
+        self._keep_app_folder_value = bb.NOT_SET
         if app_id is not None:
             self.app_id = app_id
         if team_member_id is not None:
@@ -16769,85 +9783,17 @@ class RevokeLinkedApiAppArg(bb.Struct):
         if keep_app_folder is not None:
             self.keep_app_folder = keep_app_folder
 
-    @property
-    def app_id(self):
-        """
-        The application's unique id.
+    # Instance attribute type: str (validator is set below)
+    app_id = bb.Attribute("app_id")
 
-        :rtype: str
-        """
-        if self._app_id_present:
-            return self._app_id_value
-        else:
-            raise AttributeError("missing required field 'app_id'")
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
 
-    @app_id.setter
-    def app_id(self, val):
-        val = self._app_id_validator.validate(val)
-        self._app_id_value = val
-        self._app_id_present = True
-
-    @app_id.deleter
-    def app_id(self):
-        self._app_id_value = None
-        self._app_id_present = False
-
-    @property
-    def team_member_id(self):
-        """
-        The unique id of the member owning the device.
-
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            raise AttributeError("missing required field 'team_member_id'")
-
-    @team_member_id.setter
-    def team_member_id(self, val):
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
-
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-
-    @property
-    def keep_app_folder(self):
-        """
-        This flag is not longer supported, the application dedicated folder (in
-        case the application uses  one) will be kept.
-
-        :rtype: bool
-        """
-        if self._keep_app_folder_present:
-            return self._keep_app_folder_value
-        else:
-            return True
-
-    @keep_app_folder.setter
-    def keep_app_folder(self, val):
-        val = self._keep_app_folder_validator.validate(val)
-        self._keep_app_folder_value = val
-        self._keep_app_folder_present = True
-
-    @keep_app_folder.deleter
-    def keep_app_folder(self):
-        self._keep_app_folder_value = None
-        self._keep_app_folder_present = False
+    # Instance attribute type: bool (validator is set below)
+    keep_app_folder = bb.Attribute("keep_app_folder")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeLinkedApiAppArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RevokeLinkedApiAppArg(app_id={!r}, team_member_id={!r}, keep_app_folder={!r})'.format(
-            self._app_id_value,
-            self._team_member_id_value,
-            self._keep_app_folder_value,
-        )
 
 RevokeLinkedApiAppArg_validator = bv.Struct(RevokeLinkedApiAppArg)
 
@@ -16855,53 +9801,28 @@ class RevokeLinkedApiAppBatchArg(bb.Struct):
 
     __slots__ = [
         '_revoke_linked_app_value',
-        '_revoke_linked_app_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  revoke_linked_app=None):
-        self._revoke_linked_app_value = None
-        self._revoke_linked_app_present = False
+        self._revoke_linked_app_value = bb.NOT_SET
         if revoke_linked_app is not None:
             self.revoke_linked_app = revoke_linked_app
 
-    @property
-    def revoke_linked_app(self):
-        """
-        :rtype: list of [RevokeLinkedApiAppArg]
-        """
-        if self._revoke_linked_app_present:
-            return self._revoke_linked_app_value
-        else:
-            raise AttributeError("missing required field 'revoke_linked_app'")
-
-    @revoke_linked_app.setter
-    def revoke_linked_app(self, val):
-        val = self._revoke_linked_app_validator.validate(val)
-        self._revoke_linked_app_value = val
-        self._revoke_linked_app_present = True
-
-    @revoke_linked_app.deleter
-    def revoke_linked_app(self):
-        self._revoke_linked_app_value = None
-        self._revoke_linked_app_present = False
+    # Instance attribute type: list of [RevokeLinkedApiAppArg] (validator is set below)
+    revoke_linked_app = bb.Attribute("revoke_linked_app")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeLinkedApiAppBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RevokeLinkedApiAppBatchArg(revoke_linked_app={!r})'.format(
-            self._revoke_linked_app_value,
-        )
 
 RevokeLinkedApiAppBatchArg_validator = bv.Struct(RevokeLinkedApiAppBatchArg)
 
 class RevokeLinkedAppBatchError(bb.Union):
     """
     Error returned by
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_revoke_linked_app_batch`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_revoke_linked_app_batch`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -16923,62 +9844,34 @@ class RevokeLinkedAppBatchError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeLinkedAppBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'RevokeLinkedAppBatchError(%r, %r)' % (self._tag, self._value)
-
 RevokeLinkedAppBatchError_validator = bv.Union(RevokeLinkedAppBatchError)
 
 class RevokeLinkedAppBatchResult(bb.Struct):
 
     __slots__ = [
         '_revoke_linked_app_status_value',
-        '_revoke_linked_app_status_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  revoke_linked_app_status=None):
-        self._revoke_linked_app_status_value = None
-        self._revoke_linked_app_status_present = False
+        self._revoke_linked_app_status_value = bb.NOT_SET
         if revoke_linked_app_status is not None:
             self.revoke_linked_app_status = revoke_linked_app_status
 
-    @property
-    def revoke_linked_app_status(self):
-        """
-        :rtype: list of [RevokeLinkedAppStatus]
-        """
-        if self._revoke_linked_app_status_present:
-            return self._revoke_linked_app_status_value
-        else:
-            raise AttributeError("missing required field 'revoke_linked_app_status'")
-
-    @revoke_linked_app_status.setter
-    def revoke_linked_app_status(self, val):
-        val = self._revoke_linked_app_status_validator.validate(val)
-        self._revoke_linked_app_status_value = val
-        self._revoke_linked_app_status_present = True
-
-    @revoke_linked_app_status.deleter
-    def revoke_linked_app_status(self):
-        self._revoke_linked_app_status_value = None
-        self._revoke_linked_app_status_present = False
+    # Instance attribute type: list of [RevokeLinkedAppStatus] (validator is set below)
+    revoke_linked_app_status = bb.Attribute("revoke_linked_app_status")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeLinkedAppBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RevokeLinkedAppBatchResult(revoke_linked_app_status={!r})'.format(
-            self._revoke_linked_app_status_value,
-        )
 
 RevokeLinkedAppBatchResult_validator = bv.Struct(RevokeLinkedAppBatchResult)
 
 class RevokeLinkedAppError(bb.Union):
     """
     Error returned by
-    :meth:`dropbox.dropbox.Dropbox.team_linked_apps_revoke_linked_app`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_linked_apps_revoke_linked_app`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -17035,9 +9928,6 @@ class RevokeLinkedAppError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeLinkedAppError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'RevokeLinkedAppError(%r, %r)' % (self._tag, self._value)
-
 RevokeLinkedAppError_validator = bv.Union(RevokeLinkedAppError)
 
 class RevokeLinkedAppStatus(bb.Struct):
@@ -17049,9 +9939,7 @@ class RevokeLinkedAppStatus(bb.Struct):
 
     __slots__ = [
         '_success_value',
-        '_success_present',
         '_error_type_value',
-        '_error_type_present',
     ]
 
     _has_required_fields = True
@@ -17059,72 +9947,21 @@ class RevokeLinkedAppStatus(bb.Struct):
     def __init__(self,
                  success=None,
                  error_type=None):
-        self._success_value = None
-        self._success_present = False
-        self._error_type_value = None
-        self._error_type_present = False
+        self._success_value = bb.NOT_SET
+        self._error_type_value = bb.NOT_SET
         if success is not None:
             self.success = success
         if error_type is not None:
             self.error_type = error_type
 
-    @property
-    def success(self):
-        """
-        Result of the revoking request.
+    # Instance attribute type: bool (validator is set below)
+    success = bb.Attribute("success")
 
-        :rtype: bool
-        """
-        if self._success_present:
-            return self._success_value
-        else:
-            raise AttributeError("missing required field 'success'")
-
-    @success.setter
-    def success(self, val):
-        val = self._success_validator.validate(val)
-        self._success_value = val
-        self._success_present = True
-
-    @success.deleter
-    def success(self):
-        self._success_value = None
-        self._success_present = False
-
-    @property
-    def error_type(self):
-        """
-        The error cause in case of a failure.
-
-        :rtype: RevokeLinkedAppError
-        """
-        if self._error_type_present:
-            return self._error_type_value
-        else:
-            return None
-
-    @error_type.setter
-    def error_type(self, val):
-        if val is None:
-            del self.error_type
-            return
-        self._error_type_validator.validate_type_only(val)
-        self._error_type_value = val
-        self._error_type_present = True
-
-    @error_type.deleter
-    def error_type(self):
-        self._error_type_value = None
-        self._error_type_present = False
+    # Instance attribute type: RevokeLinkedAppError (validator is set below)
+    error_type = bb.Attribute("error_type", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RevokeLinkedAppStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RevokeLinkedAppStatus(success={!r}, error_type={!r})'.format(
-            self._success_value,
-            self._error_type_value,
-        )
 
 RevokeLinkedAppStatus_validator = bv.Struct(RevokeLinkedAppStatus)
 
@@ -17136,48 +9973,21 @@ class SetCustomQuotaArg(bb.Struct):
 
     __slots__ = [
         '_users_and_quotas_value',
-        '_users_and_quotas_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  users_and_quotas=None):
-        self._users_and_quotas_value = None
-        self._users_and_quotas_present = False
+        self._users_and_quotas_value = bb.NOT_SET
         if users_and_quotas is not None:
             self.users_and_quotas = users_and_quotas
 
-    @property
-    def users_and_quotas(self):
-        """
-        List of users and their custom quotas.
-
-        :rtype: list of [UserCustomQuotaArg]
-        """
-        if self._users_and_quotas_present:
-            return self._users_and_quotas_value
-        else:
-            raise AttributeError("missing required field 'users_and_quotas'")
-
-    @users_and_quotas.setter
-    def users_and_quotas(self, val):
-        val = self._users_and_quotas_validator.validate(val)
-        self._users_and_quotas_value = val
-        self._users_and_quotas_present = True
-
-    @users_and_quotas.deleter
-    def users_and_quotas(self):
-        self._users_and_quotas_value = None
-        self._users_and_quotas_present = False
+    # Instance attribute type: list of [UserCustomQuotaArg] (validator is set below)
+    users_and_quotas = bb.Attribute("users_and_quotas")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SetCustomQuotaArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'SetCustomQuotaArg(users_and_quotas={!r})'.format(
-            self._users_and_quotas_value,
-        )
 
 SetCustomQuotaArg_validator = bv.Struct(SetCustomQuotaArg)
 
@@ -17207,9 +10017,6 @@ class SetCustomQuotaError(CustomQuotaError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SetCustomQuotaError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SetCustomQuotaError(%r, %r)' % (self._tag, self._value)
-
 SetCustomQuotaError_validator = bv.Union(SetCustomQuotaError)
 
 class StorageBucket(bb.Struct):
@@ -17224,9 +10031,7 @@ class StorageBucket(bb.Struct):
 
     __slots__ = [
         '_bucket_value',
-        '_bucket_present',
         '_users_value',
-        '_users_present',
     ]
 
     _has_required_fields = True
@@ -17234,71 +10039,21 @@ class StorageBucket(bb.Struct):
     def __init__(self,
                  bucket=None,
                  users=None):
-        self._bucket_value = None
-        self._bucket_present = False
-        self._users_value = None
-        self._users_present = False
+        self._bucket_value = bb.NOT_SET
+        self._users_value = bb.NOT_SET
         if bucket is not None:
             self.bucket = bucket
         if users is not None:
             self.users = users
 
-    @property
-    def bucket(self):
-        """
-        The name of the storage bucket. For example, '1G' is a bucket of users
-        with storage size up to 1 Giga.
+    # Instance attribute type: str (validator is set below)
+    bucket = bb.Attribute("bucket")
 
-        :rtype: str
-        """
-        if self._bucket_present:
-            return self._bucket_value
-        else:
-            raise AttributeError("missing required field 'bucket'")
-
-    @bucket.setter
-    def bucket(self, val):
-        val = self._bucket_validator.validate(val)
-        self._bucket_value = val
-        self._bucket_present = True
-
-    @bucket.deleter
-    def bucket(self):
-        self._bucket_value = None
-        self._bucket_present = False
-
-    @property
-    def users(self):
-        """
-        The number of people whose storage is in the range of this storage
-        bucket.
-
-        :rtype: int
-        """
-        if self._users_present:
-            return self._users_value
-        else:
-            raise AttributeError("missing required field 'users'")
-
-    @users.setter
-    def users(self, val):
-        val = self._users_validator.validate(val)
-        self._users_value = val
-        self._users_present = True
-
-    @users.deleter
-    def users(self):
-        self._users_value = None
-        self._users_present = False
+    # Instance attribute type: int (validator is set below)
+    users = bb.Attribute("users")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(StorageBucket, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'StorageBucket(bucket={!r}, users={!r})'.format(
-            self._bucket_value,
-            self._users_value,
-        )
 
 StorageBucket_validator = bv.Struct(StorageBucket)
 
@@ -17349,9 +10104,6 @@ class TeamFolderAccessError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderAccessError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderAccessError(%r, %r)' % (self._tag, self._value)
-
 TeamFolderAccessError_validator = bv.Union(TeamFolderAccessError)
 
 class TeamFolderActivateError(BaseTeamFolderError):
@@ -17364,9 +10116,6 @@ class TeamFolderActivateError(BaseTeamFolderError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderActivateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderActivateError(%r, %r)' % (self._tag, self._value)
-
 TeamFolderActivateError_validator = bv.Union(TeamFolderActivateError)
 
 class TeamFolderIdArg(bb.Struct):
@@ -17376,48 +10125,21 @@ class TeamFolderIdArg(bb.Struct):
 
     __slots__ = [
         '_team_folder_id_value',
-        '_team_folder_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  team_folder_id=None):
-        self._team_folder_id_value = None
-        self._team_folder_id_present = False
+        self._team_folder_id_value = bb.NOT_SET
         if team_folder_id is not None:
             self.team_folder_id = team_folder_id
 
-    @property
-    def team_folder_id(self):
-        """
-        The ID of the team folder.
-
-        :rtype: str
-        """
-        if self._team_folder_id_present:
-            return self._team_folder_id_value
-        else:
-            raise AttributeError("missing required field 'team_folder_id'")
-
-    @team_folder_id.setter
-    def team_folder_id(self, val):
-        val = self._team_folder_id_validator.validate(val)
-        self._team_folder_id_value = val
-        self._team_folder_id_present = True
-
-    @team_folder_id.deleter
-    def team_folder_id(self):
-        self._team_folder_id_value = None
-        self._team_folder_id_present = False
+    # Instance attribute type: str (validator is set below)
+    team_folder_id = bb.Attribute("team_folder_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderIdArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderIdArg(team_folder_id={!r})'.format(
-            self._team_folder_id_value,
-        )
 
 TeamFolderIdArg_validator = bv.Struct(TeamFolderIdArg)
 
@@ -17429,7 +10151,6 @@ class TeamFolderArchiveArg(TeamFolderIdArg):
 
     __slots__ = [
         '_force_async_off_value',
-        '_force_async_off_present',
     ]
 
     _has_required_fields = True
@@ -17438,42 +10159,15 @@ class TeamFolderArchiveArg(TeamFolderIdArg):
                  team_folder_id=None,
                  force_async_off=None):
         super(TeamFolderArchiveArg, self).__init__(team_folder_id)
-        self._force_async_off_value = None
-        self._force_async_off_present = False
+        self._force_async_off_value = bb.NOT_SET
         if force_async_off is not None:
             self.force_async_off = force_async_off
 
-    @property
-    def force_async_off(self):
-        """
-        Whether to force the archive to happen synchronously.
-
-        :rtype: bool
-        """
-        if self._force_async_off_present:
-            return self._force_async_off_value
-        else:
-            return False
-
-    @force_async_off.setter
-    def force_async_off(self, val):
-        val = self._force_async_off_validator.validate(val)
-        self._force_async_off_value = val
-        self._force_async_off_present = True
-
-    @force_async_off.deleter
-    def force_async_off(self):
-        self._force_async_off_value = None
-        self._force_async_off_present = False
+    # Instance attribute type: bool (validator is set below)
+    force_async_off = bb.Attribute("force_async_off")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderArchiveArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderArchiveArg(team_folder_id={!r}, force_async_off={!r})'.format(
-            self._team_folder_id_value,
-            self._force_async_off_value,
-        )
 
 TeamFolderArchiveArg_validator = bv.Struct(TeamFolderArchiveArg)
 
@@ -17486,9 +10180,6 @@ class TeamFolderArchiveError(BaseTeamFolderError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderArchiveError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderArchiveError(%r, %r)' % (self._tag, self._value)
 
 TeamFolderArchiveError_validator = bv.Union(TeamFolderArchiveError)
 
@@ -17503,7 +10194,7 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
         folder.
     :ivar TeamFolderArchiveError TeamFolderArchiveJobStatus.failed: Error
         occurred while performing an asynchronous job from
-        :meth:`dropbox.dropbox.Dropbox.team_team_folder_archive`.
+        :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_archive`.
     """
 
     @classmethod
@@ -17560,7 +10251,7 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
     def get_failed(self):
         """
         Error occurred while performing an asynchronous job from
-        :meth:`dropbox.dropbox.Dropbox.team_team_folder_archive`.
+        :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_archive`.
 
         Only call this if :meth:`is_failed` is true.
 
@@ -17572,9 +10263,6 @@ class TeamFolderArchiveJobStatus(async_.PollResultBase):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderArchiveJobStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderArchiveJobStatus(%r, %r)' % (self._tag, self._value)
 
 TeamFolderArchiveJobStatus_validator = bv.Union(TeamFolderArchiveJobStatus)
 
@@ -17617,9 +10305,6 @@ class TeamFolderArchiveLaunch(async_.LaunchResultBase):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderArchiveLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderArchiveLaunch(%r, %r)' % (self._tag, self._value)
-
 TeamFolderArchiveLaunch_validator = bv.Union(TeamFolderArchiveLaunch)
 
 class TeamFolderCreateArg(bb.Struct):
@@ -17632,9 +10317,7 @@ class TeamFolderCreateArg(bb.Struct):
 
     __slots__ = [
         '_name_value',
-        '_name_present',
         '_sync_setting_value',
-        '_sync_setting_present',
     ]
 
     _has_required_fields = True
@@ -17642,73 +10325,21 @@ class TeamFolderCreateArg(bb.Struct):
     def __init__(self,
                  name=None,
                  sync_setting=None):
-        self._name_value = None
-        self._name_present = False
-        self._sync_setting_value = None
-        self._sync_setting_present = False
+        self._name_value = bb.NOT_SET
+        self._sync_setting_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if sync_setting is not None:
             self.sync_setting = sync_setting
 
-    @property
-    def name(self):
-        """
-        Name for the new team folder.
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def sync_setting(self):
-        """
-        The sync setting to apply to this team folder. Only permitted if the
-        team has team selective sync enabled.
-
-        :rtype: files.SyncSettingArg
-        """
-        if self._sync_setting_present:
-            return self._sync_setting_value
-        else:
-            return None
-
-    @sync_setting.setter
-    def sync_setting(self, val):
-        if val is None:
-            del self.sync_setting
-            return
-        self._sync_setting_validator.validate_type_only(val)
-        self._sync_setting_value = val
-        self._sync_setting_present = True
-
-    @sync_setting.deleter
-    def sync_setting(self):
-        self._sync_setting_value = None
-        self._sync_setting_present = False
+    # Instance attribute type: files.SyncSettingArg (validator is set below)
+    sync_setting = bb.Attribute("sync_setting", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderCreateArg(name={!r}, sync_setting={!r})'.format(
-            self._name_value,
-            self._sync_setting_value,
-        )
 
 TeamFolderCreateArg_validator = bv.Struct(TeamFolderCreateArg)
 
@@ -17804,9 +10435,6 @@ class TeamFolderCreateError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderCreateError(%r, %r)' % (self._tag, self._value)
-
 TeamFolderCreateError_validator = bv.Union(TeamFolderCreateError)
 
 class TeamFolderGetInfoItem(bb.Union):
@@ -17865,8 +10493,8 @@ class TeamFolderGetInfoItem(bb.Union):
     def get_id_not_found(self):
         """
         An ID that was provided as a parameter to
-        :meth:`dropbox.dropbox.Dropbox.team_team_folder_get_info` did not match
-        any of the team's team folders.
+        :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_get_info` did not
+        match any of the team's team folders.
 
         Only call this if :meth:`is_id_not_found` is true.
 
@@ -17891,9 +10519,6 @@ class TeamFolderGetInfoItem(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderGetInfoItem, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderGetInfoItem(%r, %r)' % (self._tag, self._value)
-
 TeamFolderGetInfoItem_validator = bv.Union(TeamFolderGetInfoItem)
 
 class TeamFolderIdListArg(bb.Struct):
@@ -17903,48 +10528,21 @@ class TeamFolderIdListArg(bb.Struct):
 
     __slots__ = [
         '_team_folder_ids_value',
-        '_team_folder_ids_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  team_folder_ids=None):
-        self._team_folder_ids_value = None
-        self._team_folder_ids_present = False
+        self._team_folder_ids_value = bb.NOT_SET
         if team_folder_ids is not None:
             self.team_folder_ids = team_folder_ids
 
-    @property
-    def team_folder_ids(self):
-        """
-        The list of team folder IDs.
-
-        :rtype: list of [str]
-        """
-        if self._team_folder_ids_present:
-            return self._team_folder_ids_value
-        else:
-            raise AttributeError("missing required field 'team_folder_ids'")
-
-    @team_folder_ids.setter
-    def team_folder_ids(self, val):
-        val = self._team_folder_ids_validator.validate(val)
-        self._team_folder_ids_value = val
-        self._team_folder_ids_present = True
-
-    @team_folder_ids.deleter
-    def team_folder_ids(self):
-        self._team_folder_ids_value = None
-        self._team_folder_ids_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    team_folder_ids = bb.Attribute("team_folder_ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderIdListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderIdListArg(team_folder_ids={!r})'.format(
-            self._team_folder_ids_value,
-        )
 
 TeamFolderIdListArg_validator = bv.Struct(TeamFolderIdListArg)
 
@@ -18007,9 +10605,6 @@ class TeamFolderInvalidStatusError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderInvalidStatusError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderInvalidStatusError(%r, %r)' % (self._tag, self._value)
-
 TeamFolderInvalidStatusError_validator = bv.Union(TeamFolderInvalidStatusError)
 
 class TeamFolderListArg(bb.Struct):
@@ -18020,48 +10615,21 @@ class TeamFolderListArg(bb.Struct):
 
     __slots__ = [
         '_limit_value',
-        '_limit_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  limit=None):
-        self._limit_value = None
-        self._limit_present = False
+        self._limit_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
 
-    @property
-    def limit(self):
-        """
-        The maximum number of results to return per request.
-
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderListArg(limit={!r})'.format(
-            self._limit_value,
-        )
 
 TeamFolderListArg_validator = bv.Struct(TeamFolderListArg)
 
@@ -18073,48 +10641,21 @@ class TeamFolderListContinueArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        Indicates from what point to get the next set of team folders.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderListContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 TeamFolderListContinueArg_validator = bv.Struct(TeamFolderListContinueArg)
 
@@ -18153,81 +10694,50 @@ class TeamFolderListContinueError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderListContinueError(%r, %r)' % (self._tag, self._value)
-
 TeamFolderListContinueError_validator = bv.Union(TeamFolderListContinueError)
 
 class TeamFolderListError(bb.Struct):
 
     __slots__ = [
         '_access_error_value',
-        '_access_error_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  access_error=None):
-        self._access_error_value = None
-        self._access_error_present = False
+        self._access_error_value = bb.NOT_SET
         if access_error is not None:
             self.access_error = access_error
 
-    @property
-    def access_error(self):
-        """
-        :rtype: TeamFolderAccessError
-        """
-        if self._access_error_present:
-            return self._access_error_value
-        else:
-            raise AttributeError("missing required field 'access_error'")
-
-    @access_error.setter
-    def access_error(self, val):
-        self._access_error_validator.validate_type_only(val)
-        self._access_error_value = val
-        self._access_error_present = True
-
-    @access_error.deleter
-    def access_error(self):
-        self._access_error_value = None
-        self._access_error_present = False
+    # Instance attribute type: TeamFolderAccessError (validator is set below)
+    access_error = bb.Attribute("access_error", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderListError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderListError(access_error={!r})'.format(
-            self._access_error_value,
-        )
 
 TeamFolderListError_validator = bv.Struct(TeamFolderListError)
 
 class TeamFolderListResult(bb.Struct):
     """
-    Result for :meth:`dropbox.dropbox.Dropbox.team_team_folder_list` and
-    :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue`.
+    Result for :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_list` and
+    :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_list_continue`.
 
     :ivar team.TeamFolderListResult.team_folders: List of all team folders in
         the authenticated team.
     :ivar team.TeamFolderListResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` to obtain
-        additional team folders.
+        :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_list_continue` to
+        obtain additional team folders.
     :ivar team.TeamFolderListResult.has_more: Is true if there are additional
         team folders that have not been returned yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` can
-        retrieve them.
+        :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_list_continue`
+        can retrieve them.
     """
 
     __slots__ = [
         '_team_folders_value',
-        '_team_folders_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -18236,12 +10746,9 @@ class TeamFolderListResult(bb.Struct):
                  team_folders=None,
                  cursor=None,
                  has_more=None):
-        self._team_folders_value = None
-        self._team_folders_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._team_folders_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if team_folders is not None:
             self.team_folders = team_folders
         if cursor is not None:
@@ -18249,89 +10756,17 @@ class TeamFolderListResult(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def team_folders(self):
-        """
-        List of all team folders in the authenticated team.
+    # Instance attribute type: list of [TeamFolderMetadata] (validator is set below)
+    team_folders = bb.Attribute("team_folders")
 
-        :rtype: list of [TeamFolderMetadata]
-        """
-        if self._team_folders_present:
-            return self._team_folders_value
-        else:
-            raise AttributeError("missing required field 'team_folders'")
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-    @team_folders.setter
-    def team_folders(self, val):
-        val = self._team_folders_validator.validate(val)
-        self._team_folders_value = val
-        self._team_folders_present = True
-
-    @team_folders.deleter
-    def team_folders(self):
-        self._team_folders_value = None
-        self._team_folders_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` to obtain
-        additional team folders.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Is true if there are additional team folders that have not been returned
-        yet. An additional call to
-        :meth:`dropbox.dropbox.Dropbox.team_team_folder_list_continue` can
-        retrieve them.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderListResult(team_folders={!r}, cursor={!r}, has_more={!r})'.format(
-            self._team_folders_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
 
 TeamFolderListResult_validator = bv.Struct(TeamFolderListResult)
 
@@ -18352,17 +10787,11 @@ class TeamFolderMetadata(bb.Struct):
 
     __slots__ = [
         '_team_folder_id_value',
-        '_team_folder_id_present',
         '_name_value',
-        '_name_present',
         '_status_value',
-        '_status_present',
         '_is_team_shared_dropbox_value',
-        '_is_team_shared_dropbox_present',
         '_sync_setting_value',
-        '_sync_setting_present',
         '_content_sync_settings_value',
-        '_content_sync_settings_present',
     ]
 
     _has_required_fields = True
@@ -18374,18 +10803,12 @@ class TeamFolderMetadata(bb.Struct):
                  is_team_shared_dropbox=None,
                  sync_setting=None,
                  content_sync_settings=None):
-        self._team_folder_id_value = None
-        self._team_folder_id_present = False
-        self._name_value = None
-        self._name_present = False
-        self._status_value = None
-        self._status_present = False
-        self._is_team_shared_dropbox_value = None
-        self._is_team_shared_dropbox_present = False
-        self._sync_setting_value = None
-        self._sync_setting_present = False
-        self._content_sync_settings_value = None
-        self._content_sync_settings_present = False
+        self._team_folder_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._status_value = bb.NOT_SET
+        self._is_team_shared_dropbox_value = bb.NOT_SET
+        self._sync_setting_value = bb.NOT_SET
+        self._content_sync_settings_value = bb.NOT_SET
         if team_folder_id is not None:
             self.team_folder_id = team_folder_id
         if name is not None:
@@ -18399,156 +10822,26 @@ class TeamFolderMetadata(bb.Struct):
         if content_sync_settings is not None:
             self.content_sync_settings = content_sync_settings
 
-    @property
-    def team_folder_id(self):
-        """
-        The ID of the team folder.
+    # Instance attribute type: str (validator is set below)
+    team_folder_id = bb.Attribute("team_folder_id")
 
-        :rtype: str
-        """
-        if self._team_folder_id_present:
-            return self._team_folder_id_value
-        else:
-            raise AttributeError("missing required field 'team_folder_id'")
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-    @team_folder_id.setter
-    def team_folder_id(self, val):
-        val = self._team_folder_id_validator.validate(val)
-        self._team_folder_id_value = val
-        self._team_folder_id_present = True
+    # Instance attribute type: TeamFolderStatus (validator is set below)
+    status = bb.Attribute("status", user_defined=True)
 
-    @team_folder_id.deleter
-    def team_folder_id(self):
-        self._team_folder_id_value = None
-        self._team_folder_id_present = False
+    # Instance attribute type: bool (validator is set below)
+    is_team_shared_dropbox = bb.Attribute("is_team_shared_dropbox")
 
-    @property
-    def name(self):
-        """
-        The name of the team folder.
+    # Instance attribute type: files.SyncSetting (validator is set below)
+    sync_setting = bb.Attribute("sync_setting", user_defined=True)
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def status(self):
-        """
-        The status of the team folder.
-
-        :rtype: TeamFolderStatus
-        """
-        if self._status_present:
-            return self._status_value
-        else:
-            raise AttributeError("missing required field 'status'")
-
-    @status.setter
-    def status(self, val):
-        self._status_validator.validate_type_only(val)
-        self._status_value = val
-        self._status_present = True
-
-    @status.deleter
-    def status(self):
-        self._status_value = None
-        self._status_present = False
-
-    @property
-    def is_team_shared_dropbox(self):
-        """
-        True if this team folder is a shared team root.
-
-        :rtype: bool
-        """
-        if self._is_team_shared_dropbox_present:
-            return self._is_team_shared_dropbox_value
-        else:
-            raise AttributeError("missing required field 'is_team_shared_dropbox'")
-
-    @is_team_shared_dropbox.setter
-    def is_team_shared_dropbox(self, val):
-        val = self._is_team_shared_dropbox_validator.validate(val)
-        self._is_team_shared_dropbox_value = val
-        self._is_team_shared_dropbox_present = True
-
-    @is_team_shared_dropbox.deleter
-    def is_team_shared_dropbox(self):
-        self._is_team_shared_dropbox_value = None
-        self._is_team_shared_dropbox_present = False
-
-    @property
-    def sync_setting(self):
-        """
-        The sync setting applied to this team folder.
-
-        :rtype: files.SyncSetting
-        """
-        if self._sync_setting_present:
-            return self._sync_setting_value
-        else:
-            raise AttributeError("missing required field 'sync_setting'")
-
-    @sync_setting.setter
-    def sync_setting(self, val):
-        self._sync_setting_validator.validate_type_only(val)
-        self._sync_setting_value = val
-        self._sync_setting_present = True
-
-    @sync_setting.deleter
-    def sync_setting(self):
-        self._sync_setting_value = None
-        self._sync_setting_present = False
-
-    @property
-    def content_sync_settings(self):
-        """
-        Sync settings applied to contents of this team folder.
-
-        :rtype: list of [files.ContentSyncSetting]
-        """
-        if self._content_sync_settings_present:
-            return self._content_sync_settings_value
-        else:
-            raise AttributeError("missing required field 'content_sync_settings'")
-
-    @content_sync_settings.setter
-    def content_sync_settings(self, val):
-        val = self._content_sync_settings_validator.validate(val)
-        self._content_sync_settings_value = val
-        self._content_sync_settings_present = True
-
-    @content_sync_settings.deleter
-    def content_sync_settings(self):
-        self._content_sync_settings_value = None
-        self._content_sync_settings_present = False
+    # Instance attribute type: list of [files.ContentSyncSetting] (validator is set below)
+    content_sync_settings = bb.Attribute("content_sync_settings")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderMetadata(team_folder_id={!r}, name={!r}, status={!r}, is_team_shared_dropbox={!r}, sync_setting={!r}, content_sync_settings={!r})'.format(
-            self._team_folder_id_value,
-            self._name_value,
-            self._status_value,
-            self._is_team_shared_dropbox_value,
-            self._sync_setting_value,
-            self._content_sync_settings_value,
-        )
 
 TeamFolderMetadata_validator = bv.Struct(TeamFolderMetadata)
 
@@ -18562,9 +10855,6 @@ class TeamFolderPermanentlyDeleteError(BaseTeamFolderError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderPermanentlyDeleteError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderPermanentlyDeleteError(%r, %r)' % (self._tag, self._value)
-
 TeamFolderPermanentlyDeleteError_validator = bv.Union(TeamFolderPermanentlyDeleteError)
 
 class TeamFolderRenameArg(TeamFolderIdArg):
@@ -18574,7 +10864,6 @@ class TeamFolderRenameArg(TeamFolderIdArg):
 
     __slots__ = [
         '_name_value',
-        '_name_present',
     ]
 
     _has_required_fields = True
@@ -18583,42 +10872,15 @@ class TeamFolderRenameArg(TeamFolderIdArg):
                  team_folder_id=None,
                  name=None):
         super(TeamFolderRenameArg, self).__init__(team_folder_id)
-        self._name_value = None
-        self._name_present = False
+        self._name_value = bb.NOT_SET
         if name is not None:
             self.name = name
 
-    @property
-    def name(self):
-        """
-        New team folder name.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderRenameArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderRenameArg(team_folder_id={!r}, name={!r})'.format(
-            self._team_folder_id_value,
-            self._name_value,
-        )
 
 TeamFolderRenameArg_validator = bv.Struct(TeamFolderRenameArg)
 
@@ -18669,9 +10931,6 @@ class TeamFolderRenameError(BaseTeamFolderError):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderRenameError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderRenameError(%r, %r)' % (self._tag, self._value)
 
 TeamFolderRenameError_validator = bv.Union(TeamFolderRenameError)
 
@@ -18734,9 +10993,6 @@ class TeamFolderStatus(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderStatus(%r, %r)' % (self._tag, self._value)
-
 TeamFolderStatus_validator = bv.Union(TeamFolderStatus)
 
 class TeamFolderTeamSharedDropboxError(bb.Union):
@@ -18774,9 +11030,6 @@ class TeamFolderTeamSharedDropboxError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderTeamSharedDropboxError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderTeamSharedDropboxError(%r, %r)' % (self._tag, self._value)
-
 TeamFolderTeamSharedDropboxError_validator = bv.Union(TeamFolderTeamSharedDropboxError)
 
 class TeamFolderUpdateSyncSettingsArg(TeamFolderIdArg):
@@ -18790,9 +11043,7 @@ class TeamFolderUpdateSyncSettingsArg(TeamFolderIdArg):
 
     __slots__ = [
         '_sync_setting_value',
-        '_sync_setting_present',
         '_content_sync_settings_value',
-        '_content_sync_settings_present',
     ]
 
     _has_required_fields = True
@@ -18802,77 +11053,21 @@ class TeamFolderUpdateSyncSettingsArg(TeamFolderIdArg):
                  sync_setting=None,
                  content_sync_settings=None):
         super(TeamFolderUpdateSyncSettingsArg, self).__init__(team_folder_id)
-        self._sync_setting_value = None
-        self._sync_setting_present = False
-        self._content_sync_settings_value = None
-        self._content_sync_settings_present = False
+        self._sync_setting_value = bb.NOT_SET
+        self._content_sync_settings_value = bb.NOT_SET
         if sync_setting is not None:
             self.sync_setting = sync_setting
         if content_sync_settings is not None:
             self.content_sync_settings = content_sync_settings
 
-    @property
-    def sync_setting(self):
-        """
-        Sync setting to apply to the team folder itself. Only meaningful if the
-        team folder is not a shared team root.
+    # Instance attribute type: files.SyncSettingArg (validator is set below)
+    sync_setting = bb.Attribute("sync_setting", nullable=True, user_defined=True)
 
-        :rtype: files.SyncSettingArg
-        """
-        if self._sync_setting_present:
-            return self._sync_setting_value
-        else:
-            return None
-
-    @sync_setting.setter
-    def sync_setting(self, val):
-        if val is None:
-            del self.sync_setting
-            return
-        self._sync_setting_validator.validate_type_only(val)
-        self._sync_setting_value = val
-        self._sync_setting_present = True
-
-    @sync_setting.deleter
-    def sync_setting(self):
-        self._sync_setting_value = None
-        self._sync_setting_present = False
-
-    @property
-    def content_sync_settings(self):
-        """
-        Sync settings to apply to contents of this team folder.
-
-        :rtype: list of [files.ContentSyncSettingArg]
-        """
-        if self._content_sync_settings_present:
-            return self._content_sync_settings_value
-        else:
-            return None
-
-    @content_sync_settings.setter
-    def content_sync_settings(self, val):
-        if val is None:
-            del self.content_sync_settings
-            return
-        val = self._content_sync_settings_validator.validate(val)
-        self._content_sync_settings_value = val
-        self._content_sync_settings_present = True
-
-    @content_sync_settings.deleter
-    def content_sync_settings(self):
-        self._content_sync_settings_value = None
-        self._content_sync_settings_present = False
+    # Instance attribute type: list of [files.ContentSyncSettingArg] (validator is set below)
+    content_sync_settings = bb.Attribute("content_sync_settings", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderUpdateSyncSettingsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamFolderUpdateSyncSettingsArg(team_folder_id={!r}, sync_setting={!r}, content_sync_settings={!r})'.format(
-            self._team_folder_id_value,
-            self._sync_setting_value,
-            self._content_sync_settings_value,
-        )
 
 TeamFolderUpdateSyncSettingsArg_validator = bv.Struct(TeamFolderUpdateSyncSettingsArg)
 
@@ -18921,9 +11116,6 @@ class TeamFolderUpdateSyncSettingsError(BaseTeamFolderError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderUpdateSyncSettingsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamFolderUpdateSyncSettingsError(%r, %r)' % (self._tag, self._value)
-
 TeamFolderUpdateSyncSettingsError_validator = bv.Union(TeamFolderUpdateSyncSettingsError)
 
 class TeamGetInfoResult(bb.Struct):
@@ -18938,15 +11130,10 @@ class TeamGetInfoResult(bb.Struct):
 
     __slots__ = [
         '_name_value',
-        '_name_present',
         '_team_id_value',
-        '_team_id_present',
         '_num_licensed_users_value',
-        '_num_licensed_users_present',
         '_num_provisioned_users_value',
-        '_num_provisioned_users_present',
         '_policies_value',
-        '_policies_present',
     ]
 
     _has_required_fields = True
@@ -18957,16 +11144,11 @@ class TeamGetInfoResult(bb.Struct):
                  num_licensed_users=None,
                  num_provisioned_users=None,
                  policies=None):
-        self._name_value = None
-        self._name_present = False
-        self._team_id_value = None
-        self._team_id_present = False
-        self._num_licensed_users_value = None
-        self._num_licensed_users_present = False
-        self._num_provisioned_users_value = None
-        self._num_provisioned_users_present = False
-        self._policies_value = None
-        self._policies_present = False
+        self._name_value = bb.NOT_SET
+        self._team_id_value = bb.NOT_SET
+        self._num_licensed_users_value = bb.NOT_SET
+        self._num_provisioned_users_value = bb.NOT_SET
+        self._policies_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if team_id is not None:
@@ -18978,131 +11160,23 @@ class TeamGetInfoResult(bb.Struct):
         if policies is not None:
             self.policies = policies
 
-    @property
-    def name(self):
-        """
-        The name of the team.
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
+    # Instance attribute type: str (validator is set below)
+    team_id = bb.Attribute("team_id")
 
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
+    # Instance attribute type: int (validator is set below)
+    num_licensed_users = bb.Attribute("num_licensed_users")
 
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
+    # Instance attribute type: int (validator is set below)
+    num_provisioned_users = bb.Attribute("num_provisioned_users")
 
-    @property
-    def team_id(self):
-        """
-        The ID of the team.
-
-        :rtype: str
-        """
-        if self._team_id_present:
-            return self._team_id_value
-        else:
-            raise AttributeError("missing required field 'team_id'")
-
-    @team_id.setter
-    def team_id(self, val):
-        val = self._team_id_validator.validate(val)
-        self._team_id_value = val
-        self._team_id_present = True
-
-    @team_id.deleter
-    def team_id(self):
-        self._team_id_value = None
-        self._team_id_present = False
-
-    @property
-    def num_licensed_users(self):
-        """
-        The number of licenses available to the team.
-
-        :rtype: int
-        """
-        if self._num_licensed_users_present:
-            return self._num_licensed_users_value
-        else:
-            raise AttributeError("missing required field 'num_licensed_users'")
-
-    @num_licensed_users.setter
-    def num_licensed_users(self, val):
-        val = self._num_licensed_users_validator.validate(val)
-        self._num_licensed_users_value = val
-        self._num_licensed_users_present = True
-
-    @num_licensed_users.deleter
-    def num_licensed_users(self):
-        self._num_licensed_users_value = None
-        self._num_licensed_users_present = False
-
-    @property
-    def num_provisioned_users(self):
-        """
-        The number of accounts that have been invited or are already active
-        members of the team.
-
-        :rtype: int
-        """
-        if self._num_provisioned_users_present:
-            return self._num_provisioned_users_value
-        else:
-            raise AttributeError("missing required field 'num_provisioned_users'")
-
-    @num_provisioned_users.setter
-    def num_provisioned_users(self, val):
-        val = self._num_provisioned_users_validator.validate(val)
-        self._num_provisioned_users_value = val
-        self._num_provisioned_users_present = True
-
-    @num_provisioned_users.deleter
-    def num_provisioned_users(self):
-        self._num_provisioned_users_value = None
-        self._num_provisioned_users_present = False
-
-    @property
-    def policies(self):
-        """
-        :rtype: team_policies.TeamMemberPolicies
-        """
-        if self._policies_present:
-            return self._policies_value
-        else:
-            raise AttributeError("missing required field 'policies'")
-
-    @policies.setter
-    def policies(self, val):
-        self._policies_validator.validate_type_only(val)
-        self._policies_value = val
-        self._policies_present = True
-
-    @policies.deleter
-    def policies(self):
-        self._policies_value = None
-        self._policies_present = False
+    # Instance attribute type: team_policies.TeamMemberPolicies (validator is set below)
+    policies = bb.Attribute("policies", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamGetInfoResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamGetInfoResult(name={!r}, team_id={!r}, num_licensed_users={!r}, num_provisioned_users={!r}, policies={!r})'.format(
-            self._name_value,
-            self._team_id_value,
-            self._num_licensed_users_value,
-            self._num_provisioned_users_value,
-            self._policies_value,
-        )
 
 TeamGetInfoResult_validator = bv.Struct(TeamGetInfoResult)
 
@@ -19116,9 +11190,7 @@ class TeamMemberInfo(bb.Struct):
 
     __slots__ = [
         '_profile_value',
-        '_profile_present',
         '_role_value',
-        '_role_present',
     ]
 
     _has_required_fields = True
@@ -19126,69 +11198,21 @@ class TeamMemberInfo(bb.Struct):
     def __init__(self,
                  profile=None,
                  role=None):
-        self._profile_value = None
-        self._profile_present = False
-        self._role_value = None
-        self._role_present = False
+        self._profile_value = bb.NOT_SET
+        self._role_value = bb.NOT_SET
         if profile is not None:
             self.profile = profile
         if role is not None:
             self.role = role
 
-    @property
-    def profile(self):
-        """
-        Profile of a user as a member of a team.
+    # Instance attribute type: TeamMemberProfile (validator is set below)
+    profile = bb.Attribute("profile", user_defined=True)
 
-        :rtype: TeamMemberProfile
-        """
-        if self._profile_present:
-            return self._profile_value
-        else:
-            raise AttributeError("missing required field 'profile'")
-
-    @profile.setter
-    def profile(self, val):
-        self._profile_validator.validate_type_only(val)
-        self._profile_value = val
-        self._profile_present = True
-
-    @profile.deleter
-    def profile(self):
-        self._profile_value = None
-        self._profile_present = False
-
-    @property
-    def role(self):
-        """
-        The user's role in the team.
-
-        :rtype: AdminTier
-        """
-        if self._role_present:
-            return self._role_value
-        else:
-            raise AttributeError("missing required field 'role'")
-
-    @role.setter
-    def role(self, val):
-        self._role_validator.validate_type_only(val)
-        self._role_value = val
-        self._role_present = True
-
-    @role.deleter
-    def role(self):
-        self._role_value = None
-        self._role_present = False
+    # Instance attribute type: AdminTier (validator is set below)
+    role = bb.Attribute("role", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMemberInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamMemberInfo(profile={!r}, role={!r})'.format(
-            self._profile_value,
-            self._role_value,
-        )
 
 TeamMemberInfo_validator = bv.Struct(TeamMemberInfo)
 
@@ -19204,9 +11228,7 @@ class TeamMemberProfile(MemberProfile):
 
     __slots__ = [
         '_groups_value',
-        '_groups_present',
         '_member_folder_id_value',
-        '_member_folder_id_present',
     ]
 
     _has_required_fields = True
@@ -19244,84 +11266,21 @@ class TeamMemberProfile(MemberProfile):
                                                 persistent_id,
                                                 is_directory_restricted,
                                                 profile_photo_url)
-        self._groups_value = None
-        self._groups_present = False
-        self._member_folder_id_value = None
-        self._member_folder_id_present = False
+        self._groups_value = bb.NOT_SET
+        self._member_folder_id_value = bb.NOT_SET
         if groups is not None:
             self.groups = groups
         if member_folder_id is not None:
             self.member_folder_id = member_folder_id
 
-    @property
-    def groups(self):
-        """
-        List of group IDs of groups that the user belongs to.
+    # Instance attribute type: list of [str] (validator is set below)
+    groups = bb.Attribute("groups")
 
-        :rtype: list of [str]
-        """
-        if self._groups_present:
-            return self._groups_value
-        else:
-            raise AttributeError("missing required field 'groups'")
-
-    @groups.setter
-    def groups(self, val):
-        val = self._groups_validator.validate(val)
-        self._groups_value = val
-        self._groups_present = True
-
-    @groups.deleter
-    def groups(self):
-        self._groups_value = None
-        self._groups_present = False
-
-    @property
-    def member_folder_id(self):
-        """
-        The namespace id of the user's root folder.
-
-        :rtype: str
-        """
-        if self._member_folder_id_present:
-            return self._member_folder_id_value
-        else:
-            raise AttributeError("missing required field 'member_folder_id'")
-
-    @member_folder_id.setter
-    def member_folder_id(self, val):
-        val = self._member_folder_id_validator.validate(val)
-        self._member_folder_id_value = val
-        self._member_folder_id_present = True
-
-    @member_folder_id.deleter
-    def member_folder_id(self):
-        self._member_folder_id_value = None
-        self._member_folder_id_present = False
+    # Instance attribute type: str (validator is set below)
+    member_folder_id = bb.Attribute("member_folder_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMemberProfile, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamMemberProfile(team_member_id={!r}, email={!r}, email_verified={!r}, status={!r}, name={!r}, membership_type={!r}, groups={!r}, member_folder_id={!r}, external_id={!r}, account_id={!r}, secondary_emails={!r}, invited_on={!r}, joined_on={!r}, suspended_on={!r}, persistent_id={!r}, is_directory_restricted={!r}, profile_photo_url={!r})'.format(
-            self._team_member_id_value,
-            self._email_value,
-            self._email_verified_value,
-            self._status_value,
-            self._name_value,
-            self._membership_type_value,
-            self._groups_value,
-            self._member_folder_id_value,
-            self._external_id_value,
-            self._account_id_value,
-            self._secondary_emails_value,
-            self._invited_on_value,
-            self._joined_on_value,
-            self._suspended_on_value,
-            self._persistent_id_value,
-            self._is_directory_restricted_value,
-            self._profile_photo_url_value,
-        )
 
 TeamMemberProfile_validator = bv.Struct(TeamMemberProfile)
 
@@ -19411,9 +11370,6 @@ class TeamMemberStatus(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMemberStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamMemberStatus(%r, %r)' % (self._tag, self._value)
-
 TeamMemberStatus_validator = bv.Union(TeamMemberStatus)
 
 class TeamMembershipType(bb.Union):
@@ -19453,9 +11409,6 @@ class TeamMembershipType(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMembershipType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamMembershipType(%r, %r)' % (self._tag, self._value)
-
 TeamMembershipType_validator = bv.Union(TeamMembershipType)
 
 class TeamNamespacesListArg(bb.Struct):
@@ -19466,48 +11419,21 @@ class TeamNamespacesListArg(bb.Struct):
 
     __slots__ = [
         '_limit_value',
-        '_limit_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  limit=None):
-        self._limit_value = None
-        self._limit_present = False
+        self._limit_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
 
-    @property
-    def limit(self):
-        """
-        Specifying a value here has no effect.
-
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamNamespacesListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamNamespacesListArg(limit={!r})'.format(
-            self._limit_value,
-        )
 
 TeamNamespacesListArg_validator = bv.Struct(TeamNamespacesListArg)
 
@@ -19519,49 +11445,21 @@ class TeamNamespacesListContinueArg(bb.Struct):
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        Indicates from what point to get the next set of team-accessible
-        namespaces.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamNamespacesListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamNamespacesListContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 TeamNamespacesListContinueArg_validator = bv.Struct(TeamNamespacesListContinueArg)
 
@@ -19600,9 +11498,6 @@ class TeamNamespacesListError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamNamespacesListError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamNamespacesListError(%r, %r)' % (self._tag, self._value)
-
 TeamNamespacesListError_validator = bv.Union(TeamNamespacesListError)
 
 class TeamNamespacesListContinueError(TeamNamespacesListError):
@@ -19629,31 +11524,26 @@ class TeamNamespacesListContinueError(TeamNamespacesListError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamNamespacesListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamNamespacesListContinueError(%r, %r)' % (self._tag, self._value)
-
 TeamNamespacesListContinueError_validator = bv.Union(TeamNamespacesListContinueError)
 
 class TeamNamespacesListResult(bb.Struct):
     """
-    Result for :meth:`dropbox.dropbox.Dropbox.team_namespaces_list`.
+    Result for :meth:`dropbox.dropbox_client.Dropbox.team_namespaces_list`.
 
     :ivar team.TeamNamespacesListResult.namespaces: List of all namespaces the
         team can access.
     :ivar team.TeamNamespacesListResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_namespaces_list_continue` to obtain
-        additional namespaces. Note that duplicate namespaces may be returned.
+        :meth:`dropbox.dropbox_client.Dropbox.team_namespaces_list_continue` to
+        obtain additional namespaces. Note that duplicate namespaces may be
+        returned.
     :ivar team.TeamNamespacesListResult.has_more: Is true if there are
         additional namespaces that have not been returned yet.
     """
 
     __slots__ = [
         '_namespaces_value',
-        '_namespaces_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -19662,12 +11552,9 @@ class TeamNamespacesListResult(bb.Struct):
                  namespaces=None,
                  cursor=None,
                  has_more=None):
-        self._namespaces_value = None
-        self._namespaces_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._namespaces_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if namespaces is not None:
             self.namespaces = namespaces
         if cursor is not None:
@@ -19675,87 +11562,17 @@ class TeamNamespacesListResult(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def namespaces(self):
-        """
-        List of all namespaces the team can access.
+    # Instance attribute type: list of [NamespaceMetadata] (validator is set below)
+    namespaces = bb.Attribute("namespaces")
 
-        :rtype: list of [NamespaceMetadata]
-        """
-        if self._namespaces_present:
-            return self._namespaces_value
-        else:
-            raise AttributeError("missing required field 'namespaces'")
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-    @namespaces.setter
-    def namespaces(self, val):
-        val = self._namespaces_validator.validate(val)
-        self._namespaces_value = val
-        self._namespaces_present = True
-
-    @namespaces.deleter
-    def namespaces(self):
-        self._namespaces_value = None
-        self._namespaces_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.team_namespaces_list_continue` to obtain
-        additional namespaces. Note that duplicate namespaces may be returned.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Is true if there are additional namespaces that have not been returned
-        yet.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamNamespacesListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamNamespacesListResult(namespaces={!r}, cursor={!r}, has_more={!r})'.format(
-            self._namespaces_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
 
 TeamNamespacesListResult_validator = bv.Struct(TeamNamespacesListResult)
 
@@ -19820,15 +11637,12 @@ class TeamReportFailureReason(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamReportFailureReason, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TeamReportFailureReason(%r, %r)' % (self._tag, self._value)
-
 TeamReportFailureReason_validator = bv.Union(TeamReportFailureReason)
 
 class TokenGetAuthenticatedAdminError(bb.Union):
     """
     Error returned by
-    :meth:`dropbox.dropbox.Dropbox.team_token_get_authenticated_admin`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_token_get_authenticated_admin`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -19878,15 +11692,12 @@ class TokenGetAuthenticatedAdminError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TokenGetAuthenticatedAdminError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TokenGetAuthenticatedAdminError(%r, %r)' % (self._tag, self._value)
-
 TokenGetAuthenticatedAdminError_validator = bv.Union(TokenGetAuthenticatedAdminError)
 
 class TokenGetAuthenticatedAdminResult(bb.Struct):
     """
     Results for
-    :meth:`dropbox.dropbox.Dropbox.team_token_get_authenticated_admin`.
+    :meth:`dropbox.dropbox_client.Dropbox.team_token_get_authenticated_admin`.
 
     :ivar team.TokenGetAuthenticatedAdminResult.admin_profile: The admin who
         authorized the token.
@@ -19894,48 +11705,21 @@ class TokenGetAuthenticatedAdminResult(bb.Struct):
 
     __slots__ = [
         '_admin_profile_value',
-        '_admin_profile_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  admin_profile=None):
-        self._admin_profile_value = None
-        self._admin_profile_present = False
+        self._admin_profile_value = bb.NOT_SET
         if admin_profile is not None:
             self.admin_profile = admin_profile
 
-    @property
-    def admin_profile(self):
-        """
-        The admin who authorized the token.
-
-        :rtype: TeamMemberProfile
-        """
-        if self._admin_profile_present:
-            return self._admin_profile_value
-        else:
-            raise AttributeError("missing required field 'admin_profile'")
-
-    @admin_profile.setter
-    def admin_profile(self, val):
-        self._admin_profile_validator.validate_type_only(val)
-        self._admin_profile_value = val
-        self._admin_profile_present = True
-
-    @admin_profile.deleter
-    def admin_profile(self):
-        self._admin_profile_value = None
-        self._admin_profile_present = False
+    # Instance attribute type: TeamMemberProfile (validator is set below)
+    admin_profile = bb.Attribute("admin_profile", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TokenGetAuthenticatedAdminResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TokenGetAuthenticatedAdminResult(admin_profile={!r})'.format(
-            self._admin_profile_value,
-        )
 
 TokenGetAuthenticatedAdminResult_validator = bv.Struct(TokenGetAuthenticatedAdminResult)
 
@@ -20009,9 +11793,6 @@ class UploadApiRateLimitValue(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UploadApiRateLimitValue, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UploadApiRateLimitValue(%r, %r)' % (self._tag, self._value)
 
 UploadApiRateLimitValue_validator = bv.Union(UploadApiRateLimitValue)
 
@@ -20176,9 +11957,6 @@ class UserAddResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserAddResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UserAddResult(%r, %r)' % (self._tag, self._value)
-
 UserAddResult_validator = bv.Union(UserAddResult)
 
 class UserCustomQuotaArg(bb.Struct):
@@ -20188,9 +11966,7 @@ class UserCustomQuotaArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_quota_gb_value',
-        '_quota_gb_present',
     ]
 
     _has_required_fields = True
@@ -20198,65 +11974,21 @@ class UserCustomQuotaArg(bb.Struct):
     def __init__(self,
                  user=None,
                  quota_gb=None):
-        self._user_value = None
-        self._user_present = False
-        self._quota_gb_value = None
-        self._quota_gb_present = False
+        self._user_value = bb.NOT_SET
+        self._quota_gb_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if quota_gb is not None:
             self.quota_gb = quota_gb
 
-    @property
-    def user(self):
-        """
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def quota_gb(self):
-        """
-        :rtype: int
-        """
-        if self._quota_gb_present:
-            return self._quota_gb_value
-        else:
-            raise AttributeError("missing required field 'quota_gb'")
-
-    @quota_gb.setter
-    def quota_gb(self, val):
-        val = self._quota_gb_validator.validate(val)
-        self._quota_gb_value = val
-        self._quota_gb_present = True
-
-    @quota_gb.deleter
-    def quota_gb(self):
-        self._quota_gb_value = None
-        self._quota_gb_present = False
+    # Instance attribute type: int (validator is set below)
+    quota_gb = bb.Attribute("quota_gb")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserCustomQuotaArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserCustomQuotaArg(user={!r}, quota_gb={!r})'.format(
-            self._user_value,
-            self._quota_gb_value,
-        )
 
 UserCustomQuotaArg_validator = bv.Struct(UserCustomQuotaArg)
 
@@ -20268,9 +12000,7 @@ class UserCustomQuotaResult(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_quota_gb_value',
-        '_quota_gb_present',
     ]
 
     _has_required_fields = True
@@ -20278,68 +12008,21 @@ class UserCustomQuotaResult(bb.Struct):
     def __init__(self,
                  user=None,
                  quota_gb=None):
-        self._user_value = None
-        self._user_present = False
-        self._quota_gb_value = None
-        self._quota_gb_present = False
+        self._user_value = bb.NOT_SET
+        self._quota_gb_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if quota_gb is not None:
             self.quota_gb = quota_gb
 
-    @property
-    def user(self):
-        """
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def quota_gb(self):
-        """
-        :rtype: int
-        """
-        if self._quota_gb_present:
-            return self._quota_gb_value
-        else:
-            return None
-
-    @quota_gb.setter
-    def quota_gb(self, val):
-        if val is None:
-            del self.quota_gb
-            return
-        val = self._quota_gb_validator.validate(val)
-        self._quota_gb_value = val
-        self._quota_gb_present = True
-
-    @quota_gb.deleter
-    def quota_gb(self):
-        self._quota_gb_value = None
-        self._quota_gb_present = False
+    # Instance attribute type: int (validator is set below)
+    quota_gb = bb.Attribute("quota_gb", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserCustomQuotaResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserCustomQuotaResult(user={!r}, quota_gb={!r})'.format(
-            self._user_value,
-            self._quota_gb_value,
-        )
 
 UserCustomQuotaResult_validator = bv.Struct(UserCustomQuotaResult)
 
@@ -20347,9 +12030,7 @@ class UserDeleteEmailsResult(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_results_value',
-        '_results_present',
     ]
 
     _has_required_fields = True
@@ -20357,65 +12038,21 @@ class UserDeleteEmailsResult(bb.Struct):
     def __init__(self,
                  user=None,
                  results=None):
-        self._user_value = None
-        self._user_present = False
-        self._results_value = None
-        self._results_present = False
+        self._user_value = bb.NOT_SET
+        self._results_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if results is not None:
             self.results = results
 
-    @property
-    def user(self):
-        """
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def results(self):
-        """
-        :rtype: list of [DeleteSecondaryEmailResult]
-        """
-        if self._results_present:
-            return self._results_value
-        else:
-            raise AttributeError("missing required field 'results'")
-
-    @results.setter
-    def results(self, val):
-        val = self._results_validator.validate(val)
-        self._results_value = val
-        self._results_present = True
-
-    @results.deleter
-    def results(self):
-        self._results_value = None
-        self._results_present = False
+    # Instance attribute type: list of [DeleteSecondaryEmailResult] (validator is set below)
+    results = bb.Attribute("results")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserDeleteEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserDeleteEmailsResult(user={!r}, results={!r})'.format(
-            self._user_value,
-            self._results_value,
-        )
 
 UserDeleteEmailsResult_validator = bv.Struct(UserDeleteEmailsResult)
 
@@ -20514,18 +12151,13 @@ class UserDeleteResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserDeleteResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UserDeleteResult(%r, %r)' % (self._tag, self._value)
-
 UserDeleteResult_validator = bv.Union(UserDeleteResult)
 
 class UserResendEmailsResult(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_results_value',
-        '_results_present',
     ]
 
     _has_required_fields = True
@@ -20533,65 +12165,21 @@ class UserResendEmailsResult(bb.Struct):
     def __init__(self,
                  user=None,
                  results=None):
-        self._user_value = None
-        self._user_present = False
-        self._results_value = None
-        self._results_present = False
+        self._user_value = bb.NOT_SET
+        self._results_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if results is not None:
             self.results = results
 
-    @property
-    def user(self):
-        """
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def results(self):
-        """
-        :rtype: list of [ResendSecondaryEmailResult]
-        """
-        if self._results_present:
-            return self._results_value
-        else:
-            raise AttributeError("missing required field 'results'")
-
-    @results.setter
-    def results(self, val):
-        val = self._results_validator.validate(val)
-        self._results_value = val
-        self._results_present = True
-
-    @results.deleter
-    def results(self):
-        self._results_value = None
-        self._results_present = False
+    # Instance attribute type: list of [ResendSecondaryEmailResult] (validator is set below)
+    results = bb.Attribute("results")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserResendEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserResendEmailsResult(user={!r}, results={!r})'.format(
-            self._user_value,
-            self._results_value,
-        )
 
 UserResendEmailsResult_validator = bv.Struct(UserResendEmailsResult)
 
@@ -20690,9 +12278,6 @@ class UserResendResult(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserResendResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UserResendResult(%r, %r)' % (self._tag, self._value)
-
 UserResendResult_validator = bv.Union(UserResendResult)
 
 class UserSecondaryEmailsArg(bb.Struct):
@@ -20702,9 +12287,7 @@ class UserSecondaryEmailsArg(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_secondary_emails_value',
-        '_secondary_emails_present',
     ]
 
     _has_required_fields = True
@@ -20712,65 +12295,21 @@ class UserSecondaryEmailsArg(bb.Struct):
     def __init__(self,
                  user=None,
                  secondary_emails=None):
-        self._user_value = None
-        self._user_present = False
-        self._secondary_emails_value = None
-        self._secondary_emails_present = False
+        self._user_value = bb.NOT_SET
+        self._secondary_emails_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if secondary_emails is not None:
             self.secondary_emails = secondary_emails
 
-    @property
-    def user(self):
-        """
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def secondary_emails(self):
-        """
-        :rtype: list of [str]
-        """
-        if self._secondary_emails_present:
-            return self._secondary_emails_value
-        else:
-            raise AttributeError("missing required field 'secondary_emails'")
-
-    @secondary_emails.setter
-    def secondary_emails(self, val):
-        val = self._secondary_emails_validator.validate(val)
-        self._secondary_emails_value = val
-        self._secondary_emails_present = True
-
-    @secondary_emails.deleter
-    def secondary_emails(self):
-        self._secondary_emails_value = None
-        self._secondary_emails_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    secondary_emails = bb.Attribute("secondary_emails")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserSecondaryEmailsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserSecondaryEmailsArg(user={!r}, secondary_emails={!r})'.format(
-            self._user_value,
-            self._secondary_emails_value,
-        )
 
 UserSecondaryEmailsArg_validator = bv.Struct(UserSecondaryEmailsArg)
 
@@ -20778,9 +12317,7 @@ class UserSecondaryEmailsResult(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_results_value',
-        '_results_present',
     ]
 
     _has_required_fields = True
@@ -20788,65 +12325,21 @@ class UserSecondaryEmailsResult(bb.Struct):
     def __init__(self,
                  user=None,
                  results=None):
-        self._user_value = None
-        self._user_present = False
-        self._results_value = None
-        self._results_present = False
+        self._user_value = bb.NOT_SET
+        self._results_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if results is not None:
             self.results = results
 
-    @property
-    def user(self):
-        """
-        :rtype: UserSelectorArg
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def results(self):
-        """
-        :rtype: list of [AddSecondaryEmailResult]
-        """
-        if self._results_present:
-            return self._results_value
-        else:
-            raise AttributeError("missing required field 'results'")
-
-    @results.setter
-    def results(self, val):
-        val = self._results_validator.validate(val)
-        self._results_value = val
-        self._results_present = True
-
-    @results.deleter
-    def results(self):
-        self._results_value = None
-        self._results_present = False
+    # Instance attribute type: list of [AddSecondaryEmailResult] (validator is set below)
+    results = bb.Attribute("results")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserSecondaryEmailsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserSecondaryEmailsResult(user={!r}, results={!r})'.format(
-            self._user_value,
-            self._results_value,
-        )
 
 UserSecondaryEmailsResult_validator = bv.Struct(UserSecondaryEmailsResult)
 
@@ -20951,9 +12444,6 @@ class UserSelectorArg(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserSelectorArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserSelectorArg(%r, %r)' % (self._tag, self._value)
 
 UserSelectorArg_validator = bv.Union(UserSelectorArg)
 
@@ -21071,9 +12561,6 @@ class UsersSelectorArg(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UsersSelectorArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UsersSelectorArg(%r, %r)' % (self._tag, self._value)
-
 UsersSelectorArg_validator = bv.Union(UsersSelectorArg)
 
 GroupsGetInfoResult_validator = bv.List(GroupsGetInfoItem_validator)
@@ -21093,11 +12580,11 @@ Path_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?')
 SecondaryEmail_validator = secondary_emails.SecondaryEmail_validator
 SecondaryEmail = secondary_emails.SecondaryEmail
 UserQuota_validator = bv.UInt32(min_value=15)
-DeviceSession._session_id_validator = bv.String()
-DeviceSession._ip_address_validator = bv.Nullable(bv.String())
-DeviceSession._country_validator = bv.Nullable(bv.String())
-DeviceSession._created_validator = bv.Nullable(common.DropboxTimestamp_validator)
-DeviceSession._updated_validator = bv.Nullable(common.DropboxTimestamp_validator)
+DeviceSession.session_id.validator = bv.String()
+DeviceSession.ip_address.validator = bv.Nullable(bv.String())
+DeviceSession.country.validator = bv.Nullable(bv.String())
+DeviceSession.created.validator = bv.Nullable(common.DropboxTimestamp_validator)
+DeviceSession.updated.validator = bv.Nullable(common.DropboxTimestamp_validator)
 DeviceSession._all_field_names_ = set([
     'session_id',
     'ip_address',
@@ -21106,17 +12593,17 @@ DeviceSession._all_field_names_ = set([
     'updated',
 ])
 DeviceSession._all_fields_ = [
-    ('session_id', DeviceSession._session_id_validator),
-    ('ip_address', DeviceSession._ip_address_validator),
-    ('country', DeviceSession._country_validator),
-    ('created', DeviceSession._created_validator),
-    ('updated', DeviceSession._updated_validator),
+    ('session_id', DeviceSession.session_id.validator),
+    ('ip_address', DeviceSession.ip_address.validator),
+    ('country', DeviceSession.country.validator),
+    ('created', DeviceSession.created.validator),
+    ('updated', DeviceSession.updated.validator),
 ]
 
-ActiveWebSession._user_agent_validator = bv.String()
-ActiveWebSession._os_validator = bv.String()
-ActiveWebSession._browser_validator = bv.String()
-ActiveWebSession._expires_validator = bv.Nullable(common.DropboxTimestamp_validator)
+ActiveWebSession.user_agent.validator = bv.String()
+ActiveWebSession.os.validator = bv.String()
+ActiveWebSession.browser.validator = bv.String()
+ActiveWebSession.expires.validator = bv.Nullable(common.DropboxTimestamp_validator)
 ActiveWebSession._all_field_names_ = DeviceSession._all_field_names_.union(set([
     'user_agent',
     'os',
@@ -21124,10 +12611,10 @@ ActiveWebSession._all_field_names_ = DeviceSession._all_field_names_.union(set([
     'expires',
 ]))
 ActiveWebSession._all_fields_ = DeviceSession._all_fields_ + [
-    ('user_agent', ActiveWebSession._user_agent_validator),
-    ('os', ActiveWebSession._os_validator),
-    ('browser', ActiveWebSession._browser_validator),
-    ('expires', ActiveWebSession._expires_validator),
+    ('user_agent', ActiveWebSession.user_agent.validator),
+    ('os', ActiveWebSession.os.validator),
+    ('browser', ActiveWebSession.browser.validator),
+    ('expires', ActiveWebSession.expires.validator),
 ]
 
 AddSecondaryEmailResult._success_validator = SecondaryEmail_validator
@@ -21155,9 +12642,9 @@ AddSecondaryEmailResult._tagmap = {
 
 AddSecondaryEmailResult.other = AddSecondaryEmailResult('other')
 
-AddSecondaryEmailsArg._new_secondary_emails_validator = bv.List(UserSecondaryEmailsArg_validator)
+AddSecondaryEmailsArg.new_secondary_emails.validator = bv.List(UserSecondaryEmailsArg_validator)
 AddSecondaryEmailsArg._all_field_names_ = set(['new_secondary_emails'])
-AddSecondaryEmailsArg._all_fields_ = [('new_secondary_emails', AddSecondaryEmailsArg._new_secondary_emails_validator)]
+AddSecondaryEmailsArg._all_fields_ = [('new_secondary_emails', AddSecondaryEmailsArg.new_secondary_emails.validator)]
 
 AddSecondaryEmailsError._secondary_emails_disabled_validator = bv.Void()
 AddSecondaryEmailsError._too_many_emails_validator = bv.Void()
@@ -21172,9 +12659,9 @@ AddSecondaryEmailsError.secondary_emails_disabled = AddSecondaryEmailsError('sec
 AddSecondaryEmailsError.too_many_emails = AddSecondaryEmailsError('too_many_emails')
 AddSecondaryEmailsError.other = AddSecondaryEmailsError('other')
 
-AddSecondaryEmailsResult._results_validator = bv.List(UserAddResult_validator)
+AddSecondaryEmailsResult.results.validator = bv.List(UserAddResult_validator)
 AddSecondaryEmailsResult._all_field_names_ = set(['results'])
-AddSecondaryEmailsResult._all_fields_ = [('results', AddSecondaryEmailsResult._results_validator)]
+AddSecondaryEmailsResult._all_fields_ = [('results', AddSecondaryEmailsResult.results.validator)]
 
 AdminTier._team_admin_validator = bv.Void()
 AdminTier._user_management_admin_validator = bv.Void()
@@ -21192,12 +12679,12 @@ AdminTier.user_management_admin = AdminTier('user_management_admin')
 AdminTier.support_admin = AdminTier('support_admin')
 AdminTier.member_only = AdminTier('member_only')
 
-ApiApp._app_id_validator = bv.String()
-ApiApp._app_name_validator = bv.String()
-ApiApp._publisher_validator = bv.Nullable(bv.String())
-ApiApp._publisher_url_validator = bv.Nullable(bv.String())
-ApiApp._linked_validator = bv.Nullable(common.DropboxTimestamp_validator)
-ApiApp._is_app_folder_validator = bv.Boolean()
+ApiApp.app_id.validator = bv.String()
+ApiApp.app_name.validator = bv.String()
+ApiApp.publisher.validator = bv.Nullable(bv.String())
+ApiApp.publisher_url.validator = bv.Nullable(bv.String())
+ApiApp.linked.validator = bv.Nullable(common.DropboxTimestamp_validator)
+ApiApp.is_app_folder.validator = bv.Boolean()
 ApiApp._all_field_names_ = set([
     'app_id',
     'app_name',
@@ -21207,17 +12694,17 @@ ApiApp._all_field_names_ = set([
     'is_app_folder',
 ])
 ApiApp._all_fields_ = [
-    ('app_id', ApiApp._app_id_validator),
-    ('app_name', ApiApp._app_name_validator),
-    ('publisher', ApiApp._publisher_validator),
-    ('publisher_url', ApiApp._publisher_url_validator),
-    ('linked', ApiApp._linked_validator),
-    ('is_app_folder', ApiApp._is_app_folder_validator),
+    ('app_id', ApiApp.app_id.validator),
+    ('app_name', ApiApp.app_name.validator),
+    ('publisher', ApiApp.publisher.validator),
+    ('publisher_url', ApiApp.publisher_url.validator),
+    ('linked', ApiApp.linked.validator),
+    ('is_app_folder', ApiApp.is_app_folder.validator),
 ]
 
-BaseDfbReport._start_date_validator = bv.String()
+BaseDfbReport.start_date.validator = bv.String()
 BaseDfbReport._all_field_names_ = set(['start_date'])
-BaseDfbReport._all_fields_ = [('start_date', BaseDfbReport._start_date_validator)]
+BaseDfbReport._all_fields_ = [('start_date', BaseDfbReport.start_date.validator)]
 
 BaseTeamFolderError._access_error_validator = TeamFolderAccessError_validator
 BaseTeamFolderError._status_error_validator = TeamFolderInvalidStatusError_validator
@@ -21253,19 +12740,19 @@ CustomQuotaResult._tagmap = {
 
 CustomQuotaResult.other = CustomQuotaResult('other')
 
-CustomQuotaUsersArg._users_validator = bv.List(UserSelectorArg_validator)
+CustomQuotaUsersArg.users.validator = bv.List(UserSelectorArg_validator)
 CustomQuotaUsersArg._all_field_names_ = set(['users'])
-CustomQuotaUsersArg._all_fields_ = [('users', CustomQuotaUsersArg._users_validator)]
+CustomQuotaUsersArg._all_fields_ = [('users', CustomQuotaUsersArg.users.validator)]
 
-DateRange._start_date_validator = bv.Nullable(common.Date_validator)
-DateRange._end_date_validator = bv.Nullable(common.Date_validator)
+DateRange.start_date.validator = bv.Nullable(common.Date_validator)
+DateRange.end_date.validator = bv.Nullable(common.Date_validator)
 DateRange._all_field_names_ = set([
     'start_date',
     'end_date',
 ])
 DateRange._all_fields_ = [
-    ('start_date', DateRange._start_date_validator),
-    ('end_date', DateRange._end_date_validator),
+    ('start_date', DateRange.start_date.validator),
+    ('end_date', DateRange.end_date.validator),
 ]
 
 DateRangeError._other_validator = bv.Void()
@@ -21288,19 +12775,19 @@ DeleteSecondaryEmailResult._tagmap = {
 
 DeleteSecondaryEmailResult.other = DeleteSecondaryEmailResult('other')
 
-DeleteSecondaryEmailsArg._emails_to_delete_validator = bv.List(UserSecondaryEmailsArg_validator)
+DeleteSecondaryEmailsArg.emails_to_delete.validator = bv.List(UserSecondaryEmailsArg_validator)
 DeleteSecondaryEmailsArg._all_field_names_ = set(['emails_to_delete'])
-DeleteSecondaryEmailsArg._all_fields_ = [('emails_to_delete', DeleteSecondaryEmailsArg._emails_to_delete_validator)]
+DeleteSecondaryEmailsArg._all_fields_ = [('emails_to_delete', DeleteSecondaryEmailsArg.emails_to_delete.validator)]
 
-DeleteSecondaryEmailsResult._results_validator = bv.List(UserDeleteResult_validator)
+DeleteSecondaryEmailsResult.results.validator = bv.List(UserDeleteResult_validator)
 DeleteSecondaryEmailsResult._all_field_names_ = set(['results'])
-DeleteSecondaryEmailsResult._all_fields_ = [('results', DeleteSecondaryEmailsResult._results_validator)]
+DeleteSecondaryEmailsResult._all_fields_ = [('results', DeleteSecondaryEmailsResult.results.validator)]
 
-DesktopClientSession._host_name_validator = bv.String()
-DesktopClientSession._client_type_validator = DesktopPlatform_validator
-DesktopClientSession._client_version_validator = bv.String()
-DesktopClientSession._platform_validator = bv.String()
-DesktopClientSession._is_delete_on_unlink_supported_validator = bv.Boolean()
+DesktopClientSession.host_name.validator = bv.String()
+DesktopClientSession.client_type.validator = DesktopPlatform_validator
+DesktopClientSession.client_version.validator = bv.String()
+DesktopClientSession.platform.validator = bv.String()
+DesktopClientSession.is_delete_on_unlink_supported.validator = bv.Boolean()
 DesktopClientSession._all_field_names_ = DeviceSession._all_field_names_.union(set([
     'host_name',
     'client_type',
@@ -21309,11 +12796,11 @@ DesktopClientSession._all_field_names_ = DeviceSession._all_field_names_.union(s
     'is_delete_on_unlink_supported',
 ]))
 DesktopClientSession._all_fields_ = DeviceSession._all_fields_ + [
-    ('host_name', DesktopClientSession._host_name_validator),
-    ('client_type', DesktopClientSession._client_type_validator),
-    ('client_version', DesktopClientSession._client_version_validator),
-    ('platform', DesktopClientSession._platform_validator),
-    ('is_delete_on_unlink_supported', DesktopClientSession._is_delete_on_unlink_supported_validator),
+    ('host_name', DesktopClientSession.host_name.validator),
+    ('client_type', DesktopClientSession.client_type.validator),
+    ('client_version', DesktopClientSession.client_version.validator),
+    ('platform', DesktopClientSession.platform.validator),
+    ('is_delete_on_unlink_supported', DesktopClientSession.is_delete_on_unlink_supported.validator),
 ]
 
 DesktopPlatform._windows_validator = bv.Void()
@@ -21332,24 +12819,24 @@ DesktopPlatform.mac = DesktopPlatform('mac')
 DesktopPlatform.linux = DesktopPlatform('linux')
 DesktopPlatform.other = DesktopPlatform('other')
 
-DeviceSessionArg._session_id_validator = bv.String()
-DeviceSessionArg._team_member_id_validator = bv.String()
+DeviceSessionArg.session_id.validator = bv.String()
+DeviceSessionArg.team_member_id.validator = bv.String()
 DeviceSessionArg._all_field_names_ = set([
     'session_id',
     'team_member_id',
 ])
 DeviceSessionArg._all_fields_ = [
-    ('session_id', DeviceSessionArg._session_id_validator),
-    ('team_member_id', DeviceSessionArg._team_member_id_validator),
+    ('session_id', DeviceSessionArg.session_id.validator),
+    ('team_member_id', DeviceSessionArg.team_member_id.validator),
 ]
 
-DevicesActive._windows_validator = NumberPerDay_validator
-DevicesActive._macos_validator = NumberPerDay_validator
-DevicesActive._linux_validator = NumberPerDay_validator
-DevicesActive._ios_validator = NumberPerDay_validator
-DevicesActive._android_validator = NumberPerDay_validator
-DevicesActive._other_validator = NumberPerDay_validator
-DevicesActive._total_validator = NumberPerDay_validator
+DevicesActive.windows.validator = NumberPerDay_validator
+DevicesActive.macos.validator = NumberPerDay_validator
+DevicesActive.linux.validator = NumberPerDay_validator
+DevicesActive.ios.validator = NumberPerDay_validator
+DevicesActive.android.validator = NumberPerDay_validator
+DevicesActive.other.validator = NumberPerDay_validator
+DevicesActive.total.validator = NumberPerDay_validator
 DevicesActive._all_field_names_ = set([
     'windows',
     'macos',
@@ -21360,22 +12847,22 @@ DevicesActive._all_field_names_ = set([
     'total',
 ])
 DevicesActive._all_fields_ = [
-    ('windows', DevicesActive._windows_validator),
-    ('macos', DevicesActive._macos_validator),
-    ('linux', DevicesActive._linux_validator),
-    ('ios', DevicesActive._ios_validator),
-    ('android', DevicesActive._android_validator),
-    ('other', DevicesActive._other_validator),
-    ('total', DevicesActive._total_validator),
+    ('windows', DevicesActive.windows.validator),
+    ('macos', DevicesActive.macos.validator),
+    ('linux', DevicesActive.linux.validator),
+    ('ios', DevicesActive.ios.validator),
+    ('android', DevicesActive.android.validator),
+    ('other', DevicesActive.other.validator),
+    ('total', DevicesActive.total.validator),
 ]
 
-ExcludedUsersListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
+ExcludedUsersListArg.limit.validator = bv.UInt32(min_value=1, max_value=1000)
 ExcludedUsersListArg._all_field_names_ = set(['limit'])
-ExcludedUsersListArg._all_fields_ = [('limit', ExcludedUsersListArg._limit_validator)]
+ExcludedUsersListArg._all_fields_ = [('limit', ExcludedUsersListArg.limit.validator)]
 
-ExcludedUsersListContinueArg._cursor_validator = bv.String()
+ExcludedUsersListContinueArg.cursor.validator = bv.String()
 ExcludedUsersListContinueArg._all_field_names_ = set(['cursor'])
-ExcludedUsersListContinueArg._all_fields_ = [('cursor', ExcludedUsersListContinueArg._cursor_validator)]
+ExcludedUsersListContinueArg._all_fields_ = [('cursor', ExcludedUsersListContinueArg.cursor.validator)]
 
 ExcludedUsersListContinueError._invalid_cursor_validator = bv.Void()
 ExcludedUsersListContinueError._other_validator = bv.Void()
@@ -21397,23 +12884,23 @@ ExcludedUsersListError._tagmap = {
 ExcludedUsersListError.list_error = ExcludedUsersListError('list_error')
 ExcludedUsersListError.other = ExcludedUsersListError('other')
 
-ExcludedUsersListResult._users_validator = bv.List(MemberProfile_validator)
-ExcludedUsersListResult._cursor_validator = bv.Nullable(bv.String())
-ExcludedUsersListResult._has_more_validator = bv.Boolean()
+ExcludedUsersListResult.users.validator = bv.List(MemberProfile_validator)
+ExcludedUsersListResult.cursor.validator = bv.Nullable(bv.String())
+ExcludedUsersListResult.has_more.validator = bv.Boolean()
 ExcludedUsersListResult._all_field_names_ = set([
     'users',
     'cursor',
     'has_more',
 ])
 ExcludedUsersListResult._all_fields_ = [
-    ('users', ExcludedUsersListResult._users_validator),
-    ('cursor', ExcludedUsersListResult._cursor_validator),
-    ('has_more', ExcludedUsersListResult._has_more_validator),
+    ('users', ExcludedUsersListResult.users.validator),
+    ('cursor', ExcludedUsersListResult.cursor.validator),
+    ('has_more', ExcludedUsersListResult.has_more.validator),
 ]
 
-ExcludedUsersUpdateArg._users_validator = bv.Nullable(bv.List(UserSelectorArg_validator))
+ExcludedUsersUpdateArg.users.validator = bv.Nullable(bv.List(UserSelectorArg_validator))
 ExcludedUsersUpdateArg._all_field_names_ = set(['users'])
-ExcludedUsersUpdateArg._all_fields_ = [('users', ExcludedUsersUpdateArg._users_validator)]
+ExcludedUsersUpdateArg._all_fields_ = [('users', ExcludedUsersUpdateArg.users.validator)]
 
 ExcludedUsersUpdateError._users_not_in_team_validator = bv.Void()
 ExcludedUsersUpdateError._too_many_users_validator = bv.Void()
@@ -21428,9 +12915,9 @@ ExcludedUsersUpdateError.users_not_in_team = ExcludedUsersUpdateError('users_not
 ExcludedUsersUpdateError.too_many_users = ExcludedUsersUpdateError('too_many_users')
 ExcludedUsersUpdateError.other = ExcludedUsersUpdateError('other')
 
-ExcludedUsersUpdateResult._status_validator = ExcludedUsersUpdateStatus_validator
+ExcludedUsersUpdateResult.status.validator = ExcludedUsersUpdateStatus_validator
 ExcludedUsersUpdateResult._all_field_names_ = set(['status'])
-ExcludedUsersUpdateResult._all_fields_ = [('status', ExcludedUsersUpdateResult._status_validator)]
+ExcludedUsersUpdateResult._all_fields_ = [('status', ExcludedUsersUpdateResult.status.validator)]
 
 ExcludedUsersUpdateStatus._success_validator = bv.Void()
 ExcludedUsersUpdateStatus._other_validator = bv.Void()
@@ -21476,9 +12963,9 @@ FeatureValue._tagmap = {
 
 FeatureValue.other = FeatureValue('other')
 
-FeaturesGetValuesBatchArg._features_validator = bv.List(Feature_validator)
+FeaturesGetValuesBatchArg.features.validator = bv.List(Feature_validator)
 FeaturesGetValuesBatchArg._all_field_names_ = set(['features'])
-FeaturesGetValuesBatchArg._all_fields_ = [('features', FeaturesGetValuesBatchArg._features_validator)]
+FeaturesGetValuesBatchArg._all_fields_ = [('features', FeaturesGetValuesBatchArg.features.validator)]
 
 FeaturesGetValuesBatchError._empty_features_list_validator = bv.Void()
 FeaturesGetValuesBatchError._other_validator = bv.Void()
@@ -21490,24 +12977,24 @@ FeaturesGetValuesBatchError._tagmap = {
 FeaturesGetValuesBatchError.empty_features_list = FeaturesGetValuesBatchError('empty_features_list')
 FeaturesGetValuesBatchError.other = FeaturesGetValuesBatchError('other')
 
-FeaturesGetValuesBatchResult._values_validator = bv.List(FeatureValue_validator)
+FeaturesGetValuesBatchResult.values.validator = bv.List(FeatureValue_validator)
 FeaturesGetValuesBatchResult._all_field_names_ = set(['values'])
-FeaturesGetValuesBatchResult._all_fields_ = [('values', FeaturesGetValuesBatchResult._values_validator)]
+FeaturesGetValuesBatchResult._all_fields_ = [('values', FeaturesGetValuesBatchResult.values.validator)]
 
-GetActivityReport._adds_validator = NumberPerDay_validator
-GetActivityReport._edits_validator = NumberPerDay_validator
-GetActivityReport._deletes_validator = NumberPerDay_validator
-GetActivityReport._active_users_28_day_validator = NumberPerDay_validator
-GetActivityReport._active_users_7_day_validator = NumberPerDay_validator
-GetActivityReport._active_users_1_day_validator = NumberPerDay_validator
-GetActivityReport._active_shared_folders_28_day_validator = NumberPerDay_validator
-GetActivityReport._active_shared_folders_7_day_validator = NumberPerDay_validator
-GetActivityReport._active_shared_folders_1_day_validator = NumberPerDay_validator
-GetActivityReport._shared_links_created_validator = NumberPerDay_validator
-GetActivityReport._shared_links_viewed_by_team_validator = NumberPerDay_validator
-GetActivityReport._shared_links_viewed_by_outside_user_validator = NumberPerDay_validator
-GetActivityReport._shared_links_viewed_by_not_logged_in_validator = NumberPerDay_validator
-GetActivityReport._shared_links_viewed_total_validator = NumberPerDay_validator
+GetActivityReport.adds.validator = NumberPerDay_validator
+GetActivityReport.edits.validator = NumberPerDay_validator
+GetActivityReport.deletes.validator = NumberPerDay_validator
+GetActivityReport.active_users_28_day.validator = NumberPerDay_validator
+GetActivityReport.active_users_7_day.validator = NumberPerDay_validator
+GetActivityReport.active_users_1_day.validator = NumberPerDay_validator
+GetActivityReport.active_shared_folders_28_day.validator = NumberPerDay_validator
+GetActivityReport.active_shared_folders_7_day.validator = NumberPerDay_validator
+GetActivityReport.active_shared_folders_1_day.validator = NumberPerDay_validator
+GetActivityReport.shared_links_created.validator = NumberPerDay_validator
+GetActivityReport.shared_links_viewed_by_team.validator = NumberPerDay_validator
+GetActivityReport.shared_links_viewed_by_outside_user.validator = NumberPerDay_validator
+GetActivityReport.shared_links_viewed_by_not_logged_in.validator = NumberPerDay_validator
+GetActivityReport.shared_links_viewed_total.validator = NumberPerDay_validator
 GetActivityReport._all_field_names_ = BaseDfbReport._all_field_names_.union(set([
     'adds',
     'edits',
@@ -21525,41 +13012,41 @@ GetActivityReport._all_field_names_ = BaseDfbReport._all_field_names_.union(set(
     'shared_links_viewed_total',
 ]))
 GetActivityReport._all_fields_ = BaseDfbReport._all_fields_ + [
-    ('adds', GetActivityReport._adds_validator),
-    ('edits', GetActivityReport._edits_validator),
-    ('deletes', GetActivityReport._deletes_validator),
-    ('active_users_28_day', GetActivityReport._active_users_28_day_validator),
-    ('active_users_7_day', GetActivityReport._active_users_7_day_validator),
-    ('active_users_1_day', GetActivityReport._active_users_1_day_validator),
-    ('active_shared_folders_28_day', GetActivityReport._active_shared_folders_28_day_validator),
-    ('active_shared_folders_7_day', GetActivityReport._active_shared_folders_7_day_validator),
-    ('active_shared_folders_1_day', GetActivityReport._active_shared_folders_1_day_validator),
-    ('shared_links_created', GetActivityReport._shared_links_created_validator),
-    ('shared_links_viewed_by_team', GetActivityReport._shared_links_viewed_by_team_validator),
-    ('shared_links_viewed_by_outside_user', GetActivityReport._shared_links_viewed_by_outside_user_validator),
-    ('shared_links_viewed_by_not_logged_in', GetActivityReport._shared_links_viewed_by_not_logged_in_validator),
-    ('shared_links_viewed_total', GetActivityReport._shared_links_viewed_total_validator),
+    ('adds', GetActivityReport.adds.validator),
+    ('edits', GetActivityReport.edits.validator),
+    ('deletes', GetActivityReport.deletes.validator),
+    ('active_users_28_day', GetActivityReport.active_users_28_day.validator),
+    ('active_users_7_day', GetActivityReport.active_users_7_day.validator),
+    ('active_users_1_day', GetActivityReport.active_users_1_day.validator),
+    ('active_shared_folders_28_day', GetActivityReport.active_shared_folders_28_day.validator),
+    ('active_shared_folders_7_day', GetActivityReport.active_shared_folders_7_day.validator),
+    ('active_shared_folders_1_day', GetActivityReport.active_shared_folders_1_day.validator),
+    ('shared_links_created', GetActivityReport.shared_links_created.validator),
+    ('shared_links_viewed_by_team', GetActivityReport.shared_links_viewed_by_team.validator),
+    ('shared_links_viewed_by_outside_user', GetActivityReport.shared_links_viewed_by_outside_user.validator),
+    ('shared_links_viewed_by_not_logged_in', GetActivityReport.shared_links_viewed_by_not_logged_in.validator),
+    ('shared_links_viewed_total', GetActivityReport.shared_links_viewed_total.validator),
 ]
 
-GetDevicesReport._active_1_day_validator = DevicesActive_validator
-GetDevicesReport._active_7_day_validator = DevicesActive_validator
-GetDevicesReport._active_28_day_validator = DevicesActive_validator
+GetDevicesReport.active_1_day.validator = DevicesActive_validator
+GetDevicesReport.active_7_day.validator = DevicesActive_validator
+GetDevicesReport.active_28_day.validator = DevicesActive_validator
 GetDevicesReport._all_field_names_ = BaseDfbReport._all_field_names_.union(set([
     'active_1_day',
     'active_7_day',
     'active_28_day',
 ]))
 GetDevicesReport._all_fields_ = BaseDfbReport._all_fields_ + [
-    ('active_1_day', GetDevicesReport._active_1_day_validator),
-    ('active_7_day', GetDevicesReport._active_7_day_validator),
-    ('active_28_day', GetDevicesReport._active_28_day_validator),
+    ('active_1_day', GetDevicesReport.active_1_day.validator),
+    ('active_7_day', GetDevicesReport.active_7_day.validator),
+    ('active_28_day', GetDevicesReport.active_28_day.validator),
 ]
 
-GetMembershipReport._team_size_validator = NumberPerDay_validator
-GetMembershipReport._pending_invites_validator = NumberPerDay_validator
-GetMembershipReport._members_joined_validator = NumberPerDay_validator
-GetMembershipReport._suspended_members_validator = NumberPerDay_validator
-GetMembershipReport._licenses_validator = NumberPerDay_validator
+GetMembershipReport.team_size.validator = NumberPerDay_validator
+GetMembershipReport.pending_invites.validator = NumberPerDay_validator
+GetMembershipReport.members_joined.validator = NumberPerDay_validator
+GetMembershipReport.suspended_members.validator = NumberPerDay_validator
+GetMembershipReport.licenses.validator = NumberPerDay_validator
 GetMembershipReport._all_field_names_ = BaseDfbReport._all_field_names_.union(set([
     'team_size',
     'pending_invites',
@@ -21568,18 +13055,18 @@ GetMembershipReport._all_field_names_ = BaseDfbReport._all_field_names_.union(se
     'licenses',
 ]))
 GetMembershipReport._all_fields_ = BaseDfbReport._all_fields_ + [
-    ('team_size', GetMembershipReport._team_size_validator),
-    ('pending_invites', GetMembershipReport._pending_invites_validator),
-    ('members_joined', GetMembershipReport._members_joined_validator),
-    ('suspended_members', GetMembershipReport._suspended_members_validator),
-    ('licenses', GetMembershipReport._licenses_validator),
+    ('team_size', GetMembershipReport.team_size.validator),
+    ('pending_invites', GetMembershipReport.pending_invites.validator),
+    ('members_joined', GetMembershipReport.members_joined.validator),
+    ('suspended_members', GetMembershipReport.suspended_members.validator),
+    ('licenses', GetMembershipReport.licenses.validator),
 ]
 
-GetStorageReport._total_usage_validator = NumberPerDay_validator
-GetStorageReport._shared_usage_validator = NumberPerDay_validator
-GetStorageReport._unshared_usage_validator = NumberPerDay_validator
-GetStorageReport._shared_folders_validator = NumberPerDay_validator
-GetStorageReport._member_storage_map_validator = bv.List(bv.List(StorageBucket_validator))
+GetStorageReport.total_usage.validator = NumberPerDay_validator
+GetStorageReport.shared_usage.validator = NumberPerDay_validator
+GetStorageReport.unshared_usage.validator = NumberPerDay_validator
+GetStorageReport.shared_folders.validator = NumberPerDay_validator
+GetStorageReport.member_storage_map.validator = bv.List(bv.List(StorageBucket_validator))
 GetStorageReport._all_field_names_ = BaseDfbReport._all_field_names_.union(set([
     'total_usage',
     'shared_usage',
@@ -21588,11 +13075,11 @@ GetStorageReport._all_field_names_ = BaseDfbReport._all_field_names_.union(set([
     'member_storage_map',
 ]))
 GetStorageReport._all_fields_ = BaseDfbReport._all_fields_ + [
-    ('total_usage', GetStorageReport._total_usage_validator),
-    ('shared_usage', GetStorageReport._shared_usage_validator),
-    ('unshared_usage', GetStorageReport._unshared_usage_validator),
-    ('shared_folders', GetStorageReport._shared_folders_validator),
-    ('member_storage_map', GetStorageReport._member_storage_map_validator),
+    ('total_usage', GetStorageReport.total_usage.validator),
+    ('shared_usage', GetStorageReport.shared_usage.validator),
+    ('unshared_usage', GetStorageReport.unshared_usage.validator),
+    ('shared_folders', GetStorageReport.shared_folders.validator),
+    ('member_storage_map', GetStorageReport.member_storage_map.validator),
 ]
 
 GroupAccessType._member_validator = bv.Void()
@@ -21605,10 +13092,10 @@ GroupAccessType._tagmap = {
 GroupAccessType.member = GroupAccessType('member')
 GroupAccessType.owner = GroupAccessType('owner')
 
-GroupCreateArg._group_name_validator = bv.String()
-GroupCreateArg._add_creator_as_owner_validator = bv.Boolean()
-GroupCreateArg._group_external_id_validator = bv.Nullable(team_common.GroupExternalId_validator)
-GroupCreateArg._group_management_type_validator = bv.Nullable(team_common.GroupManagementType_validator)
+GroupCreateArg.group_name.validator = bv.String()
+GroupCreateArg.add_creator_as_owner.validator = bv.Boolean()
+GroupCreateArg.group_external_id.validator = bv.Nullable(team_common.GroupExternalId_validator)
+GroupCreateArg.group_management_type.validator = bv.Nullable(team_common.GroupManagementType_validator)
 GroupCreateArg._all_field_names_ = set([
     'group_name',
     'add_creator_as_owner',
@@ -21616,10 +13103,10 @@ GroupCreateArg._all_field_names_ = set([
     'group_management_type',
 ])
 GroupCreateArg._all_fields_ = [
-    ('group_name', GroupCreateArg._group_name_validator),
-    ('add_creator_as_owner', GroupCreateArg._add_creator_as_owner_validator),
-    ('group_external_id', GroupCreateArg._group_external_id_validator),
-    ('group_management_type', GroupCreateArg._group_management_type_validator),
+    ('group_name', GroupCreateArg.group_name.validator),
+    ('add_creator_as_owner', GroupCreateArg.add_creator_as_owner.validator),
+    ('group_external_id', GroupCreateArg.group_external_id.validator),
+    ('group_management_type', GroupCreateArg.group_management_type.validator),
 ]
 
 GroupCreateError._group_name_already_used_validator = bv.Void()
@@ -21667,37 +13154,37 @@ GroupDeleteError._tagmap.update(GroupSelectorWithTeamGroupError._tagmap)
 
 GroupDeleteError.group_already_deleted = GroupDeleteError('group_already_deleted')
 
-GroupFullInfo._members_validator = bv.Nullable(bv.List(GroupMemberInfo_validator))
-GroupFullInfo._created_validator = bv.UInt64()
+GroupFullInfo.members.validator = bv.Nullable(bv.List(GroupMemberInfo_validator))
+GroupFullInfo.created.validator = bv.UInt64()
 GroupFullInfo._all_field_names_ = team_common.GroupSummary._all_field_names_.union(set([
     'members',
     'created',
 ]))
 GroupFullInfo._all_fields_ = team_common.GroupSummary._all_fields_ + [
-    ('members', GroupFullInfo._members_validator),
-    ('created', GroupFullInfo._created_validator),
+    ('members', GroupFullInfo.members.validator),
+    ('created', GroupFullInfo.created.validator),
 ]
 
-GroupMemberInfo._profile_validator = MemberProfile_validator
-GroupMemberInfo._access_type_validator = GroupAccessType_validator
+GroupMemberInfo.profile.validator = MemberProfile_validator
+GroupMemberInfo.access_type.validator = GroupAccessType_validator
 GroupMemberInfo._all_field_names_ = set([
     'profile',
     'access_type',
 ])
 GroupMemberInfo._all_fields_ = [
-    ('profile', GroupMemberInfo._profile_validator),
-    ('access_type', GroupMemberInfo._access_type_validator),
+    ('profile', GroupMemberInfo.profile.validator),
+    ('access_type', GroupMemberInfo.access_type.validator),
 ]
 
-GroupMemberSelector._group_validator = GroupSelector_validator
-GroupMemberSelector._user_validator = UserSelectorArg_validator
+GroupMemberSelector.group.validator = GroupSelector_validator
+GroupMemberSelector.user.validator = UserSelectorArg_validator
 GroupMemberSelector._all_field_names_ = set([
     'group',
     'user',
 ])
 GroupMemberSelector._all_fields_ = [
-    ('group', GroupMemberSelector._group_validator),
-    ('user', GroupMemberSelector._user_validator),
+    ('group', GroupMemberSelector.group.validator),
+    ('user', GroupMemberSelector.user.validator),
 ]
 
 GroupMemberSelectorError._member_not_in_group_validator = bv.Void()
@@ -21716,19 +13203,19 @@ GroupMemberSetAccessTypeError._tagmap.update(GroupMemberSelectorError._tagmap)
 
 GroupMemberSetAccessTypeError.user_cannot_be_manager_of_company_managed_group = GroupMemberSetAccessTypeError('user_cannot_be_manager_of_company_managed_group')
 
-IncludeMembersArg._return_members_validator = bv.Boolean()
+IncludeMembersArg.return_members.validator = bv.Boolean()
 IncludeMembersArg._all_field_names_ = set(['return_members'])
-IncludeMembersArg._all_fields_ = [('return_members', IncludeMembersArg._return_members_validator)]
+IncludeMembersArg._all_fields_ = [('return_members', IncludeMembersArg.return_members.validator)]
 
-GroupMembersAddArg._group_validator = GroupSelector_validator
-GroupMembersAddArg._members_validator = bv.List(MemberAccess_validator)
+GroupMembersAddArg.group.validator = GroupSelector_validator
+GroupMembersAddArg.members.validator = bv.List(MemberAccess_validator)
 GroupMembersAddArg._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
     'group',
     'members',
 ]))
 GroupMembersAddArg._all_fields_ = IncludeMembersArg._all_fields_ + [
-    ('group', GroupMembersAddArg._group_validator),
-    ('members', GroupMembersAddArg._members_validator),
+    ('group', GroupMembersAddArg.group.validator),
+    ('members', GroupMembersAddArg.members.validator),
 ]
 
 GroupMembersAddError._duplicate_user_validator = bv.Void()
@@ -21751,26 +13238,26 @@ GroupMembersAddError.duplicate_user = GroupMembersAddError('duplicate_user')
 GroupMembersAddError.group_not_in_team = GroupMembersAddError('group_not_in_team')
 GroupMembersAddError.user_must_be_active_to_be_owner = GroupMembersAddError('user_must_be_active_to_be_owner')
 
-GroupMembersChangeResult._group_info_validator = GroupFullInfo_validator
-GroupMembersChangeResult._async_job_id_validator = async_.AsyncJobId_validator
+GroupMembersChangeResult.group_info.validator = GroupFullInfo_validator
+GroupMembersChangeResult.async_job_id.validator = async_.AsyncJobId_validator
 GroupMembersChangeResult._all_field_names_ = set([
     'group_info',
     'async_job_id',
 ])
 GroupMembersChangeResult._all_fields_ = [
-    ('group_info', GroupMembersChangeResult._group_info_validator),
-    ('async_job_id', GroupMembersChangeResult._async_job_id_validator),
+    ('group_info', GroupMembersChangeResult.group_info.validator),
+    ('async_job_id', GroupMembersChangeResult.async_job_id.validator),
 ]
 
-GroupMembersRemoveArg._group_validator = GroupSelector_validator
-GroupMembersRemoveArg._users_validator = bv.List(UserSelectorArg_validator)
+GroupMembersRemoveArg.group.validator = GroupSelector_validator
+GroupMembersRemoveArg.users.validator = bv.List(UserSelectorArg_validator)
 GroupMembersRemoveArg._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
     'group',
     'users',
 ]))
 GroupMembersRemoveArg._all_fields_ = IncludeMembersArg._all_fields_ + [
-    ('group', GroupMembersRemoveArg._group_validator),
-    ('users', GroupMembersRemoveArg._users_validator),
+    ('group', GroupMembersRemoveArg.group.validator),
+    ('users', GroupMembersRemoveArg.users.validator),
 ]
 
 GroupMembersSelectorError._member_not_in_group_validator = bv.Void()
@@ -21793,26 +13280,26 @@ GroupMembersRemoveError._tagmap.update(GroupMembersSelectorError._tagmap)
 
 GroupMembersRemoveError.group_not_in_team = GroupMembersRemoveError('group_not_in_team')
 
-GroupMembersSelector._group_validator = GroupSelector_validator
-GroupMembersSelector._users_validator = UsersSelectorArg_validator
+GroupMembersSelector.group.validator = GroupSelector_validator
+GroupMembersSelector.users.validator = UsersSelectorArg_validator
 GroupMembersSelector._all_field_names_ = set([
     'group',
     'users',
 ])
 GroupMembersSelector._all_fields_ = [
-    ('group', GroupMembersSelector._group_validator),
-    ('users', GroupMembersSelector._users_validator),
+    ('group', GroupMembersSelector.group.validator),
+    ('users', GroupMembersSelector.users.validator),
 ]
 
-GroupMembersSetAccessTypeArg._access_type_validator = GroupAccessType_validator
-GroupMembersSetAccessTypeArg._return_members_validator = bv.Boolean()
+GroupMembersSetAccessTypeArg.access_type.validator = GroupAccessType_validator
+GroupMembersSetAccessTypeArg.return_members.validator = bv.Boolean()
 GroupMembersSetAccessTypeArg._all_field_names_ = GroupMemberSelector._all_field_names_.union(set([
     'access_type',
     'return_members',
 ]))
 GroupMembersSetAccessTypeArg._all_fields_ = GroupMemberSelector._all_fields_ + [
-    ('access_type', GroupMembersSetAccessTypeArg._access_type_validator),
-    ('return_members', GroupMembersSetAccessTypeArg._return_members_validator),
+    ('access_type', GroupMembersSetAccessTypeArg.access_type.validator),
+    ('return_members', GroupMembersSetAccessTypeArg.return_members.validator),
 ]
 
 GroupSelector._group_id_validator = team_common.GroupId_validator
@@ -21822,10 +13309,10 @@ GroupSelector._tagmap = {
     'group_external_id': GroupSelector._group_external_id_validator,
 }
 
-GroupUpdateArgs._group_validator = GroupSelector_validator
-GroupUpdateArgs._new_group_name_validator = bv.Nullable(bv.String())
-GroupUpdateArgs._new_group_external_id_validator = bv.Nullable(team_common.GroupExternalId_validator)
-GroupUpdateArgs._new_group_management_type_validator = bv.Nullable(team_common.GroupManagementType_validator)
+GroupUpdateArgs.group.validator = GroupSelector_validator
+GroupUpdateArgs.new_group_name.validator = bv.Nullable(bv.String())
+GroupUpdateArgs.new_group_external_id.validator = bv.Nullable(team_common.GroupExternalId_validator)
+GroupUpdateArgs.new_group_management_type.validator = bv.Nullable(team_common.GroupManagementType_validator)
 GroupUpdateArgs._all_field_names_ = IncludeMembersArg._all_field_names_.union(set([
     'group',
     'new_group_name',
@@ -21833,10 +13320,10 @@ GroupUpdateArgs._all_field_names_ = IncludeMembersArg._all_field_names_.union(se
     'new_group_management_type',
 ]))
 GroupUpdateArgs._all_fields_ = IncludeMembersArg._all_fields_ + [
-    ('group', GroupUpdateArgs._group_validator),
-    ('new_group_name', GroupUpdateArgs._new_group_name_validator),
-    ('new_group_external_id', GroupUpdateArgs._new_group_external_id_validator),
-    ('new_group_management_type', GroupUpdateArgs._new_group_management_type_validator),
+    ('group', GroupUpdateArgs.group.validator),
+    ('new_group_name', GroupUpdateArgs.new_group_name.validator),
+    ('new_group_external_id', GroupUpdateArgs.new_group_external_id.validator),
+    ('new_group_management_type', GroupUpdateArgs.new_group_management_type.validator),
 ]
 
 GroupUpdateError._group_name_already_used_validator = bv.Void()
@@ -21870,13 +13357,13 @@ GroupsGetInfoItem._tagmap = {
     'group_info': GroupsGetInfoItem._group_info_validator,
 }
 
-GroupsListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
+GroupsListArg.limit.validator = bv.UInt32(min_value=1, max_value=1000)
 GroupsListArg._all_field_names_ = set(['limit'])
-GroupsListArg._all_fields_ = [('limit', GroupsListArg._limit_validator)]
+GroupsListArg._all_fields_ = [('limit', GroupsListArg.limit.validator)]
 
-GroupsListContinueArg._cursor_validator = bv.String()
+GroupsListContinueArg.cursor.validator = bv.String()
 GroupsListContinueArg._all_field_names_ = set(['cursor'])
-GroupsListContinueArg._all_fields_ = [('cursor', GroupsListContinueArg._cursor_validator)]
+GroupsListContinueArg._all_fields_ = [('cursor', GroupsListContinueArg.cursor.validator)]
 
 GroupsListContinueError._invalid_cursor_validator = bv.Void()
 GroupsListContinueError._other_validator = bv.Void()
@@ -21888,34 +13375,34 @@ GroupsListContinueError._tagmap = {
 GroupsListContinueError.invalid_cursor = GroupsListContinueError('invalid_cursor')
 GroupsListContinueError.other = GroupsListContinueError('other')
 
-GroupsListResult._groups_validator = bv.List(team_common.GroupSummary_validator)
-GroupsListResult._cursor_validator = bv.String()
-GroupsListResult._has_more_validator = bv.Boolean()
+GroupsListResult.groups.validator = bv.List(team_common.GroupSummary_validator)
+GroupsListResult.cursor.validator = bv.String()
+GroupsListResult.has_more.validator = bv.Boolean()
 GroupsListResult._all_field_names_ = set([
     'groups',
     'cursor',
     'has_more',
 ])
 GroupsListResult._all_fields_ = [
-    ('groups', GroupsListResult._groups_validator),
-    ('cursor', GroupsListResult._cursor_validator),
-    ('has_more', GroupsListResult._has_more_validator),
+    ('groups', GroupsListResult.groups.validator),
+    ('cursor', GroupsListResult.cursor.validator),
+    ('has_more', GroupsListResult.has_more.validator),
 ]
 
-GroupsMembersListArg._group_validator = GroupSelector_validator
-GroupsMembersListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
+GroupsMembersListArg.group.validator = GroupSelector_validator
+GroupsMembersListArg.limit.validator = bv.UInt32(min_value=1, max_value=1000)
 GroupsMembersListArg._all_field_names_ = set([
     'group',
     'limit',
 ])
 GroupsMembersListArg._all_fields_ = [
-    ('group', GroupsMembersListArg._group_validator),
-    ('limit', GroupsMembersListArg._limit_validator),
+    ('group', GroupsMembersListArg.group.validator),
+    ('limit', GroupsMembersListArg.limit.validator),
 ]
 
-GroupsMembersListContinueArg._cursor_validator = bv.String()
+GroupsMembersListContinueArg.cursor.validator = bv.String()
 GroupsMembersListContinueArg._all_field_names_ = set(['cursor'])
-GroupsMembersListContinueArg._all_fields_ = [('cursor', GroupsMembersListContinueArg._cursor_validator)]
+GroupsMembersListContinueArg._all_fields_ = [('cursor', GroupsMembersListContinueArg.cursor.validator)]
 
 GroupsMembersListContinueError._invalid_cursor_validator = bv.Void()
 GroupsMembersListContinueError._other_validator = bv.Void()
@@ -21927,18 +13414,18 @@ GroupsMembersListContinueError._tagmap = {
 GroupsMembersListContinueError.invalid_cursor = GroupsMembersListContinueError('invalid_cursor')
 GroupsMembersListContinueError.other = GroupsMembersListContinueError('other')
 
-GroupsMembersListResult._members_validator = bv.List(GroupMemberInfo_validator)
-GroupsMembersListResult._cursor_validator = bv.String()
-GroupsMembersListResult._has_more_validator = bv.Boolean()
+GroupsMembersListResult.members.validator = bv.List(GroupMemberInfo_validator)
+GroupsMembersListResult.cursor.validator = bv.String()
+GroupsMembersListResult.has_more.validator = bv.Boolean()
 GroupsMembersListResult._all_field_names_ = set([
     'members',
     'cursor',
     'has_more',
 ])
 GroupsMembersListResult._all_fields_ = [
-    ('members', GroupsMembersListResult._members_validator),
-    ('cursor', GroupsMembersListResult._cursor_validator),
-    ('has_more', GroupsMembersListResult._has_more_validator),
+    ('members', GroupsMembersListResult.members.validator),
+    ('cursor', GroupsMembersListResult.cursor.validator),
+    ('has_more', GroupsMembersListResult.has_more.validator),
 ]
 
 GroupsPollError._access_denied_validator = bv.Void()
@@ -21983,16 +13470,16 @@ HasTeamSharedDropboxValue._tagmap = {
 
 HasTeamSharedDropboxValue.other = HasTeamSharedDropboxValue('other')
 
-LegalHoldHeldRevisionMetadata._new_filename_validator = bv.String()
-LegalHoldHeldRevisionMetadata._original_revision_id_validator = files.Rev_validator
-LegalHoldHeldRevisionMetadata._original_file_path_validator = Path_validator
-LegalHoldHeldRevisionMetadata._server_modified_validator = common.DropboxTimestamp_validator
-LegalHoldHeldRevisionMetadata._author_member_id_validator = team_common.TeamMemberId_validator
-LegalHoldHeldRevisionMetadata._author_member_status_validator = TeamMemberStatus_validator
-LegalHoldHeldRevisionMetadata._author_email_validator = common.EmailAddress_validator
-LegalHoldHeldRevisionMetadata._file_type_validator = bv.String()
-LegalHoldHeldRevisionMetadata._size_validator = bv.UInt64()
-LegalHoldHeldRevisionMetadata._content_hash_validator = files.Sha256HexHash_validator
+LegalHoldHeldRevisionMetadata.new_filename.validator = bv.String()
+LegalHoldHeldRevisionMetadata.original_revision_id.validator = files.Rev_validator
+LegalHoldHeldRevisionMetadata.original_file_path.validator = Path_validator
+LegalHoldHeldRevisionMetadata.server_modified.validator = common.DropboxTimestamp_validator
+LegalHoldHeldRevisionMetadata.author_member_id.validator = team_common.TeamMemberId_validator
+LegalHoldHeldRevisionMetadata.author_member_status.validator = TeamMemberStatus_validator
+LegalHoldHeldRevisionMetadata.author_email.validator = common.EmailAddress_validator
+LegalHoldHeldRevisionMetadata.file_type.validator = bv.String()
+LegalHoldHeldRevisionMetadata.size.validator = bv.UInt64()
+LegalHoldHeldRevisionMetadata.content_hash.validator = files.Sha256HexHash_validator
 LegalHoldHeldRevisionMetadata._all_field_names_ = set([
     'new_filename',
     'original_revision_id',
@@ -22006,26 +13493,26 @@ LegalHoldHeldRevisionMetadata._all_field_names_ = set([
     'content_hash',
 ])
 LegalHoldHeldRevisionMetadata._all_fields_ = [
-    ('new_filename', LegalHoldHeldRevisionMetadata._new_filename_validator),
-    ('original_revision_id', LegalHoldHeldRevisionMetadata._original_revision_id_validator),
-    ('original_file_path', LegalHoldHeldRevisionMetadata._original_file_path_validator),
-    ('server_modified', LegalHoldHeldRevisionMetadata._server_modified_validator),
-    ('author_member_id', LegalHoldHeldRevisionMetadata._author_member_id_validator),
-    ('author_member_status', LegalHoldHeldRevisionMetadata._author_member_status_validator),
-    ('author_email', LegalHoldHeldRevisionMetadata._author_email_validator),
-    ('file_type', LegalHoldHeldRevisionMetadata._file_type_validator),
-    ('size', LegalHoldHeldRevisionMetadata._size_validator),
-    ('content_hash', LegalHoldHeldRevisionMetadata._content_hash_validator),
+    ('new_filename', LegalHoldHeldRevisionMetadata.new_filename.validator),
+    ('original_revision_id', LegalHoldHeldRevisionMetadata.original_revision_id.validator),
+    ('original_file_path', LegalHoldHeldRevisionMetadata.original_file_path.validator),
+    ('server_modified', LegalHoldHeldRevisionMetadata.server_modified.validator),
+    ('author_member_id', LegalHoldHeldRevisionMetadata.author_member_id.validator),
+    ('author_member_status', LegalHoldHeldRevisionMetadata.author_member_status.validator),
+    ('author_email', LegalHoldHeldRevisionMetadata.author_email.validator),
+    ('file_type', LegalHoldHeldRevisionMetadata.file_type.validator),
+    ('size', LegalHoldHeldRevisionMetadata.size.validator),
+    ('content_hash', LegalHoldHeldRevisionMetadata.content_hash.validator),
 ]
 
-LegalHoldPolicy._id_validator = LegalHoldId_validator
-LegalHoldPolicy._name_validator = LegalHoldPolicyName_validator
-LegalHoldPolicy._description_validator = bv.Nullable(LegalHoldPolicyDescription_validator)
-LegalHoldPolicy._activation_time_validator = bv.Nullable(common.DropboxTimestamp_validator)
-LegalHoldPolicy._members_validator = MembersInfo_validator
-LegalHoldPolicy._status_validator = LegalHoldStatus_validator
-LegalHoldPolicy._start_date_validator = common.DropboxTimestamp_validator
-LegalHoldPolicy._end_date_validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldPolicy.id.validator = LegalHoldId_validator
+LegalHoldPolicy.name.validator = LegalHoldPolicyName_validator
+LegalHoldPolicy.description.validator = bv.Nullable(LegalHoldPolicyDescription_validator)
+LegalHoldPolicy.activation_time.validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldPolicy.members.validator = MembersInfo_validator
+LegalHoldPolicy.status.validator = LegalHoldStatus_validator
+LegalHoldPolicy.start_date.validator = common.DropboxTimestamp_validator
+LegalHoldPolicy.end_date.validator = bv.Nullable(common.DropboxTimestamp_validator)
 LegalHoldPolicy._all_field_names_ = set([
     'id',
     'name',
@@ -22037,14 +13524,14 @@ LegalHoldPolicy._all_field_names_ = set([
     'end_date',
 ])
 LegalHoldPolicy._all_fields_ = [
-    ('id', LegalHoldPolicy._id_validator),
-    ('name', LegalHoldPolicy._name_validator),
-    ('description', LegalHoldPolicy._description_validator),
-    ('activation_time', LegalHoldPolicy._activation_time_validator),
-    ('members', LegalHoldPolicy._members_validator),
-    ('status', LegalHoldPolicy._status_validator),
-    ('start_date', LegalHoldPolicy._start_date_validator),
-    ('end_date', LegalHoldPolicy._end_date_validator),
+    ('id', LegalHoldPolicy.id.validator),
+    ('name', LegalHoldPolicy.name.validator),
+    ('description', LegalHoldPolicy.description.validator),
+    ('activation_time', LegalHoldPolicy.activation_time.validator),
+    ('members', LegalHoldPolicy.members.validator),
+    ('status', LegalHoldPolicy.status.validator),
+    ('start_date', LegalHoldPolicy.start_date.validator),
+    ('end_date', LegalHoldPolicy.end_date.validator),
 ]
 
 LegalHoldStatus._active_validator = bv.Void()
@@ -22085,9 +13572,9 @@ LegalHoldsError.unknown_legal_hold_error = LegalHoldsError('unknown_legal_hold_e
 LegalHoldsError.insufficient_permissions = LegalHoldsError('insufficient_permissions')
 LegalHoldsError.other = LegalHoldsError('other')
 
-LegalHoldsGetPolicyArg._id_validator = LegalHoldId_validator
+LegalHoldsGetPolicyArg.id.validator = LegalHoldId_validator
 LegalHoldsGetPolicyArg._all_field_names_ = set(['id'])
-LegalHoldsGetPolicyArg._all_fields_ = [('id', LegalHoldsGetPolicyArg._id_validator)]
+LegalHoldsGetPolicyArg._all_fields_ = [('id', LegalHoldsGetPolicyArg.id.validator)]
 
 LegalHoldsGetPolicyError._legal_hold_policy_not_found_validator = bv.Void()
 LegalHoldsGetPolicyError._tagmap = {
@@ -22097,33 +13584,33 @@ LegalHoldsGetPolicyError._tagmap.update(LegalHoldsError._tagmap)
 
 LegalHoldsGetPolicyError.legal_hold_policy_not_found = LegalHoldsGetPolicyError('legal_hold_policy_not_found')
 
-LegalHoldsListHeldRevisionResult._entries_validator = bv.List(LegalHoldHeldRevisionMetadata_validator)
-LegalHoldsListHeldRevisionResult._cursor_validator = bv.Nullable(ListHeldRevisionCursor_validator)
-LegalHoldsListHeldRevisionResult._has_more_validator = bv.Boolean()
+LegalHoldsListHeldRevisionResult.entries.validator = bv.List(LegalHoldHeldRevisionMetadata_validator)
+LegalHoldsListHeldRevisionResult.cursor.validator = bv.Nullable(ListHeldRevisionCursor_validator)
+LegalHoldsListHeldRevisionResult.has_more.validator = bv.Boolean()
 LegalHoldsListHeldRevisionResult._all_field_names_ = set([
     'entries',
     'cursor',
     'has_more',
 ])
 LegalHoldsListHeldRevisionResult._all_fields_ = [
-    ('entries', LegalHoldsListHeldRevisionResult._entries_validator),
-    ('cursor', LegalHoldsListHeldRevisionResult._cursor_validator),
-    ('has_more', LegalHoldsListHeldRevisionResult._has_more_validator),
+    ('entries', LegalHoldsListHeldRevisionResult.entries.validator),
+    ('cursor', LegalHoldsListHeldRevisionResult.cursor.validator),
+    ('has_more', LegalHoldsListHeldRevisionResult.has_more.validator),
 ]
 
-LegalHoldsListHeldRevisionsArg._id_validator = LegalHoldId_validator
+LegalHoldsListHeldRevisionsArg.id.validator = LegalHoldId_validator
 LegalHoldsListHeldRevisionsArg._all_field_names_ = set(['id'])
-LegalHoldsListHeldRevisionsArg._all_fields_ = [('id', LegalHoldsListHeldRevisionsArg._id_validator)]
+LegalHoldsListHeldRevisionsArg._all_fields_ = [('id', LegalHoldsListHeldRevisionsArg.id.validator)]
 
-LegalHoldsListHeldRevisionsContinueArg._id_validator = LegalHoldId_validator
-LegalHoldsListHeldRevisionsContinueArg._cursor_validator = bv.Nullable(ListHeldRevisionCursor_validator)
+LegalHoldsListHeldRevisionsContinueArg.id.validator = LegalHoldId_validator
+LegalHoldsListHeldRevisionsContinueArg.cursor.validator = bv.Nullable(ListHeldRevisionCursor_validator)
 LegalHoldsListHeldRevisionsContinueArg._all_field_names_ = set([
     'id',
     'cursor',
 ])
 LegalHoldsListHeldRevisionsContinueArg._all_fields_ = [
-    ('id', LegalHoldsListHeldRevisionsContinueArg._id_validator),
-    ('cursor', LegalHoldsListHeldRevisionsContinueArg._cursor_validator),
+    ('id', LegalHoldsListHeldRevisionsContinueArg.id.validator),
+    ('cursor', LegalHoldsListHeldRevisionsContinueArg.cursor.validator),
 ]
 
 LegalHoldsListHeldRevisionsContinueError._unknown_legal_hold_error_validator = bv.Void()
@@ -22156,9 +13643,9 @@ LegalHoldsListHeldRevisionsError.transient_error = LegalHoldsListHeldRevisionsEr
 LegalHoldsListHeldRevisionsError.legal_hold_still_empty = LegalHoldsListHeldRevisionsError('legal_hold_still_empty')
 LegalHoldsListHeldRevisionsError.inactive_legal_hold = LegalHoldsListHeldRevisionsError('inactive_legal_hold')
 
-LegalHoldsListPoliciesArg._include_released_validator = bv.Boolean()
+LegalHoldsListPoliciesArg.include_released.validator = bv.Boolean()
 LegalHoldsListPoliciesArg._all_field_names_ = set(['include_released'])
-LegalHoldsListPoliciesArg._all_fields_ = [('include_released', LegalHoldsListPoliciesArg._include_released_validator)]
+LegalHoldsListPoliciesArg._all_fields_ = [('include_released', LegalHoldsListPoliciesArg.include_released.validator)]
 
 LegalHoldsListPoliciesError._transient_error_validator = bv.Void()
 LegalHoldsListPoliciesError._tagmap = {
@@ -22168,15 +13655,15 @@ LegalHoldsListPoliciesError._tagmap.update(LegalHoldsError._tagmap)
 
 LegalHoldsListPoliciesError.transient_error = LegalHoldsListPoliciesError('transient_error')
 
-LegalHoldsListPoliciesResult._policies_validator = bv.List(LegalHoldPolicy_validator)
+LegalHoldsListPoliciesResult.policies.validator = bv.List(LegalHoldPolicy_validator)
 LegalHoldsListPoliciesResult._all_field_names_ = set(['policies'])
-LegalHoldsListPoliciesResult._all_fields_ = [('policies', LegalHoldsListPoliciesResult._policies_validator)]
+LegalHoldsListPoliciesResult._all_fields_ = [('policies', LegalHoldsListPoliciesResult.policies.validator)]
 
-LegalHoldsPolicyCreateArg._name_validator = LegalHoldPolicyName_validator
-LegalHoldsPolicyCreateArg._description_validator = bv.Nullable(LegalHoldPolicyDescription_validator)
-LegalHoldsPolicyCreateArg._members_validator = bv.List(team_common.TeamMemberId_validator)
-LegalHoldsPolicyCreateArg._start_date_validator = bv.Nullable(common.DropboxTimestamp_validator)
-LegalHoldsPolicyCreateArg._end_date_validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldsPolicyCreateArg.name.validator = LegalHoldPolicyName_validator
+LegalHoldsPolicyCreateArg.description.validator = bv.Nullable(LegalHoldPolicyDescription_validator)
+LegalHoldsPolicyCreateArg.members.validator = bv.List(team_common.TeamMemberId_validator)
+LegalHoldsPolicyCreateArg.start_date.validator = bv.Nullable(common.DropboxTimestamp_validator)
+LegalHoldsPolicyCreateArg.end_date.validator = bv.Nullable(common.DropboxTimestamp_validator)
 LegalHoldsPolicyCreateArg._all_field_names_ = set([
     'name',
     'description',
@@ -22185,11 +13672,11 @@ LegalHoldsPolicyCreateArg._all_field_names_ = set([
     'end_date',
 ])
 LegalHoldsPolicyCreateArg._all_fields_ = [
-    ('name', LegalHoldsPolicyCreateArg._name_validator),
-    ('description', LegalHoldsPolicyCreateArg._description_validator),
-    ('members', LegalHoldsPolicyCreateArg._members_validator),
-    ('start_date', LegalHoldsPolicyCreateArg._start_date_validator),
-    ('end_date', LegalHoldsPolicyCreateArg._end_date_validator),
+    ('name', LegalHoldsPolicyCreateArg.name.validator),
+    ('description', LegalHoldsPolicyCreateArg.description.validator),
+    ('members', LegalHoldsPolicyCreateArg.members.validator),
+    ('start_date', LegalHoldsPolicyCreateArg.start_date.validator),
+    ('end_date', LegalHoldsPolicyCreateArg.end_date.validator),
 ]
 
 LegalHoldsPolicyCreateError._start_date_is_later_than_end_date_validator = bv.Void()
@@ -22221,9 +13708,9 @@ LegalHoldsPolicyCreateError.name_must_be_unique = LegalHoldsPolicyCreateError('n
 LegalHoldsPolicyCreateError.team_exceeded_legal_hold_quota = LegalHoldsPolicyCreateError('team_exceeded_legal_hold_quota')
 LegalHoldsPolicyCreateError.invalid_date = LegalHoldsPolicyCreateError('invalid_date')
 
-LegalHoldsPolicyReleaseArg._id_validator = LegalHoldId_validator
+LegalHoldsPolicyReleaseArg.id.validator = LegalHoldId_validator
 LegalHoldsPolicyReleaseArg._all_field_names_ = set(['id'])
-LegalHoldsPolicyReleaseArg._all_fields_ = [('id', LegalHoldsPolicyReleaseArg._id_validator)]
+LegalHoldsPolicyReleaseArg._all_fields_ = [('id', LegalHoldsPolicyReleaseArg.id.validator)]
 
 LegalHoldsPolicyReleaseError._legal_hold_performing_another_operation_validator = bv.Void()
 LegalHoldsPolicyReleaseError._legal_hold_already_releasing_validator = bv.Void()
@@ -22239,10 +13726,10 @@ LegalHoldsPolicyReleaseError.legal_hold_performing_another_operation = LegalHold
 LegalHoldsPolicyReleaseError.legal_hold_already_releasing = LegalHoldsPolicyReleaseError('legal_hold_already_releasing')
 LegalHoldsPolicyReleaseError.legal_hold_policy_not_found = LegalHoldsPolicyReleaseError('legal_hold_policy_not_found')
 
-LegalHoldsPolicyUpdateArg._id_validator = LegalHoldId_validator
-LegalHoldsPolicyUpdateArg._name_validator = bv.Nullable(LegalHoldPolicyName_validator)
-LegalHoldsPolicyUpdateArg._description_validator = bv.Nullable(LegalHoldPolicyDescription_validator)
-LegalHoldsPolicyUpdateArg._members_validator = bv.Nullable(bv.List(team_common.TeamMemberId_validator))
+LegalHoldsPolicyUpdateArg.id.validator = LegalHoldId_validator
+LegalHoldsPolicyUpdateArg.name.validator = bv.Nullable(LegalHoldPolicyName_validator)
+LegalHoldsPolicyUpdateArg.description.validator = bv.Nullable(LegalHoldPolicyDescription_validator)
+LegalHoldsPolicyUpdateArg.members.validator = bv.Nullable(bv.List(team_common.TeamMemberId_validator))
 LegalHoldsPolicyUpdateArg._all_field_names_ = set([
     'id',
     'name',
@@ -22250,10 +13737,10 @@ LegalHoldsPolicyUpdateArg._all_field_names_ = set([
     'members',
 ])
 LegalHoldsPolicyUpdateArg._all_fields_ = [
-    ('id', LegalHoldsPolicyUpdateArg._id_validator),
-    ('name', LegalHoldsPolicyUpdateArg._name_validator),
-    ('description', LegalHoldsPolicyUpdateArg._description_validator),
-    ('members', LegalHoldsPolicyUpdateArg._members_validator),
+    ('id', LegalHoldsPolicyUpdateArg.id.validator),
+    ('name', LegalHoldsPolicyUpdateArg.name.validator),
+    ('description', LegalHoldsPolicyUpdateArg.description.validator),
+    ('members', LegalHoldsPolicyUpdateArg.members.validator),
 ]
 
 LegalHoldsPolicyUpdateError._inactive_legal_hold_validator = bv.Void()
@@ -22282,9 +13769,9 @@ LegalHoldsPolicyUpdateError.empty_members_list = LegalHoldsPolicyUpdateError('em
 LegalHoldsPolicyUpdateError.name_must_be_unique = LegalHoldsPolicyUpdateError('name_must_be_unique')
 LegalHoldsPolicyUpdateError.legal_hold_policy_not_found = LegalHoldsPolicyUpdateError('legal_hold_policy_not_found')
 
-ListMemberAppsArg._team_member_id_validator = bv.String()
+ListMemberAppsArg.team_member_id.validator = bv.String()
 ListMemberAppsArg._all_field_names_ = set(['team_member_id'])
-ListMemberAppsArg._all_fields_ = [('team_member_id', ListMemberAppsArg._team_member_id_validator)]
+ListMemberAppsArg._all_fields_ = [('team_member_id', ListMemberAppsArg.team_member_id.validator)]
 
 ListMemberAppsError._member_not_found_validator = bv.Void()
 ListMemberAppsError._other_validator = bv.Void()
@@ -22296,14 +13783,14 @@ ListMemberAppsError._tagmap = {
 ListMemberAppsError.member_not_found = ListMemberAppsError('member_not_found')
 ListMemberAppsError.other = ListMemberAppsError('other')
 
-ListMemberAppsResult._linked_api_apps_validator = bv.List(ApiApp_validator)
+ListMemberAppsResult.linked_api_apps.validator = bv.List(ApiApp_validator)
 ListMemberAppsResult._all_field_names_ = set(['linked_api_apps'])
-ListMemberAppsResult._all_fields_ = [('linked_api_apps', ListMemberAppsResult._linked_api_apps_validator)]
+ListMemberAppsResult._all_fields_ = [('linked_api_apps', ListMemberAppsResult.linked_api_apps.validator)]
 
-ListMemberDevicesArg._team_member_id_validator = bv.String()
-ListMemberDevicesArg._include_web_sessions_validator = bv.Boolean()
-ListMemberDevicesArg._include_desktop_clients_validator = bv.Boolean()
-ListMemberDevicesArg._include_mobile_clients_validator = bv.Boolean()
+ListMemberDevicesArg.team_member_id.validator = bv.String()
+ListMemberDevicesArg.include_web_sessions.validator = bv.Boolean()
+ListMemberDevicesArg.include_desktop_clients.validator = bv.Boolean()
+ListMemberDevicesArg.include_mobile_clients.validator = bv.Boolean()
 ListMemberDevicesArg._all_field_names_ = set([
     'team_member_id',
     'include_web_sessions',
@@ -22311,10 +13798,10 @@ ListMemberDevicesArg._all_field_names_ = set([
     'include_mobile_clients',
 ])
 ListMemberDevicesArg._all_fields_ = [
-    ('team_member_id', ListMemberDevicesArg._team_member_id_validator),
-    ('include_web_sessions', ListMemberDevicesArg._include_web_sessions_validator),
-    ('include_desktop_clients', ListMemberDevicesArg._include_desktop_clients_validator),
-    ('include_mobile_clients', ListMemberDevicesArg._include_mobile_clients_validator),
+    ('team_member_id', ListMemberDevicesArg.team_member_id.validator),
+    ('include_web_sessions', ListMemberDevicesArg.include_web_sessions.validator),
+    ('include_desktop_clients', ListMemberDevicesArg.include_desktop_clients.validator),
+    ('include_mobile_clients', ListMemberDevicesArg.include_mobile_clients.validator),
 ]
 
 ListMemberDevicesError._member_not_found_validator = bv.Void()
@@ -22327,23 +13814,23 @@ ListMemberDevicesError._tagmap = {
 ListMemberDevicesError.member_not_found = ListMemberDevicesError('member_not_found')
 ListMemberDevicesError.other = ListMemberDevicesError('other')
 
-ListMemberDevicesResult._active_web_sessions_validator = bv.Nullable(bv.List(ActiveWebSession_validator))
-ListMemberDevicesResult._desktop_client_sessions_validator = bv.Nullable(bv.List(DesktopClientSession_validator))
-ListMemberDevicesResult._mobile_client_sessions_validator = bv.Nullable(bv.List(MobileClientSession_validator))
+ListMemberDevicesResult.active_web_sessions.validator = bv.Nullable(bv.List(ActiveWebSession_validator))
+ListMemberDevicesResult.desktop_client_sessions.validator = bv.Nullable(bv.List(DesktopClientSession_validator))
+ListMemberDevicesResult.mobile_client_sessions.validator = bv.Nullable(bv.List(MobileClientSession_validator))
 ListMemberDevicesResult._all_field_names_ = set([
     'active_web_sessions',
     'desktop_client_sessions',
     'mobile_client_sessions',
 ])
 ListMemberDevicesResult._all_fields_ = [
-    ('active_web_sessions', ListMemberDevicesResult._active_web_sessions_validator),
-    ('desktop_client_sessions', ListMemberDevicesResult._desktop_client_sessions_validator),
-    ('mobile_client_sessions', ListMemberDevicesResult._mobile_client_sessions_validator),
+    ('active_web_sessions', ListMemberDevicesResult.active_web_sessions.validator),
+    ('desktop_client_sessions', ListMemberDevicesResult.desktop_client_sessions.validator),
+    ('mobile_client_sessions', ListMemberDevicesResult.mobile_client_sessions.validator),
 ]
 
-ListMembersAppsArg._cursor_validator = bv.Nullable(bv.String())
+ListMembersAppsArg.cursor.validator = bv.Nullable(bv.String())
 ListMembersAppsArg._all_field_names_ = set(['cursor'])
-ListMembersAppsArg._all_fields_ = [('cursor', ListMembersAppsArg._cursor_validator)]
+ListMembersAppsArg._all_fields_ = [('cursor', ListMembersAppsArg.cursor.validator)]
 
 ListMembersAppsError._reset_validator = bv.Void()
 ListMembersAppsError._other_validator = bv.Void()
@@ -22355,24 +13842,24 @@ ListMembersAppsError._tagmap = {
 ListMembersAppsError.reset = ListMembersAppsError('reset')
 ListMembersAppsError.other = ListMembersAppsError('other')
 
-ListMembersAppsResult._apps_validator = bv.List(MemberLinkedApps_validator)
-ListMembersAppsResult._has_more_validator = bv.Boolean()
-ListMembersAppsResult._cursor_validator = bv.Nullable(bv.String())
+ListMembersAppsResult.apps.validator = bv.List(MemberLinkedApps_validator)
+ListMembersAppsResult.has_more.validator = bv.Boolean()
+ListMembersAppsResult.cursor.validator = bv.Nullable(bv.String())
 ListMembersAppsResult._all_field_names_ = set([
     'apps',
     'has_more',
     'cursor',
 ])
 ListMembersAppsResult._all_fields_ = [
-    ('apps', ListMembersAppsResult._apps_validator),
-    ('has_more', ListMembersAppsResult._has_more_validator),
-    ('cursor', ListMembersAppsResult._cursor_validator),
+    ('apps', ListMembersAppsResult.apps.validator),
+    ('has_more', ListMembersAppsResult.has_more.validator),
+    ('cursor', ListMembersAppsResult.cursor.validator),
 ]
 
-ListMembersDevicesArg._cursor_validator = bv.Nullable(bv.String())
-ListMembersDevicesArg._include_web_sessions_validator = bv.Boolean()
-ListMembersDevicesArg._include_desktop_clients_validator = bv.Boolean()
-ListMembersDevicesArg._include_mobile_clients_validator = bv.Boolean()
+ListMembersDevicesArg.cursor.validator = bv.Nullable(bv.String())
+ListMembersDevicesArg.include_web_sessions.validator = bv.Boolean()
+ListMembersDevicesArg.include_desktop_clients.validator = bv.Boolean()
+ListMembersDevicesArg.include_mobile_clients.validator = bv.Boolean()
 ListMembersDevicesArg._all_field_names_ = set([
     'cursor',
     'include_web_sessions',
@@ -22380,10 +13867,10 @@ ListMembersDevicesArg._all_field_names_ = set([
     'include_mobile_clients',
 ])
 ListMembersDevicesArg._all_fields_ = [
-    ('cursor', ListMembersDevicesArg._cursor_validator),
-    ('include_web_sessions', ListMembersDevicesArg._include_web_sessions_validator),
-    ('include_desktop_clients', ListMembersDevicesArg._include_desktop_clients_validator),
-    ('include_mobile_clients', ListMembersDevicesArg._include_mobile_clients_validator),
+    ('cursor', ListMembersDevicesArg.cursor.validator),
+    ('include_web_sessions', ListMembersDevicesArg.include_web_sessions.validator),
+    ('include_desktop_clients', ListMembersDevicesArg.include_desktop_clients.validator),
+    ('include_mobile_clients', ListMembersDevicesArg.include_mobile_clients.validator),
 ]
 
 ListMembersDevicesError._reset_validator = bv.Void()
@@ -22396,23 +13883,23 @@ ListMembersDevicesError._tagmap = {
 ListMembersDevicesError.reset = ListMembersDevicesError('reset')
 ListMembersDevicesError.other = ListMembersDevicesError('other')
 
-ListMembersDevicesResult._devices_validator = bv.List(MemberDevices_validator)
-ListMembersDevicesResult._has_more_validator = bv.Boolean()
-ListMembersDevicesResult._cursor_validator = bv.Nullable(bv.String())
+ListMembersDevicesResult.devices.validator = bv.List(MemberDevices_validator)
+ListMembersDevicesResult.has_more.validator = bv.Boolean()
+ListMembersDevicesResult.cursor.validator = bv.Nullable(bv.String())
 ListMembersDevicesResult._all_field_names_ = set([
     'devices',
     'has_more',
     'cursor',
 ])
 ListMembersDevicesResult._all_fields_ = [
-    ('devices', ListMembersDevicesResult._devices_validator),
-    ('has_more', ListMembersDevicesResult._has_more_validator),
-    ('cursor', ListMembersDevicesResult._cursor_validator),
+    ('devices', ListMembersDevicesResult.devices.validator),
+    ('has_more', ListMembersDevicesResult.has_more.validator),
+    ('cursor', ListMembersDevicesResult.cursor.validator),
 ]
 
-ListTeamAppsArg._cursor_validator = bv.Nullable(bv.String())
+ListTeamAppsArg.cursor.validator = bv.Nullable(bv.String())
 ListTeamAppsArg._all_field_names_ = set(['cursor'])
-ListTeamAppsArg._all_fields_ = [('cursor', ListTeamAppsArg._cursor_validator)]
+ListTeamAppsArg._all_fields_ = [('cursor', ListTeamAppsArg.cursor.validator)]
 
 ListTeamAppsError._reset_validator = bv.Void()
 ListTeamAppsError._other_validator = bv.Void()
@@ -22424,24 +13911,24 @@ ListTeamAppsError._tagmap = {
 ListTeamAppsError.reset = ListTeamAppsError('reset')
 ListTeamAppsError.other = ListTeamAppsError('other')
 
-ListTeamAppsResult._apps_validator = bv.List(MemberLinkedApps_validator)
-ListTeamAppsResult._has_more_validator = bv.Boolean()
-ListTeamAppsResult._cursor_validator = bv.Nullable(bv.String())
+ListTeamAppsResult.apps.validator = bv.List(MemberLinkedApps_validator)
+ListTeamAppsResult.has_more.validator = bv.Boolean()
+ListTeamAppsResult.cursor.validator = bv.Nullable(bv.String())
 ListTeamAppsResult._all_field_names_ = set([
     'apps',
     'has_more',
     'cursor',
 ])
 ListTeamAppsResult._all_fields_ = [
-    ('apps', ListTeamAppsResult._apps_validator),
-    ('has_more', ListTeamAppsResult._has_more_validator),
-    ('cursor', ListTeamAppsResult._cursor_validator),
+    ('apps', ListTeamAppsResult.apps.validator),
+    ('has_more', ListTeamAppsResult.has_more.validator),
+    ('cursor', ListTeamAppsResult.cursor.validator),
 ]
 
-ListTeamDevicesArg._cursor_validator = bv.Nullable(bv.String())
-ListTeamDevicesArg._include_web_sessions_validator = bv.Boolean()
-ListTeamDevicesArg._include_desktop_clients_validator = bv.Boolean()
-ListTeamDevicesArg._include_mobile_clients_validator = bv.Boolean()
+ListTeamDevicesArg.cursor.validator = bv.Nullable(bv.String())
+ListTeamDevicesArg.include_web_sessions.validator = bv.Boolean()
+ListTeamDevicesArg.include_desktop_clients.validator = bv.Boolean()
+ListTeamDevicesArg.include_mobile_clients.validator = bv.Boolean()
 ListTeamDevicesArg._all_field_names_ = set([
     'cursor',
     'include_web_sessions',
@@ -22449,10 +13936,10 @@ ListTeamDevicesArg._all_field_names_ = set([
     'include_mobile_clients',
 ])
 ListTeamDevicesArg._all_fields_ = [
-    ('cursor', ListTeamDevicesArg._cursor_validator),
-    ('include_web_sessions', ListTeamDevicesArg._include_web_sessions_validator),
-    ('include_desktop_clients', ListTeamDevicesArg._include_desktop_clients_validator),
-    ('include_mobile_clients', ListTeamDevicesArg._include_mobile_clients_validator),
+    ('cursor', ListTeamDevicesArg.cursor.validator),
+    ('include_web_sessions', ListTeamDevicesArg.include_web_sessions.validator),
+    ('include_desktop_clients', ListTeamDevicesArg.include_desktop_clients.validator),
+    ('include_mobile_clients', ListTeamDevicesArg.include_mobile_clients.validator),
 ]
 
 ListTeamDevicesError._reset_validator = bv.Void()
@@ -22465,39 +13952,39 @@ ListTeamDevicesError._tagmap = {
 ListTeamDevicesError.reset = ListTeamDevicesError('reset')
 ListTeamDevicesError.other = ListTeamDevicesError('other')
 
-ListTeamDevicesResult._devices_validator = bv.List(MemberDevices_validator)
-ListTeamDevicesResult._has_more_validator = bv.Boolean()
-ListTeamDevicesResult._cursor_validator = bv.Nullable(bv.String())
+ListTeamDevicesResult.devices.validator = bv.List(MemberDevices_validator)
+ListTeamDevicesResult.has_more.validator = bv.Boolean()
+ListTeamDevicesResult.cursor.validator = bv.Nullable(bv.String())
 ListTeamDevicesResult._all_field_names_ = set([
     'devices',
     'has_more',
     'cursor',
 ])
 ListTeamDevicesResult._all_fields_ = [
-    ('devices', ListTeamDevicesResult._devices_validator),
-    ('has_more', ListTeamDevicesResult._has_more_validator),
-    ('cursor', ListTeamDevicesResult._cursor_validator),
+    ('devices', ListTeamDevicesResult.devices.validator),
+    ('has_more', ListTeamDevicesResult.has_more.validator),
+    ('cursor', ListTeamDevicesResult.cursor.validator),
 ]
 
-MemberAccess._user_validator = UserSelectorArg_validator
-MemberAccess._access_type_validator = GroupAccessType_validator
+MemberAccess.user.validator = UserSelectorArg_validator
+MemberAccess.access_type.validator = GroupAccessType_validator
 MemberAccess._all_field_names_ = set([
     'user',
     'access_type',
 ])
 MemberAccess._all_fields_ = [
-    ('user', MemberAccess._user_validator),
-    ('access_type', MemberAccess._access_type_validator),
+    ('user', MemberAccess.user.validator),
+    ('access_type', MemberAccess.access_type.validator),
 ]
 
-MemberAddArg._member_email_validator = common.EmailAddress_validator
-MemberAddArg._member_given_name_validator = bv.Nullable(common.OptionalNamePart_validator)
-MemberAddArg._member_surname_validator = bv.Nullable(common.OptionalNamePart_validator)
-MemberAddArg._member_external_id_validator = bv.Nullable(team_common.MemberExternalId_validator)
-MemberAddArg._member_persistent_id_validator = bv.Nullable(bv.String())
-MemberAddArg._send_welcome_email_validator = bv.Boolean()
-MemberAddArg._role_validator = AdminTier_validator
-MemberAddArg._is_directory_restricted_validator = bv.Nullable(bv.Boolean())
+MemberAddArg.member_email.validator = common.EmailAddress_validator
+MemberAddArg.member_given_name.validator = bv.Nullable(common.OptionalNamePart_validator)
+MemberAddArg.member_surname.validator = bv.Nullable(common.OptionalNamePart_validator)
+MemberAddArg.member_external_id.validator = bv.Nullable(team_common.MemberExternalId_validator)
+MemberAddArg.member_persistent_id.validator = bv.Nullable(bv.String())
+MemberAddArg.send_welcome_email.validator = bv.Boolean()
+MemberAddArg.role.validator = AdminTier_validator
+MemberAddArg.is_directory_restricted.validator = bv.Nullable(bv.Boolean())
 MemberAddArg._all_field_names_ = set([
     'member_email',
     'member_given_name',
@@ -22509,14 +13996,14 @@ MemberAddArg._all_field_names_ = set([
     'is_directory_restricted',
 ])
 MemberAddArg._all_fields_ = [
-    ('member_email', MemberAddArg._member_email_validator),
-    ('member_given_name', MemberAddArg._member_given_name_validator),
-    ('member_surname', MemberAddArg._member_surname_validator),
-    ('member_external_id', MemberAddArg._member_external_id_validator),
-    ('member_persistent_id', MemberAddArg._member_persistent_id_validator),
-    ('send_welcome_email', MemberAddArg._send_welcome_email_validator),
-    ('role', MemberAddArg._role_validator),
-    ('is_directory_restricted', MemberAddArg._is_directory_restricted_validator),
+    ('member_email', MemberAddArg.member_email.validator),
+    ('member_given_name', MemberAddArg.member_given_name.validator),
+    ('member_surname', MemberAddArg.member_surname.validator),
+    ('member_external_id', MemberAddArg.member_external_id.validator),
+    ('member_persistent_id', MemberAddArg.member_persistent_id.validator),
+    ('send_welcome_email', MemberAddArg.send_welcome_email.validator),
+    ('role', MemberAddArg.role.validator),
+    ('is_directory_restricted', MemberAddArg.is_directory_restricted.validator),
 ]
 
 MemberAddResult._success_validator = TeamMemberInfo_validator
@@ -22544,10 +14031,10 @@ MemberAddResult._tagmap = {
     'user_creation_failed': MemberAddResult._user_creation_failed_validator,
 }
 
-MemberDevices._team_member_id_validator = bv.String()
-MemberDevices._web_sessions_validator = bv.Nullable(bv.List(ActiveWebSession_validator))
-MemberDevices._desktop_clients_validator = bv.Nullable(bv.List(DesktopClientSession_validator))
-MemberDevices._mobile_clients_validator = bv.Nullable(bv.List(MobileClientSession_validator))
+MemberDevices.team_member_id.validator = bv.String()
+MemberDevices.web_sessions.validator = bv.Nullable(bv.List(ActiveWebSession_validator))
+MemberDevices.desktop_clients.validator = bv.Nullable(bv.List(DesktopClientSession_validator))
+MemberDevices.mobile_clients.validator = bv.Nullable(bv.List(MobileClientSession_validator))
 MemberDevices._all_field_names_ = set([
     'team_member_id',
     'web_sessions',
@@ -22555,38 +14042,38 @@ MemberDevices._all_field_names_ = set([
     'mobile_clients',
 ])
 MemberDevices._all_fields_ = [
-    ('team_member_id', MemberDevices._team_member_id_validator),
-    ('web_sessions', MemberDevices._web_sessions_validator),
-    ('desktop_clients', MemberDevices._desktop_clients_validator),
-    ('mobile_clients', MemberDevices._mobile_clients_validator),
+    ('team_member_id', MemberDevices.team_member_id.validator),
+    ('web_sessions', MemberDevices.web_sessions.validator),
+    ('desktop_clients', MemberDevices.desktop_clients.validator),
+    ('mobile_clients', MemberDevices.mobile_clients.validator),
 ]
 
-MemberLinkedApps._team_member_id_validator = bv.String()
-MemberLinkedApps._linked_api_apps_validator = bv.List(ApiApp_validator)
+MemberLinkedApps.team_member_id.validator = bv.String()
+MemberLinkedApps.linked_api_apps.validator = bv.List(ApiApp_validator)
 MemberLinkedApps._all_field_names_ = set([
     'team_member_id',
     'linked_api_apps',
 ])
 MemberLinkedApps._all_fields_ = [
-    ('team_member_id', MemberLinkedApps._team_member_id_validator),
-    ('linked_api_apps', MemberLinkedApps._linked_api_apps_validator),
+    ('team_member_id', MemberLinkedApps.team_member_id.validator),
+    ('linked_api_apps', MemberLinkedApps.linked_api_apps.validator),
 ]
 
-MemberProfile._team_member_id_validator = team_common.TeamMemberId_validator
-MemberProfile._external_id_validator = bv.Nullable(bv.String())
-MemberProfile._account_id_validator = bv.Nullable(users_common.AccountId_validator)
-MemberProfile._email_validator = bv.String()
-MemberProfile._email_verified_validator = bv.Boolean()
-MemberProfile._secondary_emails_validator = bv.Nullable(bv.List(secondary_emails.SecondaryEmail_validator))
-MemberProfile._status_validator = TeamMemberStatus_validator
-MemberProfile._name_validator = users.Name_validator
-MemberProfile._membership_type_validator = TeamMembershipType_validator
-MemberProfile._invited_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
-MemberProfile._joined_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
-MemberProfile._suspended_on_validator = bv.Nullable(common.DropboxTimestamp_validator)
-MemberProfile._persistent_id_validator = bv.Nullable(bv.String())
-MemberProfile._is_directory_restricted_validator = bv.Nullable(bv.Boolean())
-MemberProfile._profile_photo_url_validator = bv.Nullable(bv.String())
+MemberProfile.team_member_id.validator = team_common.TeamMemberId_validator
+MemberProfile.external_id.validator = bv.Nullable(bv.String())
+MemberProfile.account_id.validator = bv.Nullable(users_common.AccountId_validator)
+MemberProfile.email.validator = bv.String()
+MemberProfile.email_verified.validator = bv.Boolean()
+MemberProfile.secondary_emails.validator = bv.Nullable(bv.List(secondary_emails.SecondaryEmail_validator))
+MemberProfile.status.validator = TeamMemberStatus_validator
+MemberProfile.name.validator = users.Name_validator
+MemberProfile.membership_type.validator = TeamMembershipType_validator
+MemberProfile.invited_on.validator = bv.Nullable(common.DropboxTimestamp_validator)
+MemberProfile.joined_on.validator = bv.Nullable(common.DropboxTimestamp_validator)
+MemberProfile.suspended_on.validator = bv.Nullable(common.DropboxTimestamp_validator)
+MemberProfile.persistent_id.validator = bv.Nullable(bv.String())
+MemberProfile.is_directory_restricted.validator = bv.Nullable(bv.Boolean())
+MemberProfile.profile_photo_url.validator = bv.Nullable(bv.String())
 MemberProfile._all_field_names_ = set([
     'team_member_id',
     'external_id',
@@ -22605,21 +14092,21 @@ MemberProfile._all_field_names_ = set([
     'profile_photo_url',
 ])
 MemberProfile._all_fields_ = [
-    ('team_member_id', MemberProfile._team_member_id_validator),
-    ('external_id', MemberProfile._external_id_validator),
-    ('account_id', MemberProfile._account_id_validator),
-    ('email', MemberProfile._email_validator),
-    ('email_verified', MemberProfile._email_verified_validator),
-    ('secondary_emails', MemberProfile._secondary_emails_validator),
-    ('status', MemberProfile._status_validator),
-    ('name', MemberProfile._name_validator),
-    ('membership_type', MemberProfile._membership_type_validator),
-    ('invited_on', MemberProfile._invited_on_validator),
-    ('joined_on', MemberProfile._joined_on_validator),
-    ('suspended_on', MemberProfile._suspended_on_validator),
-    ('persistent_id', MemberProfile._persistent_id_validator),
-    ('is_directory_restricted', MemberProfile._is_directory_restricted_validator),
-    ('profile_photo_url', MemberProfile._profile_photo_url_validator),
+    ('team_member_id', MemberProfile.team_member_id.validator),
+    ('external_id', MemberProfile.external_id.validator),
+    ('account_id', MemberProfile.account_id.validator),
+    ('email', MemberProfile.email.validator),
+    ('email_verified', MemberProfile.email_verified.validator),
+    ('secondary_emails', MemberProfile.secondary_emails.validator),
+    ('status', MemberProfile.status.validator),
+    ('name', MemberProfile.name.validator),
+    ('membership_type', MemberProfile.membership_type.validator),
+    ('invited_on', MemberProfile.invited_on.validator),
+    ('joined_on', MemberProfile.joined_on.validator),
+    ('suspended_on', MemberProfile.suspended_on.validator),
+    ('persistent_id', MemberProfile.persistent_id.validator),
+    ('is_directory_restricted', MemberProfile.is_directory_restricted.validator),
+    ('profile_photo_url', MemberProfile.profile_photo_url.validator),
 ]
 
 UserSelectorError._user_not_found_validator = bv.Void()
@@ -22637,15 +14124,15 @@ MemberSelectorError._tagmap.update(UserSelectorError._tagmap)
 
 MemberSelectorError.user_not_in_team = MemberSelectorError('user_not_in_team')
 
-MembersAddArg._new_members_validator = bv.List(MemberAddArg_validator)
-MembersAddArg._force_async_validator = bv.Boolean()
+MembersAddArg.new_members.validator = bv.List(MemberAddArg_validator)
+MembersAddArg.force_async.validator = bv.Boolean()
 MembersAddArg._all_field_names_ = set([
     'new_members',
     'force_async',
 ])
 MembersAddArg._all_fields_ = [
-    ('new_members', MembersAddArg._new_members_validator),
-    ('force_async', MembersAddArg._force_async_validator),
+    ('new_members', MembersAddArg.new_members.validator),
+    ('force_async', MembersAddArg.force_async.validator),
 ]
 
 MembersAddJobStatus._complete_validator = bv.List(MemberAddResult_validator)
@@ -22662,24 +14149,24 @@ MembersAddLaunch._tagmap = {
 }
 MembersAddLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
-MembersDeactivateBaseArg._user_validator = UserSelectorArg_validator
+MembersDeactivateBaseArg.user.validator = UserSelectorArg_validator
 MembersDeactivateBaseArg._all_field_names_ = set(['user'])
-MembersDeactivateBaseArg._all_fields_ = [('user', MembersDeactivateBaseArg._user_validator)]
+MembersDeactivateBaseArg._all_fields_ = [('user', MembersDeactivateBaseArg.user.validator)]
 
-MembersDataTransferArg._transfer_dest_id_validator = UserSelectorArg_validator
-MembersDataTransferArg._transfer_admin_id_validator = UserSelectorArg_validator
+MembersDataTransferArg.transfer_dest_id.validator = UserSelectorArg_validator
+MembersDataTransferArg.transfer_admin_id.validator = UserSelectorArg_validator
 MembersDataTransferArg._all_field_names_ = MembersDeactivateBaseArg._all_field_names_.union(set([
     'transfer_dest_id',
     'transfer_admin_id',
 ]))
 MembersDataTransferArg._all_fields_ = MembersDeactivateBaseArg._all_fields_ + [
-    ('transfer_dest_id', MembersDataTransferArg._transfer_dest_id_validator),
-    ('transfer_admin_id', MembersDataTransferArg._transfer_admin_id_validator),
+    ('transfer_dest_id', MembersDataTransferArg.transfer_dest_id.validator),
+    ('transfer_admin_id', MembersDataTransferArg.transfer_admin_id.validator),
 ]
 
-MembersDeactivateArg._wipe_data_validator = bv.Boolean()
+MembersDeactivateArg.wipe_data.validator = bv.Boolean()
 MembersDeactivateArg._all_field_names_ = MembersDeactivateBaseArg._all_field_names_.union(set(['wipe_data']))
-MembersDeactivateArg._all_fields_ = MembersDeactivateBaseArg._all_fields_ + [('wipe_data', MembersDeactivateArg._wipe_data_validator)]
+MembersDeactivateArg._all_fields_ = MembersDeactivateBaseArg._all_fields_ + [('wipe_data', MembersDeactivateArg.wipe_data.validator)]
 
 MembersDeactivateError._user_not_in_team_validator = bv.Void()
 MembersDeactivateError._other_validator = bv.Void()
@@ -22692,9 +14179,9 @@ MembersDeactivateError._tagmap.update(UserSelectorError._tagmap)
 MembersDeactivateError.user_not_in_team = MembersDeactivateError('user_not_in_team')
 MembersDeactivateError.other = MembersDeactivateError('other')
 
-MembersDeleteProfilePhotoArg._user_validator = UserSelectorArg_validator
+MembersDeleteProfilePhotoArg.user.validator = UserSelectorArg_validator
 MembersDeleteProfilePhotoArg._all_field_names_ = set(['user'])
-MembersDeleteProfilePhotoArg._all_fields_ = [('user', MembersDeleteProfilePhotoArg._user_validator)]
+MembersDeleteProfilePhotoArg._all_fields_ = [('user', MembersDeleteProfilePhotoArg.user.validator)]
 
 MembersDeleteProfilePhotoError._set_profile_disallowed_validator = bv.Void()
 MembersDeleteProfilePhotoError._other_validator = bv.Void()
@@ -22707,9 +14194,9 @@ MembersDeleteProfilePhotoError._tagmap.update(MemberSelectorError._tagmap)
 MembersDeleteProfilePhotoError.set_profile_disallowed = MembersDeleteProfilePhotoError('set_profile_disallowed')
 MembersDeleteProfilePhotoError.other = MembersDeleteProfilePhotoError('other')
 
-MembersGetInfoArgs._members_validator = bv.List(UserSelectorArg_validator)
+MembersGetInfoArgs.members.validator = bv.List(UserSelectorArg_validator)
 MembersGetInfoArgs._all_field_names_ = set(['members'])
-MembersGetInfoArgs._all_fields_ = [('members', MembersGetInfoArgs._members_validator)]
+MembersGetInfoArgs._all_fields_ = [('members', MembersGetInfoArgs.members.validator)]
 
 MembersGetInfoError._other_validator = bv.Void()
 MembersGetInfoError._tagmap = {
@@ -22725,31 +14212,31 @@ MembersGetInfoItem._tagmap = {
     'member_info': MembersGetInfoItem._member_info_validator,
 }
 
-MembersInfo._team_member_ids_validator = bv.List(team_common.TeamMemberId_validator)
-MembersInfo._permanently_deleted_users_validator = bv.UInt64()
+MembersInfo.team_member_ids.validator = bv.List(team_common.TeamMemberId_validator)
+MembersInfo.permanently_deleted_users.validator = bv.UInt64()
 MembersInfo._all_field_names_ = set([
     'team_member_ids',
     'permanently_deleted_users',
 ])
 MembersInfo._all_fields_ = [
-    ('team_member_ids', MembersInfo._team_member_ids_validator),
-    ('permanently_deleted_users', MembersInfo._permanently_deleted_users_validator),
+    ('team_member_ids', MembersInfo.team_member_ids.validator),
+    ('permanently_deleted_users', MembersInfo.permanently_deleted_users.validator),
 ]
 
-MembersListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
-MembersListArg._include_removed_validator = bv.Boolean()
+MembersListArg.limit.validator = bv.UInt32(min_value=1, max_value=1000)
+MembersListArg.include_removed.validator = bv.Boolean()
 MembersListArg._all_field_names_ = set([
     'limit',
     'include_removed',
 ])
 MembersListArg._all_fields_ = [
-    ('limit', MembersListArg._limit_validator),
-    ('include_removed', MembersListArg._include_removed_validator),
+    ('limit', MembersListArg.limit.validator),
+    ('include_removed', MembersListArg.include_removed.validator),
 ]
 
-MembersListContinueArg._cursor_validator = bv.String()
+MembersListContinueArg.cursor.validator = bv.String()
 MembersListContinueArg._all_field_names_ = set(['cursor'])
-MembersListContinueArg._all_fields_ = [('cursor', MembersListContinueArg._cursor_validator)]
+MembersListContinueArg._all_fields_ = [('cursor', MembersListContinueArg.cursor.validator)]
 
 MembersListContinueError._invalid_cursor_validator = bv.Void()
 MembersListContinueError._other_validator = bv.Void()
@@ -22768,23 +14255,23 @@ MembersListError._tagmap = {
 
 MembersListError.other = MembersListError('other')
 
-MembersListResult._members_validator = bv.List(TeamMemberInfo_validator)
-MembersListResult._cursor_validator = bv.String()
-MembersListResult._has_more_validator = bv.Boolean()
+MembersListResult.members.validator = bv.List(TeamMemberInfo_validator)
+MembersListResult.cursor.validator = bv.String()
+MembersListResult.has_more.validator = bv.Boolean()
 MembersListResult._all_field_names_ = set([
     'members',
     'cursor',
     'has_more',
 ])
 MembersListResult._all_fields_ = [
-    ('members', MembersListResult._members_validator),
-    ('cursor', MembersListResult._cursor_validator),
-    ('has_more', MembersListResult._has_more_validator),
+    ('members', MembersListResult.members.validator),
+    ('cursor', MembersListResult.cursor.validator),
+    ('has_more', MembersListResult.has_more.validator),
 ]
 
-MembersRecoverArg._user_validator = UserSelectorArg_validator
+MembersRecoverArg.user.validator = UserSelectorArg_validator
 MembersRecoverArg._all_field_names_ = set(['user'])
-MembersRecoverArg._all_fields_ = [('user', MembersRecoverArg._user_validator)]
+MembersRecoverArg._all_fields_ = [('user', MembersRecoverArg.user.validator)]
 
 MembersRecoverError._user_unrecoverable_validator = bv.Void()
 MembersRecoverError._user_not_in_team_validator = bv.Void()
@@ -22803,10 +14290,10 @@ MembersRecoverError.user_not_in_team = MembersRecoverError('user_not_in_team')
 MembersRecoverError.team_license_limit = MembersRecoverError('team_license_limit')
 MembersRecoverError.other = MembersRecoverError('other')
 
-MembersRemoveArg._transfer_dest_id_validator = bv.Nullable(UserSelectorArg_validator)
-MembersRemoveArg._transfer_admin_id_validator = bv.Nullable(UserSelectorArg_validator)
-MembersRemoveArg._keep_account_validator = bv.Boolean()
-MembersRemoveArg._retain_team_shares_validator = bv.Boolean()
+MembersRemoveArg.transfer_dest_id.validator = bv.Nullable(UserSelectorArg_validator)
+MembersRemoveArg.transfer_admin_id.validator = bv.Nullable(UserSelectorArg_validator)
+MembersRemoveArg.keep_account.validator = bv.Boolean()
+MembersRemoveArg.retain_team_shares.validator = bv.Boolean()
 MembersRemoveArg._all_field_names_ = MembersDeactivateArg._all_field_names_.union(set([
     'transfer_dest_id',
     'transfer_admin_id',
@@ -22814,10 +14301,10 @@ MembersRemoveArg._all_field_names_ = MembersDeactivateArg._all_field_names_.unio
     'retain_team_shares',
 ]))
 MembersRemoveArg._all_fields_ = MembersDeactivateArg._all_fields_ + [
-    ('transfer_dest_id', MembersRemoveArg._transfer_dest_id_validator),
-    ('transfer_admin_id', MembersRemoveArg._transfer_admin_id_validator),
-    ('keep_account', MembersRemoveArg._keep_account_validator),
-    ('retain_team_shares', MembersRemoveArg._retain_team_shares_validator),
+    ('transfer_dest_id', MembersRemoveArg.transfer_dest_id.validator),
+    ('transfer_admin_id', MembersRemoveArg.transfer_admin_id.validator),
+    ('keep_account', MembersRemoveArg.keep_account.validator),
+    ('retain_team_shares', MembersRemoveArg.retain_team_shares.validator),
 ]
 
 MembersTransferFilesError._removed_and_transfer_dest_should_differ_validator = bv.Void()
@@ -22898,15 +14385,15 @@ MembersSendWelcomeError._tagmap.update(MemberSelectorError._tagmap)
 
 MembersSendWelcomeError.other = MembersSendWelcomeError('other')
 
-MembersSetPermissionsArg._user_validator = UserSelectorArg_validator
-MembersSetPermissionsArg._new_role_validator = AdminTier_validator
+MembersSetPermissionsArg.user.validator = UserSelectorArg_validator
+MembersSetPermissionsArg.new_role.validator = AdminTier_validator
 MembersSetPermissionsArg._all_field_names_ = set([
     'user',
     'new_role',
 ])
 MembersSetPermissionsArg._all_fields_ = [
-    ('user', MembersSetPermissionsArg._user_validator),
-    ('new_role', MembersSetPermissionsArg._new_role_validator),
+    ('user', MembersSetPermissionsArg.user.validator),
+    ('new_role', MembersSetPermissionsArg.new_role.validator),
 ]
 
 MembersSetPermissionsError._last_admin_validator = bv.Void()
@@ -22929,24 +14416,24 @@ MembersSetPermissionsError.cannot_set_permissions = MembersSetPermissionsError('
 MembersSetPermissionsError.team_license_limit = MembersSetPermissionsError('team_license_limit')
 MembersSetPermissionsError.other = MembersSetPermissionsError('other')
 
-MembersSetPermissionsResult._team_member_id_validator = team_common.TeamMemberId_validator
-MembersSetPermissionsResult._role_validator = AdminTier_validator
+MembersSetPermissionsResult.team_member_id.validator = team_common.TeamMemberId_validator
+MembersSetPermissionsResult.role.validator = AdminTier_validator
 MembersSetPermissionsResult._all_field_names_ = set([
     'team_member_id',
     'role',
 ])
 MembersSetPermissionsResult._all_fields_ = [
-    ('team_member_id', MembersSetPermissionsResult._team_member_id_validator),
-    ('role', MembersSetPermissionsResult._role_validator),
+    ('team_member_id', MembersSetPermissionsResult.team_member_id.validator),
+    ('role', MembersSetPermissionsResult.role.validator),
 ]
 
-MembersSetProfileArg._user_validator = UserSelectorArg_validator
-MembersSetProfileArg._new_email_validator = bv.Nullable(common.EmailAddress_validator)
-MembersSetProfileArg._new_external_id_validator = bv.Nullable(team_common.MemberExternalId_validator)
-MembersSetProfileArg._new_given_name_validator = bv.Nullable(common.OptionalNamePart_validator)
-MembersSetProfileArg._new_surname_validator = bv.Nullable(common.OptionalNamePart_validator)
-MembersSetProfileArg._new_persistent_id_validator = bv.Nullable(bv.String())
-MembersSetProfileArg._new_is_directory_restricted_validator = bv.Nullable(bv.Boolean())
+MembersSetProfileArg.user.validator = UserSelectorArg_validator
+MembersSetProfileArg.new_email.validator = bv.Nullable(common.EmailAddress_validator)
+MembersSetProfileArg.new_external_id.validator = bv.Nullable(team_common.MemberExternalId_validator)
+MembersSetProfileArg.new_given_name.validator = bv.Nullable(common.OptionalNamePart_validator)
+MembersSetProfileArg.new_surname.validator = bv.Nullable(common.OptionalNamePart_validator)
+MembersSetProfileArg.new_persistent_id.validator = bv.Nullable(bv.String())
+MembersSetProfileArg.new_is_directory_restricted.validator = bv.Nullable(bv.Boolean())
 MembersSetProfileArg._all_field_names_ = set([
     'user',
     'new_email',
@@ -22957,13 +14444,13 @@ MembersSetProfileArg._all_field_names_ = set([
     'new_is_directory_restricted',
 ])
 MembersSetProfileArg._all_fields_ = [
-    ('user', MembersSetProfileArg._user_validator),
-    ('new_email', MembersSetProfileArg._new_email_validator),
-    ('new_external_id', MembersSetProfileArg._new_external_id_validator),
-    ('new_given_name', MembersSetProfileArg._new_given_name_validator),
-    ('new_surname', MembersSetProfileArg._new_surname_validator),
-    ('new_persistent_id', MembersSetProfileArg._new_persistent_id_validator),
-    ('new_is_directory_restricted', MembersSetProfileArg._new_is_directory_restricted_validator),
+    ('user', MembersSetProfileArg.user.validator),
+    ('new_email', MembersSetProfileArg.new_email.validator),
+    ('new_external_id', MembersSetProfileArg.new_external_id.validator),
+    ('new_given_name', MembersSetProfileArg.new_given_name.validator),
+    ('new_surname', MembersSetProfileArg.new_surname.validator),
+    ('new_persistent_id', MembersSetProfileArg.new_persistent_id.validator),
+    ('new_is_directory_restricted', MembersSetProfileArg.new_is_directory_restricted.validator),
 ]
 
 MembersSetProfileError._external_id_and_new_external_id_unsafe_validator = bv.Void()
@@ -23001,15 +14488,15 @@ MembersSetProfileError.persistent_id_used_by_other_user = MembersSetProfileError
 MembersSetProfileError.directory_restricted_off = MembersSetProfileError('directory_restricted_off')
 MembersSetProfileError.other = MembersSetProfileError('other')
 
-MembersSetProfilePhotoArg._user_validator = UserSelectorArg_validator
-MembersSetProfilePhotoArg._photo_validator = account.PhotoSourceArg_validator
+MembersSetProfilePhotoArg.user.validator = UserSelectorArg_validator
+MembersSetProfilePhotoArg.photo.validator = account.PhotoSourceArg_validator
 MembersSetProfilePhotoArg._all_field_names_ = set([
     'user',
     'photo',
 ])
 MembersSetProfilePhotoArg._all_fields_ = [
-    ('user', MembersSetProfilePhotoArg._user_validator),
-    ('photo', MembersSetProfilePhotoArg._photo_validator),
+    ('user', MembersSetProfilePhotoArg.user.validator),
+    ('photo', MembersSetProfilePhotoArg.photo.validator),
 ]
 
 MembersSetProfilePhotoError._set_profile_disallowed_validator = bv.Void()
@@ -23056,9 +14543,9 @@ MembersTransferFormerMembersFilesError.user_not_removed = MembersTransferFormerM
 MembersTransferFormerMembersFilesError.user_data_cannot_be_transferred = MembersTransferFormerMembersFilesError('user_data_cannot_be_transferred')
 MembersTransferFormerMembersFilesError.user_data_already_transferred = MembersTransferFormerMembersFilesError('user_data_already_transferred')
 
-MembersUnsuspendArg._user_validator = UserSelectorArg_validator
+MembersUnsuspendArg.user.validator = UserSelectorArg_validator
 MembersUnsuspendArg._all_field_names_ = set(['user'])
-MembersUnsuspendArg._all_fields_ = [('user', MembersUnsuspendArg._user_validator)]
+MembersUnsuspendArg._all_fields_ = [('user', MembersUnsuspendArg.user.validator)]
 
 MembersUnsuspendError._unsuspend_non_suspended_member_validator = bv.Void()
 MembersUnsuspendError._team_license_limit_validator = bv.Void()
@@ -23093,11 +14580,11 @@ MobileClientPlatform.windows_phone = MobileClientPlatform('windows_phone')
 MobileClientPlatform.blackberry = MobileClientPlatform('blackberry')
 MobileClientPlatform.other = MobileClientPlatform('other')
 
-MobileClientSession._device_name_validator = bv.String()
-MobileClientSession._client_type_validator = MobileClientPlatform_validator
-MobileClientSession._client_version_validator = bv.Nullable(bv.String())
-MobileClientSession._os_version_validator = bv.Nullable(bv.String())
-MobileClientSession._last_carrier_validator = bv.Nullable(bv.String())
+MobileClientSession.device_name.validator = bv.String()
+MobileClientSession.client_type.validator = MobileClientPlatform_validator
+MobileClientSession.client_version.validator = bv.Nullable(bv.String())
+MobileClientSession.os_version.validator = bv.Nullable(bv.String())
+MobileClientSession.last_carrier.validator = bv.Nullable(bv.String())
 MobileClientSession._all_field_names_ = DeviceSession._all_field_names_.union(set([
     'device_name',
     'client_type',
@@ -23106,17 +14593,17 @@ MobileClientSession._all_field_names_ = DeviceSession._all_field_names_.union(se
     'last_carrier',
 ]))
 MobileClientSession._all_fields_ = DeviceSession._all_fields_ + [
-    ('device_name', MobileClientSession._device_name_validator),
-    ('client_type', MobileClientSession._client_type_validator),
-    ('client_version', MobileClientSession._client_version_validator),
-    ('os_version', MobileClientSession._os_version_validator),
-    ('last_carrier', MobileClientSession._last_carrier_validator),
+    ('device_name', MobileClientSession.device_name.validator),
+    ('client_type', MobileClientSession.client_type.validator),
+    ('client_version', MobileClientSession.client_version.validator),
+    ('os_version', MobileClientSession.os_version.validator),
+    ('last_carrier', MobileClientSession.last_carrier.validator),
 ]
 
-NamespaceMetadata._name_validator = bv.String()
-NamespaceMetadata._namespace_id_validator = common.SharedFolderId_validator
-NamespaceMetadata._namespace_type_validator = NamespaceType_validator
-NamespaceMetadata._team_member_id_validator = bv.Nullable(team_common.TeamMemberId_validator)
+NamespaceMetadata.name.validator = bv.String()
+NamespaceMetadata.namespace_id.validator = common.SharedFolderId_validator
+NamespaceMetadata.namespace_type.validator = NamespaceType_validator
+NamespaceMetadata.team_member_id.validator = bv.Nullable(team_common.TeamMemberId_validator)
 NamespaceMetadata._all_field_names_ = set([
     'name',
     'namespace_id',
@@ -23124,10 +14611,10 @@ NamespaceMetadata._all_field_names_ = set([
     'team_member_id',
 ])
 NamespaceMetadata._all_fields_ = [
-    ('name', NamespaceMetadata._name_validator),
-    ('namespace_id', NamespaceMetadata._namespace_id_validator),
-    ('namespace_type', NamespaceMetadata._namespace_type_validator),
-    ('team_member_id', NamespaceMetadata._team_member_id_validator),
+    ('name', NamespaceMetadata.name.validator),
+    ('namespace_id', NamespaceMetadata.namespace_id.validator),
+    ('namespace_type', NamespaceMetadata.namespace_type.validator),
+    ('team_member_id', NamespaceMetadata.team_member_id.validator),
 ]
 
 NamespaceType._app_folder_validator = bv.Void()
@@ -23160,15 +14647,15 @@ RemoveCustomQuotaResult._tagmap = {
 
 RemoveCustomQuotaResult.other = RemoveCustomQuotaResult('other')
 
-RemovedStatus._is_recoverable_validator = bv.Boolean()
-RemovedStatus._is_disconnected_validator = bv.Boolean()
+RemovedStatus.is_recoverable.validator = bv.Boolean()
+RemovedStatus.is_disconnected.validator = bv.Boolean()
 RemovedStatus._all_field_names_ = set([
     'is_recoverable',
     'is_disconnected',
 ])
 RemovedStatus._all_fields_ = [
-    ('is_recoverable', RemovedStatus._is_recoverable_validator),
-    ('is_disconnected', RemovedStatus._is_disconnected_validator),
+    ('is_recoverable', RemovedStatus.is_recoverable.validator),
+    ('is_disconnected', RemovedStatus.is_disconnected.validator),
 ]
 
 ResendSecondaryEmailResult._success_validator = common.EmailAddress_validator
@@ -23184,17 +14671,17 @@ ResendSecondaryEmailResult._tagmap = {
 
 ResendSecondaryEmailResult.other = ResendSecondaryEmailResult('other')
 
-ResendVerificationEmailArg._emails_to_resend_validator = bv.List(UserSecondaryEmailsArg_validator)
+ResendVerificationEmailArg.emails_to_resend.validator = bv.List(UserSecondaryEmailsArg_validator)
 ResendVerificationEmailArg._all_field_names_ = set(['emails_to_resend'])
-ResendVerificationEmailArg._all_fields_ = [('emails_to_resend', ResendVerificationEmailArg._emails_to_resend_validator)]
+ResendVerificationEmailArg._all_fields_ = [('emails_to_resend', ResendVerificationEmailArg.emails_to_resend.validator)]
 
-ResendVerificationEmailResult._results_validator = bv.List(UserResendResult_validator)
+ResendVerificationEmailResult.results.validator = bv.List(UserResendResult_validator)
 ResendVerificationEmailResult._all_field_names_ = set(['results'])
-ResendVerificationEmailResult._all_fields_ = [('results', ResendVerificationEmailResult._results_validator)]
+ResendVerificationEmailResult._all_fields_ = [('results', ResendVerificationEmailResult.results.validator)]
 
-RevokeDesktopClientArg._delete_on_unlink_validator = bv.Boolean()
+RevokeDesktopClientArg.delete_on_unlink.validator = bv.Boolean()
 RevokeDesktopClientArg._all_field_names_ = DeviceSessionArg._all_field_names_.union(set(['delete_on_unlink']))
-RevokeDesktopClientArg._all_fields_ = DeviceSessionArg._all_fields_ + [('delete_on_unlink', RevokeDesktopClientArg._delete_on_unlink_validator)]
+RevokeDesktopClientArg._all_fields_ = DeviceSessionArg._all_fields_ + [('delete_on_unlink', RevokeDesktopClientArg.delete_on_unlink.validator)]
 
 RevokeDeviceSessionArg._web_session_validator = DeviceSessionArg_validator
 RevokeDeviceSessionArg._desktop_client_validator = RevokeDesktopClientArg_validator
@@ -23205,9 +14692,9 @@ RevokeDeviceSessionArg._tagmap = {
     'mobile_client': RevokeDeviceSessionArg._mobile_client_validator,
 }
 
-RevokeDeviceSessionBatchArg._revoke_devices_validator = bv.List(RevokeDeviceSessionArg_validator)
+RevokeDeviceSessionBatchArg.revoke_devices.validator = bv.List(RevokeDeviceSessionArg_validator)
 RevokeDeviceSessionBatchArg._all_field_names_ = set(['revoke_devices'])
-RevokeDeviceSessionBatchArg._all_fields_ = [('revoke_devices', RevokeDeviceSessionBatchArg._revoke_devices_validator)]
+RevokeDeviceSessionBatchArg._all_fields_ = [('revoke_devices', RevokeDeviceSessionBatchArg.revoke_devices.validator)]
 
 RevokeDeviceSessionBatchError._other_validator = bv.Void()
 RevokeDeviceSessionBatchError._tagmap = {
@@ -23216,9 +14703,9 @@ RevokeDeviceSessionBatchError._tagmap = {
 
 RevokeDeviceSessionBatchError.other = RevokeDeviceSessionBatchError('other')
 
-RevokeDeviceSessionBatchResult._revoke_devices_status_validator = bv.List(RevokeDeviceSessionStatus_validator)
+RevokeDeviceSessionBatchResult.revoke_devices_status.validator = bv.List(RevokeDeviceSessionStatus_validator)
 RevokeDeviceSessionBatchResult._all_field_names_ = set(['revoke_devices_status'])
-RevokeDeviceSessionBatchResult._all_fields_ = [('revoke_devices_status', RevokeDeviceSessionBatchResult._revoke_devices_status_validator)]
+RevokeDeviceSessionBatchResult._all_fields_ = [('revoke_devices_status', RevokeDeviceSessionBatchResult.revoke_devices_status.validator)]
 
 RevokeDeviceSessionError._device_session_not_found_validator = bv.Void()
 RevokeDeviceSessionError._member_not_found_validator = bv.Void()
@@ -23233,34 +14720,34 @@ RevokeDeviceSessionError.device_session_not_found = RevokeDeviceSessionError('de
 RevokeDeviceSessionError.member_not_found = RevokeDeviceSessionError('member_not_found')
 RevokeDeviceSessionError.other = RevokeDeviceSessionError('other')
 
-RevokeDeviceSessionStatus._success_validator = bv.Boolean()
-RevokeDeviceSessionStatus._error_type_validator = bv.Nullable(RevokeDeviceSessionError_validator)
+RevokeDeviceSessionStatus.success.validator = bv.Boolean()
+RevokeDeviceSessionStatus.error_type.validator = bv.Nullable(RevokeDeviceSessionError_validator)
 RevokeDeviceSessionStatus._all_field_names_ = set([
     'success',
     'error_type',
 ])
 RevokeDeviceSessionStatus._all_fields_ = [
-    ('success', RevokeDeviceSessionStatus._success_validator),
-    ('error_type', RevokeDeviceSessionStatus._error_type_validator),
+    ('success', RevokeDeviceSessionStatus.success.validator),
+    ('error_type', RevokeDeviceSessionStatus.error_type.validator),
 ]
 
-RevokeLinkedApiAppArg._app_id_validator = bv.String()
-RevokeLinkedApiAppArg._team_member_id_validator = bv.String()
-RevokeLinkedApiAppArg._keep_app_folder_validator = bv.Boolean()
+RevokeLinkedApiAppArg.app_id.validator = bv.String()
+RevokeLinkedApiAppArg.team_member_id.validator = bv.String()
+RevokeLinkedApiAppArg.keep_app_folder.validator = bv.Boolean()
 RevokeLinkedApiAppArg._all_field_names_ = set([
     'app_id',
     'team_member_id',
     'keep_app_folder',
 ])
 RevokeLinkedApiAppArg._all_fields_ = [
-    ('app_id', RevokeLinkedApiAppArg._app_id_validator),
-    ('team_member_id', RevokeLinkedApiAppArg._team_member_id_validator),
-    ('keep_app_folder', RevokeLinkedApiAppArg._keep_app_folder_validator),
+    ('app_id', RevokeLinkedApiAppArg.app_id.validator),
+    ('team_member_id', RevokeLinkedApiAppArg.team_member_id.validator),
+    ('keep_app_folder', RevokeLinkedApiAppArg.keep_app_folder.validator),
 ]
 
-RevokeLinkedApiAppBatchArg._revoke_linked_app_validator = bv.List(RevokeLinkedApiAppArg_validator)
+RevokeLinkedApiAppBatchArg.revoke_linked_app.validator = bv.List(RevokeLinkedApiAppArg_validator)
 RevokeLinkedApiAppBatchArg._all_field_names_ = set(['revoke_linked_app'])
-RevokeLinkedApiAppBatchArg._all_fields_ = [('revoke_linked_app', RevokeLinkedApiAppBatchArg._revoke_linked_app_validator)]
+RevokeLinkedApiAppBatchArg._all_fields_ = [('revoke_linked_app', RevokeLinkedApiAppBatchArg.revoke_linked_app.validator)]
 
 RevokeLinkedAppBatchError._other_validator = bv.Void()
 RevokeLinkedAppBatchError._tagmap = {
@@ -23269,9 +14756,9 @@ RevokeLinkedAppBatchError._tagmap = {
 
 RevokeLinkedAppBatchError.other = RevokeLinkedAppBatchError('other')
 
-RevokeLinkedAppBatchResult._revoke_linked_app_status_validator = bv.List(RevokeLinkedAppStatus_validator)
+RevokeLinkedAppBatchResult.revoke_linked_app_status.validator = bv.List(RevokeLinkedAppStatus_validator)
 RevokeLinkedAppBatchResult._all_field_names_ = set(['revoke_linked_app_status'])
-RevokeLinkedAppBatchResult._all_fields_ = [('revoke_linked_app_status', RevokeLinkedAppBatchResult._revoke_linked_app_status_validator)]
+RevokeLinkedAppBatchResult._all_fields_ = [('revoke_linked_app_status', RevokeLinkedAppBatchResult.revoke_linked_app_status.validator)]
 
 RevokeLinkedAppError._app_not_found_validator = bv.Void()
 RevokeLinkedAppError._member_not_found_validator = bv.Void()
@@ -23289,20 +14776,20 @@ RevokeLinkedAppError.member_not_found = RevokeLinkedAppError('member_not_found')
 RevokeLinkedAppError.app_folder_removal_not_supported = RevokeLinkedAppError('app_folder_removal_not_supported')
 RevokeLinkedAppError.other = RevokeLinkedAppError('other')
 
-RevokeLinkedAppStatus._success_validator = bv.Boolean()
-RevokeLinkedAppStatus._error_type_validator = bv.Nullable(RevokeLinkedAppError_validator)
+RevokeLinkedAppStatus.success.validator = bv.Boolean()
+RevokeLinkedAppStatus.error_type.validator = bv.Nullable(RevokeLinkedAppError_validator)
 RevokeLinkedAppStatus._all_field_names_ = set([
     'success',
     'error_type',
 ])
 RevokeLinkedAppStatus._all_fields_ = [
-    ('success', RevokeLinkedAppStatus._success_validator),
-    ('error_type', RevokeLinkedAppStatus._error_type_validator),
+    ('success', RevokeLinkedAppStatus.success.validator),
+    ('error_type', RevokeLinkedAppStatus.error_type.validator),
 ]
 
-SetCustomQuotaArg._users_and_quotas_validator = bv.List(UserCustomQuotaArg_validator)
+SetCustomQuotaArg.users_and_quotas.validator = bv.List(UserCustomQuotaArg_validator)
 SetCustomQuotaArg._all_field_names_ = set(['users_and_quotas'])
-SetCustomQuotaArg._all_fields_ = [('users_and_quotas', SetCustomQuotaArg._users_and_quotas_validator)]
+SetCustomQuotaArg._all_fields_ = [('users_and_quotas', SetCustomQuotaArg.users_and_quotas.validator)]
 
 SetCustomQuotaError._some_users_are_excluded_validator = bv.Void()
 SetCustomQuotaError._tagmap = {
@@ -23312,15 +14799,15 @@ SetCustomQuotaError._tagmap.update(CustomQuotaError._tagmap)
 
 SetCustomQuotaError.some_users_are_excluded = SetCustomQuotaError('some_users_are_excluded')
 
-StorageBucket._bucket_validator = bv.String()
-StorageBucket._users_validator = bv.UInt64()
+StorageBucket.bucket.validator = bv.String()
+StorageBucket.users.validator = bv.UInt64()
 StorageBucket._all_field_names_ = set([
     'bucket',
     'users',
 ])
 StorageBucket._all_fields_ = [
-    ('bucket', StorageBucket._bucket_validator),
-    ('users', StorageBucket._users_validator),
+    ('bucket', StorageBucket.bucket.validator),
+    ('users', StorageBucket.users.validator),
 ]
 
 TeamFolderAccessError._invalid_team_folder_id_validator = bv.Void()
@@ -23340,13 +14827,13 @@ TeamFolderActivateError._tagmap = {
 }
 TeamFolderActivateError._tagmap.update(BaseTeamFolderError._tagmap)
 
-TeamFolderIdArg._team_folder_id_validator = common.SharedFolderId_validator
+TeamFolderIdArg.team_folder_id.validator = common.SharedFolderId_validator
 TeamFolderIdArg._all_field_names_ = set(['team_folder_id'])
-TeamFolderIdArg._all_fields_ = [('team_folder_id', TeamFolderIdArg._team_folder_id_validator)]
+TeamFolderIdArg._all_fields_ = [('team_folder_id', TeamFolderIdArg.team_folder_id.validator)]
 
-TeamFolderArchiveArg._force_async_off_validator = bv.Boolean()
+TeamFolderArchiveArg.force_async_off.validator = bv.Boolean()
 TeamFolderArchiveArg._all_field_names_ = TeamFolderIdArg._all_field_names_.union(set(['force_async_off']))
-TeamFolderArchiveArg._all_fields_ = TeamFolderIdArg._all_fields_ + [('force_async_off', TeamFolderArchiveArg._force_async_off_validator)]
+TeamFolderArchiveArg._all_fields_ = TeamFolderIdArg._all_fields_ + [('force_async_off', TeamFolderArchiveArg.force_async_off.validator)]
 
 TeamFolderArchiveError._tagmap = {
 }
@@ -23366,15 +14853,15 @@ TeamFolderArchiveLaunch._tagmap = {
 }
 TeamFolderArchiveLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
 
-TeamFolderCreateArg._name_validator = bv.String()
-TeamFolderCreateArg._sync_setting_validator = bv.Nullable(files.SyncSettingArg_validator)
+TeamFolderCreateArg.name.validator = bv.String()
+TeamFolderCreateArg.sync_setting.validator = bv.Nullable(files.SyncSettingArg_validator)
 TeamFolderCreateArg._all_field_names_ = set([
     'name',
     'sync_setting',
 ])
 TeamFolderCreateArg._all_fields_ = [
-    ('name', TeamFolderCreateArg._name_validator),
-    ('sync_setting', TeamFolderCreateArg._sync_setting_validator),
+    ('name', TeamFolderCreateArg.name.validator),
+    ('sync_setting', TeamFolderCreateArg.sync_setting.validator),
 ]
 
 TeamFolderCreateError._invalid_folder_name_validator = bv.Void()
@@ -23402,9 +14889,9 @@ TeamFolderGetInfoItem._tagmap = {
     'team_folder_metadata': TeamFolderGetInfoItem._team_folder_metadata_validator,
 }
 
-TeamFolderIdListArg._team_folder_ids_validator = bv.List(common.SharedFolderId_validator, min_items=1)
+TeamFolderIdListArg.team_folder_ids.validator = bv.List(common.SharedFolderId_validator, min_items=1)
 TeamFolderIdListArg._all_field_names_ = set(['team_folder_ids'])
-TeamFolderIdListArg._all_fields_ = [('team_folder_ids', TeamFolderIdListArg._team_folder_ids_validator)]
+TeamFolderIdListArg._all_fields_ = [('team_folder_ids', TeamFolderIdListArg.team_folder_ids.validator)]
 
 TeamFolderInvalidStatusError._active_validator = bv.Void()
 TeamFolderInvalidStatusError._archived_validator = bv.Void()
@@ -23422,13 +14909,13 @@ TeamFolderInvalidStatusError.archived = TeamFolderInvalidStatusError('archived')
 TeamFolderInvalidStatusError.archive_in_progress = TeamFolderInvalidStatusError('archive_in_progress')
 TeamFolderInvalidStatusError.other = TeamFolderInvalidStatusError('other')
 
-TeamFolderListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
+TeamFolderListArg.limit.validator = bv.UInt32(min_value=1, max_value=1000)
 TeamFolderListArg._all_field_names_ = set(['limit'])
-TeamFolderListArg._all_fields_ = [('limit', TeamFolderListArg._limit_validator)]
+TeamFolderListArg._all_fields_ = [('limit', TeamFolderListArg.limit.validator)]
 
-TeamFolderListContinueArg._cursor_validator = bv.String()
+TeamFolderListContinueArg.cursor.validator = bv.String()
 TeamFolderListContinueArg._all_field_names_ = set(['cursor'])
-TeamFolderListContinueArg._all_fields_ = [('cursor', TeamFolderListContinueArg._cursor_validator)]
+TeamFolderListContinueArg._all_fields_ = [('cursor', TeamFolderListContinueArg.cursor.validator)]
 
 TeamFolderListContinueError._invalid_cursor_validator = bv.Void()
 TeamFolderListContinueError._other_validator = bv.Void()
@@ -23440,30 +14927,30 @@ TeamFolderListContinueError._tagmap = {
 TeamFolderListContinueError.invalid_cursor = TeamFolderListContinueError('invalid_cursor')
 TeamFolderListContinueError.other = TeamFolderListContinueError('other')
 
-TeamFolderListError._access_error_validator = TeamFolderAccessError_validator
+TeamFolderListError.access_error.validator = TeamFolderAccessError_validator
 TeamFolderListError._all_field_names_ = set(['access_error'])
-TeamFolderListError._all_fields_ = [('access_error', TeamFolderListError._access_error_validator)]
+TeamFolderListError._all_fields_ = [('access_error', TeamFolderListError.access_error.validator)]
 
-TeamFolderListResult._team_folders_validator = bv.List(TeamFolderMetadata_validator)
-TeamFolderListResult._cursor_validator = bv.String()
-TeamFolderListResult._has_more_validator = bv.Boolean()
+TeamFolderListResult.team_folders.validator = bv.List(TeamFolderMetadata_validator)
+TeamFolderListResult.cursor.validator = bv.String()
+TeamFolderListResult.has_more.validator = bv.Boolean()
 TeamFolderListResult._all_field_names_ = set([
     'team_folders',
     'cursor',
     'has_more',
 ])
 TeamFolderListResult._all_fields_ = [
-    ('team_folders', TeamFolderListResult._team_folders_validator),
-    ('cursor', TeamFolderListResult._cursor_validator),
-    ('has_more', TeamFolderListResult._has_more_validator),
+    ('team_folders', TeamFolderListResult.team_folders.validator),
+    ('cursor', TeamFolderListResult.cursor.validator),
+    ('has_more', TeamFolderListResult.has_more.validator),
 ]
 
-TeamFolderMetadata._team_folder_id_validator = common.SharedFolderId_validator
-TeamFolderMetadata._name_validator = bv.String()
-TeamFolderMetadata._status_validator = TeamFolderStatus_validator
-TeamFolderMetadata._is_team_shared_dropbox_validator = bv.Boolean()
-TeamFolderMetadata._sync_setting_validator = files.SyncSetting_validator
-TeamFolderMetadata._content_sync_settings_validator = bv.List(files.ContentSyncSetting_validator)
+TeamFolderMetadata.team_folder_id.validator = common.SharedFolderId_validator
+TeamFolderMetadata.name.validator = bv.String()
+TeamFolderMetadata.status.validator = TeamFolderStatus_validator
+TeamFolderMetadata.is_team_shared_dropbox.validator = bv.Boolean()
+TeamFolderMetadata.sync_setting.validator = files.SyncSetting_validator
+TeamFolderMetadata.content_sync_settings.validator = bv.List(files.ContentSyncSetting_validator)
 TeamFolderMetadata._all_field_names_ = set([
     'team_folder_id',
     'name',
@@ -23473,21 +14960,21 @@ TeamFolderMetadata._all_field_names_ = set([
     'content_sync_settings',
 ])
 TeamFolderMetadata._all_fields_ = [
-    ('team_folder_id', TeamFolderMetadata._team_folder_id_validator),
-    ('name', TeamFolderMetadata._name_validator),
-    ('status', TeamFolderMetadata._status_validator),
-    ('is_team_shared_dropbox', TeamFolderMetadata._is_team_shared_dropbox_validator),
-    ('sync_setting', TeamFolderMetadata._sync_setting_validator),
-    ('content_sync_settings', TeamFolderMetadata._content_sync_settings_validator),
+    ('team_folder_id', TeamFolderMetadata.team_folder_id.validator),
+    ('name', TeamFolderMetadata.name.validator),
+    ('status', TeamFolderMetadata.status.validator),
+    ('is_team_shared_dropbox', TeamFolderMetadata.is_team_shared_dropbox.validator),
+    ('sync_setting', TeamFolderMetadata.sync_setting.validator),
+    ('content_sync_settings', TeamFolderMetadata.content_sync_settings.validator),
 ]
 
 TeamFolderPermanentlyDeleteError._tagmap = {
 }
 TeamFolderPermanentlyDeleteError._tagmap.update(BaseTeamFolderError._tagmap)
 
-TeamFolderRenameArg._name_validator = bv.String()
+TeamFolderRenameArg.name.validator = bv.String()
 TeamFolderRenameArg._all_field_names_ = TeamFolderIdArg._all_field_names_.union(set(['name']))
-TeamFolderRenameArg._all_fields_ = TeamFolderIdArg._all_fields_ + [('name', TeamFolderRenameArg._name_validator)]
+TeamFolderRenameArg._all_fields_ = TeamFolderIdArg._all_fields_ + [('name', TeamFolderRenameArg.name.validator)]
 
 TeamFolderRenameError._invalid_folder_name_validator = bv.Void()
 TeamFolderRenameError._folder_name_already_used_validator = bv.Void()
@@ -23529,15 +15016,15 @@ TeamFolderTeamSharedDropboxError._tagmap = {
 TeamFolderTeamSharedDropboxError.disallowed = TeamFolderTeamSharedDropboxError('disallowed')
 TeamFolderTeamSharedDropboxError.other = TeamFolderTeamSharedDropboxError('other')
 
-TeamFolderUpdateSyncSettingsArg._sync_setting_validator = bv.Nullable(files.SyncSettingArg_validator)
-TeamFolderUpdateSyncSettingsArg._content_sync_settings_validator = bv.Nullable(bv.List(files.ContentSyncSettingArg_validator))
+TeamFolderUpdateSyncSettingsArg.sync_setting.validator = bv.Nullable(files.SyncSettingArg_validator)
+TeamFolderUpdateSyncSettingsArg.content_sync_settings.validator = bv.Nullable(bv.List(files.ContentSyncSettingArg_validator))
 TeamFolderUpdateSyncSettingsArg._all_field_names_ = TeamFolderIdArg._all_field_names_.union(set([
     'sync_setting',
     'content_sync_settings',
 ]))
 TeamFolderUpdateSyncSettingsArg._all_fields_ = TeamFolderIdArg._all_fields_ + [
-    ('sync_setting', TeamFolderUpdateSyncSettingsArg._sync_setting_validator),
-    ('content_sync_settings', TeamFolderUpdateSyncSettingsArg._content_sync_settings_validator),
+    ('sync_setting', TeamFolderUpdateSyncSettingsArg.sync_setting.validator),
+    ('content_sync_settings', TeamFolderUpdateSyncSettingsArg.content_sync_settings.validator),
 ]
 
 TeamFolderUpdateSyncSettingsError._sync_settings_error_validator = files.SyncSettingsError_validator
@@ -23546,11 +15033,11 @@ TeamFolderUpdateSyncSettingsError._tagmap = {
 }
 TeamFolderUpdateSyncSettingsError._tagmap.update(BaseTeamFolderError._tagmap)
 
-TeamGetInfoResult._name_validator = bv.String()
-TeamGetInfoResult._team_id_validator = bv.String()
-TeamGetInfoResult._num_licensed_users_validator = bv.UInt32()
-TeamGetInfoResult._num_provisioned_users_validator = bv.UInt32()
-TeamGetInfoResult._policies_validator = team_policies.TeamMemberPolicies_validator
+TeamGetInfoResult.name.validator = bv.String()
+TeamGetInfoResult.team_id.validator = bv.String()
+TeamGetInfoResult.num_licensed_users.validator = bv.UInt32()
+TeamGetInfoResult.num_provisioned_users.validator = bv.UInt32()
+TeamGetInfoResult.policies.validator = team_policies.TeamMemberPolicies_validator
 TeamGetInfoResult._all_field_names_ = set([
     'name',
     'team_id',
@@ -23559,33 +15046,33 @@ TeamGetInfoResult._all_field_names_ = set([
     'policies',
 ])
 TeamGetInfoResult._all_fields_ = [
-    ('name', TeamGetInfoResult._name_validator),
-    ('team_id', TeamGetInfoResult._team_id_validator),
-    ('num_licensed_users', TeamGetInfoResult._num_licensed_users_validator),
-    ('num_provisioned_users', TeamGetInfoResult._num_provisioned_users_validator),
-    ('policies', TeamGetInfoResult._policies_validator),
+    ('name', TeamGetInfoResult.name.validator),
+    ('team_id', TeamGetInfoResult.team_id.validator),
+    ('num_licensed_users', TeamGetInfoResult.num_licensed_users.validator),
+    ('num_provisioned_users', TeamGetInfoResult.num_provisioned_users.validator),
+    ('policies', TeamGetInfoResult.policies.validator),
 ]
 
-TeamMemberInfo._profile_validator = TeamMemberProfile_validator
-TeamMemberInfo._role_validator = AdminTier_validator
+TeamMemberInfo.profile.validator = TeamMemberProfile_validator
+TeamMemberInfo.role.validator = AdminTier_validator
 TeamMemberInfo._all_field_names_ = set([
     'profile',
     'role',
 ])
 TeamMemberInfo._all_fields_ = [
-    ('profile', TeamMemberInfo._profile_validator),
-    ('role', TeamMemberInfo._role_validator),
+    ('profile', TeamMemberInfo.profile.validator),
+    ('role', TeamMemberInfo.role.validator),
 ]
 
-TeamMemberProfile._groups_validator = bv.List(team_common.GroupId_validator)
-TeamMemberProfile._member_folder_id_validator = common.NamespaceId_validator
+TeamMemberProfile.groups.validator = bv.List(team_common.GroupId_validator)
+TeamMemberProfile.member_folder_id.validator = common.NamespaceId_validator
 TeamMemberProfile._all_field_names_ = MemberProfile._all_field_names_.union(set([
     'groups',
     'member_folder_id',
 ]))
 TeamMemberProfile._all_fields_ = MemberProfile._all_fields_ + [
-    ('groups', TeamMemberProfile._groups_validator),
-    ('member_folder_id', TeamMemberProfile._member_folder_id_validator),
+    ('groups', TeamMemberProfile.groups.validator),
+    ('member_folder_id', TeamMemberProfile.member_folder_id.validator),
 ]
 
 TeamMemberStatus._active_validator = bv.Void()
@@ -23613,13 +15100,13 @@ TeamMembershipType._tagmap = {
 TeamMembershipType.full = TeamMembershipType('full')
 TeamMembershipType.limited = TeamMembershipType('limited')
 
-TeamNamespacesListArg._limit_validator = bv.UInt32(min_value=1, max_value=1000)
+TeamNamespacesListArg.limit.validator = bv.UInt32(min_value=1, max_value=1000)
 TeamNamespacesListArg._all_field_names_ = set(['limit'])
-TeamNamespacesListArg._all_fields_ = [('limit', TeamNamespacesListArg._limit_validator)]
+TeamNamespacesListArg._all_fields_ = [('limit', TeamNamespacesListArg.limit.validator)]
 
-TeamNamespacesListContinueArg._cursor_validator = bv.String()
+TeamNamespacesListContinueArg.cursor.validator = bv.String()
 TeamNamespacesListContinueArg._all_field_names_ = set(['cursor'])
-TeamNamespacesListContinueArg._all_fields_ = [('cursor', TeamNamespacesListContinueArg._cursor_validator)]
+TeamNamespacesListContinueArg._all_fields_ = [('cursor', TeamNamespacesListContinueArg.cursor.validator)]
 
 TeamNamespacesListError._invalid_arg_validator = bv.Void()
 TeamNamespacesListError._other_validator = bv.Void()
@@ -23639,18 +15126,18 @@ TeamNamespacesListContinueError._tagmap.update(TeamNamespacesListError._tagmap)
 
 TeamNamespacesListContinueError.invalid_cursor = TeamNamespacesListContinueError('invalid_cursor')
 
-TeamNamespacesListResult._namespaces_validator = bv.List(NamespaceMetadata_validator)
-TeamNamespacesListResult._cursor_validator = bv.String()
-TeamNamespacesListResult._has_more_validator = bv.Boolean()
+TeamNamespacesListResult.namespaces.validator = bv.List(NamespaceMetadata_validator)
+TeamNamespacesListResult.cursor.validator = bv.String()
+TeamNamespacesListResult.has_more.validator = bv.Boolean()
 TeamNamespacesListResult._all_field_names_ = set([
     'namespaces',
     'cursor',
     'has_more',
 ])
 TeamNamespacesListResult._all_fields_ = [
-    ('namespaces', TeamNamespacesListResult._namespaces_validator),
-    ('cursor', TeamNamespacesListResult._cursor_validator),
-    ('has_more', TeamNamespacesListResult._has_more_validator),
+    ('namespaces', TeamNamespacesListResult.namespaces.validator),
+    ('cursor', TeamNamespacesListResult.cursor.validator),
+    ('has_more', TeamNamespacesListResult.has_more.validator),
 ]
 
 TeamReportFailureReason._temporary_error_validator = bv.Void()
@@ -23682,9 +15169,9 @@ TokenGetAuthenticatedAdminError.mapping_not_found = TokenGetAuthenticatedAdminEr
 TokenGetAuthenticatedAdminError.admin_not_active = TokenGetAuthenticatedAdminError('admin_not_active')
 TokenGetAuthenticatedAdminError.other = TokenGetAuthenticatedAdminError('other')
 
-TokenGetAuthenticatedAdminResult._admin_profile_validator = TeamMemberProfile_validator
+TokenGetAuthenticatedAdminResult.admin_profile.validator = TeamMemberProfile_validator
 TokenGetAuthenticatedAdminResult._all_field_names_ = set(['admin_profile'])
-TokenGetAuthenticatedAdminResult._all_fields_ = [('admin_profile', TokenGetAuthenticatedAdminResult._admin_profile_validator)]
+TokenGetAuthenticatedAdminResult._all_fields_ = [('admin_profile', TokenGetAuthenticatedAdminResult.admin_profile.validator)]
 
 UploadApiRateLimitValue._unlimited_validator = bv.Void()
 UploadApiRateLimitValue._limit_validator = bv.UInt32()
@@ -23713,37 +15200,37 @@ UserAddResult._tagmap = {
 
 UserAddResult.other = UserAddResult('other')
 
-UserCustomQuotaArg._user_validator = UserSelectorArg_validator
-UserCustomQuotaArg._quota_gb_validator = UserQuota_validator
+UserCustomQuotaArg.user.validator = UserSelectorArg_validator
+UserCustomQuotaArg.quota_gb.validator = UserQuota_validator
 UserCustomQuotaArg._all_field_names_ = set([
     'user',
     'quota_gb',
 ])
 UserCustomQuotaArg._all_fields_ = [
-    ('user', UserCustomQuotaArg._user_validator),
-    ('quota_gb', UserCustomQuotaArg._quota_gb_validator),
+    ('user', UserCustomQuotaArg.user.validator),
+    ('quota_gb', UserCustomQuotaArg.quota_gb.validator),
 ]
 
-UserCustomQuotaResult._user_validator = UserSelectorArg_validator
-UserCustomQuotaResult._quota_gb_validator = bv.Nullable(UserQuota_validator)
+UserCustomQuotaResult.user.validator = UserSelectorArg_validator
+UserCustomQuotaResult.quota_gb.validator = bv.Nullable(UserQuota_validator)
 UserCustomQuotaResult._all_field_names_ = set([
     'user',
     'quota_gb',
 ])
 UserCustomQuotaResult._all_fields_ = [
-    ('user', UserCustomQuotaResult._user_validator),
-    ('quota_gb', UserCustomQuotaResult._quota_gb_validator),
+    ('user', UserCustomQuotaResult.user.validator),
+    ('quota_gb', UserCustomQuotaResult.quota_gb.validator),
 ]
 
-UserDeleteEmailsResult._user_validator = UserSelectorArg_validator
-UserDeleteEmailsResult._results_validator = bv.List(DeleteSecondaryEmailResult_validator)
+UserDeleteEmailsResult.user.validator = UserSelectorArg_validator
+UserDeleteEmailsResult.results.validator = bv.List(DeleteSecondaryEmailResult_validator)
 UserDeleteEmailsResult._all_field_names_ = set([
     'user',
     'results',
 ])
 UserDeleteEmailsResult._all_fields_ = [
-    ('user', UserDeleteEmailsResult._user_validator),
-    ('results', UserDeleteEmailsResult._results_validator),
+    ('user', UserDeleteEmailsResult.user.validator),
+    ('results', UserDeleteEmailsResult.results.validator),
 ]
 
 UserDeleteResult._success_validator = UserDeleteEmailsResult_validator
@@ -23757,15 +15244,15 @@ UserDeleteResult._tagmap = {
 
 UserDeleteResult.other = UserDeleteResult('other')
 
-UserResendEmailsResult._user_validator = UserSelectorArg_validator
-UserResendEmailsResult._results_validator = bv.List(ResendSecondaryEmailResult_validator)
+UserResendEmailsResult.user.validator = UserSelectorArg_validator
+UserResendEmailsResult.results.validator = bv.List(ResendSecondaryEmailResult_validator)
 UserResendEmailsResult._all_field_names_ = set([
     'user',
     'results',
 ])
 UserResendEmailsResult._all_fields_ = [
-    ('user', UserResendEmailsResult._user_validator),
-    ('results', UserResendEmailsResult._results_validator),
+    ('user', UserResendEmailsResult.user.validator),
+    ('results', UserResendEmailsResult.results.validator),
 ]
 
 UserResendResult._success_validator = UserResendEmailsResult_validator
@@ -23779,26 +15266,26 @@ UserResendResult._tagmap = {
 
 UserResendResult.other = UserResendResult('other')
 
-UserSecondaryEmailsArg._user_validator = UserSelectorArg_validator
-UserSecondaryEmailsArg._secondary_emails_validator = bv.List(common.EmailAddress_validator)
+UserSecondaryEmailsArg.user.validator = UserSelectorArg_validator
+UserSecondaryEmailsArg.secondary_emails.validator = bv.List(common.EmailAddress_validator)
 UserSecondaryEmailsArg._all_field_names_ = set([
     'user',
     'secondary_emails',
 ])
 UserSecondaryEmailsArg._all_fields_ = [
-    ('user', UserSecondaryEmailsArg._user_validator),
-    ('secondary_emails', UserSecondaryEmailsArg._secondary_emails_validator),
+    ('user', UserSecondaryEmailsArg.user.validator),
+    ('secondary_emails', UserSecondaryEmailsArg.secondary_emails.validator),
 ]
 
-UserSecondaryEmailsResult._user_validator = UserSelectorArg_validator
-UserSecondaryEmailsResult._results_validator = bv.List(AddSecondaryEmailResult_validator)
+UserSecondaryEmailsResult.user.validator = UserSelectorArg_validator
+UserSecondaryEmailsResult.results.validator = bv.List(AddSecondaryEmailResult_validator)
 UserSecondaryEmailsResult._all_field_names_ = set([
     'user',
     'results',
 ])
 UserSecondaryEmailsResult._all_fields_ = [
-    ('user', UserSecondaryEmailsResult._user_validator),
-    ('results', UserSecondaryEmailsResult._results_validator),
+    ('user', UserSecondaryEmailsResult.user.validator),
+    ('results', UserSecondaryEmailsResult.results.validator),
 ]
 
 UserSelectorArg._team_member_id_validator = team_common.TeamMemberId_validator
@@ -23819,6 +15306,35 @@ UsersSelectorArg._tagmap = {
     'emails': UsersSelectorArg._emails_validator,
 }
 
+ExcludedUsersListArg.limit.default = 1000
+GroupCreateArg.add_creator_as_owner.default = False
+IncludeMembersArg.return_members.default = True
+GroupMembersSetAccessTypeArg.return_members.default = True
+GroupsListArg.limit.default = 1000
+GroupsMembersListArg.limit.default = 1000
+LegalHoldsListPoliciesArg.include_released.default = False
+ListMemberDevicesArg.include_web_sessions.default = True
+ListMemberDevicesArg.include_desktop_clients.default = True
+ListMemberDevicesArg.include_mobile_clients.default = True
+ListMembersDevicesArg.include_web_sessions.default = True
+ListMembersDevicesArg.include_desktop_clients.default = True
+ListMembersDevicesArg.include_mobile_clients.default = True
+ListTeamDevicesArg.include_web_sessions.default = True
+ListTeamDevicesArg.include_desktop_clients.default = True
+ListTeamDevicesArg.include_mobile_clients.default = True
+MemberAddArg.send_welcome_email.default = True
+MemberAddArg.role.default = AdminTier.member_only
+MembersAddArg.force_async.default = False
+MembersDeactivateArg.wipe_data.default = True
+MembersListArg.limit.default = 1000
+MembersListArg.include_removed.default = False
+MembersRemoveArg.keep_account.default = False
+MembersRemoveArg.retain_team_shares.default = False
+RevokeDesktopClientArg.delete_on_unlink.default = False
+RevokeLinkedApiAppArg.keep_app_folder.default = True
+TeamFolderArchiveArg.force_async_off.default = False
+TeamFolderListArg.limit.default = 1000
+TeamNamespacesListArg.limit.default = 1000
 devices_list_member_devices = bb.Route(
     'devices/list_member_devices',
     1,

@@ -3,21 +3,11 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
-try:
-    from . import (
-        common,
-    )
-except (ImportError, SystemError, ValueError):
-    import common
+from dropbox import common
 
 class SecondaryEmail(bb.Struct):
     """
@@ -28,9 +18,7 @@ class SecondaryEmail(bb.Struct):
 
     __slots__ = [
         '_email_value',
-        '_email_present',
         '_is_verified_value',
-        '_is_verified_present',
     ]
 
     _has_required_fields = True
@@ -38,82 +26,33 @@ class SecondaryEmail(bb.Struct):
     def __init__(self,
                  email=None,
                  is_verified=None):
-        self._email_value = None
-        self._email_present = False
-        self._is_verified_value = None
-        self._is_verified_present = False
+        self._email_value = bb.NOT_SET
+        self._is_verified_value = bb.NOT_SET
         if email is not None:
             self.email = email
         if is_verified is not None:
             self.is_verified = is_verified
 
-    @property
-    def email(self):
-        """
-        Secondary email address.
+    # Instance attribute type: str (validator is set below)
+    email = bb.Attribute("email")
 
-        :rtype: str
-        """
-        if self._email_present:
-            return self._email_value
-        else:
-            raise AttributeError("missing required field 'email'")
-
-    @email.setter
-    def email(self, val):
-        val = self._email_validator.validate(val)
-        self._email_value = val
-        self._email_present = True
-
-    @email.deleter
-    def email(self):
-        self._email_value = None
-        self._email_present = False
-
-    @property
-    def is_verified(self):
-        """
-        Whether or not the secondary email address is verified to be owned by a
-        user.
-
-        :rtype: bool
-        """
-        if self._is_verified_present:
-            return self._is_verified_value
-        else:
-            raise AttributeError("missing required field 'is_verified'")
-
-    @is_verified.setter
-    def is_verified(self, val):
-        val = self._is_verified_validator.validate(val)
-        self._is_verified_value = val
-        self._is_verified_present = True
-
-    @is_verified.deleter
-    def is_verified(self):
-        self._is_verified_value = None
-        self._is_verified_present = False
+    # Instance attribute type: bool (validator is set below)
+    is_verified = bb.Attribute("is_verified")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SecondaryEmail, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SecondaryEmail(email={!r}, is_verified={!r})'.format(
-            self._email_value,
-            self._is_verified_value,
-        )
-
 SecondaryEmail_validator = bv.Struct(SecondaryEmail)
 
-SecondaryEmail._email_validator = common.EmailAddress_validator
-SecondaryEmail._is_verified_validator = bv.Boolean()
+SecondaryEmail.email.validator = common.EmailAddress_validator
+SecondaryEmail.is_verified.validator = bv.Boolean()
 SecondaryEmail._all_field_names_ = set([
     'email',
     'is_verified',
 ])
 SecondaryEmail._all_fields_ = [
-    ('email', SecondaryEmail._email_validator),
-    ('is_verified', SecondaryEmail._is_verified_validator),
+    ('email', SecondaryEmail.email.validator),
+    ('is_verified', SecondaryEmail.is_verified.validator),
 ]
 
 ROUTES = {

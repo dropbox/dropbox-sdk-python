@@ -3,14 +3,9 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class PhotoSourceArg(bb.Union):
     """
@@ -68,9 +63,6 @@ class PhotoSourceArg(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PhotoSourceArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PhotoSourceArg(%r, %r)' % (self._tag, self._value)
-
 PhotoSourceArg_validator = bv.Union(PhotoSourceArg)
 
 class SetProfilePhotoArg(bb.Struct):
@@ -81,48 +73,21 @@ class SetProfilePhotoArg(bb.Struct):
 
     __slots__ = [
         '_photo_value',
-        '_photo_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  photo=None):
-        self._photo_value = None
-        self._photo_present = False
+        self._photo_value = bb.NOT_SET
         if photo is not None:
             self.photo = photo
 
-    @property
-    def photo(self):
-        """
-        Image to set as the user's new profile photo.
-
-        :rtype: PhotoSourceArg
-        """
-        if self._photo_present:
-            return self._photo_value
-        else:
-            raise AttributeError("missing required field 'photo'")
-
-    @photo.setter
-    def photo(self, val):
-        self._photo_validator.validate_type_only(val)
-        self._photo_value = val
-        self._photo_present = True
-
-    @photo.deleter
-    def photo(self):
-        self._photo_value = None
-        self._photo_present = False
+    # Instance attribute type: PhotoSourceArg (validator is set below)
+    photo = bb.Attribute("photo", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SetProfilePhotoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'SetProfilePhotoArg(photo={!r})'.format(
-            self._photo_value,
-        )
 
 SetProfilePhotoArg_validator = bv.Struct(SetProfilePhotoArg)
 
@@ -209,9 +174,6 @@ class SetProfilePhotoError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SetProfilePhotoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SetProfilePhotoError(%r, %r)' % (self._tag, self._value)
-
 SetProfilePhotoError_validator = bv.Union(SetProfilePhotoError)
 
 class SetProfilePhotoResult(bb.Struct):
@@ -222,48 +184,21 @@ class SetProfilePhotoResult(bb.Struct):
 
     __slots__ = [
         '_profile_photo_url_value',
-        '_profile_photo_url_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  profile_photo_url=None):
-        self._profile_photo_url_value = None
-        self._profile_photo_url_present = False
+        self._profile_photo_url_value = bb.NOT_SET
         if profile_photo_url is not None:
             self.profile_photo_url = profile_photo_url
 
-    @property
-    def profile_photo_url(self):
-        """
-        URL for the photo representing the user, if one is set.
-
-        :rtype: str
-        """
-        if self._profile_photo_url_present:
-            return self._profile_photo_url_value
-        else:
-            raise AttributeError("missing required field 'profile_photo_url'")
-
-    @profile_photo_url.setter
-    def profile_photo_url(self, val):
-        val = self._profile_photo_url_validator.validate(val)
-        self._profile_photo_url_value = val
-        self._profile_photo_url_present = True
-
-    @profile_photo_url.deleter
-    def profile_photo_url(self):
-        self._profile_photo_url_value = None
-        self._profile_photo_url_present = False
+    # Instance attribute type: str (validator is set below)
+    profile_photo_url = bb.Attribute("profile_photo_url")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SetProfilePhotoResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'SetProfilePhotoResult(profile_photo_url={!r})'.format(
-            self._profile_photo_url_value,
-        )
 
 SetProfilePhotoResult_validator = bv.Struct(SetProfilePhotoResult)
 
@@ -276,9 +211,9 @@ PhotoSourceArg._tagmap = {
 
 PhotoSourceArg.other = PhotoSourceArg('other')
 
-SetProfilePhotoArg._photo_validator = PhotoSourceArg_validator
+SetProfilePhotoArg.photo.validator = PhotoSourceArg_validator
 SetProfilePhotoArg._all_field_names_ = set(['photo'])
-SetProfilePhotoArg._all_fields_ = [('photo', SetProfilePhotoArg._photo_validator)]
+SetProfilePhotoArg._all_fields_ = [('photo', SetProfilePhotoArg.photo.validator)]
 
 SetProfilePhotoError._file_type_error_validator = bv.Void()
 SetProfilePhotoError._file_size_error_validator = bv.Void()
@@ -302,9 +237,9 @@ SetProfilePhotoError.thumbnail_error = SetProfilePhotoError('thumbnail_error')
 SetProfilePhotoError.transient_error = SetProfilePhotoError('transient_error')
 SetProfilePhotoError.other = SetProfilePhotoError('other')
 
-SetProfilePhotoResult._profile_photo_url_validator = bv.String()
+SetProfilePhotoResult.profile_photo_url.validator = bv.String()
 SetProfilePhotoResult._all_field_names_ = set(['profile_photo_url'])
-SetProfilePhotoResult._all_fields_ = [('profile_photo_url', SetProfilePhotoResult._profile_photo_url_validator)]
+SetProfilePhotoResult._all_fields_ = [('profile_photo_url', SetProfilePhotoResult.profile_photo_url.validator)]
 
 set_profile_photo = bb.Route(
     'set_profile_photo',

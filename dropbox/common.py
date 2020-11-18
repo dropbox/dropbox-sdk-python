@@ -3,14 +3,9 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class PathRoot(bb.Union):
     """
@@ -120,9 +115,6 @@ class PathRoot(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PathRoot, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PathRoot(%r, %r)' % (self._tag, self._value)
-
 PathRoot_validator = bv.Union(PathRoot)
 
 class PathRootError(bb.Union):
@@ -195,9 +187,6 @@ class PathRootError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PathRootError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PathRootError(%r, %r)' % (self._tag, self._value)
-
 PathRootError_validator = bv.Union(PathRootError)
 
 class RootInfo(bb.Struct):
@@ -214,9 +203,7 @@ class RootInfo(bb.Struct):
 
     __slots__ = [
         '_root_namespace_id_value',
-        '_root_namespace_id_present',
         '_home_namespace_id_value',
-        '_home_namespace_id_present',
     ]
 
     _has_required_fields = True
@@ -224,71 +211,21 @@ class RootInfo(bb.Struct):
     def __init__(self,
                  root_namespace_id=None,
                  home_namespace_id=None):
-        self._root_namespace_id_value = None
-        self._root_namespace_id_present = False
-        self._home_namespace_id_value = None
-        self._home_namespace_id_present = False
+        self._root_namespace_id_value = bb.NOT_SET
+        self._home_namespace_id_value = bb.NOT_SET
         if root_namespace_id is not None:
             self.root_namespace_id = root_namespace_id
         if home_namespace_id is not None:
             self.home_namespace_id = home_namespace_id
 
-    @property
-    def root_namespace_id(self):
-        """
-        The namespace ID for user's root namespace. It will be the namespace ID
-        of the shared team root if the user is member of a team with a separate
-        team root. Otherwise it will be same as ``RootInfo.home_namespace_id``.
+    # Instance attribute type: str (validator is set below)
+    root_namespace_id = bb.Attribute("root_namespace_id")
 
-        :rtype: str
-        """
-        if self._root_namespace_id_present:
-            return self._root_namespace_id_value
-        else:
-            raise AttributeError("missing required field 'root_namespace_id'")
-
-    @root_namespace_id.setter
-    def root_namespace_id(self, val):
-        val = self._root_namespace_id_validator.validate(val)
-        self._root_namespace_id_value = val
-        self._root_namespace_id_present = True
-
-    @root_namespace_id.deleter
-    def root_namespace_id(self):
-        self._root_namespace_id_value = None
-        self._root_namespace_id_present = False
-
-    @property
-    def home_namespace_id(self):
-        """
-        The namespace ID for user's home namespace.
-
-        :rtype: str
-        """
-        if self._home_namespace_id_present:
-            return self._home_namespace_id_value
-        else:
-            raise AttributeError("missing required field 'home_namespace_id'")
-
-    @home_namespace_id.setter
-    def home_namespace_id(self, val):
-        val = self._home_namespace_id_validator.validate(val)
-        self._home_namespace_id_value = val
-        self._home_namespace_id_present = True
-
-    @home_namespace_id.deleter
-    def home_namespace_id(self):
-        self._home_namespace_id_value = None
-        self._home_namespace_id_present = False
+    # Instance attribute type: str (validator is set below)
+    home_namespace_id = bb.Attribute("home_namespace_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RootInfo(root_namespace_id={!r}, home_namespace_id={!r})'.format(
-            self._root_namespace_id_value,
-            self._home_namespace_id_value,
-        )
 
 RootInfo_validator = bv.StructTree(RootInfo)
 
@@ -302,7 +239,6 @@ class TeamRootInfo(RootInfo):
 
     __slots__ = [
         '_home_path_value',
-        '_home_path_present',
     ]
 
     _has_required_fields = True
@@ -313,43 +249,15 @@ class TeamRootInfo(RootInfo):
                  home_path=None):
         super(TeamRootInfo, self).__init__(root_namespace_id,
                                            home_namespace_id)
-        self._home_path_value = None
-        self._home_path_present = False
+        self._home_path_value = bb.NOT_SET
         if home_path is not None:
             self.home_path = home_path
 
-    @property
-    def home_path(self):
-        """
-        The path for user's home directory under the shared team root.
-
-        :rtype: str
-        """
-        if self._home_path_present:
-            return self._home_path_value
-        else:
-            raise AttributeError("missing required field 'home_path'")
-
-    @home_path.setter
-    def home_path(self, val):
-        val = self._home_path_validator.validate(val)
-        self._home_path_value = val
-        self._home_path_present = True
-
-    @home_path.deleter
-    def home_path(self):
-        self._home_path_value = None
-        self._home_path_present = False
+    # Instance attribute type: str (validator is set below)
+    home_path = bb.Attribute("home_path")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamRootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamRootInfo(root_namespace_id={!r}, home_namespace_id={!r}, home_path={!r})'.format(
-            self._root_namespace_id_value,
-            self._home_namespace_id_value,
-            self._home_path_value,
-        )
 
 TeamRootInfo_validator = bv.Struct(TeamRootInfo)
 
@@ -372,12 +280,6 @@ class UserRootInfo(RootInfo):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserRootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserRootInfo(root_namespace_id={!r}, home_namespace_id={!r})'.format(
-            self._root_namespace_id_value,
-            self._home_namespace_id_value,
-        )
 
 UserRootInfo_validator = bv.Struct(UserRootInfo)
 
@@ -419,16 +321,16 @@ PathRootError._tagmap = {
 PathRootError.no_permission = PathRootError('no_permission')
 PathRootError.other = PathRootError('other')
 
-RootInfo._root_namespace_id_validator = NamespaceId_validator
-RootInfo._home_namespace_id_validator = NamespaceId_validator
+RootInfo.root_namespace_id.validator = NamespaceId_validator
+RootInfo.home_namespace_id.validator = NamespaceId_validator
 RootInfo._field_names_ = set([
     'root_namespace_id',
     'home_namespace_id',
 ])
 RootInfo._all_field_names_ = RootInfo._field_names_
 RootInfo._fields_ = [
-    ('root_namespace_id', RootInfo._root_namespace_id_validator),
-    ('home_namespace_id', RootInfo._home_namespace_id_validator),
+    ('root_namespace_id', RootInfo.root_namespace_id.validator),
+    ('home_namespace_id', RootInfo.home_namespace_id.validator),
 ]
 RootInfo._all_fields_ = RootInfo._fields_
 
@@ -442,10 +344,10 @@ RootInfo._pytype_to_tag_and_subtype_ = {
 }
 RootInfo._is_catch_all_ = True
 
-TeamRootInfo._home_path_validator = bv.String()
+TeamRootInfo.home_path.validator = bv.String()
 TeamRootInfo._field_names_ = set(['home_path'])
 TeamRootInfo._all_field_names_ = RootInfo._all_field_names_.union(TeamRootInfo._field_names_)
-TeamRootInfo._fields_ = [('home_path', TeamRootInfo._home_path_validator)]
+TeamRootInfo._fields_ = [('home_path', TeamRootInfo.home_path.validator)]
 TeamRootInfo._all_fields_ = RootInfo._all_fields_ + TeamRootInfo._fields_
 
 UserRootInfo._field_names_ = set([])

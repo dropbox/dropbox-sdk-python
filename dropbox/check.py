@@ -3,14 +3,9 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class EchoArg(bb.Struct):
     """
@@ -22,48 +17,21 @@ class EchoArg(bb.Struct):
 
     __slots__ = [
         '_query_value',
-        '_query_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  query=None):
-        self._query_value = None
-        self._query_present = False
+        self._query_value = bb.NOT_SET
         if query is not None:
             self.query = query
 
-    @property
-    def query(self):
-        """
-        The string that you'd like to be echoed back to you.
-
-        :rtype: str
-        """
-        if self._query_present:
-            return self._query_value
-        else:
-            return u''
-
-    @query.setter
-    def query(self, val):
-        val = self._query_validator.validate(val)
-        self._query_value = val
-        self._query_present = True
-
-    @query.deleter
-    def query(self):
-        self._query_value = None
-        self._query_present = False
+    # Instance attribute type: str (validator is set below)
+    query = bb.Attribute("query")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(EchoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'EchoArg(query={!r})'.format(
-            self._query_value,
-        )
 
 EchoArg_validator = bv.Struct(EchoArg)
 
@@ -77,59 +45,34 @@ class EchoResult(bb.Struct):
 
     __slots__ = [
         '_result_value',
-        '_result_present',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  result=None):
-        self._result_value = None
-        self._result_present = False
+        self._result_value = bb.NOT_SET
         if result is not None:
             self.result = result
 
-    @property
-    def result(self):
-        """
-        If everything worked correctly, this would be the same as query.
-
-        :rtype: str
-        """
-        if self._result_present:
-            return self._result_value
-        else:
-            return u''
-
-    @result.setter
-    def result(self, val):
-        val = self._result_validator.validate(val)
-        self._result_value = val
-        self._result_present = True
-
-    @result.deleter
-    def result(self):
-        self._result_value = None
-        self._result_present = False
+    # Instance attribute type: str (validator is set below)
+    result = bb.Attribute("result")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(EchoResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'EchoResult(result={!r})'.format(
-            self._result_value,
-        )
-
 EchoResult_validator = bv.Struct(EchoResult)
 
-EchoArg._query_validator = bv.String()
+EchoArg.query.validator = bv.String()
 EchoArg._all_field_names_ = set(['query'])
-EchoArg._all_fields_ = [('query', EchoArg._query_validator)]
+EchoArg._all_fields_ = [('query', EchoArg.query.validator)]
 
-EchoResult._result_validator = bv.String()
+EchoResult.result.validator = bv.String()
 EchoResult._all_field_names_ = set(['result'])
-EchoResult._all_fields_ = [('result', EchoResult._result_validator)]
+EchoResult._all_fields_ = [('result', EchoResult.result.validator)]
 
+EchoArg.query.default = u''
+EchoResult.result.default = u''
 app = bb.Route(
     'app',
     1,
